@@ -1,0 +1,5 @@
+recursive-include config *.conf *.png *.sql *.xml
+recursive-include docs *.pdf *.tar.xz
+exclude docs/developer/*.xls
+exclude *.cfg
+recursive-exclude reliafree *.pyc

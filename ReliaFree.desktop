@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=ReliaFree
+Type=Application
+Comment=An open-source RAMS analyses solution.
+Exec=reliafree
+TryExec=reliafree
+Icon=ReliaFree
+Categories=Math;Science;
