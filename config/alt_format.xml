@@ -1,0 +1,110 @@
+<!--
+-*- coding: utf-8 -*-
+
+      alt_format.xml is part of The ReliaFree Project
+
+      Copyright 2011-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+# All rights reserved.
+#
+# ReliaFree is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# ReliaFree is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ReliaFree.  If not, see <http://www.gnu.org/licenses -->
+
+<!-- This file contains information used by the ReliaFree application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="ALT">
+        <column>
+            <defaulttitle>Mode ID</defaulttitle>
+            <usertitle>Mode ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mechanism ID</defaulttitle>
+            <usertitle>Mechanism ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mechanism Description</defaulttitle>
+            <usertitle>Mechanism Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Damaging Conditions</defaulttitle>
+            <usertitle>Damaging Conditions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Damage Model</defaulttitle>
+            <usertitle>Damage Model</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Primary Measureable Parameter</defaulttitle>
+            <usertitle>Primary Measureable Parameter</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Secondary Measureable Parameter</defaulttitle>
+            <usertitle>Secondary Measureable Parameter</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Tertiary Measureable Parameter</defaulttitle>
+            <usertitle>Tertiary Measureable Parameter</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Load History</defaulttitle>
+            <usertitle>Mean Load History</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Required Boundary Conditions</defaulttitle>
+            <usertitle>Required Boundary Conditions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+    </tree>
+</root>

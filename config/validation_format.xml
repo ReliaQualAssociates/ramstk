@@ -1,0 +1,142 @@
+<!--
+-*- coding: utf-8 -*-
+
+      validation_format.xml is part of The ReliaFree Project
+
+      Copyright (C) 2007-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+All rights reserved.
+
+ReliaFree is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ReliaFree is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ReliaFree.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- This file contains information used by the ReliaFree application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Validation">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Validation ID</defaulttitle>
+            <usertitle>Validation ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>V and V Activity</defaulttitle>
+            <usertitle>V and V Activity</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>V and V Activity Type</defaulttitle>
+            <usertitle>V and V Activity Type</usertitle>
+            <datatype>gint</datatype>
+            <position>3</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification</defaulttitle>
+            <usertitle>Specification</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Measurement Unit</defaulttitle>
+            <usertitle>Measurement Unit</usertitle>
+            <datatype>gint</datatype>
+            <position>5</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Min. Acceptable</defaulttitle>
+            <usertitle>Min. Acceptable</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Acceptable</defaulttitle>
+            <usertitle>Mean Acceptable</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Max. Acceptable</defaulttitle>
+            <usertitle>Max. Acceptable</usertitle>
+            <datatype>gfloat</datatype>
+            <position>8</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Variance Acceptable</defaulttitle>
+            <usertitle>Variance Acceptable</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Start Date</defaulttitle>
+            <usertitle>Start Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>End Date</defaulttitle>
+            <usertitle>End Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>% Complete</defaulttitle>
+            <usertitle>% Complete</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Effectiveness</defaulttitle>
+            <usertitle>Effectiveness</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

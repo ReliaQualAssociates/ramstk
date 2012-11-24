@@ -1,0 +1,158 @@
+<!--
+-*- coding: utf-8 -*-
+
+      requirement_format.xml is part of The ReliaFree Project
+
+      Copyright (C) 2007-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+All rights reserved.
+
+ReliaFree is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ReliaFree is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with ReliaFree.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- This file contains information used by the ReliaFree application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Requirement">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement ID</defaulttitle>
+            <usertitle>Requirement ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>2</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement</defaulttitle>
+            <usertitle>Requirement</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement Type</defaulttitle>
+            <usertitle>Requirement Type</usertitle>
+            <datatype>gint</datatype>
+            <position>4</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement Code</defaulttitle>
+            <usertitle>Requirement Code</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Derived?</defaulttitle>
+            <usertitle>Derived?</usertitle>
+            <datatype>gint</datatype>
+            <position>6</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Parent Requirement</defaulttitle>
+            <usertitle>Parent Requirement</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Validated?</defaulttitle>
+            <usertitle>Validated?</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Validated Date</defaulttitle>
+            <usertitle>Validated Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Owner</defaulttitle>
+            <usertitle>Owner</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification</defaulttitle>
+            <usertitle>Specification</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Page Number</defaulttitle>
+            <usertitle>Page Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>12</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Figure Number</defaulttitle>
+            <usertitle>Figure Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>13</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Parent ID</defaulttitle>
+            <usertitle>Parent ID</usertitle>
+            <datatype>gint</datatype>
+            <position>14</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Software ID</defaulttitle>
+            <usertitle>Software ID</usertitle>
+            <datatype>gint</datatype>
+            <position>15</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

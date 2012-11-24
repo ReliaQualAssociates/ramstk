@@ -1,0 +1,747 @@
+<!--
+-*- coding: utf-8 -*-
+
+      hardware_format.xml is part of The ReliaFree Project
+
+      Copyright (C) 2010 - 2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+All rights reserved.
+
+-->
+
+<!-- This file contains information used by the ReliaFree application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Hardware">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Additive Adjustment Factor</defaulttitle>
+            <usertitle>Additive Adjustment Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>2</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Allocation Type</defaulttitle>
+            <usertitle>Allocation Type</usertitle>
+            <datatype>gint</datatype>
+            <position>3</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Alternate Part Number</defaulttitle>
+            <usertitle>Alternate Part Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly Criticality</defaulttitle>
+            <usertitle>Assembly Criticality</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Attachments</defaulttitle>
+            <usertitle>Attachments</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Availability, Predicted</defaulttitle>
+            <usertitle>Availability, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Availability, Mission</defaulttitle>
+            <usertitle>Availability, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>8</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>CAGE Code</defaulttitle>
+            <usertitle>CAGE Code</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Calculation Model</defaulttitle>
+            <usertitle>Calculation Model</usertitle>
+            <datatype>gint</datatype>
+            <position>10</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Category ID</defaulttitle>
+            <usertitle>Category ID</usertitle>
+            <datatype>gint</datatype>
+            <position>11</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Composite Ref. Des.</defaulttitle>
+            <usertitle>Composite Ref. Des.</usertitle>
+            <datatype>gchararray</datatype>
+            <position>12</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost</defaulttitle>
+            <usertitle>Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost/Failure</defaulttitle>
+            <usertitle>Cost/Failure</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost/Hour</defaulttitle>
+            <usertitle>Cost/Hour</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost Type</defaulttitle>
+            <usertitle>Cost Type</usertitle>
+            <datatype>gint</datatype>
+            <position>16</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Description</defaulttitle>
+            <usertitle>Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>17</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Detection</defaulttitle>
+            <usertitle>Failure Rate, Detection</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Detection %</defaulttitle>
+            <usertitle>Detection %</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Duty Cycle</defaulttitle>
+            <usertitle>Duty Cycle</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Entered By</defaulttitle>
+            <usertitle>Entered By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>21</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Environment, Active</defaulttitle>
+            <usertitle>Environment, Active</usertitle>
+            <datatype>gint</datatype>
+            <position>22</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Environment, Dormant</defaulttitle>
+            <usertitle>Environment, Dormant</usertitle>
+            <datatype>gint</datatype>
+            <position>23</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Distribution</defaulttitle>
+            <usertitle>Failure Distribution</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Parameter 1</defaulttitle>
+            <usertitle>Failure Parameter 1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Parameter 2</defaulttitle>
+            <usertitle>Failure Parameter 2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Parameter 3</defaulttitle>
+            <usertitle>Failure Parameter 3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>27</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Active</defaulttitle>
+            <usertitle>Failure Rate, Active</usertitle>
+            <datatype>gfloat</datatype>
+            <position>28</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Dormant</defaulttitle>
+            <usertitle>Failure Rate, Dormant</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Mission</defaulttitle>
+            <usertitle>Failure Rate, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Percent</defaulttitle>
+            <usertitle>Failure Rate, Percent</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Predicted</defaulttitle>
+            <usertitle>Failure Rate, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Software</defaulttitle>
+            <usertitle>Failure Rate, Software</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Specified</defaulttitle>
+            <usertitle>Failure Rate, Specified</usertitle>
+            <datatype>gfloat</datatype>
+            <position>34</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate Type</defaulttitle>
+            <usertitle>Failure Rate Type</usertitle>
+            <datatype>gint</datatype>
+            <position>35</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Figure Number</defaulttitle>
+            <usertitle>Figure Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>36</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Humidity</defaulttitle>
+            <usertitle>Humidity</usertitle>
+            <datatype>gfloat</datatype>
+            <position>37</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Image File</defaulttitle>
+            <usertitle>Image File</usertitle>
+            <datatype>gchararray</datatype>
+            <position>38</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Isolation Failure Rate</defaulttitle>
+            <usertitle>Isolation Failure Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>39</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Isolation Percent</defaulttitle>
+            <usertitle>Isolation Percent</usertitle>
+            <datatype>gfloat</datatype>
+            <position>40</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>LCN</defaulttitle>
+            <usertitle>LCN</usertitle>
+            <datatype>gchararray</datatype>
+            <position>41</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Level</defaulttitle>
+            <usertitle>Level</usertitle>
+            <datatype>gint</datatype>
+            <position>42</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Manufacturer</defaulttitle>
+            <usertitle>Manufacturer</usertitle>
+            <datatype>gint</datatype>
+            <position>43</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MCMT</defaulttitle>
+            <usertitle>MCMT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>44</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mission Time</defaulttitle>
+            <usertitle>Mission Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>45</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MMT</defaulttitle>
+            <usertitle>MMT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>46</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Modified By</defaulttitle>
+            <usertitle>Modified By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>47</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MPMT</defaulttitle>
+            <usertitle>MPMT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>48</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Mission</defaulttitle>
+            <usertitle>MTBF, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>49</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Predicted</defaulttitle>
+            <usertitle>MTBF, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>50</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Specified</defaulttitle>
+            <usertitle>MTBF, Specified</usertitle>
+            <datatype>gfloat</datatype>
+            <position>51</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTTR</defaulttitle>
+            <usertitle>MTTR</usertitle>
+            <datatype>gfloat</datatype>
+            <position>52</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTTR Add. Adj. Factor</defaulttitle>
+            <usertitle>MTTR Add. Adj. Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>53</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTTR Mult. Adj. Factor</defaulttitle>
+            <usertitle>MTTR Mult. Adj. Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>54</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTTR, Specified</defaulttitle>
+            <usertitle>MTTR, Specified</usertitle>
+            <datatype>gfloat</datatype>
+            <position>55</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTTR Type</defaulttitle>
+            <usertitle>MTTR Type</usertitle>
+            <datatype>gint</datatype>
+            <position>56</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mult. Adj. Factor</defaulttitle>
+            <usertitle>Mult. Adj. Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>57</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Name</defaulttitle>
+            <usertitle>Name</usertitle>
+            <datatype>gchararray</datatype>
+            <position>58</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>NSN</defaulttitle>
+            <usertitle>NSN</usertitle>
+            <datatype>gchararray</datatype>
+            <position>59</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Overstress</defaulttitle>
+            <usertitle>Overstress</usertitle>
+            <datatype>gint</datatype>
+            <position>60</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Page Number</defaulttitle>
+            <usertitle>Page Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>61</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Parent Assembly</defaulttitle>
+            <usertitle>Parent Assembly</usertitle>
+            <datatype>gchararray</datatype>
+            <position>62</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Part</defaulttitle>
+            <usertitle>Part</usertitle>
+            <datatype>gint</datatype>
+            <position>63</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Part Number</defaulttitle>
+            <usertitle>Part Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>64</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Percent Isolation Group</defaulttitle>
+            <usertitle>Percent Isolation Group</usertitle>
+            <datatype>gfloat</datatype>
+            <position>65</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Percent Isolation Single</defaulttitle>
+            <usertitle>Percent Isolation Single</usertitle>
+            <datatype>gfloat</datatype>
+            <position>66</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Quantity</defaulttitle>
+            <usertitle>Quantity</usertitle>
+            <datatype>gint</datatype>
+            <position>67</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reference Designator</defaulttitle>
+            <usertitle>Reference Designator</usertitle>
+            <datatype>gchararray</datatype>
+            <position>68</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability, Mission</defaulttitle>
+            <usertitle>Reliability, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>69</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability, Predicted</defaulttitle>
+            <usertitle>Reliability, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>70</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>71</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Repair Distribution</defaulttitle>
+            <usertitle>Repair Distribution</usertitle>
+            <datatype>gint</datatype>
+            <position>72</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Repair Parameter 1</defaulttitle>
+            <usertitle>Repair Parameter 1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>73</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Repair Parameter 2</defaulttitle>
+            <usertitle>Repair Parameter 2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>74</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Repairable</defaulttitle>
+            <usertitle>Repairable</usertitle>
+            <datatype>gint</datatype>
+            <position>75</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>RPM</defaulttitle>
+            <usertitle>RPM</usertitle>
+            <datatype>gfloat</datatype>
+            <position>76</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification</defaulttitle>
+            <usertitle>Specification</usertitle>
+            <datatype>gchararray</datatype>
+            <position>77</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Subcategory ID</defaulttitle>
+            <usertitle>Subcategory ID</usertitle>
+            <datatype>gint</datatype>
+            <position>78</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Tagged Part</defaulttitle>
+            <usertitle>Tagged Part</usertitle>
+            <datatype>gint</datatype>
+            <position>79</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Temperature, Active</defaulttitle>
+            <usertitle>Temperature, Active</usertitle>
+            <datatype>gfloat</datatype>
+            <position>80</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Temperature, Dormant</defaulttitle>
+            <usertitle>Temperature, Dormant</usertitle>
+            <datatype>gfloat</datatype>
+            <position>81</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Part Quantity</defaulttitle>
+            <usertitle>Total Part Quantity</usertitle>
+            <datatype>gint</datatype>
+            <position>82</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Power Dissipation</defaulttitle>
+            <usertitle>Total Power Dissipation</usertitle>
+            <datatype>gfloat</datatype>
+            <position>83</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Vibration</defaulttitle>
+            <usertitle>Vibration</usertitle>
+            <datatype>gfloat</datatype>
+            <position>84</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Weibull Data Set</defaulttitle>
+            <usertitle>Weibull Data Set</usertitle>
+            <datatype>gint</datatype>
+            <position>85</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Weibull File</defaulttitle>
+            <usertitle>Weibull File</usertitle>
+            <datatype>gchararray</datatype>
+            <position>86</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Year of Manufacture</defaulttitle>
+            <usertitle>Year of Manufacture</usertitle>
+            <datatype>gint</datatype>
+            <position>87</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Hazard Rate Model</defaulttitle>
+            <usertitle>Hazard Rate Model</usertitle>
+            <datatype>gchararray</datatype>
+            <position>88</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability Goal Measure</defaulttitle>
+            <usertitle>Reliability Goal Measure</usertitle>
+            <datatype>gint</datatype>
+            <position>89</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability Goal</defaulttitle>
+            <usertitle>Reliability Goal</usertitle>
+            <datatype>gfloat</datatype>
+            <position>90</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

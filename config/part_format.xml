@@ -1,0 +1,933 @@
+<!--
+-*- coding: utf-8 -*-
+
+      part_format.xml is part of the RelKit Project
+
+      Copyright (C) 2010-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+All rights reserved. -->
+
+<root>
+    <tree name="Parts">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function ID</defaulttitle>
+            <usertitle>Function ID</usertitle>
+            <datatype>gint</datatype>
+            <position>2</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>A1</defaulttitle>
+            <usertitle>A1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>3</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>A2</defaulttitle>
+            <usertitle>A2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>4</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Application ID</defaulttitle>
+            <usertitle>Application ID</usertitle>
+            <datatype>gint</datatype>
+            <position>5</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Burn In Temperature</defaulttitle>
+            <usertitle>Burn In Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Burn In Time</defaulttitle>
+            <usertitle>Burn In Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C1</defaulttitle>
+            <usertitle>C1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>8</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C2</defaulttitle>
+            <usertitle>C2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C3</defaulttitle>
+            <usertitle>C3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>10</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C4</defaulttitle>
+            <usertitle>C4</usertitle>
+            <datatype>gfloat</datatype>
+            <position>11</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C5</defaulttitle>
+            <usertitle>C5</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C6</defaulttitle>
+            <usertitle>C6</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>C7</defaulttitle>
+            <usertitle>C7</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Capacitance</defaulttitle>
+            <usertitle>Capacitance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Construction ID</defaulttitle>
+            <usertitle>Construction ID</usertitle>
+            <datatype>gint</datatype>
+            <position>16</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Current Ratio</defaulttitle>
+            <usertitle>Current Ratio</usertitle>
+            <datatype>gfloat</datatype>
+            <position>17</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cycles ID</defaulttitle>
+            <usertitle>Cycles ID</usertitle>
+            <datatype>gint</datatype>
+            <position>18</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cycling Rate</defaulttitle>
+            <usertitle>Cycling Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># Devices, Lab</defaulttitle>
+            <usertitle># Devices, Lab</usertitle>
+            <datatype>gint</datatype>
+            <position>20</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Die Area</defaulttitle>
+            <usertitle>Die Area</usertitle>
+            <datatype>gfloat</datatype>
+            <position>21</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Activation Energy</defaulttitle>
+            <usertitle>Activation Energy</usertitle>
+            <datatype>gfloat</datatype>
+            <position>22</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>ECC ID</defaulttitle>
+            <usertitle>ECC ID</usertitle>
+            <datatype>gint</datatype>
+            <position>23</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Element ID</defaulttitle>
+            <usertitle>Element ID</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>ESD Susceptibility</defaulttitle>
+            <usertitle>ESD Susceptibility</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># Failure, Field</defaulttitle>
+            <usertitle># Failure, Field</usertitle>
+            <datatype>gint</datatype>
+            <position>26</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># Failures, Lab</defaulttitle>
+            <usertitle># Failures, Lab</usertitle>
+            <datatype>gint</datatype>
+            <position>27</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Family ID</defaulttitle>
+            <usertitle>Family ID</usertitle>
+            <datatype>gint</datatype>
+            <position>28</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Feature Size</defaulttitle>
+            <usertitle>Feature Size</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function ID</defaulttitle>
+            <usertitle>Function ID</usertitle>
+            <datatype>gint</datatype>
+            <position>30</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I1</defaulttitle>
+            <usertitle>I1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I2</defaulttitle>
+            <usertitle>I2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I3</defaulttitle>
+            <usertitle>I3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I4</defaulttitle>
+            <usertitle>I4</usertitle>
+            <datatype>gfloat</datatype>
+            <position>34</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I5</defaulttitle>
+            <usertitle>I5</usertitle>
+            <datatype>gfloat</datatype>
+            <position>35</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>I6</defaulttitle>
+            <usertitle>I6</usertitle>
+            <datatype>gfloat</datatype>
+            <position>36</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Initial Temperature</defaulttitle>
+            <usertitle>Initial Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>37</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Insulation ID</defaulttitle>
+            <usertitle>Insulation ID</usertitle>
+            <datatype>gint</datatype>
+            <position>38</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Junction Temperature</defaulttitle>
+            <usertitle>Junction Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>39</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>K1</defaulttitle>
+            <usertitle>K1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>40</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>K2</defaulttitle>
+            <usertitle>K2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>41</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>K3</defaulttitle>
+            <usertitle>K3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>42</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Knee Temperature</defaulttitle>
+            <usertitle>Knee Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>43</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>L1</defaulttitle>
+            <usertitle>L1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>44</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>L2</defaulttitle>
+            <usertitle>L2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>45</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda b</defaulttitle>
+            <usertitle>lambda b</usertitle>
+            <datatype>gfloat</datatype>
+            <position>46</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda b0</defaulttitle>
+            <usertitle>lambda b0</usertitle>
+            <datatype>gfloat</datatype>
+            <position>47</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda b1</defaulttitle>
+            <usertitle>lambda b1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>48</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda b2</defaulttitle>
+            <usertitle>lambda b2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>49</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda BD</defaulttitle>
+            <usertitle>lambda BD</usertitle>
+            <datatype>gfloat</datatype>
+            <position>50</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda EOS</defaulttitle>
+            <usertitle>lambda EOS</usertitle>
+            <datatype>gfloat</datatype>
+            <position>51</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda g</defaulttitle>
+            <usertitle>lambda g</usertitle>
+            <datatype>gfloat</datatype>
+            <position>52</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>lambda o</defaulttitle>
+            <usertitle>lambda o</usertitle>
+            <datatype>gfloat</datatype>
+            <position>53</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Manufacturing ID</defaulttitle>
+            <usertitle>Manufacturing ID</usertitle>
+            <datatype>gint</datatype>
+            <position>54</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Max Rated Temperature</defaulttitle>
+            <usertitle>Max Rated Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>55</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Min Rated Temperature</defaulttitle>
+            <usertitle>Min Rated Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>56</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle># of Contacts</defaulttitle>
+            <usertitle># of Contacts</usertitle>
+            <datatype>gint</datatype>
+            <position>57</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># of Elements</defaulttitle>
+            <usertitle># of Elements</usertitle>
+            <datatype>gint</datatype>
+            <position>58</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># of Hand Solders</defaulttitle>
+            <usertitle># if Hand Solders</usertitle>
+            <datatype>gint</datatype>
+            <position>59</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># of Pins</defaulttitle>
+            <usertitle># of Pins</usertitle>
+            <datatype>gint</datatype>
+            <position>60</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle># of Wave Solders</defaulttitle>
+            <usertitle># of Wave Solders</usertitle>
+            <datatype>gint</datatype>
+            <position>61</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Operating Current</defaulttitle>
+            <usertitle>Operating Current</usertitle>
+            <datatype>gfloat</datatype>
+            <position>62</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Operating Freq</defaulttitle>
+            <usertitle>Operating Freq</usertitle>
+            <datatype>gfloat</datatype>
+            <position>63</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Operating Power</defaulttitle>
+            <usertitle>Operating Power</usertitle>
+            <datatype>gfloat</datatype>
+            <position>64</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Operating Time, Field</defaulttitle>
+            <usertitle>Operating Time, Field</usertitle>
+            <datatype>gfloat</datatype>
+            <position>65</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Operating Voltage</defaulttitle>
+            <usertitle>Operating Voltage</usertitle>
+            <datatype>gfloat</datatype>
+            <position>66</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Package ID</defaulttitle>
+            <usertitle>Package ID</usertitle>
+            <datatype>gint</datatype>
+            <position>67</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi A</defaulttitle>
+            <usertitle>Pi A</usertitle>
+            <datatype>gfloat</datatype>
+            <position>68</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi C</defaulttitle>
+            <usertitle>Pi C</usertitle>
+            <datatype>gfloat</datatype>
+            <position>69</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi CF</defaulttitle>
+            <usertitle>Pi CF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>70</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi CYC</defaulttitle>
+            <usertitle>Pi CYC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>71</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi E</defaulttitle>
+            <usertitle>Pi E</usertitle>
+            <datatype>gfloat</datatype>
+            <position>72</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi ECC</defaulttitle>
+            <usertitle>Pi ECC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>73</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi F</defaulttitle>
+            <usertitle>Pi F</usertitle>
+            <datatype>gfloat</datatype>
+            <position>74</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi K</defaulttitle>
+            <usertitle>Pi K</usertitle>
+            <datatype>gfloat</datatype>
+            <position>75</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi M</defaulttitle>
+            <usertitle>Pi M</usertitle>
+            <datatype>gfloat</datatype>
+            <position>76</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi MFG</defaulttitle>
+            <usertitle>Pi MFG</usertitle>
+            <datatype>gfloat</datatype>
+            <position>77</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi PT</defaulttitle>
+            <usertitle>Pi PT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>78</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi Q</defaulttitle>
+            <usertitle>Pi Q</usertitle>
+            <datatype>gfloat</datatype>
+            <position>79</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi R</defaulttitle>
+            <usertitle>Pi R</usertitle>
+            <datatype>gfloat</datatype>
+            <position>80</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi SR</defaulttitle>
+            <usertitle>Pi SR</usertitle>
+            <datatype>gfloat</datatype>
+            <position>81</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi U</defaulttitle>
+            <usertitle>Pi U</usertitle>
+            <datatype>gfloat</datatype>
+            <position>82</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Pi V</defaulttitle>
+            <usertitle>Pi V</usertitle>
+            <datatype>gfloat</datatype>
+            <position>83</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Power Ratio</defaulttitle>
+            <usertitle>Power Ratio</usertitle>
+            <datatype>gfloat</datatype>
+            <position>84</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Quality ID</defaulttitle>
+            <usertitle>Quality ID</usertitle>
+            <datatype>gint</datatype>
+            <position>85</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R1</defaulttitle>
+            <usertitle>R1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>86</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R2</defaulttitle>
+            <usertitle>R2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>87</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R3</defaulttitle>
+            <usertitle>R3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>88</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R4</defaulttitle>
+            <usertitle>R4</usertitle>
+            <datatype>gfloat</datatype>
+            <position>89</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R5</defaulttitle>
+            <usertitle>R5</usertitle>
+            <datatype>gfloat</datatype>
+            <position>90</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>R6</defaulttitle>
+            <usertitle>R6</usertitle>
+            <datatype>gfloat</datatype>
+            <position>91</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Rated Current</defaulttitle>
+            <usertitle>Rated Current</usertitle>
+            <datatype>gfloat</datatype>
+            <position>92</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Rated Power</defaulttitle>
+            <usertitle>Rated Power</usertitle>
+            <datatype>gfloat</datatype>
+            <position>93</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Rated Voltage</defaulttitle>
+            <usertitle>Rated Voltage</usertitle>
+            <datatype>gfloat</datatype>
+            <position>94</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Resistance</defaulttitle>
+            <usertitle>Resistance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>95</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Resistance ID</defaulttitle>
+            <usertitle>Resistance ID</usertitle>
+            <datatype>gint</datatype>
+            <position>96</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>S1</defaulttitle>
+            <usertitle>S1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>97</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>S2</defaulttitle>
+            <usertitle>S2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>98</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>S3</defaulttitle>
+            <usertitle>S3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>99</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>S4</defaulttitle>
+            <usertitle>S4</usertitle>
+            <datatype>gfloat</datatype>
+            <position>100</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification ID</defaulttitle>
+            <usertitle>Specification ID</usertitle>
+            <datatype>gint</datatype>
+            <position>101</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Spec. Sheet ID</defaulttitle>
+            <usertitle>Spec. Sheet ID</usertitle>
+            <datatype>gint</datatype>
+            <position>102</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Temperature, Base</defaulttitle>
+            <usertitle>Temperature, Base</usertitle>
+            <datatype>gfloat</datatype>
+            <position>103</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Technology ID</defaulttitle>
+            <usertitle>Technology ID</usertitle>
+            <datatype>gint</datatype>
+            <position>104</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Case Temperature</defaulttitle>
+            <usertitle>Case Temperature</usertitle>
+            <datatype>gfloat</datatype>
+            <position>105</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Temperature, Lab</defaulttitle>
+            <usertitle>Temperature, Lab</usertitle>
+            <datatype>gfloat</datatype>
+            <position>106</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Temperature Rise</defaulttitle>
+            <usertitle>Temperature Rise</usertitle>
+            <datatype>gfloat</datatype>
+            <position>107</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Time, Lab</defaulttitle>
+            <usertitle>Test Time, Lab</usertitle>
+            <datatype>gfloat</datatype>
+            <position>108</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Theta JC</defaulttitle>
+            <usertitle>Theta JC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>109</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Tref</defaulttitle>
+            <usertitle>Tref</usertitle>
+            <datatype>gfloat</datatype>
+            <position>110</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Voltage Ratio</defaulttitle>
+            <usertitle>Voltage Ratio</usertitle>
+            <datatype>gfloat</datatype>
+            <position>111</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Years in Production</defaulttitle>
+            <usertitle>Years in Production</usertitle>
+            <datatype>gint</datatype>
+            <position>112</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Part Number</defaulttitle>
+            <usertitle>Part Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>113</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Reference Designator</defaulttitle>
+            <usertitle>Reference Designator</usertitle>
+            <datatype>gchararray</datatype>
+            <position>114</position>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+    </tree>
+</root>
