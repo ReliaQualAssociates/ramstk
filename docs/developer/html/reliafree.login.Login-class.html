@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>reliafree.login.Login</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="reliafree-module.html">Package&nbsp;reliafree</a> ::
+        <a href="reliafree.login-module.html">Module&nbsp;login</a> ::
+        Class&nbsp;Login
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="reliafree.login.Login-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Login</h1><p class="nomargin-top"><span class="codelink"><a href="reliafree.login-pysrc.html#Login">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_reliafre_47" name="uml_class_diagram_for_reliafre_47">
+<area shape="rect" id="node1_123" href="reliafree.login.Login-class.html#__init__" title="Initializes the Login Object." alt="" coords="193,2639,347,2657"/>
+<area shape="rect" id="node1_124" href="reliafree.login.Login-class.html#ok" title="Callback function to handle OK button response." alt="" coords="193,2657,347,2676"/>
+<area shape="rect" id="node1_125" href="reliafree.login.Login-class.html#cancel" title="Callback function to handle CANCEL button response." alt="" coords="193,2676,347,2695"/>
+<area shape="rect" id="node1" href="reliafree.login.Login-class.html" title="The Login class is used to create a window that allows the user to enter login information for the MySQL server to use." alt="" coords="181,2606,358,2701"/>
+<area shape="rect" id="node2_126" href="javascript:void(0);" title="gtk.Dialog.__gtype__" alt="" coords="184,2241,356,2260"/>
+<area shape="rect" id="node2_127" href="javascript:void(0);" title="gtk.Dialog.action_area" alt="" coords="184,2260,356,2279"/>
+<area shape="rect" id="node2_128" href="javascript:void(0);" title="gtk.Dialog.vbox" alt="" coords="184,2279,356,2297"/>
+<area shape="rect" id="node2_129" href="javascript:void(0);" title="iter(x)" alt="" coords="184,2300,356,2319"/>
+<area shape="rect" id="node2_130" href="javascript:void(0);" title="gtk.Dialog.add_action_widget" alt="" coords="184,2319,356,2337"/>
+<area shape="rect" id="node2_131" href="javascript:void(0);" title="gtk.Dialog.add_button" alt="" coords="184,2337,356,2356"/>
+<area shape="rect" id="node2_132" href="javascript:void(0);" title="gtk.Dialog.add_buttons" alt="" coords="184,2356,356,2375"/>
+<area shape="rect" id="node2_133" href="javascript:void(0);" title="gtk.Dialog.do_close" alt="" coords="184,2375,356,2393"/>
+<area shape="rect" id="node2_134" href="javascript:void(0);" title="gtk.Dialog.do_response" alt="" coords="184,2393,356,2412"/>
+<area shape="rect" id="node2_135" href="javascript:void(0);" title="gtk.Dialog.get_action_area" alt="" coords="184,2412,356,2431"/>
+<area shape="rect" id="node2_136" href="javascript:void(0);" title="gtk.Dialog.get_content_area" alt="" coords="184,2431,356,2449"/>
+<area shape="rect" id="node2_137" href="javascript:void(0);" title="gtk.Dialog.get_has_separator" alt="" coords="184,2449,356,2468"/>
+<area shape="rect" id="node2_138" href="javascript:void(0);" title="gtk.Dialog.get_response_for_widget" alt="" coords="184,2468,356,2487"/>
+<area shape="rect" id="node2_139" href="javascript:void(0);" title="gtk.Dialog.get_widget_for_response" alt="" coords="184,2487,356,2505"/>
+<area shape="rect" id="node2_140" href="javascript:void(0);" title="gtk.Dialog.response" alt="" coords="184,2505,356,2524"/>
+<area shape="rect" id="node2_141" href="javascript:void(0);" title="gtk.Dialog.run" alt="" coords="184,2524,356,2543"/>
+<area shape="rect" id="node2_142" href="javascript:void(0);" title="gtk.Dialog.set_response_sensitive" alt="" coords="184,2561,356,2580"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="Object GtkDialog" alt="" coords="171,2217,367,2586"/>
+<area shape="rect" id="node3_143" href="javascript:void(0);" title="gtk.Widget.allocation" alt="" coords="184,609,356,628"/>
+<area shape="rect" id="node3_144" href="javascript:void(0);" title="gtk.Widget.name" alt="" coords="184,628,356,647"/>
+<area shape="rect" id="node3_145" href="javascript:void(0);" title="gtk.Widget.parent" alt="" coords="184,647,356,665"/>
+<area shape="rect" id="node3_146" href="javascript:void(0);" title="gtk.Widget.requisition" alt="" coords="184,665,356,684"/>
+<area shape="rect" id="node3_147" href="javascript:void(0);" title="gtk.Widget.saved_state" alt="" coords="184,684,356,703"/>
+<area shape="rect" id="node3_148" href="javascript:void(0);" title="gtk.Widget.state" alt="" coords="184,703,356,721"/>
+<area shape="rect" id="node3_149" href="javascript:void(0);" title="gtk.Widget.style" alt="" coords="184,721,356,740"/>
+<area shape="rect" id="node3_150" href="javascript:void(0);" title="gtk.Widget.window" alt="" coords="184,740,356,759"/>
+<area shape="rect" id="node3_151" href="javascript:void(0);" title="gtk.Widget.activate" alt="" coords="184,761,356,780"/>
+<area shape="rect" id="node3_152" href="javascript:void(0);" title="gtk.Widget.add_accelerator" alt="" coords="184,780,356,799"/>
+<area shape="rect" id="node3_153" href="javascript:void(0);" title="gtk.Widget.add_events" alt="" coords="184,799,356,817"/>
+<area shape="rect" id="node3_154" href="javascript:void(0);" title="gtk.Widget.add_mnemonic_label" alt="" coords="184,817,356,836"/>
+<area shape="rect" id="node3_155" href="javascript:void(0);" title="gtk.Widget.can_activate_accel" alt="" coords="184,836,356,855"/>
+<area shape="rect" id="node3_156" href="javascript:void(0);" title="gtk.Widget.child_focus" alt="" coords="184,855,356,873"/>
+<area shape="rect" id="node3_157" href="javascript:void(0);" title="gtk.Widget.child_notify" alt="" coords="184,873,356,892"/>
+<area shape="rect" id="node3_158" href="javascript:void(0);" title="gtk.Widget.class_path" alt="" coords="184,892,356,911"/>
+<area shape="rect" id="node3_159" href="javascript:void(0);" title="gtk.Widget.create_pango_context" alt="" coords="184,911,356,929"/>
+<area shape="rect" id="node3_160" href="javascript:void(0);" title="gtk.Widget.create_pango_layout" alt="" coords="184,929,356,948"/>
+<area shape="rect" id="node3_161" href="javascript:void(0);" title="gtk.Widget.destroy" alt="" coords="184,948,356,967"/>
+<area shape="rect" id="node3_162" href="javascript:void(0);" title="gtk.Widget.do_button_press_event" alt="" coords="184,967,356,985"/>
+<area shape="rect" id="node3_163" href="javascript:void(0);" title="gtk.Widget.do_button_release_event" alt="" coords="184,985,356,1004"/>
+<area shape="rect" id="node3_164" href="javascript:void(0);" title="gtk.Widget.unrealize" alt="" coords="184,1023,356,1041"/>
+<area shape="rect" id="node3" href="javascript:void(0);" title="Object GtkWidget" alt="" coords="171,585,367,1047"/>
+<area shape="rect" id="node7_165" href="javascript:void(0);" title="gtk.Container.border_width" alt="" coords="199,1092,343,1111"/>
+<area shape="rect" id="node7_166" href="javascript:void(0);" title="gtk.Container.focus_child" alt="" coords="199,1111,343,1129"/>
+<area shape="rect" id="node7_167" href="javascript:void(0);" title="gtk.Container.has_focus_chain" alt="" coords="199,1129,343,1148"/>
+<area shape="rect" id="node7_168" href="javascript:void(0);" title="gtk.Container.need_resize" alt="" coords="199,1148,343,1167"/>
+<area shape="rect" id="node7_169" href="javascript:void(0);" title="gtk.Container.reallocate_redraws" alt="" coords="199,1167,343,1185"/>
+<area shape="rect" id="node7_170" href="javascript:void(0);" title="gtk.Container.resize_mode" alt="" coords="199,1185,343,1204"/>
+<area shape="rect" id="node7_171" href="javascript:void(0);" title="len(x)" alt="" coords="199,1207,343,1225"/>
+<area shape="rect" id="node7_172" href="javascript:void(0);" title="x != 0" alt="" coords="199,1225,343,1244"/>
+<area shape="rect" id="node7_173" href="javascript:void(0);" title="gtk.Container.add" alt="" coords="199,1244,343,1263"/>
+<area shape="rect" id="node7_174" href="javascript:void(0);" title="gtk.Container.add_with_properties" alt="" coords="199,1263,343,1281"/>
+<area shape="rect" id="node7_175" href="javascript:void(0);" title="gtk.Container.check_resize" alt="" coords="199,1281,343,1300"/>
+<area shape="rect" id="node7_176" href="javascript:void(0);" title="gtk.Container.child_get" alt="" coords="199,1300,343,1319"/>
+<area shape="rect" id="node7_177" href="javascript:void(0);" title="gtk.Container.child_get_property" alt="" coords="199,1319,343,1337"/>
+<area shape="rect" id="node7_178" href="javascript:void(0);" title="gtk.Container.child_set" alt="" coords="199,1337,343,1356"/>
+<area shape="rect" id="node7_179" href="javascript:void(0);" title="gtk.Container.child_set_property" alt="" coords="199,1356,343,1375"/>
+<area shape="rect" id="node7_180" href="javascript:void(0);" title="gtk.Container.child_type" alt="" coords="199,1375,343,1393"/>
+<area shape="rect" id="node7_181" href="javascript:void(0);" title="gtk.Container.children" alt="" coords="199,1393,343,1412"/>
+<area shape="rect" id="node7_182" href="javascript:void(0);" title="gtk.Container.do_add" alt="" coords="199,1412,343,1431"/>
+<area shape="rect" id="node7_183" href="javascript:void(0);" title="gtk.Container.do_check_resize" alt="" coords="199,1431,343,1449"/>
+<area shape="rect" id="node7_184" href="javascript:void(0);" title="gtk.Container.unset_focus_chain" alt="" coords="199,1468,343,1487"/>
+<area shape="rect" id="node7" href="javascript:void(0);" title="Object GtkContainer" alt="" coords="187,1067,355,1493"/>
+<area shape="rect" id="node4_185" href="javascript:void(0);" title="atk.ImplementorIface.ref_accessible" alt="" coords="17,465,143,484"/>
+<area shape="rect" id="node4" href="javascript:void(0);" title="atk.ImplementorIface" alt="" coords="5,433,155,490"/>
+<area shape="rect" id="node5" href="javascript:void(0);" title="Interface GInterface" alt="" coords="108,150,241,194"/>
+<area shape="rect" id="node11_186" href="javascript:void(0);" title="gtk.Buildable.add_child" alt="" coords="196,391,345,409"/>
+<area shape="rect" id="node11_187" href="javascript:void(0);" title="gtk.Buildable.construct_child" alt="" coords="196,409,345,428"/>
+<area shape="rect" id="node11_188" href="javascript:void(0);" title="gtk.Buildable.do_add_child" alt="" coords="196,428,345,447"/>
+<area shape="rect" id="node11_189" href="javascript:void(0);" title="gtk.Buildable.do_construct_child" alt="" coords="196,447,345,465"/>
+<area shape="rect" id="node11_190" href="javascript:void(0);" title="gtk.Buildable.do_get_internal_child" alt="" coords="196,465,345,484"/>
+<area shape="rect" id="node11_191" href="javascript:void(0);" title="gtk.Buildable.do_parser_finished" alt="" coords="196,484,345,503"/>
+<area shape="rect" id="node11_192" href="javascript:void(0);" title="gtk.Buildable.do_set_name" alt="" coords="196,503,345,521"/>
+<area shape="rect" id="node11_193" href="javascript:void(0);" title="gtk.Buildable.get_internal_child" alt="" coords="196,521,345,540"/>
+<area shape="rect" id="node11_194" href="javascript:void(0);" title="gtk.Buildable.parser_finished" alt="" coords="196,540,345,559"/>
+<area shape="rect" id="node11" href="javascript:void(0);" title="gtk.Buildable" alt="" coords="184,358,357,565"/>
+<area shape="rect" id="node6_195" href="javascript:void(0);" title="gtk.Bin.child" alt="" coords="231,1537,311,1556"/>
+<area shape="rect" id="node6_196" href="javascript:void(0);" title="gtk.Bin.get_child" alt="" coords="231,1559,311,1577"/>
+<area shape="rect" id="node6" href="javascript:void(0);" title="Object GtkBin" alt="" coords="219,1513,323,1583"/>
+<area shape="rect" id="node9_197" href="javascript:void(0);" title="gtk.Window.allow_grow" alt="" coords="192,1628,348,1647"/>
+<area shape="rect" id="node9_198" href="javascript:void(0);" title="gtk.Window.allow_shrink" alt="" coords="192,1647,348,1665"/>
+<area shape="rect" id="node9_199" href="javascript:void(0);" title="gtk.Window.configure_notify_received" alt="" coords="192,1665,348,1684"/>
+<area shape="rect" id="node9_200" href="javascript:void(0);" title="gtk.Window.configure_request_count" alt="" coords="192,1684,348,1703"/>
+<area shape="rect" id="node9_201" href="javascript:void(0);" title="gtk.Window.decorated" alt="" coords="192,1703,348,1721"/>
+<area shape="rect" id="node9_202" href="javascript:void(0);" title="gtk.Window.default_widget" alt="" coords="192,1721,348,1740"/>
+<area shape="rect" id="node9_203" href="javascript:void(0);" title="gtk.Window.destroy_with_parent" alt="" coords="192,1740,348,1759"/>
+<area shape="rect" id="node9_204" href="javascript:void(0);" title="gtk.Window.focus_widget" alt="" coords="192,1759,348,1777"/>
+<area shape="rect" id="node9_205" href="javascript:void(0);" title="gtk.Window.frame" alt="" coords="192,1777,348,1796"/>
+<area shape="rect" id="node9_206" href="javascript:void(0);" title="gtk.Window.frame_bottom" alt="" coords="192,1796,348,1815"/>
+<area shape="rect" id="node9_207" href="javascript:void(0);" title="gtk.Window.frame_left" alt="" coords="192,1815,348,1833"/>
+<area shape="rect" id="node9_208" href="javascript:void(0);" title="gtk.Window.frame_right" alt="" coords="192,1833,348,1852"/>
+<area shape="rect" id="node9_209" href="javascript:void(0);" title="gtk.Window.frame_top" alt="" coords="192,1852,348,1871"/>
+<area shape="rect" id="node9_210" href="javascript:void(0);" title="gtk.Window.wmclass_name" alt="" coords="192,1889,348,1908"/>
+<area shape="rect" id="node9_211" href="javascript:void(0);" title="gtk.Window.activate_default" alt="" coords="192,1911,348,1929"/>
+<area shape="rect" id="node9_212" href="javascript:void(0);" title="gtk.Window.activate_focus" alt="" coords="192,1929,348,1948"/>
+<area shape="rect" id="node9_213" href="javascript:void(0);" title="gtk.Window.activate_key" alt="" coords="192,1948,348,1967"/>
+<area shape="rect" id="node9_214" href="javascript:void(0);" title="gtk.Window.add_accel_group" alt="" coords="192,1967,348,1985"/>
+<area shape="rect" id="node9_215" href="javascript:void(0);" title="gtk.Window.add_mnemonic" alt="" coords="192,1985,348,2004"/>
+<area shape="rect" id="node9_216" href="javascript:void(0);" title="gtk.Window.begin_move_drag" alt="" coords="192,2004,348,2023"/>
+<area shape="rect" id="node9_217" href="javascript:void(0);" title="gtk.Window.begin_resize_drag" alt="" coords="192,2023,348,2041"/>
+<area shape="rect" id="node9_218" href="javascript:void(0);" title="gtk.Window.deiconify" alt="" coords="192,2041,348,2060"/>
+<area shape="rect" id="node9_219" href="javascript:void(0);" title="gtk.Window.do_activate_default" alt="" coords="192,2060,348,2079"/>
+<area shape="rect" id="node9_220" href="javascript:void(0);" title="gtk.Window.do_activate_focus" alt="" coords="192,2079,348,2097"/>
+<area shape="rect" id="node9_221" href="javascript:void(0);" title="gtk.Window.do_frame_event" alt="" coords="192,2097,348,2116"/>
+<area shape="rect" id="node9_222" href="javascript:void(0);" title="gtk.Window.do_keys_changed" alt="" coords="192,2116,348,2135"/>
+<area shape="rect" id="node9_223" href="javascript:void(0);" title="gtk.Window.do_move_focus" alt="" coords="192,2135,348,2153"/>
+<area shape="rect" id="node9_224" href="javascript:void(0);" title="gtk.Window.unstick" alt="" coords="192,2172,348,2191"/>
+<area shape="rect" id="node9" href="javascript:void(0);" title="Object GtkWindow" alt="" coords="179,1603,359,2197"/>
+<area shape="rect" id="node8_225" href="javascript:void(0);" title="gtk.Object.do_destroy" alt="" coords="399,419,529,437"/>
+<area shape="rect" id="node8_226" href="javascript:void(0);" title="gtk.Object.flags" alt="" coords="399,437,529,456"/>
+<area shape="rect" id="node8_227" href="javascript:void(0);" title="gtk.Object.remove_data" alt="" coords="399,456,529,475"/>
+<area shape="rect" id="node8_228" href="javascript:void(0);" title="gtk.Object.remove_no_notify" alt="" coords="399,475,529,493"/>
+<area shape="rect" id="node8_229" href="javascript:void(0);" title="gtk.Object.set_flags" alt="" coords="399,493,529,512"/>
+<area shape="rect" id="node8_230" href="javascript:void(0);" title="gtk.Object.unset_flags" alt="" coords="399,512,529,531"/>
+<area shape="rect" id="node8" href="javascript:void(0);" title="Object GtkObject" alt="" coords="387,386,541,537"/>
+<area shape="rect" id="node10_231" href="javascript:void(0);" title="??.GObject.__grefcount__" alt="" coords="403,31,524,49"/>
+<area shape="rect" id="node10_232" href="javascript:void(0);" title="??.GObject.__copy__" alt="" coords="403,52,524,71"/>
+<area shape="rect" id="node10_233" href="javascript:void(0);" title="??.GObject.__deepcopy__" alt="" coords="403,71,524,89"/>
+<area shape="rect" id="node10_234" href="javascript:void(0);" title="x.__delattr__(&#39;name&#39;) &lt;==&gt; del x.name" alt="" coords="403,89,524,108"/>
+<area shape="rect" id="node10_235" href="javascript:void(0);" title="x==y" alt="" coords="403,108,524,127"/>
+<area shape="rect" id="node10_236" href="javascript:void(0);" title="??.GObject.__gdoc__" alt="" coords="403,127,524,145"/>
+<area shape="rect" id="node10_237" href="javascript:void(0);" title="x&gt;=y" alt="" coords="403,145,524,164"/>
+<area shape="rect" id="node10_238" href="javascript:void(0);" title="??.GObject.__gobject_init__" alt="" coords="403,164,524,183"/>
+<area shape="rect" id="node10_239" href="javascript:void(0);" title="x&gt;y" alt="" coords="403,183,524,201"/>
+<area shape="rect" id="node10_240" href="javascript:void(0);" title="hash(x)" alt="" coords="403,201,524,220"/>
+<area shape="rect" id="node10_241" href="javascript:void(0);" title="x&lt;=y" alt="" coords="403,220,524,239"/>
+<area shape="rect" id="node10_242" href="javascript:void(0);" title="x&lt;y" alt="" coords="403,239,524,257"/>
+<area shape="rect" id="node10_243" href="javascript:void(0);" title="x!=y" alt="" coords="403,257,524,276"/>
+<area shape="rect" id="node10_244" href="javascript:void(0);" title="??.GObject.__new__" alt="" coords="403,276,524,295"/>
+<area shape="rect" id="node10_245" href="javascript:void(0);" title="??.GObject.weak_ref" alt="" coords="403,313,524,332"/>
+<area shape="rect" id="node10" href="javascript:void(0);" title="Object GObject" alt="" coords="390,6,535,338"/>
+</map>
+  <img src="uml_class_diagram_for_reliafre_47.gif" alt='' usemap="#uml_class_diagram_for_reliafre_47" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>The Login class is used to create a window that allows the user to 
+  enter login information for the MySQL server to use.  This includes 
+  server, port, MySQL user name, and password.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.login.Login-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">title</span>)</span><br />
+      Initializes the Login Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.login-pysrc.html#Login.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ok"></a><span class="summary-sig-name">ok</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dialog</span>,
+        <span class="summary-sig-arg">response</span>)</span><br />
+      Callback function to handle OK button response.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.login-pysrc.html#Login.ok">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cancel"></a><span class="summary-sig-name">cancel</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dialog</span>)</span><br />
+      Callback function to handle CANCEL button response.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.login-pysrc.html#Login.cancel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Dialog</code></b>:
+      <code>__iter__</code>,
+      <code>add_action_widget</code>,
+      <code>add_button</code>,
+      <code>add_buttons</code>,
+      <code>do_close</code>,
+      <code>do_response</code>,
+      <code>get_action_area</code>,
+      <code>get_content_area</code>,
+      <code>get_has_separator</code>,
+      <code>get_response_for_widget</code>,
+      <code>get_widget_for_response</code>,
+      <code>response</code>,
+      <code>run</code>,
+      <code>set_alternative_button_order</code>,
+      <code>set_default_response</code>,
+      <code>set_has_separator</code>,
+      <code>set_response_sensitive</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Window</code></b>:
+      <code>activate_default</code>,
+      <code>activate_focus</code>,
+      <code>activate_key</code>,
+      <code>add_accel_group</code>,
+      <code>add_mnemonic</code>,
+      <code>begin_move_drag</code>,
+      <code>begin_resize_drag</code>,
+      <code>deiconify</code>,
+      <code>do_activate_default</code>,
+      <code>do_activate_focus</code>,
+      <code>do_frame_event</code>,
+      <code>do_keys_changed</code>,
+      <code>do_move_focus</code>,
+      <code>do_set_focus</code>,
+      <code>fullscreen</code>,
+      <code>get_accept_focus</code>,
+      <code>get_decorated</code>,
+      <code>get_default_size</code>,
+      <code>get_default_widget</code>,
+      <code>get_deletable</code>,
+      <code>get_destroy_with_parent</code>,
+      <code>get_focus</code>,
+      <code>get_focus_on_map</code>,
+      <code>get_frame_dimensions</code>,
+      <code>get_gravity</code>,
+      <code>get_group</code>,
+      <code>get_has_frame</code>,
+      <code>get_icon</code>,
+      <code>get_icon_list</code>,
+      <code>get_icon_name</code>,
+      <code>get_mnemonic_modifier</code>,
+      <code>get_mnemonics_visible</code>,
+      <code>get_modal</code>,
+      <code>get_opacity</code>,
+      <code>get_position</code>,
+      <code>get_resizable</code>,
+      <code>get_role</code>,
+      <code>get_screen</code>,
+      <code>get_size</code>,
+      <code>get_skip_pager_hint</code>,
+      <code>get_skip_taskbar_hint</code>,
+      <code>get_title</code>,
+      <code>get_transient_for</code>,
+      <code>get_type_hint</code>,
+      <code>get_urgency_hint</code>,
+      <code>get_window_type</code>,
+      <code>has_group</code>,
+      <code>has_toplevel_focus</code>,
+      <code>iconify</code>,
+      <code>is_active</code>,
+      <code>maximize</code>,
+      <code>mnemonic_activate</code>,
+      <code>move</code>,
+      <code>parse_geometry</code>,
+      <code>present</code>,
+      <code>present_with_time</code>,
+      <code>propagate_key_event</code>,
+      <code>remove_accel_group</code>,
+      <code>remove_mnemonic</code>,
+      <code>reshow_with_initial_size</code>,
+      <code>resize</code>,
+      <code>set_accept_focus</code>,
+      <code>set_decorated</code>,
+      <code>set_default</code>,
+      <code>set_default_size</code>,
+      <code>set_deletable</code>,
+      <code>set_destroy_with_parent</code>,
+      <code>set_focus</code>,
+      <code>set_focus_on_map</code>,
+      <code>set_frame_dimensions</code>,
+      <code>set_geometry_hints</code>,
+      <code>set_gravity</code>,
+      <code>set_has_frame</code>,
+      <code>set_icon</code>,
+      <code>set_icon_from_file</code>,
+      <code>set_icon_list</code>,
+      <code>set_icon_name</code>,
+      <code>set_keep_above</code>,
+      <code>set_keep_below</code>,
+      <code>set_mnemonic_modifier</code>,
+      <code>set_mnemonics_visible</code>,
+      <code>set_modal</code>,
+      <code>set_opacity</code>,
+      <code>set_policy</code>,
+      <code>set_position</code>,
+      <code>set_resizable</code>,
+      <code>set_role</code>,
+      <code>set_screen</code>,
+      <code>set_skip_pager_hint</code>,
+      <code>set_skip_taskbar_hint</code>,
+      <code>set_startup_id</code>,
+      <code>set_title</code>,
+      <code>set_transient_for</code>,
+      <code>set_type_hint</code>,
+      <code>set_urgency_hint</code>,
+      <code>set_wmclass</code>,
+      <code>stick</code>,
+      <code>tooltips_get_info_from_tip_window</code>,
+      <code>unfullscreen</code>,
+      <code>unmaximize</code>,
+      <code>unstick</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Bin</code></b>:
+      <code>get_child</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Container</code></b>:
+      <code>__len__</code>,
+      <code>__nonzero__</code>,
+      <code>add</code>,
+      <code>add_with_properties</code>,
+      <code>check_resize</code>,
+      <code>child_get</code>,
+      <code>child_get_property</code>,
+      <code>child_set</code>,
+      <code>child_set_property</code>,
+      <code>child_type</code>,
+      <code>children</code>,
+      <code>do_add</code>,
+      <code>do_check_resize</code>,
+      <code>do_child_type</code>,
+      <code>do_composite_name</code>,
+      <code>do_forall</code>,
+      <code>do_get_child_property</code>,
+      <code>do_remove</code>,
+      <code>do_set_child_property</code>,
+      <code>do_set_focus_child</code>,
+      <code>forall</code>,
+      <code>foreach</code>,
+      <code>get_border_width</code>,
+      <code>get_children</code>,
+      <code>get_focus_chain</code>,
+      <code>get_focus_child</code>,
+      <code>get_focus_hadjustment</code>,
+      <code>get_focus_vadjustment</code>,
+      <code>get_resize_mode</code>,
+      <code>install_child_property</code>,
+      <code>list_child_properties</code>,
+      <code>propagate_expose</code>,
+      <code>remove</code>,
+      <code>resize_children</code>,
+      <code>set_border_width</code>,
+      <code>set_focus_chain</code>,
+      <code>set_focus_child</code>,
+      <code>set_focus_hadjustment</code>,
+      <code>set_focus_vadjustment</code>,
+      <code>set_reallocate_redraws</code>,
+      <code>set_resize_mode</code>,
+      <code>unset_focus_chain</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Widget</code></b>:
+      <code>activate</code>,
+      <code>add_accelerator</code>,
+      <code>add_events</code>,
+      <code>add_mnemonic_label</code>,
+      <code>can_activate_accel</code>,
+      <code>child_focus</code>,
+      <code>child_notify</code>,
+      <code>class_path</code>,
+      <code>create_pango_context</code>,
+      <code>create_pango_layout</code>,
+      <code>destroy</code>,
+      <code>do_button_press_event</code>,
+      <code>do_button_release_event</code>,
+      <code>do_can_activate_accel</code>,
+      <code>do_client_event</code>,
+      <code>do_composited_changed</code>,
+      <code>do_configure_event</code>,
+      <code>do_delete_event</code>,
+      <code>do_destroy_event</code>,
+      <code>do_direction_changed</code>,
+      <code>do_drag_begin</code>,
+      <code>do_drag_data_delete</code>,
+      <code>do_drag_data_get</code>,
+      <code>do_drag_data_received</code>,
+      <code>do_drag_drop</code>,
+      <code>do_drag_end</code>,
+      <code>do_drag_leave</code>,
+      <code>do_drag_motion</code>,
+      <code>do_enter_notify_event</code>,
+      <code>do_event</code>,
+      <code>do_expose_event</code>,
+      <code>do_focus</code>,
+      <code>do_focus_in_event</code>,
+      <code>do_focus_out_event</code>,
+      <code>do_get_accessible</code>,
+      <code>do_grab_broken_event</code>,
+      <code>do_grab_focus</code>,
+      <code>do_grab_notify</code>,
+      <code>do_hide</code>,
+      <code>do_hide_all</code>,
+      <code>do_hierarchy_changed</code>,
+      <code>do_key_press_event</code>,
+      <code>do_key_release_event</code>,
+      <code>do_leave_notify_event</code>,
+      <code>do_map</code>,
+      <code>do_map_event</code>,
+      <code>do_mnemonic_activate</code>,
+      <code>do_motion_notify_event</code>,
+      <code>do_no_expose_event</code>,
+      <code>do_parent_set</code>,
+      <code>do_popup_menu</code>,
+      <code>do_property_notify_event</code>,
+      <code>do_proximity_in_event</code>,
+      <code>do_proximity_out_event</code>,
+      <code>do_realize</code>,
+      <code>do_screen_changed</code>,
+      <code>do_scroll_event</code>,
+      <code>do_selection_clear_event</code>,
+      <code>do_selection_get</code>,
+      <code>do_selection_notify_event</code>,
+      <code>do_selection_received</code>,
+      <code>do_selection_request_event</code>,
+      <code>do_show</code>,
+      <code>do_show_all</code>,
+      <code>do_show_help</code>,
+      <code>do_size_allocate</code>,
+      <code>do_size_request</code>,
+      <code>do_state_changed</code>,
+      <code>do_style_set</code>,
+      <code>do_unmap</code>,
+      <code>do_unmap_event</code>,
+      <code>do_unrealize</code>,
+      <code>do_visibility_notify_event</code>,
+      <code>do_window_state_event</code>,
+      <code>drag_begin</code>,
+      <code>drag_check_threshold</code>,
+      <code>drag_dest_add_image_targets</code>,
+      <code>drag_dest_add_text_targets</code>,
+      <code>drag_dest_add_uri_targets</code>,
+      <code>drag_dest_find_target</code>,
+      <code>drag_dest_get_target_list</code>,
+      <code>drag_dest_get_track_motion</code>,
+      <code>drag_dest_set</code>,
+      <code>drag_dest_set_proxy</code>,
+      <code>drag_dest_set_target_list</code>,
+      <code>drag_dest_set_track_motion</code>,
+      <code>drag_dest_unset</code>,
+      <code>drag_get_data</code>,
+      <code>drag_highlight</code>,
+      <code>drag_source_add_image_targets</code>,
+      <code>drag_source_add_text_targets</code>,
+      <code>drag_source_add_uri_targets</code>,
+      <code>drag_source_get_target_list</code>,
+      <code>drag_source_set</code>,
+      <code>drag_source_set_icon</code>,
+      <code>drag_source_set_icon_name</code>,
+      <code>drag_source_set_icon_pixbuf</code>,
+      <code>drag_source_set_icon_stock</code>,
+      <code>drag_source_set_target_list</code>,
+      <code>drag_source_unset</code>,
+      <code>drag_unhighlight</code>,
+      <code>draw</code>,
+      <code>ensure_style</code>,
+      <code>error_bell</code>,
+      <code>event</code>,
+      <code>freeze_child_notify</code>,
+      <code>get_accessible</code>,
+      <code>get_action</code>,
+      <code>get_activate_signal</code>,
+      <code>get_allocation</code>,
+      <code>get_ancestor</code>,
+      <code>get_app_paintable</code>,
+      <code>get_can_default</code>,
+      <code>get_can_focus</code>,
+      <code>get_child_requisition</code>,
+      <code>get_child_visible</code>,
+      <code>get_clipboard</code>,
+      <code>get_colormap</code>,
+      <code>get_composite_name</code>,
+      <code>get_direction</code>,
+      <code>get_display</code>,
+      <code>get_double_buffered</code>,
+      <code>get_events</code>,
+      <code>get_extension_events</code>,
+      <code>get_has_tooltip</code>,
+      <code>get_has_window</code>,
+      <code>get_mapped</code>,
+      <code>get_modifier_style</code>,
+      <code>get_name</code>,
+      <code>get_no_show_all</code>,
+      <code>get_pango_context</code>,
+      <code>get_parent</code>,
+      <code>get_parent_window</code>,
+      <code>get_pointer</code>,
+      <code>get_realized</code>,
+      <code>get_receives_default</code>,
+      <code>get_requisition</code>,
+      <code>get_root_window</code>,
+      <code>get_sensitive</code>,
+      <code>get_settings</code>,
+      <code>get_size_request</code>,
+      <code>get_snapshot</code>,
+      <code>get_state</code>,
+      <code>get_style</code>,
+      <code>get_tooltip_markup</code>,
+      <code>get_tooltip_text</code>,
+      <code>get_tooltip_window</code>,
+      <code>get_toplevel</code>,
+      <code>get_visible</code>,
+      <code>get_visual</code>,
+      <code>get_window</code>,
+      <code>grab_add</code>,
+      <code>grab_default</code>,
+      <code>grab_focus</code>,
+      <code>grab_remove</code>,
+      <code>has_default</code>,
+      <code>has_grab</code>,
+      <code>has_rc_style</code>,
+      <code>has_screen</code>,
+      <code>hide</code>,
+      <code>hide_all</code>,
+      <code>hide_on_delete</code>,
+      <code>input_shape_combine_mask</code>,
+      <code>intersect</code>,
+      <code>is_ancestor</code>,
+      <code>is_composited</code>,
+      <code>is_drawable</code>,
+      <code>is_focus</code>,
+      <code>is_sensitive</code>,
+      <code>is_toplevel</code>,
+      <code>keynav_failed</code>,
+      <code>list_accel_closures</code>,
+      <code>list_mnemonic_labels</code>,
+      <code>map</code>,
+      <code>menu_get_for_attach_widget</code>,
+      <code>modify_base</code>,
+      <code>modify_bg</code>,
+      <code>modify_cursor</code>,
+      <code>modify_fg</code>,
+      <code>modify_font</code>,
+      <code>modify_style</code>,
+      <code>modify_text</code>,
+      <code>path</code>,
+      <code>queue_clear</code>,
+      <code>queue_clear_area</code>,
+      <code>queue_draw</code>,
+      <code>queue_draw_area</code>,
+      <code>queue_resize</code>,
+      <code>queue_resize_no_redraw</code>,
+      <code>rc_get_style</code>,
+      <code>realize</code>,
+      <code>region_intersect</code>,
+      <code>remove_accelerator</code>,
+      <code>remove_mnemonic_label</code>,
+      <code>render_icon</code>,
+      <code>reparent</code>,
+      <code>reset_rc_styles</code>,
+      <code>reset_shapes</code>,
+      <code>selection_add_target</code>,
+      <code>selection_add_targets</code>,
+      <code>selection_clear_targets</code>,
+      <code>selection_convert</code>,
+      <code>selection_owner_set</code>,
+      <code>selection_remove_all</code>,
+      <code>send_expose</code>,
+      <code>send_focus_change</code>,
+      <code>set_accel_path</code>,
+      <code>set_activate_signal</code>,
+      <code>set_allocation</code>,
+      <code>set_app_paintable</code>,
+      <code>set_can_default</code>,
+      <code>set_can_focus</code>,
+      <code>set_child_visible</code>,
+      <code>set_colormap</code>,
+      <code>set_composite_name</code>,
+      <code>set_direction</code>,
+      <code>set_double_buffered</code>,
+      <code>set_events</code>,
+      <code>set_extension_events</code>,
+      <code>set_has_tooltip</code>,
+      <code>set_has_window</code>,
+      <code>set_mapped</code>,
+      <code>set_name</code>,
+      <code>set_no_show_all</code>,
+      <code>set_parent</code>,
+      <code>set_parent_window</code>,
+      <code>set_realized</code>,
+      <code>set_receives_default</code>,
+      <code>set_redraw_on_allocate</code>,
+      <code>set_scroll_adjustments</code>,
+      <code>set_sensitive</code>,
+      <code>set_set_scroll_adjustments_signal</code>,
+      <code>set_size_request</code>,
+      <code>set_state</code>,
+      <code>set_style</code>,
+      <code>set_tooltip_markup</code>,
+      <code>set_tooltip_text</code>,
+      <code>set_tooltip_window</code>,
+      <code>set_uposition</code>,
+      <code>set_usize</code>,
+      <code>set_visible</code>,
+      <code>set_window</code>,
+      <code>shape_combine_mask</code>,
+      <code>show</code>,
+      <code>show_all</code>,
+      <code>show_now</code>,
+      <code>size_allocate</code>,
+      <code>size_request</code>,
+      <code>style_attach</code>,
+      <code>style_get_property</code>,
+      <code>thaw_child_notify</code>,
+      <code>translate_coordinates</code>,
+      <code>trigger_tooltip_query</code>,
+      <code>unmap</code>,
+      <code>unparent</code>,
+      <code>unrealize</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Object</code></b>:
+      <code>do_destroy</code>,
+      <code>flags</code>,
+      <code>remove_data</code>,
+      <code>remove_no_notify</code>,
+      <code>set_flags</code>,
+      <code>unset_flags</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><i>unreachable</i>.GObject</code></b>:
+      <code>__copy__</code>,
+      <code>__deepcopy__</code>,
+      <code>__delattr__</code>,
+      <code>__eq__</code>,
+      <code>__gdoc__</code>,
+      <code>__ge__</code>,
+      <code>__gobject_init__</code>,
+      <code>__gt__</code>,
+      <code>__hash__</code>,
+      <code>__le__</code>,
+      <code>__lt__</code>,
+      <code>__ne__</code>,
+      <code>__new__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>chain</code>,
+      <code>connect</code>,
+      <code>connect_after</code>,
+      <code>connect_object</code>,
+      <code>connect_object_after</code>,
+      <code>disconnect</code>,
+      <code>disconnect_by_func</code>,
+      <code>emit</code>,
+      <code>emit_stop_by_name</code>,
+      <code>freeze_notify</code>,
+      <code>get_data</code>,
+      <code>get_properties</code>,
+      <code>get_property</code>,
+      <code>handler_block</code>,
+      <code>handler_block_by_func</code>,
+      <code>handler_disconnect</code>,
+      <code>handler_is_connected</code>,
+      <code>handler_unblock</code>,
+      <code>handler_unblock_by_func</code>,
+      <code>notify</code>,
+      <code>props</code>,
+      <code>set_data</code>,
+      <code>set_properties</code>,
+      <code>set_property</code>,
+      <code>stop_emission</code>,
+      <code>thaw_notify</code>,
+      <code>weak_ref</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>atk.ImplementorIface</code></b>:
+      <code>ref_accessible</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Buildable</code></b>:
+      <code>add_child</code>,
+      <code>construct_child</code>,
+      <code>do_add_child</code>,
+      <code>do_construct_child</code>,
+      <code>do_get_internal_child</code>,
+      <code>do_parser_finished</code>,
+      <code>do_set_name</code>,
+      <code>get_internal_child</code>,
+      <code>parser_finished</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Dialog</code></b>:
+      <code>__gtype__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Dialog</code></b>:
+      <code>action_area</code>,
+      <code>vbox</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Window</code></b>:
+      <code>allow_grow</code>,
+      <code>allow_shrink</code>,
+      <code>configure_notify_received</code>,
+      <code>configure_request_count</code>,
+      <code>decorated</code>,
+      <code>default_widget</code>,
+      <code>destroy_with_parent</code>,
+      <code>focus_widget</code>,
+      <code>frame</code>,
+      <code>frame_bottom</code>,
+      <code>frame_left</code>,
+      <code>frame_right</code>,
+      <code>frame_top</code>,
+      <code>gravity</code>,
+      <code>group</code>,
+      <code>has_focus</code>,
+      <code>has_frame</code>,
+      <code>has_user_ref_count</code>,
+      <code>iconify_initially</code>,
+      <code>keys_changed_handler</code>,
+      <code>maximize_initially</code>,
+      <code>mnemonic_modifier</code>,
+      <code>modal</code>,
+      <code>need_default_position</code>,
+      <code>need_default_size</code>,
+      <code>position</code>,
+      <code>stick_initially</code>,
+      <code>title</code>,
+      <code>transient_parent</code>,
+      <code>type</code>,
+      <code>type_hint</code>,
+      <code>wm_role</code>,
+      <code>wmclass_class</code>,
+      <code>wmclass_name</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Bin</code></b>:
+      <code>child</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Container</code></b>:
+      <code>border_width</code>,
+      <code>focus_child</code>,
+      <code>has_focus_chain</code>,
+      <code>need_resize</code>,
+      <code>reallocate_redraws</code>,
+      <code>resize_mode</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>gtk.Widget</code></b>:
+      <code>allocation</code>,
+      <code>name</code>,
+      <code>parent</code>,
+      <code>requisition</code>,
+      <code>saved_state</code>,
+      <code>state</code>,
+      <code>style</code>,
+      <code>window</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><i>unreachable</i>.GObject</code></b>:
+      <code>__grefcount__</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">title</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.login-pysrc.html#Login.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Initializes the Login Object.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:12 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

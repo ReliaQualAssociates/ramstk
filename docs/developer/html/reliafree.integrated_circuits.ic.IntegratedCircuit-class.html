@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>reliafree.integrated_circuits.ic.IntegratedCircuit</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="reliafree-module.html">Package&nbsp;reliafree</a> ::
+        <a href="reliafree.integrated_circuits-module.html">Package&nbsp;integrated_circuits</a> ::
+        <a href="reliafree.integrated_circuits.ic-module.html">Module&nbsp;ic</a> ::
+        Class&nbsp;IntegratedCircuit
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class IntegratedCircuit</h1><p class="nomargin-top"><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_reliafre_37" name="uml_class_diagram_for_reliafre_37">
+<area shape="rect" id="node1_7" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#__init__" title="Initializes the Integrated Circuit Component Class." alt="" coords="853,39,1185,57"/>
+<area shape="rect" id="node1_8" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#combo_callback" title="Callback function for handling Integrated Circuit Class ComboBox changes." alt="" coords="853,57,1185,76"/>
+<area shape="rect" id="node1_9" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#create_reliability_inputs" title="Populates the ReliaFree Workbook calculation input tab with the widgets &#160;needed to select inputs for Integrated Circuit prediction calculations." alt="" coords="853,76,1185,95"/>
+<area shape="rect" id="node1_10" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#create_reliability_outputs" title="Populates the ReliaFree Workbook calculation results tab with the widgets &#160;to display Integrated Circuit calculation results." alt="" coords="853,95,1185,113"/>
+<area shape="rect" id="node1_11" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#entry_callback" title="Callback function for handling Integrated Circuit Class Entry changes." alt="" coords="853,113,1185,132"/>
+<area shape="rect" id="node1_12" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#load_reliability_inputs" title="Loads the ReliaFree Workbook calculation input widgets with calculation &#160;input information." alt="" coords="853,132,1185,151"/>
+<area shape="rect" id="node1_13" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#load_reliability_outputs" title="Loads the ReliaFree Workbook calculation results widgets with calculation &#160;results." alt="" coords="853,151,1185,169"/>
+<area shape="rect" id="node1" href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html" title="Integrated Circuit meta class." alt="" coords="841,6,1197,175"/>
+<area shape="rect" id="node2" href="reliafree.integrated_circuits.gaas.GaAsDigital-class.html" title="Digital GaAs Integrated Circuit Component Class." alt="" coords="5,195,144,234"/>
+<area shape="rect" id="node3" href="reliafree.integrated_circuits.memory.MemorySRAM-class.html" title="SRAM memory class." alt="" coords="173,195,347,234"/>
+<area shape="rect" id="node4" href="reliafree.integrated_circuits.memory.MemoryEEPROM-class.html" title="EEPROM memory class." alt="" coords="377,195,570,234"/>
+<area shape="rect" id="node5" href="reliafree.integrated_circuits.memory.MemoryDRAM-class.html" title="DRAM memory class." alt="" coords="599,195,774,234"/>
+<area shape="rect" id="node6" href="reliafree.integrated_circuits.gaas.GaAsMMIC-class.html" title="Microwave Monolithic GaAs Integrated Circuit Component Class." alt="" coords="803,195,941,234"/>
+<area shape="rect" id="node7" href="reliafree.integrated_circuits.logic.Logic-class.html" title="Logic (digital) integrated circuit class." alt="" coords="971,195,1069,234"/>
+<area shape="rect" id="node8" href="reliafree.integrated_circuits.memory.MemoryROM-class.html" title="ROM Memory class." alt="" coords="1099,195,1264,234"/>
+<area shape="rect" id="node9" href="reliafree.integrated_circuits.palpla.PALPLA-class.html" title="PAL/PLA device class." alt="" coords="1293,195,1419,234"/>
+<area shape="rect" id="node10" href="reliafree.integrated_circuits.linear.Linear-class.html" title="Linear integrated circuit class." alt="" coords="1448,195,1555,234"/>
+<area shape="rect" id="node11" href="reliafree.integrated_circuits.microprocessor.Microprocessor-class.html" title="Microprocessor class." alt="" coords="1584,195,1803,234"/>
+<area shape="rect" id="node12" href="reliafree.integrated_circuits.vlsi.VLSI-class.html" title="VHSIC/VHSIC&#45;like and VLSI CMOS integrated circuit class." alt="" coords="1833,195,1922,234"/>
+</map>
+  <img src="uml_class_diagram_for_reliafre_37.gif" alt='' usemap="#uml_class_diagram_for_reliafre_37" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Integrated Circuit meta class.</p>
+  <p>Hazard Rate Models:</p>
+  <ol start="1">
+    <li>
+      MIL-HDBK-217F, section 5.
+    </li>
+  </ol>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initializes the Integrated Circuit Component Class.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#combo_callback" class="summary-sig-name">combo_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">combo</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">_index_</span>)</span><br />
+      Callback function for handling Integrated Circuit Class ComboBox 
+      changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.combo_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#create_reliability_inputs" class="summary-sig-name">create_reliability_inputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">layout</span>)</span><br />
+      Populates the ReliaFree Workbook calculation input tab with the 
+      widgets needed to select inputs for Integrated Circuit prediction 
+      calculations.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.create_reliability_inputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#create_reliability_outputs" class="summary-sig-name">create_reliability_outputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">layout</span>)</span><br />
+      Populates the ReliaFree Workbook calculation results tab with the 
+      widgets to display Integrated Circuit calculation results.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.create_reliability_outputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#entry_callback" class="summary-sig-name">entry_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">entry</span>,
+        <span class="summary-sig-arg">event</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">convert</span>,
+        <span class="summary-sig-arg">_index_</span>)</span><br />
+      Callback function for handling Integrated Circuit Class Entry
+changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.entry_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#load_reliability_inputs" class="summary-sig-name">load_reliability_inputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Loads the ReliaFree Workbook calculation input widgets with 
+      calculation input information.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.load_reliability_inputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#load_reliability_outputs" class="summary-sig-name">load_reliability_outputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Loads the ReliaFree Workbook calculation results widgets with 
+      calculation results.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.load_reliability_outputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.integrated_circuits.ic.IntegratedCircuit-class.html#_package" class="summary-name" onclick="show_private();">_package</a> = <code title="['', 'Hermetic DIP', 'Flatpack', 'Can', 'Non-Hermetic DIP']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Hermetic DIP</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Flatpack</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Can</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Non-Hermet</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_quality"></a><span class="summary-name">_quality</span> = <code title="['', 'S', 'B', 'B-1', 'Commercial']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">B</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">B-1</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Commercial</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_technology"></a><span class="summary-name">_technology</span> = <code title="['', 'Bipolar', 'CMOS']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Bipolar</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">CMOS</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="combo_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">combo_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">combo</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">_index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.combo_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Callback function for handling Integrated Circuit Class ComboBox 
+  changes.</p>
+  <p>Keyword Arguments: combo   -- the combobox widget calling this 
+  function. part    -- the ReliaFree COMPONENT object. _index_ -- the 
+  user-definded index for the calling combobx.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_reliability_inputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_reliability_inputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">layout</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.create_reliability_inputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Populates the ReliaFree Workbook calculation input tab with the 
+  widgets needed to select inputs for Integrated Circuit prediction 
+  calculations.</p>
+  <p>Keyword Arguments: part   -- the ReliaFree COMPONENT object. layout --
+  the layout widget to contain the display widgets.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_reliability_outputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_reliability_outputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">layout</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.create_reliability_outputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Populates the ReliaFree Workbook calculation results tab with the 
+  widgets to display Integrated Circuit calculation results.</p>
+  <p>Keyword Arguments: part   -- the ReliaFree COMPONENT object. layout --
+  the layout widget to contain the display widgets.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="entry_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">entry_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">entry</span>,
+        <span class="sig-arg">event</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">convert</span>,
+        <span class="sig-arg">_index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.entry_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function for handling Integrated Circuit Class Entry
+changes.
+
+Keyword Arguments:
+entry   -- the entry widget calling this function.
+event   -- the event that triggered calling this function.
+part    -- the ReliaFree COMPONENT object.
+convert -- the data type to convert the entry contents to.
+_index_ -- the position in the Component property array
+           associated with the data from the entry that called
+           this function.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_reliability_inputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_reliability_inputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.load_reliability_inputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Loads the ReliaFree Workbook calculation input widgets with 
+  calculation input information.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_reliability_outputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_reliability_outputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.integrated_circuits.ic-pysrc.html#IntegratedCircuit.load_reliability_outputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Loads the ReliaFree Workbook calculation results widgets with 
+  calculation results.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_package"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_package</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Hermetic DIP</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Flatpack</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Can</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Non-Hermetic DIP</code><code class="variable-quote">'</code><code class="variable-group">]</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:11 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

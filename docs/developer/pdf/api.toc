@@ -1,0 +1,433 @@
+\contentsline {section}{Contents}{1}{section*.1}
+\contentsline {section}{\numberline {1}Package reliafree}{13}{section.1}
+\contentsline {subsection}{\numberline {1.1}Modules}{13}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Variables}{14}{subsection.1.2}
+\contentsline {section}{\numberline {2}Module reliafree.assembly}{15}{section.2}
+\contentsline {subsection}{\numberline {2.1}Classes}{15}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Variables}{15}{subsection.2.2}
+\contentsline {section}{\numberline {3}Module reliafree.calculations}{16}{section.3}
+\contentsline {subsection}{\numberline {3.1}Functions}{16}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Variables}{19}{subsection.3.2}
+\contentsline {section}{\numberline {4}Package reliafree.capacitors}{20}{section.4}
+\contentsline {subsection}{\numberline {4.1}Modules}{20}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Variables}{20}{subsection.4.2}
+\contentsline {section}{\numberline {5}Module reliafree.capacitors.capacitor}{21}{section.5}
+\contentsline {subsection}{\numberline {5.1}Classes}{21}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Variables}{21}{subsection.5.2}
+\contentsline {section}{\numberline {6}Module reliafree.capacitors.electrolytic}{22}{section.6}
+\contentsline {subsection}{\numberline {6.1}Classes}{22}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Variables}{22}{subsection.6.2}
+\contentsline {section}{\numberline {7}Module reliafree.capacitors.fixed}{23}{section.7}
+\contentsline {subsection}{\numberline {7.1}Classes}{23}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Variables}{23}{subsection.7.2}
+\contentsline {section}{\numberline {8}Module reliafree.capacitors.variable}{24}{section.8}
+\contentsline {subsection}{\numberline {8.1}Classes}{24}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Variables}{24}{subsection.8.2}
+\contentsline {section}{\numberline {9}Module reliafree.component}{25}{section.9}
+\contentsline {subsection}{\numberline {9.1}Classes}{25}{subsection.9.1}
+\contentsline {subsection}{\numberline {9.2}Variables}{25}{subsection.9.2}
+\contentsline {section}{\numberline {10}Module reliafree.configuration}{26}{section.10}
+\contentsline {subsection}{\numberline {10.1}Classes}{26}{subsection.10.1}
+\contentsline {subsection}{\numberline {10.2}Variables}{26}{subsection.10.2}
+\contentsline {section}{\numberline {11}Package reliafree.connections}{29}{section.11}
+\contentsline {subsection}{\numberline {11.1}Modules}{29}{subsection.11.1}
+\contentsline {subsection}{\numberline {11.2}Variables}{29}{subsection.11.2}
+\contentsline {section}{\numberline {12}Module reliafree.connections.connection}{30}{section.12}
+\contentsline {subsection}{\numberline {12.1}Classes}{30}{subsection.12.1}
+\contentsline {subsection}{\numberline {12.2}Variables}{30}{subsection.12.2}
+\contentsline {section}{\numberline {13}Module reliafree.connections.multipin}{31}{section.13}
+\contentsline {subsection}{\numberline {13.1}Classes}{31}{subsection.13.1}
+\contentsline {subsection}{\numberline {13.2}Variables}{31}{subsection.13.2}
+\contentsline {section}{\numberline {14}Module reliafree.connections.pcb}{32}{section.14}
+\contentsline {subsection}{\numberline {14.1}Classes}{32}{subsection.14.1}
+\contentsline {subsection}{\numberline {14.2}Variables}{32}{subsection.14.2}
+\contentsline {section}{\numberline {15}Module reliafree.connections.socket}{33}{section.15}
+\contentsline {subsection}{\numberline {15.1}Classes}{33}{subsection.15.1}
+\contentsline {subsection}{\numberline {15.2}Variables}{33}{subsection.15.2}
+\contentsline {section}{\numberline {16}Module reliafree.connections.solder}{34}{section.16}
+\contentsline {subsection}{\numberline {16.1}Classes}{34}{subsection.16.1}
+\contentsline {subsection}{\numberline {16.2}Variables}{34}{subsection.16.2}
+\contentsline {section}{\numberline {17}Module reliafree.function}{35}{section.17}
+\contentsline {subsection}{\numberline {17.1}Classes}{35}{subsection.17.1}
+\contentsline {subsection}{\numberline {17.2}Variables}{35}{subsection.17.2}
+\contentsline {section}{\numberline {18}Module reliafree.hardware}{36}{section.18}
+\contentsline {subsection}{\numberline {18.1}Classes}{36}{subsection.18.1}
+\contentsline {subsection}{\numberline {18.2}Variables}{36}{subsection.18.2}
+\contentsline {section}{\numberline {19}Package reliafree.inductors}{37}{section.19}
+\contentsline {subsection}{\numberline {19.1}Modules}{37}{subsection.19.1}
+\contentsline {subsection}{\numberline {19.2}Variables}{37}{subsection.19.2}
+\contentsline {section}{\numberline {20}Module reliafree.inductors.coil}{38}{section.20}
+\contentsline {subsection}{\numberline {20.1}Classes}{38}{subsection.20.1}
+\contentsline {subsection}{\numberline {20.2}Variables}{38}{subsection.20.2}
+\contentsline {section}{\numberline {21}Module reliafree.inductors.inductor}{39}{section.21}
+\contentsline {subsection}{\numberline {21.1}Classes}{39}{subsection.21.1}
+\contentsline {subsection}{\numberline {21.2}Variables}{39}{subsection.21.2}
+\contentsline {section}{\numberline {22}Module reliafree.inductors.transformer}{40}{section.22}
+\contentsline {subsection}{\numberline {22.1}Classes}{40}{subsection.22.1}
+\contentsline {subsection}{\numberline {22.2}Variables}{40}{subsection.22.2}
+\contentsline {section}{\numberline {23}Package reliafree.integrated\_circuits}{41}{section.23}
+\contentsline {subsection}{\numberline {23.1}Modules}{41}{subsection.23.1}
+\contentsline {subsection}{\numberline {23.2}Variables}{41}{subsection.23.2}
+\contentsline {section}{\numberline {24}Module reliafree.integrated\_circuits.gaas}{42}{section.24}
+\contentsline {subsection}{\numberline {24.1}Classes}{42}{subsection.24.1}
+\contentsline {subsection}{\numberline {24.2}Variables}{42}{subsection.24.2}
+\contentsline {section}{\numberline {25}Module reliafree.integrated\_circuits.ic}{43}{section.25}
+\contentsline {subsection}{\numberline {25.1}Classes}{43}{subsection.25.1}
+\contentsline {subsection}{\numberline {25.2}Variables}{43}{subsection.25.2}
+\contentsline {section}{\numberline {26}Module reliafree.integrated\_circuits.linear}{44}{section.26}
+\contentsline {subsection}{\numberline {26.1}Classes}{44}{subsection.26.1}
+\contentsline {subsection}{\numberline {26.2}Variables}{44}{subsection.26.2}
+\contentsline {section}{\numberline {27}Module reliafree.integrated\_circuits.logic}{45}{section.27}
+\contentsline {subsection}{\numberline {27.1}Classes}{45}{subsection.27.1}
+\contentsline {subsection}{\numberline {27.2}Variables}{45}{subsection.27.2}
+\contentsline {section}{\numberline {28}Module reliafree.integrated\_circuits.memory}{46}{section.28}
+\contentsline {subsection}{\numberline {28.1}Classes}{46}{subsection.28.1}
+\contentsline {subsection}{\numberline {28.2}Variables}{46}{subsection.28.2}
+\contentsline {section}{\numberline {29}Module reliafree.integrated\_circuits.microprocessor}{47}{section.29}
+\contentsline {subsection}{\numberline {29.1}Classes}{47}{subsection.29.1}
+\contentsline {subsection}{\numberline {29.2}Variables}{47}{subsection.29.2}
+\contentsline {section}{\numberline {30}Module reliafree.integrated\_circuits.palpla}{48}{section.30}
+\contentsline {subsection}{\numberline {30.1}Classes}{48}{subsection.30.1}
+\contentsline {subsection}{\numberline {30.2}Variables}{48}{subsection.30.2}
+\contentsline {section}{\numberline {31}Module reliafree.integrated\_circuits.vlsi}{49}{section.31}
+\contentsline {subsection}{\numberline {31.1}Classes}{49}{subsection.31.1}
+\contentsline {subsection}{\numberline {31.2}Variables}{49}{subsection.31.2}
+\contentsline {section}{\numberline {32}Module reliafree.login}{50}{section.32}
+\contentsline {subsection}{\numberline {32.1}Classes}{50}{subsection.32.1}
+\contentsline {subsection}{\numberline {32.2}Variables}{50}{subsection.32.2}
+\contentsline {section}{\numberline {33}Module reliafree.main}{51}{section.33}
+\contentsline {subsection}{\numberline {33.1}Classes}{51}{subsection.33.1}
+\contentsline {subsection}{\numberline {33.2}Functions}{51}{subsection.33.2}
+\contentsline {subsection}{\numberline {33.3}Variables}{51}{subsection.33.3}
+\contentsline {section}{\numberline {34}Package reliafree.meters}{52}{section.34}
+\contentsline {subsection}{\numberline {34.1}Modules}{52}{subsection.34.1}
+\contentsline {subsection}{\numberline {34.2}Variables}{52}{subsection.34.2}
+\contentsline {section}{\numberline {35}Module reliafree.meters.meter}{53}{section.35}
+\contentsline {subsection}{\numberline {35.1}Classes}{53}{subsection.35.1}
+\contentsline {subsection}{\numberline {35.2}Variables}{53}{subsection.35.2}
+\contentsline {section}{\numberline {36}Package reliafree.miscellaneous}{54}{section.36}
+\contentsline {subsection}{\numberline {36.1}Modules}{54}{subsection.36.1}
+\contentsline {subsection}{\numberline {36.2}Variables}{54}{subsection.36.2}
+\contentsline {section}{\numberline {37}Module reliafree.miscellaneous.crystal}{55}{section.37}
+\contentsline {subsection}{\numberline {37.1}Classes}{55}{subsection.37.1}
+\contentsline {subsection}{\numberline {37.2}Variables}{55}{subsection.37.2}
+\contentsline {section}{\numberline {38}Module reliafree.miscellaneous.filter}{56}{section.38}
+\contentsline {subsection}{\numberline {38.1}Classes}{56}{subsection.38.1}
+\contentsline {subsection}{\numberline {38.2}Variables}{56}{subsection.38.2}
+\contentsline {section}{\numberline {39}Module reliafree.miscellaneous.fuse}{57}{section.39}
+\contentsline {subsection}{\numberline {39.1}Classes}{57}{subsection.39.1}
+\contentsline {subsection}{\numberline {39.2}Variables}{57}{subsection.39.2}
+\contentsline {section}{\numberline {40}Module reliafree.miscellaneous.lamp}{58}{section.40}
+\contentsline {subsection}{\numberline {40.1}Classes}{58}{subsection.40.1}
+\contentsline {subsection}{\numberline {40.2}Variables}{58}{subsection.40.2}
+\contentsline {section}{\numberline {41}Module reliafree.mysql}{59}{section.41}
+\contentsline {subsection}{\numberline {41.1}Classes}{59}{subsection.41.1}
+\contentsline {subsection}{\numberline {41.2}Variables}{59}{subsection.41.2}
+\contentsline {section}{\numberline {42}Module reliafree.notebook}{60}{section.42}
+\contentsline {subsection}{\numberline {42.1}Classes}{60}{subsection.42.1}
+\contentsline {subsection}{\numberline {42.2}Variables}{60}{subsection.42.2}
+\contentsline {section}{\numberline {43}Module reliafree.partlist}{61}{section.43}
+\contentsline {subsection}{\numberline {43.1}Classes}{61}{subsection.43.1}
+\contentsline {subsection}{\numberline {43.2}Variables}{61}{subsection.43.2}
+\contentsline {section}{\numberline {44}Package reliafree.relays}{62}{section.44}
+\contentsline {subsection}{\numberline {44.1}Modules}{62}{subsection.44.1}
+\contentsline {subsection}{\numberline {44.2}Variables}{62}{subsection.44.2}
+\contentsline {section}{\numberline {45}Module reliafree.relays.relay}{63}{section.45}
+\contentsline {subsection}{\numberline {45.1}Classes}{63}{subsection.45.1}
+\contentsline {subsection}{\numberline {45.2}Variables}{63}{subsection.45.2}
+\contentsline {section}{\numberline {46}Module reliafree.requirement}{64}{section.46}
+\contentsline {subsection}{\numberline {46.1}Classes}{64}{subsection.46.1}
+\contentsline {subsection}{\numberline {46.2}Variables}{64}{subsection.46.2}
+\contentsline {section}{\numberline {47}Package reliafree.resistors}{65}{section.47}
+\contentsline {subsection}{\numberline {47.1}Modules}{65}{subsection.47.1}
+\contentsline {subsection}{\numberline {47.2}Variables}{65}{subsection.47.2}
+\contentsline {section}{\numberline {48}Module reliafree.resistors.fixed}{66}{section.48}
+\contentsline {subsection}{\numberline {48.1}Classes}{66}{subsection.48.1}
+\contentsline {subsection}{\numberline {48.2}Variables}{66}{subsection.48.2}
+\contentsline {section}{\numberline {49}Module reliafree.resistors.resistor}{67}{section.49}
+\contentsline {subsection}{\numberline {49.1}Classes}{67}{subsection.49.1}
+\contentsline {subsection}{\numberline {49.2}Variables}{67}{subsection.49.2}
+\contentsline {section}{\numberline {50}Module reliafree.resistors.thermistor}{68}{section.50}
+\contentsline {subsection}{\numberline {50.1}Classes}{68}{subsection.50.1}
+\contentsline {subsection}{\numberline {50.2}Variables}{68}{subsection.50.2}
+\contentsline {section}{\numberline {51}Module reliafree.resistors.variable}{69}{section.51}
+\contentsline {subsection}{\numberline {51.1}Classes}{69}{subsection.51.1}
+\contentsline {subsection}{\numberline {51.2}Variables}{69}{subsection.51.2}
+\contentsline {section}{\numberline {52}Module reliafree.revision}{70}{section.52}
+\contentsline {subsection}{\numberline {52.1}Classes}{70}{subsection.52.1}
+\contentsline {subsection}{\numberline {52.2}Variables}{70}{subsection.52.2}
+\contentsline {section}{\numberline {53}Package reliafree.semiconductors}{71}{section.53}
+\contentsline {subsection}{\numberline {53.1}Modules}{71}{subsection.53.1}
+\contentsline {subsection}{\numberline {53.2}Variables}{71}{subsection.53.2}
+\contentsline {section}{\numberline {54}Module reliafree.semiconductors.diode}{72}{section.54}
+\contentsline {subsection}{\numberline {54.1}Classes}{72}{subsection.54.1}
+\contentsline {subsection}{\numberline {54.2}Variables}{72}{subsection.54.2}
+\contentsline {section}{\numberline {55}Module reliafree.semiconductors.optoelectronics}{73}{section.55}
+\contentsline {subsection}{\numberline {55.1}Classes}{73}{subsection.55.1}
+\contentsline {subsection}{\numberline {55.2}Variables}{73}{subsection.55.2}
+\contentsline {section}{\numberline {56}Module reliafree.semiconductors.semiconductor}{74}{section.56}
+\contentsline {subsection}{\numberline {56.1}Classes}{74}{subsection.56.1}
+\contentsline {subsection}{\numberline {56.2}Variables}{74}{subsection.56.2}
+\contentsline {section}{\numberline {57}Module reliafree.semiconductors.thyristor}{75}{section.57}
+\contentsline {subsection}{\numberline {57.1}Classes}{75}{subsection.57.1}
+\contentsline {subsection}{\numberline {57.2}Variables}{75}{subsection.57.2}
+\contentsline {section}{\numberline {58}Module reliafree.semiconductors.transistor}{76}{section.58}
+\contentsline {subsection}{\numberline {58.1}Classes}{76}{subsection.58.1}
+\contentsline {subsection}{\numberline {58.2}Variables}{76}{subsection.58.2}
+\contentsline {section}{\numberline {59}Package reliafree.switches}{77}{section.59}
+\contentsline {subsection}{\numberline {59.1}Modules}{77}{subsection.59.1}
+\contentsline {subsection}{\numberline {59.2}Variables}{77}{subsection.59.2}
+\contentsline {section}{\numberline {60}Module reliafree.switches.breaker}{78}{section.60}
+\contentsline {subsection}{\numberline {60.1}Classes}{78}{subsection.60.1}
+\contentsline {subsection}{\numberline {60.2}Variables}{78}{subsection.60.2}
+\contentsline {section}{\numberline {61}Module reliafree.switches.rotary}{79}{section.61}
+\contentsline {subsection}{\numberline {61.1}Classes}{79}{subsection.61.1}
+\contentsline {subsection}{\numberline {61.2}Variables}{79}{subsection.61.2}
+\contentsline {section}{\numberline {62}Module reliafree.switches.sensitive}{80}{section.62}
+\contentsline {subsection}{\numberline {62.1}Classes}{80}{subsection.62.1}
+\contentsline {subsection}{\numberline {62.2}Variables}{80}{subsection.62.2}
+\contentsline {section}{\numberline {63}Module reliafree.switches.switch}{81}{section.63}
+\contentsline {subsection}{\numberline {63.1}Classes}{81}{subsection.63.1}
+\contentsline {subsection}{\numberline {63.2}Variables}{81}{subsection.63.2}
+\contentsline {section}{\numberline {64}Module reliafree.switches.thumbwheel}{82}{section.64}
+\contentsline {subsection}{\numberline {64.1}Classes}{82}{subsection.64.1}
+\contentsline {subsection}{\numberline {64.2}Variables}{82}{subsection.64.2}
+\contentsline {section}{\numberline {65}Module reliafree.switches.toggle}{83}{section.65}
+\contentsline {subsection}{\numberline {65.1}Classes}{83}{subsection.65.1}
+\contentsline {subsection}{\numberline {65.2}Variables}{83}{subsection.65.2}
+\contentsline {section}{\numberline {66}Module reliafree.tree}{84}{section.66}
+\contentsline {subsection}{\numberline {66.1}Classes}{84}{subsection.66.1}
+\contentsline {subsection}{\numberline {66.2}Variables}{84}{subsection.66.2}
+\contentsline {section}{\numberline {67}Module reliafree.utilities}{85}{section.67}
+\contentsline {subsection}{\numberline {67.1}Classes}{85}{subsection.67.1}
+\contentsline {subsection}{\numberline {67.2}Functions}{85}{subsection.67.2}
+\contentsline {subsection}{\numberline {67.3}Variables}{87}{subsection.67.3}
+\contentsline {section}{\numberline {68}Module reliafree.validation}{89}{section.68}
+\contentsline {subsection}{\numberline {68.1}Classes}{89}{subsection.68.1}
+\contentsline {subsection}{\numberline {68.2}Variables}{89}{subsection.68.2}
+\contentsline {section}{\numberline {69}Module reliafree.widgets}{90}{section.69}
+\contentsline {subsection}{\numberline {69.1}Classes}{90}{subsection.69.1}
+\contentsline {subsection}{\numberline {69.2}Functions}{90}{subsection.69.2}
+\contentsline {subsection}{\numberline {69.3}Variables}{93}{subsection.69.3}
+\contentsline {section}{\numberline {70}Class reliafree.assembly.Assembly}{94}{section.70}
+\contentsline {subsection}{\numberline {70.1}Methods}{94}{subsection.70.1}
+\contentsline {subsection}{\numberline {70.2}Class Variables}{95}{subsection.70.2}
+\contentsline {section}{\numberline {71}Class reliafree.capacitors.capacitor.Capacitor}{96}{section.71}
+\contentsline {subsection}{\numberline {71.1}Methods}{96}{subsection.71.1}
+\contentsline {section}{\numberline {72}Class reliafree.capacitors.electrolytic.Aluminum}{98}{section.72}
+\contentsline {subsection}{\numberline {72.1}Methods}{98}{subsection.72.1}
+\contentsline {section}{\numberline {73}Class reliafree.capacitors.electrolytic.AluminumDry}{99}{section.73}
+\contentsline {subsection}{\numberline {73.1}Methods}{99}{subsection.73.1}
+\contentsline {section}{\numberline {74}Class reliafree.capacitors.electrolytic.TantalumNonSolid}{100}{section.74}
+\contentsline {subsection}{\numberline {74.1}Methods}{100}{subsection.74.1}
+\contentsline {section}{\numberline {75}Class reliafree.capacitors.electrolytic.TantalumSolid}{102}{section.75}
+\contentsline {subsection}{\numberline {75.1}Methods}{102}{subsection.75.1}
+\contentsline {section}{\numberline {76}Class reliafree.capacitors.fixed.CeramicChip}{104}{section.76}
+\contentsline {subsection}{\numberline {76.1}Methods}{104}{subsection.76.1}
+\contentsline {section}{\numberline {77}Class reliafree.capacitors.fixed.CeramicGeneral}{105}{section.77}
+\contentsline {subsection}{\numberline {77.1}Methods}{105}{subsection.77.1}
+\contentsline {section}{\numberline {78}Class reliafree.capacitors.fixed.Glass}{106}{section.78}
+\contentsline {subsection}{\numberline {78.1}Methods}{106}{subsection.78.1}
+\contentsline {section}{\numberline {79}Class reliafree.capacitors.fixed.MetallizedPaper}{107}{section.79}
+\contentsline {subsection}{\numberline {79.1}Methods}{107}{subsection.79.1}
+\contentsline {section}{\numberline {80}Class reliafree.capacitors.fixed.Mica}{108}{section.80}
+\contentsline {subsection}{\numberline {80.1}Methods}{108}{subsection.80.1}
+\contentsline {section}{\numberline {81}Class reliafree.capacitors.fixed.MicaButton}{109}{section.81}
+\contentsline {subsection}{\numberline {81.1}Methods}{109}{subsection.81.1}
+\contentsline {section}{\numberline {82}Class reliafree.capacitors.fixed.PaperBypass}{110}{section.82}
+\contentsline {subsection}{\numberline {82.1}Methods}{110}{subsection.82.1}
+\contentsline {section}{\numberline {83}Class reliafree.capacitors.fixed.PaperFeedthrough}{111}{section.83}
+\contentsline {subsection}{\numberline {83.1}Methods}{111}{subsection.83.1}
+\contentsline {section}{\numberline {84}Class reliafree.capacitors.fixed.Plastic}{112}{section.84}
+\contentsline {subsection}{\numberline {84.1}Methods}{112}{subsection.84.1}
+\contentsline {section}{\numberline {85}Class reliafree.capacitors.fixed.PlasticFilm}{113}{section.85}
+\contentsline {subsection}{\numberline {85.1}Methods}{113}{subsection.85.1}
+\contentsline {section}{\numberline {86}Class reliafree.capacitors.fixed.SuperMetallizedPlastic}{114}{section.86}
+\contentsline {subsection}{\numberline {86.1}Methods}{114}{subsection.86.1}
+\contentsline {section}{\numberline {87}Class reliafree.capacitors.variable.AirTrimmer}{115}{section.87}
+\contentsline {subsection}{\numberline {87.1}Methods}{115}{subsection.87.1}
+\contentsline {section}{\numberline {88}Class reliafree.capacitors.variable.Ceramic}{116}{section.88}
+\contentsline {subsection}{\numberline {88.1}Methods}{116}{subsection.88.1}
+\contentsline {section}{\numberline {89}Class reliafree.capacitors.variable.Gas}{117}{section.89}
+\contentsline {subsection}{\numberline {89.1}Methods}{117}{subsection.89.1}
+\contentsline {section}{\numberline {90}Class reliafree.capacitors.variable.Piston}{119}{section.90}
+\contentsline {subsection}{\numberline {90.1}Methods}{119}{subsection.90.1}
+\contentsline {section}{\numberline {91}Class reliafree.component.Component}{120}{section.91}
+\contentsline {subsection}{\numberline {91.1}Methods}{120}{subsection.91.1}
+\contentsline {subsection}{\numberline {91.2}Class Variables}{121}{subsection.91.2}
+\contentsline {section}{\numberline {92}Class reliafree.configuration.ReliaFreeConf}{122}{section.92}
+\contentsline {subsection}{\numberline {92.1}Methods}{122}{subsection.92.1}
+\contentsline {section}{\numberline {93}Class reliafree.connections.connection.Connection}{123}{section.93}
+\contentsline {subsection}{\numberline {93.1}Methods}{123}{subsection.93.1}
+\contentsline {section}{\numberline {94}Class reliafree.connections.multipin.Multipin}{125}{section.94}
+\contentsline {subsection}{\numberline {94.1}Methods}{125}{subsection.94.1}
+\contentsline {section}{\numberline {95}Class reliafree.connections.pcb.PCBEdge}{127}{section.95}
+\contentsline {subsection}{\numberline {95.1}Methods}{127}{subsection.95.1}
+\contentsline {section}{\numberline {96}Class reliafree.connections.socket.ICSocket}{129}{section.96}
+\contentsline {subsection}{\numberline {96.1}Methods}{129}{subsection.96.1}
+\contentsline {section}{\numberline {97}Class reliafree.connections.solder.PTH}{131}{section.97}
+\contentsline {subsection}{\numberline {97.1}Methods}{131}{subsection.97.1}
+\contentsline {section}{\numberline {98}Class reliafree.connections.solder.Solder}{133}{section.98}
+\contentsline {subsection}{\numberline {98.1}Methods}{133}{subsection.98.1}
+\contentsline {section}{\numberline {99}Class reliafree.function.Function}{135}{section.99}
+\contentsline {subsection}{\numberline {99.1}Methods}{135}{subsection.99.1}
+\contentsline {section}{\numberline {100}Class reliafree.hardware.Hardware}{137}{section.100}
+\contentsline {subsection}{\numberline {100.1}Methods}{137}{subsection.100.1}
+\contentsline {subsection}{\numberline {100.2}Class Variables}{137}{subsection.100.2}
+\contentsline {section}{\numberline {101}Class reliafree.inductors.coil.Coil}{138}{section.101}
+\contentsline {subsection}{\numberline {101.1}Methods}{138}{subsection.101.1}
+\contentsline {section}{\numberline {102}Class reliafree.inductors.inductor.Inductor}{140}{section.102}
+\contentsline {subsection}{\numberline {102.1}Methods}{140}{subsection.102.1}
+\contentsline {section}{\numberline {103}Class reliafree.inductors.transformer.Audio}{142}{section.103}
+\contentsline {subsection}{\numberline {103.1}Methods}{142}{subsection.103.1}
+\contentsline {section}{\numberline {104}Class reliafree.inductors.transformer.LowPowerPulse}{143}{section.104}
+\contentsline {subsection}{\numberline {104.1}Methods}{143}{subsection.104.1}
+\contentsline {section}{\numberline {105}Class reliafree.inductors.transformer.Power}{144}{section.105}
+\contentsline {subsection}{\numberline {105.1}Methods}{144}{subsection.105.1}
+\contentsline {section}{\numberline {106}Class reliafree.inductors.transformer.RF}{145}{section.106}
+\contentsline {subsection}{\numberline {106.1}Methods}{145}{subsection.106.1}
+\contentsline {section}{\numberline {107}Class reliafree.integrated\_circuits.gaas.GaAsDigital}{146}{section.107}
+\contentsline {subsection}{\numberline {107.1}Methods}{146}{subsection.107.1}
+\contentsline {section}{\numberline {108}Class reliafree.integrated\_circuits.gaas.GaAsMMIC}{148}{section.108}
+\contentsline {subsection}{\numberline {108.1}Methods}{148}{subsection.108.1}
+\contentsline {section}{\numberline {109}Class reliafree.integrated\_circuits.ic.IntegratedCircuit}{150}{section.109}
+\contentsline {subsection}{\numberline {109.1}Methods}{150}{subsection.109.1}
+\contentsline {section}{\numberline {110}Class reliafree.integrated\_circuits.linear.Linear}{152}{section.110}
+\contentsline {subsection}{\numberline {110.1}Methods}{152}{subsection.110.1}
+\contentsline {section}{\numberline {111}Class reliafree.integrated\_circuits.logic.Logic}{154}{section.111}
+\contentsline {subsection}{\numberline {111.1}Methods}{154}{subsection.111.1}
+\contentsline {section}{\numberline {112}Class reliafree.integrated\_circuits.memory.MemoryDRAM}{156}{section.112}
+\contentsline {subsection}{\numberline {112.1}Methods}{156}{subsection.112.1}
+\contentsline {section}{\numberline {113}Class reliafree.integrated\_circuits.memory.MemoryEEPROM}{158}{section.113}
+\contentsline {subsection}{\numberline {113.1}Methods}{158}{subsection.113.1}
+\contentsline {section}{\numberline {114}Class reliafree.integrated\_circuits.memory.MemoryROM}{160}{section.114}
+\contentsline {subsection}{\numberline {114.1}Methods}{160}{subsection.114.1}
+\contentsline {section}{\numberline {115}Class reliafree.integrated\_circuits.memory.MemorySRAM}{162}{section.115}
+\contentsline {subsection}{\numberline {115.1}Methods}{162}{subsection.115.1}
+\contentsline {section}{\numberline {116}Class reliafree.integrated\_circuits.microprocessor.Microprocessor}{164}{section.116}
+\contentsline {subsection}{\numberline {116.1}Methods}{164}{subsection.116.1}
+\contentsline {section}{\numberline {117}Class reliafree.integrated\_circuits.palpla.PALPLA}{166}{section.117}
+\contentsline {subsection}{\numberline {117.1}Methods}{166}{subsection.117.1}
+\contentsline {section}{\numberline {118}Class reliafree.integrated\_circuits.vlsi.VLSI}{168}{section.118}
+\contentsline {subsection}{\numberline {118.1}Methods}{168}{subsection.118.1}
+\contentsline {section}{\numberline {119}Class reliafree.login.Login}{171}{section.119}
+\contentsline {subsection}{\numberline {119.1}Methods}{171}{subsection.119.1}
+\contentsline {subsection}{\numberline {119.2}Properties}{174}{subsection.119.2}
+\contentsline {subsection}{\numberline {119.3}Class Variables}{175}{subsection.119.3}
+\contentsline {section}{\numberline {120}Class reliafree.main.ReliaFree}{176}{section.120}
+\contentsline {subsection}{\numberline {120.1}Methods}{176}{subsection.120.1}
+\contentsline {section}{\numberline {121}Class reliafree.meters.meter.ElapsedTime}{177}{section.121}
+\contentsline {subsection}{\numberline {121.1}Methods}{177}{subsection.121.1}
+\contentsline {section}{\numberline {122}Class reliafree.meters.meter.Panel}{179}{section.122}
+\contentsline {subsection}{\numberline {122.1}Methods}{179}{subsection.122.1}
+\contentsline {section}{\numberline {123}Class reliafree.miscellaneous.crystal.Crystal}{181}{section.123}
+\contentsline {subsection}{\numberline {123.1}Methods}{181}{subsection.123.1}
+\contentsline {section}{\numberline {124}Class reliafree.miscellaneous.filter.Filter}{183}{section.124}
+\contentsline {subsection}{\numberline {124.1}Methods}{183}{subsection.124.1}
+\contentsline {section}{\numberline {125}Class reliafree.miscellaneous.fuse.Fuse}{185}{section.125}
+\contentsline {subsection}{\numberline {125.1}Methods}{185}{subsection.125.1}
+\contentsline {section}{\numberline {126}Class reliafree.miscellaneous.lamp.Lamp}{187}{section.126}
+\contentsline {subsection}{\numberline {126.1}Methods}{187}{subsection.126.1}
+\contentsline {section}{\numberline {127}Class reliafree.mysql.MySQLInterface}{189}{section.127}
+\contentsline {subsection}{\numberline {127.1}Methods}{189}{subsection.127.1}
+\contentsline {section}{\numberline {128}Class reliafree.notebook.WorkBookWindow}{190}{section.128}
+\contentsline {subsection}{\numberline {128.1}Methods}{190}{subsection.128.1}
+\contentsline {subsection}{\numberline {128.2}Properties}{194}{subsection.128.2}
+\contentsline {subsection}{\numberline {128.3}Class Variables}{194}{subsection.128.3}
+\contentsline {section}{\numberline {129}Class reliafree.partlist.PartsListWindow}{195}{section.129}
+\contentsline {subsection}{\numberline {129.1}Methods}{195}{subsection.129.1}
+\contentsline {subsection}{\numberline {129.2}Properties}{200}{subsection.129.2}
+\contentsline {subsection}{\numberline {129.3}Class Variables}{200}{subsection.129.3}
+\contentsline {section}{\numberline {130}Class reliafree.relays.relay.Mechanical}{202}{section.130}
+\contentsline {subsection}{\numberline {130.1}Methods}{202}{subsection.130.1}
+\contentsline {section}{\numberline {131}Class reliafree.relays.relay.SolidState}{204}{section.131}
+\contentsline {subsection}{\numberline {131.1}Methods}{204}{subsection.131.1}
+\contentsline {section}{\numberline {132}Class reliafree.requirement.Requirement}{206}{section.132}
+\contentsline {subsection}{\numberline {132.1}Methods}{206}{subsection.132.1}
+\contentsline {subsection}{\numberline {132.2}Class Variables}{207}{subsection.132.2}
+\contentsline {section}{\numberline {133}Class reliafree.resistors.fixed.Composition}{208}{section.133}
+\contentsline {subsection}{\numberline {133.1}Methods}{208}{subsection.133.1}
+\contentsline {section}{\numberline {134}Class reliafree.resistors.fixed.Film}{209}{section.134}
+\contentsline {subsection}{\numberline {134.1}Methods}{209}{subsection.134.1}
+\contentsline {section}{\numberline {135}Class reliafree.resistors.fixed.FilmNetwork}{211}{section.135}
+\contentsline {subsection}{\numberline {135.1}Methods}{211}{subsection.135.1}
+\contentsline {section}{\numberline {136}Class reliafree.resistors.fixed.FilmPower}{213}{section.136}
+\contentsline {subsection}{\numberline {136.1}Methods}{213}{subsection.136.1}
+\contentsline {section}{\numberline {137}Class reliafree.resistors.fixed.Wirewound}{214}{section.137}
+\contentsline {subsection}{\numberline {137.1}Methods}{214}{subsection.137.1}
+\contentsline {section}{\numberline {138}Class reliafree.resistors.fixed.WirewoundPower}{215}{section.138}
+\contentsline {subsection}{\numberline {138.1}Methods}{215}{subsection.138.1}
+\contentsline {section}{\numberline {139}Class reliafree.resistors.fixed.WirewoundPowerChassis}{217}{section.139}
+\contentsline {subsection}{\numberline {139.1}Methods}{217}{subsection.139.1}
+\contentsline {section}{\numberline {140}Class reliafree.resistors.resistor.Resistor}{219}{section.140}
+\contentsline {subsection}{\numberline {140.1}Methods}{219}{subsection.140.1}
+\contentsline {section}{\numberline {141}Class reliafree.resistors.thermistor.Thermistor}{221}{section.141}
+\contentsline {subsection}{\numberline {141.1}Methods}{221}{subsection.141.1}
+\contentsline {section}{\numberline {142}Class reliafree.resistors.variable.Composition}{223}{section.142}
+\contentsline {subsection}{\numberline {142.1}Methods}{223}{subsection.142.1}
+\contentsline {section}{\numberline {143}Class reliafree.resistors.variable.NonWirewound}{225}{section.143}
+\contentsline {subsection}{\numberline {143.1}Methods}{225}{subsection.143.1}
+\contentsline {section}{\numberline {144}Class reliafree.resistors.variable.VarFilm}{227}{section.144}
+\contentsline {subsection}{\numberline {144.1}Methods}{227}{subsection.144.1}
+\contentsline {section}{\numberline {145}Class reliafree.resistors.variable.VarWirewound}{229}{section.145}
+\contentsline {subsection}{\numberline {145.1}Methods}{229}{subsection.145.1}
+\contentsline {section}{\numberline {146}Class reliafree.resistors.variable.VarWirewoundPower}{231}{section.146}
+\contentsline {subsection}{\numberline {146.1}Methods}{231}{subsection.146.1}
+\contentsline {section}{\numberline {147}Class reliafree.resistors.variable.WirewoundPrecision}{233}{section.147}
+\contentsline {subsection}{\numberline {147.1}Methods}{233}{subsection.147.1}
+\contentsline {section}{\numberline {148}Class reliafree.resistors.variable.WirewoundSemiPrecision}{235}{section.148}
+\contentsline {subsection}{\numberline {148.1}Methods}{235}{subsection.148.1}
+\contentsline {section}{\numberline {149}Class reliafree.revision.Revision}{237}{section.149}
+\contentsline {subsection}{\numberline {149.1}Methods}{237}{subsection.149.1}
+\contentsline {section}{\numberline {150}Class reliafree.semiconductors.diode.HighFrequency}{239}{section.150}
+\contentsline {subsection}{\numberline {150.1}Methods}{239}{subsection.150.1}
+\contentsline {section}{\numberline {151}Class reliafree.semiconductors.diode.LowFrequency}{242}{section.151}
+\contentsline {subsection}{\numberline {151.1}Methods}{242}{subsection.151.1}
+\contentsline {section}{\numberline {152}Class reliafree.semiconductors.optoelectronics.Detector}{245}{section.152}
+\contentsline {subsection}{\numberline {152.1}Methods}{245}{subsection.152.1}
+\contentsline {section}{\numberline {153}Class reliafree.semiconductors.optoelectronics.Display}{247}{section.153}
+\contentsline {subsection}{\numberline {153.1}Methods}{247}{subsection.153.1}
+\contentsline {section}{\numberline {154}Class reliafree.semiconductors.optoelectronics.LaserDiode}{249}{section.154}
+\contentsline {subsection}{\numberline {154.1}Methods}{249}{subsection.154.1}
+\contentsline {section}{\numberline {155}Class reliafree.semiconductors.semiconductor.Semiconductor}{252}{section.155}
+\contentsline {subsection}{\numberline {155.1}Methods}{252}{subsection.155.1}
+\contentsline {section}{\numberline {156}Class reliafree.semiconductors.thyristor.Thyristor}{254}{section.156}
+\contentsline {subsection}{\numberline {156.1}Methods}{254}{subsection.156.1}
+\contentsline {section}{\numberline {157}Class reliafree.semiconductors.transistor.HFGaAsFET}{256}{section.157}
+\contentsline {subsection}{\numberline {157.1}Methods}{256}{subsection.157.1}
+\contentsline {section}{\numberline {158}Class reliafree.semiconductors.transistor.HFHPBipolar}{259}{section.158}
+\contentsline {subsection}{\numberline {158.1}Methods}{259}{subsection.158.1}
+\contentsline {section}{\numberline {159}Class reliafree.semiconductors.transistor.HFLNBipolar}{262}{section.159}
+\contentsline {subsection}{\numberline {159.1}Methods}{262}{subsection.159.1}
+\contentsline {section}{\numberline {160}Class reliafree.semiconductors.transistor.HFSiFET}{264}{section.160}
+\contentsline {subsection}{\numberline {160.1}Methods}{264}{subsection.160.1}
+\contentsline {section}{\numberline {161}Class reliafree.semiconductors.transistor.LFBipolar}{266}{section.161}
+\contentsline {subsection}{\numberline {161.1}Methods}{266}{subsection.161.1}
+\contentsline {section}{\numberline {162}Class reliafree.semiconductors.transistor.LFSiFET}{269}{section.162}
+\contentsline {subsection}{\numberline {162.1}Methods}{269}{subsection.162.1}
+\contentsline {section}{\numberline {163}Class reliafree.semiconductors.transistor.Unijunction}{272}{section.163}
+\contentsline {subsection}{\numberline {163.1}Methods}{272}{subsection.163.1}
+\contentsline {section}{\numberline {164}Class reliafree.switches.breaker.Breaker}{274}{section.164}
+\contentsline {subsection}{\numberline {164.1}Methods}{274}{subsection.164.1}
+\contentsline {section}{\numberline {165}Class reliafree.switches.rotary.Rotary}{276}{section.165}
+\contentsline {subsection}{\numberline {165.1}Methods}{276}{subsection.165.1}
+\contentsline {section}{\numberline {166}Class reliafree.switches.sensitive.Sensitive}{278}{section.166}
+\contentsline {subsection}{\numberline {166.1}Methods}{278}{subsection.166.1}
+\contentsline {section}{\numberline {167}Class reliafree.switches.switch.Switch}{280}{section.167}
+\contentsline {subsection}{\numberline {167.1}Methods}{280}{subsection.167.1}
+\contentsline {section}{\numberline {168}Class reliafree.switches.thumbwheel.Thumbwheel}{282}{section.168}
+\contentsline {subsection}{\numberline {168.1}Methods}{282}{subsection.168.1}
+\contentsline {section}{\numberline {169}Class reliafree.switches.toggle.Toggle}{284}{section.169}
+\contentsline {subsection}{\numberline {169.1}Methods}{284}{subsection.169.1}
+\contentsline {section}{\numberline {170}Class reliafree.tree.TreeWindow}{286}{section.170}
+\contentsline {subsection}{\numberline {170.1}Methods}{286}{subsection.170.1}
+\contentsline {subsection}{\numberline {170.2}Properties}{290}{subsection.170.2}
+\contentsline {subsection}{\numberline {170.3}Class Variables}{291}{subsection.170.3}
+\contentsline {section}{\numberline {171}Class reliafree.utilities.Options}{292}{section.171}
+\contentsline {subsection}{\numberline {171.1}Methods}{292}{subsection.171.1}
+\contentsline {section}{\numberline {172}Class reliafree.validation.Validation}{293}{section.172}
+\contentsline {subsection}{\numberline {172.1}Methods}{293}{subsection.172.1}
+\contentsline {subsection}{\numberline {172.2}Class Variables}{294}{subsection.172.2}
+\contentsline {section}{\numberline {173}Class reliafree.widgets.Assistant}{295}{section.173}
+\contentsline {subsection}{\numberline {173.1}Methods}{295}{subsection.173.1}
+\contentsline {section}{Index}{296}{section*.2}

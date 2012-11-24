@@ -1,0 +1,1900 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>reliafree.assembly.Assembly</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="reliafree-module.html">Package&nbsp;reliafree</a> ::
+        <a href="reliafree.assembly-module.html">Module&nbsp;assembly</a> ::
+        Class&nbsp;Assembly
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="reliafree.assembly.Assembly-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Assembly</h1><p class="nomargin-top"><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_reliafre" name="uml_class_diagram_for_reliafre">
+<area shape="rect" id="node1_13" href="reliafree.assembly.Assembly-class.html#n_attributes" title="reliafree.assembly.Assembly.n_attributes" alt="" coords="17,31,397,49"/>
+<area shape="rect" id="node1_14" href="reliafree.assembly.Assembly-class.html#__init__" title="Initializes the Assembly Object." alt="" coords="17,52,397,71"/>
+<area shape="rect" id="node1_15" href="reliafree.assembly.Assembly-class.html#load_attributes" title="Loads the Assembly Object attribute values from the Hardware Object &#160;TreeView." alt="" coords="17,71,397,89"/>
+<area shape="rect" id="node1_16" href="reliafree.assembly.Assembly-class.html#add_assembly" title="Adds a new Assembly to the Program&#39;s database." alt="" coords="17,89,397,108"/>
+<area shape="rect" id="node1_17" href="reliafree.assembly.Assembly-class.html#delete_assembly" title="Deletes the currently selected Assembly from the Program&#39;s database." alt="" coords="17,108,397,127"/>
+<area shape="rect" id="node1_18" href="reliafree.assembly.Assembly-class.html#load_general_data_tab" title="Loads the widgets with general information about the Assembly Object." alt="" coords="17,127,397,145"/>
+<area shape="rect" id="node1_19" href="reliafree.assembly.Assembly-class.html#load_allocation_tab" title="Loads the widgets with allocation information about the Assembly Object." alt="" coords="17,145,397,164"/>
+<area shape="rect" id="node1_20" href="reliafree.assembly.Assembly-class.html#load_similar_item_data" title="Loads the similar items analysis worksheet with information for the &#160;selected assembly&#39;s children." alt="" coords="17,164,397,183"/>
+<area shape="rect" id="node1_21" href="reliafree.assembly.Assembly-class.html#load_assessment_inputs_tab" title="Loads the widgets with calculation input data for the Assembly Object." alt="" coords="17,183,397,201"/>
+<area shape="rect" id="node1_22" href="reliafree.assembly.Assembly-class.html#load_calculation_results" title="Loads the widgets with calculation results for the ASSEMBLY Object." alt="" coords="17,201,397,220"/>
+<area shape="rect" id="node1_23" href="reliafree.assembly.Assembly-class.html#load_fmeca_worksheet_tab" title="Creates the widgets to display the FMECA worksheet for the ASSEMBLY Object." alt="" coords="17,220,397,239"/>
+<area shape="rect" id="node1_24" href="reliafree.assembly.Assembly-class.html#load_vandv_tab" title="Loads the widgets with verification and validation information for the ASSEMBLY Object." alt="" coords="17,239,397,257"/>
+<area shape="rect" id="node1_25" href="reliafree.assembly.Assembly-class.html#load_field_incident_tab" title="Creates the widgets to display and enter FRACA information for the ASSEMBLY Object." alt="" coords="17,257,397,276"/>
+<area shape="rect" id="node1" href="reliafree.assembly.Assembly-class.html" title="The Assembly class is used to represent a piece of hardware in a system being analyzed." alt="" coords="5,6,409,282"/>
+<area shape="rect" id="node2" href="reliafree.component.Component-class.html" title="The Components class is used to represent a component in a system being analyzed." alt="" coords="122,302,294,341"/>
+</map>
+  <img src="uml_class_diagram_for_reliafre.gif" alt='' usemap="#uml_class_diagram_for_reliafre" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>The Assembly class is used to represent a piece of hardware in a 
+  system being analyzed.  It is a meta-class for the Component class.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">application</span>)</span><br />
+      Initializes the Assembly Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_general_data_widgets_create"></a><span class="summary-sig-name">_general_data_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create General Data widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._general_data_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_general_data_tab_create"></a><span class="summary-sig-name">_general_data_tab_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the General Data gtk.Notebook tab and populate it 
+      with the appropriate widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._general_data_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_allocation_widgets_create"></a><span class="summary-sig-name">_allocation_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Allocation widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_allocation_tab_create"></a><span class="summary-sig-name">_allocation_tab_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Allocation gtk.Notebook tab and populate it with
+      the appropriate widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_similar_item_widgets_create"></a><span class="summary-sig-name">_similar_item_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Similar Item Analysis widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._similar_item_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_similar_item_tab_create"></a><span class="summary-sig-name">_similar_item_tab_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Similar Item Analysis gtk.Notebook tab and 
+      populate it with the appropriate widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._similar_item_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_assessment_inputs_widgets_create"></a><span class="summary-sig-name">_assessment_inputs_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Assessment Inputs widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._assessment_inputs_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_assessment_inputs_tab_create"></a><span class="summary-sig-name">_assessment_inputs_tab_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Calculation Inputs gtk.Notebook tab and populate
+      it with the appropriate widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._assessment_inputs_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_assessment_results_widgets_create"></a><span class="summary-sig-name">_assessment_results_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Assessment Results widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._assessment_results_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_assessment_results_tab_create"></a><span class="summary-sig-name">_assessment_results_tab_create</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Method to create the Assessment Results gtk.Notebook tab and populate
+      it with the appropriate widgets.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._assessment_results_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_fmeca_worksheet_widgets_create"></a><span class="summary-sig-name">_fmeca_worksheet_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._fmeca_worksheet_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_fmeca_worksheet_tab_create"></a><span class="summary-sig-name">_fmeca_worksheet_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._fmeca_worksheet_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_alt_planning_widgets_create"></a><span class="summary-sig-name">_alt_planning_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._alt_planning_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_alt_planning_tab_create"></a><span class="summary-sig-name">_alt_planning_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._alt_planning_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_maintenance_planning_widgets_create"></a><span class="summary-sig-name">_maintenance_planning_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._maintenance_planning_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_maintenance_planning_tab_create"></a><span class="summary-sig-name">_maintenance_planning_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._maintenance_planning_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_rg_planning_widgets_create"></a><span class="summary-sig-name">_rg_planning_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._rg_planning_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_rg_planning_tab_create"></a><span class="summary-sig-name">_rg_planning_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._rg_planning_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_vandv_widgets_create"></a><span class="summary-sig-name">_vandv_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._vandv_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_vandv_tab_create"></a><span class="summary-sig-name">_vandv_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._vandv_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_rg_tracking_widgets_create"></a><span class="summary-sig-name">_rg_tracking_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._rg_tracking_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_rg_tracking_tab_create"></a><span class="summary-sig-name">_rg_tracking_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._rg_tracking_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_field_tracking_widgets_create"></a><span class="summary-sig-name">_field_tracking_widgets_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._field_tracking_widgets_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_field_tracking_tab_create"></a><span class="summary-sig-name">_field_tracking_tab_create</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._field_tracking_tab_create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_attributes"></a><span class="summary-sig-name">load_attributes</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the Assembly Object attribute values from the Hardware Object 
+      TreeView.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_attributes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#add_assembly" class="summary-sig-name">add_assembly</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>,
+        <span class="summary-sig-arg">type_</span>)</span><br />
+      Adds a new Assembly to the Program's database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.add_assembly">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#delete_assembly" class="summary-sig-name">delete_assembly</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">menuitem</span>)</span><br />
+      Deletes the currently selected Assembly from the Program's database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.delete_assembly">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_general_data_tab"></a><span class="summary-sig-name">load_general_data_tab</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the widgets with general information about the Assembly Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_general_data_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_allocation_tab"></a><span class="summary-sig-name">load_allocation_tab</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the widgets with allocation information about the Assembly 
+      Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_allocation_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_similar_item_data"></a><span class="summary-sig-name">load_similar_item_data</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the similar items analysis worksheet with information for the 
+      selected assembly's children.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_similar_item_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_assessment_inputs_tab"></a><span class="summary-sig-name">load_assessment_inputs_tab</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the widgets with calculation input data for the Assembly 
+      Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_assessment_inputs_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_calculation_results"></a><span class="summary-sig-name">load_calculation_results</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Loads the widgets with calculation results for the ASSEMBLY Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_calculation_results">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#load_fmeca_worksheet_tab" class="summary-sig-name">load_fmeca_worksheet_tab</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Creates the widgets to display the FMECA worksheet for the
+ASSEMBLY Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_fmeca_worksheet_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#load_vandv_tab" class="summary-sig-name">load_vandv_tab</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">notebook</span>,
+        <span class="summary-sig-arg">quadrant</span>,
+        <span class="summary-sig-arg">x_size</span>,
+        <span class="summary-sig-arg">y_size</span>)</span><br />
+      Loads the widgets with verification and validation information
+for the ASSEMBLY Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_vandv_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#load_field_incident_tab" class="summary-sig-name">load_field_incident_tab</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">notebook</span>,
+        <span class="summary-sig-arg">quadrant</span>,
+        <span class="summary-sig-arg">x_size</span>,
+        <span class="summary-sig-arg">y_size</span>)</span><br />
+      Creates the widgets to display and enter FRACA information for the
+ASSEMBLY Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_field_incident_tab">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_allocate"></a><span class="summary-sig-name">_allocate</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_calculate_goals" class="summary-sig-name" onclick="show_private();">_calculate_goals</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">measure</span>=<span class="summary-sig-default">500</span>)</span><br />
+      Calculates the Assembly Object similar item analysis.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._calculate_goals">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_calculate_sia" class="summary-sig-name" onclick="show_private();">_calculate_sia</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Calculates the Assembly Object similar item analysis.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._calculate_sia">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_allocation_save" class="summary-sig-name" onclick="show_private();">_allocation_save</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Saves the Assembly Object allocation analysis gtkTreeView information
+      to the Program's database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_save">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_allocation_save_line_item" class="summary-sig-name" onclick="show_private();">_allocation_save_line_item</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">path_</span>,
+        <span class="summary-sig-arg">row</span>)</span><br />
+      Saves each row in the Assembly Object allocation treeview
+model to the database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_save_line_item">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_sia_function_edit" class="summary-sig-name" onclick="show_private();">_sia_function_edit</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Method to edit the Similar Item Analysis functions.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_function_edit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_sia_rollup" class="summary-sig-name" onclick="show_private();">_sia_rollup</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Rolls-up the lower level similar item analysis change descriptions to
+      the selected Assembly Object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_rollup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_sia_save" class="summary-sig-name" onclick="show_private();">_sia_save</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">widget</span>)</span><br />
+      Saves the Assembly Object similar item analysis gtk.TreeView 
+      information to the Program's database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_save">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_sia_save_line_item" class="summary-sig-name" onclick="show_private();">_sia_save_line_item</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">path_</span>,
+        <span class="summary-sig-arg">row</span>)</span><br />
+      Saves each row in the Assembly Object similar item analysis
+treeview model to the database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_save_line_item">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_allocation_tree_edit" class="summary-sig-name" onclick="show_private();">_allocation_tree_edit</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cell</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">new_text</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">model</span>)</span><br />
+      Called whenever a TreeView CellRenderer is edited.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_tree_edit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_callback_combo_cell" class="summary-sig-name" onclick="show_private();">_callback_combo_cell</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cell</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">treemodel</span>,
+        <span class="summary-sig-arg">lastcol</span>)</span><br />
+      Called whenever a TreeView CellRendererCombo changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_combo_cell">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_callback_combo" class="summary-sig-name" onclick="show_private();">_callback_combo</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">combo</span>,
+        <span class="summary-sig-arg">index_</span>)</span><br />
+      Callback function to retrieve and save combobox changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_combo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_callback_entry" class="summary-sig-name" onclick="show_private();">_callback_entry</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">entry</span>,
+        <span class="summary-sig-arg">event</span>,
+        <span class="summary-sig-arg">convert</span>,
+        <span class="summary-sig-arg">index_</span>)</span><br />
+      Callback function to retrieve and save entry changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_entry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_callback_check" class="summary-sig-name" onclick="show_private();">_callback_check</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">check</span>,
+        <span class="summary-sig-arg">index_</span>)</span><br />
+      Callback function to retrieve and save checkbutton changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_check">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.assembly.Assembly-class.html#_trickledown" class="summary-sig-name" onclick="show_private();">_trickledown</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">row</span>,
+        <span class="summary-sig-arg">index_</span>)</span><br />
+      Updates child assemblies and components when certain information
+is changed in the parent assembly.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._trickledown">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.assembly.Assembly-class.html#_gd_tab_labels" class="summary-name" onclick="show_private();">_gd_tab_labels</a> = <code title="[['Assembly Name:',
+  'Part Number:',
+  'Alternate Part #:',
+  '',
+  '',
+  'Ref Designator:',
+  'Composite Ref Des:',
+  'Quantity:',
+..."><code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Assembly Name:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Part Number:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Alternat</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.assembly.Assembly-class.html#_al_tab_labels" class="summary-name" onclick="show_private();">_al_tab_labels</a> = <code title="['Measure:',
+ 'Reliability:',
+ 'MTTF/MTBF:',
+ 'Failure Rate:',
+ 'Allocation Type:',
+ 'Elements:',
+ 'Operating Time:']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Measure:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Reliability:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">MTTF/MTBF:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">F</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.assembly.Assembly-class.html#_ai_tab_labels" class="summary-name" onclick="show_private();">_ai_tab_labels</a> = <code title="[['h(t) Type:',
+  'Calculation Model:',
+  'Specified h(t):',
+  'Specified MTBF:',
+  'Software h(t):',
+  'Additive Adj:',
+  'Multiplicative Adj:',
+  'Allocation Weight:',
+..."><code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">h(t) Type:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Calculation Model:</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Specif</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.assembly.Assembly-class.html#_ar_tab_labels" class="summary-name" onclick="show_private();">_ar_tab_labels</a> = <code title="[['Active h(t):',
+  'Dormant h(t):',
+  'Software h(t):',
+  'Predicted h(t):',
+  'Mission h(t):',
+  'h(t) Percent:',
+  'MTBF:',
+  'Mission MTBF:',
+..."><code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Active h(t):</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Dormant h(t):</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Software </code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.assembly.Assembly-class.html#_al_header_labels" class="summary-name" onclick="show_private();">_al_header_labels</a> = <code title="['Revision ID',
+ 'Assembly ID',
+ 'Description',
+ 'Included?',
+ 'Number of Sub-Systems',
+ 'Number of Sub-Elements',
+ 'Operating Time',
+ 'Duty Cycle',
+..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Revision ID</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Assembly ID</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Descriptio</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="n_attributes"></a><span class="summary-name">n_attributes</span> = <code title="88">88</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">application</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Initializes the Assembly Object.</p>
+  <p>Keyword Arguments: application -- the ReliaFree application.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_assembly"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_assembly</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>,
+        <span class="sig-arg">type_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.add_assembly">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Adds a new Assembly to the Program's database.</p>
+  <p>Keyword Arguments: widget -- the widget that called this function. 
+  type_  -- the type of Assembly to add; 0 = sibling, 1 = child.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="delete_assembly"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_assembly</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">menuitem</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.delete_assembly">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Deletes the currently selected Assembly from the Program's 
+  database.</p>
+  <p>Keyword Arguments: menuitem -- the gtk.MenuItem that called this 
+  function.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_fmeca_worksheet_tab"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_fmeca_worksheet_tab</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_fmeca_worksheet_tab">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Creates the widgets to display the FMECA worksheet for the
+ASSEMBLY Object.
+
+Keyword Arguments:
+x_size -- the x-size of the layout that contains the needed
+          widgets.
+y_size -- the y-size of the layout that contains the needed
+          widgets.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_vandv_tab"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_vandv_tab</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">notebook</span>,
+        <span class="sig-arg">quadrant</span>,
+        <span class="sig-arg">x_size</span>,
+        <span class="sig-arg">y_size</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_vandv_tab">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Loads the widgets with verification and validation information
+for the ASSEMBLY Object.
+
+Keyword Arguments:
+x_size -- the x-size of the layout that contains the needed
+          widgets.
+y_size -- the y-size of the layout that contains the needed
+          widgets.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_field_incident_tab"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_field_incident_tab</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">notebook</span>,
+        <span class="sig-arg">quadrant</span>,
+        <span class="sig-arg">x_size</span>,
+        <span class="sig-arg">y_size</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly.load_field_incident_tab">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Creates the widgets to display and enter FRACA information for the
+ASSEMBLY Object.
+
+Keyword Arguments:
+x_size -- the x-size of the layout that contains the needed
+          widgets.
+y_size -- the y-size of the layout that contains the needed
+          widgets.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_calculate_goals"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_calculate_goals</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">measure</span>=<span class="sig-default">500</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._calculate_goals">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the Assembly Object similar item analysis.</p>
+  <p>Keyword Arguments: measure -- the reliability goal measurement:</p>
+  <ol start="1">
+    <li>
+      Reliability
+    </li>
+    <li>
+      MTBF
+    </li>
+    <li>
+      Hazard Rate
+    </li>
+  </ol>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_calculate_sia"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_calculate_sia</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._calculate_sia">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the Assembly Object similar item analysis.</p>
+  <p>Keyword Arguments: widget -- the widget that called this function.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_allocation_save"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_allocation_save</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_save">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Saves the Assembly Object allocation analysis gtkTreeView information 
+  to the Program's database.</p>
+  <p>Keyword Arguments: widget -- the widget that called this function.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_allocation_save_line_item"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_allocation_save_line_item</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">model</span>,
+        <span class="sig-arg">path_</span>,
+        <span class="sig-arg">row</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_save_line_item">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Saves each row in the Assembly Object allocation treeview
+model to the database.
+
+Keyword Arguments:
+model   -- the Assembly Object allocation gtk.TreeModel.
+path_   -- the path of the active row in the Assembly Object
+           allocation gtk.TreeModel.
+row     -- the selected row in the Assembly Object allocation
+           gtk.TreeView.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_sia_function_edit"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_sia_function_edit</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_function_edit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Method to edit the Similar Item Analysis functions.</p>
+  <p>Keyword Arguments: widget -- the widget that called the method.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_sia_rollup"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_sia_rollup</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_rollup">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Rolls-up the lower level similar item analysis change descriptions to 
+  the selected Assembly Object.</p>
+  <p>Keyword Arguments: widget -- the widget that called this function.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_sia_save"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_sia_save</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">widget</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_save">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Saves the Assembly Object similar item analysis gtk.TreeView 
+  information to the Program's database.</p>
+  <p>Keyword Arguments: widget -- the widget that called this function.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_sia_save_line_item"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_sia_save_line_item</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">model</span>,
+        <span class="sig-arg">path_</span>,
+        <span class="sig-arg">row</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._sia_save_line_item">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Saves each row in the Assembly Object similar item analysis
+treeview model to the database.
+
+Keyword Arguments:
+model -- the Assembly Object similar item analysis gtk.TreeModel.
+path_ -- the path of the active row in the Assembly Object
+         similar item analysis gtk.TreeModel.
+row   -- the selected row in the Assembly Object similar item
+         analysis gtk.TreeView.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_allocation_tree_edit"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_allocation_tree_edit</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cell</span>,
+        <span class="sig-arg">path</span>,
+        <span class="sig-arg">new_text</span>,
+        <span class="sig-arg">position</span>,
+        <span class="sig-arg">model</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._allocation_tree_edit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Called whenever a TreeView CellRenderer is edited.</p>
+  <p>Keyword Arguments: cell     -- the CellRenderer that was edited. path
+  -- the TreeView path of the CellRenderer that was edited. new_text -- the
+  new text in the edited CellRenderer. position -- the column position of 
+  the edited CellRenderer. model    -- the TreeModel the CellRenderer 
+  belongs to.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_callback_combo_cell"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_callback_combo_cell</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cell</span>,
+        <span class="sig-arg">path</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">position</span>,
+        <span class="sig-arg">treemodel</span>,
+        <span class="sig-arg">lastcol</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_combo_cell">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Called whenever a TreeView CellRendererCombo changes.
+
+Keyword Arguments:
+cell      -- the gtk.CellRendererCombo that called this function
+path      -- the path in the gtk.TreeView containing the
+             gtk.CellRendererCombo that called this function.
+row       -- the new gtk.TreeIter in the gtk.CellRendererCombo that
+             called this function.
+position  -- the position of in the gtk.TreeView of the
+             gtk.CellRendererCombo that called this function.
+treemodel -- the gtk.TreeModel for the gtk.TreeView.
+lastcol   -- the index of the last visible column in the
+             gtk.TreeView.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_callback_combo"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_callback_combo</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">combo</span>,
+        <span class="sig-arg">index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_combo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function to retrieve and save combobox changes.
+
+Keyword Arguments:
+combo  -- the combobox that called the function.
+index_ -- the position in the ASSEMBLY Object _attribute list
+          associated with the data from the calling combobox.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_callback_entry"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_callback_entry</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">entry</span>,
+        <span class="sig-arg">event</span>,
+        <span class="sig-arg">convert</span>,
+        <span class="sig-arg">index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_entry">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function to retrieve and save entry changes.
+
+Keyword Arguments:
+entry   -- the entry that called the function.
+event   -- the gtk.gdk.Event that called the function.
+convert -- the data type to convert the entry contents to.
+index_  -- the position in the ASSEMBLY Object _attribute list
+           associated with the data from the calling entry.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_callback_check"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_callback_check</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">check</span>,
+        <span class="sig-arg">index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._callback_check">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function to retrieve and save checkbutton changes.
+
+Keyword Arguments:
+check  -- the checkbutton that called the function.
+index_ -- the position in the Assembly Object _attribute list
+          associated with the data from the calling checkbutton.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_trickledown"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_trickledown</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">model</span>,
+        <span class="sig-arg">row</span>,
+        <span class="sig-arg">index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.assembly-pysrc.html#Assembly._trickledown">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Updates child assemblies and components when certain information
+is changed in the parent assembly.
+
+Keyword Arguments:
+model  -- the HARDWARE Object treemodel.
+row    -- the selected row in the HARDWARE Object treemodel.
+index_ -- the position in the ASSEMBLY Object _attribute list
+          associated with the data to be trickled down.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_gd_tab_labels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_gd_tab_labels</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Assembly Name:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Part Number:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Alternate Part #:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Ref Designator:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Composite Ref Des:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Quantity:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_al_tab_labels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_al_tab_labels</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Measure:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Reliability:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">MTTF/MTBF:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Failure Rate:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Allocation Type:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Elements:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Operating Time:</code><code class="variable-quote">'</code><code class="variable-group">]</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_ai_tab_labels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_ai_tab_labels</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">h(t) Type:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Calculation Model:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Specified h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Specified MTBF:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Software h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Additive Adj:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Multiplicative Adj:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Allocation Weight:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_ar_tab_labels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_ar_tab_labels</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Active h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Dormant h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Software h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Predicted h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Mission h(t):</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">h(t) Percent:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">MTBF:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">Mission MTBF:</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_al_header_labels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_al_header_labels</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Revision ID</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Assembly ID</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Description</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Included?</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Number of Sub-Systems</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Number of Sub-Elements</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Operating Time</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Duty Cycle</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:09 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

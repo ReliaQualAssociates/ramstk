@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>reliafree.semiconductors.semiconductor.Semiconductor</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="reliafree-module.html">Package&nbsp;reliafree</a> ::
+        <a href="reliafree.semiconductors-module.html">Package&nbsp;semiconductors</a> ::
+        <a href="reliafree.semiconductors.semiconductor-module.html">Module&nbsp;semiconductor</a> ::
+        Class&nbsp;Semiconductor
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Semiconductor</h1><p class="nomargin-top"><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_reliafre_71" name="uml_class_diagram_for_reliafre_71">
+<area shape="rect" id="node1_7" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#__init__" title="Initializes the Discrete Semiconductor Component Class." alt="" coords="1049,39,1381,57"/>
+<area shape="rect" id="node1_8" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#combo_callback" title="Callback function for handling Discrete Semicondutor Class ComboBox changes." alt="" coords="1049,57,1381,76"/>
+<area shape="rect" id="node1_9" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#create_reliability_inputs" title="Populates the ReliaFree Workbook calculation input tab with the widgets &#160;needed to select inputs for Discrete Semiconductor prediction calculations." alt="" coords="1049,76,1381,95"/>
+<area shape="rect" id="node1_10" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#create_reliability_outputs" title="Populates the ReliaFree Workbook calculation results tab with the widgets &#160;to display Discrete Semicondutor calculation results." alt="" coords="1049,95,1381,113"/>
+<area shape="rect" id="node1_11" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#entry_callback" title="Callback function for handling Discrete Semiconductor Device Class Entry changes." alt="" coords="1049,113,1381,132"/>
+<area shape="rect" id="node1_12" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#load_reliability_inputs" title="Loads the ReliaFree Workbook calculation input widgets with calculation &#160;input information." alt="" coords="1049,132,1381,151"/>
+<area shape="rect" id="node1_13" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#load_reliability_outputs" title="Loads the ReliaFree Workbook calculation results widgets with calculation &#160;results." alt="" coords="1049,151,1381,169"/>
+<area shape="rect" id="node1" href="reliafree.semiconductors.semiconductor.Semiconductor-class.html" title="Discrete Semiconductor meta class." alt="" coords="1037,6,1393,175"/>
+<area shape="rect" id="node2" href="reliafree.semiconductors.thyristor.Thyristor-class.html" title="Thyristor Component Class." alt="" coords="5,195,144,234"/>
+<area shape="rect" id="node3" href="reliafree.semiconductors.transistor.LFSiFET-class.html" title="Low Frequency Silicon Field Effect Transistor (FET) Component Class." alt="" coords="173,195,320,234"/>
+<area shape="rect" id="node4" href="reliafree.semiconductors.diode.HighFrequency-class.html" title="Low Frequency Diode Component Class." alt="" coords="349,195,509,234"/>
+<area shape="rect" id="node5" href="reliafree.semiconductors.optoelectronics.Detector-class.html" title="Photodetector Component Class." alt="" coords="539,195,717,234"/>
+<area shape="rect" id="node6" href="reliafree.semiconductors.transistor.HFHPBipolar-class.html" title="High Frequency, High Power Bipolar Transistor Component Class." alt="" coords="747,195,919,234"/>
+<area shape="rect" id="node7" href="reliafree.semiconductors.diode.LowFrequency-class.html" title="Low Frequency Diode Component Class." alt="" coords="949,195,1107,234"/>
+<area shape="rect" id="node8" href="reliafree.semiconductors.transistor.Unijunction-class.html" title="Unijunction Transistor Component Class." alt="" coords="1136,195,1296,234"/>
+<area shape="rect" id="node9" href="reliafree.semiconductors.transistor.LFBipolar-class.html" title="Low Frequency Bipolar Transistor Component Class." alt="" coords="1325,195,1475,234"/>
+<area shape="rect" id="node10" href="reliafree.semiconductors.transistor.HFLNBipolar-class.html" title="High Frequency, Low Noise Bipolar Transistor Component Class." alt="" coords="1505,195,1674,234"/>
+<area shape="rect" id="node11" href="reliafree.semiconductors.optoelectronics.Display-class.html" title="Alphanumeric Display Component Class." alt="" coords="1704,195,1877,234"/>
+<area shape="rect" id="node12" href="reliafree.semiconductors.transistor.HFGaAsFET-class.html" title="High Frequency Gallium Arsenide (GaAs) Field Effect Transistor (FET) Component Class." alt="" coords="1907,195,2077,234"/>
+<area shape="rect" id="node13" href="reliafree.semiconductors.optoelectronics.LaserDiode-class.html" title="Laser Diode Component Class." alt="" coords="2107,195,2301,234"/>
+<area shape="rect" id="node14" href="reliafree.semiconductors.transistor.HFSiFET-class.html" title="High Frequency Silicon Field Effect Transistor (FET) Component Class." alt="" coords="2331,195,2480,234"/>
+</map>
+  <img src="uml_class_diagram_for_reliafre_71.gif" alt='' usemap="#uml_class_diagram_for_reliafre_71" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Discrete Semiconductor meta class.</p>
+  <p>Hazard Rate Models:</p>
+  <ol start="1">
+    <li>
+      MIL-HDBK-217F, section 6.
+    </li>
+  </ol>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initializes the Discrete Semiconductor Component Class.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#combo_callback" class="summary-sig-name">combo_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">combo</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">_index_</span>)</span><br />
+      Callback function for handling Discrete Semicondutor Class
+ComboBox changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.combo_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#create_reliability_inputs" class="summary-sig-name">create_reliability_inputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">layout</span>)</span><br />
+      Populates the ReliaFree Workbook calculation input tab with the 
+      widgets needed to select inputs for Discrete Semiconductor prediction
+      calculations.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.create_reliability_inputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#create_reliability_outputs" class="summary-sig-name">create_reliability_outputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">layout</span>)</span><br />
+      Populates the ReliaFree Workbook calculation results tab with the 
+      widgets to display Discrete Semicondutor calculation results.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.create_reliability_outputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#entry_callback" class="summary-sig-name">entry_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">entry</span>,
+        <span class="summary-sig-arg">event</span>,
+        <span class="summary-sig-arg">part</span>,
+        <span class="summary-sig-arg">convert</span>,
+        <span class="summary-sig-arg">_index_</span>)</span><br />
+      Callback function for handling Discrete Semiconductor Device
+Class Entry changes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.entry_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#load_reliability_inputs" class="summary-sig-name">load_reliability_inputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Loads the ReliaFree Workbook calculation input widgets with 
+      calculation input information.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.load_reliability_inputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#load_reliability_outputs" class="summary-sig-name">load_reliability_outputs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Loads the ReliaFree Workbook calculation results widgets with 
+      calculation results.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.load_reliability_outputs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="reliafree.semiconductors.semiconductor.Semiconductor-class.html#_package" class="summary-name" onclick="show_private();">_package</a> = <code title="['',
+ 'TO-1',
+ 'TO-3',
+ 'TO-5',
+ 'TO-8',
+ 'TO-9',
+ 'TO-12',
+ 'TO-18',
+..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-1</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-3</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-5</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-8</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-9</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TO-12</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_quality"></a><span class="summary-name">_quality</span> = <code title="['', 'JANTXV', 'JANTX', 'JAN', 'Lower', 'Plastic']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JANTXV</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JANTX</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JAN</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Lower</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Plastic</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="combo_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">combo_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">combo</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">_index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.combo_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function for handling Discrete Semicondutor Class
+ComboBox changes.
+
+Keyword Arguments:
+  combo -- the combobox widget calling this function.
+   part -- the ReliaFree COMPONENT object.
+_index_ -- the user-definded index for the calling combobx.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_reliability_inputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_reliability_inputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">layout</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.create_reliability_inputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Populates the ReliaFree Workbook calculation input tab with the 
+  widgets needed to select inputs for Discrete Semiconductor prediction 
+  calculations.</p>
+  <p>Keyword Arguments: part   -- the ReliaFree COMPONENT object. layout --
+  the layout widget to contain the display widgets.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_reliability_outputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_reliability_outputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">layout</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.create_reliability_outputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Populates the ReliaFree Workbook calculation results tab with the 
+  widgets to display Discrete Semicondutor calculation results.</p>
+  <p>Keyword Arguments: part   -- the ReliaFree COMPONENT object. layout --
+  the layout widget to contain the display widgets.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="entry_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">entry_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">entry</span>,
+        <span class="sig-arg">event</span>,
+        <span class="sig-arg">part</span>,
+        <span class="sig-arg">convert</span>,
+        <span class="sig-arg">_index_</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.entry_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Callback function for handling Discrete Semiconductor Device
+Class Entry changes.
+
+Keyword Arguments:
+  entry -- the entry widget calling this function.
+  event -- the event that triggered calling this function.
+   part -- the ReliaFree COMPONENT object.
+convert -- the data type to convert the entry contents to.
+_index_ -- the position in the Component property array
+           associated with the data from the entry that called
+           this function.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_reliability_inputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_reliability_inputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.load_reliability_inputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Loads the ReliaFree Workbook calculation input widgets with 
+  calculation input information.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="load_reliability_outputs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load_reliability_outputs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.semiconductors.semiconductor-pysrc.html#Semiconductor.load_reliability_outputs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Loads the ReliaFree Workbook calculation results widgets with 
+  calculation results.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_package"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_package</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-1</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-3</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-5</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-8</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-9</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-12</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">TO-18</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:14 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

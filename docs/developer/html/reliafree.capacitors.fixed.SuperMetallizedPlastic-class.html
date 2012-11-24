@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>reliafree.capacitors.fixed.SuperMetallizedPlastic</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="reliafree-module.html">Package&nbsp;reliafree</a> ::
+        <a href="reliafree.capacitors-module.html">Package&nbsp;capacitors</a> ::
+        <a href="reliafree.capacitors.fixed-module.html">Module&nbsp;fixed</a> ::
+        Class&nbsp;SuperMetallizedPlastic
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class SuperMetallizedPlastic</h1><p class="nomargin-top"><span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_reliafre_17" name="uml_class_diagram_for_reliafre_17">
+<area shape="rect" id="node1_8" href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#__init__" title="Initializes the Fixed Super&#45;Metallized Plastic Capacitor Component Class." alt="" coords="41,191,255,209"/>
+<area shape="rect" id="node1_9" href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#calculate_mil_217_count" title="Performs MIL&#45;HDBK&#45;217F part count hazard rate calculations for the Fixed &#160;Super&#45;Metallized Plastic Capacitor Component Class." alt="" coords="41,209,255,228"/>
+<area shape="rect" id="node1_10" href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#calculate_mil_217_stress" title="Performs MIL&#45;HDBK&#45;217F part stress hazard rate calculations for the Fixed &#160;Super&#45;Metallized Plastic Capacitor Component Class." alt="" coords="41,228,255,247"/>
+<area shape="rect" id="node1" href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html" title="Fixed Super&#45;Metallized Plastic Capacitor Component Class." alt="" coords="29,158,267,253"/>
+<area shape="rect" id="node2_11" href="reliafree.capacitors.capacitor.Capacitor-class.html#combo_callback" title="Callback function for handling Capacitor Class ComboBox changes." alt="" coords="17,39,277,57"/>
+<area shape="rect" id="node2_12" href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_inputs" title="Populates the ReliaFree Workbook calculation input tab with the widgets &#160;needed to select inputs for Capacitor Component Class prediction &#160;calculations." alt="" coords="17,57,277,76"/>
+<area shape="rect" id="node2_13" href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_outputs" title="Populates the ReliaFree Workbook calculation results tab with the widgets &#160;to display Capacitor Component Class calculation results." alt="" coords="17,76,277,95"/>
+<area shape="rect" id="node2_14" href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_inputs" title="Loads the ReliaFree Workbook calculation input widgets with calculation &#160;input information." alt="" coords="17,95,277,113"/>
+<area shape="rect" id="node2_15" href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_outputs" title="Loads the ReliaFree Workbook calculation results widgets with calculation &#160;results." alt="" coords="17,113,277,132"/>
+<area shape="rect" id="node2" href="reliafree.capacitors.capacitor.Capacitor-class.html" title="Capacitor meta class." alt="" coords="5,6,289,138"/>
+</map>
+  <img src="uml_class_diagram_for_reliafre_17.gif" alt='' usemap="#uml_class_diagram_for_reliafre_17" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Fixed Super-Metallized Plastic Capacitor Component Class. Covers 
+  specifications MIL-C-83421.</p>
+  <p>Hazard Rate Models:</p>
+  <ol start="1">
+    <li>
+      MIL-HDBK-217F, section 10.6
+    </li>
+  </ol>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initializes the Fixed Super-Metallized Plastic Capacitor Component 
+      Class.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#calculate_mil_217_count" class="summary-sig-name">calculate_mil_217_count</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Performs MIL-HDBK-217F part count hazard rate calculations for the 
+      Fixed Super-Metallized Plastic Capacitor Component Class.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.calculate_mil_217_count">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="reliafree.capacitors.fixed.SuperMetallizedPlastic-class.html#calculate_mil_217_stress" class="summary-sig-name">calculate_mil_217_stress</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part</span>)</span><br />
+      Performs MIL-HDBK-217F part stress hazard rate calculations for the 
+      Fixed Super-Metallized Plastic Capacitor Component Class.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.calculate_mil_217_stress">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html">capacitor.Capacitor</a></code></b>:
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#combo_callback">combo_callback</a></code>,
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_inputs">create_reliability_inputs</a></code>,
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_outputs">create_reliability_outputs</a></code>,
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_inputs">load_reliability_inputs</a></code>,
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_outputs">load_reliability_outputs</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html">capacitor.Capacitor</a></code></b> (private):
+      <code><a href="reliafree.capacitors.capacitor.Capacitor-class.html#_entry_callback" onclick="show_private();">_entry_callback</a></code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_quality"></a><span class="summary-name">_quality</span> = <code title="['', 'S', 'R', 'P', 'M', 'Lower']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">P</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">M</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">Lower</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_specification"></a><span class="summary-name">_specification</span> = <code title="['', 'MIL-C-83421 (CRH)']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">MIL-C-83421 (CRH)</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_specsheet"></a><span class="summary-name">_specsheet</span> = <code title="[['', u'125&#176;C']]"><code class="variable-group">[</code><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">125&#176;C</code><code class="variable-quote">'</code><code class="variable-group">]</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Initializes the Fixed Super-Metallized Plastic Capacitor Component 
+  Class.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="reliafree.capacitors.capacitor.Capacitor-class.html#__init__">capacitor.Capacitor.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="calculate_mil_217_count"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">calculate_mil_217_count</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.calculate_mil_217_count">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Performs MIL-HDBK-217F part count hazard rate calculations for the 
+  Fixed Super-Metallized Plastic Capacitor Component Class.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="calculate_mil_217_stress"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">calculate_mil_217_stress</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="reliafree.capacitors.fixed-pysrc.html#SuperMetallizedPlastic.calculate_mil_217_stress">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Performs MIL-HDBK-217F part stress hazard rate calculations for the 
+  Fixed Super-Metallized Plastic Capacitor Component Class.</p>
+  <p>Keyword Arguments: part -- the ReliaFree COMPONENT object.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="reliafree-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:10 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
