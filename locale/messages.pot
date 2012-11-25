@@ -1,0 +1,764 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: ../reliafree/function.py:728 ../reliafree/notebook.py:288
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-01 10:58-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../reliafree/revision.py:62
+msgid "Revision Code:"
+msgstr ""
+
+#: ../reliafree/revision.py:62
+msgid "Revision Name:"
+msgstr ""
+
+#: ../reliafree/revision.py:63 ../reliafree/function.py:65
+msgid "Total Cost:"
+msgstr ""
+
+#: ../reliafree/revision.py:63
+msgid "Cost/Failure:"
+msgstr ""
+
+#: ../reliafree/revision.py:63
+msgid "Cost/Hour:"
+msgstr ""
+
+#: ../reliafree/revision.py:64 ../reliafree/function.py:66
+msgid "Total Part Count:"
+msgstr ""
+
+#: ../reliafree/revision.py:64 ../reliafree/function.py:66
+msgid "Remarks:"
+msgstr ""
+
+#: ../reliafree/revision.py:65
+msgid "Active h(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:65
+msgid "Dormant h(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:66
+msgid "Software h(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:66 ../reliafree/function.py:69
+msgid "Predicted h(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:67 ../reliafree/function.py:69
+msgid "Mission h(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:67 ../reliafree/function.py:69
+msgid "MTBF:"
+msgstr ""
+
+#: ../reliafree/revision.py:67 ../reliafree/function.py:70
+msgid "Mission MTBF:"
+msgstr ""
+
+#: ../reliafree/revision.py:68
+msgid "Reliability:"
+msgstr ""
+
+#: ../reliafree/revision.py:68
+msgid "Mission R(t):"
+msgstr ""
+
+#: ../reliafree/revision.py:69 ../reliafree/function.py:71
+msgid "MPMT:"
+msgstr ""
+
+#: ../reliafree/revision.py:69 ../reliafree/function.py:71
+msgid "MCMT:"
+msgstr ""
+
+#: ../reliafree/revision.py:69 ../reliafree/function.py:71
+msgid "MTTR:"
+msgstr ""
+
+#: ../reliafree/revision.py:69 ../reliafree/function.py:71
+msgid "MMT:"
+msgstr ""
+
+#: ../reliafree/revision.py:70 ../reliafree/function.py:72
+msgid "Availability:"
+msgstr ""
+
+#: ../reliafree/revision.py:70
+msgid "Mission A(t):"
+msgstr ""
+
+#: ../reliafree/requirement.py:64
+msgid "Requirement ID:"
+msgstr ""
+
+#: ../reliafree/requirement.py:64
+msgid "Requirement:"
+msgstr ""
+
+#: ../reliafree/requirement.py:65
+msgid "Requirement Type:"
+msgstr ""
+
+#: ../reliafree/requirement.py:65
+msgid "Specification:"
+msgstr ""
+
+#: ../reliafree/requirement.py:66
+msgid "Page Number:"
+msgstr ""
+
+#: ../reliafree/requirement.py:66
+msgid "Figure Number:"
+msgstr ""
+
+#: ../reliafree/requirement.py:66
+msgid "Derived?:"
+msgstr ""
+
+#: ../reliafree/requirement.py:67
+msgid "Parent Requirement:"
+msgstr ""
+
+#: ../reliafree/requirement.py:67
+msgid "Validated?:"
+msgstr ""
+
+#: ../reliafree/requirement.py:68
+msgid "Validated Date"
+msgstr ""
+
+#: ../reliafree/requirement.py:68
+msgid "Owner:"
+msgstr ""
+
+#: ../reliafree/requirement.py:101
+msgid "Displays the unique code for the selected requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:108
+msgid ""
+"Selects and displays the type of requirement for the selected requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:121
+msgid ""
+"Displays the internal or industry specification associated with the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:126
+msgid ""
+"Displays the specification page number associated with the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:131
+msgid ""
+"Displays the specification figure number associated with the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:136
+msgid "Whether or not the selected requirement is derived."
+msgstr ""
+
+#: ../reliafree/requirement.py:140
+msgid ""
+"Whether or not the selected requirement has been verified and validated."
+msgstr ""
+
+#: ../reliafree/requirement.py:144
+msgid "Displays the date the selected requirement was verified and validated."
+msgstr ""
+
+#: ../reliafree/requirement.py:149
+msgid ""
+"Displays the responsible organization or individual for the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:155
+msgid "Add Sibling"
+msgstr ""
+
+#: ../reliafree/requirement.py:158
+msgid "Adds a new requirement at the same level as the selected requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:163
+msgid "Add Derived"
+msgstr ""
+
+#: ../reliafree/requirement.py:166
+msgid "Adds a new requirement subordinate to the selected requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:171
+msgid "Delete"
+msgstr ""
+
+#: ../reliafree/requirement.py:174
+msgid "Deletes the selected requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:185
+msgid "Add Task"
+msgstr ""
+
+#: ../reliafree/requirement.py:188
+msgid ""
+"Adds a new Verification and Validation (V&V) task for the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:196
+msgid ""
+"Saves all the Verification and Validation (V&V) tasks for the selected "
+"requirement."
+msgstr ""
+
+#: ../reliafree/requirement.py:310
+msgid "Task ID"
+msgstr ""
+
+#: ../reliafree/requirement.py:320
+msgid "Task Description"
+msgstr ""
+
+#: ../reliafree/requirement.py:332
+msgid "Start Date"
+msgstr ""
+
+#: ../reliafree/requirement.py:342
+msgid "Due Date"
+msgstr ""
+
+#: ../reliafree/requirement.py:352
+msgid "% Complete"
+msgstr ""
+
+#: ../reliafree/requirement.py:567 ../reliafree/tree.py:375
+msgid "Sibling Requirement"
+msgstr ""
+
+#: ../reliafree/requirement.py:574 ../reliafree/tree.py:379
+msgid "Derived Requirement"
+msgstr ""
+
+#: ../reliafree/requirement.py:658
+msgid "New V & V Task"
+msgstr ""
+
+#: ../reliafree/component.py:109
+msgid "Category:"
+msgstr ""
+
+#: ../reliafree/component.py:110
+msgid "Subcategory:"
+msgstr ""
+
+#: ../reliafree/main.py:140
+msgid "The ReliaFree Project is not currently connected to a program database."
+msgstr ""
+
+#: ../reliafree/main.py:247
+#, python-format
+msgid "The ReliaFree Project is connected to program database %s."
+msgstr ""
+
+#: ../reliafree/main.py:248
+#, python-format
+msgid "The ReliaFree Project - Analyzing %s"
+msgstr ""
+
+#: ../reliafree/function.py:64
+msgid "Function Code:"
+msgstr ""
+
+#: ../reliafree/function.py:64
+msgid "Function Name:"
+msgstr ""
+
+#: ../reliafree/function.py:65
+msgid "Total Mode Count:"
+msgstr ""
+
+#: ../reliafree/function.py:72
+msgid "Mission Availability:"
+msgstr ""
+
+#: ../reliafree/function.py:453 ../reliafree/tree.py:367
+msgid "Sibling Function"
+msgstr ""
+
+#: ../reliafree/function.py:460 ../reliafree/tree.py:371
+msgid "Child Function"
+msgstr ""
+
+#: ../reliafree/function.py:699
+msgid "Reference Designator"
+msgstr ""
+
+#: ../reliafree/partlist.py:88
+msgid "The ReliaFree Project - Parts List"
+msgstr ""
+
+#: ../reliafree/partlist.py:128 ../reliafree/tree.py:137
+#: ../reliafree/notebook.py:119
+msgid "Ready"
+msgstr ""
+
+#: ../reliafree/partlist.py:143
+msgid "Add a component to the currently selected assembly"
+msgstr ""
+
+#: ../reliafree/partlist.py:152 ../reliafree/tree.py:433
+msgid "Delete the currently selected component."
+msgstr ""
+
+#: ../reliafree/partlist.py:164
+msgid "Cut the currently selected component."
+msgstr ""
+
+#: ../reliafree/partlist.py:168 ../reliafree/tree.py:251
+#: ../reliafree/tree.py:449
+msgid "Cut"
+msgstr ""
+
+#: ../reliafree/partlist.py:175
+msgid "Copy the currently selected component."
+msgstr ""
+
+#: ../reliafree/partlist.py:179 ../reliafree/tree.py:259
+#: ../reliafree/tree.py:460
+msgid "Copy"
+msgstr ""
+
+#: ../reliafree/partlist.py:186
+msgid "Paste the contents of the clipboard."
+msgstr ""
+
+#: ../reliafree/partlist.py:190 ../reliafree/tree.py:267
+#: ../reliafree/tree.py:471
+msgid "Paste"
+msgstr ""
+
+#: ../reliafree/partlist.py:199 ../reliafree/tree.py:480
+msgid "Undo the last change"
+msgstr ""
+
+#: ../reliafree/partlist.py:203 ../reliafree/tree.py:235
+#: ../reliafree/tree.py:484
+msgid "Undo"
+msgstr ""
+
+#: ../reliafree/partlist.py:210 ../reliafree/tree.py:491
+msgid "Redo the last change"
+msgstr ""
+
+#: ../reliafree/partlist.py:214 ../reliafree/tree.py:243
+#: ../reliafree/tree.py:495
+msgid "Redo"
+msgstr ""
+
+#: ../reliafree/partlist.py:222 ../reliafree/tree.py:508
+msgid "Calculate"
+msgstr ""
+
+#: ../reliafree/tree.py:75
+msgid "The ReliaFree Project"
+msgstr ""
+
+#: ../reliafree/tree.py:96
+msgid "Revision Tree"
+msgstr ""
+
+#: ../reliafree/tree.py:97
+msgid "Displays the program revisions"
+msgstr ""
+
+#: ../reliafree/tree.py:101
+msgid "Function Tree"
+msgstr ""
+
+#: ../reliafree/tree.py:102
+msgid "Displays the system functional hierarchy"
+msgstr ""
+
+#: ../reliafree/tree.py:106
+msgid "Requirements Tree"
+msgstr ""
+
+#: ../reliafree/tree.py:107
+msgid "Displays the system requirement hierarchy"
+msgstr ""
+
+#: ../reliafree/tree.py:111
+msgid "Hardware Tree"
+msgstr ""
+
+#: ../reliafree/tree.py:112
+msgid "Displays the system hardware hierarchy"
+msgstr ""
+
+#: ../reliafree/tree.py:157
+msgid "_Project"
+msgstr ""
+
+#: ../reliafree/tree.py:160
+msgid "_Revision"
+msgstr ""
+
+#: ../reliafree/tree.py:169 ../reliafree/tree.py:428
+msgid "Assembly"
+msgstr ""
+
+#: ../reliafree/tree.py:179 ../reliafree/tree.py:391 ../reliafree/tree.py:432
+msgid "Component"
+msgstr ""
+
+#: ../reliafree/tree.py:189
+msgid "New"
+msgstr ""
+
+#: ../reliafree/tree.py:199
+msgid "Open"
+msgstr ""
+
+#: ../reliafree/tree.py:207
+msgid "Save"
+msgstr ""
+
+#: ../reliafree/tree.py:211
+msgid "Save _As"
+msgstr ""
+
+#: ../reliafree/tree.py:221
+msgid "Exit"
+msgstr ""
+
+#: ../reliafree/tree.py:226
+msgid "_File"
+msgstr ""
+
+#: ../reliafree/tree.py:271
+msgid "Select _All"
+msgstr ""
+
+#: ../reliafree/tree.py:275
+msgid "_Edit"
+msgstr ""
+
+#: ../reliafree/tree.py:280
+msgid "_Find"
+msgstr ""
+
+#: ../reliafree/tree.py:283
+msgid "Find _Next"
+msgstr ""
+
+#: ../reliafree/tree.py:286
+msgid "Find _Previous"
+msgstr ""
+
+#: ../reliafree/tree.py:289
+msgid "_Replace"
+msgstr ""
+
+#: ../reliafree/tree.py:293
+msgid "_Search"
+msgstr ""
+
+#: ../reliafree/tree.py:298
+msgid "_Options"
+msgstr ""
+
+#: ../reliafree/tree.py:301
+msgid "_Composite Ref Des"
+msgstr ""
+
+#: ../reliafree/tree.py:304
+msgid "_Import Project"
+msgstr ""
+
+#: ../reliafree/tree.py:308
+msgid "_Tools"
+msgstr ""
+
+#: ../reliafree/tree.py:329
+msgid "Create a new ReliaFree Program Database"
+msgstr ""
+
+#: ../reliafree/tree.py:338
+msgid "Open an existing ReliaFree Program Database"
+msgstr ""
+
+#: ../reliafree/tree.py:347
+msgid "Save the currently open ReliaFree Program Database"
+msgstr ""
+
+#: ../reliafree/tree.py:358
+msgid "Add an item to the current product structure"
+msgstr ""
+
+#: ../reliafree/tree.py:363 ../reliafree/tree.py:416 ../reliafree/tree.py:514
+msgid "Revision"
+msgstr ""
+
+#: ../reliafree/tree.py:364
+msgid "Add a new revision."
+msgstr ""
+
+#: ../reliafree/tree.py:368
+msgid "Add a new function at the same level as the selected function."
+msgstr ""
+
+#: ../reliafree/tree.py:372
+msgid "Add a new function subordinate to the selected function."
+msgstr ""
+
+#: ../reliafree/tree.py:376
+msgid "Add a new requirement at the same level as the selected requirement."
+msgstr ""
+
+#: ../reliafree/tree.py:380
+msgid "Add a new requirement subordinate to the selected requirement."
+msgstr ""
+
+#: ../reliafree/tree.py:383
+msgid "Sibling Assembly"
+msgstr ""
+
+#: ../reliafree/tree.py:384
+msgid ""
+"Add a new hardware assembly at the same level as the selected hardware "
+"assembly."
+msgstr ""
+
+#: ../reliafree/tree.py:387
+msgid "Child Assembly"
+msgstr ""
+
+#: ../reliafree/tree.py:388
+msgid ""
+"Add a new hardware assembly subordinate to the selected hardware assembly."
+msgstr ""
+
+#: ../reliafree/tree.py:392
+msgid "Add a new component to the selected hardware assembly."
+msgstr ""
+
+#: ../reliafree/tree.py:407
+msgid "Delete the currently selected item"
+msgstr ""
+
+#: ../reliafree/tree.py:412 ../reliafree/tree.py:510
+msgid "Project"
+msgstr ""
+
+#: ../reliafree/tree.py:413
+msgid "Delete the currently open ReliaFree project."
+msgstr ""
+
+#: ../reliafree/tree.py:417
+msgid "Delete the currently selected revision."
+msgstr ""
+
+#: ../reliafree/tree.py:420 ../reliafree/tree.py:518
+msgid "Function"
+msgstr ""
+
+#: ../reliafree/tree.py:421
+msgid "Delete the currently selected function."
+msgstr ""
+
+#: ../reliafree/tree.py:424
+msgid "Requirement"
+msgstr ""
+
+#: ../reliafree/tree.py:425
+msgid "Delete the currently selected requirement."
+msgstr ""
+
+#: ../reliafree/tree.py:429
+msgid "Delete the currently selected hardware assembly."
+msgstr ""
+
+#: ../reliafree/tree.py:445
+msgid "Cut the currently selected item"
+msgstr ""
+
+#: ../reliafree/tree.py:456
+msgid "Copy the currently selected item"
+msgstr ""
+
+#: ../reliafree/tree.py:467
+msgid "Paste the clipboard contents"
+msgstr ""
+
+#: ../reliafree/tree.py:504
+msgid "Perform various calculations on the system"
+msgstr ""
+
+#: ../reliafree/tree.py:511
+msgid "Calculate the currently open ReliaFree project."
+msgstr ""
+
+#: ../reliafree/tree.py:515
+msgid "Calculate the revisions only."
+msgstr ""
+
+#: ../reliafree/tree.py:519
+msgid "Calculate the functions only."
+msgstr ""
+
+#: ../reliafree/tree.py:522
+msgid "System"
+msgstr ""
+
+#: ../reliafree/tree.py:523
+msgid "Calculate the hardware assemblies only."
+msgstr ""
+
+#: ../reliafree/tree.py:533
+msgid "Charts & Graphs"
+msgstr ""
+
+#: ../reliafree/tree.py:534
+msgid "Create charts and graphs"
+msgstr ""
+
+#: ../reliafree/tree.py:538
+msgid "Graphs"
+msgstr ""
+
+#: ../reliafree/tree.py:544 ../reliafree/tree.py:549
+msgid "Reports"
+msgstr ""
+
+#: ../reliafree/tree.py:545
+msgid "Create text reports"
+msgstr ""
+
+#: ../reliafree/tree.py:556
+msgid "Save & Quit"
+msgstr ""
+
+#: ../reliafree/tree.py:557
+msgid "Save the currently open ReliaFree Program Database then quit"
+msgstr ""
+
+#: ../reliafree/tree.py:567
+msgid "Quit without saving the currently open ReliaFree Program Database"
+msgstr ""
+
+#: ../reliafree/notebook.py:79
+msgid "The ReliaFree Project - Work Book"
+msgstr ""
+
+#: ../reliafree/notebook.py:138
+msgid "General Information"
+msgstr ""
+
+#: ../reliafree/notebook.py:143 ../reliafree/notebook.py:425
+msgid "Requirements Information"
+msgstr ""
+
+#: ../reliafree/notebook.py:148 ../reliafree/notebook.py:428
+msgid "Logistics Information"
+msgstr ""
+
+#: ../reliafree/notebook.py:153 ../reliafree/notebook.py:430
+msgid "Miscellaneous Information"
+msgstr ""
+
+#: ../reliafree/notebook.py:158
+msgid "General Data"
+msgstr ""
+
+#: ../reliafree/notebook.py:174
+msgid "Function Matrix"
+msgstr ""
+
+#: ../reliafree/notebook.py:189
+msgid "Similar Item Analysis"
+msgstr ""
+
+#: ../reliafree/notebook.py:206
+msgid "Reliability Inputs"
+msgstr ""
+
+#: ../reliafree/notebook.py:211 ../reliafree/notebook.py:554
+msgid "Maintainability Inputs"
+msgstr ""
+
+#: ../reliafree/notebook.py:216
+msgid "Stress Inputs"
+msgstr ""
+
+#: ../reliafree/notebook.py:221
+msgid "Calculation Inputs"
+msgstr ""
+
+#: ../reliafree/notebook.py:238
+msgid "Reliability Results"
+msgstr ""
+
+#: ../reliafree/notebook.py:243
+msgid "Maintainability Results"
+msgstr ""
+
+#: ../reliafree/notebook.py:248
+msgid "Stress Results"
+msgstr ""
+
+#: ../reliafree/notebook.py:253
+msgid "Calculation Results"
+msgstr ""
+
+#: ../reliafree/notebook.py:270
+msgid "FMECA Worksheet"
+msgstr ""
+
+#: ../reliafree/notebook.py:283
+msgid "Verification and Validation Task List"
+msgstr ""
+
+#: ../reliafree/notebook.py:293
+msgid "Design Verification"
+msgstr ""
+
+#: ../reliafree/notebook.py:310
+msgid "RG Test Incident"
+msgstr ""
+
+#: ../reliafree/notebook.py:327
+msgid "Field Incident"
+msgstr ""
+
+#: ../reliafree/notebook.py:564 ../reliafree/notebook.py:575
+msgid "Method Data"
+msgstr ""
+
+#: ../reliafree/notebook.py:641
+msgid "Miscellaneous Results"
+msgstr ""
