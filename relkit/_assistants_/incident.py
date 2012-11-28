@@ -48,6 +48,419 @@ except:
 import gettext
 _ = gettext.gettext
 
+class FilterIncident:
+
+# Lists of search criteria to use for the various gtk.Combo widgets.
+    _criteria0 = [["="], ["!="], [">"], ["<"], [">="], ["<="],
+                  [_("LIKE")], [_("NOT LIKE")]]
+    _criteria1 = [[_("LIKE")], [_("NOT LIKE")]]
+    _criteria2 = [["="], ["!="], [">"], ["<"], [">="], ["<="]]
+    _criteria3 = [["="], ["!="]]
+
+    _compound = [[_("AND")], [_("OR")]]
+
+    _fi_tab_labels = [[_("Incident ID:"), _("Incident Type:"),
+                       _("Incident Status:"), _("Date Opened:"),
+                       _("Date Closed:"), _("Incident Age:"),
+                       _("Affected Unit:"), _("Affected System:"),
+                       _("Accepted"), _("Reviewed")],
+                      [_("Brief Description:"), _("Long Description:"),
+                       _("Closure Remarks:")],
+                      [],
+                      [_("Incident ID"), _("Incident Type"),
+                       _("Short Description"), _("Long Description"),
+                       _("Remarks"), _("Incident Date"), _("Closure Date"),
+                       _("Incident Age"), _("Status"), _("Affected Unit"),
+                       _("Affected System"), _("Is Accepted"),
+                       _("Is Reviewed")]]
+
+    def __init__(self, button, app):
+
+        self._app = app
+
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_("RelKit Filter Incidents Assistant"))
+        self.assistant.connect('apply', self._filter)
+        self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
+
+        # Create the introduction page.
+        fixed = gtk.Fixed()
+        _text_ = _("This is the RelKit incident filter assistant.\n\nIt will help you filter program incidents in the database so you can view only those you're interested in seeing.\n\nPress 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_complete(fixed, True)
+
+# Create the gtk.Combo widgets that will be used to select compounding
+# statements (i.e., AND, OR).
+        self.cmbCompound1 = _widg.make_combo(_width_=75)
+        self.cmbCompound2 = _widg.make_combo(_width_=75)
+        self.cmbCompound3 = _widg.make_combo(_width_=75)
+        self.cmbCompound4 = _widg.make_combo(_width_=75)
+        self.cmbCompound5 = _widg.make_combo(_width_=75)
+        self.cmbCompound6 = _widg.make_combo(_width_=75)
+        self.cmbCompound7 = _widg.make_combo(_width_=75)
+        self.cmbCompound8 = _widg.make_combo(_width_=75)
+        self.cmbCompound9 = _widg.make_combo(_width_=75)
+        self.cmbCompound10 = _widg.make_combo(_width_=75)
+        self.cmbCompound11 = _widg.make_combo(_width_=75)
+        _widg.load_combo(self.cmbCompound1, self._compound)
+        _widg.load_combo(self.cmbCompound2, self._compound)
+        _widg.load_combo(self.cmbCompound3, self._compound)
+        _widg.load_combo(self.cmbCompound4, self._compound)
+        _widg.load_combo(self.cmbCompound5, self._compound)
+        _widg.load_combo(self.cmbCompound6, self._compound)
+        _widg.load_combo(self.cmbCompound7, self._compound)
+        _widg.load_combo(self.cmbCompound8, self._compound)
+        _widg.load_combo(self.cmbCompound9, self._compound)
+        _widg.load_combo(self.cmbCompound10, self._compound)
+        _widg.load_combo(self.cmbCompound11, self._compound)
+
+# Create the gtk.Combo widgets that will be used to select the comparison
+# criteria (e.g., =, <>, LIKE, etc.) for the different fields.
+        self.cmbFilterIncidentID = _widg.make_combo(_width_=100)
+        self.cmbFilterIncidentID.set_tooltip_text(_("Sets the field incident ID filter criterion."))
+        _widg.load_combo(self.cmbFilterIncidentID, self._criteria0)
+
+        self.cmbFilterIncidentType = _widg.make_combo(_width_=100)
+        self.cmbFilterIncidentType.set_tooltip_text(_("Sets the field incident type filter criterion."))
+        _widg.load_combo(self.cmbFilterIncidentType, self._criteria3)
+
+        self.cmbFilterIncidentTypeList = _widg.make_combo(_width_=100)
+        self.cmbFilterIncidentTypeList.set_tooltip_text(_("Sets the field incident type filter criterion."))
+        query = "SELECT fld_incident_type_name \
+                 FROM tbl_incident_type"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ComCnx)
+        _widg.load_combo(self.cmbFilterIncidentTypeList, results, simple=True)
+
+        self.cmbFilterShortDesc = _widg.make_combo(_width_=100)
+        self.cmbFilterShortDesc.set_tooltip_text(_("Sets the field incident short description filter criterion."))
+        _widg.load_combo(self.cmbFilterShortDesc, self._criteria1)
+
+        self.cmbFilterLongDesc = _widg.make_combo(_width_=100)
+        self.cmbFilterLongDesc.set_tooltip_text(_("Sets the field incident long description filter criterion."))
+        _widg.load_combo(self.cmbFilterLongDesc, self._criteria1)
+
+        self.cmbFilterRemarks = _widg.make_combo(_width_=100)
+        self.cmbFilterRemarks.set_tooltip_text(_("Sets the field incident closure remarks filter criterion."))
+        _widg.load_combo(self.cmbFilterRemarks, self._criteria1)
+
+        self.cmbFilterIncidentDate = _widg.make_combo(_width_=100)
+        self.cmbFilterIncidentDate.set_tooltip_text(_("Sets the field incident occurrence date filter criterion."))
+        _widg.load_combo(self.cmbFilterIncidentDate, self._criteria2)
+
+        self.cmbFilterClosureDate = _widg.make_combo(_width_=100)
+        self.cmbFilterClosureDate.set_tooltip_text(_("Sets the field incident closure date filter criterion."))
+        _widg.load_combo(self.cmbFilterClosureDate, self._criteria2)
+
+        self.cmbFilterIncidentAge = _widg.make_combo(_width_=100)
+        self.cmbFilterIncidentAge.set_tooltip_text(_("Sets the field incident age filter criterion."))
+        _widg.load_combo(self.cmbFilterIncidentAge, self._criteria2)
+
+        self.cmbFilterStatus = _widg.make_combo(_width_=100)
+        self.cmbFilterStatus.set_tooltip_text(_("Sets the field incident status filter criterion."))
+        _widg.load_combo(self.cmbFilterStatus, self._criteria3)
+
+        self.cmbFilterMachine = _widg.make_combo(_width_=100)
+        self.cmbFilterMachine.set_tooltip_text(_("Sets the field incident unit serial number filter criterion."))
+        _widg.load_combo(self.cmbFilterMachine, self._criteria2)
+
+        self.cmbFilterSystem = _widg.make_combo(_width_=100)
+        self.cmbFilterSystem.set_tooltip_text(_("Sets the field incident affected system filter criterion."))
+        _widg.load_combo(self.cmbFilterSystem, self._criteria3)
+
+        self.cmbFilterSystemList = _widg.make_combo(_width_=100)
+        self.cmbFilterSystemList.set_tooltip_text(_("Sets the field incident affected system filter criterion."))
+        query = "SELECT fld_name \
+                 FROM tbl_system \
+                 WHERE fld_parent_assembly='0' \
+                 AND fld_part=0"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+        _widg.load_combo(self.cmbFilterSystemList, results, simple=True)
+
+# Create the gtk.Entry widgets used to provide the user-desired filter criteria
+        self.txtFilterIncidentID = _widg.make_entry(_width_=100)
+        self.txtFilterIncidentID.set_tooltip_text(_("Sets the field incident ID filter criterion."))
+
+        self.txtFilterShortDesc = _widg.make_entry(_width_=100)
+        self.txtFilterShortDesc.set_tooltip_text(_("Sets the field incident short description filter criterion."))
+
+        self.txtFilterLongDesc = _widg.make_entry(_width_=100)
+        self.txtFilterLongDesc.set_tooltip_text(_("Sets the field incident long description filter criterion."))
+
+        self.txtFilterRemarks = _widg.make_entry(_width_=100)
+        self.txtFilterRemarks.set_tooltip_text(_("Sets the field incident closure remarks filter criterion."))
+
+        self.txtFilterIncidentDate = _widg.make_entry(_width_=100)
+        self.txtFilterIncidentDate.set_tooltip_text(_("Sets the field incident occurrence date filter criterion."))
+
+        self.txtFilterClosureDate = _widg.make_entry(_width_=100)
+        self.txtFilterClosureDate.set_tooltip_text(_("Sets the field incident closure date filter criterion."))
+
+        self.txtFilterIncidentAge = _widg.make_entry(_width_=100)
+        self.txtFilterIncidentAge.set_tooltip_text(_("Sets the field incident age filter criterion."))
+
+        self.txtFilterStatus = _widg.make_entry(_width_=100)
+        self.txtFilterStatus.set_tooltip_text(_("Sets the field incident status filter criterion."))
+
+        self.txtFilterMachine = _widg.make_entry(_width_=100)
+        self.txtFilterMachine.set_tooltip_text(_("Sets the field incident unit serial number filter criterion."))
+
+        self.chkFilterAccepted = _widg.make_check_button(self._fi_tab_labels[3][11])
+        self.chkFilterAccepted.set_tooltip_text(_("Deletes the selected component from the selected field incident."))
+
+        self.chkFilterReviewed = _widg.make_check_button(self._fi_tab_labels[3][12])
+        self.chkFilterReviewed.set_tooltip_text(_("Deletes the selected component from the selected field incident."))
+
+# Create the page to select filter criteria.
+        y_pos = 5
+        fixed = gtk.Fixed()
+        _text_ = _("Create Program Incident filter...")
+        label = _widg.make_label(_text_, width=300)
+        fixed.put(label, 5, y_pos)
+        y_pos += 30
+
+        for i in range(len(self._fi_tab_labels[3]) - 2):
+            label = _widg.make_label(self._fi_tab_labels[3][i], 150, 25)
+            fixed.put(label, 5, (35 * i + y_pos))
+
+        fixed.put(self.cmbFilterIncidentID, 190, y_pos)
+        fixed.put(self.txtFilterIncidentID, 300, y_pos)
+        fixed.put(self.cmbCompound1, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterIncidentType, 190, y_pos)
+        fixed.put(self.cmbFilterIncidentTypeList, 300, y_pos)
+        fixed.put(self.cmbCompound2, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterShortDesc, 190, y_pos)
+        fixed.put(self.txtFilterShortDesc, 300, y_pos)
+        fixed.put(self.cmbCompound3, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterLongDesc, 190, y_pos)
+        fixed.put(self.txtFilterLongDesc, 300, y_pos)
+        fixed.put(self.cmbCompound4, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterRemarks, 190, y_pos)
+        fixed.put(self.txtFilterRemarks, 300, y_pos)
+        fixed.put(self.cmbCompound5, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterIncidentDate, 190, y_pos)
+        fixed.put(self.txtFilterIncidentDate, 300, y_pos)
+        fixed.put(self.cmbCompound6, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterClosureDate, 190, y_pos)
+        fixed.put(self.txtFilterClosureDate, 300, y_pos)
+        fixed.put(self.cmbCompound7, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterIncidentAge, 190, y_pos)
+        fixed.put(self.txtFilterIncidentAge, 300, y_pos)
+        fixed.put(self.cmbCompound8, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterStatus, 190, y_pos)
+        fixed.put(self.txtFilterStatus, 300, y_pos)
+        fixed.put(self.cmbCompound9, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterMachine, 190, y_pos)
+        fixed.put(self.txtFilterMachine, 300, y_pos)
+        fixed.put(self.cmbCompound10, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbFilterSystem, 190, y_pos)
+        fixed.put(self.cmbFilterSystemList, 300, y_pos)
+        fixed.put(self.cmbCompound11, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.chkFilterAccepted, 15, y_pos)
+        y_pos += 35
+
+        fixed.put(self.chkFilterReviewed, 15, y_pos)
+
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(fixed, _("Set Filter Criteria"))
+        self.assistant.set_page_complete(fixed, True)
+
+# Create the page to apply the filter criteria.
+        fixed = gtk.Fixed()
+        _text_ = _("Press 'Apply' to apply the filter criteria or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed,
+                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(fixed, _("Apply Filter Criteria"))
+        self.assistant.set_page_complete(fixed, True)
+
+        self.assistant.show_all()
+
+    def _filter(self, button):
+        """
+        Method to create the SQL query for filtering the Program Incidents.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        _criteria = []
+        _inputs = []
+        _connectors = []
+
+        # Read the user inputs for the different fields that can be used to
+        # filter with.
+        _criteria.append(self.cmbFilterIncidentID.get_active_text())
+        _inputs.append(self.txtFilterIncidentID.get_text())
+        _connectors.append(self.cmbCompound1.get_active_text())
+
+        _criteria.append(self.cmbFilterIncidentType.get_active_text())
+        _inputs.append(self.cmbFilterIncidentTypeList.get_active_text())
+        _connectors.append(self.cmbCompound2.get_active_text())
+
+        _criteria.append(self.cmbFilterShortDesc.get_active_text())
+        _inputs.append(self.txtFilterShortDesc.get_text())
+        _connectors.append(self.cmbCompound3.get_active_text())
+
+        _criteria.append(self.cmbFilterLongDesc.get_active_text())
+        _inputs.append(self.txtFilterLongDesc.get_text())
+        _connectors.append(self.cmbCompound4.get_active_text())
+
+        _criteria.append(self.cmbFilterRemarks.get_active_text())
+        _inputs.append(self.txtFilterRemarks.get_text())
+        _connectors.append(self.cmbCompound5.get_active_text())
+
+        _criteria.append(self.cmbFilterIncidentDate.get_active_text())
+        _inputs.append(self.txtFilterIncidentDate.get_text())
+        _connectors.append(self.cmbCompound6.get_active_text())
+
+        _criteria.append(self.cmbFilterClosureDate.get_active_text())
+        _inputs.append(self.txtFilterClosureDate.get_text())
+        _connectors.append(self.cmbCompound7.get_active_text())
+
+        _criteria.append(self.cmbFilterIncidentAge.get_active_text())
+        _inputs.append(self.txtFilterIncidentAge.get_text())
+        _connectors.append(self.cmbCompound8.get_active_text())
+
+        _criteria.append(self.cmbFilterStatus.get_active_text())
+        _inputs.append(self.txtFilterStatus.get_text())
+        _connectors.append(self.cmbCompound9.get_active_text())
+
+        _criteria.append(self.cmbFilterMachine.get_active_text())
+        _inputs.append(self.txtFilterMachine.get_text())
+        _connectors.append(self.cmbCompound10.get_active_text())
+
+        _criteria.append(self.cmbFilterSystem.get_active_text())
+        _inputs.append(self.cmbFilterSystemList.get_active())
+        _connectors.append(self.cmbCompound11.get_active_text())
+
+        _inputs.append(self.chkFilterAccepted.get_active())
+        _inputs.append(self.chkFilterReviewed.get_active())
+
+        # Build the query from the user-provided inputs.
+        if(_conf.RELIAFREE_MODULES[0] == 1):
+            query = "SELECT * FROM tbl_incident \
+                     WHERE fld_revision_id=%d AND " % \
+            self._app.REVISION.revision_id
+        else:
+            query = "SELECT * FROM tbl_incident \
+                     WHERE fld_revision_id=0 AND "
+
+        if(_criteria[0] is not None and _criteria[0] != ''):
+            query = query + "fld_incident_id" + _criteria[0] + _inputs[0]
+        if(_connectors[0] is not None and _connectors[0] != ''):
+            query = query + " " + _connectors[0] + " "
+
+        if(_criteria[1] is not None and _criteria[1] != ''):
+            query = query + "fld_incident_type" + _criteria[1] + \
+                    "'" + _inputs[1] + "'"
+        if(_connectors[1] is not None and _connectors[1] != ''):
+            query = query + " " + _connectors[1] + " "
+
+        if(_criteria[2] is not None and _criteria[2] != ''):
+            query = query + "fld_short_description " + _criteria[2] + \
+                    " '%" + _inputs[2] + "%'"
+        if(_connectors[2] is not None and _connectors[2] != ''):
+            query = query + " " + _connectors[2] + " "
+
+        if(_criteria[3] is not None and _criteria[3] != ''):
+            query = query + "fld_long_description " + _criteria[3] + \
+                    " '%" + _inputs[3] + "%'"
+        if(_connectors[3] is not None and _connectors[3] != ''):
+            query = query + " " + _connectors[3] + " "
+
+        if(_criteria[4] is not None and _criteria[4] != ''):
+            query = query + "fld_remarks " + _criteria[4] + \
+                    " '%" + _inputs[4] + "%'"
+        if(_connectors[4] is not None and _connectors[4] != ''):
+            query = query + " " + _connectors[4] + " "
+
+        if(_criteria[5] is not None and _criteria[5] != ''):
+            query =  query + "fld_request_date" + _criteria[5] + \
+                     "'" + _inputs[5] + "'"
+        if(_connectors[5] is not None and _connectors[5] != ''):
+            query = query + " " + _connectors[5] + " "
+
+        if(_criteria[6] is not None and _criteria[6] != ''):
+            query = query + "fld_complete_date" + _criteria[6] + \
+                    "'" + _inputs[6] + "'"
+        if(_connectors[6] is not None and _connectors[6] != ''):
+            query = query + " " + _connectors[6] + " "
+
+        if(_criteria[7] is not None and _criteria[7] != ''):
+            query = query + "fld_incident_age" + _criteria[7]
+            query = query + "%d" % int(_inputs[7])
+        if(_connectors[7] is not None and _connectors[7] != ''):
+            query = query + " " + _connectors[7] + " "
+
+        if(_criteria[8] is not None and _criteria[8] != ''):
+            query = query + "fld_status" + _criteria[8] + \
+                    "'" + _inputs[8] + "'"
+        if(_connectors[8] is not None and _connectors[8] != ''):
+            query = query + " " + _connectors[8] + " "
+
+        if(_criteria[9] is not None and _connectors[9] != ''):
+            query = query + "fld_machine" + _criteria[9] + \
+                    "'" + _inputs[9] + "'"
+        if(_connectors[9] is not None and _connectors[9] != ''):
+            query = query + " " + _connectors[9] + " "
+
+        if(_inputs[11]):
+            query = query + " AND fld_accepted=%d" % 1
+        else:
+            query = query + " AND fld_accepted=%d" % 0
+
+        if(_inputs[12]):
+            query = query + " AND fld_reviewed=%d" % 1
+        else:
+            query = query + " AND fld_reviewed=%d" % 0
+
+        self._app.INCIDENT.load_tree(query, None)
+
+    def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        self.assistant.destroy()
+
 class AddIncident:
 
     def __init__(self, button, app):
@@ -55,13 +468,14 @@ class AddIncident:
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Incident Wizard"))
+        self.assistant.set_title(_("RelKit Add Incident Assistant"))
         self.assistant.connect('apply', self._add_incident)
         self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
 
         # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit incident addition wizard.  It will help you add a new hardware or software incident to the database.  Press 'Forward' to continue or 'Cancel' to quit the wizard.")
+        _text_ = _("This is the RelKit incident addition assistant.  It will help you add a new hardware or software incident to the database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=300, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -315,14 +729,14 @@ class AddIncident:
         return False
 
     def _check_ready(self, widget, event, _page_):
+        """
+        Method to check if all the required data is filled in before allowing
+        the assistant to continue.
 
-        """ Method to check if all the required data is filled in before
-            allowing the assistant to continue.
-
-            Keyword Arguments:
-            widget -- the widget calling this method.
-            event  -- the gtk.gdk.Event calling this method.
-            _page_ -- the page in the assistant to check.
+        Keyword Arguments:
+        widget -- the widget calling this method.
+        event  -- the gtk.gdk.Event calling this method.
+        _page_ -- the page in the assistant to check.
         """
 
         if(_page_ == 2):
@@ -441,15 +855,36 @@ class AddIncident:
         if(results == '' or not results):
             self._app.debug_log.error("software.py: Failed to add new incident to incident details table.")
 
-        #self.assistant.destroy()
-
     def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
 
-        """ Method to destroy the gtk.Assistant when the 'Cancel' button is
-            pressed.
-
-            Keyword Arguments:
-            button -- the gtk.Button that called this method.
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
         """
 
         self.assistant.destroy()
+
+class ImportIncident:
+
+    def __init__(self, button, app):
+
+        self._app = app
+
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_("RelKit Import Incidents Assistant"))
+        #self.assistant.connect('apply', self._import)
+        self.assistant.connect('cancel', self._cancel)
+
+        # Create the introduction page.
+        fixed = gtk.Fixed()
+        _text_ = _("This is the RelKit incident filter assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=300, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_complete(fixed, True)
+
+        self.assistant.show_all()

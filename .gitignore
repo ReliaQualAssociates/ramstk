@@ -1,0 +1,16 @@
+# Generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+
+# Python specific files to ignore
+*.pyc
+
+# ReliaFree specific files to ignore
+Notes
+workbook_mockup.glade
+*.xls*
+*.log
+*.txt

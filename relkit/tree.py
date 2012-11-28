@@ -228,7 +228,26 @@ class TreeWindow(gtk.Window):
             label.show_all()
             label.set_tooltip_text(_("Displays the system field incidents."))
             self.notebook.insert_page(self.scwIncidents, tab_label=label, position=-1)
-            _app.INCIDENT.load_tree()
+
+            # Find the current revision if using the revision module, otherwise
+            # set this to the default value.
+            if(_conf.RELIAFREE_MODULES[0] == 1):
+                values = (self._app.REVISION.revision_id,)
+            else:
+                values = (0,)
+
+            # Select all the unaccepted field incidents from the open RelKit
+            # Program database.
+            if(_conf.BACKEND == 'mysql'):
+                query = "SELECT * FROM tbl_incident \
+                         WHERE fld_revision_id=%d \
+                         ORDER BY fld_incident_id"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "SELECT * FROM tbl_incident \
+                         WHERE fld_revision_id=? \
+                         ORDER BY fld_incident_id"
+
+            _app.INCIDENT.load_tree(query, values)
 
         #if(_conf.RELIAFREE_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
