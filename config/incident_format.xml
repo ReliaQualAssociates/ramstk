@@ -8,7 +8,7 @@
       All rights reserved.
 -->
 
-<!-- This file contains information used by the ReliaFree application to draw
+<!-- This file contains information used by the RelKit application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -161,7 +161,7 @@ experience. -->
         <column>
             <defaulttitle>Requested By</defaulttitle>
             <usertitle>Requested By</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>18</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -185,7 +185,7 @@ experience. -->
         <column>
             <defaulttitle>Reviewed By</defaulttitle>
             <usertitle>Reviewed By</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>21</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -209,7 +209,7 @@ experience. -->
         <column>
             <defaulttitle>Approved By</defaulttitle>
             <usertitle>Approved By</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>24</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -233,7 +233,7 @@ experience. -->
         <column>
             <defaulttitle>Closed By</defaulttitle>
             <usertitle>Closed By</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>27</position>
             <editable>0</editable>
             <visible>0</visible>

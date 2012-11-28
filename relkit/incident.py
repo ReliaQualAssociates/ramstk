@@ -59,22 +59,17 @@ class Incident:
 
     # TODO: Write code to update notebook widgets when editing the Validation treeview.
     # TODO: Add tooltips to all widgets.
-    _fi_tab_labels = [[_("Incident ID:"), _("Incident Type:"),
-                       _("Incident Status:"), _("Date Opened:"),
+    _fi_tab_labels = [[_("Incident ID:"), _("Incident Category:"),
+                       _("Incident Type:"), _("Incident Criticality:"),
+                       _("Life Cycle:"), _("Date Opened:"),
                        _("Date Closed:"), _("Incident Age:"),
-                       _("Affected Unit:"), _("Affected System:"),
+                       _("Reported By:"), _("Incident Status:"),
                        _("Accepted"), _("Reviewed")],
                       [_("Brief Description:"), _("Long Description:"),
                        _("Closure Remarks:")],
-                      [],
-                      [_("Incident ID"), _("Incident Type"),
-                       _("Short Description"), _("Long Description"),
-                       _("Remarks"), _("Incident Date"), _("Closure Date"),
-                       _("Incident Age"), _("Status"), _("Affected Unit"),
-                       _("Affected System"), _("Is Accepted"),
-                       _("Is Reviewed")]]
-
-    n_attributes = 13
+                      [_("Found in Test:"), _("Found in Test Case:"),
+                       _("Reviewed By:"), _("Date Reviewed:"),
+                       _("Approved By:"), _("Date Approved:")]]
 
     def __init__(self, application):
         """
@@ -112,29 +107,42 @@ class Incident:
         self.btnClosureDate = _widg.make_button(_height_=25, _width_=25,
                                                 _label_="...", _image_=None)
 
-        self.chkAccepted = _widg.make_check_button(_label_=self._fi_tab_labels[0][8])
-        self.chkReviewed = _widg.make_check_button(_label_=self._fi_tab_labels[0][9])
+        self.chkAccepted = _widg.make_check_button(_label_=self._fi_tab_labels[0][10])
+        self.chkReviewed = _widg.make_check_button(_label_=self._fi_tab_labels[0][11])
 
-        self.cmbIncidentStatus = _widg.make_combo()
-        self.cmbSystem = _widg.make_combo(simple=True)
-        self.cmbFilterIncidentID = _widg.make_combo(_width_=100)
+        self.cmbCategory = _widg.make_combo()
+        self.cmbType = _widg.make_combo()
+        self.cmbStatus = _widg.make_combo()
+        self.cmbCriticality = _widg.make_combo()
+        self.cmbLifeCycle = _widg.make_combo()
+        self.cmbRequestBy = _widg.make_combo()
+        self.cmbReviewBy = _widg.make_combo()
+        self.cmbApproveBy = _widg.make_combo()
+        self.cmbCloseBy = _widg.make_combo()
 
         self.tvwComponentList = gtk.TreeView()
 
         self.txtID = _widg.make_entry(_width_=100)
-        self.txtIncidentType = _widg.make_entry(_width_=100)
-        self.txtIncidentDate = _widg.make_entry(_width_=100)
-        self.txtClosureDate = _widg.make_entry(_width_=100)
-        self.txtIncidentAge = _widg.make_entry(_width_=100)
-        self.txtUnit = _widg.make_entry(_width_=100)
+        self.txtRequestDate = _widg.make_entry(_width_=100)
+        self.txtCloseDate = _widg.make_entry(_width_=100)
+        self.txtAge = _widg.make_entry(_width_=100)
         self.txtShortDescription = _widg.make_entry(_width_=550)
-        self.txtTask = gtk.TextBuffer()
         self.txtLongDescription = gtk.TextBuffer()
-        self.txtClosureRemarks = gtk.TextBuffer()
+        self.txtRemarks = gtk.TextBuffer()
+        self.txtAnalysis = gtk.TextBuffer()
+        self.txtTest = _widg.make_entry(_width_=100)
+        self.txtTestCase = _widg.make_entry(_width_=100)
+        self.txtReviewDate = _widg.make_entry(_width_=100)
+        self.txtApproveDate = _widg.make_entry(_width_=100)
+        self.txtCloseDate = _widg.make_entry(_width_=100)
         if self._field_incident_widgets_create():
-            self.debug_app._log.error("incident.py: Failed to create Field Incident widgets.")
+            self.debug_app._log.error("incident.py: Failed to create Incident widgets.")
         if self._field_incident_tab_create():
-            self.debug_app._log.error("incident.py: Failed to create Field Incident tab.")
+            self.debug_app._log.error("incident.py: Failed to create Incident tab.")
+        if self._incident_analysis_widgets_create():
+            self.debug_app._log.error("incident.py: Failed to create Incident Analysis widgets.")
+        if self._incident_analysis_tab_create():
+            self.debug_app._log.error("incident.py: Failed to create Incident Analysis tab.")
 
         self.vbxIncident = gtk.VBox()
         toolbar = self._toolbar_create()
@@ -201,34 +209,68 @@ class Incident:
         """ Method to create the Field Incident widgets. """
 
         # Quadrant 1 (upper left) widgets.
-        self.txtID.set_tooltip_text(_("Displays the unique code for the selected field incident."))
+        self.txtID.set_tooltip_text(_("Displays the unique code for the selected incident."))
 
-        self.txtIncidentType.set_tooltip_text(_("Selects and displays the type of incident for the selected field incident."))
-
-        self.cmbIncidentStatus.set_tooltip_text(_("Displays the status of the field incident."))
-        query = "SELECT fld_status_name \
-                 FROM tbl_status"
+        self.cmbCategory.set_tooltip_text(_("Selects and displays the category of the selected incident."))
+        query = "SELECT fld_incident_cat_name FROM tbl_incident_category"
         results = self._app.COMDB.execute_query(query,
                                                 None,
                                                 self._app.ComCnx)
-        _widg.load_combo(self.cmbIncidentStatus, results)
-        self.cmbIncidentStatus.connect('changed', self._callback_combo, 9)
+        _widg.load_combo(self.cmbCategory, results)
+        self.cmbCategory.connect('changed', self._callback_combo, 2)
 
-        self.txtIncidentDate.set_tooltip_text(_("Displays the date the incident was opened."))
+        self.cmbType.set_tooltip_text(_("Selects and displays the type of incident for the selected incident."))
+        query = "SELECT fld_incident_type_name FROM tbl_incident_type"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbType, results)
+        self.cmbType.connect('changed', self._callback_combo, 3)
+
+        self.cmbStatus.set_tooltip_text(_("Displays the status of the selected incident."))
+        query = "SELECT fld_status_name FROM tbl_status"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbStatus, results)
+        self.cmbStatus.connect('changed', self._callback_combo, 9)
+
+        self.cmbCriticality.set_tooltip_text(_("Displays the criticality of the selected incident."))
+        query = "SELECT fld_criticality_name FROM tbl_criticality"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbCriticality, results)
+        self.cmbCriticality.connect('changed', self._callback_combo, 4)
+
+        self.cmbLifeCycle.set_tooltip_text(_("Displays the product life cycle during which the incident occurred."))
+        query = "SELECT fld_lifecycle_name FROM tbl_lifecycles"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbLifeCycle, results)
+        self.cmbLifeCycle.connect('changed', self._callback_combo, 29)
+
+        self.txtRequestDate.set_tooltip_text(_("Displays the date the incident was opened."))
         self.btnIncidentDate.set_tooltip_text(_("Select the date the incident occurred."))
         self.btnIncidentDate.connect('released', _util.date_select,
-                                     self.txtIncidentDate)
+                                     self.txtRequestDate)
 
-        self.txtClosureDate.set_tooltip_text(_("Displays the date the incident was closed."))
+        self.txtCloseDate.set_tooltip_text(_("Displays the date the incident was closed."))
         self.btnClosureDate.set_tooltip_text(_("Select the date the incident was closed."))
         self.btnClosureDate.connect('released', _util.date_select,
-                                    self.txtClosureDate)
+                                    self.txtCloseDate)
 
-        self.txtIncidentAge.set_tooltip_text(_("Displays the age of the incident in days."))
-        self.txtUnit.set_tooltip_text(_("Displays the affected unit."))
+        self.txtAge.set_tooltip_text(_("Displays the age of the incident in days."))
 
-        self.cmbSystem.set_tooltip_text(_("Allows selection of the affected system."))
-        self.cmbSystem.connect('changed', self._callback_combo, 16)
+        self.cmbRequestBy.set_tooltip_text(_("Displays the name of the individual reporting the incident."))
+        query = "SELECT fld_user_lname || ', ' || fld_user_fname \
+                 FROM tbl_users ORDER BY fld_user_lname ASC"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbRequestBy, results)
+        self.cmbRequestBy.connect('changed', self._callback_combo, 18)
 
         self.chkAccepted.set_tooltip_text(_("Displays whether the field incident has been accepted by the responsible owner."))
         self.chkAccepted.connect('toggled', self._callback_check, 31)
@@ -268,36 +310,50 @@ class Incident:
         vpaned.pack1(frame, True, True)
 
         y_pos = 5
-        for i in range(len(self._fi_tab_labels[0])-2):
-            label = _widg.make_label(self._fi_tab_labels[0][i], 150, 25)
-            fixed.put(label, 5, (30 * i + y_pos))
-
+        label = _widg.make_label(self._fi_tab_labels[0][0], 150, 25)
+        fixed.put(label, 5, y_pos)
         fixed.put(self.txtID, 155, y_pos)
-        fixed.put(self.chkAccepted, 370, y_pos)
-        fixed.put(self.chkReviewed, 475, y_pos)
+        fixed.put(self.chkAccepted, 355, y_pos)
+        fixed.put(self.chkReviewed, 510, y_pos)
         y_pos += 30
 
-        fixed.put(self.txtIncidentType, 155, y_pos)
-        y_pos += 30
+        label = _widg.make_label(self._fi_tab_labels[0][1], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.cmbCategory, 155, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][2], 150, 25)
+        fixed.put(label, 360, y_pos)
+        fixed.put(self.cmbType, 515, y_pos)
+        y_pos += 35
 
-        fixed.put(self.cmbIncidentStatus, 155, y_pos)
-        y_pos += 30
+        label = _widg.make_label(self._fi_tab_labels[0][3], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.cmbCriticality, 155, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][4], 150, 25)
+        fixed.put(label, 360, y_pos)
+        fixed.put(self.cmbLifeCycle, 515, y_pos)
+        y_pos += 35
 
-        fixed.put(self.txtIncidentDate, 155, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][5], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtRequestDate, 155, y_pos)
         fixed.put(self.btnIncidentDate, 265, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][6], 150, 25)
+        fixed.put(label, 310, y_pos)
+        fixed.put(self.txtCloseDate, 425, y_pos)
+        fixed.put(self.btnClosureDate, 530, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][7], 150, 25)
+        fixed.put(label, 575, y_pos)
+        fixed.put(self.txtAge, 730, y_pos)
         y_pos += 30
 
-        fixed.put(self.txtClosureDate, 155, y_pos)
-        fixed.put(self.btnClosureDate, 265, y_pos)
-        y_pos += 30
+        label = _widg.make_label(self._fi_tab_labels[0][8], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.cmbRequestBy, 155, y_pos)
+        y_pos += 35
 
-        fixed.put(self.txtIncidentAge, 155, y_pos)
-        y_pos += 30
-
-        fixed.put(self.txtUnit, 155, y_pos)
-        y_pos += 30
-
-        fixed.put(self.cmbSystem, 155, y_pos)
+        label = _widg.make_label(self._fi_tab_labels[0][9], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.cmbStatus, 155, y_pos)
 
         fixed.show_all()
 
@@ -351,7 +407,7 @@ class Incident:
         fixed.put(label, 5, y_pos)
         y_pos += 30
 
-        textview = _widg.make_text_view(buffer_=self.txtClosureRemarks,
+        textview = _widg.make_text_view(buffer_=self.txtRemarks,
                                         width=550, height=200)
         fixed.put(textview, 5, y_pos)
 
@@ -359,7 +415,7 @@ class Incident:
 
         # Insert the tab.
         label = gtk.Label()
-        _heading = _("Field\nIncident")
+        _heading = _("Incident\nDetails")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
@@ -377,26 +433,40 @@ class Incident:
         Loads the widgets with general information about the INCIDENT Object.
         """
 
+        from datetime import datetime
+
         if(self.selected_row is None):
             return True
 
-        query = "SELECT fld_name FROM tbl_system WHERE fld_part=0"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ProgCnx)
-        _widg.load_combo(self.cmbSystem, results)
+        #query = "SELECT fld_name FROM tbl_system WHERE fld_part=0"
+        #results = self._app.COMDB.execute_query(query,
+        #                                        None,
+        #                                        self._app.ProgCnx)
+        #_widg.load_combo(self.cmbSystem, results)
 
-        self.txtID.set_text(str(self.model.get_value(self.selected_row, 0)))
-        self.txtIncidentType.set_text(str(self.model.get_value(self.selected_row, 3)))
+        self.txtID.set_text(str(self.model.get_value(self.selected_row, 1)))
+        self.cmbCategory.set_active(self.model.get_value(self.selected_row, 2))
+        self.cmbType.set_active(self.model.get_value(self.selected_row, 3))
+        self.cmbStatus.set_active(self.model.get_value(self.selected_row, 9))
+        self.cmbCriticality.set_active(self.model.get_value(self.selected_row, 6))
+        self.cmbLifeCycle.set_active(self.model.get_value(self.selected_row, 29))
+        self.txtAge.set_text(str(self.model.get_value(self.selected_row, 15)))
+        self.cmbRequestBy.set_active(self.model.get_value(self.selected_row, 18))
+        self.chkReviewed.set_active(self.model.get_value(self.selected_row, 20))
+        self.chkAccepted.set_active(self.model.get_value(self.selected_row, 31))
+
         self.txtShortDescription.set_text(self.model.get_value(self.selected_row, 4))
         self.txtLongDescription.set_text(self.model.get_value(self.selected_row, 5))
-        self.txtClosureRemarks.set_text(self.model.get_value(self.selected_row, 8))
-        #self.txtIncidentStatus.set_text(self.model.get_value(self.selected_row, 9))
-        self.txtIncidentAge.set_text(str(self.model.get_value(self.selected_row, 15)))
-        self.txtIncidentDate.set_text(str(self.model.get_value(self.selected_row, 19)))
-        self.chkReviewed.set_active(self.model.get_value(self.selected_row, 20))
-        self.txtClosureDate.set_text(str(self.model.get_value(self.selected_row, 28)))
-        self.chkAccepted.set_active(self.model.get_value(self.selected_row, 31))
+        self.txtRemarks.set_text(self.model.get_value(self.selected_row, 8))
+
+        dt = self.model.get_value(self.selected_row, 19)
+        if(dt is not None and dt != ''):
+            dt = datetime.fromordinal(int(dt))
+            self.txtRequestDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        dt = self.model.get_value(self.selected_row, 28)
+        if(dt is not None and dt != ''):
+            dt = datetime.fromordinal(int(dt))
+            self.txtCloseDate.set_text(str(dt.strftime('%Y-%m-%d')))
 
         values = (str(self.model.get_value(self.selected_row, 0)),)
 
@@ -440,6 +510,122 @@ class Incident:
                 model.append(results[i])
             except TypeError:
                 print results[i]
+
+        return False
+
+    def _incident_analysis_widgets_create(self):
+        """ Method to create the Incident Analysis widgets. """
+
+        self.cmbReviewBy.set_tooltip_text(_("Displays the name of the individual who reviewed the analysis."))
+        query = "SELECT fld_user_lname || ', ' || fld_user_fname \
+                 FROM tbl_users ORDER BY fld_user_lname ASC"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ComCnx)
+        _widg.load_combo(self.cmbReviewBy, results)
+        self.cmbReviewBy.connect('changed', self._callback_combo, 21)
+
+        self.txtReviewDate.set_tooltip_text(_("Displays the date the analysis was reviewed."))
+
+        self.cmbApproveBy.set_tooltip_text(_("Displays the name of the individual who approved the analysis."))
+        _widg.load_combo(self.cmbApproveBy, results)
+        self.cmbApproveBy.connect('changed', self._callback_combo, 24)
+
+        self.txtApproveDate.set_tooltip_text(_("Displays the date the analysis was approved."))
+
+        return False
+
+    def _incident_analysis_tab_create(self):
+        """
+        Method to create the Incident Analysis gtk.Notebook tab and populate
+        it with the appropriate widgets.
+        """
+
+        vbox = gtk.VBox()
+
+        fixed = gtk.Fixed()
+
+        label = _widg.make_label(self._fi_tab_labels[2][0], 150, 25)
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtTest, 160, 5)
+        label = _widg.make_label(self._fi_tab_labels[2][1], 150, 25)
+        fixed.put(label, 265, 5)
+        fixed.put(self.txtTestCase, 420, 5)
+
+        vbox.pack_start(fixed, expand=False)
+
+        textview = _widg.make_text_view(buffer_=self.txtAnalysis,
+                                        width=550, height=200)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(textview)
+
+        frame = _widg.make_frame(_label_=_("Incident Analysis"))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        vbox.pack_start(frame)
+
+        fixed = gtk.Fixed()
+
+        label = _widg.make_label(self._fi_tab_labels[2][2], 150, 25)
+        fixed.put(label, 5, 5)
+        fixed.put(self.cmbReviewBy, 160, 5)
+        label = _widg.make_label(self._fi_tab_labels[2][3], 150, 25)
+        fixed.put(label, 365, 5)
+        fixed.put(self.txtReviewDate, 520, 5)
+
+        label = _widg.make_label(self._fi_tab_labels[2][4], 150, 25)
+        fixed.put(label, 630, 5)
+        fixed.put(self.cmbApproveBy, 785, 5)
+        label = _widg.make_label(self._fi_tab_labels[2][5], 150, 25)
+        fixed.put(label, 990, 5)
+        fixed.put(self.txtApproveDate, 1145, 5)
+
+        vbox.pack_start(fixed, expand=False)
+
+        # Insert the tab.
+        label = gtk.Label()
+        _heading = _("Incident\nAnalysis")
+        label.set_markup("<span weight='bold'>" + _heading + "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_("Displays the analysis of the selected incident."))
+
+        self.notebook.insert_page(vbox,
+                                  tab_label=label,
+                                  position=-1)
+
+        return False
+
+    def _incident_analysis_tab_load(self):
+        """
+        Loads the widgets with analysis information about the INCIDENT Object.
+        """
+
+        from datetime import datetime
+
+        if(self.selected_row is None):
+            return True
+
+        self.txtTest.set_text(self.model.get_value(self.selected_row, 10))
+        self.txtTestCase.set_text(self.model.get_value(self.selected_row, 11))
+
+        self.txtAnalysis.set_text(self.model.get_value(self.selected_row, 30))
+
+        self.cmbReviewBy.set_active(self.model.get_value(self.selected_row, 21))
+        self.cmbApproveBy.set_active(self.model.get_value(self.selected_row, 24))
+
+        dt = self.model.get_value(self.selected_row, 22)
+        if(dt is not None and dt != ''):
+            dt = datetime.fromordinal(int(dt))
+            self.txtReviewDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        dt = self.model.get_value(self.selected_row, 25)
+        if(dt is not None and dt != ''):
+            dt = datetime.fromordinal(int(dt))
+            self.txtApproveDate.set_text(str(dt.strftime('%Y-%m-%d')))
 
         return False
 
@@ -807,6 +993,8 @@ class Incident:
                  treeview.
         """
 
+        #datetime.strptime(dt,"%Y-%m-%d").toordinal()
+
         values = (model.get_value(row, 2), \
                   model.get_value(row, 3), \
                   model.get_value(row, 4), \
@@ -963,14 +1151,14 @@ class Incident:
             col = self.treeview.get_column(0)
             self.treeview.row_activated(path, col)
 
-        query = "SELECT fld_name \
-                 FROM tbl_system \
-                 WHERE fld_parent_assembly='0' \
-                 AND fld_part=0"
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
-        _widg.load_combo(self.cmbSystem, results, simple=True)
+        #query = "SELECT fld_name \
+        #         FROM tbl_system \
+        #         WHERE fld_parent_assembly='0' \
+        #         AND fld_part=0"
+        #results = self._app.DB.execute_query(query,
+        #                                     None,
+        #                                     self._app.ProgCnx)
+        #_widg.load_combo(self.cmbSystem, results, simple=True)
 
         return False
 
@@ -978,13 +1166,14 @@ class Incident:
         """ Method to load the INCIDENT Object gtk.Notebook. """
 
         self._field_incident_tab_load()
+        self._incident_analysis_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxIncident)
         self._app.winWorkBook.show_all()
 
-        _title = _("RelKit Work Bench: Field Incident (%d Field Incidents)") % \
+        _title = _("RelKit Work Bench: Program Incident (%d Incidents)") % \
                    self._app.INCIDENT.n_incidents
         self._app.winWorkBook.set_title(_title)
 
