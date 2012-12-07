@@ -43,7 +43,7 @@ import widgets as _widg
 
 class ImportAssistant:
 
-    def __init__(self, application):
+    def __init__(self, widget, application):
 
         self._app = application
 

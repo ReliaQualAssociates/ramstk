@@ -206,12 +206,12 @@ def parse_config(configfile):
     return(tree)
 
 def split_string(string):
+    """
+    Splits a colon-delimited string into its constituent parts.
 
-    """ Splits a colon-delimited string into its constituent parts.
-
-        Keyword Arguments:
-        string -- the colon delimited string that needs to be split into a
-                  list.
+    Keyword Arguments:
+    string -- the colon delimited string that needs to be split into a
+              list.
 
     """
 
@@ -378,13 +378,13 @@ def create_project(widget, app):
     return False
 
 def open_project(widget, app):
+    """
+    Shows the RelKit databases available on the selected server and allows the
+    user to select the one he/she wishes to use.
 
-    """ Shows the RelKit databases available on the selected server and
-        allows the user to select the one he/she wishes to use.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
-        app    -- the RelKit application.
+    Keyword Arguments:
+    widget -- the widget that called this function.
+    app    -- the RelKit application.
     """
 
     from time import sleep
@@ -464,13 +464,12 @@ def open_project(widget, app):
     return False
 
 def save_project(widget, _app):
+    """
+    Saves the RelKit information to the project's MySQL database.
 
-    """ Saves the RelKit information to the project's MySQL database.
-
-        Keyword Arguments:
-        widget -- the widget that is calling this function.
-        _app   -- the RelKit application.
-
+    Keyword Arguments:
+    widget -- the widget that is calling this function.
+    _app   -- the RelKit application.
     """
 
     if not _app.LOADED:
@@ -530,13 +529,12 @@ def save_project(widget, _app):
     return False
 
 def delete_project(widget, _app):
+    """
+    Deletes an existing RelKit Project.
 
-    """ Deletes an existing RelKit Project.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
-        _app   -- the RelKit application.
-
+    Keyword Arguments:
+    widget -- the widget that called this function.
+    _app   -- the RelKit application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -740,13 +738,12 @@ def add_items(_class_):
     return(numitems)
 
 def cut_copy_paste(widget, action):
+    """
+    Cuts, copies, and pastes.
 
-    """ Cuts, copies, and pastes.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
-        action -- whether to cut (0), copy (1), or paste (2).
-
+    Keyword Arguments:
+    widget -- the widget that called this function.
+    action -- whether to cut (0), copy (1), or paste (2).
     """
 
     # TODO: Write code to cut/copy/paste.
@@ -764,52 +761,49 @@ def cut_copy_paste(widget, action):
     return False
 
 def paste(clipboard, contents, user_data):
+    """
+    Callback function to paste text from the clipboard.
 
-    """ Callback function to paste text from the clipboard.
-
-        Keyword Arguments:
-        clipboard -- the gtk.Clipboard that called this function.
-        contents  -- the contents of the clipboard.
-        user_data -- user data.
+    Keyword Arguments:
+    clipboard -- the gtk.Clipboard that called this function.
+    contents  -- the contents of the clipboard.
+    user_data -- user data.
     """
 
     print contents
 
 def select_all(widget):
+    """
+    Selects all the rows in a treeview.
 
-
-    """ Selects all the rows in a treeview.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
-
+    Keyword Arguments:
+    widget -- the widget that called this function.
     """
 
     # TODO: Write code to select all items in treeviews.
     return False
 
 def find(widget, action):
+    """
+    Finds records in the open project.
 
-    """ Finds records in the open project.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
-        action -- whether to find (0), find next (1), find previous (2),
-                  or replace(3).
-
+    Keyword Arguments:
+    widget -- the widget that called this function.
+    action -- whether to find (0), find next (1), find previous (2),
+              or replace(3).
     """
 
     # TODO: Write code to find, find next, find previous, and replace search terms.
     return False
 
 def find_all_in_list(list, value, start=0):
+    """
+    Finds all instances of value in the list starting at position start.
 
-    """ Finds all instances of value in the list starting at position start.
-
-        Keyword Arguments:
-        list  -- the list to search.
-        value -- the value to search for.
-        start -- the position in the list to start the search.
+    Keyword Arguments:
+    list  -- the list to search.
+    value -- the value to search for.
+    start -- the position in the list to start the search.
     """
 
     positions = []
@@ -884,10 +878,13 @@ def build_comp_ref_des(treemodel, row):
     return False
 
 def set_part_model(category, subcategory):
-
     """
     This functions sets the COMPONENT part model based on the category
     and subcategory.
+
+    Keyword Arguments:
+    category    --
+    subcategory --
     """
 
     if(category == 0 or subcategory == 0):  # No category or subcategory
@@ -1238,11 +1235,11 @@ def date_select(widget, entry):
 class Options:
 
     def __init__(self, _app):
+        """
+        Allows a user to set site-wide options.
 
-        """ Allows a user to set site-wide options.
-
-            Keyword Arguments:
-            app    -- the RelKit application object.
+        Keyword Arguments:
+        app    -- the RelKit application object.
         """
 
         self.winOptions = gtk.Window()

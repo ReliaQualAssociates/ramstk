@@ -37,9 +37,12 @@ except ImportError:
 # Import other RelKit modules.
 import calculations as _calc
 import configuration as _conf
+import imports as _impt
 import utilities as _util
 import widgets as _widg
+
 import _assistants_.incident as _incs
+from _assistants_.hardware import *
 
 # Add localization support.
 import locale
@@ -426,6 +429,26 @@ class Assembly:
         self.btnEdit.set_name('Edit')
         self.btnEdit.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnEdit, 9)
+
+        # Create an import button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
+        button.set_icon_widget(image)
+        button.set_name('Import')
+        button.connect('clicked', ImportHardware, self._app)
+        button.set_tooltip_text(_("Launches the hardware import assistant."))
+        toolbar.insert(button, 10)
+
+        # Create an export button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
+        button.set_icon_widget(image)
+        button.set_name('Export')
+        button.connect('clicked', ExportHardware, self._app)
+        button.set_tooltip_text(_("Launches the hardware export assistant."))
+        toolbar.insert(button, 11)
 
         toolbar.show()
 

@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2012 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       add_incident.py is part of The RelKit Project
+#       incident.py is part of The RelKit Project
 #
 # All rights reserved.
 
@@ -958,11 +958,11 @@ class AddIncident:
             self.assistant.set_current_page(3)
 
     def _show_calendar(self, button):
+        """
+        Method to display the calendar object.
 
-        """ Method to display the calendar object.
-
-            Keyword Arguments:
-            button -- the button calling this method.
+        Keyword Arguments:
+        button -- the button calling this method.
         """
 
         self.winCalendar = gtk.Window()
