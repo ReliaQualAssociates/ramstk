@@ -166,7 +166,7 @@ class RelKit:
 
         results = self.DB.execute_query(query, None, self.ProgCnx)
 
-        for i in range(18):
+        for i in range(19):
             _conf.RELIAFREE_PREFIX.append(results[0][i + 1])
 
         # Find which modules are active in this project.

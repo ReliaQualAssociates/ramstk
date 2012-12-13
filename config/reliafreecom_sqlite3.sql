@@ -26,7 +26,7 @@ INSERT INTO "tbl_active_environs" VALUES (1,1,10,'ARW','Airborne, Rotary Wing',8
 INSERT INTO "tbl_active_environs" VALUES (1,1,11,'SF','Space, Flight',0.5);
 INSERT INTO "tbl_active_environs" VALUES (1,1,12,'MF','Missile, Flight',5);
 INSERT INTO "tbl_active_environs" VALUES (1,1,13,'ML','Missile, Launch',12);
-INSERT INTO "tbl_active_environs" VALUES (1,1,14,'CL','Cannon, Launch',220)
+INSERT INTO "tbl_active_environs" VALUES (1,1,14,'CL','Cannon, Launch',220);
 
 DROP TABLE IF EXISTS "tbl_allocation_models";
 CREATE TABLE "tbl_allocation_models" (
@@ -153,7 +153,7 @@ CREATE TABLE "tbl_failure_modes" (
 INSERT INTO "tbl_failure_modes" VALUES (4,40,1,"Shorted",0.6);
 INSERT INTO "tbl_failure_modes" VALUES (4,40,2,"Opened",0.35);
 INSERT INTO "tbl_failure_modes" VALUES (4,40,3,"Parametric Drift",0.05);
-INSERT INTO "tbl_failure_modes" VALUES (4,41,4,"",);
+INSERT INTO "tbl_failure_modes" VALUES (4,41,4,"",0.0);
 
 DROP TABLE IF EXISTS "tbl_failure_mechanisms";
 CREATE TABLE "tbl_failure_mechanisms" (

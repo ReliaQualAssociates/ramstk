@@ -67,7 +67,7 @@ class ImportHardware:
 # Create the introduction page.
         fixed = gtk.Fixed()
         _text_ = _("This is the RelKit hardware import assistant.  It will help you import a hardware structure from an external file to the program database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=300, height=150)
+        label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -128,7 +128,7 @@ class ImportHardware:
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
                                      gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _("Export Data"))
+        self.assistant.set_page_title(fixed, _("Import Data"))
         self.assistant.set_page_complete(fixed, True)
 
         self.assistant.show_all()

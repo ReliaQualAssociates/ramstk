@@ -181,7 +181,7 @@ class Incident:
         button.set_tooltip_text(_("Deletes the selected component from the selected field incident."))
         toolbar.insert(button, 1)
 
-        # Save results button.
+# Save results button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -191,7 +191,7 @@ class Incident:
         button.set_tooltip_text(_("Saves the list of components."))
         toolbar.insert(button, 2)
 
-        # Create a filter button.
+# Create a filter button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/filter.png')
@@ -200,6 +200,16 @@ class Incident:
         button.connect('clicked', FilterIncident, self._app)
         button.set_tooltip_text(_("Launches the Program Incident filter assistant."))
         toolbar.insert(button, 3)
+
+# Create an import button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
+        button.set_icon_widget(image)
+        button.set_name('Import')
+        button.connect('clicked', ImportIncident, self._app)
+        button.set_tooltip_text(_("Launches the Program Incident import assistant."))
+        toolbar.insert(button, 4)
 
         toolbar.show()
 
@@ -1165,8 +1175,9 @@ class Incident:
     def load_notebook(self):
         """ Method to load the INCIDENT Object gtk.Notebook. """
 
-        self._field_incident_tab_load()
-        self._incident_analysis_tab_load()
+        if self.selected_row is not None:
+            self._field_incident_tab_load()
+            self._incident_analysis_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
@@ -1174,7 +1185,7 @@ class Incident:
         self._app.winWorkBook.show_all()
 
         _title = _("RelKit Work Bench: Program Incident (%d Incidents)") % \
-                   self._app.INCIDENT.n_incidents
+                   self.n_incidents
         self._app.winWorkBook.set_title(_title)
 
         return False

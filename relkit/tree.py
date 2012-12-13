@@ -738,7 +738,7 @@ class TreeWindow(gtk.Window):
                     3 = Hardware Tree
                     4 = Software Tree
                     4 = Validation Tree
-                    5 = Reliability Growth Test Tree
+                    5 = Reliability Testing Tree
                     6 = Field Incident Tree
         """
 
@@ -759,7 +759,7 @@ class TreeWindow(gtk.Window):
                 column = self._app.FUNCTION.treeview.get_column(0)
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
-                pass
+                self._app.FUNCTION.load_notebook()
         elif(page_num == 2):
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
@@ -768,7 +768,7 @@ class TreeWindow(gtk.Window):
                 column = self._app.REQUIREMENT.treeview.get_column(0)
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
-                pass
+                self._app.REQUIREMENT.load_notebook()
         elif(page_num == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()
@@ -808,7 +808,7 @@ class TreeWindow(gtk.Window):
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
             except:                         # There are no field incidents.
-                pass
+                self._app.INCIDENT.load_notebook()
 
         return False
 

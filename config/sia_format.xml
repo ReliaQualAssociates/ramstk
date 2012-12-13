@@ -40,8 +40,8 @@ All rights reserved. -->
             <defaulttitle>Change Description 1</defaulttitle>
             <usertitle>Change Description 1</usertitle>
             <datatype>gchararray</datatype>
-            <position>3</position>
             <widget>text</widget>
+            <position>3</position>
             <editable>1</editable>
             <visible>1</visible>
         </column>

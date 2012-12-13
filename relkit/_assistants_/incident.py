@@ -734,7 +734,7 @@ class AddIncident:
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
-        # Create the introduction page.
+# Create the introduction page.
         fixed = gtk.Fixed()
         _text_ = _("This is the RelKit incident addition assistant.  It will help you add a new hardware or software incident to the database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=300, height=150)
@@ -744,7 +744,7 @@ class AddIncident:
         self.assistant.set_page_title(fixed, _("Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-        # Create the pages to select either hardware or software incident.
+# Create the pages to select either hardware or software incident.
         y_pos = 5
         self.fxdPageType = gtk.Fixed()
         _text_ = _("Select type of incident to add...")
@@ -768,7 +768,7 @@ class AddIncident:
         self.assistant.set_page_title(self.fxdPageType, _("Incident Type"))
         self.assistant.set_page_complete(self.fxdPageType, True)
 
-        # Create the software incident general information page.
+# Create the software incident general information page.
         x_pos = 5
         y_pos = 5
         self.fxdPageSWGeneral = gtk.Fixed()
@@ -880,7 +880,7 @@ class AddIncident:
                                      gtk.ASSISTANT_PAGE_CONTENT)
         self.assistant.set_page_title(self.fxdPageSWGeneral, _("Software Incident: General Information"))
 
-        # Create the software incident test information page.
+# Create the software incident test information page.
         y_pos = 5
         self.fxdPageSWTest = gtk.Fixed()
         _text_ = _("Test Procedure*:")
@@ -1137,15 +1137,96 @@ class ImportIncident:
         self.assistant.set_title(_("RelKit Import Incidents Assistant"))
         #self.assistant.connect('apply', self._import)
         self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
 
-        # Create the introduction page.
+# Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit incident filter assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=300, height=150)
+        _text_ = _("This is the RelKit incident import assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
         self.assistant.set_page_title(fixed, _("Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
+
+# Create the age to map input file fields to database fields.
+        model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
+        self.tvwFileFields = gtk.TreeView(model)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(self.tvwFileFields)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        column.set_resizable(True)
+        label = gtk.Label(column.get_title())
+        label.set_line_wrap(True)
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_markup("<span weight='bold'>%s</span>" % _("Database\nField"))
+        label.show_all()
+        column.set_widget(label)
+        self.tvwFileFields.append_column(column)
+
+        cell = gtk.CellRendererCombo()
+        cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
+        _file_fields = [["Model Year", 1], ["Incident No", 2]]
+        for i in range(len(_file_fields)):
+            cellmodel.append(_file_fields[i])
+
+        cell.set_property('has-entry', False)
+        cell.set_property('model', cellmodel)
+        cell.set_property('text-column', 0)
+
+        column = gtk.TreeViewColumn()
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        column.set_resizable(True)
+        label = gtk.Label(column.get_title())
+        label.set_line_wrap(True)
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_markup("<span weight='bold'>%s</span>" % _("File\nField"))
+        label.show_all()
+        column.set_widget(label)
+        self.tvwFileFields.append_column(column)
+
+        _db_fields = ["Revision ID", "Incident ID", "Incident Category",
+                      "Incident Type", "Short Description", "Long Description"]
+
+        for i in range(len(_db_fields)):
+            model.append(None, [_db_fields[i], "None"])
+
+        self.assistant.append_page(scrollwindow)
+        self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(scrollwindow,
+                                      _("Select Fields to Import"))
+        self.assistant.set_page_complete(scrollwindow, True)
+
+# Create the page to apply the import criteria.
+        fixed = gtk.Fixed()
+        _text_ = _("Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed,
+                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(fixed, _("Import Data"))
+        self.assistant.set_page_complete(fixed, True)
+
         self.assistant.show_all()
+
+    def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        self.assistant.destroy()
