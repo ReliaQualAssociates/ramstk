@@ -1332,6 +1332,11 @@ class ImportIncident:
         return(_headers, _contents)
 
     def _import(self, button):
+        """ Method to perform the import from an external file to the database.
+
+            Keyword Arguments:
+            button -- the gtk.Button widget that called this method.
+        """
 
         from datetime import datetime
 
