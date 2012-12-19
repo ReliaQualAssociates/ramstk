@@ -143,7 +143,7 @@ class ImportHardware:
     def _select_source_file(self):
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_("RelKit: Import from File ..."),
+        dialog = gtk.FileChooserDialog(_("RelKit: Import Hardware from File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,

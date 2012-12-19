@@ -1135,9 +1135,12 @@ class ImportIncident:
 
         self.assistant = gtk.Assistant()
         self.assistant.set_title(_("RelKit Import Incidents Assistant"))
-        #self.assistant.connect('apply', self._import)
+        self.assistant.connect('apply', self._import)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
+
+# Initialize some variables.
+        self._file_index = [-1] * 32
 
 # Create the introduction page.
         fixed = gtk.Fixed()
@@ -1149,9 +1152,9 @@ class ImportIncident:
         self.assistant.set_page_title(fixed, _("Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-
 # Create the age to map input file fields to database fields.
-        model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
+        model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                              gobject.TYPE_STRING)
         self.tvwFileFields = gtk.TreeView(model)
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1165,6 +1168,16 @@ class ImportIncident:
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
         column.set_resizable(True)
+        column.set_visible(False)
+        self.tvwFileFields.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        column.set_resizable(True)
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
@@ -1175,17 +1188,19 @@ class ImportIncident:
 
         cell = gtk.CellRendererCombo()
         cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
-        _file_fields = [["Model Year", 1], ["Incident No", 2]]
+        (_file_fields, self._file_contents) = self._select_source_file()
+        cellmodel.append(["", -1])
         for i in range(len(_file_fields)):
-            cellmodel.append(_file_fields[i])
+            cellmodel.append([_file_fields[i], i])
 
+        cell.set_property('editable', 1)
         cell.set_property('has-entry', False)
         cell.set_property('model', cellmodel)
         cell.set_property('text-column', 0)
 
         column = gtk.TreeViewColumn()
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
+        column.set_attributes(cell, text=2)
         column.set_resizable(True)
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
@@ -1195,11 +1210,22 @@ class ImportIncident:
         column.set_widget(label)
         self.tvwFileFields.append_column(column)
 
+        cell.connect('changed', self._callback_combo_cell, 2, model)
+
         _db_fields = ["Revision ID", "Incident ID", "Incident Category",
-                      "Incident Type", "Short Description", "Long Description"]
+                      "Incident Type", "Short Description", "Long Description",
+                      "Criticality", "Detection Method", "Remarks", "Status",
+                      "Found During Test", "Found During Test Case",
+                      "Execution Time", "Effect", "Recommended Solution",
+                      "Incident Age", "Hardware ID", "Software ID",
+                      "Requested By", "Request Date", "Reviewed",
+                      "Reviewed By", "Reviewed Date", "Approved",
+                      "Approved By", "Approved Date", "Closed",
+                      "Closed By", "Closed Date", "Life Cycle", "Analysis",
+                      "Accepted"]
 
         for i in range(len(_db_fields)):
-            model.append(None, [_db_fields[i], "None"])
+            model.append([i, _db_fields[i], ""])
 
         self.assistant.append_page(scrollwindow)
         self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
@@ -1219,6 +1245,142 @@ class ImportIncident:
         self.assistant.set_page_complete(fixed, True)
 
         self.assistant.show_all()
+
+    def _callback_combo_cell(self, cell, path, row, position, treemodel):
+        """
+        Called whenever a TreeView CellRendererCombo changes.
+
+        Keyword Arguments:
+        cell      -- the gtk.CellRendererCombo that called this function
+        path      -- the path in the gtk.TreeView containing the
+                     gtk.CellRendererCombo that called this function.
+        row       -- the new gtk.TreeIter in the gtk.CellRendererCombo that
+                     called this function.
+        position  -- the position of in the gtk.TreeView of the
+                     gtk.CellRendererCombo that called this function.
+        treemodel -- the gtk.TreeModel for the gtk.TreeView.
+        lastcol   -- the index of the last visible column in the
+                     gtk.TreeView.
+        """
+
+        model = cell.get_property('model')
+        _text = model.get_value(row, 0)
+        _index  = model.get_value(row, 1)
+
+        treerow = treemodel.get_iter(path)
+
+        _position = treemodel.get_value(treerow, 0)
+        self._file_index.insert(_position, _index)
+
+        treemodel.set_value(treerow, position, _text)
+
+        return False
+
+    def _forward_page_select(self, current_page):
+
+        if(current_page == 0):
+            self._select_source_file()
+        else:
+            self.assistant.set_current_page(current_page + 1)
+
+    def _select_source_file(self):
+
+        import os
+
+        # Get the user's selected file and write the results.
+        dialog = gtk.FileChooserDialog(_("RelKit: Import Incidents from File ..."),
+                                       None,
+                                       gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+
+        # Set some filters to select all files or only some text files.
+        filter = gtk.FileFilter()
+        filter.set_name("All files")
+        filter.add_pattern("*")
+        dialog.add_filter(filter)
+
+        filter = gtk.FileFilter()
+        filter.set_name("Text Files (csv, txt)")
+        filter.add_mime_type("text/csv")
+        filter.add_mime_type("text/txt")
+        filter.add_mime_type("application/xls")
+        filter.add_pattern("*.csv")
+        filter.add_pattern("*.txt")
+        filter.add_pattern("*.xls")
+        dialog.add_filter(filter)
+
+        # Run the dialog and write the file.
+        response = dialog.run()
+        if(response == gtk.RESPONSE_ACCEPT):
+            _filename = dialog.get_filename()
+            (name, extension) = os.path.splitext(_filename)
+
+        dialog.destroy()
+
+        _contents = []
+        _file = open(_filename, 'r')
+
+        for _line in _file:
+            _contents.append([_line])
+
+        _headers = str(_contents[0][0]).rsplit('\t')
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+
+        return(_headers, _contents)
+
+    def _import(self, button):
+
+        from datetime import datetime
+
+        model = self.tvwFileFields.get_model()
+        row = model.get_iter_root()
+
+        for i in range(len(self._file_contents)):
+            contents = []
+
+            for j in range(len(self._file_index)):
+                if self._file_index[j] == -1:
+                    contents.append(0)
+                else:
+                    contents.append(self._file_contents[i][self._file_index[j]])
+            print contents
+            values = (int(contents[0]), int(contents[1]), int(contents[2]),
+                      int(contents[3]), contents[4], contents[5],
+                      int(contents[6]), contents[7], contents[8],
+                      int(contents[9]), contents[10], contents[11],
+                      float(contents[12]), contents[13], contents[14],
+                      int(contents[15]), int(contents[16]), int(contents[17]),
+                      int(contents[18]),
+                      datetime.strptime(contents[19], '%m/%d/%y').toordinal(),
+                      int(contents[20]), int(contents[21]),
+                      datetime.strptime(contents[22], '%m/%d/%y').toordinal(),
+                      int(contents[23]), int(contents[24]),
+                      datetime.strptime(contents[25], '%m/%d/%y').toordinal(),
+                      int(contents[26]), int(contents[27]),
+                      datetime.strptime(contents[28], '%m/%d/%y').toordinal(),
+                      int(contents[29]), contents[30], int(contents[31]))
+
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_incident \
+                         VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
+                                 %d, '%s', '%s', %f, '%s', '%s', %d, %d, %d, \
+                                 %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
+                                 %d, '%s', %d, '%s', %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_incident \
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                 ?, ?)"
+
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+
+        return False
 
     def _cancel(self, button):
         """
