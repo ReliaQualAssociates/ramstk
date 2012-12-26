@@ -227,6 +227,40 @@ def none_to_string(string):
     else:
         return(string)
 
+def string_to_boolean(string):
+    """ Converts string representations of TRUE/FALSE to an integer value for
+        use in the database.
+
+        Keyword Arguments:
+        string -- the string to convert.
+    """
+
+    result = 0
+
+    string = str(string)
+
+    if(string.lower() == 'true' or string.lower() == 'yes' or
+       string.lower() == 't' or string.lower() == 'y'):
+        result = 1
+
+    return(result)
+
+def date_to_ordinal(date):
+    """ Converts date strings to oridinal dates for use in the database.
+
+        Keyword Arguments:
+        date -- the date string to convert.
+    """
+
+    from datetime import datetime
+
+    try:
+        results = datetime.strptime(str(date), '%m/%d/%y').toordinal()
+    except ValueError:
+        results = datetime.strptime('01/01/70', '%m/%d/%y').toordinal()
+
+    return(results)
+
 def dir_exists(_directory_):
     """
     Checks for the existence of a directory.
@@ -259,7 +293,6 @@ def file_exists(_file_):
         return False
 
 def create_project(widget, app):
-
     """ Creates a new RelKit Project.
 
         Keyword Arguments:

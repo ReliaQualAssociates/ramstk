@@ -36,6 +36,7 @@ except ImportError:
 
 # Import other RelKit modules.
 import configuration as _conf
+import utilities as _util
 import widgets as _widg
 
 # Add localization support.
@@ -1140,7 +1141,7 @@ class ImportIncident:
         self.assistant.connect('close', self._cancel)
 
 # Initialize some variables.
-        self._file_index = [-1] * 32
+        self._file_index = [-1] * 40
 
 # Create the introduction page.
         fixed = gtk.Fixed()
@@ -1222,7 +1223,9 @@ class ImportIncident:
                       "Reviewed By", "Reviewed Date", "Approved",
                       "Approved By", "Approved Date", "Closed",
                       "Closed By", "Closed Date", "Life Cycle", "Analysis",
-                      "Accepted"]
+                      "Accepted", "Part Number", "Age at Incident", "Failure",
+                      "Suspension", "No Fault Found", "Out of Calibration",
+                      "Initial Installation", "Interval Censored"]
 
         for i in range(len(_db_fields)):
             model.append([i, _db_fields[i], ""])
@@ -1332,10 +1335,11 @@ class ImportIncident:
         return(_headers, _contents)
 
     def _import(self, button):
-        """ Method to perform the import from an external file to the database.
+        """
+        Method to perform the import from an external file to the database.
 
-            Keyword Arguments:
-            button -- the gtk.Button widget that called this method.
+        Keyword Arguments:
+        button -- the gtk.Button widget that called this method.
         """
 
         from datetime import datetime
@@ -1343,30 +1347,58 @@ class ImportIncident:
         model = self.tvwFileFields.get_model()
         row = model.get_iter_root()
 
-        for i in range(len(self._file_contents)):
+        # Find the number ofexisting incidents.
+        if(_conf.BACKEND == 'mysql'):
+            query = "SELECT COUNT(*) FROM tbl_incident"
+        elif(_conf.BACKEND == 'sqlite3'):
+            query = "SELECT COALESCE(MAX(fld_incident_id)+1, 0) FROM tbl_incident"
+
+        num_incidents = self._app.DB.execute_query(query,
+                                                   None,
+                                                   self._app.ProgCnx)
+
+        for i in range(len(self._file_contents) - 1):
             contents = []
 
             for j in range(len(self._file_index)):
                 if self._file_index[j] == -1:
                     contents.append(0)
                 else:
-                    contents.append(self._file_contents[i][self._file_index[j]])
-            print contents
+                    try:
+                        contents.append(self._file_contents[i][self._file_index[j]])
+                    except IndexError:
+                        contents.append(0)
+
+            # Convert all the date fields to ordinal dates.
+            contents[19] = _util.date_to_ordinal(contents[19])
+            contents[22] = _util.date_to_ordinal(contents[22])
+            contents[25] = _util.date_to_ordinal(contents[25])
+            contents[28] = _util.date_to_ordinal(contents[28])
+
+            # Convert all the True/False fields to integer.
+            contents[34] = _util.string_to_boolean(contents[34])
+            contents[35] = _util.string_to_boolean(contents[35])
+            contents[36] = _util.string_to_boolean(contents[36])
+            contents[37] = _util.string_to_boolean(contents[37])
+            contents[38] = _util.string_to_boolean(contents[38])
+            contents[39] = _util.string_to_boolean(contents[39])
+            contents[40] = _util.string_to_boolean(contents[40])
+            contents[41] = _util.string_to_boolean(contents[41])
+
+            if(contents[0] == 0):
+                contents[0] = num_incidents[0][0] + i + 1
+
             values = (int(contents[0]), int(contents[1]), int(contents[2]),
                       int(contents[3]), contents[4], contents[5],
                       int(contents[6]), contents[7], contents[8],
                       int(contents[9]), contents[10], contents[11],
                       float(contents[12]), contents[13], contents[14],
                       int(contents[15]), int(contents[16]), int(contents[17]),
-                      int(contents[18]),
-                      datetime.strptime(contents[19], '%m/%d/%y').toordinal(),
-                      int(contents[20]), int(contents[21]),
-                      datetime.strptime(contents[22], '%m/%d/%y').toordinal(),
-                      int(contents[23]), int(contents[24]),
-                      datetime.strptime(contents[25], '%m/%d/%y').toordinal(),
-                      int(contents[26]), int(contents[27]),
-                      datetime.strptime(contents[28], '%m/%d/%y').toordinal(),
-                      int(contents[29]), contents[30], int(contents[31]))
+                      int(contents[18]), contents[19], int(contents[20]),
+                      int(contents[21]), contents[22], int(contents[23]),
+                      int(contents[24]), contents[25], int(contents[26]),
+                      int(contents[27]), contents[28], int(contents[29]),
+                      contents[30], int(contents[31]))
 
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_incident \
@@ -1380,10 +1412,29 @@ class ImportIncident:
                                  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                  ?, ?)"
 
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
+            #results = self._app.DB.execute_query(query,
+            #                                     values,
+            #                                     self._app.ProgCnx,
+            #                                     commit=True)
+
+            values = (str(contents[1]), str(contents[32]), float(contents[33]),
+                      int(contents[34]), int(contents[35]), int(contents[36]),
+                      int(contents[37]), int(contents[38]), int(contents[39]),
+                      int(contents[40]), int(contents[41]),
+                      float(contents[42]))
+
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_incident_detail \
+                         VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
+                                 %d, %d, %f)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_incident_detail \
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+            #results = self._app.DB.execute_query(query,
+            #                                     values,
+            #                                     self._app.ProgCnx,
+            #                                     commit=True)
 
         return False
 
