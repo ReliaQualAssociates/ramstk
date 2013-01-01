@@ -174,18 +174,18 @@ def make_dialog(_title_, _parent_=None,
 def make_entry(_width_=200, _height_=25,
                editable=True, bold=False,
                _color_='#BBDDFF'):
+    """
+    Utility function to create Entry widgets.
 
-    """ Utility function to create Entry widgets.
-
-        Keyword Arguments:
-        width    -- width of the Entry widget.  Default is 200.
-        eight    -- height of the Entry widget.  Default is 25.
-        editable -- boolean indicating whether Entry should be editable.
-                    Defaults to True.
-        bold     -- boolean indicating whether text should be bold.  Defaults
-                    to False.
-        _color_  -- the hexidecimal color to set the foreground.  Defaults to
-                    #FFF (light grey).
+    Keyword Arguments:
+    width    -- width of the Entry widget.  Default is 200.
+    eight    -- height of the Entry widget.  Default is 25.
+    editable -- boolean indicating whether Entry should be editable.
+                Defaults to True.
+    bold     -- boolean indicating whether text should be bold.  Defaults
+                to False.
+    _color_  -- the hexidecimal color to set the foreground.  Defaults to
+                #FFF (light grey).
     """
 
     entry = gtk.Entry()

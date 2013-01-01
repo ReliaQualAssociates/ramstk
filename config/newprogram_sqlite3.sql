@@ -51,6 +51,38 @@ CREATE TABLE "tbl_anomaly_management" (
      PRIMARY KEY("fld_software_id", "fld_phase_id", "fld_question_id")
 );
 
+CREATE TABLE "tbl_dataset" (
+    "fld_dataset_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_assembly_id" INTEGER DEFAULT(0),
+    "fld_description" VARCHAR(512),
+    "fld_type" INTEGER DEFAULT(0),
+    "fld_distribution_id" INTEGER DEFAULT(0),
+    "fld_scale" FLOAT DEFAULT(0),
+    "fld_shape" FLOAT DEFAULT(0),
+    "fld_location" FLOAT DEFAULT(0),
+    "fld_variance_1" FLOAT DEFAULT(0),
+    "fld_variance_2" FLOAT DEFAULT(0),
+    "fld_variance_3" FLOAT DEFAULT(0),
+    "fld_covariance_1" FLOAT DEFAULT(0),
+    "fld_covariance_2" FLOAT DEFAULT(0),
+    "fld_covariance_3" FLOAT DEFAULT(0),
+    "fld_confidence" FLOAT DEFAULT(50),
+    "fld_confidence_type" INTEGER DEFAULT(0)
+);
+
+CREATE TABLE "tbl_survival_data" (
+    "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_left_interval" FLOAT DEFAULT(0),
+    "fld_right_interval" FLOAT DEFAULT(0),
+    "fld_status" INTEGER DEFAULT(0),
+    "fld_quantity" INTEGER DEFAULT(1),
+    "fld_unit" VARCHAR(256),
+    "fld_part_num" VARCHAR(128),
+    "fld_market" VARCHAR(32),
+    "fld_model" VARCHAR(32),
+    "fld_tbf" FLOAT DEFAULT(0)
+);
+
 CREATE TABLE "tbl_fmeca" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
@@ -139,22 +171,22 @@ CREATE TABLE "tbl_incident" (
     "fld_test_found" VARCHAR(512),
     "fld_test_case" VARCHAR(512),
     "fld_execution_time" FLOAT DEFAULT(0),
-    "fld_effect" VARCHAR(512),
-    "fld_recommended_solution" VARCHAR(1024),
+    "fld_unit" VARCHAR(256),
+    "fld_cost" FLOAT DEFAULT(0),
     "fld_incident_age" INTEGER DEFAULT(0),
     "fld_hardware_id" INTEGER DEFAULT(-1),
     "fld_software_id" INTEGER DEFAULT(-1),
     "fld_request_by" VARCHAR(256),
-    "fld_request_date" datetime,
+    "fld_request_date" INTEGER,
     "fld_reviewed" TINYINT DEFAULT(0),
     "fld_reviewed_by" VARCHAR(256),
-    "fld_reviewed_date" datetime,
+    "fld_reviewed_date" INTEGER,
     "fld_approved" TINYINT DEFAULT(0),
     "fld_approved_by" VARCHAR(256),
-    "fld_approved_date" datetime,
+    "fld_approved_date" INTEGER,
     "fld_complete" TINYINT DEFAULT(0),
     "fld_complete_by" VARCHAR(256),
-    "fld_complete_date" datetime,
+    "fld_complete_date" INTEGER,
     "fld_life_cycle" INTEGER DEFAULT(0),
     "fld_analysis" BLOB,
     "fld_accepted" TINYINT DEFAULT(0)

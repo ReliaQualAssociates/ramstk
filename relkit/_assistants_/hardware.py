@@ -311,12 +311,39 @@ class ImportHardware:
             _temp = []
             for j in range(len(self._file_index)):
                 if self._file_index[j] == -1:
-                   _temp.append(0)
+                   _temp.append('')
                 else:
                     try:
                         _temp.append(self._file_contents[i][self._file_index[j]].rstrip('\n'))
                     except IndexError:
-                        _temp.append(0)
+                        _temp.append('')
+
+            # Convert missing integer values to correct default value.
+            for i in [0, 1, 3, 5, 11, 22, 23, 24, 43, 60,
+                      63, 67, 72, 75, 78, 79, 82, 89]:
+                _temp[i] = self._missing_to_default(_temp[i], 0)
+
+            for i in [10, 16, 35, 42, 56, 68, 85]:
+                _temp[i] = self._missing_to_default(_temp[i], 1)
+
+            _temp[87] = self._missing_to_default(_temp[87], 2012)
+
+            # Convert missing float values to correct default value.
+            for i in [2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+                      34, 39, 40, 44, 46, 48, 49, 50, 51, 52, 54, 55, 65, 66,
+                      73, 74, 76, 83, 84]:
+                _temp[i] = self._missing_to_default(_temp[i], 0.0)
+
+            for i in [7, 8, 53, 57, 69, 70, 90]:
+                _temp[i] = self._missing_to_default(_temp[i], 1.0)
+
+            for i in [80, 81]:
+                _temp[i] = self._missing_to_default(_temp[i], 30.0)
+
+            _temp[37] = self._missing_to_default(_temp[37], 50.0)
+
+            for i in [19, 20, 45]:
+                _temp[i] = self._missing_to_default(_temp[i], 100.0)
 
             contents.append(_temp)
 
@@ -570,11 +597,20 @@ class ImportHardware:
                 except ValueError:
                 # If there is a problem with the input data, don't import the
                 # record.
-                    pass
+                    self._app.import_log.error("Failed to import record: %d" % contents[i][1])
 
             j += 1
 
+        self._app.HARDWARE.load_tree()
+
         return False
+
+    def _missing_to_default(self, field, default_value):
+
+        if(field == ''):
+            field = default_value
+
+        return(field)
 
     def _cancel(self, button):
         """

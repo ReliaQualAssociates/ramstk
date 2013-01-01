@@ -1131,6 +1131,12 @@ class AddIncident:
 class ImportIncident:
 
     def __init__(self, button, app):
+        """ Method to initialize the Incident Import Assistant.
+
+            Keyword Arguments:
+            button -- the gtk.Button widget that called this method.
+            app    -- the RelKit application.
+        """
 
         self._app = app
 
@@ -1141,7 +1147,7 @@ class ImportIncident:
         self.assistant.connect('close', self._cancel)
 
 # Initialize some variables.
-        self._file_index = [-1] * 40
+        self._file_index = [-1] * 76
 
 # Create the introduction page.
         fixed = gtk.Fixed()
@@ -1153,7 +1159,7 @@ class ImportIncident:
         self.assistant.set_page_title(fixed, _("Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-# Create the age to map input file fields to database fields.
+# Create the gtk.TreeView to map input file fields to database fields.
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_STRING)
         self.tvwFileFields = gtk.TreeView(model)
@@ -1217,7 +1223,7 @@ class ImportIncident:
                       "Incident Type", "Short Description", "Long Description",
                       "Criticality", "Detection Method", "Remarks", "Status",
                       "Found During Test", "Found During Test Case",
-                      "Execution Time", "Effect", "Recommended Solution",
+                      "Execution Time", "Affected Unit", "Incident Cost",
                       "Incident Age", "Hardware ID", "Software ID",
                       "Requested By", "Request Date", "Reviewed",
                       "Reviewed By", "Reviewed Date", "Approved",
@@ -1347,7 +1353,7 @@ class ImportIncident:
         model = self.tvwFileFields.get_model()
         row = model.get_iter_root()
 
-        # Find the number ofexisting incidents.
+        # Find the number of 6existing incidents.
         if(_conf.BACKEND == 'mysql'):
             query = "SELECT COUNT(*) FROM tbl_incident"
         elif(_conf.BACKEND == 'sqlite3'):
@@ -1362,12 +1368,12 @@ class ImportIncident:
 
             for j in range(len(self._file_index)):
                 if self._file_index[j] == -1:
-                    contents.append(0)
+                    contents.append('')
                 else:
                     try:
                         contents.append(self._file_contents[i][self._file_index[j]])
                     except IndexError:
-                        contents.append(0)
+                        contents.append('')
 
             # Convert all the date fields to ordinal dates.
             contents[19] = _util.date_to_ordinal(contents[19])
@@ -1376,6 +1382,7 @@ class ImportIncident:
             contents[28] = _util.date_to_ordinal(contents[28])
 
             # Convert all the True/False fields to integer.
+            contents[31] = _util.string_to_boolean(contents[31])
             contents[34] = _util.string_to_boolean(contents[34])
             contents[35] = _util.string_to_boolean(contents[35])
             contents[36] = _util.string_to_boolean(contents[36])
@@ -1385,56 +1392,375 @@ class ImportIncident:
             contents[40] = _util.string_to_boolean(contents[40])
             contents[41] = _util.string_to_boolean(contents[41])
 
-            if(contents[0] == 0):
-                contents[0] = num_incidents[0][0] + i + 1
+            # Convert missing values to correct default value.
+            contents[0] = self._missing_to_default(contents[0], 0)
+            contents[2] = self._missing_to_default(contents[2], 0)
+            contents[3] = self._missing_to_default(contents[3], 0)
+            contents[6] = self._missing_to_default(contents[6], 1)
+            contents[9] = self._missing_to_default(contents[9], 0)
+            contents[12] = self._missing_to_default(contents[12], 0.0)
+            contents[14] = self._missing_to_default(contents[14], 0.0)
+            contents[15] = self._missing_to_default(contents[15], 0)
+            contents[16] = self._missing_to_default(contents[16], -1)
+            contents[17] = self._missing_to_default(contents[17], -1)
+            contents[18] = self._missing_to_default(contents[18], 0)
+            contents[20] = self._missing_to_default(contents[20], 0)
+            contents[21] = self._missing_to_default(contents[21], 0)
+            contents[23] = self._missing_to_default(contents[23], 0)
+            contents[24] = self._missing_to_default(contents[24], 0)
+            contents[26] = self._missing_to_default(contents[26], 0)
+            contents[27] = self._missing_to_default(contents[27], 0)
+            contents[28] = self._missing_to_default(contents[28], 0)
+            contents[29] = self._missing_to_default(contents[29], 0)
+            contents[42] = self._missing_to_default(contents[42], 0.0)
 
-            values = (int(contents[0]), int(contents[1]), int(contents[2]),
-                      int(contents[3]), contents[4], contents[5],
-                      int(contents[6]), contents[7], contents[8],
-                      int(contents[9]), contents[10], contents[11],
-                      float(contents[12]), contents[13], contents[14],
-                      int(contents[15]), int(contents[16]), int(contents[17]),
-                      int(contents[18]), contents[19], int(contents[20]),
-                      int(contents[21]), contents[22], int(contents[23]),
-                      int(contents[24]), contents[25], int(contents[26]),
-                      int(contents[27]), contents[28], int(contents[29]),
-                      contents[30], int(contents[31]))
+            if(contents[1] == 0 or contents[1] is None or contents[1] == ''):
+                contents[1] = num_incidents[0][0] + i + 1
+
+            try:
+                values = (int(contents[0]), int(contents[1]), int(contents[2]),
+                          int(contents[3]), contents[4], contents[5],
+                          int(contents[6]), contents[7], contents[8],
+                          int(contents[9]), contents[10], contents[11],
+                          float(contents[12]), contents[13],
+                          float(contents[14].lstrip('$')), int(contents[15]),
+                          int(contents[16]), int(contents[17]), contents[18],
+                          int(contents[19]), int(contents[20]),
+                          contents[21], int(contents[22]), int(contents[23]),
+                          contents[24], int(contents[25]), int(contents[26]),
+                          contents[27], int(contents[28]), int(contents[29]),
+                          contents[30], int(contents[31]))
+
+                if(_conf.BACKEND == 'mysql'):
+                    query = "INSERT INTO tbl_incident \
+                             VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
+                                     %d, '%s', '%s', %f, '%s', %f, %d, %d, %d, \
+                                     %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
+                                     %d, '%s', %d, '%s', %d)"
+                elif(_conf.BACKEND == 'sqlite3'):
+                    query = "INSERT INTO tbl_incident \
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                     ?, ?)"
+
+                results = self._app.DB.execute_query(query,
+                                                     values,
+                                                     self._app.ProgCnx,
+                                                     commit=True)
+
+            except ValueError:
+                self._app.import_log.error("Failed to import record %d into tbl_incident" % contents[1])
+                #self._app.import_log.error(contents)
+
+            try:
+                values = (str(contents[1]), str(contents[32]),
+                          float(contents[33]), int(contents[34]),
+                          int(contents[35]), int(contents[36]),
+                          int(contents[37]), int(contents[38]),
+                          int(contents[39]), int(contents[40]),
+                          int(contents[41]), float(contents[42]), 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+                if(_conf.BACKEND == 'mysql'):
+                    query = "INSERT INTO tbl_incident_detail \
+                             VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
+                                     %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
+                                     %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                                     %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                                     %d, %d, %d, %d, %d)"
+                elif(_conf.BACKEND == 'sqlite3'):
+                    query = "INSERT INTO tbl_incident_detail \
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
+                                     ?, ?, ?, ?, ?)"
+
+                results = self._app.DB.execute_query(query,
+                                                     values,
+                                                     self._app.ProgCnx,
+                                                     commit=True)
+
+            except ValueError:
+                self._app.import_log.error("Failed to import record %d into tbl_incident_detail" % contents[1])
+
+        # Load the INCIDENT treeview with the newly imported records.
+        values = (self._app.REVISION.revision_id, )
+        if(_conf.BACKEND == 'mysql'):
+            query = "SELECT * FROM tbl_incident\
+                     WHERE fld_revision_id=%d"
+        elif(_conf.BACKEND == 'sqlite3'):
+            query = "SELECT * FROM tbl_incident\
+                     WHERE fld_revision_id=?"
+
+        self._app.INCIDENT.load_tree(query, values)
+
+        return False
+
+    def _missing_to_default(self, field, default_value):
+
+        if(field == ''):
+            field = default_value
+
+        return(field)
+
+    def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        self.assistant.destroy()
+
+class CreateDataSet:
+
+    def __init__(self, button, app):
+        """ Method to initialize the Incident Import Assistant.
+
+            Keyword Arguments:
+            button -- the gtk.Button widget that called this method.
+            app    -- the RelKit application.
+        """
+
+        self._app = app
+
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_("RelKit Survival Data Set Creation Assistant"))
+        self.assistant.connect('apply', self._create)
+        self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
+
+# Create the introduction page.
+        fixed = gtk.Fixed()
+        _text_ = _("This is the RelKit survival data set assistant.  It will help you create a data set for survival (Weibull) analysis from the Program Incidents.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_complete(fixed, True)
+
+# Create a page to select where data set should be saved.
+        fixed = gtk.Fixed()
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+        self.optDatabase = gtk.RadioButton(label="Save Data Set to Database")
+        self.optFile = gtk.RadioButton(group=self.optDatabase,
+                                       label="Save Data Set to File")
+
+        fixed.put(self.optDatabase, 5, 5)
+        fixed.put(self.optFile, 5, 35)
+
+        self.assistant.append_page(frame)
+        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(frame,
+                                      _("Select Where to Save Data Set"))
+        self.assistant.set_page_complete(frame, True)
+
+# Create a page to select where data set should be saved.
+        fixed = gtk.Fixed()
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+        self.txtDescription = _widg.make_entry()
+        self.txtConfidence = _widg.make_entry(_width_=50)
+
+        label = _widg.make_label("Data Set Description:")
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtDescription, 205, 5)
+
+        label = _widg.make_label("Analysis Confidence (%):")
+        fixed.put(label, 5, 35)
+        fixed.put(self.txtConfidence, 205, 35)
+
+        self.assistant.append_page(frame)
+        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(frame,
+                                      _("Describe the Data Set"))
+        self.assistant.set_page_complete(frame, True)
+
+# Create the page to apply the import criteria.
+        fixed = gtk.Fixed()
+        _text_ = _("Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed,
+                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(fixed, _("Create Data Set"))
+        self.assistant.set_page_complete(fixed, True)
+
+        self.assistant.show_all()
+
+    def _create(self, button):
+        """
+        Method to create the desired data set.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        _parts = dict()
+        _data_set = []
+
+        # Select everything from the incident detail table in the Program
+        # database.
+        #   Index       Field
+        #     0      Incident ID
+        #     1      Part Number
+        #     2      Age at Incident
+        #     3      Failure
+        #     4      Suspension
+        #     5      CND/NFF
+        #     6      OCC
+        #     7      Initial Installation
+        #     8      Interval Censored
+        query = "SELECT * FROM tbl_incident_detail"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        # Create a dictionary using the incident id as the key and the
+        # remaining columns in a list as the value.
+        n_parts = len(results)
+        for i in range(n_parts):
+            _parts[results[i][0]] = results[i][1:9]
+
+        # Create a list of lists.
+        #    0.0 Unit
+        #    0.1.0 Part Number
+        #    0.1.1 Failure Time
+        #    0.1.2 Failure
+        #    0.1.3 Suspension
+        #    0.1.4 CND/NFF
+        #    0.1.5 OCC
+        #    0.1.6 Initial Installation
+        #    0.1.7 Interval Censored
+        model = self._app.INCIDENT.model
+        row = model.get_iter_root()
+
+        while row is not None:
+            _temp = []
+            _temp.append(model.get_value(row, 13))
+            _temp.append(_parts[model.get_value(row, 1)][0:8])
+            _data_set.append(_temp)
+            row = model.iter_next(row)
+
+        # Sort the data set by unit first, then age at time of failure.
+        _data_set.sort(key=lambda x:(str(x[0]), float(x[1][1])))
+
+        # Add a new dataset.
+        _confidence = float(self.txtConfidence.get_text())
+        if(self.optDatabase.get_active()):
+            query = "INSERT INTO tbl_dataset (fld_assembly_id, \
+                                              fld_description, \
+                                              fld_confidence) \
+                     VALUES (%d, '%s', %f)" % \
+                     (self._app.ASSEMBLY.assembly_id,
+                      self.txtDescription.get_text(), _confidence)
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
 
             if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_incident \
-                         VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
-                                 %d, '%s', '%s', %f, '%s', '%s', %d, %d, %d, \
-                                 %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
-                                 %d, '%s', %d, '%s', %d)"
+                query = "SELECT LAST_INSERT_ID()"
             elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_incident \
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                 ?, ?)"
+                query = "SELECT seq \
+                         FROM sqlite_sequence \
+                         WHERE name='tbl_dataset'"
 
-            #results = self._app.DB.execute_query(query,
-            #                                     values,
-            #                                     self._app.ProgCnx,
-            #                                     commit=True)
+            dataset_id = self._app.DB.execute_query(query,
+                                                    None,
+                                                    self._app.ProgCnx)
+            dataset_id = dataset_id[0][0]
+        else:
+            dialog = gtk.FileChooserDialog(_("RelKit: Save Data Set to File ..."),
+                                           None,
+                                           gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                           (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                            gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+            dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+            response = dialog.run()
+            if(response == gtk.RESPONSE_ACCEPT):
+                _filename = dialog.get_filename()
 
-            values = (str(contents[1]), str(contents[32]), float(contents[33]),
-                      int(contents[34]), int(contents[35]), int(contents[36]),
-                      int(contents[37]), int(contents[38]), int(contents[39]),
-                      int(contents[40]), int(contents[41]),
-                      float(contents[42]))
+            dialog.destroy()
 
+            dataset_id = 0
+
+            f = open(_filename, 'w')
+            f.write("Data Set Description: " + self.txtDescription.get_text() + "\n")
+            f.write("\n")
+            f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\n")
+
+        _status = _data_set[0][1][3] * -1 + 1
+        _tbf = float(_data_set[0][1][1])
+        values = (dataset_id, 0.0, float(_data_set[0][1][1]),
+                  int(_status), 1, str(_data_set[0][0]),
+                  str(_data_set[0][1][0]), '', '', float(_tbf))
+
+        # Insert the first data set record.
+        if(self.optDatabase.get_active()):
             if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_incident_detail \
-                         VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
-                                 %d, %d, %f)"
+                query = "INSERT INTO tbl_survival_data \
+                         VALUES (%d, %f, %f, %d, %d, '%s', '%s', '%s', '%s', \
+                                 %f)"
             elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_incident_detail \
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                query = "INSERT INTO tbl_survival_data \
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-            #results = self._app.DB.execute_query(query,
-            #                                     values,
-            #                                     self._app.ProgCnx,
-            #                                     commit=True)
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+        else:
+            f.write(str(dataset_id) + '\t0.0' + '\t' +
+                    str(_data_set[0][1][1]) + '\t' + str(_status) + '\t1\t' +
+                    str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
+                    '\t ' + '\t ' + '\t' + str(_tbf) + '\n')
+
+        _unit = _data_set[0][0]
+        for i in range(1, len(_data_set)):
+            _status = _data_set[i][1][3] * -1 + 1
+            if(_data_set[i][0] == _unit):
+                if(_data_set[i][1][1] != _data_set[i - 1][1][1]):
+                    _left = _data_set[i - 1][1][1]
+            else:
+                _left = 0
+
+            _tbf = float(_data_set[i][1][1]) - float(_left)
+
+            if(self.optDatabase.get_active()):
+                values = (dataset_id, float(_left),
+                          float(_data_set[i][1][1]), int(_status), 1,
+                          str(_data_set[i][0]), str(_data_set[i][1][0]),
+                          '', '', float(_tbf))
+                results = self._app.DB.execute_query(query,
+                                                     values,
+                                                     self._app.ProgCnx,
+                                                     commit=True)
+            else:
+                f.write(str(dataset_id) + '\t' + str(_left) + '\t' +
+                        str(_data_set[i][1][1]) + '\t' + str(_status) +
+                        '\t1\t' + str(_data_set[i][0]) + '\t' +
+                        str(_data_set[i][1][0]) + '\t ' + '\t ' + '\t' +
+                        str(_tbf) + '\n')
+
+            _unit = _data_set[i][0]
+
+        try:
+            f.close()
+        except UnboundLocalError:
+            pass
 
         return False
 

@@ -79,8 +79,9 @@ class RelKit:
         # information for RelKit developers.  The second is to log errors
         # for the user.  The user can use these errors to help find problems
         # with their inputs and sich.
-        __user_log = _conf.LOG_DIR + '/reliafree_user.log'
-        __error_log = _conf.LOG_DIR + '/reliafree_error.log'
+        __user_log = _conf.LOG_DIR + '/relkit_user.log'
+        __error_log = _conf.LOG_DIR + '/relkit_error.log'
+        __import_log = _conf.LOG_DIR + '/relkit_import.log'
 
         if(not _util.dir_exists(_conf.LOG_DIR)):
             os.makedirs(_conf.LOG_DIR)
@@ -89,11 +90,15 @@ class RelKit:
             os.remove(__user_log)
         if(_util.file_exists(__error_log)):
             os.remove(__error_log)
+        if(_util.file_exists(__import_log)):
+            os.remove(__import_log)
 
         self.debug_log = _util.create_logger("RelKit.debug", logging.DEBUG,
-                                        __error_log)
+                                             __error_log)
         self.user_log = _util.create_logger("RelKit.user", logging.WARNING,
                                             __user_log)
+        self.import_log = _util.create_logger("RelKit.import", logging.WARNING,
+                                              __import_log)
 
         self.LOADED = False
         self.partlist = {}

@@ -161,7 +161,7 @@ class Incident:
 
         toolbar = gtk.Toolbar()
 
-        # Add item button.
+# Add item button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -171,7 +171,7 @@ class Incident:
         button.set_tooltip_text(_("Adds a component to the selected field incident."))
         toolbar.insert(button, 0)
 
-        # Remove item button.
+# Remove item button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -192,7 +192,7 @@ class Incident:
         toolbar.insert(button, 2)
 
 # Create a filter button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/filter.png')
         button.set_icon_widget(image)
@@ -202,7 +202,7 @@ class Incident:
         toolbar.insert(button, 3)
 
 # Create an import button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
         button.set_icon_widget(image)
@@ -210,6 +210,26 @@ class Incident:
         button.connect('clicked', ImportIncident, self._app)
         button.set_tooltip_text(_("Launches the Program Incident import assistant."))
         toolbar.insert(button, 4)
+
+# Create an export button.
+        button = gtk.ToolButton()
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
+        button.set_icon_widget(image)
+        button.set_name('Export')
+        #button.connect('clicked', ImportIncident, self._app)
+        button.set_tooltip_text(_("Launches the Program Incident export assistant."))
+        toolbar.insert(button, 5)
+
+# Create a dat set creation button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/wizard.png')
+        button.set_icon_widget(image)
+        button.set_name('Data Set')
+        button.connect('clicked', CreateDataSet, self._app)
+        button.set_tooltip_text(_("Launches the Data Set creation assistant."))
+        toolbar.insert(button, 6)
 
         toolbar.show()
 
@@ -469,14 +489,35 @@ class Incident:
         self.txtLongDescription.set_text(self.model.get_value(self.selected_row, 5))
         self.txtRemarks.set_text(self.model.get_value(self.selected_row, 8))
 
+        # Set dates.  If there is no date or the date is invalid, set it to
+        # January 1, 1970 as the default.
         dt = self.model.get_value(self.selected_row, 19)
-        if(dt is not None and dt != ''):
+        if(dt is not None and dt != '' and dt >= 1):
             dt = datetime.fromordinal(int(dt))
             self.txtRequestDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        else:
+            self.txtRequestDate.set_text('')
+
+        dt = self.model.get_value(self.selected_row, 22)
+        if(dt is not None and dt != '' and dt >= 1):
+            dt = datetime.fromordinal(int(dt))
+            self.txtReviewDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        else:
+            self.txtReviewDate.set_text('')
+
+        dt = self.model.get_value(self.selected_row, 25)
+        if(dt is not None and dt != '' and dt >= 1):
+            dt = datetime.fromordinal(int(dt))
+            self.txtApproveDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        else:
+            self.txtApproveDate.set_text('')
+
         dt = self.model.get_value(self.selected_row, 28)
-        if(dt is not None and dt != ''):
+        if(dt is not None and dt != '' and dt >= 1):
             dt = datetime.fromordinal(int(dt))
             self.txtCloseDate.set_text(str(dt.strftime('%Y-%m-%d')))
+        else:
+            self.txtCloseDate.set_text('')
 
         values = (str(self.model.get_value(self.selected_row, 0)),)
 
@@ -623,7 +664,8 @@ class Incident:
         self.txtTest.set_text(self.model.get_value(self.selected_row, 10))
         self.txtTestCase.set_text(self.model.get_value(self.selected_row, 11))
 
-        self.txtAnalysis.set_text(self.model.get_value(self.selected_row, 30))
+        _string = _util.none_to_string(self.model.get_value(self.selected_row, 30))
+        self.txtAnalysis.set_text(_string)
 
         self.cmbReviewBy.set_active(self.model.get_value(self.selected_row, 21))
         self.cmbApproveBy.set_active(self.model.get_value(self.selected_row, 24))
@@ -645,12 +687,12 @@ class Incident:
         the component information associated with a field incident.
         """
 
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_INT,
-                              gobject.TYPE_INT, gobject.TYPE_INT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+                              gobject.TYPE_INT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT)
         self.tvwComponentList.set_model(model)
 
         cell = gtk.CellRendererText()
@@ -661,20 +703,12 @@ class Incident:
         column.set_attributes(cell, text=0)
         self.tvwComponentList.append_column(column)
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn(_("Description"))
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
-        self.tvwComponentList.append_column(column)
-
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 2, model)
         column = gtk.TreeViewColumn(_("Initial\nInstall"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=2)
+        column.set_attributes(cell, active=1)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -682,7 +716,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 3, model)
         column = gtk.TreeViewColumn(_("Failure"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=3)
+        column.set_attributes(cell, active=2)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -690,7 +724,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 4, model)
         column = gtk.TreeViewColumn(_("Suspension"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=4)
+        column.set_attributes(cell, active=3)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -698,7 +732,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 5, model)
         column = gtk.TreeViewColumn(_("OOT\nFailure"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=5)
+        column.set_attributes(cell, active=4)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -706,7 +740,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 6, model)
         column = gtk.TreeViewColumn(_("CND/NFF"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=6)
+        column.set_attributes(cell, active=5)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -714,7 +748,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 7, model)
         column = gtk.TreeViewColumn(_("Interval\nCensored"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=7)
+        column.set_attributes(cell, active=6)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -722,7 +756,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 8, model)
         column = gtk.TreeViewColumn(_("Use\nOperating\nTime"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=8)
+        column.set_attributes(cell, active=7)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererToggle()
@@ -730,7 +764,7 @@ class Incident:
         cell.connect('toggled', self._component_list_edit, None, 9, model)
         column = gtk.TreeViewColumn(_("Use\nCalendar\nTime"))
         column.pack_start(cell, True)
-        column.set_attributes(cell, active=9)
+        column.set_attributes(cell, active=8)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -744,10 +778,9 @@ class Incident:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn(_("Age at\nFailure"))
+        column = gtk.TreeViewColumn(_("Age at Failure"))
         column.pack_start(cell, True)
         column.set_attributes(cell, text=11)
-        column.set_visible(0)
         self.tvwComponentList.append_column(column)
 
         return False
@@ -794,7 +827,6 @@ class Incident:
 
         if self.selected_row is not None:
             self.load_notebook()
-
             return False
         else:
             return True
@@ -1096,11 +1128,18 @@ class Incident:
                    associated with the data from the calling combobox.
         """
 
-        if(_index_ == 9):                   # Incident status
-            _text_ = combo.get_active()
-        elif(_index_ == 16):                # Affected system
-            _text_ = combo.get_active()
-
+        # _index_   Field
+        #   2       Incident ID
+        #   3       Incident Category
+        #   4       Incident Type
+        #   9       Incident status
+        #  16       Hardware ID
+        #  17       Software ID
+        #  18       Request By
+        #  21       Reviewed By
+        #  24       Approved By
+        #  27       Complete By
+        _text_ = combo.get_active()
         self.model.set_value(self.selected_row, _index_, _text_)
 
         return False
@@ -1151,7 +1190,10 @@ class Incident:
         self.n_incidents = len(results)
         self.model.clear()
         for i in range(self.n_incidents):
-            self.model.append(None, results[i])
+            try:
+                self.model.append(None, results[i])
+            except TypeError:
+                pass
 
         root = self.model.get_iter_root()
         if root is not None:
@@ -1172,12 +1214,44 @@ class Incident:
 
         return False
 
+    def _load_component_list(self):
+        """ Method to load the component list. """
+
+        selection = self.treeview.get_selection()
+        (model, row) = selection.get_selected()
+        _incident_id = model.get_value(row, 1)
+
+        model = self.tvwComponentList.get_model()
+        model.clear()
+
+        query="SELECT fld_part_num, fld_initial_installation, \
+                      fld_failure, fld_suspension, fld_occ_fault, \
+                      fld_cnd_nff, fld_interval_censored, fld_use_op_time, \
+                      fld_use_cal_time, fld_ttf, fld_age_at_incident \
+                FROM tbl_incident_detail \
+                WHERE fld_incident_id=%d" % _incident_id
+
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        if(results == '' or not results):
+            self._app.debug_log.error("incident.py: Failed to load component list.")
+            return True
+
+        n_components = len(results)
+        for i in range(n_components):
+            model.append(results[i])
+
+        return False
+
     def load_notebook(self):
         """ Method to load the INCIDENT Object gtk.Notebook. """
 
         if self.selected_row is not None:
             self._field_incident_tab_load()
             self._incident_analysis_tab_load()
+            self._load_component_list()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
