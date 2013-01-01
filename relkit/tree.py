@@ -108,11 +108,14 @@ class TreeWindow(gtk.Window):
         # TODO: Implement Maintenance Policy tree.
         # This is just a placeholder for now.
         # self.scwMaintenance = self._app.MAINTENANCE.create_tree()
-        # TODO: Implement Reliability Growth tree.
+        # TODO: Implement Reliability Testing tree.
         # This is just a placeholder for now.
-        #self.scwRelGrowth = self._app.TESTING.create_tree()
+        #self.scwTesting = self._app.TESTING.create_tree()
         self.scwValidation = self._app.VALIDATION.create_tree()
         self.scwIncidents = self._app.INCIDENT.create_tree()
+        # TODO: Implement Survival Data Set tree.
+        # This is just a placeholder for now.
+        #self.scwDatasets = self._app.DATASET.create_tree()
 
         vbox.pack_start(self.notebook, expand=True, fill=True)
 
