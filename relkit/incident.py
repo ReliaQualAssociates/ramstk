@@ -156,7 +156,7 @@ class Incident:
 
     def _toolbar_create(self):
         """
-        Method to create the toolbar for the VALIDATAION Object work book.
+        Method to create the toolbar for the INCIDENT Object work book.
         """
 
         toolbar = gtk.Toolbar()
