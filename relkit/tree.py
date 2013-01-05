@@ -115,7 +115,7 @@ class TreeWindow(gtk.Window):
         self.scwIncidents = self._app.INCIDENT.create_tree()
         # TODO: Implement Survival Data Set tree.
         # This is just a placeholder for now.
-        #self.scwDatasets = self._app.DATASET.create_tree()
+        self.scwDatasets = self._app.DATASET.create_tree()
 
         vbox.pack_start(self.notebook, expand=True, fill=True)
 
@@ -252,6 +252,19 @@ class TreeWindow(gtk.Window):
 
             _app.INCIDENT.load_tree(query, values)
 
+        # TODO: Add index to RELKIT_MODULES array for data sets.
+        if(_conf.RELIAFREE_MODULES[8] == 1):
+            label = gtk.Label()
+            _heading = _("Survival\nAnalyses")
+            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.show_all()
+            label.set_tooltip_text(_("Displays the program survival data sets."))
+            self.notebook.insert_page(self.scwDatasets, tab_label=label,
+                                      position=-1)
+            _app.DATASET.load_tree()
+
         #if(_conf.RELIAFREE_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
             # and hardware.
@@ -265,6 +278,7 @@ class TreeWindow(gtk.Window):
 
         #if(_conf.RELIAFREE_MODULES[12] == 1):
             # This determines whether FTAs are active.
+
 
         self.notebook.show_all()
 

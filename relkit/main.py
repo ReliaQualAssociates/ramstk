@@ -51,6 +51,7 @@ from incident import Incident
 from assembly import Assembly
 from component import Component
 from software import Software
+from dataset import Dataset
 
 
 def main():
@@ -137,6 +138,7 @@ class RelKit:
         self.INCIDENT = Incident(self)
         self.ASSEMBLY = Assembly(self)
         self.COMPONENT = Component(self)
+        self.DATASET = Dataset(self)
 
         self.winTree = _tree.TreeWindow(self)
         self.winParts = _parts.PartsListWindow(self)
