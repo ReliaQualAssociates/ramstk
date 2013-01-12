@@ -49,6 +49,7 @@ except:
 import gettext
 _ = gettext.gettext
 
+
 class FilterIncident:
 
 # Lists of search criteria to use for the various gtk.Combo widgets.
@@ -1700,23 +1701,23 @@ class CreateDataSet:
             f = open(_filename, 'w')
             f.write("Data Set Description: " + self.txtDescription.get_text() + "\n")
             f.write("\n")
-            f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\n")
+            f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\tMode Type\n")
 
         _status = _data_set[0][1][3] * -1 + 1
         _tbf = float(_data_set[0][1][1])
         values = (dataset_id, 0.0, float(_data_set[0][1][1]),
                   int(_status), 1, str(_data_set[0][0]),
-                  str(_data_set[0][1][0]), '', '', float(_tbf))
+                  str(_data_set[0][1][0]), '', '', float(_tbf), 0)
 
         # Insert the first data set record.
         if(self.optDatabase.get_active()):
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_survival_data \
                          VALUES (%d, %f, %f, %d, %d, '%s', '%s', '%s', '%s', \
-                                 %f)"
+                                 %f, %d)"
             elif(_conf.BACKEND == 'sqlite3'):
                 query = "INSERT INTO tbl_survival_data \
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
             results = self._app.DB.execute_query(query,
                                                  values,
@@ -1726,7 +1727,7 @@ class CreateDataSet:
             f.write(str(dataset_id) + '\t0.0' + '\t' +
                     str(_data_set[0][1][1]) + '\t' + str(_status) + '\t1\t' +
                     str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
-                    '\t ' + '\t ' + '\t' + str(_tbf) + '\n')
+                    '\t ' + '\t ' + '\t' + str(_tbf) + '0' + '\n')
 
         _unit = _data_set[0][0]
         for i in range(1, len(_data_set)):
@@ -1743,7 +1744,7 @@ class CreateDataSet:
                 values = (dataset_id, float(_left),
                           float(_data_set[i][1][1]), int(_status), 1,
                           str(_data_set[i][0]), str(_data_set[i][1][0]),
-                          '', '', float(_tbf))
+                          '', '', float(_tbf), 0)
                 results = self._app.DB.execute_query(query,
                                                      values,
                                                      self._app.ProgCnx,
@@ -1753,7 +1754,7 @@ class CreateDataSet:
                         str(_data_set[i][1][1]) + '\t' + str(_status) +
                         '\t1\t' + str(_data_set[i][0]) + '\t' +
                         str(_data_set[i][1][0]) + '\t ' + '\t ' + '\t' +
-                        str(_tbf) + '\n')
+                        str(_tbf) + '0' + '\n')
 
             _unit = _data_set[i][0]
 

@@ -826,6 +826,16 @@ class TreeWindow(gtk.Window):
                 self._app.INCIDENT.treeview.row_activated(path, column)
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
+        elif(page_num == 7):
+            try:
+                self._app.DATASET.treeview.grab_focus()
+                model = self._app.DATASET.model
+                #self._app.winParts.tvwPartsList.set_model(None)
+                #path = model.get_path(model.get_iter_root())
+                column = self._app.DATASET.treeview.get_column(0)
+                self._app.DATASET.treeview.row_activated(path, column)
+            except:                         # There are no datasets.
+                self._app.DATASET.load_notebook()
 
         return False
 

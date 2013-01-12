@@ -11,6 +11,7 @@ __copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+from os import name
 
 # Modules required for the GUI.
 try:
@@ -34,6 +35,18 @@ except ImportError:
 # Add NLS support.
 import gettext
 _ = gettext.gettext
+
+# Import R library if on a POSIX system.
+if(name == "posix"):
+    try:
+        from rpy2 import robjects
+        from rpy2.robjects import r as R
+        from rpy2.robjects.packages import importr
+        __USE_RPY__ = False
+        __USE_RPY2__ = True
+    except ImportError:
+        __USE_RPY__ = False
+        __USE_RPY2__ = False
 
 # Import other RelKit modules.
 import configuration as _conf
@@ -2077,7 +2090,6 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     return(lambdad)
 
 def calculate_field_ttf(_dates_):
-
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
@@ -2093,3 +2105,71 @@ def calculate_field_ttf(_dates_):
     ttf = _fail - _start
 
     return(ttf.days)
+
+def kaplan_meier(_dataset_, _reltime_, _conf_):
+    """
+    Function to calculate the Kaplan-Meier survival function estimates.
+
+    Keyword Arguments:
+    _dataset_  -- list of tuples where each tuple is in the form of:
+                  (Event Time, Event Status) and event status are:
+                  0 = censored
+                  1 = event at time
+    _reltime_  -- time at which to stop analysis (helps eliminate stretched
+                  plots due to small number of events at high hours).
+    _conf_     -- the confidence level of the KM estimates.
+    """
+
+    # Eliminate zero time failures and failures occurring after any
+    # user-supplied uppre limit.
+    _dataset_ = [i for i in _dataset_ if i[0] > 0.0]
+    _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
+
+    if(__USE_RPY2__):
+        _survival = importr('survival')
+        Surv = R('Surv')
+        survfit = R('survfit')
+
+        _times_ = [x[0] for x in _dataset_]
+        _status_ = [x[1] for x in _dataset_]
+
+        robjects.globalenv["Times"] = robjects.FloatVector(_times_)
+        robjects.globalenv["Status"] = robjects.IntegerVector(_status_)
+        _S_ = Surv("Times", "Status")
+
+        _KM_ = survift(_S_)
+
+    else:
+        from math import sqrt
+        from scipy import stats
+
+        _conf_ = (1.0 - (_conf_ / 100.0)) / 2.0
+        z_norm = stats.norm.ppf(_conf_)
+
+        # Get the total number of events.
+        n = len(_dataset_)
+
+        _Sh_ = 1.0
+        _r_ = 0
+        z = 0.0
+        _KM_ = []
+        for i in range(n - 1):
+            if(_dataset_[i][1] == 1):
+                _r_ = i + 1
+                x = float(n) - float(_r_)
+                y = float(n) - float(_r_) + 1
+                _Si_ = x / y
+                z = z + (1.0 / (x * y))
+                _se_ = sqrt(_Si_ * _Si_ * z)
+                _Sh_ = _Si_ * _Sh_
+                _ll_ = _Sh_ + z_norm * _se_
+                _ul_ = _Sh_ - z_norm * _se_
+                _KM_.append([str(_dataset_[i][0]), i + 1, i + 1, _Si_, _Sh_,
+                             _se_, _ll_, _ul_])
+
+            else:
+                _KM_.append([str(_dataset_[i][0]) + '+', i + 1, '-', '-', _Sh_,
+                             _se_, _ll_, _ul_])
+
+        return(_KM_)
+

@@ -55,19 +55,37 @@ CREATE TABLE "tbl_dataset" (
     "fld_dataset_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_assembly_id" INTEGER DEFAULT(0),
     "fld_description" VARCHAR(512),
-    "fld_type" INTEGER DEFAULT(0),
+    "fld_source" INTEGER DEFAULT(0),
     "fld_distribution_id" INTEGER DEFAULT(0),
+    "fld_confidence" FLOAT DEFAULT(50),
+    "fld_confidence_type" INTEGER DEFAULT(0),
+    "fld_confidence_method" INTEGER DEFAULT(0),
+    "fld_fit_method" INTEGER DEFAULT(0),
+    "fld_rel_time" FLOAT DEFAULT(0),
+    "fld_num_rel_points" INTEGER DEFAULT(0),
+    "fld_num_suspension" INTEGER DEFAULT(0),
+    "fld_num_failures" INTEGER DEFAULT(0),
     "fld_scale" FLOAT DEFAULT(0),
+    "fld_scale_ll" FLOAT DEFAULT(0),
+    "fld_scale_ul" FLOAT DEFAULT(0),
     "fld_shape" FLOAT DEFAULT(0),
+    "fld_shape_ll" FLOAT DEFAULT(0),
+    "fld_shape_ul" FLOAT DEFAULT(0),
     "fld_location" FLOAT DEFAULT(0),
+    "fld_location_ll" FLOAT DEFAULT(0),
+    "fld_location_ul" FLOAT DEFAULT(0),
     "fld_variance_1" FLOAT DEFAULT(0),
     "fld_variance_2" FLOAT DEFAULT(0),
     "fld_variance_3" FLOAT DEFAULT(0),
     "fld_covariance_1" FLOAT DEFAULT(0),
     "fld_covariance_2" FLOAT DEFAULT(0),
     "fld_covariance_3" FLOAT DEFAULT(0),
-    "fld_confidence" FLOAT DEFAULT(50),
-    "fld_confidence_type" INTEGER DEFAULT(0)
+    "fld_mhb" FLOAT DEFAULT(0),
+    "fld_lp" FLOAT DEFAULT(0),
+    "fld_lr" FLOAT DEFAULT(0),
+    "fld_aic" FLOAT DEFAULT(0),
+    "fld_bic" FLOAT DEFAULT(0),
+    "fld_mle" FLOAT DEFAULT(0)
 );
 
 CREATE TABLE "tbl_fmeca" (
@@ -192,6 +210,7 @@ CREATE TABLE "tbl_incident_detail" (
     "fld_use_op_time" INTEGER DEFAULT (0),
     "fld_use_cal_time" INTEGER DEFAULT (0),
     "fld_ttf" REAL DEFAULT (0),
+    "fld_mode_type" INTEGER DEFAULT(0),
     "fld_relevant_1" TINYINT DEFAULT (0),
     "fld_relevant_2" TINYINT DEFAULT (0),
     "fld_relevant_3" TINYINT DEFAULT (0),
@@ -702,7 +721,8 @@ CREATE TABLE "tbl_survival_data" (
     "fld_part_num" VARCHAR(128),
     "fld_market" VARCHAR(32),
     "fld_model" VARCHAR(32),
-    "fld_tbf" FLOAT DEFAULT(0)
+    "fld_tbf" FLOAT DEFAULT(0),
+    "fld_mode_type" INTEGER DEFAULT(0)
 );
 
 CREATE TABLE "tbl_system" (

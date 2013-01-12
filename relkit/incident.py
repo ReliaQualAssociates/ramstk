@@ -64,7 +64,8 @@ class Incident:
                        _("Life Cycle:"), _("Date Opened:"),
                        _("Date Closed:"), _("Incident Age:"),
                        _("Reported By:"), _("Incident Status:"),
-                       _("Accepted"), _("Reviewed")],
+                       _("Accepted"), _("Reviewed"), _("Affected System:"),
+                       _("Affected Software:")],
                       [_("Brief Description:"), _("Long Description:"),
                        _("Closure Remarks:")],
                       [_("Found in Test:"), _("Found in Test Case:"),
@@ -110,6 +111,8 @@ class Incident:
         self.chkAccepted = _widg.make_check_button(_label_=self._fi_tab_labels[0][10])
         self.chkReviewed = _widg.make_check_button(_label_=self._fi_tab_labels[0][11])
 
+        self.cmbHardware = _widg.make_combo()
+        self.cmbSoftware = _widg.make_combo()
         self.cmbCategory = _widg.make_combo()
         self.cmbType = _widg.make_combo()
         self.cmbStatus = _widg.make_combo()
@@ -221,7 +224,7 @@ class Incident:
         button.set_tooltip_text(_("Launches the Program Incident export assistant."))
         toolbar.insert(button, 5)
 
-# Create a dat set creation button.
+# Create a data set creation button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/wizard.png')
@@ -384,6 +387,15 @@ class Incident:
         label = _widg.make_label(self._fi_tab_labels[0][9], 150, 25)
         fixed.put(label, 5, y_pos)
         fixed.put(self.cmbStatus, 155, y_pos)
+        y_pos += 35
+
+        label = _widg.make_label(self._fi_tab_labels[0][12], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.cmbHardware, 155, y_pos)
+
+        label = _widg.make_label(self._fi_tab_labels[0][13], 150, 25)
+        fixed.put(label, 360, y_pos)
+        fixed.put(self.cmbSoftware, 515, y_pos)
 
         fixed.show_all()
 
@@ -698,7 +710,9 @@ class Incident:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn(_("Reference\nDesignator"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Reference\nDesignator"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
         self.tvwComponentList.append_column(column)
@@ -706,7 +720,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 2, model)
-        column = gtk.TreeViewColumn(_("Initial\nInstall"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Initial\nInstall"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=1)
         self.tvwComponentList.append_column(column)
@@ -714,7 +730,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 3, model)
-        column = gtk.TreeViewColumn(_("Failure"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Failure"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=2)
         self.tvwComponentList.append_column(column)
@@ -722,7 +740,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 4, model)
-        column = gtk.TreeViewColumn(_("Suspension"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Suspension"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=3)
         self.tvwComponentList.append_column(column)
@@ -730,7 +750,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 5, model)
-        column = gtk.TreeViewColumn(_("OOT\nFailure"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("OOT\nFailure"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=4)
         self.tvwComponentList.append_column(column)
@@ -738,7 +760,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 6, model)
-        column = gtk.TreeViewColumn(_("CND/NFF"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("CND/NFF"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=5)
         self.tvwComponentList.append_column(column)
@@ -746,7 +770,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 7, model)
-        column = gtk.TreeViewColumn(_("Interval\nCensored"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Interval\nCensored"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=6)
         self.tvwComponentList.append_column(column)
@@ -754,7 +780,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 8, model)
-        column = gtk.TreeViewColumn(_("Use\nOperating\nTime"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Use\nOperating\nTime"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=7)
         self.tvwComponentList.append_column(column)
@@ -762,7 +790,9 @@ class Incident:
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
         cell.connect('toggled', self._component_list_edit, None, 9, model)
-        column = gtk.TreeViewColumn(_("Use\nCalendar\nTime"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Use\nCalendar\nTime"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, active=8)
         self.tvwComponentList.append_column(column)
@@ -770,7 +800,9 @@ class Incident:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn(_("Time to\nFailure"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Time to\nFailure"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=10)
         self.tvwComponentList.append_column(column)
@@ -778,7 +810,9 @@ class Incident:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn(_("Age at Failure"))
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_("Age at\nFailure"))
+        column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=11)
         self.tvwComponentList.append_column(column)
@@ -1160,6 +1194,8 @@ class Incident:
                                                                bg_color,
                                                                fg_color)
         self.treeview.set_enable_tree_lines(True)
+
+        self.treeview.set_tooltip_text(_("Displays a list of Program incidents."))
 
         scrollwindow.add(self.treeview)
         self.model = self.treeview.get_model()

@@ -1,0 +1,290 @@
+<!--
+-*- coding: utf-8 -*-
+
+      dataset_format.xml is part of The RelKit Project
+
+      Copyright 2011-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+# All rights reserved.
+-->
+
+<!-- This file contains information used by the ReliaFree application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Dataset">
+        <column>
+            <defaulttitle>Dataset ID</defaulttitle>
+            <usertitle>Dataset ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Dataset Description</defaulttitle>
+            <usertitle>Dataset Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Dataset Source</defaulttitle>
+            <usertitle>Dataset Source</usertitle>
+            <datatype>gint</datatype>
+            <position>3</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Distribution ID</defaulttitle>
+            <usertitle>Distribution ID</usertitle>
+            <datatype>gint</datatype>
+            <position>4</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence</defaulttitle>
+            <usertitle>Confidence</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence Type</defaulttitle>
+            <usertitle>Confidence Type</usertitle>
+            <datatype>gint</datatype>
+            <position>6</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence Method</defaulttitle>
+            <usertitle>Confidence Method</usertitle>
+            <datatype>gint</datatype>
+            <position>7</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Fit Method</defaulttitle>
+            <usertitle>Fit Method</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability Time</defaulttitle>
+            <usertitle>Reliability Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Reliability Points</defaulttitle>
+            <usertitle>Number of Reliability Points</usertitle>
+            <datatype>gint</datatype>
+            <position>10</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Suspensions</defaulttitle>
+            <usertitle>Number of Suspensions</usertitle>
+            <datatype>gint</datatype>
+            <position>11</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Failures</defaulttitle>
+            <usertitle>Number of Failures</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter</defaulttitle>
+            <usertitle>Scale Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter, Lower Bound</defaulttitle>
+            <usertitle>Scale Parameter, Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter, Upper Bound</defaulttitle>
+            <usertitle>Scale Parameter, Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter</defaulttitle>
+            <usertitle>Shape Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter, Lower Bound</defaulttitle>
+            <usertitle>Shape Parameter, Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>17</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter, Upper Bound</defaulttitle>
+            <usertitle>Shape Parameter, Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Location Parameter</defaulttitle>
+            <usertitle>Location Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Location Parameter, Lower Bound</defaulttitle>
+            <usertitle>Location Parameter, Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Location Parameter, Upper Bound</defaulttitle>
+            <usertitle>Location Parameter, Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>21</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Variance</defaulttitle>
+            <usertitle>Scale Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>22</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Variance</defaulttitle>
+            <usertitle>Shape Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Location Variance</defaulttitle>
+            <usertitle>Location Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>24</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale-Shape Covariance</defaulttitle>
+            <usertitle>Scale-Shape Covariance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale-Location Covariance</defaulttitle>
+            <usertitle>Scale-Location Covariance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape-Location Covariance</defaulttitle>
+            <usertitle>Shape-Location Covariance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>27</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MIL Handbook GOF</defaulttitle>
+            <usertitle>MIL Handbook GOF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>28</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Laplace GOF</defaulttitle>
+            <usertitle>Laplace GOF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Lewis-Robinson GOF</defaulttitle>
+            <usertitle>Lewis-Robinson GOF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>AIC</defaulttitle>
+            <usertitle>AIC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>BIC</defaulttitle>
+            <usertitle>BIC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MLE</defaulttitle>
+            <usertitle>MLE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

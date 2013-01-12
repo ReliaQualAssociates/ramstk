@@ -131,6 +131,8 @@ def read_configuration():
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'softwareformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    formatfile = conf.read_configuration().get('Files', 'datasetformat')
+    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
     # Get color information.
     _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))

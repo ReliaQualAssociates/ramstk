@@ -223,9 +223,10 @@ def make_label(text, width=190, height=25, bold=True):
     """
 
     label = gtk.Label()
-    label.set_markup(text)
+    label.set_markup("<span>" + text + "</span>")
     label.set_line_wrap(True)
-    label.set_alignment(xalign=1.0, yalign=0.5)
+    label.set_alignment(xalign=0.5, yalign=0.5)
+    label.set_justify(gtk.JUSTIFY_CENTER)
     label.props.width_request = width
     label.props.height_request = height
 
@@ -454,15 +455,14 @@ def edit_tree(cell, path, new_text, position, model):
 
 
 def resize_wrap(column, param, cell):
+    """
+    This function dynamically sets the wrap-width property for the
+    gtk.CellRenderers in the gtk.TreeView when the column width is resized.
 
-    """ This function dynamically sets the wrap-width property for the
-        gtk.CellRenderers in the gtk.TreeView when the column width is
-        resized.
-
-        Keyword Arguments:
-        column -- the column being resized.
-        param  -- the triggering parameter (this is a GParamInt object).
-        cell   -- the cell that needs to be resized.
+    Keyword Arguments:
+    column -- the column being resized.
+    param  -- the triggering parameter (this is a GParamInt object).
+    cell   -- the cell that needs to be resized.
     """
 
     # TODO: Adjust the height of the row when the width is adjusted.
@@ -477,3 +477,20 @@ def resize_wrap(column, param, cell):
     cell.set_property('wrap-width', width)
 
     return False
+
+
+def make_column_heading(_heading_=""):
+    """
+    This function creates labels to use for gtk.TreeView column headings.
+
+    Keyword Arguments:
+    _heading_ -- the text to use for the heading.
+    """
+
+    label = gtk.Label()
+    label.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+    label.set_alignment(xalign=0.5, yalign=0.5)
+    label.set_justify(gtk.JUSTIFY_CENTER)
+    label.show_all()
+
+    return(label)
