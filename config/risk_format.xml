@@ -1,17 +1,17 @@
 <!--
 -*- coding: utf-8 -*-
 
-      sia_format.xml is part of The RelKit Project
+      risk_format.xml is part of The RelKit Project
 
-      Copyright (C) 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 All rights reserved. -->
 
 <root>
-    <tree name="SIA">
+    <tree name="Risk">
         <column>
-            <defaulttitle>SIA ID</defaulttitle>
-            <usertitle>SIA ID</usertitle>
+            <defaulttitle>Risk ID</defaulttitle>
+            <usertitle>Risk ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
@@ -28,29 +28,38 @@ All rights reserved. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Failure Intensity</defaulttitle>
-            <usertitle>Failure Intensity</usertitle>
-            <datatype>gfloat</datatype>
-            <position>2</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
             <defaulttitle>Change Description 1</defaulttitle>
             <usertitle>Change Description 1</usertitle>
             <datatype>gchararray</datatype>
             <widget>text</widget>
+            <position>2</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Category 1</defaulttitle>
+            <usertitle>Change Category 1</usertitle>
+            <datatype>gchararray</datatype>
+            <widget>combo</widget>
             <position>3</position>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 1</defaulttitle>
-            <usertitle>Change Factor 1</usertitle>
-            <datatype>gfloat</datatype>
+            <defaulttitle>Change Effort 1</defaulttitle>
+            <usertitle>Change Effort 1</usertitle>
+            <datatype>gint</datatype>
             <position>4</position>
-            <widget>spin</widget>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 1</defaulttitle>
+            <usertitle>Change Cost 1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -58,17 +67,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 2</defaulttitle>
             <usertitle>Change Description 2</usertitle>
             <datatype>gchararray</datatype>
-            <position>5</position>
+            <position>6</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 2</defaulttitle>
-            <usertitle>Change Factor 2</usertitle>
+            <defaulttitle>Change Category 2</defaulttitle>
+            <usertitle>Change Category 2</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 2</defaulttitle>
+            <usertitle>Change Effort 2</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 2</defaulttitle>
+            <usertitle>Change Cost 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>6</position>
-            <widget>spin</widget>
+            <position>9</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -76,17 +103,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 3</defaulttitle>
             <usertitle>Change Description 3</usertitle>
             <datatype>gchararray</datatype>
-            <position>7</position>
+            <position>10</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 3</defaulttitle>
-            <usertitle>Change Factor 3</usertitle>
+            <defaulttitle>Change Category 3</defaulttitle>
+            <usertitle>Change Category 3</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 3</defaulttitle>
+            <usertitle>Change Effort 3</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 3</defaulttitle>
+            <usertitle>Change Cost 3</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
-            <widget>spin</widget>
+            <position>13</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -94,17 +139,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 4</defaulttitle>
             <usertitle>Change Description 4</usertitle>
             <datatype>gchararray</datatype>
-            <position>9</position>
+            <position>14</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 4</defaulttitle>
-            <usertitle>Change Factor 4</usertitle>
+            <defaulttitle>Change Category 4</defaulttitle>
+            <usertitle>Change Category 4</usertitle>
+            <datatype>gchararray</datatype>
+            <position>15</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 4</defaulttitle>
+            <usertitle>Chnage Effort 4</usertitle>
+            <datatype>gint</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 4</defaulttitle>
+            <usertitle>Change Cost 4</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
-            <widget>spin</widget>
+            <position>17</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -112,17 +175,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 5</defaulttitle>
             <usertitle>Change Description 5</usertitle>
             <datatype>gchararray</datatype>
-            <position>11</position>
+            <position>18</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 5</defaulttitle>
-            <usertitle>Change Factor 5</usertitle>
+            <defaulttitle>Change Category 5</defaulttitle>
+            <usertitle>Change Category 5</usertitle>
+            <datatype>gchararray</datatype>
+            <position>19</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 5</defaulttitle>
+            <usertitle>Change Effort 5</usertitle>
+            <datatype>gint</datatype>
+            <widget>text</widget>
+            <position>20</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 5</defaulttitle>
+            <usertitle>Change Cost 5</usertitle>
             <datatype>gfloat</datatype>
-            <position>12</position>
-            <widget>spin</widget>
+            <position>21</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -130,17 +211,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 6</defaulttitle>
             <usertitle>Change Description 6</usertitle>
             <datatype>gchararray</datatype>
-            <position>13</position>
+            <position>22</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 6</defaulttitle>
-            <usertitle>Change Factor 6</usertitle>
+            <defaulttitle>Change Category 6</defaulttitle>
+            <usertitle>Change Category 6</usertitle>
+            <datatype>gchararray</datatype>
+            <position>23</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 6</defaulttitle>
+            <usertitle>Change Effort 6</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 6</defaulttitle>
+            <usertitle>Change Cost 6</usertitle>
             <datatype>gfloat</datatype>
-            <position>14</position>
-            <widget>spin</widget>
+            <position>25</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -148,17 +247,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 7</defaulttitle>
             <usertitle>Change Description 7</usertitle>
             <datatype>gchararray</datatype>
-            <position>15</position></position>
+            <position>26</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 7</defaulttitle>
-            <usertitle>Change Factor 7</usertitle>
+            <defaulttitle>Change Category 7</defaulttitle>
+            <usertitle>Change Category 7</usertitle>
+            <datatype>gchararray</datatype>
+            <position>27</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 7</defaulttitle>
+            <usertitle>Change Effort 7</usertitle>
+            <datatype>gint</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 7</defaulttitle>
+            <usertitle>Change Cost 7</usertitle>
             <datatype>gfloat</datatype>
-            <position>16</position>
-            <widget>spin</widget>
+            <position>29</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -166,17 +283,35 @@ All rights reserved. -->
             <defaulttitle>Change Description 8</defaulttitle>
             <usertitle>Change Description 8</usertitle>
             <datatype>gchararray</datatype>
-            <position>17</position>
+            <position>30</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Change Factor 8</defaulttitle>
-            <usertitle>Change Factor 8</usertitle>
+            <defaulttitle>Change Category 8</defaulttitle>
+            <usertitle>Change Category 8</usertitle>
+            <datatype>gchararray</datatype>
+            <position>31</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Effort 8</defaulttitle>
+            <usertitle>Change Effort 8</usertitle>
+            <datatype>gint</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Change Cost 8</defaulttitle>
+            <usertitle>Change Cost 8</usertitle>
             <datatype>gfloat</datatype>
-            <position>18</position>
-            <widget>spin</widget>
+            <position>33</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -184,7 +319,7 @@ All rights reserved. -->
             <defaulttitle>Function 1</defaulttitle>
             <usertitle>Function 1</usertitle>
             <datatype>gchararray</datatype>
-            <position>19</position>
+            <position>34</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -193,7 +328,7 @@ All rights reserved. -->
             <defaulttitle>Function 2</defaulttitle>
             <usertitle>Function 2</usertitle>
             <datatype>gchararray</datatype>
-            <position>20</position>
+            <position>35</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -202,7 +337,7 @@ All rights reserved. -->
             <defaulttitle>Function 3</defaulttitle>
             <usertitle>Function 3</usertitle>
             <datatype>gchararray</datatype>
-            <position>21</position>
+            <position>36</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -211,7 +346,7 @@ All rights reserved. -->
             <defaulttitle>Function 4</defaulttitle>
             <usertitle>Function 4</usertitle>
             <datatype>gchararray</datatype>
-            <position>22</position>
+            <position>37</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -220,7 +355,7 @@ All rights reserved. -->
             <defaulttitle>Function 5</defaulttitle>
             <usertitle>Function 5</usertitle>
             <datatype>gchararray</datatype>
-            <position>23</position>
+            <position>38</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -229,7 +364,7 @@ All rights reserved. -->
             <defaulttitle>Result 1</defaulttitle>
             <usertitle>Result 1</usertitle>
             <datatype>gfloat</datatype>
-            <position>24</position>
+            <position>39</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -238,7 +373,7 @@ All rights reserved. -->
             <defaulttitle>Result 2</defaulttitle>
             <usertitle>Result 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>25</position>
+            <position>40</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -247,7 +382,7 @@ All rights reserved. -->
             <defaulttitle>Result 3</defaulttitle>
             <usertitle>Result 3</usertitle>
             <datatype>gfloat</datatype>
-            <position>26</position>
+            <position>41</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -256,7 +391,7 @@ All rights reserved. -->
             <defaulttitle>Result 4</defaulttitle>
             <usertitle>Result 4</usertitle>
             <datatype>gfloat</datatype>
-            <position>27</position>
+            <position>42</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -265,7 +400,7 @@ All rights reserved. -->
             <defaulttitle>Result 5</defaulttitle>
             <usertitle>Result 5</usertitle>
             <datatype>gfloat</datatype>
-            <position>28</position>
+            <position>43</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -274,7 +409,7 @@ All rights reserved. -->
             <defaulttitle>User Memo 1</defaulttitle>
             <usertitle>User Memo 1</usertitle>
             <datatype>gchararray</datatype>
-            <position>29</position>
+            <position>44</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -283,7 +418,7 @@ All rights reserved. -->
             <defaulttitle>User Memo 2</defaulttitle>
             <usertitle>User Memo 2</usertitle>
             <datatype>gchararray</datatype>
-            <position>30</position>
+            <position>45</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -292,7 +427,7 @@ All rights reserved. -->
             <defaulttitle>User Memo 3</defaulttitle>
             <usertitle>User Memo 3</usertitle>
             <datatype>gchararray</datatype>
-            <position>31</position>
+            <position>46</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -301,7 +436,7 @@ All rights reserved. -->
             <defaulttitle>User Float 1</defaulttitle>
             <usertitle>User Float 1</usertitle>
             <datatype>gfloat</datatype>
-            <position>32</position>
+            <position>47</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -310,7 +445,7 @@ All rights reserved. -->
             <defaulttitle>User Float 2</defaulttitle>
             <usertitle>User Float 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>33</position>
+            <position>48</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -319,7 +454,7 @@ All rights reserved. -->
             <defaulttitle>User Float 3</defaulttitle>
             <usertitle>User Float 3</usertitle>
             <datatype>gfloat</datatype>
-            <position>34</position>
+            <position>49</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -328,7 +463,7 @@ All rights reserved. -->
             <defaulttitle>User Integer 1</defaulttitle>
             <usertitle>User Integer 1</usertitle>
             <datatype>gint</datatype>
-            <position>35</position>
+            <position>50</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -337,7 +472,7 @@ All rights reserved. -->
             <defaulttitle>User Integer 2</defaulttitle>
             <usertitle>User Integer 2</usertitle>
             <datatype>gint</datatype>
-            <position>36</position>
+            <position>51</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -346,7 +481,7 @@ All rights reserved. -->
             <defaulttitle>User Integer 3</defaulttitle>
             <usertitle>User Integer 3</usertitle>
             <datatype>gint</datatype>
-            <position>37</position>
+            <position>52</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>

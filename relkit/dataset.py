@@ -153,9 +153,18 @@ class Dataset:
             self.debug_app._log.error("dataset.py: Failed to create Analysis Results tab.")
 
 # Create the Plot tab widgets.
-        self.fig = Figure(figsize=(6, 4))
-        self.pltSurvival = FigureCanvas(self.fig)
-        self.ax = self.fig.add_subplot(111)
+        self.figSurvival = Figure(figsize=(6, 4))
+        self.pltSurvival = FigureCanvas(self.figSurvival)
+        self.axSurvival = self.figSurvival.add_subplot(111)
+        self.figProbability = Figure(figsize=(6, 4))
+        self.pltProbability = FigureCanvas(self.figProbability)
+        self.axProbability = self.figProbability.add_subplot(111)
+        self.figLogHazard = Figure(figsize=(6, 4))
+        self.pltLogHazard = FigureCanvas(self.figLogHazard)
+        self.axLogHazard = self.figLogHazard.add_subplot(111)
+        self.figHazardRate = Figure(figsize=(6, 4))
+        self.pltHazardRate = FigureCanvas(self.figHazardRate)
+        self.axHazardRate = self.figHazardRate.add_subplot(111)
 
         if self._plot_widgets_create():
             self.debug_app._log.error("dataset.py: Failed to create Plot widgets.")
@@ -204,6 +213,16 @@ class Dataset:
         button.connect('clicked', self.dataset_save)
         button.set_tooltip_text(_("Saves the selected data set."))
         toolbar.insert(button, 2)
+
+# Assign results to affected assembly.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
+        button.set_icon_widget(image)
+        button.set_name('Assign')
+        button.connect('clicked', self._assign_results)
+        button.set_tooltip_text(_("Assigns MTBF and hazard rate results to the selected assembly."))
+        toolbar.insert(button, 3)
 
         toolbar.show()
 
@@ -351,7 +370,19 @@ class Dataset:
         Loads the widgets with analyses input data for the DATASET Object.
         """
 
-        #self.cmbAssembly.set_active(self.model.get_value(self.selected_row, 1))
+        _index_ = 0
+        _assembly_id = self.model.get_value(self.selected_row, 1)
+        model = self.cmbAssembly.get_model()
+        row = model.get_iter_root()
+        while row is not None:
+            if(model.get_value(row, 1) == str(_assembly_id)):
+                break
+            else:
+                row = model.iter_next(row)
+                _index_ += 1
+
+        self.cmbAssembly.set_active(_index_)
+
         self.cmbSource.set_active(self.model.get_value(self.selected_row, 3))
         self.cmbDistribution.set_active(self.model.get_value(self.selected_row, 4))
         self.cmbConfType.set_active(self.model.get_value(self.selected_row, 6))
@@ -715,10 +746,24 @@ class Dataset:
         it to the gtk.Notebook at the correct location.
         """
 
+        hbox = gtk.HBox()
+
         frame = _widg.make_frame(_label_=_("Survival Analysis Plots"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(self.pltSurvival)
+        frame.add(hbox)
         frame.show_all()
+
+        vbox = gtk.VBox()
+        hbox.pack_start(vbox)
+
+        vbox.pack_start(self.pltSurvival)
+        vbox.pack_start(self.pltProbability)
+
+        vbox = gtk.VBox()
+        hbox.pack_start(vbox)
+
+        vbox.pack_start(self.pltLogHazard)
+        vbox.pack_start(self.pltHazardRate)
 
         # Insert the tab.
         label = gtk.Label()
@@ -743,13 +788,26 @@ class Dataset:
         button -- the gtk.ToolButton that called this method.
         """
 
+        from math import log
+        from scipy.stats import norm
+
         _dataset_ = self.model.get_value(self.selected_row, 0)
         _analysis_ = self.model.get_value(self.selected_row, 4)
         _conf_ = self.model.get_value(self.selected_row, 5)
+        _type_ = self.model.get_value(self.selected_row, 6)
         _reltime_ = self.model.get_value(self.selected_row, 9)
 
         if(_analysis_ == 1):
-            print "Perform MCF analysis."
+            query = "SELECT fld_unit, fld_left_interval, \
+                            fld_right_interval, fld_tbf \
+                     FROM tbl_survival_data \
+                     WHERE fld_dataset_id=%d \
+                     AND fld_status=1 \
+                     ORDER BY fld_left_interval ASC" % _dataset_
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx)
+            print results
         elif(_analysis_ == 2):
             query = "SELECT fld_right_interval, fld_status \
                      FROM tbl_survival_data \
@@ -761,19 +819,36 @@ class Dataset:
                                                  self._app.ProgCnx)
 
             # 0 = Event Time (string)
-            # 1 = i (integer)
-            # 2 = r (integer)
-            # 3 = (n - r) / (n - r + 1) (float)
-            # 4 = S(ti) (float)
+            # 1 = number at risk at beginning of interval i (integer)
+            # 2 = number of events in interval [i - 1, 1] (integer)
+            # 3 = probability of survival in interval [i - 1, 1] (float)
+            # 4 = probability of survival up to time i S(ti) (float)
             # 5 = Standard error of S(ti) (float)
             # 6 = Lower bound on S(ti)
             # 7 = Upper bound on S(ti)
-            nonpar = _calc.kaplan_meier(results, _reltime_, _conf_)
+            # 8 = Cumulative hazard function [H(t)]
+            nonpar = _calc.kaplan_meier(results, _reltime_, _conf_, _type_)
 
+            n_points = len(nonpar)
             _times_ = [x[0] for x in nonpar]
             _Shat_ = [x[4] for x in nonpar]
             _Shatll_ = [x[6] for x in nonpar]
             _Shatul_ = [x[7] for x in nonpar]
+            _H_ = [x[8] for x in nonpar]
+
+            _muhat_ = 0.0
+            for i in range(len(_Shat_) - 1):
+                _muhat_ = _muhat_ + _Shat_[i] * (float(_times_[i + 1]) - float(_times_[i]))
+
+            _logH_ = []
+            _logtimes_ = []
+            _zShat_ = []
+            _h_ = []
+            for i in range(len(_H_)):
+                _logH_.append(log(_H_[i]))
+                _logtimes_.append(log(_times_[i]))
+                _zShat_.append(norm.ppf(_Shat_[i]))
+                _h_.append(_H_[i] / _times_[i])
 
             model = self.tvwNonParResults.get_model()
             model.clear()
@@ -786,22 +861,110 @@ class Dataset:
                 model.append(_data_)
 
             _name = self.model.get_value(self.selected_row, 2)
-            self.ax.set_title(_("Kaplan-Meier Plot of %s") % _name)
-            self.ax.set_xlabel(_("Time"))
-            self.ax.set_ylabel(_("Survival Function [S(t)]"))
 
-            line, = self.ax.plot(_times_, _Shat_, 'g-')
-            line2, = self.ax.plot(_times_, _Shatll_, 'r-')
-            line3, = self.ax.plot(_times_, _Shatul_, 'b-')
+            # Plot the survival curve.
+            self.axSurvival.cla()
+
+            self.axSurvival.grid(True, which='both')
+            self.axSurvival.set_title(_("Kaplan-Meier Plot of %s") % _name)
+            self.axSurvival.set_xlabel(_("Time"))
+            self.axSurvival.set_ylabel(_("Survival Function [S(t)]"))
+
+            lineSurv, = self.axSurvival.step(_times_, _Shat_, 'g-', where='mid')
+            lineSurv2, = self.axSurvival.step(_times_, _Shatll_, 'r-', where='mid')
+            lineSurv3, = self.axSurvival.step(_times_, _Shatul_, 'b-', where='mid')
 
             for i in range(len(_Shat_)):
-                line.set_ydata(_Shat_)
-                line2.set_ydata(_Shatll_)
-                line3.set_ydata(_Shatul_)
+                lineSurv.set_ydata(_Shat_)
+                lineSurv2.set_ydata(_Shatll_)
+                lineSurv3.set_ydata(_Shatul_)
 
             self.pltSurvival.draw()
-            #self.fig.legend((line),
-            #                ("Estimated Survival Function"), 'upper right')
+
+            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            self.figSurvival.legend((lineSurv, lineSurv2, lineSurv3),
+                                    ("Survival Function", labell,
+                                    labelu),
+                                    'upper right')
+
+            # Plot the cumulative hazard curve.
+            self.axProbability.cla()
+
+            self.axProbability.grid(True, which='both')
+            self.axProbability.set_title(_("Cumulative Hazard Plot of %s") % _name)
+            self.axProbability.set_xlabel(_("Time"))
+            self.axProbability.set_ylabel(_("Cumulative Hazard Function [H(t)]"))
+
+            lineProb, = self.axProbability.step(_times_, _H_, 'g-', where='mid')
+            #lineProb2, = self.axProbability.step(_times_, _Hll_, 'r-', where='mid')
+            #lineProb3, = self.axProbability.step(_times_, _Hul_, 'b-', where='mid')
+
+            for i in range(len(_H_)):
+                lineProb.set_ydata(_H_)
+                #lineProb2.set_ydata(_Hll_)
+                #lineProb3.set_ydata(_Hul_)
+
+            self.pltProbability.draw()
+
+            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            #self.figProbability.legend((lineProb, lineProb2, lineProb3),
+            #                        ("Cumulative Hazard Function", labell,
+            #                        labelu),
+            #                        'upper right')
+
+            # Plot the log cumulative hazard curve.
+            self.axLogHazard.cla()
+
+            self.axLogHazard.grid(True, which='both')
+            self.axLogHazard.set_title(_("Log Hazard Plot of %s") % _name)
+            self.axLogHazard.set_xlabel(_("Time"))
+            self.axLogHazard.set_ylabel(_("Log Hazard Function [H(t)]"))
+
+            lineLogHaz, = self.axLogHazard.step(_logtimes_, _logH_, 'g-', where='mid')
+            #lineLogHaz2, = self.axLogHazard.step(log(_times_), log(_Hll_), 'r-', where='mid')
+            #lineLogHaz3, = self.axLogHazard.step(log(_times_), log(_Hul_), 'b-', where='mid')
+
+            for i in range(len(_logH_)):
+                lineLogHaz.set_ydata(_logH_)
+                #lineLogHaz2.set_ydata(_Hll_)
+                #lineLogHaz3.set_ydata(_Hul_)
+
+            self.pltLogHazard.draw()
+
+            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            #self.figLogHazard.legend((lineProb, lineProb2, lineProb3),
+            #                        ("Log Cumulative Hazard Function", labell,
+            #                        labelu),
+            #                        'upper right')
+
+            # Plot the hazard rate curve.
+            self.axHazardRate.cla()
+
+            self.axHazardRate.grid(True, which='both')
+            self.axHazardRate.set_title(_("Z(S) Plot of %s") % _name)
+            self.axHazardRate.set_xlabel(_("Time"))
+            self.axHazardRate.set_ylabel(_("Z(S(t))"))
+
+            lineHazRate, = self.axHazardRate.step(_logtimes_, _h_, 'g-', where='mid')
+            #lineHazRate2, = self.axHazardRate.step(log(_times_), log(_Hll_), 'r-', where='mid')
+            #lineHazRate3, = self.axHazardRate.step(log(_times_), log(_Hul_), 'b-', where='mid')
+
+            for i in range(len(_h_)):
+                lineHazRate.set_ydata(_h_)
+                #lineHazRate2.set_ydata(_Hll_)
+                #lineHazRate3.set_ydata(_Hul_)
+
+            self.pltHazardRate.draw()
+
+            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
+            #self.figHazardRate.legend((lineProb, lineProb2, lineProb3),
+            #                        ("Log Cumulative Hazard Function", labell,
+            #                        labelu),
+            #                        'upper right')
 
     def dataset_save(self, button):
         """
@@ -905,6 +1068,21 @@ class Dataset:
         if not results:
             self._app.debug_log.error("dataset.py: Failed to save dataset.")
             return True
+
+        return False
+
+    def _assign_results(self, button):
+        """
+        Assigns the MTBF and hazard rate results to the assembly associated
+        with the dataset.  Values are assigned to the specified fields.
+
+        Keyword Arguments:
+        button -- the gtk.Button widget that called this function.
+        """
+
+        _assembly_id = self.model.get_value(self.selected_row, 1)
+
+        print _assembly_id
 
         return False
 
@@ -1078,6 +1256,14 @@ class Dataset:
             col = self.treeview.get_column(0)
             self.treeview.row_activated(path, col)
 
+        # Load the Assembly combo.
+        query = "SELECT fld_description, fld_assembly_id, fld_name \
+                 FROM tbl_system"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+        _widg.load_combo(self.cmbAssembly, results, simple=False)
+
         return False
 
     def load_notebook(self):
@@ -1088,14 +1274,6 @@ class Dataset:
             self._analyses_results_tab_load()
         #    self._load_component_list()
 
-        # Load the Assembly combo.
-        query = "SELECT fld_description, fld_assembly_id, fld_name \
-                 FROM tbl_system"
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
-        _widg.load_combo(self.cmbAssembly, results, simple=False)
-
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxDataset)
@@ -1104,5 +1282,7 @@ class Dataset:
         _title = _("RelKit Work Bench: Program Survival Analyses (%d Datasets)") % \
                    self.n_datasets
         self._app.winWorkBook.set_title(_title)
+
+        self.notebook.set_current_page(0)
 
         return False

@@ -64,7 +64,7 @@ class FilterIncident:
     _fi_tab_labels = [[_("Incident ID:"), _("Incident Category:"),
                        _("Incident Type:"), _("Incident Status:"),
                        _("Incident Criticality:"), _("Incident Age:"),
-                       _("Incident Lifecycle:")],
+                       _("Incident Lifecycle:"), _("Affected Assembly:")],
                       [_("Short Description:"), _("Long Description:"),
                        _("Remarks:"), _("Analysis:")],
                       [_("Found in Test:"), _("Found in Test Case:")],
@@ -117,6 +117,7 @@ class FilterIncident:
         self.cmbCompound20 = _widg.make_combo(_width_=75)
         self.cmbCompound21 = _widg.make_combo(_width_=75)
         self.cmbCompound22 = _widg.make_combo(_width_=75)
+        self.cmbCompound23 = _widg.make_combo(_width_=75)
         _widg.load_combo(self.cmbCompound1, self._compound)
         _widg.load_combo(self.cmbCompound2, self._compound)
         _widg.load_combo(self.cmbCompound3, self._compound)
@@ -139,6 +140,7 @@ class FilterIncident:
         _widg.load_combo(self.cmbCompound20, self._compound)
         _widg.load_combo(self.cmbCompound21, self._compound)
         _widg.load_combo(self.cmbCompound22, self._compound)
+        _widg.load_combo(self.cmbCompound23, self._compound)
 
 # Create the page to select filter criteria related to the type, category,
 # status, criticality, and age of the incident.
@@ -203,6 +205,17 @@ class FilterIncident:
                                              self._app.ComCnx)
         _widg.load_combo(self.cmbFilterLifeCycle, results, simple=True)
 
+        self.cmbCriteriaAssembly = _widg.make_combo(_width_=100)
+        _widg.load_combo(self.cmbCriteriaAssembly, self._criteria3)
+        self.cmbAssembly = _widg.make_combo(_width_=100, simple=False)
+        self.cmbAssembly.set_tooltip_text(_("Sets the affected assembly filter criterion."))
+        query = "SELECT fld_description, fld_assembly_id, fld_name \
+                 FROM tbl_system"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+        _widg.load_combo(self.cmbAssembly, results, simple=False)
+
         fixed = gtk.Fixed()
 
         y_pos = 5
@@ -243,10 +256,15 @@ class FilterIncident:
         fixed.put(self.cmbCriteriaLifeCycle, 190, y_pos)
         fixed.put(self.cmbFilterLifeCycle, 300, y_pos)
         fixed.put(self.cmbCompound7, 410, y_pos)
+        y_pos += 35
+
+        fixed.put(self.cmbCriteriaAssembly, 190, y_pos)
+        fixed.put(self.cmbAssembly, 300, y_pos)
+        fixed.put(self.cmbCompound23, 410, y_pos)
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed, _("Set Filter Criteria: Incident Status"))
+        self.assistant.set_page_title(fixed, _("Set Filter Criteria: Incident Details"))
         self.assistant.set_page_complete(fixed, True)
 
 # Create the page to select filter criteria related to the short description,
@@ -304,7 +322,7 @@ class FilterIncident:
         self.assistant.set_page_complete(fixed, True)
 
 # Create the page to select filter criteria related to the test and test case
-# that discoverd the problem reported in the incident.
+# that discovered the problem reported in the incident.
         self.cmbCriteriaTest = _widg.make_combo(_width_=100)
         _widg.load_combo(self.cmbCriteriaTest, self._criteria1)
         self.txtFilterTest = _widg.make_entry(_width_=100)
@@ -569,6 +587,16 @@ class FilterIncident:
 
         _inputs.append(self.chkFilterReviewed.get_active())
 
+        _criteria.append(self.cmbCriteriaAssembly.get_active_text())
+        model = self.cmbAssembly.get_model()
+        row = self.cmbAssembly.get_active_iter()
+        if(row is not None):
+            _text_ = int(model.get_value(row, 1))
+        else:
+            _text_ = 0
+        _inputs.append(_text_)
+        _compound.append(self.cmbCompound23.get_active_text())
+
         # Build the query from the user-provided inputs.
         if(_conf.RELIAFREE_MODULES[0] == 1):
             query = "SELECT * FROM tbl_incident \
@@ -618,6 +646,12 @@ class FilterIncident:
                      str(_inputs[6])
         if(_compound[6] is not None and _compound[6] != ''):
             query = query + " " + _compound[6] + " "
+
+        if(_criteria[21] is not None and _criteria[21] != ''):
+            query =  query + "fld_hardware_id" + _criteria[21] + \
+                     str(_inputs[23])
+        if(_compound[22] is not None and _compound[22] != ''):
+            query = query + " " + _compound[22] + " "
 
         if(_criteria[7] is not None and _criteria[7] != ''):
             query = query + "fld_short_description " + _criteria[7] + \

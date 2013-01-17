@@ -599,6 +599,44 @@ class ImportHardware:
                 # record.
                     self._app.import_log.error("Failed to import record: %d" % contents[i][1])
 
+                # Now add the new hardware to the Allocation table and the
+                # Similar Items table.
+                try:
+                    values = (int(_root[i][0]), int(_root[i][1]))
+
+                    if(_conf.BACKEND == 'mysql'):
+                        query = "INSERT INTO tbl_allocation \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (%d, %d)"
+                    elif(_conf.BACKEND == 'sqlite3'):
+                        query = "INSERT INTO tbl_allocation \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (?, ?)"
+
+                    results = self._app.DB.execute_query(query,
+                                                         values,
+                                                         self._app.ProgCnx,
+                                                         commit=True)
+
+                    if(_conf.BACKEND == 'mysql'):
+                        query = "INSERT INTO tbl_similar_item \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (%d, %d)"
+                    elif(_conf.BACKEND == 'sqlite3'):
+                        query = "INSERT INTO tbl_similar_item \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (?, ?)"
+
+                    results = self._app.DB.execute_query(query,
+                                                         values,
+                                                         self._app.ProgCnx,
+                                                         commit=True)
+
+                except ValueError:
+                # If there is a problem with the input data, don't import the
+                # record.
+                    self._app.import_log.error("Failed to import record: %d to the Allocation or Similar Item Table" % contents[i][1])
+
             j += 1
 
         self._app.HARDWARE.load_tree()

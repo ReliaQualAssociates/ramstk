@@ -152,20 +152,24 @@ class PartsListWindow(gtk.Window):
         if self._incidents_tab_create():
             self._app.debug_log.error("partlist.py: Failed to create Program Incidents tab.")
 
-# Create the survival analyses tab for the LIST object.
+# Create the dataset tab for the LIST object.
         bg_color = _conf.RELIAFREE_COLORS[12]
         fg_color = _conf.RELIAFREE_COLORS[13]
-        (self.tvwSurvivalAnalysis,
-         self._survival_col_order) = _widg.make_treeview('Incidents',
-                                                         14,
-                                                         self._app,
-                                                         None,
-                                                         bg_color,
-                                                         fg_color)
-        if self._survival_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Survival Analyses tab.")
+        (self.tvwDatasets,
+         self._dataset_col_order) = _widg.make_treeview('Dataset', 16,
+                                                        self._app,
+                                                        None,
+                                                        bg_color,
+                                                        fg_color)
+        #self.tvwIncidents.connect('cursor_changed', self._treeview_row_changed,
+        #                          None, None)
+        self.tvwDatasets.connect('row_activated',
+                                 self._treeview_row_changed, 2)
 
-        # Create a statusbar for the list/matrix window.
+        if self._survival_tab_create():
+            self._app.debug_log.error("partlist.py: Failed to create Datasets tab.")
+
+# Create a statusbar for the list/matrix window.
         self.statusbar = gtk.Statusbar()
 
         vbox = gtk.VBox()
@@ -287,7 +291,7 @@ class PartsListWindow(gtk.Window):
         # Create the Program Incidents list.
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwSurvivalAnalysis)
+        scrollwindow.add_with_viewport(self.tvwDatasets)
 
         frame = _widg.make_frame()
         frame.set_shadow_type(gtk.SHADOW_NONE)
@@ -480,6 +484,36 @@ class PartsListWindow(gtk.Window):
 
         # Load the model with the returned results.
         for i in range(n_incidents):
+            model.append(None, results[i])
+
+        return False
+
+    def load_dataset_tree(self, _query_, _values_):
+        """
+        Populates the part list treeview with the parts associated with the
+        currently selected Assembly.
+
+        Keyword Arguments:
+        _query_  -- the SQL query to execute to retrieve the list of parts
+                    associated with the calling Revision, Assembly, or Software
+                    module.
+        _values_ -- the tuple of values to pass with the query.
+        """
+
+        model = self.tvwDatasets.get_model()
+        model.clear()
+
+        results = self._app.DB.execute_query(_query_,
+                                             _values_,
+                                             self._app.ProgCnx)
+
+        if(results == '' or not results):
+            return True
+
+        n_datasets = len(results)
+
+        # Load the model with the returned results.
+        for i in range(n_datasets):
             model.append(None, results[i])
 
         return False

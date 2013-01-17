@@ -62,6 +62,7 @@ LOG_DIR = ''
 #    Position 14: Field Incident List formatting.
 #    Position 15: Software Tree formatting.
 #    Position 16: Dataset Tree formatting.
+#    Position 17: Risk Analysis formatting.
 RELIAFREE_FORMAT_FILE = []
 
 # Global list containing the colors to use for various widgets.
@@ -376,6 +377,7 @@ class RelKitConf:
                 config.set('Files', 'mechanismformat', 'mechanism_format.xml')
                 config.set('Files', 'softwareformat', 'software_format.xml')
                 config.set('Files', 'datasetformat', 'dataset_format.xml')
+                config.set('Files', 'riskformat', 'risk_format.xml')
 
                 config.add_section('Colors')
                 config.set('Colors', 'revisionbg', '#FFFFFF')
@@ -491,6 +493,7 @@ class RelKitConf:
             config.set('Files', 'incidentformat', path.basename(RELIAFREE_FORMAT_FILE[14]))
             config.set('Files', 'softwareformat', path.basename(RELIAFREE_FORMAT_FILE[15]))
             config.set('Files', 'datasetformat', path.basename(RELIAFREE_FORMAT_FILE[16]))
+            config.set('Files', 'riskformat', path.basename(RELIAFREE_FORMAT_FILE[17]))
 
             # Position 00: Revision row background color
             # Position 01: Revision row foreground color

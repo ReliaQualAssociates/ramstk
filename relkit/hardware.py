@@ -270,30 +270,60 @@ class Hardware:
         (self.model, self.selected_row) = selection.get_selected()
         self._assembly_id = self.model.get_value(self.selected_row, 1)
 
+        _path_ = self.model.get_string_from_iter(self.selected_row)
+
         # Build the queries to select the reliability tests and program
         # incidents associated with the selected HARDWARE.
         if(_conf.BACKEND == 'mysql'):
-            qryTests = "SELECT "
+            qryParts = "SELECT * FROM tbl_system \
+                        WHERE fld_part=1 \
+                        AND fld_revision_id=%d \
+                        AND fld_parent_assembly='%s'"
             qryIncidents = "SELECT * FROM tbl_incident\
-                            WHERE fld_hardware_id=%d"
+                            WHERE fld_revision_id=%d \
+                            AND fld_hardware_id=%d \
+                            ORDER BY fld_incident_id"
+            qryDatasets = "SELECT * FROM tbl_dataset \
+                           WHERE fld_assembly_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
+            qryParts = "SELECT * FROM tbl_system \
+                        WHERE fld_part=1 \
+                        AND fld_revision_id=? \
+                        AND fld_parent_assembly=?"
             qryIncidents = "SELECT * FROM tbl_incident \
-                            WHERE fld_hardware_id=?"
+                            WHERE fld_revision_id=? \
+                            AND fld_hardware_id=? \
+                            ORDER BY fld_incident_id"
+            qryDatasets = "SELECT * FROM tbl_dataset \
+                           WHERE fld_assembly_id=?"
 
+        # Find the current revision if using the revision module, otherwise
+        # set this to the default value.
+        if(_conf.RELIAFREE_MODULES[0] == 1):
+            values1 = (self._app.REVISION.revision_id, _path_)
+            values2 = (self._app.REVISION.revision_id, self._assembly_id)
+        else:
+            values1 = (0, _path_)
+            values2 = (0, self._assembly_id)
+
+        self._app.winParts.load_part_tree(qryParts,
+                                          values1)
         self._app.winParts.load_incident_tree(qryIncidents,
-                                              (self._assembly_id,))
+                                              values2)
+        self._app.winParts.load_dataset_tree(qryDatasets,
+                                             (self._assembly_id,))
 
         if self.selected_row is not None:
             if(self.model.get_value(self.selected_row, 63) == 0):
                 self.ispart = False
-                self.assembly = self.model.get_string_from_iter(self.selected_row)
-                self._app.winParts.filter_parts_list(3)
+                self.assembly = _path_
+                #self._app.winParts.filter_parts_list(3)
                 self._app.ASSEMBLY.load_notebook()
 
             elif(self.model.get_value(self.selected_row, 63) == 1):
                 self.ispart = True
                 self.assembly = self.model.get_value(self.selected_row, 62)
-                self._app.winParts.filter_parts_list(3)
+                #self._app.winParts.filter_parts_list(3)
                 self._find_parts_list_row()
                 self._app.COMPONENT.load_notebook()
 

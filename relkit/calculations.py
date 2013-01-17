@@ -2106,7 +2106,7 @@ def calculate_field_ttf(_dates_):
 
     return(ttf.days)
 
-def kaplan_meier(_dataset_, _reltime_, _conf_):
+def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
@@ -2117,59 +2117,75 @@ def kaplan_meier(_dataset_, _reltime_, _conf_):
                   1 = event at time
     _reltime_  -- time at which to stop analysis (helps eliminate stretched
                   plots due to small number of events at high hours).
-    _conf_     -- the confidence level of the KM estimates.
+    _conf_     -- the confidence level of the KM estimates (default is 75%).
+    _type_     -- the confidence type:
+                  1 = lower one-sided.
+                  2 = upper one-sided.
+                  3 = two-sided (default).
     """
 
+    from math import log, sqrt
+    from scipy import stats
+
     # Eliminate zero time failures and failures occurring after any
-    # user-supplied uppre limit.
+    # user-supplied upper limit.
     _dataset_ = [i for i in _dataset_ if i[0] > 0.0]
-    _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
+    if(_reltime_ != 0.0):
+        _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
 
-    if(__USE_RPY2__):
-        _survival = importr('survival')
-        Surv = R('Surv')
-        survfit = R('survfit')
+    # Determine the confidence bound z-value.
+    _conf_ = 1.0 - (_conf_ / 100.0)
+    if(_type_ == 3):                        # Two-sided bounds.
+        _conf_ = 1.0 - (_conf_ / 2.0)
+    else:                                   # One-sided bounds.
+        _conf_ = 1.0 - _conf_
+    z_norm = stats.norm.ppf(_conf_)
 
-        _times_ = [x[0] for x in _dataset_]
-        _status_ = [x[1] for x in _dataset_]
+    # Get the total number of events.
+    _n_ = len(_dataset_)
 
-        robjects.globalenv["Times"] = robjects.FloatVector(_times_)
-        robjects.globalenv["Status"] = robjects.IntegerVector(_status_)
-        _S_ = Surv("Times", "Status")
+    _Sh_ = 1.0
+    z = 0.0
+    _KM_ = []
+    i = 0
 
-        _KM_ = survift(_S_)
+    while (_n_ > 0):
+        # Find the total number of failures and suspensions in interval [i-1, i].
+        _d_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 1)])
+        _s_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 0)])
 
-    else:
-        from math import sqrt
-        from scipy import stats
+        # Estimate the probability of failing in interval [i-1, i].
+        _Si_ = 1.0 - (float(_d_) / float(_n_))
 
-        _conf_ = (1.0 - (_conf_ / 100.0)) / 2.0
-        z_norm = stats.norm.ppf(_conf_)
+        # Estimate the probability of survival up to time i [S(ti)].
+        _Sh_ = _Si_ * _Sh_
 
-        # Get the total number of events.
-        n = len(_dataset_)
+        # Calculate the standard error for S(ti).
+        z = z + 1.0 / ((_n_ - _d_ + 1) * _n_)
+        _se_ = sqrt(_Si_ * _Si_ * z)
 
-        _Sh_ = 1.0
-        _r_ = 0
-        z = 0.0
-        _KM_ = []
-        for i in range(n - 1):
-            if(_dataset_[i][1] == 1):
-                _r_ = i + 1
-                x = float(n) - float(_r_)
-                y = float(n) - float(_r_) + 1
-                _Si_ = x / y
-                z = z + (1.0 / (x * y))
-                _se_ = sqrt(_Si_ * _Si_ * z)
-                _Sh_ = _Si_ * _Sh_
-                _ll_ = _Sh_ + z_norm * _se_
-                _ul_ = _Sh_ - z_norm * _se_
-                _KM_.append([str(_dataset_[i][0]), i + 1, i + 1, _Si_, _Sh_,
-                             _se_, _ll_, _ul_])
+        # Calculate confidence bounds for S(ti).
+        _ll_ = _Sh_ - z_norm * _se_
+        _ul_ = _Sh_ + z_norm * _se_
+        if(_type_ == 1):
+            _ul_ = _Sh_
+        if(_type_ == 2):
+            _ll_ = _Sh_
 
-            else:
-                _KM_.append([str(_dataset_[i][0]) + '+', i + 1, '-', '-', _Sh_,
-                             _se_, _ll_, _ul_])
+        # Calculate the cumulative hazard rate.
+        try:
+            _H_ = -log(_Sh_)
+        except ValueError:
+            _H_ = _H_
 
-        return(_KM_)
+        _KM_.append([_dataset_[i][0], _n_, _d_, _Si_, _Sh_,
+                     _se_, _ll_, _ul_, _H_])
+        #if(_s_ > 0):
+        #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
+        #                 _se_, _ll_, _ul_, _H_])
+
+        _n_ = _n_ - _d_ - _s_
+        i = i + _d_ + _s_
+
+    return(_KM_)
 
