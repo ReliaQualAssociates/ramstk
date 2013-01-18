@@ -2125,7 +2125,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
     """
 
     from math import log, sqrt
-    from scipy import stats
+    from scipy.stats import norm
 
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
@@ -2134,20 +2134,22 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
         _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
 
     # Determine the confidence bound z-value.
-    _conf_ = 1.0 - (_conf_ / 100.0)
     if(_type_ == 3):                        # Two-sided bounds.
-        _conf_ = 1.0 - (_conf_ / 2.0)
+        _conf_ = (100.0 + _conf_) / 200.0
     else:                                   # One-sided bounds.
-        _conf_ = 1.0 - _conf_
-    z_norm = stats.norm.ppf(_conf_)
+        _conf_ = _conf_ / 100.0
+    _z_norm_ = norm.ppf(_conf_)
 
     # Get the total number of events.
     _n_ = len(_dataset_)
 
     _Sh_ = 1.0
+    muhat = 0.0
     z = 0.0
     _KM_ = []
     i = 0
+    ti = float(_dataset_[0][0])
+    tj = 0.0
 
     while (_n_ > 0):
         # Find the total number of failures and suspensions in interval [i-1, i].
@@ -2165,8 +2167,8 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
         _se_ = sqrt(_Si_ * _Si_ * z)
 
         # Calculate confidence bounds for S(ti).
-        _ll_ = _Sh_ - z_norm * _se_
-        _ul_ = _Sh_ + z_norm * _se_
+        _ll_ = _Sh_ - _z_norm_ * _se_
+        _ul_ = _Sh_ + _z_norm_ * _se_
         if(_type_ == 1):
             _ul_ = _Sh_
         if(_type_ == 2):
@@ -2178,8 +2180,13 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
         except ValueError:
             _H_ = _H_
 
+        # Calculate the mean.
+        muhat = muhat + _Sh_ * (ti - tj)
+        tj = ti
+        ti = _dataset_[i][0]
+
         _KM_.append([_dataset_[i][0], _n_, _d_, _Si_, _Sh_,
-                     _se_, _ll_, _ul_, _H_])
+                     _se_, _ll_, _ul_, _H_, muhat])
         #if(_s_ > 0):
         #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
         #                 _se_, _ll_, _ul_, _H_])

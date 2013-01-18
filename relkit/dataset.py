@@ -144,6 +144,9 @@ class Dataset:
         self.txtMLE = _widg.make_entry(_width_=150)
         self.txtNumSuspensions = _widg.make_entry(_width_=100)
         self.txtNumFailures = _widg.make_entry(_width_=100)
+        self.txtMTBF = _widg.make_entry(_width_=100)
+        self.txtMTBFLL = _widg.make_entry(_width_=100)
+        self.txtMTBFUL = _widg.make_entry(_width_=100)
 
         self.tvwNonParResults = gtk.TreeView()
 
@@ -425,6 +428,9 @@ class Dataset:
         self.txtMLE.set_tooltip_text(_(""))
         self.txtNumSuspensions.set_tooltip_text(_(""))
         self.txtNumFailures.set_tooltip_text(_(""))
+        self.txtMTBF.set_tooltip_text(_(""))
+        self.txtMTBFLL.set_tooltip_text(_(""))
+        self.txtMTBFUL.set_tooltip_text(_(""))
 
         return False
 
@@ -455,8 +461,16 @@ class Dataset:
         label = _widg.make_label(_("Number of Failures:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumFailures, 210, y_pos)
+        y_pos += 30
 
-        #vbox.pack_start(frame, True, True)
+        label = _widg.make_label(_("Estimated MTBF:"), width=200)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtMTBF, 210, y_pos)
+        fixed.put(self.txtMTBFLL, 315, y_pos)
+        fixed.put(self.txtMTBFUL, 420, y_pos)
+        y_pos += 30
+
+        vbox.pack_start(frame, True, True)
 
         # Non-parametric table of results.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
@@ -788,8 +802,10 @@ class Dataset:
         button -- the gtk.ToolButton that called this method.
         """
 
-        from math import log
+        from math import log, sqrt
         from scipy.stats import norm
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         _dataset_ = self.model.get_value(self.selected_row, 0)
         _analysis_ = self.model.get_value(self.selected_row, 4)
@@ -827,38 +843,40 @@ class Dataset:
             # 6 = Lower bound on S(ti)
             # 7 = Upper bound on S(ti)
             # 8 = Cumulative hazard function [H(t)]
+            # 9 = Estiamte of the mean up to time i
             nonpar = _calc.kaplan_meier(results, _reltime_, _conf_, _type_)
 
             n_points = len(nonpar)
-            _times_ = [x[0] for x in nonpar]
-            _Shat_ = [x[4] for x in nonpar]
-            _Shatll_ = [x[6] for x in nonpar]
-            _Shatul_ = [x[7] for x in nonpar]
+            times = [x[0] for x in nonpar]
+            Shat = [x[4] for x in nonpar]
+            Shatll = [x[6] for x in nonpar]
+            Shatul = [x[7] for x in nonpar]
             _H_ = [x[8] for x in nonpar]
+            muhat = [x[9] for x in nonpar]
 
-            _muhat_ = 0.0
-            for i in range(len(_Shat_) - 1):
-                _muhat_ = _muhat_ + _Shat_[i] * (float(_times_[i + 1]) - float(_times_[i]))
-
-            _logH_ = []
-            _logtimes_ = []
-            _zShat_ = []
+            logH = []
+            logtimes = []
+            zShat = []
             _h_ = []
-            for i in range(len(_H_)):
-                _logH_.append(log(_H_[i]))
-                _logtimes_.append(log(_times_[i]))
-                _zShat_.append(norm.ppf(_Shat_[i]))
-                _h_.append(_H_[i] / _times_[i])
+            for i in range(n_points):
+                logH.append(log(_H_[i]))
+                logtimes.append(log(times[i]))
+                zShat.append(norm.ppf(Shat[i]))
+                _h_.append(_H_[i] / times[i])
 
             model = self.tvwNonParResults.get_model()
             model.clear()
 
-            for i in range(len(nonpar)):
+            for i in range(n_points):
                 _data_ = [str(nonpar[i][0]), int(nonpar[i][1]),
                           int(nonpar[i][2]), float(nonpar[i][3]),
                           float(nonpar[i][4]), float(nonpar[i][5]),
                           float(nonpar[i][6]), float(nonpar[i][7])]
                 model.append(_data_)
+
+            self.txtMTBF.set_text(str(fmt.format(muhat[n_points - 1])))
+            #self.txtMTBFLL.set_text(str(fmt.format(muhatll)))
+            #self.txtMTBFUL.set_text(str(fmt.format(muhatul)))
 
             _name = self.model.get_value(self.selected_row, 2)
 
@@ -870,14 +888,14 @@ class Dataset:
             self.axSurvival.set_xlabel(_("Time"))
             self.axSurvival.set_ylabel(_("Survival Function [S(t)]"))
 
-            lineSurv, = self.axSurvival.step(_times_, _Shat_, 'g-', where='mid')
-            lineSurv2, = self.axSurvival.step(_times_, _Shatll_, 'r-', where='mid')
-            lineSurv3, = self.axSurvival.step(_times_, _Shatul_, 'b-', where='mid')
+            lineSurv, = self.axSurvival.step(times, Shat, 'g-', where='mid')
+            lineSurv2, = self.axSurvival.step(times, Shatll, 'r-', where='mid')
+            lineSurv3, = self.axSurvival.step(times, Shatul, 'b-', where='mid')
 
-            for i in range(len(_Shat_)):
-                lineSurv.set_ydata(_Shat_)
-                lineSurv2.set_ydata(_Shatll_)
-                lineSurv3.set_ydata(_Shatul_)
+            for i in range(n_points):
+                lineSurv.set_ydata(Shat)
+                lineSurv2.set_ydata(Shatll)
+                lineSurv3.set_ydata(Shatul)
 
             self.pltSurvival.draw()
 
@@ -896,11 +914,11 @@ class Dataset:
             self.axProbability.set_xlabel(_("Time"))
             self.axProbability.set_ylabel(_("Cumulative Hazard Function [H(t)]"))
 
-            lineProb, = self.axProbability.step(_times_, _H_, 'g-', where='mid')
-            #lineProb2, = self.axProbability.step(_times_, _Hll_, 'r-', where='mid')
-            #lineProb3, = self.axProbability.step(_times_, _Hul_, 'b-', where='mid')
+            lineProb, = self.axProbability.step(times, _H_, 'g-', where='mid')
+            #lineProb2, = self.axProbability.step(times, _Hll_, 'r-', where='mid')
+            #lineProb3, = self.axProbability.step(times, _Hul_, 'b-', where='mid')
 
-            for i in range(len(_H_)):
+            for i in range(n_points):
                 lineProb.set_ydata(_H_)
                 #lineProb2.set_ydata(_Hll_)
                 #lineProb3.set_ydata(_Hul_)
@@ -922,12 +940,12 @@ class Dataset:
             self.axLogHazard.set_xlabel(_("Time"))
             self.axLogHazard.set_ylabel(_("Log Hazard Function [H(t)]"))
 
-            lineLogHaz, = self.axLogHazard.step(_logtimes_, _logH_, 'g-', where='mid')
-            #lineLogHaz2, = self.axLogHazard.step(log(_times_), log(_Hll_), 'r-', where='mid')
-            #lineLogHaz3, = self.axLogHazard.step(log(_times_), log(_Hul_), 'b-', where='mid')
+            lineLogHaz, = self.axLogHazard.step(logtimes, logH, 'g-', where='mid')
+            #lineLogHaz2, = self.axLogHazard.step(log(times), log(_Hll_), 'r-', where='mid')
+            #lineLogHaz3, = self.axLogHazard.step(log(times), log(_Hul_), 'b-', where='mid')
 
-            for i in range(len(_logH_)):
-                lineLogHaz.set_ydata(_logH_)
+            for i in range(n_points):
+                lineLogHaz.set_ydata(logH)
                 #lineLogHaz2.set_ydata(_Hll_)
                 #lineLogHaz3.set_ydata(_Hul_)
 
@@ -948,11 +966,11 @@ class Dataset:
             self.axHazardRate.set_xlabel(_("Time"))
             self.axHazardRate.set_ylabel(_("Z(S(t))"))
 
-            lineHazRate, = self.axHazardRate.step(_logtimes_, _h_, 'g-', where='mid')
-            #lineHazRate2, = self.axHazardRate.step(log(_times_), log(_Hll_), 'r-', where='mid')
-            #lineHazRate3, = self.axHazardRate.step(log(_times_), log(_Hul_), 'b-', where='mid')
+            lineHazRate, = self.axHazardRate.step(logtimes, _h_, 'g-', where='mid')
+            #lineHazRate2, = self.axHazardRate.step(log(times), log(_Hll_), 'r-', where='mid')
+            #lineHazRate3, = self.axHazardRate.step(log(times), log(_Hul_), 'b-', where='mid')
 
-            for i in range(len(_h_)):
+            for i in range(n_points):
                 lineHazRate.set_ydata(_h_)
                 #lineHazRate2.set_ydata(_Hll_)
                 #lineHazRate3.set_ydata(_Hul_)
