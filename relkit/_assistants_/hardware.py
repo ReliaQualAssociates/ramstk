@@ -619,6 +619,20 @@ class ImportHardware:
                                                          commit=True)
 
                     if(_conf.BACKEND == 'mysql'):
+                        query = "INSERT INTO tbl_risk_analysis \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (%d, %d)"
+                    elif(_conf.BACKEND == 'sqlite3'):
+                        query = "INSERT INTO tbl_risk_analysis \
+                                 (fld_revision_id, fld_assembly_id) \
+                                 VALUES (?, ?)"
+
+                    results = self._app.DB.execute_query(query,
+                                                         values,
+                                                         self._app.ProgCnx,
+                                                         commit=True)
+
+                    if(_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_similar_item \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES (%d, %d)"
@@ -631,11 +645,10 @@ class ImportHardware:
                                                          values,
                                                          self._app.ProgCnx,
                                                          commit=True)
-
                 except ValueError:
                 # If there is a problem with the input data, don't import the
                 # record.
-                    self._app.import_log.error("Failed to import record: %d to the Allocation or Similar Item Table" % contents[i][1])
+                    self._app.import_log.error("Failed to import record: %d to the Allocation, Risk Analysis, or Similar Item Table" % contents[i][1])
 
             j += 1
 

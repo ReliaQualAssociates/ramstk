@@ -175,6 +175,7 @@ class Assembly:
         self._subcategory = 0
         self._mode_id = 0
 
+        self._risk_col_order = []
         self._sia_col_order = []
 
         self._hrmodel = {}
@@ -1138,7 +1139,7 @@ class Assembly:
         cols = int(len(heading))
         _visible = False
         for i in range(cols):
-            self._sia_col_order.append(int(position[i].text))
+            self._risk_col_order.append(int(position[i].text))
 
             if(widget[i].text == 'combo'):
                 cell = gtk.CellRendererCombo()
@@ -1251,7 +1252,7 @@ class Assembly:
             values = (0, path_)
 
         if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t1.fld_sia_id, t2.fld_description, \
+            query = "SELECT t1.fld_risk_id, t2.fld_description, \
                             t1.fld_change_desc_1, t1.fld_change_category_1, \
                             t1.fld_change_effort_1, t1.fld_change_cost_1, \
                             t1.fld_change_desc_2, t1.fld_change_category_2, \
@@ -1282,13 +1283,13 @@ class Assembly:
                             t1.fld_category_value_3, t1.fld_category_value_4, \
                             t1.fld_category_value_5, t1.fld_category_value_6, \
                             t1.fld_category_value_7, t1.fld_category_value_8 \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t2.fld_assembly_id=t1.fld_assembly_id \
                      WHERE t1.fld_revision_id=%d \
                      AND t2.fld_parent_assembly='%s'"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t1.fld_sia_id, t2.fld_description, \
+            query = "SELECT t1.fld_risk_id, t2.fld_description, \
                             t1.fld_change_desc_1, t1.fld_change_category_1, \
                             t1.fld_change_effort_1, t1.fld_change_cost_1, \
                             t1.fld_change_desc_2, t1.fld_change_category_2, \
@@ -1319,7 +1320,7 @@ class Assembly:
                             t1.fld_category_value_3, t1.fld_category_value_4, \
                             t1.fld_category_value_5, t1.fld_category_value_6, \
                             t1.fld_category_value_7, t1.fld_category_value_8 \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t2.fld_assembly_id=t1.fld_assembly_id \
                      WHERE t1.fld_revision_id=? AND t2.fld_parent_assembly=?"
@@ -1384,16 +1385,6 @@ class Assembly:
         gobject_types = [gobject.type_from_name(types[ix])
             for ix in range(len(types))]
 
-        for i in range(8):
-            gobject_types.append(gobject.type_from_name('gint'))
-
-        query = "SELECT fld_category_noun, \
-                        fld_category_value \
-                 FROM tbl_risk_category"
-        risk_category = self._app.COMDB.execute_query(query,
-                                                      None,
-                                                      self._app.ComCnx)
-
         bg_color = _conf.RELIAFREE_COLORS[6]
         fg_color = _conf.RELIAFREE_COLORS[7]
 
@@ -1455,16 +1446,6 @@ class Assembly:
             if(i > 0):
                 column.set_reorderable(True)
 
-            self.tvwSIA.append_column(column)
-
-        # Add eight more invisible columns at the end to hold the integer
-        # values of the risk categories.
-        for i in range(7):
-            cell = gtk.CellRendererText()
-            column = gtk.TreeViewColumn()
-            column.set_visible(0)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=cols + i)
             self.tvwSIA.append_column(column)
 
         self.tvwSIA.set_tooltip_text(_("Displays the similar items analysis for the selected Assembly."))
@@ -1536,11 +1517,7 @@ class Assembly:
                             t1.fld_user_blob_3, t1.fld_user_float_1, \
                             t1.fld_user_float_2, t1.fld_user_float_3, \
                             t1.fld_user_int_1, t1.fld_user_int_2, \
-                            t1.fld_user_int_3, \
-                            t1.fld_category_value_1, t1.fld_category_value_2, \
-                            t1.fld_category_value_3, t1.fld_category_value_4, \
-                            t1.fld_category_value_5, t1.fld_category_value_6, \
-                            t1.fld_category_value_7, t1.fld_category_value_8 \
+                            t1.fld_user_int_3 \
                      FROM tbl_similar_item AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t2.fld_assembly_id=t1.fld_assembly_id \
@@ -1566,11 +1543,7 @@ class Assembly:
                             t1.fld_user_blob_3, t1.fld_user_float_1, \
                             t1.fld_user_float_2, t1.fld_user_float_3, \
                             t1.fld_user_int_1, t1.fld_user_int_2, \
-                            t1.fld_user_int_3, \
-                            t1.fld_category_value_1, t1.fld_category_value_2, \
-                            t1.fld_category_value_3, t1.fld_category_value_4, \
-                            t1.fld_category_value_5, t1.fld_category_value_6, \
-                            t1.fld_category_value_7, t1.fld_category_value_8 \
+                            t1.fld_user_int_3 \
                      FROM tbl_similar_item AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t2.fld_assembly_id=t1.fld_assembly_id \
@@ -2228,10 +2201,12 @@ class Assembly:
 
             # Find the revision ID.
             if(_conf.RELIAFREE_MODULES[0] == 1):
+                _revision = self._app.REVISION.revision_id
                 values = (self._app.REVISION.revision_id,
                           str(_conf.RELIAFREE_PROG_INFO[3]),
                           _parent, _descrip)
             else:
+                _revision = 0
                 values = (0, str(_conf.RELIAFREE_PROG_INFO[3]),
                           _parent, _descrip)
 
@@ -2295,6 +2270,24 @@ class Assembly:
 
             if not results:
                 self._app.debug_log.error("assembly.py: Failed to add new assembly to allocation table.")
+                return True
+
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_risk_analysis \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (%d, %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_risk_analysis \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (?, ?)"
+
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+
+            if not results:
+                self._app.debug_log.error("assembly.py: Failed to add new assembly to risk analysis table.")
                 return True
 
             if(_conf.BACKEND == 'mysql'):
@@ -2666,56 +2659,56 @@ class Assembly:
     def _calculate_risk(self):
         """ Calculates the Assembly Object risk analysis. """
 
-        model = self.tvwSIA.get_model()
+        model = self.tvwRisk.get_model()
         row = model.get_iter_first()
 
         while row is not None:
             sia = {}
 
             # Get the change category values.
-            sia['cat1'] = model.get_value(row, 62)
-            sia['cat2'] = model.get_value(row, 63)
-            sia['cat3'] = model.get_value(row, 64)
-            sia['cat4'] = model.get_value(row, 65)
-            sia['cat5'] = model.get_value(row, 66)
-            sia['cat6'] = model.get_value(row, 67)
-            sia['cat7'] = model.get_value(row, 68)
-            sia['cat8'] = model.get_value(row, 69)
+            sia['cat1'] = model.get_value(row, 53)
+            sia['cat2'] = model.get_value(row, 54)
+            sia['cat3'] = model.get_value(row, 55)
+            sia['cat4'] = model.get_value(row, 56)
+            sia['cat5'] = model.get_value(row, 57)
+            sia['cat6'] = model.get_value(row, 58)
+            sia['cat7'] = model.get_value(row, 59)
+            sia['cat8'] = model.get_value(row, 60)
 
             # Get the change cost values.
-            sia['cost1'] = float(model.get_value(row, 7))
-            sia['cost2'] = float(model.get_value(row, 12))
-            sia['cost3'] = float(model.get_value(row, 17))
-            sia['cost4'] = float(model.get_value(row, 22))
-            sia['cost5'] = float(model.get_value(row, 27))
-            sia['cost6'] = float(model.get_value(row, 32))
-            sia['cost7'] = float(model.get_value(row, 37))
-            sia['cost8'] = float(model.get_value(row, 42))
+            sia['cost1'] = float(model.get_value(row, 5))
+            sia['cost2'] = float(model.get_value(row, 9))
+            sia['cost3'] = float(model.get_value(row, 13))
+            sia['cost4'] = float(model.get_value(row, 17))
+            sia['cost5'] = float(model.get_value(row, 21))
+            sia['cost6'] = float(model.get_value(row, 25))
+            sia['cost7'] = float(model.get_value(row, 29))
+            sia['cost8'] = float(model.get_value(row, 33))
 
             # Get the user-defined float and integer values.
-            sia['uf1'] = float(model.get_value(row, 56))
-            sia['uf2'] = float(model.get_value(row, 57))
-            sia['uf3'] = float(model.get_value(row, 58))
-            sia['ui1'] = float(model.get_value(row, 59))
-            sia['ui2'] = float(model.get_value(row, 60))
-            sia['ui3'] = float(model.get_value(row, 61))
+            sia['uf1'] = float(model.get_value(row, 47))
+            sia['uf2'] = float(model.get_value(row, 48))
+            sia['uf3'] = float(model.get_value(row, 49))
+            sia['ui1'] = float(model.get_value(row, 50))
+            sia['ui2'] = float(model.get_value(row, 51))
+            sia['ui3'] = float(model.get_value(row, 52))
 
             # Get the user-defined functions.
-            sia['equation1'] = model.get_value(row, 43)
-            sia['equation2'] = model.get_value(row, 44)
-            sia['equation3'] = model.get_value(row, 45)
-            sia['equation4'] = model.get_value(row, 46)
-            sia['equation5'] = model.get_value(row, 47)
+            sia['equation1'] = model.get_value(row, 34)
+            sia['equation2'] = model.get_value(row, 35)
+            sia['equation3'] = model.get_value(row, 36)
+            sia['equation4'] = model.get_value(row, 37)
+            sia['equation5'] = model.get_value(row, 38)
 
             # Get the existing results.  This allows the use of the
             # results fields to be manually set to a float values by
             # the user.  Essentially creating five more user-defined
             # float values.
-            sia['res1'] = model.get_value(row, 48)
-            sia['res2'] = model.get_value(row, 49)
-            sia['res3'] = model.get_value(row, 50)
-            sia['res4'] = model.get_value(row, 51)
-            sia['res5'] = model.get_value(row, 52)
+            sia['res1'] = model.get_value(row, 39)
+            sia['res2'] = model.get_value(row, 40)
+            sia['res3'] = model.get_value(row, 41)
+            sia['res4'] = model.get_value(row, 42)
+            sia['res5'] = model.get_value(row, 43)
 
             keys = sia.keys()
             values = sia.values()
@@ -2726,33 +2719,33 @@ class Assembly:
             try:
                 results1 = eval(sia['equation1'])
             except SyntaxError:
-                results1 = model.get_value(row, 48)
+                results1 = model.get_value(row, 39)
 
             try:
                 results2 = eval(sia['equation2'])
             except SyntaxError:
-                results2 = model.get_value(row, 49)
+                results2 = model.get_value(row, 40)
 
             try:
                 results3 = eval(sia['equation3'])
             except SyntaxError:
-                results3 = model.get_value(row, 50)
+                results3 = model.get_value(row, 41)
 
             try:
                 results4 = eval(sia['equation4'])
             except SyntaxError:
-                results4 = model.get_value(row, 51)
+                results4 = model.get_value(row, 42)
 
             try:
                 results5 = eval(sia['equation5'])
             except SyntaxError:
-                results5 = model.get_value(row, 52)
+                results5 = model.get_value(row, 43)
 
-            model.set_value(row, 48, results1)
-            model.set_value(row, 49, results2)
-            model.set_value(row, 50, results3)
-            model.set_value(row, 51, results4)
-            model.set_value(row, 52, results5)
+            model.set_value(row, 39, results1)
+            model.set_value(row, 40, results2)
+            model.set_value(row, 41, results3)
+            model.set_value(row, 42, results4)
+            model.set_value(row, 43, results5)
 
             row = model.iter_next(row)
 
@@ -2771,39 +2764,39 @@ class Assembly:
             sia['hr'] = float(model.get_value(row, 2))
 
             # Get the change factor values.
-            sia['pi1'] = float(model.get_value(row, 5))
-            sia['pi2'] = float(model.get_value(row, 10))
-            sia['pi3'] = float(model.get_value(row, 15))
-            sia['pi4'] = float(model.get_value(row, 20))
-            sia['pi5'] = float(model.get_value(row, 25))
-            sia['pi6'] = float(model.get_value(row, 30))
-            sia['pi7'] = float(model.get_value(row, 35))
-            sia['pi8'] = float(model.get_value(row, 40))
+            sia['pi1'] = float(model.get_value(row, 4))
+            sia['pi2'] = float(model.get_value(row, 6))
+            sia['pi3'] = float(model.get_value(row, 8))
+            sia['pi4'] = float(model.get_value(row, 10))
+            sia['pi5'] = float(model.get_value(row, 12))
+            sia['pi6'] = float(model.get_value(row, 14))
+            sia['pi7'] = float(model.get_value(row, 16))
+            sia['pi8'] = float(model.get_value(row, 18))
 
             # Get the user-defined float and integer values.
-            sia['uf1'] = float(model.get_value(row, 56))
-            sia['uf2'] = float(model.get_value(row, 57))
-            sia['uf3'] = float(model.get_value(row, 58))
-            sia['ui1'] = float(model.get_value(row, 59))
-            sia['ui2'] = float(model.get_value(row, 60))
-            sia['ui3'] = float(model.get_value(row, 61))
+            sia['uf1'] = float(model.get_value(row, 32))
+            sia['uf2'] = float(model.get_value(row, 33))
+            sia['uf3'] = float(model.get_value(row, 34))
+            sia['ui1'] = float(model.get_value(row, 35))
+            sia['ui2'] = float(model.get_value(row, 36))
+            sia['ui3'] = float(model.get_value(row, 37))
 
             # Get the user-defined functions.
-            sia['equation1'] = model.get_value(row, 43)
-            sia['equation2'] = model.get_value(row, 44)
-            sia['equation3'] = model.get_value(row, 45)
-            sia['equation4'] = model.get_value(row, 46)
-            sia['equation5'] = model.get_value(row, 47)
+            sia['equation1'] = model.get_value(row, 19)
+            sia['equation2'] = model.get_value(row, 20)
+            sia['equation3'] = model.get_value(row, 21)
+            sia['equation4'] = model.get_value(row, 22)
+            sia['equation5'] = model.get_value(row, 23)
 
             # Get the existing results.  This allows the use of the
             # results fields to be manually set to a float values by
             # the user.  Essentially creating five more user-defined
             # float values.
-            sia['res1'] = model.get_value(row, 48)
-            sia['res2'] = model.get_value(row, 49)
-            sia['res3'] = model.get_value(row, 50)
-            sia['res4'] = model.get_value(row, 51)
-            sia['res5'] = model.get_value(row, 52)
+            sia['res1'] = model.get_value(row, 24)
+            sia['res2'] = model.get_value(row, 25)
+            sia['res3'] = model.get_value(row, 26)
+            sia['res4'] = model.get_value(row, 27)
+            sia['res5'] = model.get_value(row, 28)
 
             keys = sia.keys()
             values = sia.values()
@@ -2814,33 +2807,33 @@ class Assembly:
             try:
                 results1 = eval(sia['equation1'])
             except SyntaxError:
-                results1 = model.get_value(row, 48)
+                results1 = model.get_value(row, 24)
 
             try:
                 results2 = eval(sia['equation2'])
             except SyntaxError:
-                results2 = model.get_value(row, 49)
+                results2 = model.get_value(row, 25)
 
             try:
                 results3 = eval(sia['equation3'])
             except SyntaxError:
-                results3 = model.get_value(row, 50)
+                results3 = model.get_value(row, 26)
 
             try:
                 results4 = eval(sia['equation4'])
             except SyntaxError:
-                results4 = model.get_value(row, 51)
+                results4 = model.get_value(row, 27)
 
             try:
                 results5 = eval(sia['equation5'])
             except SyntaxError:
-                results5 = model.get_value(row, 52)
+                results5 = model.get_value(row, 28)
 
-            model.set_value(row, 48, results1)
-            model.set_value(row, 49, results2)
-            model.set_value(row, 50, results3)
-            model.set_value(row, 51, results4)
-            model.set_value(row, 52, results5)
+            model.set_value(row, 24, results1)
+            model.set_value(row, 25, results2)
+            model.set_value(row, 26, results3)
+            model.set_value(row, 27, results4)
+            model.set_value(row, 28, results5)
 
             row = model.iter_next(row)
 
@@ -2978,24 +2971,34 @@ class Assembly:
 
         return False
 
-    def _sia_function_edit(self):
+    def _function_edit(self, _index_):
         """
         Method to edit the Similar Item Analysis functions.
+
+        Keyword Arguments:
+        _index_ -- the index indicating whether to edit risk analysis or
+                   similar item analysis functions.
+                   0 = risk analysis
+                   1 = similar item analysis
         """
 
-        selection = self.tvwSIA.get_selection()
-        (model, row) = selection.get_selected()
+        if(_index_ == 0):
+            selection = self.tvwRisk.get_selection()
+            (model, row) = selection.get_selected()
+        elif(_index_ == 1):
+            selection = self.tvwSIA.get_selection()
+            (model, row) = selection.get_selected()
 
-        dialog = _widg.make_dialog(_("RelKit - Edit Similar Item Functions"),
+        dialog = _widg.make_dialog(_("RelKit - Edit Risk Analysis or Similar Item Functions"),
                                    self._app.winWorkBook)
 
         fixed = gtk.Fixed()
 
         y_pos = 10
 
-        label = _widg.make_label(_("You can define up to five functions using the Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
+        label = _widg.make_label(_("You can define up to five functions using the Risk Analysis or Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
 Assembly hazard rate is hr\n \
-Change category index is cat[1-8]\n \
+Risk category index is cat[1-8]\n \
 Change factor is pi[1-8]\n \
 Change cost is cost[1-8]\n \
 User float is uf[1-3]\n \
@@ -3007,38 +3010,57 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
         label = _widg.make_label(_("User function 1:"))
         txtFunction1 = _widg.make_entry()
-        txtFunction1.set_text(model.get_value(row, 43))
+        if(_index_ == 0):
+            txtFunction1.set_text(model.get_value(row, 34))
+        elif(_index_ == 1):
+            txtFunction1.set_text(model.get_value(row, 19))
+
         fixed.put(label, 5, y_pos)
         fixed.put(txtFunction1, 195, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("User function 2:"))
         txtFunction2 = _widg.make_entry()
-        txtFunction2.set_text(model.get_value(row, 44))
+        if(_index_ == 0):
+            txtFunction1.set_text(model.get_value(row, 35))
+        elif(_index_ == 1):
+            txtFunction2.set_text(model.get_value(row, 20))
         fixed.put(label, 5, y_pos)
         fixed.put(txtFunction2, 195, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("User function 3:"))
         txtFunction3 = _widg.make_entry()
-        txtFunction3.set_text(model.get_value(row, 45))
+        if(_index_ == 0):
+            txtFunction1.set_text(model.get_value(row, 36))
+        elif(_index_ == 1):
+            txtFunction3.set_text(model.get_value(row, 21))
         fixed.put(label, 5, y_pos)
         fixed.put(txtFunction3, 195, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("User function 4:"))
         txtFunction4 = _widg.make_entry()
-        txtFunction4.set_text(model.get_value(row, 46))
+        if(_index_ == 0):
+            txtFunction1.set_text(model.get_value(row, 37))
+        elif(_index_ == 1):
+            txtFunction4.set_text(model.get_value(row, 22))
         fixed.put(label, 5, y_pos)
         fixed.put(txtFunction4, 195, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("User function 5:"))
         txtFunction5 = _widg.make_entry()
-        txtFunction5.set_text(model.get_value(row, 47))
+        if(_index_ == 0):
+            txtFunction1.set_text(model.get_value(row, 38))
+        elif(_index_ == 1):
+            txtFunction5.set_text(model.get_value(row, 23))
         fixed.put(label, 5, y_pos)
         fixed.put(txtFunction5, 195, y_pos)
         y_pos += 30
+
+        chkApplyAll = gtk.CheckButton(label="Apply to all assemblies.")
+        fixed.put(chkApplyAll, 5, y_pos)
 
         fixed.show_all()
 
@@ -3047,17 +3069,36 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         response = dialog.run()
 
         if(response == gtk.RESPONSE_ACCEPT):
-            model.set_value(row, 43, txtFunction1.get_text())
-            model.set_value(row, 44, txtFunction2.get_text())
-            model.set_value(row, 45, txtFunction3.get_text())
-            model.set_value(row, 46, txtFunction4.get_text())
-            model.set_value(row, 47, txtFunction5.get_text())
+            _func1 = txtFunction1.get_text()
+            _func2 = txtFunction2.get_text()
+            _func3 = txtFunction3.get_text()
+            _func4 = txtFunction4.get_text()
+            _func5 = txtFunction5.get_text()
+            if(_index_ == 0):
+                _cols = [34, 35, 36, 37, 38]
+            elif(_index_ == 1):
+                _cols = [19, 20, 21, 22, 23]
+
+            if(chkApplyAll.get_active()):
+                while row is not None:
+                    model.set_value(row, _cols[0], _func1)
+                    model.set_value(row, _cols[1], _func2)
+                    model.set_value(row, _cols[2], _func3)
+                    model.set_value(row, _cols[3], _func4)
+                    model.set_value(row, _cols[4], _func5)
+                    row = model.iter_next(row)
+            else:
+                model.set_value(row, _cols[0], _func1)
+                model.set_value(row, _cols[1], _func2)
+                model.set_value(row, _cols[2], _func3)
+                model.set_value(row, _cols[3], _func4)
+                model.set_value(row, _cols[4], _func5)
 
         dialog.destroy()
 
         return False
 
-    def _sia_rollup(self):
+    def _risk_rollup(self):
         """
         Rolls-up the lower level similar item analysis change descriptions to
         the selected Assembly Object.
@@ -3075,7 +3116,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                             t1.fld_change_desc_4, t1.fld_change_desc_5, \
                             t1.fld_change_desc_6, t1.fld_change_desc_7, \
                             t1.fld_change_desc_8 \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t1.fld_assembly_id=t2.fld_assembly_id \
                      WHERE t2.fld_parent_assembly='%s'"
@@ -3085,7 +3126,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                             t1.fld_change_desc_4, t1.fld_change_desc_5, \
                             t1.fld_change_desc_6, t1.fld_change_desc_7, \
                             t1.fld_change_desc_8 \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t1.fld_assembly_id=t2.fld_assembly_id \
                      WHERE t2.fld_parent_assembly=?"
@@ -3109,7 +3150,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             query = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
                             SUM(t1.fld_result_3), SUM(t1.fld_result_4), \
                             SUM(t1.fld_result_5) \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t1.fld_assembly_id=t2.fld_assembly_id \
                      WHERE t2.fld_parent_assembly='%s'"
@@ -3117,7 +3158,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             query = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
                             SUM(t1.fld_result_3), SUM(t1.fld_result_4), \
                             SUM(t1.fld_result_5) \
-                     FROM tbl_similar_item AS t1 \
+                     FROM tbl_risk_analysis AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t1.fld_assembly_id=t2.fld_assembly_id \
                      WHERE t2.fld_parent_assembly=?"
@@ -3142,7 +3183,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
         # Update the database.
         if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_similar_item \
+            query = "UPDATE tbl_risk_analysis \
                      SET fld_change_desc_1='%s', fld_change_desc_2='%s', \
                          fld_change_desc_3='%s', fld_change_desc_4='%s', \
                          fld_change_desc_5='%s', fld_change_desc_6='%s', \
@@ -3152,7 +3193,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                          fld_result_5=%d \
                      WHERE fld_revision_id=%d AND fld_assembly_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_similar_item \
+            query = "UPDATE tbl_risk_analysis \
                      SET fld_change_desc_1=?, fld_change_desc_2=?, \
                          fld_change_desc_3=?, fld_change_desc_4=?, \
                          fld_change_desc_5=?, fld_change_desc_6=?, \
@@ -3176,7 +3217,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         model = self.tvwRisk.get_model()
-        model.foreach(self._sia_save_line_item)
+        model.foreach(self._risk_save_line_item)
 
         return False
 
@@ -3194,70 +3235,70 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         if(_conf.BACKEND == 'mysql'):
-            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[34]))
-            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[35]))
-            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[36]))
-            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[37]))
-            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[38]))
+            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[34]))
+            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[35]))
+            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[36]))
+            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[37]))
+            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[38]))
 
         elif(_conf.BACKEND == 'sqlite3'):
-            equation1 = model.get_value(row, self._sia_col_order[34])
-            equation2 = model.get_value(row, self._sia_col_order[35])
-            equation3 = model.get_value(row, self._sia_col_order[36])
-            equation4 = model.get_value(row, self._sia_col_order[37])
-            equation5 = model.get_value(row, self._sia_col_order[38])
+            equation1 = model.get_value(row, self._risk_col_order[34])
+            equation2 = model.get_value(row, self._risk_col_order[35])
+            equation3 = model.get_value(row, self._risk_col_order[36])
+            equation4 = model.get_value(row, self._risk_col_order[37])
+            equation5 = model.get_value(row, self._risk_col_order[38])
 
-        values = (model.get_value(row, self._sia_col_order[2]), \
-                  model.get_value(row, self._sia_col_order[3]), \
-                  model.get_value(row, self._sia_col_order[4]), \
-                  model.get_value(row, self._sia_col_order[5]), \
-                  model.get_value(row, self._sia_col_order[6]), \
-                  model.get_value(row, self._sia_col_order[7]), \
-                  model.get_value(row, self._sia_col_order[8]), \
-                  model.get_value(row, self._sia_col_order[9]), \
-                  model.get_value(row, self._sia_col_order[10]), \
-                  model.get_value(row, self._sia_col_order[11]), \
-                  model.get_value(row, self._sia_col_order[12]), \
-                  model.get_value(row, self._sia_col_order[13]), \
-                  model.get_value(row, self._sia_col_order[14]), \
-                  model.get_value(row, self._sia_col_order[15]), \
-                  model.get_value(row, self._sia_col_order[16]), \
-                  model.get_value(row, self._sia_col_order[17]), \
-                  model.get_value(row, self._sia_col_order[18]), \
-                  model.get_value(row, self._sia_col_order[19]), \
-                  model.get_value(row, self._sia_col_order[20]), \
-                  model.get_value(row, self._sia_col_order[21]), \
-                  model.get_value(row, self._sia_col_order[22]), \
-                  model.get_value(row, self._sia_col_order[23]), \
-                  model.get_value(row, self._sia_col_order[24]), \
-                  model.get_value(row, self._sia_col_order[25]), \
-                  model.get_value(row, self._sia_col_order[26]), \
-                  model.get_value(row, self._sia_col_order[27]), \
-                  model.get_value(row, self._sia_col_order[28]), \
-                  model.get_value(row, self._sia_col_order[29]), \
-                  model.get_value(row, self._sia_col_order[30]), \
-                  model.get_value(row, self._sia_col_order[31]), \
-                  model.get_value(row, self._sia_col_order[32]), \
-                  model.get_value(row, self._sia_col_order[33]), \
+        values = (model.get_value(row, self._risk_col_order[2]), \
+                  model.get_value(row, self._risk_col_order[3]), \
+                  model.get_value(row, self._risk_col_order[4]), \
+                  model.get_value(row, self._risk_col_order[5]), \
+                  model.get_value(row, self._risk_col_order[6]), \
+                  model.get_value(row, self._risk_col_order[7]), \
+                  model.get_value(row, self._risk_col_order[8]), \
+                  model.get_value(row, self._risk_col_order[9]), \
+                  model.get_value(row, self._risk_col_order[10]), \
+                  model.get_value(row, self._risk_col_order[11]), \
+                  model.get_value(row, self._risk_col_order[12]), \
+                  model.get_value(row, self._risk_col_order[13]), \
+                  model.get_value(row, self._risk_col_order[14]), \
+                  model.get_value(row, self._risk_col_order[15]), \
+                  model.get_value(row, self._risk_col_order[16]), \
+                  model.get_value(row, self._risk_col_order[17]), \
+                  model.get_value(row, self._risk_col_order[18]), \
+                  model.get_value(row, self._risk_col_order[19]), \
+                  model.get_value(row, self._risk_col_order[20]), \
+                  model.get_value(row, self._risk_col_order[21]), \
+                  model.get_value(row, self._risk_col_order[22]), \
+                  model.get_value(row, self._risk_col_order[23]), \
+                  model.get_value(row, self._risk_col_order[24]), \
+                  model.get_value(row, self._risk_col_order[25]), \
+                  model.get_value(row, self._risk_col_order[26]), \
+                  model.get_value(row, self._risk_col_order[27]), \
+                  model.get_value(row, self._risk_col_order[28]), \
+                  model.get_value(row, self._risk_col_order[29]), \
+                  model.get_value(row, self._risk_col_order[30]), \
+                  model.get_value(row, self._risk_col_order[31]), \
+                  model.get_value(row, self._risk_col_order[32]), \
+                  model.get_value(row, self._risk_col_order[33]), \
                   equation1, \
                   equation2, \
                   equation3, \
                   equation4, \
                   equation5, \
-                  model.get_value(row, self._sia_col_order[39]), \
-                  model.get_value(row, self._sia_col_order[40]), \
-                  model.get_value(row, self._sia_col_order[41]), \
-                  model.get_value(row, self._sia_col_order[42]), \
-                  model.get_value(row, self._sia_col_order[43]), \
-                  model.get_value(row, self._sia_col_order[44]), \
-                  model.get_value(row, self._sia_col_order[45]), \
-                  model.get_value(row, self._sia_col_order[46]), \
-                  model.get_value(row, self._sia_col_order[47]), \
-                  model.get_value(row, self._sia_col_order[48]), \
-                  model.get_value(row, self._sia_col_order[49]), \
-                  model.get_value(row, self._sia_col_order[50]), \
-                  model.get_value(row, self._sia_col_order[51]), \
-                  model.get_value(row, self._sia_col_order[52]), \
+                  model.get_value(row, self._risk_col_order[39]), \
+                  model.get_value(row, self._risk_col_order[40]), \
+                  model.get_value(row, self._risk_col_order[41]), \
+                  model.get_value(row, self._risk_col_order[42]), \
+                  model.get_value(row, self._risk_col_order[43]), \
+                  model.get_value(row, self._risk_col_order[44]), \
+                  model.get_value(row, self._risk_col_order[45]), \
+                  model.get_value(row, self._risk_col_order[46]), \
+                  model.get_value(row, self._risk_col_order[47]), \
+                  model.get_value(row, self._risk_col_order[48]), \
+                  model.get_value(row, self._risk_col_order[49]), \
+                  model.get_value(row, self._risk_col_order[50]), \
+                  model.get_value(row, self._risk_col_order[51]), \
+                  model.get_value(row, self._risk_col_order[52]), \
                   model.get_value(row, 53), \
                   model.get_value(row, 54), \
                   model.get_value(row, 55), \
@@ -3267,10 +3308,10 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                   model.get_value(row, 59), \
                   model.get_value(row, 60), \
                   self._app.REVISION.revision_id, \
-                  model.get_value(row, self._sia_col_order[0]))
+                  model.get_value(row, self._risk_col_order[0]))
 
         if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_similar_item \
+            query = "UPDATE tbl_risk_analysis \
                      SET fld_change_desc_1='%s', fld_change_category_1=%d, \
                          fld_change_effort_1=%f, fld_change_cost_1=%f, \
                          fld_change_desc_2='%s', fld_change_category_2=%d, \
@@ -3302,17 +3343,25 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                          fld_category_value_5=%d, fld_category_value_6=%d, \
                          fld_category_value_7=%d, fld_category_value_8=%d \
                      WHERE fld_revision_id=%d \
-                     AND fld_sia_id=%d"
+                     AND fld_risk_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_similar_item \
-                     SET fld_change_desc_1=?, fld_change_factor_1=?, \
-                         fld_change_desc_2=?, fld_change_factor_2=?, \
-                         fld_change_desc_3=?, fld_change_factor_3=?, \
-                         fld_change_desc_4=?, fld_change_factor_4=?, \
-                         fld_change_desc_5=?, fld_change_factor_5=?, \
-                         fld_change_desc_6=?, fld_change_factor_6=?, \
-                         fld_change_desc_7=?, fld_change_factor_7=?, \
-                         fld_change_desc_8=?, fld_change_factor_8=?, \
+            query = "UPDATE tbl_risk_analysis \
+                     SET fld_change_desc_1=?, fld_change_category_1=?, \
+                         fld_change_effort_1=?, fld_change_cost_1=?, \
+                         fld_change_desc_2=?, fld_change_category_2=?, \
+                         fld_change_effort_2=?, fld_change_cost_2=?, \
+                         fld_change_desc_3=?, fld_change_category_3=?, \
+                         fld_change_effort_3=?, fld_change_cost_3=?, \
+                         fld_change_desc_4=?, fld_change_category_4=?, \
+                         fld_change_effort_4=?, fld_change_cost_4=?, \
+                         fld_change_desc_5=?, fld_change_category_5=?, \
+                         fld_change_effort_5=?, fld_change_cost_5=?, \
+                         fld_change_desc_6=?, fld_change_category_6=?, \
+                         fld_change_effort_6=?, fld_change_cost_6=?, \
+                         fld_change_desc_7=?, fld_change_category_7=?, \
+                         fld_change_effort_7=?, fld_change_cost_7=?, \
+                         fld_change_desc_8=?, fld_change_category_8=?, \
+                         fld_change_effort_8=?, fld_change_cost_8=?, \
                          fld_function_1=?, fld_function_2=?, \
                          fld_function_3=?, fld_function_4=?, \
                          fld_function_5=?, \
@@ -3328,7 +3377,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                          fld_category_value_5=?, fld_category_value_6=?, \
                          fld_category_value_7=?, fld_category_value_8=? \
                      WHERE fld_revision_id=? \
-                     AND fld_sia_id=?"
+                     AND fld_risk_id=?"
 
         results = self._app.DB.execute_query(query,
                                              values,
@@ -3336,7 +3385,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                                              commit=True)
 
         if not results:
-            self._app.debug_log.error("assembly.py: Failed to save assembly to similar item table.")
+            self._app.debug_log.error("assembly.py: Failed to save assembly to risk analysis table.")
             return True
 
         return False
@@ -3414,14 +3463,6 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                   model.get_value(row, self._sia_col_order[35]), \
                   model.get_value(row, self._sia_col_order[36]), \
                   model.get_value(row, self._sia_col_order[37]), \
-                  model.get_value(row, 38), \
-                  model.get_value(row, 39), \
-                  model.get_value(row, 40), \
-                  model.get_value(row, 41), \
-                  model.get_value(row, 42), \
-                  model.get_value(row, 43), \
-                  model.get_value(row, 44), \
-                  model.get_value(row, 45), \
                   self._app.REVISION.revision_id, \
                   model.get_value(row, self._sia_col_order[0]))
 
@@ -3444,11 +3485,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                          fld_user_blob_3='%s', fld_user_float_1=%f, \
                          fld_user_float_2=%f, fld_user_float_3=%f, \
                          fld_user_int_1=%d, fld_user_int_2=%d, \
-                         fld_user_int_3=%d, \
-                         fld_category_value_1=%d, fld_category_value_2=%d, \
-                         fld_category_value_3=%d, fld_category_value_4=%d, \
-                         fld_category_value_5=%d, fld_category_value_6=%d, \
-                         fld_category_value_7=%d, fld_category_value_8=%d \
+                         fld_user_int_3=%d \
                      WHERE fld_revision_id=%d \
                      AND fld_sia_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
@@ -3470,11 +3507,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                          fld_user_blob_3=?, fld_user_float_1=?, \
                          fld_user_float_2=?, fld_user_float_3=?, \
                          fld_user_int_1=?, fld_user_int_2=?, \
-                         fld_user_int_3=?, \
-                         fld_category_value_1=?, fld_category_value_2=?, \
-                         fld_category_value_3=?, fld_category_value_4=?, \
-                         fld_category_value_5=?, fld_category_value_6=?, \
-                         fld_category_value_7=?, fld_category_value_8=? \
+                         fld_user_int_3=? \
                      WHERE fld_revision_id=? \
                      AND fld_sia_id=?"
 
@@ -3590,14 +3623,20 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                 # set active and predicted values equal to specified values.
                 if(combo.get_active() == 2):    # Specified hazard rate.
                     ht = model.get_value(row, 34)
-                    mtbf = 1.0 / ht
+                    try:
+                        mtbf = 1.0 / ht
+                    except ZeroDivisionError:
+                        mtbf = 0.0
                     model.set_value(row, 28, ht)
                     model.set_value(row, 32, ht)
                     model.set_value(row, 50, mtbf)
                     model.set_value(row, 51, mtbf)
                 elif(combo.get_active() == 3):  # Specified MTBF.
                     mtbf = model.get_value(row, 51)
-                    ht = 1.0 / mtbf
+                    try:
+                        ht = 1.0 / mtbf
+                    except ZeroDivisionError:
+                        ht = 0.0
                     model.set_value(row, 28, ht)
                     model.set_value(row, 32, ht)
                     model.set_value(row, 34, ht)
@@ -3958,7 +3997,18 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnEdit.hide()
             self.btnAnalyze.set_tooltip_text(_("Allocates the reliability to the child assemblies/parts."))
             self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
-        elif(page_num == 2):                # Similar items tab
+        elif(page_num == 2):                # Risk analysis tab
+            self.btnAddItem.hide()
+            self.btnRemoveItem.hide()
+            self.btnAnalyze.show()
+            self.btnSaveResults.show()
+            self.btnRollup.show()
+            self.btnEdit.show()
+            self.btnAnalyze.set_tooltip_text(_("Performs a risk analysis of changes to the selected assembly."))
+            self.btnSaveResults.set_tooltip_text(_("Saves the risk analysis results for the selected assembly."))
+            self.btnRollup.set_tooltip_text(_("Summarizes the lower level risk analyses."))
+            self.btnEdit.set_tooltip_text(_("Create/edit current risk analysis functions."))
+        elif(page_num == 3):                # Similar items tab
             self.btnAddItem.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
@@ -3969,7 +4019,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnSaveResults.set_tooltip_text(_("Saves the similar item analysis results for the selected assembly."))
             self.btnRollup.set_tooltip_text(_("Summarizes the lower level similar item analyses."))
             self.btnEdit.set_tooltip_text(_("Create/edit current similar item analysis functions."))
-        elif(page_num == 3):                # Assessment inputs tab
+        elif(page_num == 4):                # Assessment inputs tab
             self.btnAddItem.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
@@ -3977,14 +4027,14 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnRollup.hide()
             self.btnEdit.hide()
             self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RelKit Program Database."))
-        elif(page_num == 4):                # Assessment results tab
+        elif(page_num == 5):                # Assessment results tab
             self.btnAddItem.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.hide()
             self.btnSaveResults.hide()
             self.btnRollup.hide()
             self.btnEdit.hide()
-        elif(page_num == 5):                # FMEA/FMECA tab
+        elif(page_num == 6):                # FMEA/FMECA tab
             self.btnAddItem.show()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
@@ -3996,7 +4046,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnAnalyze.set_tooltip_text(_("Calculates the mode and item criticality for the selected allocation method."))
             self.btnSaveResults.set_tooltip_text(_("Saves the FMEA/FMECA for the selected assembly."))
             self.btnRollup.set_tooltip_text(_("Summarizes the lower level FMEA/FMECA results."))
-        elif(page_num == 6):                # Maintenance planning tab
+        elif(page_num == 7):                # Maintenance planning tab
             self.btnAddItem.show()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
@@ -4007,7 +4057,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnRemoveItem.set_tooltip_text(_("Remove the currently selected maintenance activity."))
             #self.btnAnalyze.set_tooltip_text(_("Calculates the selected allocation method."))
             #self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
-        elif(page_num == 7):                # RG planning tab
+        elif(page_num == 8):                # RG planning tab
             self.btnAddItem.show()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
@@ -4018,7 +4068,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnRemoveItem.set_tooltip_text(_("Remove the currently selected reliability growth plan."))
             #self.btnAnalyze.set_tooltip_text(_("Calculates the selected allocation method."))
             #self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
-        elif(page_num == 8):                # RG tracking tab
+        elif(page_num == 9):                # RG tracking tab
             self.btnAddItem.show()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
@@ -4068,7 +4118,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             elif(_button_ == 'Rollup'):
                 self._risk_rollup()
             elif(_button_ == 'Edit'):
-                self._sia_function_edit()
+                self._function_edit(_index_=0)
         elif(_page_ == 3):                  # Similar item analysis tab.
             if(_button_ == 'Analyze'):
                 self._calculate_sia()
@@ -4077,7 +4127,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             elif(_button_ == 'Rollup'):
                 self._sia_rollup()
             elif(_button_ == 'Edit'):
-                self._sia_function_edit()
+                self._function_edit(_index_=1)
         elif(_page_ == 4):                  # Assessment inputs tab.
             if(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)

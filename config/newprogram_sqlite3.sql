@@ -464,48 +464,40 @@ CREATE TABLE "tbl_revisions" (
 
 INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision the system.',0,'');
 
-CREATE TABLE "tbl_similar_item" (
+CREATE TABLE "tbl_risk_analysis" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_sia_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_risk_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_change_desc_1" BLOB DEFAULT ('No changes'),
     "fld_change_category_1" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_1" REAL DEFAULT (1),
     "fld_change_effort_1" INTEGER DEFAULT (0),
     "fld_change_cost_1" REAL DEFAULT (0),
     "fld_change_desc_2" BLOB DEFAULT ('No changes'),
     "fld_change_category_2" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_2" REAL DEFAULT (1),
     "fld_change_effort_2" INTEGER DEFAULT (0),
     "fld_change_cost_2" REAL DEFAULT (0),
     "fld_change_desc_3" BLOB DEFAULT ('No changes'),
     "fld_change_category_3" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_3" REAL DEFAULT (1),
     "fld_change_effort_3" INTEGER DEFAULT (0),
     "fld_change_cost_3" REAL DEFAULT (0),
     "fld_change_desc_4" BLOB DEFAULT ('No changes'),
     "fld_change_category_4" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_4" REAL DEFAULT (1),
     "fld_change_effort_4" INTEGER DEFAULT (0),
     "fld_change_cost_4" REAL DEFAULT (0),
     "fld_change_desc_5" BLOB DEFAULT ('No changes'),
     "fld_change_category_5" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_5" REAL DEFAULT (1),
     "fld_change_effort_5" INTEGER DEFAULT (0),
     "fld_change_cost_5" REAL DEFAULT (0),
     "fld_change_desc_6" BLOB DEFAULT ('No changes'),
     "fld_change_category_6" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_6" REAL DEFAULT (1),
     "fld_change_effort_6" INTEGER DEFAULT (0),
     "fld_change_cost_6" REAL DEFAULT (0),
     "fld_change_desc_7" BLOB DEFAULT ('No changes'),
     "fld_change_category_7" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_7" REAL DEFAULT (1),
     "fld_change_effort_7" INTEGER DEFAULT (0),
     "fld_change_cost_7" REAL DEFAULT (0),
     "fld_change_desc_8" BLOB DEFAULT ('No changes'),
     "fld_change_category_8" VARCHAR(32) NOT NULL DEFAULT ('None'),
-    "fld_change_factor_8" REAL DEFAULT (1),
     "fld_change_effort_8" INTEGER DEFAULT (0),
     "fld_change_cost_8" REAL DEFAULT (0),
     "fld_function_1" VARCHAR(128) NOT NULL DEFAULT (''),
@@ -537,7 +529,50 @@ CREATE TABLE "tbl_similar_item" (
     "fld_category_value_8" INTEGER DEFAULT (0)
 );
 
-INSERT INTO "tbl_similar_item" VALUES(0,0,1,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'No changes','None',1.0,0,0.0,'','','','','',0.0,0.0,0.0,0.0,0.0,NULL,NULL,NULL,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "tbl_risk_analysis" VALUES(0,0,1,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'','','','','',0.0,0.0,0.0,0.0,0.0,NULL,NULL,NULL,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,0);
+
+CREATE TABLE "tbl_similar_item" (
+    "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_sia_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_change_desc_1" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_1" REAL DEFAULT (1),
+    "fld_change_desc_2" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_2" REAL DEFAULT (1),
+    "fld_change_desc_3" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_3" REAL DEFAULT (1),
+    "fld_change_desc_4" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_4" REAL DEFAULT (1),
+    "fld_change_desc_5" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_5" REAL DEFAULT (1),
+    "fld_change_desc_6" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_6" REAL DEFAULT (1),
+    "fld_change_desc_7" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_7" REAL DEFAULT (1),
+    "fld_change_desc_8" BLOB DEFAULT ('No changes'),
+    "fld_change_factor_8" REAL DEFAULT (1),
+    "fld_function_1" VARCHAR(128) NOT NULL DEFAULT (''),
+    "fld_function_2" VARCHAR(128) NOT NULL DEFAULT (''),
+    "fld_function_3" VARCHAR(128) NOT NULL DEFAULT (''),
+    "fld_function_4" VARCHAR(128) NOT NULL DEFAULT (''),
+    "fld_function_5" VARCHAR(128) NOT NULL DEFAULT (''),
+    "fld_result_1" REAL DEFAULT (0),
+    "fld_result_2" REAL DEFAULT (0),
+    "fld_result_3" REAL DEFAULT (0),
+    "fld_result_4" REAL DEFAULT (0),
+    "fld_result_5" REAL DEFAULT (0),
+    "fld_user_blob_1" BLOB,
+    "fld_user_blob_2" BLOB,
+    "fld_user_blob_3" BLOB,
+    "fld_user_float_1" REAL DEFAULT (0),
+    "fld_user_float_2" REAL DEFAULT (0),
+    "fld_user_float_3" REAL DEFAULT (0),
+    "fld_user_int_1" INTEGER DEFAULT (0),
+    "fld_user_int_2" INTEGER DEFAULT (0),
+    "fld_user_int_3" INTEGER DEFAULT (0)
+);
+
+INSERT INTO "tbl_similar_item" VALUES(0,0,1,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'','','','','',0.0,0.0,0.0,0.0,0.0,NULL,NULL,NULL,0.0,0.0,0.0,0,0,0);
 
 CREATE TABLE "tbl_software" (
     "fld_revision_id" INTEGER DEFAULT (0),

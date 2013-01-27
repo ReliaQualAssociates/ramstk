@@ -802,6 +802,10 @@ class Dataset:
         button -- the gtk.ToolButton that called this method.
         """
 
+        import operator
+        import itertools
+        import numpy
+
         from math import log, sqrt
         from scipy.stats import norm
 
@@ -813,18 +817,40 @@ class Dataset:
         _type_ = self.model.get_value(self.selected_row, 6)
         _reltime_ = self.model.get_value(self.selected_row, 9)
 
-        if(_analysis_ == 1):
+        if(_analysis_ == 1):                # MCF
             query = "SELECT fld_unit, fld_left_interval, \
                             fld_right_interval, fld_tbf \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_status=1 \
-                     ORDER BY fld_left_interval ASC" % _dataset_
+                     ORDER BY fld_unit ASC, \
+                              fld_left_interval ASC" % _dataset_
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
-            print results
-        elif(_analysis_ == 2):
+
+            # Create a list of unique units and then get a count of the
+            # total number of unique units.
+            _units_ = []
+            idx = operator.itemgetter(0)
+            y = itertools.imap(idx, results)
+            for i in y:
+                _units_.append(i)
+            _units_ = list(set(_units_))
+
+            # Create a list of unique failures times and then get a counts of
+            # the total number of unique failurestimes.
+            _times_ = []
+            idx = operator.itemgetter(2)
+            y = itertools.imap(idx, results)
+            for i in y:
+                _times_.append(i)
+            _times_ = list(set(_times_))
+            _times_.sort()
+
+            _calc.mean_cumulative_function(_units_, _times_, results)
+
+        elif(_analysis_ == 2):              # Kaplan-Meier
             query = "SELECT fld_right_interval, fld_status \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \

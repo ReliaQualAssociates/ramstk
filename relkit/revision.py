@@ -5,7 +5,7 @@ to the revision of the Program.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -141,7 +141,7 @@ class Revision:
 
         # Save requirement button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Saves requirement changes to the RelKit Program Database."))
+        button.set_tooltip_text(_("Saves revision changes to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -150,7 +150,7 @@ class Revision:
 
         # Add requirement button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new requirement to the RelKit Program Database."))
+        button.set_tooltip_text(_("Adds a new revision to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
@@ -159,7 +159,7 @@ class Revision:
 
         # Delete requirement button
         button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
-        button.set_tooltip_text(_("Removes the currently selected requirement from the RelKit Program Database."))
+        button.set_tooltip_text(_("Removes the currently selected revision from the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -168,7 +168,7 @@ class Revision:
 
         # Calculate requirement button
         button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        button.set_tooltip_text(_("Calculate the currently selected requirement."))
+        button.set_tooltip_text(_("Calculate the currently selected revision."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
@@ -627,94 +627,118 @@ class Revision:
         # Increment the assembly index.
         _conf.RELIAFREE_PREFIX[5] = _conf.RELIAFREE_PREFIX[5] + 1
 
-        values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
-                  '-', _descrip)
+        query="SELECT fld_parent_assembly, fld_description \
+               FROM tbl_system WHERE fld_revision_id=0"
+        systems = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_system \
-                     (fld_revision_id, fld_entered_by, \
-                      fld_parent_assembly, fld_description) \
-                     VALUES (%d, '%s', '%s', '%s')"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_system \
-                     (fld_revision_id, fld_entered_by, \
-                      fld_parent_assembly, fld_description) \
-                     VALUES (?, ?, ?, ?)"
+        for i in range(len(systems)):
+            values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
+                      systems[i][0], systems[i][1])
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_system \
+                         (fld_revision_id, fld_entered_by, \
+                          fld_parent_assembly, fld_description) \
+                         VALUES (%d, '%s', '%s', '%s')"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_system \
+                         (fld_revision_id, fld_entered_by, \
+                          fld_parent_assembly, fld_description) \
+                         VALUES (?, ?, ?, ?)"
 
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to add new assembly to system table.")
-            return True
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT LAST_INSERT_ID()"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT seq \
-                     FROM sqlite_sequence \
-                     WHERE name='tbl_system'"
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to add new assembly to system table.")
+                return True
 
-        assembly_id = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            if(_conf.BACKEND == 'mysql'):
+                query = "SELECT LAST_INSERT_ID()"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "SELECT seq \
+                         FROM sqlite_sequence \
+                         WHERE name='tbl_system'"
 
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to retrieve new assembly ID.")
+            assembly_id = self._app.DB.execute_query(query,
+                                                     None,
+                                                     self._app.ProgCnx)
 
-        values = (revision_id[0][0], assembly_id[0][0])
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_allocation \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (%d, %d)"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_allocation \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (?, ?)"
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to retrieve new assembly ID.")
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+            values = (revision_id[0][0], assembly_id[0][0])
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_allocation \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (%d, %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_allocation \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (?, ?)"
 
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to add new assembly to allocation table.")
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_similar_item \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (%d, %d)"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_similar_item \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (?, ?)"
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to add new assembly to allocation table.")
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_risk_analysis \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (%d, %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_risk_analysis \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (?, ?)"
 
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to add new assembly to similar items table.")
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_functional_matrix \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES(%d, %d)"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_functional_matrix \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES(?, ?)"
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to add new assembly to risk analysis table.")
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_similar_item \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (%d, %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_similar_item \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES (?, ?)"
 
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to add new assembly to functional matrix table.")
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to add new assembly to similar items table.")
+
+            if(_conf.BACKEND == 'mysql'):
+                query = "INSERT INTO tbl_functional_matrix \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES(%d, %d)"
+            elif(_conf.BACKEND == 'sqlite3'):
+                query = "INSERT INTO tbl_functional_matrix \
+                         (fld_revision_id, fld_assembly_id) \
+                         VALUES(?, ?)"
+
+            results = self._app.DB.execute_query(query,
+                                                 values,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+
+            if not results:
+                self._app.debug_log.error("revision.py: Failed to add new assembly to functional matrix table.")
 
         self.load_tree()
 
@@ -770,10 +794,13 @@ class Revision:
 
         return False
 
-    def revision_save(self):
+    def revision_save(self, button=None):
         """
         Saves the REVISION Object gtk.TreeModel information to the
         program's MySQL or SQLite3 database.
+
+        Keyword Argumesnts:
+        button -- the gtk.Button widgets that called this method.
         """
 
         self.model.foreach(self._save_line_item)

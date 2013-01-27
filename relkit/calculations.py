@@ -2196,3 +2196,33 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
 
     return(_KM_)
 
+def mean_cumulative_function(units, times, data, alpha=0.9):
+    """ This functions estimates the mean cumulative function for a population
+        of items.
+
+        Keyword Argumesnts:
+        fail  -- an m by n matrix where m = number of unique failure times and
+                 n = number of unique machines.  Each cell in the matrix
+                 contains the number of failures of unit i at time j.
+        obs   -- an m by n matrix where m = number of unique failure imes and
+                 n = number of unique machines.  Each cell in the matrix
+                 contain a 0 or 1 indicator variable to indicate whether unit
+                 i is still being monitored at time j.
+        alpha -- the confidence bound interval.  Defaults to 0.90.
+    """
+
+    import numpy
+
+    _m_ = len(units)
+    _n_ = len(times)
+
+    data = numpy.asarray(data)
+
+    _d_ = numpy.zeros(shape=(_n_, _m_))
+    _delta_ = numpy.zeros(shape=(_n_, _m_))
+
+    for i in range(_n_):
+        print times[i], numpy.where(float(data[:, 2]) == times[i])[0]
+
+    #print _d_
+    #print _delta_
