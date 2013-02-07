@@ -2,7 +2,7 @@
 """ This file contains various calculations used by the RelKit Project. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -37,7 +37,7 @@ import gettext
 _ = gettext.gettext
 
 # Import R library if on a POSIX system.
-if(name == "posix"):
+if(name == 'posix'):
     try:
         from rpy2 import robjects
         from rpy2.robjects import r as R
@@ -2106,7 +2106,7 @@ def calculate_field_ttf(_dates_):
 
     return(ttf.days)
 
-def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
+def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
@@ -2118,10 +2118,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
     _reltime_  -- time at which to stop analysis (helps eliminate stretched
                   plots due to small number of events at high hours).
     _conf_     -- the confidence level of the KM estimates (default is 75%).
-    _type_     -- the confidence type:
-                  1 = lower one-sided.
-                  2 = upper one-sided.
-                  3 = two-sided (default).
+    _type_     -- the confidence interval type for the KM estimates.
     """
 
     from math import log, sqrt
@@ -2132,97 +2129,208 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=75.0, _type_=3):
     _dataset_ = [i for i in _dataset_ if i[0] > 0.0]
     if(_reltime_ != 0.0):
         _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
+        times = [i[0] for i in _dataset_ if i[0] <= _reltime_]
+        status = [i[1] for i in _dataset_ if i[0] <= _reltime_]
 
-    # Determine the confidence bound z-value.
-    if(_type_ == 3):                        # Two-sided bounds.
-        _conf_ = (100.0 + _conf_) / 200.0
-    else:                                   # One-sided bounds.
-        _conf_ = _conf_ / 100.0
-    _z_norm_ = norm.ppf(_conf_)
+    # If Rpy2 is available, we will use that to perform the KM estimations.
+    # Returns an object with the following information:
+    #    0 = total number of subjects in each curve.
+    #    1 = the time points at which the curve has a step.
+    #    2 = the number of subjects at risk at t.
+    #    3 = the number of events that occur at time t.
+    # 4 = the boolean inverse of three.
+    #    5 = the estimate of survival at time t+0. This may be a vector or a
+    #        matrix.
+    #    6 = type of survival censoring.
+    #    7 = the standard error of the cumulative hazard or -log(survival).
+    #    8 = upper confidence limit for the survival curve.
+    #    9 = lower confidence limit for the survival curve.
+    #   10 = the approximation used to compute the confidence limits.
+    #   11 = the level of the confidence limits, e.g. 90 or 95%.
+    #   12 = the returned value from the na.action function, if any.
+    #        It will be used in the printout of the curve, e.g., the number of
+    #        observations deleted due to missing values.
+    if(__USE_RPY__):
+        print "Probably using Windoze."
 
-    # Get the total number of events.
-    _n_ = len(_dataset_)
+    elif(__USE_RPY2__):
+        survival = importr('survival')
 
-    _Sh_ = 1.0
-    muhat = 0.0
-    z = 0.0
-    _KM_ = []
-    i = 0
-    ti = float(_dataset_[0][0])
-    tj = 0.0
+        times = robjects.FloatVector(times)
+        status = robjects.FloatVector(status)
 
-    while (_n_ > 0):
-        # Find the total number of failures and suspensions in interval [i-1, i].
-        _d_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 1)])
-        _s_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 0)])
+        surv = survival.Surv(times, status)
+        robjects.globalenv['surv'] = surv
+        fmla = robjects.Formula('surv ~ 1')
+        _KM_ = survival.survfit(fmla)
 
-        # Estimate the probability of failing in interval [i-1, i].
-        _Si_ = 1.0 - (float(_d_) / float(_n_))
+        return(_KM_)
 
-        # Estimate the probability of survival up to time i [S(ti)].
-        _Sh_ = _Si_ * _Sh_
+    else:
 
-        # Calculate the standard error for S(ti).
-        z = z + 1.0 / ((_n_ - _d_ + 1) * _n_)
-        _se_ = sqrt(_Si_ * _Si_ * z)
+        # Determine the confidence bound z-value.
+        _z_norm_ = norm.ppf(_conf_)
 
-        # Calculate confidence bounds for S(ti).
-        _ll_ = _Sh_ - _z_norm_ * _se_
-        _ul_ = _Sh_ + _z_norm_ * _se_
-        if(_type_ == 1):
-            _ul_ = _Sh_
-        if(_type_ == 2):
-            _ll_ = _Sh_
+        # Get the total number of events.
+        _n_ = len(_dataset_)
+        N = _n_
 
-        # Calculate the cumulative hazard rate.
-        try:
-            _H_ = -log(_Sh_)
-        except ValueError:
-            _H_ = _H_
+        _KM_ = []
+        _Sh_ = 1.0
+        muhat = 0.0
+        var = 0.0
+        z = 0.0
+        ti = float(_dataset_[0][0])
+        tj = 0.0
+        i = 0
 
-        # Calculate the mean.
-        muhat = muhat + _Sh_ * (ti - tj)
-        tj = ti
-        ti = _dataset_[i][0]
+        while (_n_ > 0):
+            # Find the total number of failures and
+            # suspensions in interval [i - 1, i].
+            _d_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 1)])
+            _s_ = len([t for t in _dataset_ if (t[0] == _dataset_[i][0] and t[1] == 0)])
 
-        _KM_.append([_dataset_[i][0], _n_, _d_, _Si_, _Sh_,
-                     _se_, _ll_, _ul_, _H_, muhat])
-        #if(_s_ > 0):
-        #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
-        #                 _se_, _ll_, _ul_, _H_])
+            # Estimate the probability of failing in interval [i - 1, i].
+            _Si_ = 1.0 - (float(_d_) / float(_n_))
 
-        _n_ = _n_ - _d_ - _s_
-        i = i + _d_ + _s_
+            # Estimate the probability of survival up to time i [S(ti)].
+            _Sh_ = _Si_ * _Sh_
 
-    return(_KM_)
+            # Calculate the standard error for S(ti).
+            z = z + 1.0 / ((_n_ - _d_ + 1) * _n_)
+            _se_ = sqrt(_Si_ * _Si_ * z)
 
-def mean_cumulative_function(units, times, data, alpha=0.9):
+            # Calculate confidence bounds for S(ti).
+            _ll_ = _Sh_ - _z_norm_ * _se_
+            _ul_ = _Sh_ + _z_norm_ * _se_
+            if(_type_ == 1 or _ul_ > 1.0):
+                _ul_ = _Sh_
+            if(_type_ == 2 or _ll_ < 0.0):
+                _ll_ = _Sh_
+
+            # Calculate the cumulative hazard rate.
+            try:
+                _H_ = -log(_Sh_)
+            except ValueError:
+                _H_ = _H_
+
+            # Calculate the mean.
+            muhat = muhat + _Sh_ * (ti - tj)
+            tj = ti
+            ti = _dataset_[i][0]
+
+            _KM_.append([ti, _n_, _d_, _Si_, _Sh_, _se_, _ll_, _ul_, _H_, muhat, var])
+            #if(_s_ > 0):
+            #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
+            #                 _se_, _ll_, _ul_, _H_])
+
+            _n_ = _n_ - _d_ - _s_
+            i = i + _d_ + _s_
+
+        return(_KM_)
+
+def mean_cumulative_function(units, times, data, _conf_=0.75, _type_=3):
     """ This functions estimates the mean cumulative function for a population
         of items.
 
         Keyword Argumesnts:
-        fail  -- an m by n matrix where m = number of unique failure times and
-                 n = number of unique machines.  Each cell in the matrix
-                 contains the number of failures of unit i at time j.
-        obs   -- an m by n matrix where m = number of unique failure imes and
-                 n = number of unique machines.  Each cell in the matrix
-                 contain a 0 or 1 indicator variable to indicate whether unit
-                 i is still being monitored at time j.
-        alpha -- the confidence bound interval.  Defaults to 0.90.
+        units  --
+        times  --
+        data -- a data.frame or matrix where:
+                Column 1 is unit ID
+                Column 2 is event time
+                Column 3 is event type coded as:
+                    0 = recurrence
+                    1 = first appearance (left censoring time)
+                    2 = last appearance (right censoring time)
+        _conf_ -- the confidence level of the KM estimates (default is 75%).
     """
 
     import numpy
 
-    _m_ = len(units)
-    _n_ = len(times)
+    from math import sqrt
+    from scipy.stats import norm
 
-    data = numpy.asarray(data)
+    if(__USE_RPY__):
+        print "Must be on Windoze."
 
-    _d_ = numpy.zeros(shape=(_n_, _m_))
-    _delta_ = numpy.zeros(shape=(_n_, _m_))
+    elif(__USE_RPY2__):
 
-    for i in range(_n_):
-        print times[i], numpy.where(float(data[:, 2]) == times[i])[0]
+        data = numpy.asarray(data)
+        # Order events data by time, unit id, event type
+        data <- data[R.order(data[,2], data[,1], data[,3]),]
+        print data
+        #m <- matrix(0, nrow=nrow(events), ncol=4)
+        #colnames(m) <- c("time", "Nrisk", "incr", "mcf")
 
-    #print _d_
-    #print _delta_
+        # copy event times
+        #m[, 1] <- data[, 2]
+
+        # number of units observed at each time
+        #m[, 2] <- cumsum(ifelse(data[, 3] == 2, -1, data[, 3]))
+
+        # incremental risk
+        #irecurrence <- data[,3] == 0
+        #m[irecurrence, 3] <- 1 / m[irecurrence, 2]
+
+        # cumulative risk (MCF estimate)
+        #m[, 4] <- cumsum(m[, 3])
+
+        # return results (matrix rows with recurrent events)
+        #m[data[,3] == 0, ]
+
+    else:
+
+        # Determine the confidence bound z-value.
+        _z_norm_ = norm.ppf(_conf_)
+
+        _m_ = len(units)
+        _n_ = len(times)
+
+        datad = []
+        for i in range(len(data)):
+            if(data[i][4] == 1):
+                datad.append(data[i])
+        data = numpy.asarray(data)
+        datad = numpy.asarray(datad)
+
+        _d_ = numpy.zeros(shape=(_m_, _n_))
+        _delta_ = numpy.zeros(shape=(_m_, _n_))
+
+        for i in range(_n_):
+            k = numpy.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
+            _u_ = numpy.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
+            for j in range(len(_u_)):
+                k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+                _delta_[k, 0:i+1] = 1
+
+        for i in range(_n_):
+            k = numpy.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
+            _u_ = numpy.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
+            for j in range(len(_u_)):
+                k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+                _d_[k, i] += 1
+
+        _delta_ = _delta_.transpose()
+        _d_ = _d_.transpose()
+
+        _delta_dot = _delta_.sum(axis=1)
+        _d_dot = (_d_ * _delta_).sum(axis=1)
+        _d_bar = _d_dot / _delta_dot
+
+        _MCF_ = []
+        _x_ = (_delta_.transpose() / _delta_dot).transpose()
+        _y_ = (_d_.transpose() - _d_bar).transpose()
+        for i in range(len(times)):
+            muhat = _d_bar[0:i+1].sum(axis=0)
+
+            # Estimate the variance.
+            _z_ = (_x_[0:i+1] * _y_[0:i+1])
+            _var_ = ((_z_.sum(axis=0))**2).sum(axis=0)
+
+            _ll_ = muhat - _z_norm_ * sqrt(_var_)
+            _ul_ = muhat + _z_norm_ * sqrt(_var_)
+
+            _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i], _d_bar[i], _var_, _ll_, _ul_, muhat])
+
+        return(_MCF_)

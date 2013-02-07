@@ -156,18 +156,26 @@ class Dataset:
             self.debug_app._log.error("dataset.py: Failed to create Analysis Results tab.")
 
 # Create the Plot tab widgets.
-        self.figSurvival = Figure(figsize=(6, 4))
-        self.pltSurvival = FigureCanvas(self.figSurvival)
-        self.axSurvival = self.figSurvival.add_subplot(111)
-        self.figProbability = Figure(figsize=(6, 4))
-        self.pltProbability = FigureCanvas(self.figProbability)
-        self.axProbability = self.figProbability.add_subplot(111)
-        self.figLogHazard = Figure(figsize=(6, 4))
-        self.pltLogHazard = FigureCanvas(self.figLogHazard)
-        self.axLogHazard = self.figLogHazard.add_subplot(111)
-        self.figHazardRate = Figure(figsize=(6, 4))
-        self.pltHazardRate = FigureCanvas(self.figHazardRate)
-        self.axHazardRate = self.figHazardRate.add_subplot(111)
+        height = (self._app.winWorkBook.height * 0.01) / 2.0
+        width = (self._app.winWorkBook.width * 0.01) / 2.0
+        self.figFigure1 = Figure(figsize=(width, height))
+        self.pltPlot1 = FigureCanvas(self.figFigure1)
+        self.pltPlot1.mpl_connect('button_press_event', self._expand_plot)
+        self.axAxis1 = self.figFigure1.add_subplot(111)
+        self.figFigure2 = Figure(figsize=(width, height))
+        self.pltPlot2 = FigureCanvas(self.figFigure2)
+        self.pltPlot2.mpl_connect('button_press_event', self._expand_plot)
+        self.axAxis2 = self.figFigure2.add_subplot(111)
+        self.figFigure3 = Figure(figsize=(width, height))
+        self.pltPlot3 = FigureCanvas(self.figFigure3)
+        self.pltPlot3.mpl_connect('button_press_event', self._expand_plot)
+        self.axAxis3 = self.figFigure3.add_subplot(111)
+        self.figFigure4 = Figure(figsize=(width, height))
+        self.pltPlot4 = FigureCanvas(self.figFigure4)
+        self.pltPlot4.mpl_connect('button_press_event', self._expand_plot)
+        self.axAxis4 = self.figFigure4.add_subplot(111)
+        self.vbxPlot1 = gtk.VBox()
+        self.vbxPlot2 = gtk.VBox()
 
         if self._plot_widgets_create():
             self.debug_app._log.error("dataset.py: Failed to create Plot widgets.")
@@ -179,6 +187,49 @@ class Dataset:
 
         self.vbxDataset.pack_start(toolbar, expand=False)
         self.vbxDataset.pack_start(self.notebook)
+
+    def _expand_plot(self, event):
+        """ Method to display a plot in it's own window.
+
+            Keyword Arguments:
+            event -- the matplotlib MouseEvent that called this method.
+        """
+
+        plot = event.canvas
+        parent = plot.get_parent()
+
+        height = self._app.winWorkBook.height
+        width = self._app.winWorkBook.width / 2.0
+
+        if event.dblclick:
+            window = gtk.Window()
+            window.set_skip_pager_hint(True)
+            window.set_skip_taskbar_hint(True)
+            window.set_default_size(width, height)
+            window.set_border_width(5)
+            window.set_position(gtk.WIN_POS_NONE)
+            window.set_title(_("RelKit Plot"))
+
+            window.connect('delete_event', self._close_plot, plot, parent)
+
+            plot.reparent(window)
+
+            window.show_all()
+
+        return False
+
+    def _close_plot(self, window, event, plot, parent):
+        """ Method to close the plot.
+
+            window -- the gtk.Window that is being destroyed.
+            event  -- the gtk.gdk.Event that called this method.
+            plot   -- the matplotlib FigureCanvas that was expaneded.
+            parent -- the origirnal parent widget for the plot.
+        """
+
+        plot.reparent(parent)
+
+        return False
 
     def _toolbar_create(self):
         """
@@ -767,17 +818,15 @@ class Dataset:
         frame.add(hbox)
         frame.show_all()
 
-        vbox = gtk.VBox()
-        hbox.pack_start(vbox)
+        hbox.pack_start(self.vbxPlot1)
 
-        vbox.pack_start(self.pltSurvival)
-        vbox.pack_start(self.pltProbability)
+        self.vbxPlot1.pack_start(self.pltPlot1)
+        self.vbxPlot1.pack_start(self.pltPlot3)
 
-        vbox = gtk.VBox()
-        hbox.pack_start(vbox)
+        hbox.pack_start(self.vbxPlot2)
 
-        vbox.pack_start(self.pltLogHazard)
-        vbox.pack_start(self.pltHazardRate)
+        self.vbxPlot2.pack_start(self.pltPlot2)
+        self.vbxPlot2.pack_start(self.pltPlot4)
 
         # Insert the tab.
         label = gtk.Label()
@@ -794,6 +843,62 @@ class Dataset:
 
         return False
 
+    def _load_plot(self, axis, plot, x, y1=None, y2=None, y3=None,
+                   _title_="", _xlab_="", _ylab_="", _type_=1,
+                   _marker_=['g-', 'r-', 'b-']):
+        """ Method to load the matplotlib plots.
+
+            Keyword Arguments:
+            axis     -- the matplotlib axis object.
+            plot     -- the matplotlib plot object.
+            x        -- the x values to plot.
+            y1       -- the first data set y values to plot.
+            y2       -- the second data set y values to plot.
+            y3       -- the third data set y values to plot.
+            _title_  -- the title for the plot.
+            _xlab_   -- the x asis label for the plot.
+            _ylab_   -- the y axis label for the plot.
+            _type_   -- the type of line to plot (1=step, 2=plot).
+            _marker_ -- the marker to use on the plot.
+        """
+
+        n_points = len(x)
+
+        axis.cla()
+
+        axis.grid(True, which='both')
+        axis.set_title(_title_)
+        axis.set_xlabel(_xlab_)
+        axis.set_ylabel(_ylab_)
+
+        if(y1 is not None):
+            if(_type_ == 1):
+                line, = axis.step(x, y1, _marker_[0], where='mid')
+            elif(_type_ == 2):
+                line, = axis.plot(x, y1, _marker_[0])
+            for i in range(n_points):
+                line.set_ydata(y1)
+
+        if(y2 is not None):
+            if(_type_ == 1):
+                line2, = axis.step(x, y2, _marker_[1], where='mid')
+            elif(_type_ == 2):
+                line2, = axis.plot(x, y2, _marker_[1])
+            for i in range(n_points):
+                line2.set_ydata(y2)
+
+        if(y3 is not None):
+            if(_type_ == 1):
+                line3, = axis.step(x, y3, _marker_[2], where='mid')
+            elif(_type_ == 2):
+                line3, = axis.plot(x, y3, _marker_[2])
+            for i in range(n_points):
+                line3.set_ydata(y3)
+
+        plot.draw()
+
+        return False
+
     def _calculate(self, button):
         """
         Method to execute the selected analysis.
@@ -807,48 +912,212 @@ class Dataset:
         import numpy
 
         from math import log, sqrt
-        from scipy.stats import norm
+        from scipy.stats import chi2, norm
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         _dataset_ = self.model.get_value(self.selected_row, 0)
+        _name = self.model.get_value(self.selected_row, 2)
         _analysis_ = self.model.get_value(self.selected_row, 4)
         _conf_ = self.model.get_value(self.selected_row, 5)
         _type_ = self.model.get_value(self.selected_row, 6)
         _reltime_ = self.model.get_value(self.selected_row, 9)
 
+        if(_type_ == 3):                    # Two-sided bounds.
+            _conf_ = (100.0 + _conf_) / 200.0
+        else:                               # One-sided bounds.
+            _conf_ = _conf_ / 100.0
+
         if(_analysis_ == 1):                # MCF
-            query = "SELECT fld_unit, fld_left_interval, \
-                            fld_right_interval, fld_tbf \
+            # Create a list of unique units.
+            query = "SELECT DISTINCT(fld_unit) \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
-                     AND fld_status=1 \
-                     ORDER BY fld_unit ASC, \
-                              fld_left_interval ASC" % _dataset_
+                     AND fld_right_interval <= %f \
+                     AND fld_right_interval > 0.0" % (_dataset_, _reltime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
 
-            # Create a list of unique units and then get a count of the
-            # total number of unique units.
             _units_ = []
-            idx = operator.itemgetter(0)
-            y = itertools.imap(idx, results)
-            for i in y:
-                _units_.append(i)
-            _units_ = list(set(_units_))
+            for i in range(len(results)):
+                _units_.append(results[i][0])
 
-            # Create a list of unique failures times and then get a counts of
-            # the total number of unique failurestimes.
+            # Create a list of unique failures times.
+            query = "SELECT DISTINCT(fld_right_interval) \
+                     FROM tbl_survival_data \
+                     WHERE fld_dataset_id=%d \
+                     AND fld_right_interval <= %f \
+                     AND fld_right_interval > 0.0" % (_dataset_, _reltime_)
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx)
+
             _times_ = []
-            idx = operator.itemgetter(2)
-            y = itertools.imap(idx, results)
-            for i in y:
-                _times_.append(i)
-            _times_ = list(set(_times_))
-            _times_.sort()
+            for i in range(len(results)):
+                _times_.append(results[i][0])
 
-            _calc.mean_cumulative_function(_units_, _times_, results)
+            # Get the entire dataset.
+            #fld_left_interval,, fld_tbf
+            query = "SELECT fld_unit,  \
+                            fld_right_interval, \
+                            fld_status \
+                     FROM tbl_survival_data \
+                     WHERE fld_dataset_id=%d \
+                     AND fld_right_interval <= %f \
+                     AND fld_right_interval > 0.0 \
+                     ORDER BY fld_unit ASC, \
+                              fld_left_interval ASC" % (_dataset_, _reltime_)
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx)
+
+            # 0 = Event Time ti. (string)
+            # 1 = Delta array at time ti. (array of integers)
+            # 2 = d array at time ti. (array of integers)
+            # 3 = Sum of delta at time ti. (integer)
+            # 4 = Sum of d at time ti. (integer)
+            # 5 = d bar at time ti. (float)
+            # 6 = Variance of d bar at time ti. (float)
+            # 7 = Lower bound on mean cumulative function at time ti. (float)
+            # 8 = Upper bound on mean cumulative fucntion at time ti. (float)
+            # 9 = Mean cumulative function at time ti. (float)
+            nonpar = _calc.mean_cumulative_function(_units_, _times_, results, _conf_)
+
+            # Get:
+            #   Total number of records.
+            #   List of unique failures times.
+            #   List of MCF at each unique failure time.
+            #   List of MCF lower bound at each unique failure time.
+            #   List of MCF upper bound at each unique failure time.
+            #   Total number of failures.
+            #   Maximum observed time.
+            n_points = len(nonpar)
+            times = [x[0] for x in nonpar]
+            muhat = [x[9] for x in nonpar]
+            muhatll = [x[7] for x in nonpar]
+            muhatul = [x[8] for x in nonpar]
+            ta = max(times)
+
+            # Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test
+            # statistics.  These statistics are used to test for HPP vs. NHPP
+            # in the data.
+            mhb = 0.0
+            zlp = 0.0
+            tbf = []
+            failnum = []
+            for i in range(n_points):
+                mhb += log(times[i] / ta)
+                zlp += times[i] / ta
+                tbf.append(results[i][3])
+                failnum.append(i)
+
+            mhb = -2.0 * mhb
+            zlp = (zlp - (n_points / 2.0)) / sqrt(n_points / 12.0)
+            tau = numpy.mean(tbf)
+            S = numpy.std(tbf)
+            zlr = zlp * tau / S
+
+            # Find the covariance and variance of the interarrival times.  Use
+            # these to calculate the sample serial correlation coefficient.
+            cov = numpy.cov(tbf[0:n_points-1], tbf[1:n_points])
+            var = numpy.var(tbf)
+            rho = sqrt(n_points - 1) * cov[0][1] / var
+
+            # Get the critical values for the chi-square and standard normal
+            # distributions.
+            _chi_sq = chi2.ppf(1.0 - _conf_, 2*n_points)
+            _z_norm = norm.ppf((1.0 + _conf_)/2.0)
+
+            # Load the table with the MCF results.
+            model = self.tvwNonParResults.get_model()
+            model.clear()
+            for i in range(n_points):
+                _data_ = [str(nonpar[i][0]), int(nonpar[i][3]),
+                          int(nonpar[i][4]), float(nonpar[i][5]),
+                          float(nonpar[i][6]), float(nonpar[i][9]),
+                          float(nonpar[i][7]), float(nonpar[i][8])]
+                model.append(_data_)
+
+            column = self.tvwNonParResults.get_column(1)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>Delta .</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(2)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>d.</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(3)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>d bar</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(4)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>se MCF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(5)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>MCF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(6)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>MCF Lower\nBound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(7)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>MCF Upper\nBound</span>"))
+            column.set_widget(label)
+
+            # Set the values in the results widgets.
+            self.txtMTBF.set_text("")
+            self.txtMTBFLL.set_text("")
+            self.txtMTBFUL.set_text("")
+
+            self.txtMHB.set_text(str(fmt.format(mhb)))
+            self.txtLP.set_text(str(fmt.format(zlp)))
+            self.txtLR.set_text(str(fmt.format(zlr)))
+
+            # Plot the mean cumulative function.
+            self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
+                            y2=muhatll, y3=muhatul,
+                            _title_=_("MCF Plot of %s") % _name,
+                            _xlab_=_("Time"),
+                            _ylab_=_("Mean Cumulative Function [mu(t)]"),
+                            _marker_=['g-', 'r-', 'b-'])
+
+            for plot in self.vbxPlot1.get_children():
+                self.vbxPlot1.remove(plot)
+
+            self.vbxPlot1.pack_start(self.pltPlot1)
+
+            # Plot the run sequence plot.
+            self._load_plot(self.axAxis2, self.pltPlot2,
+                            x=failnum, y1=tbf, y2=None, y3=None,
+                            _title_=_("Run Sequence Plot of %s") % _name,
+                            _xlab_=_("Failure Number"),
+                            _ylab_=_("Time Between Failure"),
+                            _type_=2, _marker_=['g-'])
+
+            # Plot the lag 1 plot.
+            self._load_plot(self.axAxis4, self.pltPlot4,
+                            x=tbf[0:n_points-1], y1=tbf[1:n_points],
+                            y2=None, y3=None,
+                            _title_=_("Lag 1 Plot of %s") % _name,
+                            _xlab_=_("Lagged Time Between Failure"),
+                            _ylab_=_("Time Between Failure"),
+                            _type_=2, _marker_=['go'])
+
+            for plot in self.vbxPlot2.get_children():
+                self.vbxPlot2.remove(plot)
+
+            self.vbxPlot2.pack_start(self.pltPlot2)
+            self.vbxPlot2.pack_start(self.pltPlot4)
 
         elif(_analysis_ == 2):              # Kaplan-Meier
             query = "SELECT fld_right_interval, fld_status \
@@ -860,155 +1129,155 @@ class Dataset:
                                                  None,
                                                  self._app.ProgCnx)
 
-            # 0 = Event Time (string)
-            # 1 = number at risk at beginning of interval i (integer)
-            # 2 = number of events in interval [i - 1, 1] (integer)
-            # 3 = probability of survival in interval [i - 1, 1] (float)
-            # 4 = probability of survival up to time i S(ti) (float)
-            # 5 = Standard error of S(ti) (float)
-            # 6 = Lower bound on S(ti)
-            # 7 = Upper bound on S(ti)
-            # 8 = Cumulative hazard function [H(t)]
-            # 9 = Estiamte of the mean up to time i
-            nonpar = _calc.kaplan_meier(results, _reltime_, _conf_, _type_)
+            #    0 = total number of subjects in each curve.
+            #    1 = the time points at which the curve has a step.
+            #    2 = the number of subjects at risk at t.
+            #    3 = the number of events that occur at time t.
+            # 4 = the boolean inverse of three.
+            #    5 = the estimate of survival at time t+0. This may be a vector
+            #        or a matrix.
+            #    6 = type of survival censoring.
+            #    7 = the standard error of the cumulative hazard or
+            #        -log(survival).
+            #    8 = upper confidence limit for the survival curve.
+            #    9 = lower confidence limit for the survival curve.
+            #   10 = the approximation used to compute the confidence limits.
+            #   11 = the level of the confidence limits, e.g. 90 or 95%.
+            #   12 = the returned value from the na.action function, if any.
+            #        It will be used in the printout of the curve, e.g., the
+            #        number of observations deleted due to missing values.
+            nonpar = _calc.kaplan_meier(results, _reltime_, _conf_)
 
-            n_points = len(nonpar)
-            times = [x[0] for x in nonpar]
-            Shat = [x[4] for x in nonpar]
-            Shatll = [x[6] for x in nonpar]
-            Shatul = [x[7] for x in nonpar]
-            _H_ = [x[8] for x in nonpar]
-            muhat = [x[9] for x in nonpar]
+            times = nonpar[1]
+            Shat = nonpar[5]
+            Shatul = nonpar[8]
+            Shatll = nonpar[9]
 
-            logH = []
+            n_points = len(times)
+
+            muhat = 0.0
+            ti = times[0]
+            tj = 0.0
             logtimes = []
+            _H_ = []
+            logH = []
             zShat = []
             _h_ = []
             for i in range(n_points):
-                logH.append(log(_H_[i]))
                 logtimes.append(log(times[i]))
+
+                # Calculate the cumulative hazard rate.
+                try:
+                    _H_.append(-log(Shat[i]))
+                except ValueError:
+                    _H_.append(_H_[i - 1])
+
+                logH.append(log(_H_[i]))
                 zShat.append(norm.ppf(Shat[i]))
                 _h_.append(_H_[i] / times[i])
 
+                # Calculate the mean.
+                muhat = muhat + Shat[i] * (ti - tj)
+                tj = ti
+                ti = times[i]
+
+            # Load the table with the Kaplan-Meier results.
             model = self.tvwNonParResults.get_model()
             model.clear()
-
             for i in range(n_points):
-                _data_ = [str(nonpar[i][0]), int(nonpar[i][1]),
-                          int(nonpar[i][2]), float(nonpar[i][3]),
-                          float(nonpar[i][4]), float(nonpar[i][5]),
-                          float(nonpar[i][6]), float(nonpar[i][7])]
+                _data_ = [str(nonpar[1][i]), int(nonpar[2][i]),
+                          int(nonpar[3][i]), float(nonpar[5][i]),
+                          float(nonpar[7][i]), float(nonpar[5][i]),
+                          float(nonpar[9][i]), float(nonpar[8][i])]
                 model.append(_data_)
 
-            self.txtMTBF.set_text(str(fmt.format(muhat[n_points - 1])))
-            #self.txtMTBFLL.set_text(str(fmt.format(muhatll)))
-            #self.txtMTBFUL.set_text(str(fmt.format(muhatul)))
+            column = self.tvwNonParResults.get_column(1)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>Number at\nRisk</span>"))
+            column.set_widget(label)
 
-            _name = self.model.get_value(self.selected_row, 2)
+            column = self.tvwNonParResults.get_column(2)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>Number\nFailing</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(3)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>p</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(4)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>se S(t)</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(5)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>S(t)</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(6)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>S(t) Lower\nBound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(7)
+            label = column.get_widget()
+            label.set_markup(_("<span weight='bold'>S(t) Upper\nBound</span>"))
+            column.set_widget(label)
+
+            # Set the values in the results widgets.
+            self.txtMTBF.set_text(str(fmt.format(muhat)))
+            #self.txtMTBFLL.set_text(str(fmt.format(muhatll[n_points - 1])))
+            #self.txtMTBFUL.set_text(str(fmt.format(muhatul[n_points - 1])))
 
             # Plot the survival curve.
-            self.axSurvival.cla()
-
-            self.axSurvival.grid(True, which='both')
-            self.axSurvival.set_title(_("Kaplan-Meier Plot of %s") % _name)
-            self.axSurvival.set_xlabel(_("Time"))
-            self.axSurvival.set_ylabel(_("Survival Function [S(t)]"))
-
-            lineSurv, = self.axSurvival.step(times, Shat, 'g-', where='mid')
-            lineSurv2, = self.axSurvival.step(times, Shatll, 'r-', where='mid')
-            lineSurv3, = self.axSurvival.step(times, Shatul, 'b-', where='mid')
-
-            for i in range(n_points):
-                lineSurv.set_ydata(Shat)
-                lineSurv2.set_ydata(Shatll)
-                lineSurv3.set_ydata(Shatul)
-
-            self.pltSurvival.draw()
-
-            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            self.figSurvival.legend((lineSurv, lineSurv2, lineSurv3),
-                                    ("Survival Function", labell,
-                                    labelu),
-                                    'upper right')
-
-            # Plot the cumulative hazard curve.
-            self.axProbability.cla()
-
-            self.axProbability.grid(True, which='both')
-            self.axProbability.set_title(_("Cumulative Hazard Plot of %s") % _name)
-            self.axProbability.set_xlabel(_("Time"))
-            self.axProbability.set_ylabel(_("Cumulative Hazard Function [H(t)]"))
-
-            lineProb, = self.axProbability.step(times, _H_, 'g-', where='mid')
-            #lineProb2, = self.axProbability.step(times, _Hll_, 'r-', where='mid')
-            #lineProb3, = self.axProbability.step(times, _Hul_, 'b-', where='mid')
-
-            for i in range(n_points):
-                lineProb.set_ydata(_H_)
-                #lineProb2.set_ydata(_Hll_)
-                #lineProb3.set_ydata(_Hul_)
-
-            self.pltProbability.draw()
-
-            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            #self.figProbability.legend((lineProb, lineProb2, lineProb3),
-            #                        ("Cumulative Hazard Function", labell,
-            #                        labelu),
-            #                        'upper right')
-
-            # Plot the log cumulative hazard curve.
-            self.axLogHazard.cla()
-
-            self.axLogHazard.grid(True, which='both')
-            self.axLogHazard.set_title(_("Log Hazard Plot of %s") % _name)
-            self.axLogHazard.set_xlabel(_("Time"))
-            self.axLogHazard.set_ylabel(_("Log Hazard Function [H(t)]"))
-
-            lineLogHaz, = self.axLogHazard.step(logtimes, logH, 'g-', where='mid')
-            #lineLogHaz2, = self.axLogHazard.step(log(times), log(_Hll_), 'r-', where='mid')
-            #lineLogHaz3, = self.axLogHazard.step(log(times), log(_Hul_), 'b-', where='mid')
-
-            for i in range(n_points):
-                lineLogHaz.set_ydata(logH)
-                #lineLogHaz2.set_ydata(_Hll_)
-                #lineLogHaz3.set_ydata(_Hul_)
-
-            self.pltLogHazard.draw()
-
-            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            #self.figLogHazard.legend((lineProb, lineProb2, lineProb3),
-            #                        ("Log Cumulative Hazard Function", labell,
-            #                        labelu),
-            #                        'upper right')
+            self._load_plot(self.axAxis1, self.pltPlot1,
+                            x=times, y1=Shat,
+                            y2=Shatll, y3=Shatul,
+                            _title_=_("Kaplan-Meier Plot of %s") % _name,
+                            _xlab_=_("Time"),
+                            _ylab_=_("Survival Function [S(t)]"),
+                            _marker_=['g-', 'r-', 'b-'])
 
             # Plot the hazard rate curve.
-            self.axHazardRate.cla()
+            self._load_plot(self.axAxis3, self.pltPlot3,
+                            x=times, y1=_h_,
+                            y2=None, y3=None,
+                            _title_=_("Hazard Rate Plot of %s") % _name,
+                            _xlab_=_("Time"),
+                            _ylab_=_("Hazard Rate [h(t)]"),
+                            _marker_=['g-', 'r-', 'b-'])
 
-            self.axHazardRate.grid(True, which='both')
-            self.axHazardRate.set_title(_("Z(S) Plot of %s") % _name)
-            self.axHazardRate.set_xlabel(_("Time"))
-            self.axHazardRate.set_ylabel(_("Z(S(t))"))
+            for plot in self.vbxPlot1.get_children():
+                self.vbxPlot1.remove(plot)
 
-            lineHazRate, = self.axHazardRate.step(logtimes, _h_, 'g-', where='mid')
-            #lineHazRate2, = self.axHazardRate.step(log(times), log(_Hll_), 'r-', where='mid')
-            #lineHazRate3, = self.axHazardRate.step(log(times), log(_Hul_), 'b-', where='mid')
+            self.vbxPlot1.pack_start(self.pltPlot1)
+            self.vbxPlot1.pack_start(self.pltPlot3)
 
-            for i in range(n_points):
-                lineHazRate.set_ydata(_h_)
-                #lineHazRate2.set_ydata(_Hll_)
-                #lineHazRate3.set_ydata(_Hul_)
+            # Plot the cumulative hazard curve.
+            self._load_plot(self.axAxis2, self.pltPlot2,
+                            x=times, y1=_H_,
+                            y2=None, y3=None,
+                            _title_=_("Cumulative Hazard Plot of %s") % _name,
+                            _xlab_=_("Time"),
+                            _ylab_=_("Cumulative Hazard Function [H(t)]"),
+                            _marker_=['g-', 'r-', 'b-'])
 
-            self.pltHazardRate.draw()
+            # Plot the log cumulative hazard curve.
+            self._load_plot(self.axAxis4, self.pltPlot4,
+                            x=times, y1=logH,
+                            y2=None, y3=None,
+                            _title_=_("Log Hazard Plot of %s") % _name,
+                            _xlab_=_("Time"),
+                            _ylab_=_("Log Hazard Function [log H(t)]"),
+                            _marker_=['g-', 'r-', 'b-'])
 
-            labell = "Lower %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            labelu = "Upper %s%% Bound" % str('{0:0.4g}'.format(_conf_))
-            #self.figHazardRate.legend((lineProb, lineProb2, lineProb3),
-            #                        ("Log Cumulative Hazard Function", labell,
-            #                        labelu),
-            #                        'upper right')
+            for plot in self.vbxPlot2.get_children():
+                self.vbxPlot2.remove(plot)
+
+            self.vbxPlot2.pack_start(self.pltPlot2)
+            self.vbxPlot2.pack_start(self.pltPlot4)
 
     def dataset_save(self, button):
         """

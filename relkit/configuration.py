@@ -26,6 +26,16 @@ import widgets as _widg
 
 #TODO: Create GUI to manipulate user configuration values.
 
+
+grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
+               3.203, 3.298, 3.902, 3.910, 4.000, 4.247, 4.411, 4.456,
+               4.517, 4.899, 4.910, 5.676, 5.755, 6.137, 6.221, 6.311,
+               6.613, 6.975, 7.335, 8.158, 8.498, 8.690, 9.042, 9.330,
+               9.394, 9.426, 9.872, 10.191, 11.511, 11.575, 12.1, 12.126,
+               12.368, 12.681, 12.795, 13.399, 13.668, 13.78, 13.877, 14.007,
+               14.028, 14.035, 14.173, 14.173, 14.449, 14.587, 14.610, 15.07,
+               16.0]
+
 # Path to the directory containing icon files used by RelKit.  Defaults to
 # /usr/share/pixmaps/reliafree/.
 ICON_DIR = ''
@@ -147,7 +157,7 @@ RELIAFREE_COM_INFO = []
 #    Position 04: User password
 RELIAFREE_PROG_INFO = []
 
-# Variables to hold the back end database type for the program and common
+# Variables to hold the backend database type for the program and common
 # database.
 BACKEND = ''
 COM_BACKEND = ''
@@ -176,7 +186,7 @@ class RelKitConf:
         """
 
         if(name == 'posix'):
-            self._OS = 'Linux'
+            self.OS = 'Linux'
             _SITEDIR = '/etc/reliafree/'
             _DATADIR = '/usr/share/reliafree/'
             _ICONDIR = '/usr/share/pixmaps/reliafree/'
@@ -184,7 +194,7 @@ class RelKitConf:
             _HOMEDIR = environ['HOME']
 
         elif(name == 'nt'):
-            self._OS = 'Windows'
+            self.OS = 'Windows'
             _HOMEDIR = environ['USERPROFILE']
             _DATADIR = _HOMEDIR + '/.config/reliafree/'
             _SITEDIR = _HOMEDIR + '/.config/reliafree/'
