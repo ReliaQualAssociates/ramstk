@@ -2237,11 +2237,11 @@ def mean_cumulative_function(units, times, data, _conf_=0.75, _type_=3):
         units  --
         times  --
         data -- a data.frame or matrix where:
+                Column 0 is event time
                 Column 1 is unit ID
-                Column 2 is event time
-                Column 3 is event type coded as:
-                    0 = recurrence
-                    1 = first appearance (left censoring time)
+                Column 2 is event type coded as:
+                    0 = first appearance (left censoring time)
+                    1 = recurrence
                     2 = last appearance (right censoring time)
         _conf_ -- the confidence level of the KM estimates (default is 75%).
     """
@@ -2251,86 +2251,87 @@ def mean_cumulative_function(units, times, data, _conf_=0.75, _type_=3):
     from math import sqrt
     from scipy.stats import norm
 
+    # Determine the confidence bound z-value.
+    _z_norm_ = norm.ppf(_conf_)
+
+    _m_ = len(units)
+    _n_ = len(times)
+
+    datad = []
+    for i in range(len(data)):
+        if(data[i][4] == 1):
+            datad.append(data[i])
+    data = numpy.asarray(data)
+    datad = numpy.asarray(datad)
+
+    _d_ = numpy.zeros(shape=(_m_, _n_))
+    _delta_ = numpy.zeros(shape=(_m_, _n_))
+
+    for i in range(_n_):
+        k = numpy.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
+        _u_ = numpy.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
+        for j in range(len(_u_)):
+            k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+            _delta_[k, 0:i+1] = 1
+
+    for i in range(_n_):
+        k = numpy.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
+        _u_ = numpy.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
+        for j in range(len(_u_)):
+            k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+            _d_[k, i] += 1
+
+    _delta_ = _delta_.transpose()
+    _d_ = _d_.transpose()
+
+    _delta_dot = _delta_.sum(axis=1)
+    _d_dot = (_d_ * _delta_).sum(axis=1)
+    _d_bar = _d_dot / _delta_dot
+
+    _MCF_ = []
+    _x_ = (_delta_.transpose() / _delta_dot).transpose()
+    _y_ = (_d_.transpose() - _d_bar).transpose()
+    for i in range(len(times)):
+        muhat = _d_bar[0:i+1].sum(axis=0)
+
+        # Estimate the variance.
+        _z_ = (_x_[0:i+1] * _y_[0:i+1])
+        _var_ = ((_z_.sum(axis=0))**2).sum(axis=0)
+
+        _ll_ = muhat - _z_norm_ * sqrt(_var_)
+        _ul_ = muhat + _z_norm_ * sqrt(_var_)
+
+        _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i], _d_bar[i], _var_, _ll_, _ul_, muhat])
+
+    return(_MCF_)
+
+def parametric_fit(_dataset_, _reltime_, _dist_='exponential'):
+
+    from math import log, sqrt
+    from scipy.stats import norm
+
+    # Eliminate zero time failures and failures occurring after any
+    # user-supplied upper limit.
+    _dataset_ = [i for i in _dataset_ if i[2] > 0.0]
+    if(_reltime_ != 0.0):
+        times = [i[3] for i in _dataset_ if i[2] <= _reltime_]
+        status = [i[4] for i in _dataset_ if i[2] <= _reltime_]
+
     if(__USE_RPY__):
-        print "Must be on Windoze."
+        print "Probably using Windoze."
 
     elif(__USE_RPY2__):
+        survival = importr('survival')
 
-        data = numpy.asarray(data)
-        # Order events data by time, unit id, event type
-        data <- data[R.order(data[,2], data[,1], data[,3]),]
-        print data
-        #m <- matrix(0, nrow=nrow(events), ncol=4)
-        #colnames(m) <- c("time", "Nrisk", "incr", "mcf")
+        times = robjects.FloatVector(times)
+        status = robjects.FloatVector(status)
 
-        # copy event times
-        #m[, 1] <- data[, 2]
+        surv = survival.Surv(times, status)
+        robjects.globalenv['surv'] = surv
+        fmla = robjects.Formula('surv ~ 1')
 
-        # number of units observed at each time
-        #m[, 2] <- cumsum(ifelse(data[, 3] == 2, -1, data[, 3]))
+        par = survival.survreg(fmla, dist=_dist_)
 
-        # incremental risk
-        #irecurrence <- data[,3] == 0
-        #m[irecurrence, 3] <- 1 / m[irecurrence, 2]
+    return(par)
 
-        # cumulative risk (MCF estimate)
-        #m[, 4] <- cumsum(m[, 3])
-
-        # return results (matrix rows with recurrent events)
-        #m[data[,3] == 0, ]
-
-    else:
-
-        # Determine the confidence bound z-value.
-        _z_norm_ = norm.ppf(_conf_)
-
-        _m_ = len(units)
-        _n_ = len(times)
-
-        datad = []
-        for i in range(len(data)):
-            if(data[i][4] == 1):
-                datad.append(data[i])
-        data = numpy.asarray(data)
-        datad = numpy.asarray(datad)
-
-        _d_ = numpy.zeros(shape=(_m_, _n_))
-        _delta_ = numpy.zeros(shape=(_m_, _n_))
-
-        for i in range(_n_):
-            k = numpy.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
-            _u_ = numpy.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
-            for j in range(len(_u_)):
-                k = [a for a, x in enumerate(units) if x == _u_[j]]     #
-                _delta_[k, 0:i+1] = 1
-
-        for i in range(_n_):
-            k = numpy.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
-            _u_ = numpy.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
-            for j in range(len(_u_)):
-                k = [a for a, x in enumerate(units) if x == _u_[j]]     #
-                _d_[k, i] += 1
-
-        _delta_ = _delta_.transpose()
-        _d_ = _d_.transpose()
-
-        _delta_dot = _delta_.sum(axis=1)
-        _d_dot = (_d_ * _delta_).sum(axis=1)
-        _d_bar = _d_dot / _delta_dot
-
-        _MCF_ = []
-        _x_ = (_delta_.transpose() / _delta_dot).transpose()
-        _y_ = (_d_.transpose() - _d_bar).transpose()
-        for i in range(len(times)):
-            muhat = _d_bar[0:i+1].sum(axis=0)
-
-            # Estimate the variance.
-            _z_ = (_x_[0:i+1] * _y_[0:i+1])
-            _var_ = ((_z_.sum(axis=0))**2).sum(axis=0)
-
-            _ll_ = muhat - _z_norm_ * sqrt(_var_)
-            _ul_ = muhat + _z_norm_ * sqrt(_var_)
-
-            _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i], _d_bar[i], _var_, _ll_, _ul_, muhat])
-
-        return(_MCF_)
+#

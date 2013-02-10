@@ -296,8 +296,8 @@ class Dataset:
         self.cmbSource.connect('changed', self._callback_combo, 3)
 
         self.cmbDistribution.set_tooltip_text(_("Selects and displays the statistical distribution used to fit the data."))
-        results = [["MCF"], ["Kaplan-Meier"], ["Gamma"], ["Exponential"],
-                   ["Lognormal"], ["Normal"], ["Weibull"], ["WeiBayes"]]
+        results = [["MCF"], ["Kaplan-Meier"], ["Exponential"], ["Lognormal"],
+                   ["Normal"], ["Weibull"], ["WeiBayes"]]
         _widg.load_combo(self.cmbDistribution, results)
         self.cmbDistribution.connect('changed', self._callback_combo, 4)
 
@@ -456,13 +456,13 @@ class Dataset:
         self.txtMHB.set_tooltip_text(_(""))
         self.txtLP.set_tooltip_text(_(""))
         self.txtLR.set_tooltip_text(_(""))
-        self.txtScale.set_tooltip_text(_(""))
+        self.txtScale.set_tooltip_text(_("Displays the estimated value of the scale parameter."))
         self.txtScaleLL.set_tooltip_text(_(""))
         self.txtScaleUL.set_tooltip_text(_(""))
-        self.txtShape.set_tooltip_text(_(""))
+        self.txtShape.set_tooltip_text(_("Displays the estimated value of the shape parameter."))
         self.txtShapeLL.set_tooltip_text(_(""))
         self.txtShapeUL.set_tooltip_text(_(""))
-        self.txtLocation.set_tooltip_text(_(""))
+        self.txtLocation.set_tooltip_text(_("Displays the estimated value of the location parameter."))
         self.txtLocationLL.set_tooltip_text(_(""))
         self.txtLocationUL.set_tooltip_text(_(""))
         self.txtCov11.set_tooltip_text(_(""))
@@ -911,7 +911,7 @@ class Dataset:
         import itertools
         import numpy
 
-        from math import log, sqrt
+        from math import exp, log, sqrt
         from scipy.stats import chi2, norm
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -927,6 +927,42 @@ class Dataset:
             _conf_ = (100.0 + _conf_) / 200.0
         else:                               # One-sided bounds.
             _conf_ = _conf_ / 100.0
+
+        # Determine the confidence bound z-value.
+        _z_norm_ = norm.ppf(_conf_)
+
+        # Get the entire dataset.
+        query = "SELECT fld_unit, fld_left_interval, \
+                        fld_right_interval, fld_tbf, \
+                        fld_status \
+                 FROM tbl_survival_data \
+                 WHERE fld_dataset_id=%d \
+                 AND fld_right_interval <= %f \
+                 AND fld_right_interval > 0.0 \
+                 ORDER BY fld_unit ASC, \
+                          fld_left_interval ASC" % (_dataset_, _reltime_)
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        scale = 0.0
+        scalell = 0.0
+        scaleul = 0.0
+        shape = 0.0
+        shapell = 0.0
+        shapeul = 0.0
+        location = 0.0
+        locationll = 0.0
+        locationul = 0.0
+        cov11 = 0.0
+        cov12 = 0.0
+        cov13 = 0.0
+        cov21 = 0.0
+        cov22 = 0.0
+        cov23 = 0.0
+        cov31 = 0.0
+        cov32 = 0.0
+        cov33 = 0.0
 
         if(_analysis_ == 1):                # MCF
             # Create a list of unique units.
@@ -958,9 +994,8 @@ class Dataset:
                 _times_.append(results[i][0])
 
             # Get the entire dataset.
-            #fld_left_interval,, fld_tbf
-            query = "SELECT fld_unit,  \
-                            fld_right_interval, \
+            query = "SELECT fld_unit, fld_left_interval, \
+                            fld_right_interval, fld_tbf, \
                             fld_status \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
@@ -1278,6 +1313,103 @@ class Dataset:
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
+
+        elif(_analysis_ == 3):              # Fit to an exponential.
+
+            #    0 = MLE of the coefficients of the full model.
+            #    1 = MLE of the coefficients of the baseline model.
+            #    2 = covariance matrix.
+            #    3 = loglikelihood values for the baseline and full models.
+            #    4 = number of iterations required.
+            #    5 = the linear predictor for each subject.
+            #    6 = degrees of freedom for the final model.
+            #    7 = scale factors, with length equal to the number of strata.
+            #    8 = degrees of freedom for the initial model.
+            #    9 = vector of the column means of the coefficient matrix.
+            #   10 =
+            #   11 =
+            #   12 = survreg code,
+            #   13 = distribution used in the fit.
+            par = _calc.parametric_fit(results, _reltime_, 'exponential')
+
+            scale = exp(par[1][0])
+            scalell = exp(par[1][0] - _z_norm_ * par[2][0])
+            scaleul = exp(par[1][0] + _z_norm_ * par[2][0])
+            MTBF = scale
+            MTBFLL = scalell
+            MTBFUL = scaleul
+
+            cov11 = par[2][0]
+
+            # Hide widgets we don't need.
+            self.txtCov12.hide()
+            self.txtCov13.hide()
+            self.txtCov21.hide()
+            self.txtCov22.hide()
+            self.txtCov23.hide()
+            self.txtCov31.hide()
+            self.txtCov32.hide()
+            self.txtCov33.hide()
+
+        elif(_analysis_ == 4):              # Fit to a lognormal.
+
+            par = _calc.parametric_fit(results, _reltime_, 'lognormal')
+
+            scale = par[1][0]
+            scalell = par[1][0] - _z_norm_ * par[2][0]
+            scaleul = par[1][0] + _z_norm_ * par[2][0]
+            shape = par[1][1]
+            shapell = par[1][1] - _z_norm_ * par[2][3]
+            shapeul = par[1][1] + _z_norm_ * par[2][3]
+            MTBF = exp(scale + 0.5*shape**2)
+            MTBFLL = exp(scalell + 0.5*shapell**2)
+            MTBFUL = exp(scaleul + 0.5*shapeul**2)
+            cov11 = par[2][0]
+            cov21 = par[2][1]
+            cov12 = par[2][2]
+            cov22 = par[2][3]
+
+            # Display the widgets we need.
+            self.txtCov11.show()
+            self.txtCov12.show()
+            self.txtCov21.show()
+            self.txtCov22.show()
+
+            # Hide widgets we don't need.
+            self.txtCov13.hide()
+            self.txtCov23.hide()
+            self.txtCov31.hide()
+            self.txtCov32.hide()
+            self.txtCov33.hide()
+
+        self.txtScale.set_text(str(fmt.format(scale)))
+        self.txtScaleLL.set_text(str(fmt.format(scalell)))
+        self.txtScaleUL.set_text(str(fmt.format(scaleul)))
+        self.txtShape.set_text(str(fmt.format(shape)))
+        self.txtShapeLL.set_text(str(fmt.format(shapell)))
+        self.txtShapeUL.set_text(str(fmt.format(shapeul)))
+        self.txtLocation.set_text(str(fmt.format(location)))
+        self.txtLocationLL.set_text(str(fmt.format(locationll)))
+        self.txtLocationUL.set_text(str(fmt.format(locationul)))
+        self.txtCov11.set_text(str(fmt.format(cov11)))
+        self.txtCov12.set_text(str(fmt.format(cov12)))
+        self.txtCov13.set_text(str(fmt.format(cov13)))
+        self.txtCov21.set_text(str(fmt.format(cov21)))
+        self.txtCov22.set_text(str(fmt.format(cov22)))
+        self.txtCov23.set_text(str(fmt.format(cov23)))
+        self.txtCov31.set_text(str(fmt.format(cov31)))
+        self.txtCov32.set_text(str(fmt.format(cov32)))
+        self.txtCov33.set_text(str(fmt.format(cov33)))
+        self.txtAIC.set_text(str(fmt.format(0.0)))
+        self.txtBIC.set_text(str(fmt.format(0.0)))
+        self.txtMLE.set_text(str(fmt.format(par[3][0])))
+        self.txtNumSuspensions.set_text(str(fmt.format(0.0)))
+        self.txtNumFailures.set_text(str(fmt.format(0.0)))
+        self.txtMTBF.set_text(str(fmt.format(MTBF)))
+        self.txtMTBFLL.set_text(str(fmt.format(MTBFLL)))
+        self.txtMTBFUL.set_text(str(fmt.format(MTBFUL)))
+
+        return False
 
     def dataset_save(self, button):
         """
