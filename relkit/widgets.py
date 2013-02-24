@@ -339,6 +339,17 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     for i in range(len(position)):
         types.append(datatype[i].text)
 
+    #if(name == 'Revision'):
+    #    query = "SELECT * FROM tbl_revision_format"
+    #    results = _app.DB.execute_query(query,
+    #                                    None,
+    #                                    _app.ProgCnx)
+    #    _types = []
+    #    for i in range(len(results)):
+    #        _types.append(results[i][3])
+    #    print _types
+    #    print types
+
     gobject_types = []
     gobject_types = [gobject.type_from_name(types[ix])
          for ix in range(len(types))]

@@ -85,7 +85,8 @@ CREATE TABLE "tbl_dataset" (
     "fld_lr" FLOAT DEFAULT(0),
     "fld_aic" FLOAT DEFAULT(0),
     "fld_bic" FLOAT DEFAULT(0),
-    "fld_mle" FLOAT DEFAULT(0)
+    "fld_mle" FLOAT DEFAULT(0),
+    "fld_start_time" FLOAT DEFAULT(0)
 );
 
 CREATE TABLE "tbl_fmeca" (
@@ -897,6 +898,41 @@ CREATE TABLE "tbl_validation_matrix" (
     "fld_revision_id" INTEGER DEFAULT (1),
     PRIMARY KEY ("fld_validation_id","fld_requirement_id")
 );
+
+CREATE TABLE "tbl_revision_format" (
+    "fld_field_id" INTEGER NOT NULL PRIMARY KEY,
+    "fld_default_title" VARCHAR(256),
+    "fld_user_title" VARCHAR(256),
+    "fld_datatype" VARCHAR(16),
+    "fld_cell_type" VARCHAR(16),
+    "fld_position" INTEGER,
+    "fld_editable" INTEGER,
+    "fld_visible" INTEGER
+);
+
+INSERT INTO "tbl_revision_format" VALUES (0, 'Revision ID', 'Revision ID', 'gint', 'text', 0, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (1, 'Availability, Predicted', 'Availability, Predicted', 'gfloat', 'text', 1, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (2, 'Availability, Mission', 'Availability, Mission', 'gfloat', 'text', 2, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (3, 'Cost', 'Cost', 'gfloat', 'text', 3, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (4, 'Cost/Failure', 'Cost/Failure', 'gfloat', 'text', 4, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (5, 'Cost/Hour', 'Cost/Hour', 'gfloat', 'text', 5, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (6, 'Failure Rate, Active', 'Failure Rate, Active', 'gfloat', 'text', 6, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (7, 'Failure Rate, Dormant', 'Failure Rate, Dormant', 'gfloat', 'text', 7, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (8, 'Failure Rate, Mission', 'Failure Rate, Mission', 'gfloat', 'text', 8, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (9, 'Failure Rate, Predicted', 'Failure Rate, Predicted', 'gfloat', 'text', 9, 0, 1);
+INSERT INTO "tbl_revision_format" VALUES (10, 'Failure Rate, Software', 'Failure Rate, Software', 'gfloat', 'text', 10, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (11, 'Mean Maintenance Time (MMT)', 'Mean Maintenance Time (MMT)', 'gfloat', 'text', 11, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (12, 'Mean Corrective Maintenance Time (MCMT)', 'Mean Corrective Maintenance Time (MCMT)', 'gfloat', 'text', 12, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (13, 'Mean Preventive Maintenance Time (MPMT)', 'Mean Preventive Maintenance Time (MPMT)', 'gfloat', 'text', 13, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (14, 'MTBF, Mission', 'MTBF, Mission', 'gfloat', 'text', 14, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (15, 'MTBF, Predicted', 'MTBF, Predicted', 'gfloat', 'text', 15, 0, 1);
+INSERT INTO "tbl_revision_format" VALUES (16, 'Mean Time to Repair (MTTR)', 'Mean Time to Repair (MTTR)', 'gfloat', 'text', 16, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (17, 'Revision Name', 'Revision Name', 'gchararray', 'text', 17, 1, 1);
+INSERT INTO "tbl_revision_format" VALUES (18, 'Reliability, Mission', 'Reliability, Mission', 'gfloat', 'text', 18, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (19, 'Reliability, Predicted', 'Reliability, Predicted', 'gfloat', 'text', 19, 0, 1);
+INSERT INTO "tbl_revision_format" VALUES (20, 'Remarks', 'Remarks', 'gchararray', 'text', 20, 1, 0);
+INSERT INTO "tbl_revision_format" VALUES (21, 'Total Part Count', 'Total Part Count', 'gint', 'text', 21, 0, 0);
+INSERT INTO "tbl_revision_format" VALUES (22, 'Revision', 'Revision', 'gchararray', 'text', 22, 1, 0);
 
 DELETE FROM "sqlite_sequence";
 INSERT INTO "sqlite_sequence" VALUES('tbl_system', 0);

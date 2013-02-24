@@ -5,7 +5,7 @@
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -306,27 +306,27 @@ def create_project(widget, app):
 
     if(_conf.BACKEND == 'mysql'):
 
-        login = _login.Login(_("Create a RelKit Program Database"))
+        login = _login.Login(_(u"Create a RelKit Program Database"))
         if(login.answer != gtk.RESPONSE_ACCEPT):
             return True
 
-        dialog = _widg.make_dialog(_("RelKit - New Program"))
+        dialog = _widg.make_dialog(_(u"RelKit - New Program"))
 
-        label = _widg.make_label(_("New Program Name"))
+        label = _widg.make_label(_(u"New Program Name"))
         txtProgName = _widg.make_entry()
         dialog.vbox.pack_start(label)
         dialog.vbox.pack_start(txtProgName)
         label.show()
         txtProgName.show()
 
-        label = _widg.make_label(_("Assigned User"))
+        label = _widg.make_label(_(u"Assigned User"))
         txtUser = _widg.make_entry()
         dialog.vbox.pack_start(label)
         dialog.vbox.pack_start(txtUser)
         label.show()
         txtUser.show()
 
-        label = _widg.make_label(_("Using Password"))
+        label = _widg.make_label(_(u"Using Password"))
         txtPasswd = _widg.make_entry()
         txtPasswd.set_invisible_char("*")
         dialog.vbox.pack_start(label)
@@ -386,7 +386,8 @@ def create_project(widget, app):
 
     elif(_conf.BACKEND == 'sqlite3'):
 
-        dialog = gtk.FileChooserDialog(title=_("Create a RelKit Program Database"),
+        dialog = gtk.FileChooserDialog(title=_(u"Create a RelKit Program Database"),
+                                       action=gtk.FILE_CHOOSER_ACTION_SAVE,
                                        buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT,
                                                 gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
@@ -412,9 +413,11 @@ def create_project(widget, app):
 
         dialog.destroy()
 
+        open_project(widget, app, dlg=0, filename=new_program)
+
     return False
 
-def open_project(widget, app):
+def open_project(widget, app, dlg=1, filename=''):
     """
     Shows the RelKit databases available on the selected server and allows the
     user to select the one he/she wishes to use.
@@ -422,13 +425,14 @@ def open_project(widget, app):
     Keyword Arguments:
     widget -- the widget that called this function.
     app    -- the RelKit application.
+    dlg    -- whether or not to display a file chooser dialog.  0=No, 1=Yes.
     """
 
     from time import sleep
 
     if(_conf.BACKEND == 'mysql'):
 
-        login = _login.Login(_("RelKit Program Database Login"))
+        login = _login.Login(_(u"RelKit Program Database Login"))
 
         if(login.answer != gtk.RESPONSE_ACCEPT):
             return True
@@ -439,12 +443,12 @@ def open_project(widget, app):
                                        None,
                                        cnx)
 
-        dialog = _widg.make_dialog(_("RelKit: Open Program"))
+        dialog = _widg.make_dialog(_(u"RelKit: Open Program"))
 
         model = gtk.TreeStore(gobject.TYPE_STRING)
         treeview = gtk.TreeView(model)
 
-        column = gtk.TreeViewColumn(_("Program"))
+        column = gtk.TreeViewColumn(_(u"Program"))
         treeview.append_column(column)
         cell = gtk.CellRendererText()
         cell.set_property('editable', False)
@@ -486,17 +490,35 @@ def open_project(widget, app):
 
     elif(_conf.BACKEND == 'sqlite3'):
 
-        dialog = gtk.FileChooserDialog(title=_("RelKit - Open Program"),
-                                       buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                                gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        if(dlg == 1):
+            dialog = gtk.FileChooserDialog(title=_(u"RelKit - Open Program"),
+                                           buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                                    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
-            _conf.RELIAFREE_PROG_INFO[2] = dialog.get_filename()
-            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            # Set some filters to select all files or only some text files.
+            filter = gtk.FileFilter()
+            filter.set_name(_(u"RelKit Project Files"))
+            #filter.add_mime_type("text/txt")
+            filter.add_pattern("*.rfb")
+            dialog.add_filter(filter)
+
+            filter = gtk.FileFilter()
+            filter.set_name(_(u"All files"))
+            filter.add_pattern("*")
+            dialog.add_filter(filter)
+
+            response = dialog.run()
+
+            if(response == gtk.RESPONSE_ACCEPT):
+                _conf.RELIAFREE_PROG_INFO[2] = dialog.get_filename()
+                dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+                app.load_system()
+
+            dialog.destroy()
+
+        else:
+            _conf.RELIAFREE_PROG_INFO[2] = filename
             app.load_system()
-
-        dialog.destroy()
 
     return False
 

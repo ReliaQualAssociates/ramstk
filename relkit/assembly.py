@@ -249,7 +249,7 @@ class Assembly:
                                                editable=False,
                                                bold=True)
         self.txtOperTime = _widg.make_entry(_width_=125)
-        self.chkApplyResults = _widg.make_check_button(_("Apply results to hardware"))
+        self.chkApplyResults = _widg.make_check_button(_(u"Apply results to hardware"))
         if self._allocation_widgets_create():
             self._app.debug_log.error("assembly.py: Failed to create Allocation tab widgets.")
         if self._allocation_tab_create():
@@ -360,7 +360,7 @@ class Assembly:
 
         # Add sibling assembly button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new assembly at the same indenture level as the selected assembly to the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
@@ -369,7 +369,7 @@ class Assembly:
 
         # Add child assembly button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new assembly one indenture level subordinate to the selected assembly to the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Adds a new assembly one indenture level subordinate to the selected assembly to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
@@ -378,7 +378,7 @@ class Assembly:
 
         # Delete assembly button
         button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
-        button.set_tooltip_text(_("Removes the currently selected assembly from the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Removes the currently selected assembly from the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
         button.set_icon_widget(image)

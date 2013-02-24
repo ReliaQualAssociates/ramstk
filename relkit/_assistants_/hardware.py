@@ -57,7 +57,7 @@ class ImportHardware:
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Import Hardware Assistant"))
+        self.assistant.set_title(_(u"RelKit Import Hardware Assistant"))
         self.assistant.connect('apply', self._import)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
@@ -67,12 +67,12 @@ class ImportHardware:
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit hardware import assistant.  It will help you import system hardware information to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RelKit hardware import assistant.  It will help you import system hardware information to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_title(fixed, _(u"Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
 # Create the age to map input file fields to database fields.
@@ -104,7 +104,7 @@ class ImportHardware:
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("Database\nField"))
+        label.set_markup(u"<span weight='bold'>%s</span>" % _("Database\nField"))
         label.show_all()
         column.set_widget(label)
         self.tvwFileFields.append_column(column)
@@ -128,7 +128,7 @@ class ImportHardware:
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("File\nField"))
+        label.set_markup(u"<span weight='bold'>%s</span>" % _("File\nField"))
         label.show_all()
         column.set_widget(label)
         self.tvwFileFields.append_column(column)
@@ -182,18 +182,18 @@ class ImportHardware:
         self.assistant.append_page(scrollwindow)
         self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
         self.assistant.set_page_title(scrollwindow,
-                                      _("Select Fields to Import"))
+                                      _(u"Select Fields to Import"))
         self.assistant.set_page_complete(scrollwindow, True)
 
 # Create the page to apply the import criteria.
         fixed = gtk.Fixed()
-        _text_ = _("Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
+        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
                                      gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _("Import Data"))
+        self.assistant.set_page_title(fixed, _(u"Import Data"))
         self.assistant.set_page_complete(fixed, True)
 
         self.assistant.show_all()
@@ -240,7 +240,7 @@ class ImportHardware:
         import os
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_("RelKit: Import Hardware from File ..."),
+        dialog = gtk.FileChooserDialog(_(u"RelKit: Import Hardware from File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
@@ -249,7 +249,7 @@ class ImportHardware:
 
         # Set some filters to select all files or only some text files.
         filter = gtk.FileFilter()
-        filter.set_name("All files")
+        filter.set_name(u"All files")
         filter.add_pattern("*")
         dialog.add_filter(filter)
 

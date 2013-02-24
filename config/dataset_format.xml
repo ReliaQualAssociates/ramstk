@@ -3,7 +3,7 @@
 
       dataset_format.xml is part of The RelKit Project
 
-      Copyright 2011-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2011 - 2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
@@ -283,6 +283,14 @@ experience. -->
             <usertitle>MLE</usertitle>
             <datatype>gfloat</datatype>
             <position>33</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Start Time</defaulttitle>
+            <usertitle>Start Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>34</position>
             <editable>1</editable>
             <visible>0</visible>
         </column>

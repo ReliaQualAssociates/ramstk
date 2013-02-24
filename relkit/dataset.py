@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+from os import name
 
 # Modules required for the GUI.
 try:
@@ -31,6 +32,18 @@ try:
     import gobject
 except ImportError:
     sys.exit(1)
+
+# Import R library if on a POSIX system.
+if(name == 'posix'):
+    try:
+        from rpy2 import robjects
+        from rpy2.robjects import r as R
+        from rpy2.robjects.packages import importr
+        __USE_RPY__ = False
+        __USE_RPY2__ = True
+    except ImportError:
+        __USE_RPY__ = False
+        __USE_RPY2__ = False
 
 # Import other RelKit modules.
 import calculations as _calc
@@ -67,7 +80,54 @@ class Dataset:
     _ai_tab_labels = [_("Assembly:"), _("Description:"), _("Data Source:"),
                       _("Distribution:"), _("Fit Method:"), _("Confidence:"),
                       _("Confidence Type:"), _("Confidence Method:"),
-                      _("Mission Time:"), _("Number of Points:")]
+                      _("Start Time:"), _("End Time"), _("Number of Points:")]
+
+    _exp100 = [(u'', 48.146859, 48.146859, 0.0, 1), (u'', 20.564406, 20.564406, 0.0, 1), (u'', 94.072781, 94.072781, 0.0, 1), (u'', 177.992321, 177.992321, 0.0, 1),
+               (u'', 89.103398, 89.103398, 0.0, 1), (u'', 350.577920, 350.577920, 0.0, 1), (u'', 82.223220, 82.223220, 0.0, 1),  (u'', 40.360083, 40.360083, 0.0, 1),
+               (u'', 39.576065, 39.576065, 0.0, 1), (u'', 53.127178, 53.127178, 0.0, 1), (u'', 159.732430, 159.732430, 0.0, 1), (u'', 48.398973, 48.398973, 0.0, 1),
+               (u'', 46.984010, 46.984010, 0.0, 1), (u'', 36.169584, 36.169584, 0.0, 1), (u'', 351.347799, 351.347799, 0.0, 1), (u'', 18.917324, 18.917324, 0.0, 1),
+               (u'', 101.977027, 101.977027, 0.0, 1), (u'', 141.988267, 141.988267, 0.0, 1), (u'', 241.044591, 241.044591, 0.0, 1), (u'', 61.993888, 61.993888, 0.0, 1),
+               (u'', 171.813927, 171.813927, 0.0, 1), (u'', 78.747517, 78.747517, 0.0, 1), (u'', 54.070510, 54.070510, 0.0, 1), (u'', 87.229221, 87.229221, 0.0, 1),
+               (u'', 158.980289, 158.980289, 0.0, 1), (u'', 185.254974, 185.254974, 0.0, 1), (u'', 16.452673, 16.452673, 0.0, 1), (u'', 120.144229, 120.144229, 0.0, 1),
+               (u'', 294.418608, 294.418608, 0.0, 1), (u'', 13.640705, 13.640705, 0.0, 1), (u'', 115.532861, 115.532861, 0.0, 1), (u'', 58.595331, 58.595331, 0.0, 1),
+               (u'', 7.876539, 7.876539, 0.0, 1), (u'', 10.790563, 10.790563, 0.0, 1), (u'', 67.342074, 67.342074, 0.0, 1), (u'', 14.848170, 14.848170, 0.0, 1),
+               (u'', 82.160622, 82.160622, 0.0, 1), (u'', 14.558010, 14.558010, 0.0, 1), (u'', 18.793071, 18.793071, 0.0, 1), (u'', 69.776958, 69.776958, 0.0, 1),
+               (u'', 65.542418, 65.542418, 0.0, 1), (u'', 194.039565, 194.039565, 0.0, 1), (u'', 41.559590, 41.559590, 0.0, 1), (u'', 75.549698, 75.549698, 0.0, 1),
+               (u'', 14.808375, 14.808375, 0.0, 1), (u'', 184.263190, 184.263190, 0.0, 1), (u'', 2.810047, 2.810047, 0.0, 1), (u'', 13.095068, 13.095068, 0.0, 1),
+               (u'', 52.885757, 52.885757, 0.0, 1), (u'', 49.855286, 49.855286, 0.0, 1), (u'', 263.548942, 263.548942, 0.0, 1), (u'', 4.248489, 4.248489, 0.0, 1),
+               (u'', 66.864953, 66.864953, 0.0, 1), (u'', 172.663015, 172.663015, 0.0, 1), (u'', 226.918685, 226.918685, 0.0, 1), (u'', 169.175428, 169.175428, 0.0, 1),
+               (u'', 148.070217, 148.070217, 0.0, 1), (u'', 3.679958, 3.679958, 0.0, 1), (u'', 28.693005, 28.693005, 0.0, 1), (u'', 34.931869, 34.931869, 0.0, 1),
+               (u'', 297.467901, 297.467901, 0.0, 1), (u'', 137.072180, 137.072180, 0.0, 1), (u'', 53.180089, 53.180089, 0.0, 1), (u'', 49.760206, 49.760206, 0.0, 1),
+               (u'', 19.664276, 19.664276, 0.0, 1),  (u'', 96.415132, 96.415132, 0.0, 1), (u'', 14.003862, 14.003862, 0.0, 1), (u'', 17.743755, 17.743755, 0.0, 1),
+               (u'', 212.279301, 212.279301, 0.0, 1), (u'', 38.951314, 38.951314, 0.0, 1), (u'', 74.057822, 74.057822, 0.0, 1), (u'', 86.769323, 86.769323, 0.0, 1),
+               (u'', 37.765341, 37.765341, 0.0, 1), (u'', 5.566417, 5.566417, 0.0, 1), (u'', 71.048013, 71.048013, 0.0, 1), (u'', 5.137094, 5.137094, 0.0, 1),
+               (u'', 35.461923, 35.461923, 0.0, 1), (u'', 121.963923, 121.963923, 0.0, 1), (u'', 42.486536, 42.486536, 0.0, 1), (u'', 52.315419, 52.315419, 0.0, 1),
+               (u'', 77.095150, 77.095150, 0.0, 1), (u'', 14.259343, 14.259343, 0.0, 1), (u'', 111.147273, 111.147273, 0.0, 1), (u'', 49.364508, 49.364508, 0.0, 1),
+               (u'', 1.978637, 1.978637, 0.0, 1), (u'', 163.827122, 163.827122, 0.0, 1), (u'', 66.690012, 66.690012, 0.0, 1), (u'', 80.172196, 80.172196, 0.0, 1),
+               (u'', 323.763002, 323.763002, 0.0, 1), (u'', 275.491419, 275.491419, 0.0, 1), (u'', 49.315958, 49.315958, 0.0, 1), (u'', 1.585178, 1.585178, 0.0, 1),
+               (u'', 317.922638, 317.922638, 0.0, 1), (u'', 12.398458, 12.398458, 0.0, 1), (u'', 222.930804, 222.930804, 0.0, 1), (u'', 6.328506, 6.328506, 0.0, 1),
+               (u'', 143.687402, 143.687402, 0.0, 1), (u'', 134.763300, 134.763300, 0.0, 1), (u'', 88.862705, 88.862705, 0.0, 1), (u'', 143.918067, 143.918067, 0.0, 1)]
+
+    _norm100 = [(u'', 95.37050, 95.37050, 0.0, 1), (u'', 0.0, 114.01126, 0.0, 1), (u'', 0.0, 113.24685, 0.0, 1), (u'', 0.0, 109.16715, 0.0, 1), (u'', 0.0, 104.22744, 0.0, 1),
+                (u'', 107.10937, 107.10937, 0.0, 1), (u'', 0.0, 117.43215, 0.0, 1), (u'', 0.0, 94.78554, 0.0, 1), (u'', 0.0, 83.56718, 0.0, 1), (u'', 0.0, 103.50167, 0.0, 1),
+                (u'', 89.93169, 89.93169, 0.0, 1), (u'', 0.0, 120.45587, 0.0, 1), (u'', 0.0, 97.08137, 0.0, 1), (u'', 0.0, 96.81358, 0.0, 1), (u'', 0.0, 97.57112, 0.0, 1),
+                (u'', 106.75722, 106.75722, 0.0, 1), (u'', 0.0, 99.33548, 0.0, 1), (u'', 0.0, 104.53866, 0.0, 1), (u'', 0.0, 102.02819, 0.0, 1), (u'', 0.0, 90.03242, 0.0, 1),
+                (u'', 77.54299, 77.54299, 0.0, 1), (u'', 0.0, 102.76149, 0.0, 1), (u'', 0.0, 82.48589, 0.0, 1), (u'', 0.0, 77.74356, 0.0, 1), (u'', 0.0, 109.97453, 0.0, 1),
+                (u'', 94.85149, 94.85149, 0.0, 1), (u'', 0.0, 89.77114, 0.0, 1), (u'', 0.0, 98.19346, 0.0, 1), (u'', 0.0, 102.16592, 0.0, 1), (u'', 0.0, 96.78387, 0.0, 1),
+                (u'', 108.86581, 108.86581, 0.0, 1), (u'', 0.0, 120.46225, 0.0, 1), (u'', 0.0, 111.59290, 0.0, 1), (u'', 0.0, 106.14877, 0.0, 1), (u'', 0.0, 102.94616, 0.0, 1),
+                (u'', 111.29011, 111.29011, 0.0, 1), (u'', 0.0, 106.00202, 0.0, 1), (u'', 0.0, 114.61717, 0.0, 1), (u'', 0.0, 88.22994, 0.0, 1), (u'', 0.0, 131.36413, 0.0, 1),
+                (u'', 86.85545, 86.85545, 0.0, 1), (u'', 0.0, 109.92748, 0.0, 1), (u'', 0.0, 75.11669, 0.0, 1), (u'', 0.0, 100.46514, 0.0, 1), (u'', 0.0, 97.78360, 0.0, 1),
+                (u'', 108.16912, 108.16912, 0.0, 1), (u'', 0.0, 98.85145, 0.0, 1), (u'', 0.0, 99.31015, 0.0, 1), (u'', 0.0, 94.58853, 0.0, 1), (u'', 0.0, 98.12350, 0.0, 1),
+                (u'', 115.66660, 115.66660, 0.0, 1), (u'', 0.0, 104.49188, 0.0, 1), (u'', 0.0, 93.49034, 0.0, 1), (u'', 0.0, 111.79487, 0.0, 1), (u'', 0.0, 114.32069, 0.0, 1),
+                (u'', 106.93861, 106.93861, 0.0, 1), (u'', 0.0, 106.45058, 0.0, 1), (u'', 0.0, 103.10528, 0.0, 1), (u'', 0.0, 107.78179, 0.0, 1), (u'', 0.0, 120.84600, 0.0, 1),
+                (u'', 100.10230, 100.10230, 0.0, 1), (u'', 0.0, 92.93094, 0.0, 1), (u'', 0.0, 101.24658, 0.0, 1), (u'', 0.0, 69.51782, 0.0, 1), (u'', 0.0, 106.27645, 0.0, 1),
+                (u'', 99.04622, 99.04622, 0.0, 1), (u'', 0.0, 101.30087, 0.0, 1), (u'', 0.0, 98.58876, 0.0, 1), (u'', 0.0, 110.02258, 0.0, 1), (u'', 0.0, 91.25592, 0.0, 1),
+                (u'', 106.68794, 106.68794, 0.0, 1), (u'', 0.0, 102.44362, 0.0, 1), (u'', 0.0, 100.34289, 0.0, 1), (u'', 0.0, 96.63522, 0.0, 1), (u'', 0.0, 80.90978, 0.0, 1),
+                (u'', 111.08013, 111.08013, 0.0, 1), (u'', 0.0, 107.00581, 0.0, 1), (u'', 0.0, 103.04357, 0.0, 1), (u'', 0.0, 92.66092, 0.0, 1), (u'', 0.0, 81.52659, 0.0, 1),
+                (u'', 94.49750, 94.49750, 0.0, 1), (u'', 0.0, 88.79105, 0.0, 1), (u'', 0.0, 97.91323, 0.0, 1), (u'', 0.0, 96.12042, 0.0, 1), (u'', 0.0, 101.23497, 0.0, 1),
+                (u'', 95.13220, 95.13220, 0.0, 1), (u'', 0.0, 93.93901, 0.0, 1), (u'', 0.0, 92.30268, 0.0, 1), (u'', 0.0, 96.53697, 0.0, 1), (u'', 0.0, 110.74783, 0.0, 1),
+                (u'', 99.88812, 99.88812, 0.0, 1), (u'', 0.0, 92.78015, 0.0, 1), (u'', 0.0, 107.67842, 0.0, 1), (u'', 0.0, 96.18725, 0.0, 1), (u'', 0.0, 87.93806, 0.0, 1),
+                (u'', 91.66445, 91.66445, 0.0, 1), (u'', 0.0, 106.14925, 0.0, 1), (u'', 0.0, 104.32056, 0.0, 1), (u'', 0.0, 115.68135, 0.0, 1), (u'', 0.0, 95.92033, 0.0, 1)]
 
     def __init__(self, application):
         """
@@ -107,9 +167,12 @@ class Dataset:
         self.cmbFitMethod = _widg.make_combo()
         self.cmbSource = _widg.make_combo()
 
+        self.tvwDataset = gtk.TreeView()
+
         self.txtConfidence = _widg.make_entry(_width_=100)
         self.txtDescription = _widg.make_entry(_width_=400)
-        self.txtRelTime = _widg.make_entry(_width_=100)
+        self.txtStartTime = _widg.make_entry(_width_=100)
+        self.txtEndTime = _widg.make_entry(_width_=100)
         self.txtRelPoints = _widg.make_entry(_width_=100)
 
         if self._analyses_input_widgets_create():
@@ -130,23 +193,29 @@ class Dataset:
         self.txtLocation = _widg.make_entry(_width_=150)
         self.txtLocationLL = _widg.make_entry(_width_=150)
         self.txtLocationUL = _widg.make_entry(_width_=150)
-        self.txtCov11 = _widg.make_entry(_width_=150)
-        self.txtCov12 = _widg.make_entry(_width_=150)
-        self.txtCov13 = _widg.make_entry(_width_=150)
-        self.txtCov21 = _widg.make_entry(_width_=150)
-        self.txtCov22 = _widg.make_entry(_width_=150)
-        self.txtCov23 = _widg.make_entry(_width_=150)
-        self.txtCov31 = _widg.make_entry(_width_=150)
-        self.txtCov32 = _widg.make_entry(_width_=150)
-        self.txtCov33 = _widg.make_entry(_width_=150)
+        self.lblRowScale = _widg.make_label(_(u"Scale"), width=150)
+        self.lblRowShape = _widg.make_label(_(u"Shape"), width=150)
+        self.lblRowLocation = _widg.make_label(_(u"Location"), width=150)
+        self.lblColScale = _widg.make_label(_(u"Scale"), width=150)
+        self.lblColShape = _widg.make_label(_(u"Shape"), width=150)
+        self.lblColLocation = _widg.make_label(_(u"Location"), width=150)
+        self.txtShapeShape = _widg.make_entry(_width_=150)
+        self.txtShapeScale = _widg.make_entry(_width_=150)
+        self.txtShapeLocation = _widg.make_entry(_width_=150)
+        self.txtScaleShape = _widg.make_entry(_width_=150)
+        self.txtScaleScale = _widg.make_entry(_width_=150)
+        self.txtScaleLocation = _widg.make_entry(_width_=150)
+        self.txtLocationShape = _widg.make_entry(_width_=150)
+        self.txtLocationScale = _widg.make_entry(_width_=150)
+        self.txtLocationLocation = _widg.make_entry(_width_=150)
         self.txtAIC = _widg.make_entry(_width_=150)
         self.txtBIC = _widg.make_entry(_width_=150)
         self.txtMLE = _widg.make_entry(_width_=150)
         self.txtNumSuspensions = _widg.make_entry(_width_=100)
         self.txtNumFailures = _widg.make_entry(_width_=100)
-        self.txtMTBF = _widg.make_entry(_width_=100)
-        self.txtMTBFLL = _widg.make_entry(_width_=100)
-        self.txtMTBFUL = _widg.make_entry(_width_=100)
+        self.txtMTBF = _widg.make_entry(_width_=150)
+        self.txtMTBFLL = _widg.make_entry(_width_=150)
+        self.txtMTBFUL = _widg.make_entry(_width_=150)
 
         self.tvwNonParResults = gtk.TreeView()
 
@@ -198,17 +267,17 @@ class Dataset:
         plot = event.canvas
         parent = plot.get_parent()
 
-        height = self._app.winWorkBook.height
-        width = self._app.winWorkBook.width / 2.0
+        height = int(self._app.winWorkBook.height)
+        width = int(self._app.winWorkBook.width / 2.0)
 
-        if event.dblclick:
+        if(event.button == 3):
             window = gtk.Window()
             window.set_skip_pager_hint(True)
             window.set_skip_taskbar_hint(True)
             window.set_default_size(width, height)
             window.set_border_width(5)
             window.set_position(gtk.WIN_POS_NONE)
-            window.set_title(_("RelKit Plot"))
+            window.set_title(_(u"RelKit Plot"))
 
             window.connect('delete_event', self._close_plot, plot, parent)
 
@@ -245,7 +314,7 @@ class Dataset:
         button.set_icon_widget(image)
         button.set_name('Add')
         #button.connect('clicked', self._component_add)
-        button.set_tooltip_text(_("Adds a record to the selected data set."))
+        button.set_tooltip_text(_(u"Adds a record to the selected data set."))
         toolbar.insert(button, 0)
 
 # Calculate button.
@@ -255,7 +324,7 @@ class Dataset:
         button.set_icon_widget(image)
         button.set_name('Calculate')
         button.connect('clicked', self._calculate)
-        button.set_tooltip_text(_("Analyzes the selected data set."))
+        button.set_tooltip_text(_(u"Analyzes the selected data set."))
         toolbar.insert(button, 1)
 
 # Save button.
@@ -265,7 +334,7 @@ class Dataset:
         button.set_icon_widget(image)
         button.set_name('Save')
         button.connect('clicked', self.dataset_save)
-        button.set_tooltip_text(_("Saves the selected data set."))
+        button.set_tooltip_text(_(u"Saves the selected data set."))
         toolbar.insert(button, 2)
 
 # Assign results to affected assembly.
@@ -275,7 +344,7 @@ class Dataset:
         button.set_icon_widget(image)
         button.set_name('Assign')
         button.connect('clicked', self._assign_results)
-        button.set_tooltip_text(_("Assigns MTBF and hazard rate results to the selected assembly."))
+        button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
         toolbar.insert(button, 3)
 
         toolbar.show()
@@ -286,51 +355,97 @@ class Dataset:
         """ Method to create the Analysis Input widgets. """
 
         # Quadrant 1 (upper left) widgets.
-        self.cmbAssembly.set_tooltip_text(_("Selects and displays the assembly associated with the dataset."))
+        self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the assembly associated with the dataset."))
         self.cmbAssembly.connect('changed', self._callback_combo, 1)
 
-        self.cmbSource.set_tooltip_text(_("Selects and displays the source of the selected data set."))
+        self.cmbSource.set_tooltip_text(_(u"Selects and displays the source of the selected data set."))
         results = [["ALT"], ["Reliability Growth"],
                    ["Reliability Demonstration"], ["Field"]]
         _widg.load_combo(self.cmbSource, results)
         self.cmbSource.connect('changed', self._callback_combo, 3)
 
-        self.cmbDistribution.set_tooltip_text(_("Selects and displays the statistical distribution used to fit the data."))
+        self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the statistical distribution used to fit the data."))
         results = [["MCF"], ["Kaplan-Meier"], ["Exponential"], ["Lognormal"],
                    ["Normal"], ["Weibull"], ["WeiBayes"]]
         _widg.load_combo(self.cmbDistribution, results)
         self.cmbDistribution.connect('changed', self._callback_combo, 4)
 
-        self.cmbConfType.set_tooltip_text(_("Selects and displays the confidence bound type."))
+        self.cmbConfType.set_tooltip_text(_(u"Selects and displays the confidence bound type."))
         results = [["Lower One-Sided"], ["Upper One-Sided"], ["Two-Sided"]]
         _widg.load_combo(self.cmbConfType, results)
         self.cmbConfType.connect('changed', self._callback_combo, 6)
 
-        self.cmbConfMethod.set_tooltip_text(_("Selects and displays the method for developing confidence bounds."))
+        self.cmbConfMethod.set_tooltip_text(_(u"Selects and displays the method for developing confidence bounds."))
         results = [["Fisher Matrix"], ["Likelihood"], ["Bootstrap"]]
         _widg.load_combo(self.cmbConfMethod, results)
         self.cmbConfMethod.connect('changed', self._callback_combo, 7)
 
-        self.cmbFitMethod.set_tooltip_text(_("Selects and displays the method used to fit the data to the selected distribution."))
-        results = [["Rank Regression"], ["MLE"]]
+        self.cmbFitMethod.set_tooltip_text(_(u"Selects and displays the method used to fit the data to the selected distribution."))
+        results = [["MLE"], ["Rank Regression"]]
         _widg.load_combo(self.cmbFitMethod, results)
         self.cmbFitMethod.connect('changed', self._callback_combo, 8)
 
-        self.txtDescription.set_tooltip_text(_("Description of the selected data set."))
+        self.txtDescription.set_tooltip_text(_(u"Description of the selected data set."))
         self.txtDescription.connect('focus-out-event',
                                     self._callback_entry, 'text', 2)
 
-        self.txtConfidence.set_tooltip_text(_("Desired statistical confidence"))
+        self.txtConfidence.set_tooltip_text(_(u"Desired statistical confidence"))
         self.txtConfidence.connect('focus-out-event',
                                    self._callback_entry, 'float', 5)
 
-        self.txtRelTime.set_tooltip_text(_("Time at which to calculate reliability metrics."))
-        self.txtRelTime.connect('focus-out-event',
+        self.txtStartTime.set_tooltip_text(_(u"Earliest time to use for calculating reliability metrics."))
+        self.txtStartTime.connect('focus-out-event',
+                                  self._callback_entry, 'float', 34)
+
+        self.txtEndTime.set_tooltip_text(_(u"Latest time to use for calculating reliability metrics."))
+        self.txtEndTime.connect('focus-out-event',
                                 self._callback_entry, 'float', 9)
 
-        self.txtRelPoints.set_tooltip_text(_("Number of points at which to calculate reliability metrics."))
+        self.txtRelPoints.set_tooltip_text(_(u"Number of points at which to calculate reliability metrics."))
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
+
+        model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_STRING)
+        self.tvwDataset.set_model(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 1)
+        cell.set_property('background', 'white')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Left"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        self.tvwDataset.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 1)
+        cell.set_property('background', 'white')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Right"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        self.tvwDataset.append_column(column)
+
+        cell = gtk.CellRendererCombo()
+        cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+        cellmodel.append([_(u"Right Censored")])
+        cellmodel.append([_(u"Event")])
+        cellmodel.append([_(u"Left Censored")])
+        cellmodel.append([_(u"Interval Censored")])
+        cell.set_property('has-entry', False)
+        cell.set_property('model', cellmodel)
+        cell.set_property('text-column', 2)
+        #cell.connect('changed', self._callback_combo_cell,
+        #                     int(position[i].text), model, cols)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Event"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2)
+        self.tvwDataset.append_column(column)
 
         return False
 
@@ -342,10 +457,16 @@ class Dataset:
 
         hbox = gtk.HBox()
 
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(self.tvwDataset)
+
+        hbox.pack_start(scrollwindow, True, True)
+
         # Populate tab.
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_("Analyses Inputs"))
+        frame = _widg.make_frame(_label_=_(u"Analyses Inputs"))
         frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         frame.add(fixed)
 
@@ -393,10 +514,15 @@ class Dataset:
 
         label = _widg.make_label(self._ai_tab_labels[8], 150, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtRelTime, 160, y_pos)
+        fixed.put(self.txtStartTime, 160, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._ai_tab_labels[9], 150, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtEndTime, 160, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(self._ai_tab_labels[10], 150, 25)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtRelPoints, 160, y_pos)
 
@@ -406,12 +532,12 @@ class Dataset:
 
         # Insert the tab.
         label = gtk.Label()
-        _heading = _("Analysis\nInputs")
+        _heading = _(u"Analysis\nInputs")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays analysis inputs for the selected dataset."))
+        label.set_tooltip_text(_(u"Displays analysis inputs for the selected dataset."))
 
         self.notebook.insert_page(hbox,
                                   tab_label=label,
@@ -445,43 +571,64 @@ class Dataset:
 
         self.txtDescription.set_text(str(self.model.get_value(self.selected_row, 2)))
         self.txtConfidence.set_text(str(self.model.get_value(self.selected_row, 5)))
-        self.txtRelTime.set_text(str(self.model.get_value(self.selected_row, 9)))
+        self.txtEndTime.set_text(str(self.model.get_value(self.selected_row, 9)))
         self.txtRelPoints.set_text(str(self.model.get_value(self.selected_row, 10)))
+        self.txtStartTime.set_text(str(self.model.get_value(self.selected_row, 34)))
+
+        # Load the gtk.TreeView containing the list of failure/censoring times.
+        query = "SELECT fld_left_interval, fld_right_interval, fld_status \
+                 FROM tbl_survival_data \
+                 WHERE fld_dataset_id=%s \
+                 ORDER BY fld_left_interval ASC" % self.dataset_id
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        if not results:
+            return True
+
+        n_events = len(results)
+
+        model = self.tvwDataset.get_model()
+        model.clear()
+
+        for i in range(n_events):
+            model.append(results[i])
 
         return False
 
     def _analyses_results_widgets_create(self):
         """ Method for creating DATASET Class analysis results widgets. """
 
-        self.txtMHB.set_tooltip_text(_(""))
-        self.txtLP.set_tooltip_text(_(""))
-        self.txtLR.set_tooltip_text(_(""))
-        self.txtScale.set_tooltip_text(_("Displays the estimated value of the scale parameter."))
-        self.txtScaleLL.set_tooltip_text(_(""))
-        self.txtScaleUL.set_tooltip_text(_(""))
-        self.txtShape.set_tooltip_text(_("Displays the estimated value of the shape parameter."))
-        self.txtShapeLL.set_tooltip_text(_(""))
-        self.txtShapeUL.set_tooltip_text(_(""))
-        self.txtLocation.set_tooltip_text(_("Displays the estimated value of the location parameter."))
-        self.txtLocationLL.set_tooltip_text(_(""))
-        self.txtLocationUL.set_tooltip_text(_(""))
-        self.txtCov11.set_tooltip_text(_(""))
-        self.txtCov12.set_tooltip_text(_(""))
-        self.txtCov13.set_tooltip_text(_(""))
-        self.txtCov21.set_tooltip_text(_(""))
-        self.txtCov22.set_tooltip_text(_(""))
-        self.txtCov23.set_tooltip_text(_(""))
-        self.txtCov31.set_tooltip_text(_(""))
-        self.txtCov32.set_tooltip_text(_(""))
-        self.txtCov33.set_tooltip_text(_(""))
-        self.txtAIC.set_tooltip_text(_(""))
-        self.txtBIC.set_tooltip_text(_(""))
-        self.txtMLE.set_tooltip_text(_(""))
-        self.txtNumSuspensions.set_tooltip_text(_(""))
-        self.txtNumFailures.set_tooltip_text(_(""))
-        self.txtMTBF.set_tooltip_text(_(""))
-        self.txtMTBFLL.set_tooltip_text(_(""))
-        self.txtMTBFUL.set_tooltip_text(_(""))
+        self.txtMHB.set_tooltip_text(_(u"Displays the value of the MIL-HDBK test for trend."))
+        self.txtLP.set_tooltip_text(_(u"Displays the value of the LaPlace test for trend."))
+        self.txtLR.set_tooltip_text(_(u"Displays the value of the Lewis-Robinson test for trend."))
+        self.txtScale.set_tooltip_text(_(u"Displays the point estimate of the scale parameter."))
+        self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the scale parameter."))
+        self.txtScaleUL.set_tooltip_text(_(u"Displays the upper <span>\u03B1</span>% bound on the scale parameter."))
+        self.txtShape.set_tooltip_text(_(u"Displays the point estimate of the shape parameter."))
+        self.txtShapeLL.set_tooltip_text(_(u"Displays the lower <span>\u03B1</span>% bound on the shape parameter."))
+        self.txtShapeUL.set_tooltip_text(_(u"Displays the upper <span>\u03B1</span>% bound on the shape parameter."))
+        self.txtLocation.set_tooltip_text(_(u"Displays the point estimate of the location parameter."))
+        self.txtLocationLL.set_tooltip_text(_(u"Displays the lower <span>\u03B1</span>% bound on the location parameter."))
+        self.txtLocationUL.set_tooltip_text(_(u"Displays the upper <span>\u03B1</span>% bound on the location parameter."))
+        self.txtShapeShape.set_tooltip_text(_(u"Dispalys the variance of the shape parameter."))
+        self.txtShapeScale.set_tooltip_text(_(u"Displays the covariance of the shape and scale parameters."))
+        self.txtShapeLocation.set_tooltip_text(_(u"Displays the covariance of the shape and location parameters."))
+        self.txtScaleShape.set_tooltip_text(_(u"Displays the covariance of the scale and shape parameters."))
+        self.txtScaleScale.set_tooltip_text(_(u"Displays the variance of the scale parameter."))
+        self.txtScaleLocation.set_tooltip_text(_(u"Displays the covariance of the scale and location parameters."))
+        self.txtLocationShape.set_tooltip_text(_(u"Displays the covariance of the location and shape parameters."))
+        self.txtLocationScale.set_tooltip_text(_(u"Displays the covariance of the location and scale parameters."))
+        self.txtLocationLocation.set_tooltip_text(_(u"Displays the variance of the location parameter."))
+        self.txtAIC.set_tooltip_text(_(u"Displays the value of Aikike's information criterion."))
+        self.txtBIC.set_tooltip_text(_(u"Displays the value of Bayes' information criterion."))
+        self.txtMLE.set_tooltip_text(_(u"Displays the likelihood value."))
+        self.txtNumSuspensions.set_tooltip_text(_(u"Displays the number of suspensions in the data set."))
+        self.txtNumFailures.set_tooltip_text(_(u"Displays the number of failures in the dat set."))
+        self.txtMTBF.set_tooltip_text(_(u"Displays the point estimate of the MTBF."))
+        self.txtMTBFLL.set_tooltip_text(_(u"Displays the lower <span>\u03B1</span>% bound on the MTBF."))
+        self.txtMTBFUL.set_tooltip_text(_(u"Displays the upper <span>\u03B1</span>% bound on the MTBF."))
 
         return False
 
@@ -507,18 +654,24 @@ class Dataset:
         label = _widg.make_label(_("Number of Suspensions:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumSuspensions, 210, y_pos)
+        label = _widg.make_label(_("Estimated MTBF"), width=200)
+        fixed.put(label, 415, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("Number of Failures:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumFailures, 210, y_pos)
+        label = _widg.make_label(_("Lower Bound"), width=150)
+        fixed.put(label, 415, y_pos)
+        label = _widg.make_label(_("Point Estimate"), width=150)
+        fixed.put(label, 565, y_pos)
+        label = _widg.make_label(_("Upper Bound"), width=150)
+        fixed.put(label, 715, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("Estimated MTBF:"), width=200)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMTBF, 210, y_pos)
-        fixed.put(self.txtMTBFLL, 315, y_pos)
-        fixed.put(self.txtMTBFUL, 420, y_pos)
+        fixed.put(self.txtMTBFLL, 415, y_pos)
+        fixed.put(self.txtMTBF, 565, y_pos)
+        fixed.put(self.txtMTBFUL, 715, y_pos)
         y_pos += 30
 
         vbox.pack_start(frame, True, True)
@@ -632,15 +785,15 @@ class Dataset:
         fixed.put(label, 155, y_pos)
 
         label = _widg.make_label(_("Laplace"), width=150)
-        fixed.put(label, 310, y_pos)
+        fixed.put(label, 305, y_pos)
 
         label = _widg.make_label(_("Lewis-Robinson"), width=150)
-        fixed.put(label, 465, y_pos)
+        fixed.put(label, 455, y_pos)
         y_pos += 30
 
         fixed.put(self.txtMHB, 155, y_pos)
-        fixed.put(self.txtLP, 310, y_pos)
-        fixed.put(self.txtLR, 465, y_pos)
+        fixed.put(self.txtLP, 305, y_pos)
+        fixed.put(self.txtLR, 455, y_pos)
 
         vbox.pack_start(frame, True, True)
 
@@ -656,35 +809,35 @@ class Dataset:
         frame.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_("Scale Parameter"), width=150)
+        label = _widg.make_label(_("Scale"), width=150)
         fixed.put(label, 155, y_pos)
 
-        label = _widg.make_label(_("Shape Parameter"), width=150)
-        fixed.put(label, 310, y_pos)
+        label = _widg.make_label(_("Shape"), width=150)
+        fixed.put(label, 305, y_pos)
 
-        label = _widg.make_label(_("Location Parameter"), width=150)
-        fixed.put(label, 465, y_pos)
+        label = _widg.make_label(_("Location"), width=150)
+        fixed.put(label, 455, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_("Lower Bound"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScaleLL, 155, y_pos)
-        fixed.put(self.txtShapeLL, 310, y_pos)
-        fixed.put(self.txtLocationLL, 465, y_pos)
-        y_pos += 30
+        fixed.put(self.txtShapeLL, 305, y_pos)
+        fixed.put(self.txtLocationLL, 455, y_pos)
+        y_pos += 25
 
         label = _widg.make_label(_("Point Estimate"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScale, 155, y_pos)
-        fixed.put(self.txtShape, 310, y_pos)
-        fixed.put(self.txtLocation, 465, y_pos)
-        y_pos += 30
+        fixed.put(self.txtShape, 305, y_pos)
+        fixed.put(self.txtLocation, 455, y_pos)
+        y_pos += 25
 
         label = _widg.make_label(_("Upper Bound"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScaleUL, 155, y_pos)
-        fixed.put(self.txtShapeUL, 310, y_pos)
-        fixed.put(self.txtLocationUL, 465, y_pos)
+        fixed.put(self.txtShapeUL, 305, y_pos)
+        fixed.put(self.txtLocationUL, 455, y_pos)
 
         vbox.pack_start(frame, True, True)
 
@@ -696,33 +849,27 @@ class Dataset:
         frame.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_("Scale"), width=150)
-        fixed.put(label, 155, y_pos)
-        label = _widg.make_label(_("Shape"), width=150)
-        fixed.put(label, 310, y_pos)
-        label = _widg.make_label(_("Location"), width=150)
-        fixed.put(label, 465, y_pos)
+        fixed.put(self.lblRowScale, 155, y_pos)
+        fixed.put(self.lblRowShape, 305, y_pos)
+        fixed.put(self.lblRowLocation, 455, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("Scale"), width=150)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtCov11, 155, y_pos)
-        fixed.put(self.txtCov12, 310, y_pos)
-        fixed.put(self.txtCov13, 465, y_pos)
-        y_pos += 30
+        fixed.put(self.lblColScale, 5, y_pos)
+        fixed.put(self.txtScaleScale, 155, y_pos)
+        fixed.put(self.txtScaleShape, 305, y_pos)
+        fixed.put(self.txtScaleLocation, 455, y_pos)
+        y_pos += 25
 
-        label = _widg.make_label(_("Shape"), width=150)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtCov21, 155, y_pos)
-        fixed.put(self.txtCov22, 310, y_pos)
-        fixed.put(self.txtCov23, 465, y_pos)
-        y_pos += 30
+        fixed.put(self.lblColShape, 5, y_pos)
+        fixed.put(self.txtShapeScale, 155, y_pos)
+        fixed.put(self.txtShapeShape, 305, y_pos)
+        fixed.put(self.txtShapeLocation, 455, y_pos)
+        y_pos += 25
 
-        label = _widg.make_label(_("Location"), width=150)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtCov31, 155, y_pos)
-        fixed.put(self.txtCov32, 310, y_pos)
-        fixed.put(self.txtCov33, 465, y_pos)
+        fixed.put(self.lblColLocation, 5, y_pos)
+        fixed.put(self.txtLocationScale, 155, y_pos)
+        fixed.put(self.txtLocationShape, 305, y_pos)
+        fixed.put(self.txtLocationLocation, 455, y_pos)
 
         vbox.pack_start(frame, True, True)
 
@@ -737,14 +884,14 @@ class Dataset:
         label = _widg.make_label("AIC", width=150)
         fixed.put(label, 155, y_pos)
         label = _widg.make_label("BIC", width=150)
-        fixed.put(label, 310, y_pos)
+        fixed.put(label, 305, y_pos)
         label = _widg.make_label("MLE", width=150)
-        fixed.put(label, 465, y_pos)
+        fixed.put(label, 455, y_pos)
         y_pos += 30
 
         fixed.put(self.txtAIC, 155, y_pos)
-        fixed.put(self.txtBIC, 310, y_pos)
-        fixed.put(self.txtMLE, 465, y_pos)
+        fixed.put(self.txtBIC, 305, y_pos)
+        fixed.put(self.txtMLE, 455, y_pos)
 
         vbox.pack_start(frame, True, True)
 
@@ -783,15 +930,15 @@ class Dataset:
         self.txtLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 19))))
         self.txtLocationLL.set_text(str(fmt.format(self.model.get_value(self.selected_row, 20))))
         self.txtLocationUL.set_text(str(fmt.format(self.model.get_value(self.selected_row, 21))))
-        self.txtCov11.set_text(str(fmt.format(self.model.get_value(self.selected_row, 22))))        # Scale variance (var 1)
-        self.txtCov22.set_text(str(fmt.format(self.model.get_value(self.selected_row, 23))))        # Scale variance (var 2)
-        self.txtCov33.set_text(str(fmt.format(self.model.get_value(self.selected_row, 24))))        # Location variance (var 3)
-        self.txtCov12.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
-        self.txtCov21.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
-        self.txtCov13.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))        # Scale-Location variance (cov 2)
-        self.txtCov31.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))        # Scale-Location variance (cov 2)
-        self.txtCov23.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))        # Shape-Location variance (cov 3)
-        self.txtCov32.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))        # Shape-Location variance (cov 3)
+        self.txtShapeShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 22))))        # Scale variance (var 1)
+        self.txtShapeScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 23))))        # Scale variance (var 2)
+        self.txtShapeLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 24))))     # Location variance (var 3)
+        self.txtScaleShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
+        self.txtScaleScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
+        self.txtScaleLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Scale-Location variance (cov 2)
+        self.txtLocationShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Scale-Location variance (cov 2)
+        self.txtLocationScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))     # Shape-Location variance (cov 3)
+        self.txtLocationLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))  # Shape-Location variance (cov 3)
         self.txtMHB.set_text(str(fmt.format(self.model.get_value(self.selected_row, 28))))
         self.txtLP.set_text(str(fmt.format(self.model.get_value(self.selected_row, 29))))
         self.txtLR.set_text(str(fmt.format(self.model.get_value(self.selected_row, 30))))
@@ -858,7 +1005,7 @@ class Dataset:
             _title_  -- the title for the plot.
             _xlab_   -- the x asis label for the plot.
             _ylab_   -- the y axis label for the plot.
-            _type_   -- the type of line to plot (1=step, 2=plot).
+            _type_   -- the type of line to plot (1=step, 2=plot, 3=histogram).
             _marker_ -- the marker to use on the plot.
         """
 
@@ -867,33 +1014,49 @@ class Dataset:
         axis.cla()
 
         axis.grid(True, which='both')
-        axis.set_title(_title_)
-        axis.set_xlabel(_xlab_)
-        axis.set_ylabel(_ylab_)
 
         if(y1 is not None):
             if(_type_ == 1):
                 line, = axis.step(x, y1, _marker_[0], where='mid')
+                for i in range(n_points):
+                    line.set_ydata(y1)
             elif(_type_ == 2):
                 line, = axis.plot(x, y1, _marker_[0])
-            for i in range(n_points):
-                line.set_ydata(y1)
+                for i in range(n_points):
+                    line.set_ydata(y1)
+            elif(_type_ == 3):
+                axis.grid(False, which='both')
+                n, bins, patches = axis.hist(x, bins=y1, color=_marker_[0])
 
         if(y2 is not None):
             if(_type_ == 1):
                 line2, = axis.step(x, y2, _marker_[1], where='mid')
+                for i in range(n_points):
+                    line2.set_ydata(y2)
             elif(_type_ == 2):
                 line2, = axis.plot(x, y2, _marker_[1])
-            for i in range(n_points):
-                line2.set_ydata(y2)
+                for i in range(n_points):
+                    line2.set_ydata(y2)
+            elif(_type_ == 3):
+                axis.grid(False, which='both')
+                n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
 
         if(y3 is not None):
             if(_type_ == 1):
                 line3, = axis.step(x, y3, _marker_[2], where='mid')
+                for i in range(n_points):
+                    line3.set_ydata(y3)
             elif(_type_ == 2):
                 line3, = axis.plot(x, y3, _marker_[2])
-            for i in range(n_points):
-                line3.set_ydata(y3)
+                for i in range(n_points):
+                    line3.set_ydata(y3)
+            elif(_type_ == 3):
+                axis.grid(False, which='both')
+                n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
+
+        axis.set_title(_title_)
+        axis.set_xlabel(_xlab_)
+        axis.set_ylabel(_ylab_)
 
         plot.draw()
 
@@ -916,12 +1079,14 @@ class Dataset:
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        _dataset_ = self.model.get_value(self.selected_row, 0)
-        _name = self.model.get_value(self.selected_row, 2)
-        _analysis_ = self.model.get_value(self.selected_row, 4)
-        _conf_ = self.model.get_value(self.selected_row, 5)
-        _type_ = self.model.get_value(self.selected_row, 6)
-        _reltime_ = self.model.get_value(self.selected_row, 9)
+        _dataset_ = self.model.get_value(self.selected_row, 0)  # Dataset ID.
+        _name = self.model.get_value(self.selected_row, 2)      # Dataset name.
+        _analysis_ = self.cmbDistribution.get_active()          # Distribution ID.
+        _conf_ = float(self.txtConfidence.get_text())           # Confidence.
+        _type_ = self.cmbConfType.get_active()                  # Confidence type.
+        _fitmeth_ = self.cmbFitMethod.get_active()              # Fit method.
+        _starttime_ = float(self.txtStartTime.get_text())       # Maximum time.
+        _reltime_ = float(self.txtEndTime.get_text())           # Maximum time.
 
         if(_type_ == 3):                    # Two-sided bounds.
             _conf_ = (100.0 + _conf_) / 200.0
@@ -945,6 +1110,12 @@ class Dataset:
                                              None,
                                              self._app.ProgCnx)
 
+        # Initialize variables.
+        n_suspensions = 0
+        n_failures = 0
+        MTBF = 0.0
+        MTBFLL = 0.0
+        MTBFUL = 0.0
         scale = 0.0
         scalell = 0.0
         scaleul = 0.0
@@ -954,15 +1125,21 @@ class Dataset:
         location = 0.0
         locationll = 0.0
         locationul = 0.0
-        cov11 = 0.0
-        cov12 = 0.0
-        cov13 = 0.0
-        cov21 = 0.0
-        cov22 = 0.0
-        cov23 = 0.0
-        cov31 = 0.0
-        cov32 = 0.0
-        cov33 = 0.0
+        shapeshape = 0.0
+        shapescale = 0.0
+        shapelocation = 0.0
+        scaleshape = 0.0
+        scalescale = 0.0
+        scalelocation = 0.0
+        locationshape = 0.0
+        locationscale = 0.0
+        locationlocation = 0.0
+        mhb = 0.0
+        lp = 0.0
+        lr = 0.0
+        mle = 0.0
+        aic = 0.0
+        bic = 0.0
 
         if(_analysis_ == 1):                # MCF
             # Create a list of unique units.
@@ -984,7 +1161,8 @@ class Dataset:
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_right_interval <= %f \
-                     AND fld_right_interval > 0.0" % (_dataset_, _reltime_)
+                     AND fld_right_interval > 0.0 \
+                     ORDER BY fld_right_interval ASC" % (_dataset_, _reltime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
@@ -1076,37 +1254,37 @@ class Dataset:
 
             column = self.tvwNonParResults.get_column(1)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>Delta .</span>"))
+            label.set_markup(_(u"<span weight='bold'>\u03B4.</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(2)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>d.</span>"))
+            label.set_markup(_(u"<span weight='bold'>d.</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(3)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>d bar</span>"))
+            label.set_markup(_(u"<span weight='bold'>d bar</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(4)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>se MCF</span>"))
+            label.set_markup(_(u"<span weight='bold'>se<sub>MCF</sub></span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(5)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>MCF</span>"))
+            label.set_markup(_(u"<span weight='bold'>MCF</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(6)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>MCF Lower\nBound</span>"))
+            label.set_markup(_(u"<span weight='bold'>MCF Lower\nBound</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(7)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>MCF Upper\nBound</span>"))
+            label.set_markup(_(u"<span weight='bold'>MCF Upper\nBound</span>"))
             column.set_widget(label)
 
             # Set the values in the results widgets.
@@ -1121,9 +1299,9 @@ class Dataset:
             # Plot the mean cumulative function.
             self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
                             y2=muhatll, y3=muhatul,
-                            _title_=_("MCF Plot of %s") % _name,
-                            _xlab_=_("Time"),
-                            _ylab_=_("Mean Cumulative Function [mu(t)]"),
+                            _title_=_(u"MCF Plot of %s") % _name,
+                            _xlab_=_(u"Time"),
+                            _ylab_=_(u"Mean Cumulative Function [mu(t)]"),
                             _marker_=['g-', 'r-', 'b-'])
 
             for plot in self.vbxPlot1.get_children():
@@ -1134,18 +1312,18 @@ class Dataset:
             # Plot the run sequence plot.
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=failnum, y1=tbf, y2=None, y3=None,
-                            _title_=_("Run Sequence Plot of %s") % _name,
-                            _xlab_=_("Failure Number"),
-                            _ylab_=_("Time Between Failure"),
+                            _title_=_(u"Run Sequence Plot of %s") % _name,
+                            _xlab_=_(u"Failure Number"),
+                            _ylab_=_(u"Time Between Failure"),
                             _type_=2, _marker_=['g-'])
 
             # Plot the lag 1 plot.
             self._load_plot(self.axAxis4, self.pltPlot4,
                             x=tbf[0:n_points-1], y1=tbf[1:n_points],
                             y2=None, y3=None,
-                            _title_=_("Lag 1 Plot of %s") % _name,
-                            _xlab_=_("Lagged Time Between Failure"),
-                            _ylab_=_("Time Between Failure"),
+                            _title_=_(u"Lag 1 Plot of %s") % _name,
+                            _xlab_=_(u"Lagged Time Between Failure"),
+                            _ylab_=_(u"Time Between Failure"),
                             _type_=2, _marker_=['go'])
 
             for plot in self.vbxPlot2.get_children():
@@ -1228,37 +1406,37 @@ class Dataset:
 
             column = self.tvwNonParResults.get_column(1)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>Number at\nRisk</span>"))
+            label.set_markup(_(u"<span weight='bold'>Number at\nRisk</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(2)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>Number\nFailing</span>"))
+            label.set_markup(_(u"<span weight='bold'>Number\nFailing</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(3)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>p</span>"))
+            label.set_markup(_(u"<span weight='bold'>p</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(4)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>se S(t)</span>"))
+            label.set_markup(_(u"<span weight='bold'>se S(t)</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(5)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>S(t)</span>"))
+            label.set_markup(_(u"<span weight='bold'>S(t)</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(6)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>S(t) Lower\nBound</span>"))
+            label.set_markup(_(u"<span weight='bold'>S(t) Lower\nBound</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(7)
             label = column.get_widget()
-            label.set_markup(_("<span weight='bold'>S(t) Upper\nBound</span>"))
+            label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
             column.set_widget(label)
 
             # Set the values in the results widgets.
@@ -1316,95 +1494,314 @@ class Dataset:
 
         elif(_analysis_ == 3):              # Fit to an exponential.
 
-            #    0 = MLE of the coefficients of the full model.
-            #    1 = MLE of the coefficients of the baseline model.
-            #    2 = covariance matrix.
-            #    3 = loglikelihood values for the baseline and full models.
-            #    4 = number of iterations required.
-            #    5 = the linear predictor for each subject.
-            #    6 = degrees of freedom for the final model.
-            #    7 = scale factors, with length equal to the number of strata.
-            #    8 = degrees of freedom for the initial model.
-            #    9 = vector of the column means of the coefficient matrix.
-            #   10 =
-            #   11 =
-            #   12 = survreg code,
-            #   13 = distribution used in the fit.
-            par = _calc.parametric_fit(results, _reltime_, 'exponential')
+            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
+                                       _fitmeth_, 'exponential')
 
-            scale = exp(par[1][0])
-            scalell = exp(par[1][0] - _z_norm_ * par[2][0])
-            scaleul = exp(par[1][0] + _z_norm_ * par[2][0])
+            if(_fitmeth_ == 1):             # MLE
+                scale = fit[0][0]
+                scalell = fit[0][0] - _z_norm_ * fit[1][0]
+                scaleul = fit[0][0] + _z_norm_ * fit[1][0]
+                scalescale = fit[1][0]**2.0
+                mle = fit[3][0]
+                aic = fit[4][0]
+                bic = fit[5][0]
+
+            elif(_fitmeth_ == 2):           # Rank regression.
+                scale = 1.0 / exp(fit[0][0])
+                scalell = 1.0 / (exp(fit[0][0] + _z_norm_ * fit[2][0]))
+                scaleul = 1.0 / (exp(fit[0][0] - _z_norm_ * fit[2][0]))
+                scalescale = fit[2][0]
+                mle = fit[3][0]
+
+            MTBF = 1.0 / scale
+            MTBFLL = 1.0 / scaleul
+            MTBFUL = 1.0 / scalell
+
+            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            _theo_ = R.rexp(len(times), scale)
+
+            # Display the widgets we need.
+            self.txtScaleScale.show()
+
+            # Hide widgets we don't need.
+            self.lblRowShape.hide()
+            self.lblColShape.hide()
+            self.lblRowLocation.hide()
+            self.lblColLocation.hide()
+            self.txtShapeShape.hide()
+            self.txtShapeScale.hide()
+            self.txtShapeLocation.hide()
+            self.txtScaleShape.hide()
+            self.txtScaleLocation.hide()
+            self.txtLocationShape.hide()
+            self.txtLocationScale.hide()
+            self.txtLocationLocation.hide()
+
+        elif(_analysis_ == 4):              # Fit to a lognormal.
+
+            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
+                                       _fitmeth_, 'lognormal')
+
+            if(_fitmeth_ == 1):             # MLE
+                scale = fit[0][0]
+                scalell = scale - _z_norm_ * fit[1][0]
+                scaleul = scale + _z_norm_ * fit[1][0]
+                shape = fit[0][1]
+                shapell = shape - _z_norm_ * fit[1][1]
+                shapeul = shape + _z_norm_ * fit[1][1]
+                scalescale = fit[2][0]**2
+                scaleshape = fit[2][1]**2
+                shapeshape = fit[2][2]**2
+                shapescale = fit[2][3]**2
+                mle = fit[3][0]
+                aic = fit[4][0]
+                bic = fit[5][0]
+
+            elif(_fitmeth_ == 2):           # Rank regression.
+                scale = fit[1][0]
+                shape = fit[1][1]
+                scalescale = fit[2][0]
+                scaleshape = fit[2][1]
+                shapescale = fit[2][2]
+                shapeshape = fit[2][3]
+                scalell = scale - _z_norm_ * sqrt(scalescale)
+                scaleul = scale + _z_norm_ * sqrt(scalescale)
+                shapell = shape - _z_norm_ * sqrt(shapeshape)
+                shapeul = shape + _z_norm_ * sqrt(shapeshape)
+
+            MTBF = exp(scale + 0.5 * shape**2.0)
+            MTBFLL = exp(scalell + 0.5 * shapell**2.0)
+            MTBFUL = exp(scaleul + 0.5 * shapeul**2.0)
+
+            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            _theo_ = R.rlnorm(len(times), scale, shape)
+
+            # Display the widgets we need.
+            self.lblRowShape.show()
+            self.lblColShape.show()
+            self.lblRowScale.show()
+            self.lblColScale.show()
+            self.txtShapeShape.show()
+            self.txtShapeScale.show()
+            self.txtScaleShape.show()
+            self.txtScaleScale.show()
+
+            # Hide widgets we don't need.
+            self.lblRowLocation.hide()
+            self.lblColLocation.hide()
+            self.txtShapeLocation.hide()
+            self.txtScaleLocation.hide()
+            self.txtLocationShape.hide()
+            self.txtLocationScale.hide()
+            self.txtLocationLocation.hide()
+
+        elif(_analysis_ == 5):              # Fit to a normal.
+
+            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
+                                       _fitmeth_, 'normal')
+
+            if(_fitmeth_ == 1):             # MLE
+                scale = fit[0][0]
+                scalell = scale - _z_norm_ * fit[1][0]
+                scaleul = scale + _z_norm_ * fit[1][0]
+                shape = fit[0][1]
+                shapell = shape - _z_norm_ * fit[1][1]
+                shapeul = shape + _z_norm_ * fit[1][1]
+                scalescale = fit[1][0]**2
+                shapeshape = fit[1][1]**2
+                mle = fit[3][0]
+                aic = fit[4][0]
+                bic = fit[5][0]
+            elif(_fitmeth_ == 2):           # Rank regression.
+                scale = fit[1][0]
+                shape = exp(fit[1][1])
+                scalescale = fit[2][0]
+                scaleshape = fit[2][1]
+                shapescale = fit[2][2]
+                shapeshape = fit[2][3]
+                scalell = scale - _z_norm_ * sqrt(scalescale)
+                scaleul = scale + _z_norm_ * sqrt(scalescale)
+                shapell = shape - _z_norm_ * sqrt(shapeshape)
+                shapeul = shape + _z_norm_ * sqrt(shapeshape)
+
             MTBF = scale
             MTBFLL = scalell
             MTBFUL = scaleul
 
-            cov11 = par[2][0]
+            # Display the widgets we need.
+            self.lblRowShape.show()
+            self.lblColShape.show()
+            self.lblRowScale.show()
+            self.lblColScale.show()
+            self.txtShapeShape.show()
+            self.txtShapeScale.show()
+            self.txtScaleShape.show()
+            self.txtScaleScale.show()
 
             # Hide widgets we don't need.
-            self.txtCov12.hide()
-            self.txtCov13.hide()
-            self.txtCov21.hide()
-            self.txtCov22.hide()
-            self.txtCov23.hide()
-            self.txtCov31.hide()
-            self.txtCov32.hide()
-            self.txtCov33.hide()
+            self.lblRowLocation.hide()
+            self.lblColLocation.hide()
+            self.txtShapeLocation.hide()
+            self.txtScaleLocation.hide()
+            self.txtLocationShape.hide()
+            self.txtLocationScale.hide()
+            self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 4):              # Fit to a lognormal.
+        elif(_analysis_ == 6):              # Fit to a Weibull.
 
-            par = _calc.parametric_fit(results, _reltime_, 'lognormal')
+            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
+                                       _fitmeth_, 'weibull')
 
-            scale = par[1][0]
-            scalell = par[1][0] - _z_norm_ * par[2][0]
-            scaleul = par[1][0] + _z_norm_ * par[2][0]
-            shape = par[1][1]
-            shapell = par[1][1] - _z_norm_ * par[2][3]
-            shapeul = par[1][1] + _z_norm_ * par[2][3]
-            MTBF = exp(scale + 0.5*shape**2)
-            MTBFLL = exp(scalell + 0.5*shapell**2)
-            MTBFUL = exp(scaleul + 0.5*shapeul**2)
-            cov11 = par[2][0]
-            cov21 = par[2][1]
-            cov12 = par[2][2]
-            cov22 = par[2][3]
+            if(_fitmeth_ == 1):             # MLE
+                scale = fit[0][1]
+                scalell = scale / exp(_z_norm_ * fit[1][1] / scale)
+                scaleul = scale * exp(_z_norm_ * fit[1][1] / scale)
+                shape = fit[0][0]
+                shapell = shape / exp(_z_norm_ * fit[1][0] / shape)
+                shapeul = shape * exp(_z_norm_ * fit[1][0] / shape)
+                scalescale = fit[1][0]**2
+                shapeshape = fit[1][1]**2
+                mle = fit[3][0]
+                aic = fit[4][0]
+                bic = fit[5][0]
+
+                if(__USE_RPY2__):
+                    MTBF = scale * R.gamma(1.0 + (1.0 / shape))[0]
+                    MTBFLL = scalell * R.gamma(1.0 + (1.0 / shapell))[0]
+                    MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapeul))[0]
+
+            elif(_fitmeth_ == 2):
+                scale = exp(fit[1][0])
+                shape = exp(fit[1][1])
+                scalescale = fit[2][0]
+                scaleshape = fit[2][1]
+                shapescale = fit[2][2]
+                shapeshape = fit[2][3]
+                scalell = scale - _z_norm_ * sqrt(scalescale)
+                scaleul = scale + _z_norm_ * sqrt(scalescale)
+                shapell = shape - _z_norm_ * sqrt(shapeshape)
+                shapeul = shape + _z_norm_ * sqrt(shapeshape)
+
+                if(__USE_RPY2__):
+                    MTBF = scale * R.gamma(1.0 + (1.0 / shape))[0]
+                    MTBFLL = scalell * R.gamma(1.0 + (1.0 / shapeul))[0]
+                    MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapell))[0]
+
+            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            _theo_ = R.rweibull(len(times), scale, shape)
 
             # Display the widgets we need.
-            self.txtCov11.show()
-            self.txtCov12.show()
-            self.txtCov21.show()
-            self.txtCov22.show()
+            self.lblRowShape.show()
+            self.lblColShape.show()
+            self.lblRowScale.show()
+            self.lblColScale.show()
+            self.txtShapeShape.show()
+            self.txtShapeScale.show()
+            self.txtScaleShape.show()
+            self.txtScaleScale.show()
 
             # Hide widgets we don't need.
-            self.txtCov13.hide()
-            self.txtCov23.hide()
-            self.txtCov31.hide()
-            self.txtCov32.hide()
-            self.txtCov33.hide()
+            self.lblRowLocation.hide()
+            self.lblColLocation.hide()
+            self.txtShapeLocation.hide()
+            self.txtScaleLocation.hide()
+            self.txtLocationShape.hide()
+            self.txtLocationScale.hide()
+            self.txtLocationLocation.hide()
 
-        self.txtScale.set_text(str(fmt.format(scale)))
-        self.txtScaleLL.set_text(str(fmt.format(scalell)))
-        self.txtScaleUL.set_text(str(fmt.format(scaleul)))
-        self.txtShape.set_text(str(fmt.format(shape)))
-        self.txtShapeLL.set_text(str(fmt.format(shapell)))
-        self.txtShapeUL.set_text(str(fmt.format(shapeul)))
-        self.txtLocation.set_text(str(fmt.format(location)))
-        self.txtLocationLL.set_text(str(fmt.format(locationll)))
-        self.txtLocationUL.set_text(str(fmt.format(locationul)))
-        self.txtCov11.set_text(str(fmt.format(cov11)))
-        self.txtCov12.set_text(str(fmt.format(cov12)))
-        self.txtCov13.set_text(str(fmt.format(cov13)))
-        self.txtCov21.set_text(str(fmt.format(cov21)))
-        self.txtCov22.set_text(str(fmt.format(cov22)))
-        self.txtCov23.set_text(str(fmt.format(cov23)))
-        self.txtCov31.set_text(str(fmt.format(cov31)))
-        self.txtCov32.set_text(str(fmt.format(cov32)))
-        self.txtCov33.set_text(str(fmt.format(cov33)))
-        self.txtAIC.set_text(str(fmt.format(0.0)))
-        self.txtBIC.set_text(str(fmt.format(0.0)))
-        self.txtMLE.set_text(str(fmt.format(par[3][0])))
-        self.txtNumSuspensions.set_text(str(fmt.format(0.0)))
-        self.txtNumFailures.set_text(str(fmt.format(0.0)))
+        elif(_analysis_ == 7):              # Fit to a WeiBayes.
+
+            if(_fitmeth_ == 1):             # MLE
+                print fit[0]
+                print fit[1]
+                print fit[2]
+                print fit[3]
+                print fit[4]
+                print fit[5]
+
+            print "Fitting to WeiBayes"
+
+        # Create and display plots.
+        if(_analysis_ > 2):
+
+            # Plot a histogram of interarrival times.
+            Rtimes = robjects.FloatVector(times)
+
+            hist = R.hist(Rtimes, plot='False')
+            bins = list(hist[0])
+            counts = list(hist[1])
+
+            self._load_plot(self.axAxis1, self.pltPlot1,
+                            x=counts, y1=bins,
+                            _title_=_("Histogram of Interarrival Times for %s") % _name,
+                            _xlab_=_("Interarrival Times"),
+                            _ylab_=_("Count"),
+                            _type_=3,
+                            _marker_=['g'])
+
+            # Plot the density function of interarrival times.
+            _dens_ = R.density(Rtimes)
+            self._load_plot(self.axAxis2, self.pltPlot2,
+                            x=_dens_[0], y1=_dens_[1],
+                            _title_=_("Density Estimate of Interarrival Times for %s") % _name,
+                            _xlab_=_(""),
+                            _ylab_=_("Density"),
+                            _type_=2,
+                            _marker_=['g'])
+
+            # Plot an ECDF of interarrival times.
+            #_ecdf_ = R.ecdf(times)
+            #self._load_plot(self.axAxis3, self.pltPlot3,
+            #                x=_ecdf_[0], y1=_ecdf_[1],
+            #                _title_=_("Empirical CDF of Interarrival Times for %s") % _name,
+            #                _xlab_=_("t"),
+            #                _ylab_=_("F(t)"),
+            #                _type_=2,
+            #                _marker_=['g'])
+
+            _theo_ = R.order(_theo_)
+            _qqplot_ = R.qqplot(_theo_, Rtimes, False)
+            self._load_plot(self.axAxis4, self.pltPlot4,
+                            x=_qqplot_[0], y1=_qqplot_[1],
+                            _title_=_("Probability Plot of Interarrival Times for %s") % _name,
+                            _xlab_=_("Theoretical"),
+                            _ylab_=_("Observed"),
+                            _type_=2,
+                            _marker_=['o'])
+
+        # Update gtk.TreeView with results.
+        self.model.set_value(self.selected_row, 4, _analysis_)
+        self.model.set_value(self.selected_row, 5, _conf_)
+        self.model.set_value(self.selected_row, 6, _type_)
+        self.model.set_value(self.selected_row, 8, _fitmeth_)
+        self.model.set_value(self.selected_row, 9, _reltime_)
+        self.model.set_value(self.selected_row, 11, n_suspensions)
+        self.model.set_value(self.selected_row, 12, n_failures)
+        self.model.set_value(self.selected_row, 13, scale)
+        self.model.set_value(self.selected_row, 14, scalell)
+        self.model.set_value(self.selected_row, 15, scaleul)
+        self.model.set_value(self.selected_row, 16, shape)
+        self.model.set_value(self.selected_row, 17, shapell)
+        self.model.set_value(self.selected_row, 18, shapeul)
+        self.model.set_value(self.selected_row, 19, location)
+        self.model.set_value(self.selected_row, 20, locationll)
+        self.model.set_value(self.selected_row, 21, locationul)
+        self.model.set_value(self.selected_row, 22, scalescale)
+        self.model.set_value(self.selected_row, 23, shapeshape)
+        self.model.set_value(self.selected_row, 24, locationlocation)
+        self.model.set_value(self.selected_row, 25, scaleshape)
+        self.model.set_value(self.selected_row, 26, scalelocation)
+        self.model.set_value(self.selected_row, 27, shapelocation)
+        self.model.set_value(self.selected_row, 28, mhb)
+        self.model.set_value(self.selected_row, 29, lp)
+        self.model.set_value(self.selected_row, 30, lr)
+        self.model.set_value(self.selected_row, 31, aic)
+        self.model.set_value(self.selected_row, 32, bic)
+        self.model.set_value(self.selected_row, 33, mle)
+
+        # Update widgets.
+        self._analyses_results_tab_load()
+
         self.txtMTBF.set_text(str(fmt.format(MTBF)))
         self.txtMTBFLL.set_text(str(fmt.format(MTBFLL)))
         self.txtMTBFUL.set_text(str(fmt.format(MTBFUL)))
@@ -1518,16 +1915,78 @@ class Dataset:
 
     def _assign_results(self, button):
         """
-        Assigns the MTBF and hazard rate results to the assembly associated
-        with the dataset.  Values are assigned to the specified fields.
+        Assigns the MTBF results to the assembly associated with the dataset.
+        Values are assigned to the specified fields.
 
         Keyword Arguments:
         button -- the gtk.Button widget that called this function.
         """
 
-        _assembly_id = self.model.get_value(self.selected_row, 1)
+        height = int(self._app.winWorkBook.height)
+        width = int(self._app.winWorkBook.width / 2.0)
 
-        print _assembly_id
+        query = "SELECT t1.fld_description, t2.fld_name, t1.fld_assembly_id \
+                 FROM tbl_system AS t1 \
+                 INNER JOIN tbl_revisions AS t2 \
+                 WHERE t1.fld_revision_id=t2.fld_revision_id"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        if(results == '' or not results):
+            return True
+
+        n_assemblies = len(results)
+
+        window = gtk.Window()
+        window.set_skip_pager_hint(True)
+        window.set_skip_taskbar_hint(True)
+        window.set_default_size(width, height)
+        window.set_border_width(5)
+        window.set_position(gtk.WIN_POS_NONE)
+
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                              gobject.TYPE_INT)
+
+        for i in range(n_assemblies):
+            model.append(results[i])
+
+        treeview = gtk.TreeView(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Assembly"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        treeview.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Revision"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        treeview.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Assembly ID"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.add_with_viewport(treeview)
+
+        window.add(scrollwindow)
+
+        window.show_all()
 
         return False
 
@@ -1633,6 +2092,7 @@ class Dataset:
         (self.model, self.selected_row) = selection.get_selected()
 
         if self.selected_row is not None:
+            self.dataset_id = self.model.get_value(self.selected_row, 0)
             self.load_notebook()
             return False
         else:

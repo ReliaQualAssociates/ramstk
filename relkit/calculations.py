@@ -2133,7 +2133,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         status = [i[1] for i in _dataset_ if i[0] <= _reltime_]
 
     # If Rpy2 is available, we will use that to perform the KM estimations.
-    # Returns an object with the following information:
+    # Returns an object with the following fields:
     #    0 = total number of subjects in each curve.
     #    1 = the time points at which the curve has a step.
     #    2 = the number of subjects at risk at t.
@@ -2229,20 +2229,20 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
         return(_KM_)
 
-def mean_cumulative_function(units, times, data, _conf_=0.75, _type_=3):
-    """ This functions estimates the mean cumulative function for a population
+def mean_cumulative_function(units, times, data, _conf_=0.75):
+    """ This function estimates the mean cumulative function for a population
         of items.
 
         Keyword Argumesnts:
-        units  --
-        times  --
-        data -- a data.frame or matrix where:
-                Column 0 is event time
-                Column 1 is unit ID
-                Column 2 is event type coded as:
-                    0 = first appearance (left censoring time)
-                    1 = recurrence
-                    2 = last appearance (right censoring time)
+        units  -- list of unique unit ID's in the dataset.
+        times  -- list of unique failure times in the dataset.
+        data   -- a data.frame or matrix where:
+                  Column 0 is event time
+                  Column 1 is unit ID
+                  Column 2 is event type coded as:
+                      0 = first appearance (left censoring time)
+                      1 = recurrence
+                      2 = last appearance (right censoring time)
         _conf_ -- the confidence level of the KM estimates (default is 75%).
     """
 
@@ -2305,33 +2305,77 @@ def mean_cumulative_function(units, times, data, _conf_=0.75, _type_=3):
 
     return(_MCF_)
 
-def parametric_fit(_dataset_, _reltime_, _dist_='exponential'):
+def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponential'):
+    """ Function to fit data to a parametric distribution and estimate the
+        parameters.
 
-    from math import log, sqrt
-    from scipy.stats import norm
+        Keyword Arguments:
+        _dataset_ -- the dataset to fit.  This is a
+        _reltime_ -- the maximum time to include in the fit.  Used to exclude
+                     outliers.
+        _fitmeth_ -- method used to fit data to the selected distribution.
+                     1 = rank regression
+                     2 = maximum likelihood estimation (MLE)
+        _dist_    -- the noun name of the distribution to fit.  Defaults to
+                     the exponential distribution.
+    """
 
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
-    _dataset_ = [i for i in _dataset_ if i[2] > 0.0]
-    if(_reltime_ != 0.0):
-        times = [i[3] for i in _dataset_ if i[2] <= _reltime_]
-        status = [i[4] for i in _dataset_ if i[2] <= _reltime_]
+    _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
 
     if(__USE_RPY__):
         print "Probably using Windoze."
 
     elif(__USE_RPY2__):
-        survival = importr('survival')
+        if(_fitmeth_ == 1):                 # MLE
+            import rpy2.rlike.container as rlc
 
-        times = robjects.FloatVector(times)
-        status = robjects.FloatVector(status)
+            if(_dist_ == 'exponential'):
+                _dist_ = 'exp'
+            elif(_dist_ == 'lognormal'):
+                _dist_ = 'lnorm'
+            elif(_dist_ == 'normal'):
+                _dist_ = 'norm'
 
-        surv = survival.Surv(times, status)
-        robjects.globalenv['surv'] = surv
-        fmla = robjects.Formula('surv ~ 1')
+            left = [i[1] for i in _dataset_]
+            right = [i[2] for i in _dataset_]
+            for i in range(len(_dataset_)):
+                if(_dataset_[i][4] == 0):
+                    right[i] = 'NA'
+                elif(_dataset_[i][4] == 1):
+                    left[i] = right[i]
+                elif(_dataset_[4] == 2):
+                    left[i] = 'NA'
 
-        par = survival.survreg(fmla, dist=_dist_)
+            od = rlc.OrdDict([('left', robjects.FloatVector(left)),
+                              ('right', robjects.FloatVector(right))])
 
-    return(par)
+            censdata = robjects.DataFrame(od)
 
-#
+            fitdistrplus = importr('fitdistrplus')
+
+            fit = fitdistrplus.fitdistcens(censdata, _dist_)
+
+        elif(_fitmeth_ == 2):               # Regression
+            if(_dist_ == 'normal'):
+                _dist_ = 'gaussian'
+
+            if(_reltime_ != 0.0):
+                time = [i[2] for i in _dataset_ if i[2] <= _reltime_]
+                time2 = [i[3] for i in _dataset_ if i[2] <= _reltime_]
+                status = [i[4] for i in _dataset_ if i[2] <= _reltime_]
+
+            survival = importr('survival')
+
+            time = robjects.FloatVector(time)
+            time2 = robjects.FloatVector(time2)
+            status = robjects.FloatVector(status)
+
+            surv = survival.Surv(time, time2, status, type='interval')
+            robjects.globalenv['surv'] = surv
+            formula = robjects.Formula('surv ~ 1')
+
+            fit = survival.survreg(formula, dist=_dist_)
+
+    return(fit)
