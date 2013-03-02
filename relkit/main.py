@@ -2,7 +2,7 @@
 """ This is the main program for The RelKit application. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2009 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -55,7 +55,6 @@ from dataset import Dataset
 
 
 def main():
-
     """ This is the main function for the RelKit application. """
 
     app = RelKit()
@@ -66,7 +65,6 @@ def main():
 
 
 class RelKit:
-
     """ This is the RelKit class. """
 
     def __init__(self):
@@ -104,7 +102,7 @@ class RelKit:
         self.LOADED = False
         self.partlist = {}
 
-        # Find out who is using RelKit.
+        # Find out who is using RelKit and when.
         self._UID = getpass.getuser()
         self._TODAY = datetime.datetime.now()
         self.DATE = "1970-01-01"
@@ -152,7 +150,6 @@ class RelKit:
         self.winTree.present()
 
     def load_system(self):
-
         """
         This method loads the RelKit development program database the
         user opens.

@@ -3,7 +3,7 @@
     to Program survival data sets. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -32,6 +32,8 @@ try:
     import gobject
 except ImportError:
     sys.exit(1)
+
+import numpy
 
 # Import R library if on a POSIX system.
 if(name == 'posix'):
@@ -148,7 +150,7 @@ class Dataset:
         self.n_datasets = 0
         self._col_order = []
 
-# Create the Notebook for the SOFTWARE object.
+# Create the Notebook for the DATASET object.
         self.notebook = gtk.Notebook()
         if(_conf.TABPOS[2] == 'left'):
             self.notebook.set_tab_pos(gtk.POS_LEFT)
@@ -1021,7 +1023,7 @@ class Dataset:
                 for i in range(n_points):
                     line.set_ydata(y1)
             elif(_type_ == 2):
-                line, = axis.plot(x, y1, _marker_[0])
+                line, = axis.plot(x, y1, _marker_[0], linewidth=2)
                 for i in range(n_points):
                     line.set_ydata(y1)
             elif(_type_ == 3):
@@ -1034,12 +1036,13 @@ class Dataset:
                 for i in range(n_points):
                     line2.set_ydata(y2)
             elif(_type_ == 2):
-                line2, = axis.plot(x, y2, _marker_[1])
+                line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
                 for i in range(n_points):
                     line2.set_ydata(y2)
             elif(_type_ == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
+                line2, = axis.plot(bins, y2)
 
         if(y3 is not None):
             if(_type_ == 1):
@@ -1047,12 +1050,13 @@ class Dataset:
                 for i in range(n_points):
                     line3.set_ydata(y3)
             elif(_type_ == 2):
-                line3, = axis.plot(x, y3, _marker_[2])
+                line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
                 for i in range(n_points):
                     line3.set_ydata(y3)
             elif(_type_ == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
+                line3, = axis.plot(bins, y3)
 
         axis.set_title(_title_)
         axis.set_xlabel(_xlab_)
@@ -1072,7 +1076,6 @@ class Dataset:
 
         import operator
         import itertools
-        import numpy
 
         from math import exp, log, sqrt
         from scipy.stats import chi2, norm
@@ -1518,7 +1521,12 @@ class Dataset:
             MTBFUL = 1.0 / scalell
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
-            _theo_ = R.rexp(len(times), scale)
+            Rtimes = robjects.FloatVector(times)
+            Rtimes = R.sort(Rtimes)
+            _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=scale),
+                                Rtimes, False)
+
+            _theo_ = R.rexp(100, rate=scale)
 
             # Display the widgets we need.
             self.txtScaleScale.show()
@@ -1574,7 +1582,10 @@ class Dataset:
             MTBFUL = exp(scaleul + 0.5 * shapeul**2.0)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
-            _theo_ = R.rlnorm(len(times), scale, shape)
+            Rtimes = robjects.FloatVector(times)
+            Rtimes = R.sort(Rtimes)
+            _qqplot_ = R.qqplot(R.qlnorm(R.ppoints(Rtimes), meanlog=scale,
+                                sdlog=shape), Rtimes, False)
 
             # Display the widgets we need.
             self.lblRowShape.show()
@@ -1627,6 +1638,12 @@ class Dataset:
             MTBF = scale
             MTBFLL = scalell
             MTBFUL = scaleul
+
+            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            Rtimes = robjects.FloatVector(times)
+            Rtimes = R.sort(Rtimes)
+            _qqplot_ = R.qqplot(R.qnorm(R.ppoints(Rtimes), mean=scale,
+                                sd=shape), Rtimes, False)
 
             # Display the widgets we need.
             self.lblRowShape.show()
@@ -1688,7 +1705,10 @@ class Dataset:
                     MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapell))[0]
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
-            _theo_ = R.rweibull(len(times), scale, shape)
+            Rtimes = robjects.FloatVector(times)
+            Rtimes = R.sort(Rtimes)
+            _qqplot_ = R.qqplot(R.qweibull(R.ppoints(Rtimes), shape=shape,
+                                scale=scale), Rtimes, False)
 
             # Display the widgets we need.
             self.lblRowShape.show()
@@ -1721,18 +1741,16 @@ class Dataset:
 
             print "Fitting to WeiBayes"
 
-        # Create and display plots.
+        # Create and display parametric plots.
         if(_analysis_ > 2):
 
             # Plot a histogram of interarrival times.
-            Rtimes = robjects.FloatVector(times)
-
             hist = R.hist(Rtimes, plot='False')
             bins = list(hist[0])
             counts = list(hist[1])
 
             self._load_plot(self.axAxis1, self.pltPlot1,
-                            x=counts, y1=bins,
+                            x=Rtimes, y1=bins,
                             _title_=_("Histogram of Interarrival Times for %s") % _name,
                             _xlab_=_("Interarrival Times"),
                             _ylab_=_("Count"),
@@ -1750,17 +1768,18 @@ class Dataset:
                             _marker_=['g'])
 
             # Plot an ECDF of interarrival times.
-            #_ecdf_ = R.ecdf(times)
-            #self._load_plot(self.axAxis3, self.pltPlot3,
-            #                x=_ecdf_[0], y1=_ecdf_[1],
-            #                _title_=_("Empirical CDF of Interarrival Times for %s") % _name,
-            #                _xlab_=_("t"),
-            #                _ylab_=_("F(t)"),
-            #                _type_=2,
-            #                _marker_=['g'])
+            counts = numpy.cumsum(counts)
+            cdf = []
+            for i in range(len(counts)):
+                cdf.append(float(counts[i]) / float(max(counts)))
+            self._load_plot(self.axAxis3, self.pltPlot3,
+                            x=bins[1:], y1=cdf,
+                            _title_=_("Empirical CDF of Interarrival Times for %s") % _name,
+                            _xlab_=_("t"),
+                            _ylab_=_("F(t)"),
+                            _type_=2,
+                            _marker_=['b-'])
 
-            _theo_ = R.order(_theo_)
-            _qqplot_ = R.qqplot(_theo_, Rtimes, False)
             self._load_plot(self.axAxis4, self.pltPlot4,
                             x=_qqplot_[0], y1=_qqplot_[1],
                             _title_=_("Probability Plot of Interarrival Times for %s") % _name,
