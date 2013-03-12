@@ -135,7 +135,6 @@ CREATE TABLE "tbl_functional_matrix" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
     PRIMARY KEY ("fld_function_id","fld_assembly_id")
 );
-
 INSERT INTO "tbl_functional_matrix" VALUES(0,0,0);
 
 CREATE TABLE "tbl_functions" (
@@ -182,16 +181,16 @@ CREATE TABLE "tbl_incident" (
     "fld_incident_age" INTEGER DEFAULT(0),
     "fld_hardware_id" INTEGER DEFAULT(-1),
     "fld_software_id" INTEGER DEFAULT(-1),
-    "fld_request_by" VARCHAR(256),
+    "fld_request_by" INTEGER DEFAULT(0),
     "fld_request_date" INTEGER,
     "fld_reviewed" TINYINT DEFAULT(0),
-    "fld_reviewed_by" VARCHAR(256),
+    "fld_reviewed_by" INTEGER DEFAULT(0),
     "fld_reviewed_date" INTEGER,
     "fld_approved" TINYINT DEFAULT(0),
-    "fld_approved_by" VARCHAR(256),
+    "fld_approved_by" INTEGER DEFAULT(0),
     "fld_approved_date" INTEGER,
     "fld_complete" TINYINT DEFAULT(0),
-    "fld_complete_by" VARCHAR(256),
+    "fld_complete_by" INTEGER DEFAULT(0),
     "fld_complete_date" INTEGER,
     "fld_life_cycle" INTEGER DEFAULT(0),
     "fld_analysis" BLOB,
@@ -462,7 +461,6 @@ CREATE TABLE "tbl_revisions" (
     "fld_total_part_quantity" INTEGER NOT NULL DEFAULT (1),
     "fld_revision_code" VARCHAR(8) DEFAULT ('')
 );
-
 INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision the system.',0,'');
 
 CREATE TABLE "tbl_risk_analysis" (
@@ -529,7 +527,6 @@ CREATE TABLE "tbl_risk_analysis" (
     "fld_category_value_7" INTEGER DEFAULT (0),
     "fld_category_value_8" INTEGER DEFAULT (0)
 );
-
 INSERT INTO "tbl_risk_analysis" VALUES(0,0,1,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'No changes','None',0,0.0,'','','','','',0.0,0.0,0.0,0.0,0.0,NULL,NULL,NULL,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,0);
 
 CREATE TABLE "tbl_similar_item" (
@@ -572,7 +569,6 @@ CREATE TABLE "tbl_similar_item" (
     "fld_user_int_2" INTEGER DEFAULT (0),
     "fld_user_int_3" INTEGER DEFAULT (0)
 );
-
 INSERT INTO "tbl_similar_item" VALUES(0,0,1,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'No changes',1.0,'','','','','',0.0,0.0,0.0,0.0,0.0,NULL,NULL,NULL,0.0,0.0,0.0,0,0,0);
 
 CREATE TABLE "tbl_software" (
@@ -647,7 +643,7 @@ CREATE TABLE "tbl_software" (
     "fld_e" REAL DEFAULT (0),
     "fld_f" REAL DEFAULT (0)
 );
-INSERT INTO "tbl_software" VALUES(0, 0, 0, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "-", 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO "tbl_software" VALUES(0, 0, 0, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "-", 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 CREATE TABLE "tbl_software_development" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),
@@ -854,15 +850,7 @@ CREATE TABLE "tbl_system" (
     "fld_reliability_goal_measure" INTEGER NOT NULL DEFAULT (0),
     "fld_reliability_goal" REAL NOT NULL DEFAULT (1)
 );
-
 INSERT INTO "tbl_system" VALUES(0,0,0.0,0,'',0.0,'',1.0,1.0,'',1,0,'',0.0,0.0,0.0,1,'System',0.0,100.0,100.0,'',0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,'',0.0,'',0.0,0.0,'',0,-1,0.0,100.0,0.0,'',0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0,0.0,'','',0,'','-',0,'',0.0,0.0,1,'',0.0,0.0,'',0,0.0,0.0,1,0.0,'',0,0,0.0,0.0,0,0.0,0.0,0,'',2002,'',0,1.0);
-
-CREATE TABLE "tbl_software_traceability" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_phase_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_tc11" INTEGER NOT NULL DEFAULT(0),
-    "fld_tc12" INTEGER NOT NULL DEFAULT(0)
-);
 
 CREATE TABLE "tbl_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
@@ -909,7 +897,6 @@ CREATE TABLE "tbl_revision_format" (
     "fld_editable" INTEGER,
     "fld_visible" INTEGER
 );
-
 INSERT INTO "tbl_revision_format" VALUES (0, 'Revision ID', 'Revision ID', 'gint', 'text', 0, 0, 0);
 INSERT INTO "tbl_revision_format" VALUES (1, 'Availability, Predicted', 'Availability, Predicted', 'gfloat', 'text', 1, 0, 0);
 INSERT INTO "tbl_revision_format" VALUES (2, 'Availability, Mission', 'Availability, Mission', 'gfloat', 'text', 2, 0, 0);

@@ -1495,7 +1495,7 @@ class ImportIncident:
                           int(contents[39]), int(contents[40]),
                           int(contents[41]), float(contents[42]), 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
                 if(_conf.BACKEND == 'mysql'):
                     query = "INSERT INTO tbl_incident_detail \
@@ -1503,13 +1503,13 @@ class ImportIncident:
                                      %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
                                      %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
                                      %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
-                                     %d, %d, %d, %d, %d)"
+                                     %d, %d, %d, %d, %d, %d)"
                 elif(_conf.BACKEND == 'sqlite3'):
                     query = "INSERT INTO tbl_incident_detail \
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?, ?, ?, ?)"
+                                     ?, ?, ?, ?, ?, ?)"
 
                 results = self._app.DB.execute_query(query,
                                                      values,
@@ -1658,7 +1658,12 @@ class CreateDataSet:
         #     6      OCC
         #     7      Initial Installation
         #     8      Interval Censored
-        query = "SELECT * FROM tbl_incident_detail"
+        query = "SELECT fld_incident_id, fld_part_num, fld_age_at_incident, \
+                        fld_failure, fld_suspension, fld_cnd_nff, \
+                        fld_occ_fault, fld_initial_installation, \
+                        fld_interval_censored \
+                 FROM tbl_incident_detail \
+                 ORDER BY fld_incident_id ASC"
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -1667,7 +1672,7 @@ class CreateDataSet:
         # remaining columns in a list as the value.
         n_parts = len(results)
         for i in range(n_parts):
-            _parts[results[i][0]] = results[i][1:9]
+            _parts[results[i][0]] = results[i][1:]
 
         # Create a list of lists.
         #    0.0 Unit
@@ -1684,13 +1689,21 @@ class CreateDataSet:
 
         while row is not None:
             _temp = []
-            _temp.append(model.get_value(row, 13))
-            _temp.append(_parts[model.get_value(row, 1)][0:8])
+            try:
+                _temp.append(model.get_value(row, 13))
+                _temp.append(_parts[model.get_value(row, 1)][0:])
+            except KeyError:
+                # TODO: Add error log message here.
+                pass
+
             _data_set.append(_temp)
             row = model.iter_next(row)
 
         # Sort the data set by unit first, then age at time of failure.
-        _data_set.sort(key=lambda x:(str(x[0]), float(x[1][1])))
+        try:
+            _data_set.sort(key=lambda x:(str(x[0]), float(x[1][1])))
+        except IndexError:
+            pass
 
         # Add a new dataset.
         _confidence = float(self.txtConfidence.get_text())

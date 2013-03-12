@@ -484,7 +484,10 @@ class PartsListWindow(gtk.Window):
 
         # Load the model with the returned results.
         for i in range(n_incidents):
-            model.append(None, results[i])
+            try:
+                model.append(None, results[i])
+            except TypeError:
+                print results[i]
 
         return False
 

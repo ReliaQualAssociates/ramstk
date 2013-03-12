@@ -480,11 +480,13 @@ class Incident:
         if(self.selected_row is None):
             return True
 
-        #query = "SELECT fld_name FROM tbl_system WHERE fld_part=0"
-        #results = self._app.COMDB.execute_query(query,
-        #                                        None,
-        #                                        self._app.ProgCnx)
-        #_widg.load_combo(self.cmbSystem, results)
+        # Load the hardware combo with a list of the assemblies in the system.
+        # TODO: Create code that will use either fld_description of fld_name depending on which the user uses.
+        query = "SELECT DISTINCT fld_description FROM tbl_system WHERE fld_part=0 ORDER BY fld_description ASC"
+        results = self._app.COMDB.execute_query(query,
+                                                None,
+                                                self._app.ProgCnx)
+        _widg.load_combo(self.cmbHardware, results)
 
         self.txtID.set_text(str(self.model.get_value(self.selected_row, 1)))
         self.cmbCategory.set_active(self.model.get_value(self.selected_row, 2))
@@ -492,6 +494,7 @@ class Incident:
         self.cmbStatus.set_active(self.model.get_value(self.selected_row, 9))
         self.cmbCriticality.set_active(self.model.get_value(self.selected_row, 6))
         self.cmbLifeCycle.set_active(self.model.get_value(self.selected_row, 29))
+        self.cmbHardware.set_active(self.model.get_value(self.selected_row, 16) + 1)
         self.txtAge.set_text(str(self.model.get_value(self.selected_row, 15)))
         self.cmbRequestBy.set_active(self.model.get_value(self.selected_row, 18))
         self.chkReviewed.set_active(self.model.get_value(self.selected_row, 20))

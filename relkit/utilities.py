@@ -400,7 +400,6 @@ def create_project(widget, app):
             cnx = app.DB.get_connection(_conf.RELIAFREE_PROG_INFO[2])
 
             sqlfile = open(_conf.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
-
             queries = sqlfile.read().split(';')
 
             for i in range(len(queries)):

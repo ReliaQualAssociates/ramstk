@@ -237,7 +237,7 @@ class TreeWindow(gtk.Window):
             if(_conf.RELIAFREE_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id,)
             else:
-                values = (0,)
+                values = (0, )
 
             # Select all the unaccepted field incidents from the open RelKit
             # Program database.
