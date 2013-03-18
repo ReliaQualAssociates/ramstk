@@ -2,7 +2,7 @@
 """ These are the memory integrated circuit classes. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -54,12 +54,12 @@ class MemoryDRAM(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Memory, DRAM Integrated
         Circuit prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -79,12 +79,12 @@ class MemoryDRAM(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Memory, DRAM Integrated Circuit calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -97,11 +97,11 @@ class MemoryDRAM(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)
@@ -310,12 +310,12 @@ class MemoryEEPROM(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Memory, EEPROM Integrated
         Circuit prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -366,12 +366,12 @@ class MemoryEEPROM(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Memory, EEPROM Integrated Circuit calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -397,11 +397,11 @@ class MemoryEEPROM(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)
@@ -415,11 +415,11 @@ class MemoryEEPROM(IntegratedCircuit):
 
     def assessment_results_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation results widgets with
+        Loads the RelKit Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -438,7 +438,7 @@ class MemoryEEPROM(IntegratedCircuit):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the ReliaFree COMPONENT object.
+        part    -- the RelKit COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -653,12 +653,12 @@ class MemoryROM(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Memory, ROM Integrated Circuit
         prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -678,12 +678,12 @@ class MemoryROM(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Memory, ROM Integrated Circuit calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -696,11 +696,11 @@ class MemoryROM(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)
@@ -879,12 +879,12 @@ class MemorySRAM(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Memory, SRAM Integrated
         Circuit prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -904,12 +904,12 @@ class MemorySRAM(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Memory, SRAM Integrated Circuit calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -922,11 +922,11 @@ class MemorySRAM(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)

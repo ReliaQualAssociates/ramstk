@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  import.py is part of The ReliaFree Project
+#  import.py is part of The RelKit Project
 #
-#  Copyright (C) 2012 Andrew Rowland <darowland@ieee.org>
+#  Copyright (C) 2013 Andrew Rowland <darowland@ieee.org>
 #
 # All rights reserved.
 
@@ -37,7 +37,7 @@ _ = gettext.gettext
 # Import module to read Excel files.
 import xlrd
 
-# Import other ReliaFree modules.
+# Import other RelKit modules.
 import configuration as _conf
 import widgets as _widg
 
@@ -49,7 +49,7 @@ class ImportAssistant:
 
         # Create an assistant to guide the user through the import process.
         assistant = gtk.Assistant()
-        assistant.set_title(_("ReliaFree - Importing Data"))
+        assistant.set_title(_("RelKit - Importing Data"))
 
         assistant.set_forward_page_func(self._set_next_page, assistant)
         assistant.connect('apply', self._apply)
@@ -59,9 +59,9 @@ class ImportAssistant:
         vbox.set_name('Page1')
         vbox.set_border_width(5)
         page = assistant.append_page(vbox)
-        assistant.set_page_title(vbox, _("ReliaFree: Importing Data..."))
+        assistant.set_page_title(vbox, _("RelKit: Importing Data..."))
         assistant.set_page_type(vbox, gtk.ASSISTANT_PAGE_INTRO)
-        label = gtk.Label(_("This assistant will guide you through the process of importing various types of data from an external source to the currently open ReliaFree Program database."))
+        label = gtk.Label(_("This assistant will guide you through the process of importing various types of data from an external source to the currently open RelKit Program database."))
         label.set_line_wrap(True)
         vbox.pack_start(label, True, True, 0)
         assistant.set_page_complete(vbox, True)
@@ -70,7 +70,7 @@ class ImportAssistant:
         vbox.set_name('Page2')
         vbox.set_border_width(5)
         assistant.append_page(vbox)
-        assistant.set_page_title(vbox, _("ReliaFree: Select Type of Data to Import..."))
+        assistant.set_page_title(vbox, _("RelKit: Select Type of Data to Import..."))
         assistant.set_page_type(vbox, gtk.ASSISTANT_PAGE_CONTENT)
         label = gtk.Label(_("Make a selection from the list below."))
         label.set_line_wrap(True)
@@ -96,7 +96,7 @@ class ImportAssistant:
         vbox.set_name('Page3')
         vbox.set_border_width(5)
         assistant.append_page(vbox)
-        assistant.set_page_title(vbox, _("ReliaFree: Import Data..."))
+        assistant.set_page_title(vbox, _("RelKit: Import Data..."))
         assistant.set_page_type(vbox, gtk.ASSISTANT_PAGE_CONFIRM)
         label = gtk.Label(_("Select apply to begin data import..."))
         label.set_line_wrap(True)
@@ -109,15 +109,15 @@ class ImportAssistant:
 
         """ Function to select the file containing the hardware data and
             associate the external file fields with the appropriate
-            ReliaFree Program database fields.
+            RelKit Program database fields.
         """
 
         import xlrd
 
         if(self.rdoHardware1.get_active()):
-            _title = _("ReliaFree - Import Hardware from BOM")
+            _title = _("RelKit - Import Hardware from BOM")
         elif(self.rdoHardware2.get_active()):
-            _title = _("ReliaFree - Import Hardware from flat list")
+            _title = _("RelKit - Import Hardware from flat list")
 
         filechooser = gtk.FileChooserDialog(_title,
                                             buttons=(gtk.STOCK_CANCEL,
@@ -199,7 +199,7 @@ class ImportAssistant:
             model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
-            column = gtk.TreeViewColumn(_("ReliaFree Field"))
+            column = gtk.TreeViewColumn(_("RelKit Field"))
             d_treeview.append_column(column)
             cell = gtk.CellRendererText()
             cell.set_property('editable', False)
@@ -527,12 +527,12 @@ class ImportAssistant:
 
         """ Function to select the file containing the build data and
             associate the external file fields with the appropriate
-            ReliaFree Program database fields.
+            RelKit Program database fields.
         """
 
         import xlrd
 
-        filechooser = gtk.FileChooserDialog(_("ReliaFree - Import Units"),
+        filechooser = gtk.FileChooserDialog(_("RelKit - Import Units"),
                                             buttons=(gtk.STOCK_CANCEL,
                                                      gtk.RESPONSE_REJECT,
                                                      gtk.STOCK_OK,
@@ -573,7 +573,7 @@ class ImportAssistant:
                 colnames.append(sheet.cell_value(0, i))
 
             # Display the list of columns in the selected worksheet.
-            dialog = _widg.make_dialog(_("ReliaFree - Import Units"))
+            dialog = _widg.make_dialog(_("RelKit - Import Units"))
 
             hbox = gtk.HBox()
 
@@ -611,7 +611,7 @@ class ImportAssistant:
             model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
-            column = gtk.TreeViewColumn(_("ReliaFree Field"))
+            column = gtk.TreeViewColumn(_("RelKit Field"))
             d_treeview.append_column(column)
             cell = gtk.CellRendererText()
             cell.set_property('editable', False)
@@ -776,13 +776,13 @@ class ImportAssistant:
     def _field_incident_select(self):
 
         """ Function to select the file containing the field incident data and
-            associate the external file fields with the appropriate ReliaFree
+            associate the external file fields with the appropriate RelKit
             Program database fields.
         """
 
         import xlrd
 
-        filechooser = gtk.FileChooserDialog(_("ReliaFree - Import Field Incident Data"),
+        filechooser = gtk.FileChooserDialog(_("RelKit - Import Field Incident Data"),
                                             buttons=(gtk.STOCK_CANCEL,
                                                      gtk.RESPONSE_REJECT,
                                                      gtk.STOCK_OK,
@@ -823,7 +823,7 @@ class ImportAssistant:
                 colnames.append(sheet.cell_value(0, i))
 
             # Display the list of columns in the selected worksheet.
-            dialog = _widg.make_dialog(_("ReliaFree - Import Field Incident Data"))
+            dialog = _widg.make_dialog(_("RelKit - Import Field Incident Data"))
 
             hbox = gtk.HBox()
 
@@ -861,7 +861,7 @@ class ImportAssistant:
             model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
-            column = gtk.TreeViewColumn(_("ReliaFree Field"))
+            column = gtk.TreeViewColumn(_("RelKit Field"))
             d_treeview.append_column(column)
             cell = gtk.CellRendererText()
             cell.set_property('editable', False)
@@ -1002,7 +1002,7 @@ class ImportAssistant:
                               str(data[6]), int(data[7]), str(data[8]),
                               str(data[9]), str(data[10]))
                 except ValueError:
-                    print "One or more selected columns contain the wrong type of data for the ReliaFree database."
+                    print "One or more selected columns contain the wrong type of data for the RelKit database."
 
                 if(_conf.BACKEND == 'mysql'):
                     query = "INSERT INTO tbl_incident \
@@ -1170,7 +1170,7 @@ def _select_worksheet(infile):
 def _set_import_order(button, s_treeview, d_treeview):
 
     """ Sets the order columns will be imported from an external Excel
-        spreadsheet to the ReliaFree project database table. """
+        spreadsheet to the RelKit project database table. """
 
     selection = s_treeview.get_selection()
     (model, row) = selection.get_selected()

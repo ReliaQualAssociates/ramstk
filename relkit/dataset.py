@@ -407,15 +407,15 @@ class Dataset:
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
-        model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_STRING)
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_STRING)
         self.tvwDataset.set_model(model)
 
         cell = gtk.CellRendererText()
-        cell.set_property('editable', 1)
+        cell.set_property('editable', 0)
         cell.set_property('background', 'white')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Left"))
+        label = _widg.make_column_heading(_(u"Affected\nUnit"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
@@ -425,10 +425,20 @@ class Dataset:
         cell.set_property('editable', 1)
         cell.set_property('background', 'white')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Right"))
+        label = _widg.make_column_heading(_(u"Left"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=1)
+        self.tvwDataset.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 1)
+        cell.set_property('background', 'white')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Right"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2)
         self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererCombo()
@@ -439,14 +449,14 @@ class Dataset:
         cellmodel.append([_(u"Interval Censored")])
         cell.set_property('has-entry', False)
         cell.set_property('model', cellmodel)
-        cell.set_property('text-column', 2)
+        cell.set_property('text-column', 3)
         #cell.connect('changed', self._callback_combo_cell,
         #                     int(position[i].text), model, cols)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Event"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
+        column.set_attributes(cell, text=3)
         self.tvwDataset.append_column(column)
 
         return False
@@ -578,10 +588,12 @@ class Dataset:
         self.txtStartTime.set_text(str(self.model.get_value(self.selected_row, 34)))
 
         # Load the gtk.TreeView containing the list of failure/censoring times.
-        query = "SELECT fld_left_interval, fld_right_interval, fld_status \
+        query = "SELECT fld_unit, fld_left_interval, fld_right_interval, \
+                        fld_status \
                  FROM tbl_survival_data \
                  WHERE fld_dataset_id=%s \
-                 ORDER BY fld_left_interval ASC" % self.dataset_id
+                 ORDER BY fld_unit ASC, \
+                          fld_left_interval ASC" % self.dataset_id
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -1095,6 +1107,12 @@ class Dataset:
             _conf_ = (100.0 + _conf_) / 200.0
         else:                               # One-sided bounds.
             _conf_ = _conf_ / 100.0
+
+        # Set maximum time to some very large value if the user has not
+        # set this themselves.  Keeping it at zero results in nothing being
+        # returned from the SQL queries to follow.
+        if(_reltime_ == 0.0):
+            _reltime_ = 1000000.0
 
         # Determine the confidence bound z-value.
         _z_norm_ = norm.ppf(_conf_)

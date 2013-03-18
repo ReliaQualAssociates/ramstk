@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       setup.py is part of The ReliaFree Project
+#       setup.py is part of The RelKit Project
 #
 #       Copyright (C) 2007-2011 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 #
 # All rights reserved
 #
-# ReliaFree is free software: you can redistribute it and/or modify
+# RelKit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# ReliaFree is distributed in the hope that it will be useful,
+# RelKit is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with ReliaFree.  If not, see <http://www.gnu.org/licenses/>.
+# along with RelKit.  If not, see <http://www.gnu.org/licenses/>.
 
-""" Setup script for ReliaFree.
+""" Setup script for RelKit.
 
     Run 'python setup.py develop' to set up a development environment,
     including dependencies.
@@ -113,9 +113,9 @@ class install_user_docs(Command):
         ('doc-path=', None,
          "path to install documentation (defaults to /usr/share/doc/reliafree-" + _version + "/user"),
         ('models', 'm',
-         "install documentation related to hazard rate models supported by ReliaFree."),
+         "install documentation related to hazard rate models supported by RelKit."),
         ('specs', 's',
-         "install MIL-SPECS for components supported by ReliaFree.")
+         "install MIL-SPECS for components supported by RelKit.")
         ]
 
     boolean_options = ['models', 'specs']
@@ -211,7 +211,7 @@ _data_files=[("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/add.png"]),
              ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/save.png"]),
              ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/save-exit.png"]),
              ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/undo.png"]),
-             (_icondir, ["config/icons/ReliaFree.png"]),
+             (_icondir, ["config/icons/RelKit.png"]),
              ("/etc/reliafree", ["config/site.conf"]),
              ("/etc/reliafree", ["config/reliafree.conf"]),
              ("/etc/reliafree", ["config/fmeca_format.xml"]),
@@ -228,14 +228,14 @@ _data_files=[("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/add.png"]),
              ("share/reliafree", ["config/newprogram_sqlite3.sql"]),
              ("share/reliafree", ["config/reliafreecom.sql"]),
              ("share/doc/reliafree-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
-             ("share/applications", ["ReliaFree.desktop"]),
+             ("share/applications", ["RelKit.desktop"]),
              ]
 
 _cmdclass = {'install_dev_docs': install_dev_docs,
              'install_user_docs': install_user_docs,
             }
 
-# Packages needed to install and run ReliaFree
+# Packages needed to install and run RelKit
 _requires = ["lxml >= 2.3",
              # "PyGTK > 2.12.0", - Exclude, it doesn't seem to work.
              "mysql-python >= 1.2.3"]
@@ -270,7 +270,7 @@ def osx_check():
     return platform.system() == "Darwin"
 
 setup(
-    name = "ReliaFree",
+    name = "RelKit",
     version = _version,
     author = "Andrew Rowland",
     author_email = "darowland@ieee.org",
@@ -278,9 +278,9 @@ setup(
     maintainer_email = "darowland@ieee.org",
     url = "http://sourceforge.net/apps/mediawiki/reliafree/index.php?title=Main_Page",
     description = "RAM Analyses Tools",
-    long_description = """ReliaFree is a Python and PyGTK based suite of tools to
+    long_description = """RelKit is a Python and PyGTK based suite of tools to
                           assist in Reliability, Availability, Maintainability,
-                          and Safety (RAMS) analyses. ReliaFree is intended to be
+                          and Safety (RAMS) analyses. RelKit is intended to be
                           an Open Source alternative to proprietary RAMS analyses
                           solutions.""",
     download_url = "http://sourceforge.net/projects/reliafree/",

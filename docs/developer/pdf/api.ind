@@ -31,7 +31,7 @@
 		\hyperpage{109--110}
     \subitem reliafree.configuration \textit{(module)}, 
 		\hyperpage{15--17}
-      \subsubitem reliafree.configuration.ReliaFreeConf \textit{(class)}, 
+      \subsubitem reliafree.configuration.RelKitConf \textit{(class)}, 
 		\hyperpage{111}
     \subitem reliafree.connections \textit{(package)}, \hyperpage{18}
       \subsubitem reliafree.connections.connection \textit{(module)}, 
@@ -81,7 +81,7 @@
     \subitem reliafree.main \textit{(module)}, \hyperpage{40}
       \subsubitem reliafree.main.main \textit{(function)}, 
 		\hyperpage{40}
-      \subsubitem reliafree.main.ReliaFree \textit{(class)}, 
+      \subsubitem reliafree.main.RelKit \textit{(class)}, 
 		\hyperpage{165}
     \subitem reliafree.meters \textit{(package)}, \hyperpage{41}
       \subsubitem reliafree.meters.meter \textit{(module)}, 

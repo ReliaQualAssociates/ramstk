@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -264,22 +264,24 @@ class ImportHardware:
         dialog.add_filter(filter)
 
         # Run the dialog and write the file.
+        _contents = []
         response = dialog.run()
         if(response == gtk.RESPONSE_ACCEPT):
             _filename = dialog.get_filename()
             (name, extension) = os.path.splitext(_filename)
 
+            _file = open(_filename, 'r')
+
+            for _line in _file:
+                _contents.append([_line])
+
+            _headers = str(_contents[0][0]).rsplit('\t')
+            for i in range(len(_contents) - 1):
+                _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+        else:
+            _headers = []
+
         dialog.destroy()
-
-        _contents = []
-        _file = open(_filename, 'r')
-
-        for _line in _file:
-            _contents.append([_line])
-
-        _headers = str(_contents[0][0]).rsplit('\t')
-        for i in range(len(_contents) - 1):
-            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
 
         return(_headers, _contents)
 
@@ -320,13 +322,13 @@ class ImportHardware:
 
             # Convert missing integer values to correct default value.
             for i in [0, 1, 3, 5, 11, 22, 23, 24, 43, 60,
-                      63, 67, 72, 75, 78, 79, 82, 89]:
+                      63, 72, 75, 78, 79, 82, 89]:
                 _temp[i] = self._missing_to_default(_temp[i], 0)
 
-            for i in [10, 16, 35, 42, 56, 68, 85]:
+            for i in [10, 16, 35, 42, 56, 67, 85]:
                 _temp[i] = self._missing_to_default(_temp[i], 1)
 
-            _temp[87] = self._missing_to_default(_temp[87], 2012)
+            _temp[87] = self._missing_to_default(_temp[87], 2013)
 
             # Convert missing float values to correct default value.
             for i in [2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,

@@ -73,7 +73,7 @@ include-log: no
 ### Output options
 
 # The documented project's name.
-name: ReliaFree
+name: RelKit
 
 # The CSS stylesheet for HTML output.  Can be the name of a builtin
 # stylesheet, or the name of a file.

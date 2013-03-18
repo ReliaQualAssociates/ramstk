@@ -34,7 +34,7 @@
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
@@ -67,24 +67,24 @@
 <a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
 <a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       capacitor.py is part of The ReliaFree Project</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       capacitor.py is part of The RelKit Project</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright (C) 2007-2011 Andrew "Weibullguy" Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
 <a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment"># All rights reserved.</tt> </tt>
 <a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is free software: you can redistribute it and/or modify</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is free software: you can redistribute it and/or modify</tt> </tt>
 <a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># it under the terms of the GNU General Public License as published by</tt> </tt>
 <a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># the Free Software Foundation, either version 3 of the License, or</tt> </tt>
 <a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># (at your option) any later version.</tt> </tt>
 <a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is distributed in the hope that it will be useful,</tt> </tt>
 <a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment"># but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
 <a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-comment"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
 <a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment"># GNU General Public License for more details.</tt> </tt>
 <a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-comment"># You should have received a copy of the GNU General Public License</tt> </tt>
-<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-comment"># along with ReliaFree.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-comment"># along with RelKit.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
 <a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
 <a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pango</tt> </tt>
 <a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
@@ -133,12 +133,12 @@
 </div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
 <a name="Capacitor.create_reliability_inputs"></a><div id="Capacitor.create_reliability_inputs-def"><a name="L70"></a><tt class="py-lineno"> 70</tt> <a class="py-toggle" href="#" id="Capacitor.create_reliability_inputs-toggle" onclick="return toggle('Capacitor.create_reliability_inputs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_inputs">create_reliability_inputs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">part</tt><tt class="py-op">,</tt> <tt class="py-param">layout</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Capacitor.create_reliability_inputs-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Capacitor.create_reliability_inputs-expanded"><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
-<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-docstring">""" Populates the ReliaFree Workbook calculation input tab with the</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-docstring">""" Populates the RelKit Workbook calculation input tab with the</tt> </tt>
 <a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">            widgets needed to select inputs for Capacitor Component Class</tt> </tt>
 <a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">            prediction calculations.</tt> </tt>
 <a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
-<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">            part   -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">            part   -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">            layout -- the layout widget to contain the display widgets.</tt> </tt>
 <a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
@@ -519,11 +519,11 @@ reliafree.validation.Validation._entry_callback" class="py-name" href="#" onclic
 </div><a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"> </tt>
 <a name="Capacitor.create_reliability_outputs"></a><div id="Capacitor.create_reliability_outputs-def"><a name="L181"></a><tt class="py-lineno">181</tt> <a class="py-toggle" href="#" id="Capacitor.create_reliability_outputs-toggle" onclick="return toggle('Capacitor.create_reliability_outputs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="reliafree.capacitors.capacitor.Capacitor-class.html#create_reliability_outputs">create_reliability_outputs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">part</tt><tt class="py-op">,</tt> <tt class="py-param">layout</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Capacitor.create_reliability_outputs-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Capacitor.create_reliability_outputs-expanded"><a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line"> </tt>
-<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-docstring">""" Populates the ReliaFree Workbook calculation results tab with the</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-docstring">""" Populates the RelKit Workbook calculation results tab with the</tt> </tt>
 <a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"><tt class="py-docstring">            widgets to display Capacitor Component Class calculation results.</tt> </tt>
 <a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
-<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line"><tt class="py-docstring">            part   -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line"><tt class="py-docstring">            part   -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"><tt class="py-docstring">            layout -- the layout widget to contain the display widgets.</tt> </tt>
 <a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"> </tt>
@@ -599,11 +599,11 @@ reliafree.validation.Validation._entry_callback" class="py-name" href="#" onclic
 </div><a name="L260"></a><tt class="py-lineno">260</tt>  <tt class="py-line"> </tt>
 <a name="Capacitor.load_reliability_inputs"></a><div id="Capacitor.load_reliability_inputs-def"><a name="L261"></a><tt class="py-lineno">261</tt> <a class="py-toggle" href="#" id="Capacitor.load_reliability_inputs-toggle" onclick="return toggle('Capacitor.load_reliability_inputs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_inputs">load_reliability_inputs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">part</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Capacitor.load_reliability_inputs-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Capacitor.load_reliability_inputs-expanded"><a name="L262"></a><tt class="py-lineno">262</tt>  <tt class="py-line"> </tt>
-<a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line">        <tt class="py-docstring">""" Loads the ReliaFree Workbook calculation input widgets with</tt> </tt>
+<a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line">        <tt class="py-docstring">""" Loads the RelKit Workbook calculation input widgets with</tt> </tt>
 <a name="L264"></a><tt class="py-lineno">264</tt>  <tt class="py-line"><tt class="py-docstring">            calculation input information.</tt> </tt>
 <a name="L265"></a><tt class="py-lineno">265</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L266"></a><tt class="py-lineno">266</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
-<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line"><tt class="py-docstring">            part -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line"><tt class="py-docstring">            part -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L268"></a><tt class="py-lineno">268</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L269"></a><tt class="py-lineno">269</tt>  <tt class="py-line"> </tt>
 <a name="L270"></a><tt class="py-lineno">270</tt>  <tt class="py-line">        <tt class="py-name">fmt</tt> <tt class="py-op">=</tt> <tt class="py-string">"{0:0."</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">part</tt><tt class="py-op">.</tt><tt class="py-name">fmt</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"g}"</tt> </tt>
@@ -625,11 +625,11 @@ reliafree.validation.Validation._entry_callback" class="py-name" href="#" onclic
 </div><a name="L286"></a><tt class="py-lineno">286</tt>  <tt class="py-line"> </tt>
 <a name="Capacitor.load_reliability_outputs"></a><div id="Capacitor.load_reliability_outputs-def"><a name="L287"></a><tt class="py-lineno">287</tt> <a class="py-toggle" href="#" id="Capacitor.load_reliability_outputs-toggle" onclick="return toggle('Capacitor.load_reliability_outputs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="reliafree.capacitors.capacitor.Capacitor-class.html#load_reliability_outputs">load_reliability_outputs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">part</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 </div><div id="Capacitor.load_reliability_outputs-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Capacitor.load_reliability_outputs-expanded"><a name="L288"></a><tt class="py-lineno">288</tt>  <tt class="py-line"> </tt>
-<a name="L289"></a><tt class="py-lineno">289</tt>  <tt class="py-line">        <tt class="py-docstring">""" Loads the ReliaFree Workbook calculation results widgets with</tt> </tt>
+<a name="L289"></a><tt class="py-lineno">289</tt>  <tt class="py-line">        <tt class="py-docstring">""" Loads the RelKit Workbook calculation results widgets with</tt> </tt>
 <a name="L290"></a><tt class="py-lineno">290</tt>  <tt class="py-line"><tt class="py-docstring">            calculation results.</tt> </tt>
 <a name="L291"></a><tt class="py-lineno">291</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L292"></a><tt class="py-lineno">292</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
-<a name="L293"></a><tt class="py-lineno">293</tt>  <tt class="py-line"><tt class="py-docstring">            part -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L293"></a><tt class="py-lineno">293</tt>  <tt class="py-line"><tt class="py-docstring">            part -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L294"></a><tt class="py-lineno">294</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L295"></a><tt class="py-lineno">295</tt>  <tt class="py-line"> </tt>
 <a name="L296"></a><tt class="py-lineno">296</tt>  <tt class="py-line">        <tt class="py-name">fmt</tt> <tt class="py-op">=</tt> <tt class="py-string">"{0:0."</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">part</tt><tt class="py-op">.</tt><tt class="py-name">fmt</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"g}"</tt> </tt>
@@ -649,7 +649,7 @@ reliafree.validation.Validation._entry_callback" class="py-name" href="#" onclic
 <a name="L310"></a><tt class="py-lineno">310</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L311"></a><tt class="py-lineno">311</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
 <a name="L312"></a><tt class="py-lineno">312</tt>  <tt class="py-line"><tt class="py-docstring">              combo -- the combobox widget calling this function.</tt> </tt>
-<a name="L313"></a><tt class="py-lineno">313</tt>  <tt class="py-line"><tt class="py-docstring">               part -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L313"></a><tt class="py-lineno">313</tt>  <tt class="py-line"><tt class="py-docstring">               part -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L314"></a><tt class="py-lineno">314</tt>  <tt class="py-line"><tt class="py-docstring">            _index_ -- the user-definded index for the calling combobx.</tt> </tt>
 <a name="L315"></a><tt class="py-lineno">315</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L316"></a><tt class="py-lineno">316</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
@@ -747,7 +747,7 @@ reliafree.component.Component.calculate" class="py-name" href="#" onclick="retur
 <a name="L353"></a><tt class="py-lineno">353</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
 <a name="L354"></a><tt class="py-lineno">354</tt>  <tt class="py-line"><tt class="py-docstring">              entry -- the entry widget calling this function.</tt> </tt>
 <a name="L355"></a><tt class="py-lineno">355</tt>  <tt class="py-line"><tt class="py-docstring">              event -- the event that triggered calling this function.</tt> </tt>
-<a name="L356"></a><tt class="py-lineno">356</tt>  <tt class="py-line"><tt class="py-docstring">               part -- the ReliaFree COMPONENT object.</tt> </tt>
+<a name="L356"></a><tt class="py-lineno">356</tt>  <tt class="py-line"><tt class="py-docstring">               part -- the RelKit COMPONENT object.</tt> </tt>
 <a name="L357"></a><tt class="py-lineno">357</tt>  <tt class="py-line"><tt class="py-docstring">            convert -- the data type to convert the entry contents to.</tt> </tt>
 <a name="L358"></a><tt class="py-lineno">358</tt>  <tt class="py-line"><tt class="py-docstring">            _index_ -- the position in the Component property array</tt> </tt>
 <a name="L359"></a><tt class="py-lineno">359</tt>  <tt class="py-line"><tt class="py-docstring">                       associated with the data from the entry that called</tt> </tt>
@@ -815,14 +815,14 @@ expandto(location.href);
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:20 2012
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:20 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

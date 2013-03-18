@@ -8,7 +8,7 @@
 # Python specific files to ignore
 *.pyc
 
-# ReliaFree specific files to ignore
+# RelKit specific files to ignore
 Notes
 workbook_mockup.glade
 *.xls*

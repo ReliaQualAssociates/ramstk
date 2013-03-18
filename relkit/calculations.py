@@ -42,6 +42,7 @@ if(name == 'posix'):
         from rpy2 import robjects
         from rpy2.robjects import r as R
         from rpy2.robjects.packages import importr
+        import rpy2.rlike.container as rlc
         __USE_RPY__ = False
         __USE_RPY2__ = True
     except ImportError:
@@ -2329,8 +2330,6 @@ def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponen
 
     elif(__USE_RPY2__):
         if(_fitmeth_ == 1):                 # MLE
-            import rpy2.rlike.container as rlc
-
             if(_dist_ == 'exponential'):
                 _dist_ = 'exp'
             elif(_dist_ == 'lognormal'):
@@ -2377,5 +2376,8 @@ def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponen
             formula = robjects.Formula('surv ~ 1')
 
             fit = survival.survreg(formula, dist=_dist_)
+
+    else:
+        print "No R"
 
     return(fit)

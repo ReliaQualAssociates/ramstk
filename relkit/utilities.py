@@ -410,9 +410,9 @@ def create_project(widget, app):
 
             cnx.close()
 
-        dialog.destroy()
+            open_project(widget, app, dlg=0, filename=new_program)
 
-        open_project(widget, app, dlg=0, filename=new_program)
+        dialog.destroy()
 
     return False
 

@@ -545,7 +545,7 @@ Writing index file api.idx
 (./reliafree.capacitors.variable.Gas-class.aux)
 (./reliafree.capacitors.variable.Piston-class.aux)
 (./reliafree.component.Component-class.aux)
-(./reliafree.configuration.ReliaFreeConf-class.aux)
+(./reliafree.configuration.RelKitConf-class.aux)
 (./reliafree.connections.connection.Connection-class.aux)
 (./reliafree.connections.multipin.Multipin-class.aux)
 (./reliafree.connections.pcb.PCBEdge-class.aux)
@@ -572,7 +572,7 @@ Writing index file api.idx
 (./reliafree.integrated_circuits.microprocessor.Microprocessor-class.aux)
 (./reliafree.integrated_circuits.palpla.PALPLA-class.aux)
 (./reliafree.integrated_circuits.vlsi.VLSI-class.aux)
-(./reliafree.login.Login-class.aux) (./reliafree.main.ReliaFree-class.aux)
+(./reliafree.login.Login-class.aux) (./reliafree.main.RelKit-class.aux)
 (./reliafree.meters.meter.ElapsedTime-class.aux)
 (./reliafree.meters.meter.Panel-class.aux)
 (./reliafree.miscellaneous.crystal.Crystal-class.aux)
@@ -1859,9 +1859,9 @@ Overfull \hbox (22.21013pt too wide) in paragraph at lines 213--214
  []
 
 ) [121]
-\openout2 = `reliafree.configuration.ReliaFreeConf-class.aux'.
+\openout2 = `reliafree.configuration.RelKitConf-class.aux'.
 
- (./reliafree.configuration.ReliaFreeConf-class.tex) [122
+ (./reliafree.configuration.RelKitConf-class.tex) [122
 
 
 ]
@@ -2663,9 +2663,9 @@ truct[]child(), do[]get[]internal[]child(),
  []
 
 [174]) [175]
-\openout2 = `reliafree.main.ReliaFree-class.aux'.
+\openout2 = `reliafree.main.RelKit-class.aux'.
 
- (./reliafree.main.ReliaFree-class.tex) [176
+ (./reliafree.main.RelKit-class.tex) [176
 
 
 ]
@@ -4671,7 +4671,7 @@ Overfull \hbox (2.46416pt too wide) in paragraph at lines 30--32
 
 
 Overfull \hbox (26.61253pt too wide) in paragraph at lines 34--36
-[]| \OT1/cmr/m/n/12 re-li-afree.configuration.ReliaFreeConf \OT1/cmr/m/it/12 (c
+[]| \OT1/cmr/m/n/12 re-li-afree.configuration.RelKitConf \OT1/cmr/m/it/12 (c
 lass)\OT1/cmr/m/n/12 ,
  []
 
@@ -5095,7 +5095,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 293.
 (./reliafree.capacitors.variable.Gas-class.aux)
 (./reliafree.capacitors.variable.Piston-class.aux)
 (./reliafree.component.Component-class.aux)
-(./reliafree.configuration.ReliaFreeConf-class.aux)
+(./reliafree.configuration.RelKitConf-class.aux)
 (./reliafree.connections.connection.Connection-class.aux)
 (./reliafree.connections.multipin.Multipin-class.aux)
 (./reliafree.connections.pcb.PCBEdge-class.aux)
@@ -5122,7 +5122,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 293.
 (./reliafree.integrated_circuits.microprocessor.Microprocessor-class.aux)
 (./reliafree.integrated_circuits.palpla.PALPLA-class.aux)
 (./reliafree.integrated_circuits.vlsi.VLSI-class.aux)
-(./reliafree.login.Login-class.aux) (./reliafree.main.ReliaFree-class.aux)
+(./reliafree.login.Login-class.aux) (./reliafree.main.RelKit-class.aux)
 (./reliafree.meters.meter.ElapsedTime-class.aux)
 (./reliafree.meters.meter.Panel-class.aux)
 (./reliafree.miscellaneous.crystal.Crystal-class.aux)

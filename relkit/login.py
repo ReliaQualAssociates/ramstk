@@ -3,7 +3,7 @@
     MySQL databases. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -32,7 +32,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other ReliaFree modules.
+# Import other RelKit modules.
 import widgets as _widg
 import configuration as _conf
 

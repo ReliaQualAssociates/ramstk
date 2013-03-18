@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2009 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #

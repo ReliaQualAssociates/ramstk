@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-01 10:58-0400\n"
+"POT-Creation-Date: 2013-04-01 10:58-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -277,17 +277,17 @@ msgid "Subcategory:"
 msgstr ""
 
 #: ../reliafree/main.py:140
-msgid "The ReliaFree Project is not currently connected to a program database."
+msgid "The RelKit Project is not currently connected to a program database."
 msgstr ""
 
 #: ../reliafree/main.py:247
 #, python-format
-msgid "The ReliaFree Project is connected to program database %s."
+msgid "The RelKit Project is connected to program database %s."
 msgstr ""
 
 #: ../reliafree/main.py:248
 #, python-format
-msgid "The ReliaFree Project - Analyzing %s"
+msgid "The RelKit Project - Analyzing %s"
 msgstr ""
 
 #: ../reliafree/function.py:64
@@ -319,7 +319,7 @@ msgid "Reference Designator"
 msgstr ""
 
 #: ../reliafree/partlist.py:88
-msgid "The ReliaFree Project - Parts List"
+msgid "The RelKit Project - Parts List"
 msgstr ""
 
 #: ../reliafree/partlist.py:128 ../reliafree/tree.py:137
@@ -385,7 +385,7 @@ msgid "Calculate"
 msgstr ""
 
 #: ../reliafree/tree.py:75
-msgid "The ReliaFree Project"
+msgid "The RelKit Project"
 msgstr ""
 
 #: ../reliafree/tree.py:96
@@ -505,15 +505,15 @@ msgid "_Tools"
 msgstr ""
 
 #: ../reliafree/tree.py:329
-msgid "Create a new ReliaFree Program Database"
+msgid "Create a new RelKit Program Database"
 msgstr ""
 
 #: ../reliafree/tree.py:338
-msgid "Open an existing ReliaFree Program Database"
+msgid "Open an existing RelKit Program Database"
 msgstr ""
 
 #: ../reliafree/tree.py:347
-msgid "Save the currently open ReliaFree Program Database"
+msgid "Save the currently open RelKit Program Database"
 msgstr ""
 
 #: ../reliafree/tree.py:358
@@ -576,7 +576,7 @@ msgid "Project"
 msgstr ""
 
 #: ../reliafree/tree.py:413
-msgid "Delete the currently open ReliaFree project."
+msgid "Delete the currently open RelKit project."
 msgstr ""
 
 #: ../reliafree/tree.py:417
@@ -620,7 +620,7 @@ msgid "Perform various calculations on the system"
 msgstr ""
 
 #: ../reliafree/tree.py:511
-msgid "Calculate the currently open ReliaFree project."
+msgid "Calculate the currently open RelKit project."
 msgstr ""
 
 #: ../reliafree/tree.py:515
@@ -664,15 +664,15 @@ msgid "Save & Quit"
 msgstr ""
 
 #: ../reliafree/tree.py:557
-msgid "Save the currently open ReliaFree Program Database then quit"
+msgid "Save the currently open RelKit Program Database then quit"
 msgstr ""
 
 #: ../reliafree/tree.py:567
-msgid "Quit without saving the currently open ReliaFree Program Database"
+msgid "Quit without saving the currently open RelKit Program Database"
 msgstr ""
 
 #: ../reliafree/notebook.py:79
-msgid "The ReliaFree Project - Work Book"
+msgid "The RelKit Project - Work Book"
 msgstr ""
 
 #: ../reliafree/notebook.py:138

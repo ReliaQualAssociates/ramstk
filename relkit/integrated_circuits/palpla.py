@@ -2,7 +2,7 @@
 """ This is the PAL/PLA integrated circuit class. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -54,12 +54,12 @@ class PALPLA(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for PAL/PLA Integrated Circuit
         prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -90,11 +90,11 @@ class PALPLA(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)

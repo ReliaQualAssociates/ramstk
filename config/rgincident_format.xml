@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      incident_format.xml is part of The ReliaFree Project
+      incident_format.xml is part of The RelKit Project
 
-      Copyright 2010-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
 
-<!-- This file contains information used by the ReliaFree application to draw
+<!-- This file contains information used by the RelKit application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Utility script for ReliaFree developers to update the messages.pot file,
+# Utility script for RelKit developers to update the messages.pot file,
 # create, and merge new translation files.
 
 INFILE="file.lst"					# File with list of files to process.

@@ -34,7 +34,7 @@
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
@@ -64,24 +64,24 @@
 <a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python</tt> </tt>
 <a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
 <a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#       mysql.py is part of The ReliaFree Project</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#       mysql.py is part of The RelKit Project</tt> </tt>
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright 2007-2012 Andrew "Weibullguy" Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright 2007-2013 Andrew "Weibullguy" Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment"># All rights reserved.</tt> </tt>
 <a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is free software: you can redistribute it and/or modify</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is free software: you can redistribute it and/or modify</tt> </tt>
 <a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment"># it under the terms of the GNU General Public License as published by</tt> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment"># the Free Software Foundation, either version 3 of the License, or</tt> </tt>
 <a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># (at your option) any later version.</tt> </tt>
 <a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is distributed in the hope that it will be useful,</tt> </tt>
 <a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
 <a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
 <a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment"># GNU General Public License for more details.</tt> </tt>
 <a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment"># You should have received a copy of the GNU General Public License</tt> </tt>
-<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment"># along with ReliaFree.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment"># along with RelKit.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
 <a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
 <a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
 <a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">MySQLdb</tt> </tt>
@@ -89,7 +89,7 @@
 <a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
 <a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt id="link-1" class="py-name"><a title="reliafree.mysql.has_mysqldb" class="py-name" href="#" onclick="return doclink('link-1', 'has_mysqldb', 'link-0');">has_mysqldb</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
 <a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
-<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-comment"># Import other ReliaFree modules.</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-comment"># Import other RelKit modules.</tt> </tt>
 <a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module reliafree.configuration=reliafree.configuration-module.html"><a title="reliafree.configuration" class="py-name" href="#" onclick="return doclink('link-2', 'configuration', 'link-2');">configuration</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">_conf</tt> </tt>
 <a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"> </tt>
 <a name="MySQLInterface"></a><div id="MySQLInterface-def"><a name="L32"></a><tt class="py-lineno"> 32</tt> <a class="py-toggle" href="#" id="MySQLInterface-toggle" onclick="return toggle('MySQLInterface');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="reliafree.mysql.MySQLInterface-class.html">MySQLInterface</a><tt class="py-op">:</tt> </tt>
@@ -184,7 +184,7 @@
 </div><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
 <a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">    <tt class="py-comment"># +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++</tt> </tt>
 <a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">    <tt class="py-comment"># This function creates a new database using the default layout.</tt> </tt>
-<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">    <tt class="py-comment"># TODO: Convert init_db this for use by the ReliaFree Project.</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">    <tt class="py-comment"># TODO: Convert init_db this for use by the RelKit Project.</tt> </tt>
 <a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt class="py-comment">#</tt> </tt>
 <a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-comment"># Inputs:</tt> </tt>
 <a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt class="py-comment">#       1. self   - the MySQLInterface class.</tt> </tt>
@@ -271,14 +271,14 @@ expandto(location.href);
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:16 2012
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:16 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

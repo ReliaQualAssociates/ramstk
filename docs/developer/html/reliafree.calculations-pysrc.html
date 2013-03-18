@@ -34,7 +34,7 @@
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
@@ -62,13 +62,13 @@
 <h1 class="epydoc">Source Code for <a href="reliafree.calculations-module.html">Module reliafree.calculations</a></h1>
 <pre class="py-src">
 <a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python2</tt> </tt>
-<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">""" This file contains various calculations used by the ReliaFree Project. """</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">""" This file contains various calculations used by the RelKit Project. """</tt> </tt>
 <a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
 <a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       calculations.py is part of The ReliaFree Project</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       calculations.py is part of The RelKit Project</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright (C) 2007 - 2012 Andrew Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright (C) 2007 - 2013 Andrew Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
 <a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#       This program is free software; you can redistribute it and/or modify</tt> </tt>
 <a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#       it under the terms of the GNU General Public License as published by</tt> </tt>
@@ -91,7 +91,7 @@
 <a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">        Keyword Arguments:</tt> </tt>
 <a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring">        button      -- the gtk.Toolbutton that called this function.</tt> </tt>
-<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">        application -- the ReliaFree application object.</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">        application -- the RelKit application object.</tt> </tt>
 <a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">        index       -- an index indicating what to calculate:</tt> </tt>
 <a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">                       0 - everything below.</tt> </tt>
 <a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">                       1 - just the selected Revision.</tt> </tt>
@@ -139,7 +139,7 @@ reliafree.component.Component.calculate" class="py-name" href="#" onclick="retur
 <a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-docstring">        Keyword Arguments:</tt> </tt>
 <a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">        treemodel   -- the gtk.Treemodel containing the information to edit.</tt> </tt>
 <a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">        row         -- the row in the gtk.Treemodel to read/write values.</tt> </tt>
-<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">        application -- the ReliaFree application object.</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">        application -- the RelKit application object.</tt> </tt>
 <a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
 <a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
 <a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Module reliafree.configuration=reliafree.configuration-module.html"><a title="reliafree.configuration" class="py-name" href="#" onclick="return doclink('link-6', 'configuration', 'link-6');">configuration</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">_conf</tt> </tt>
@@ -1019,14 +1019,14 @@ expandto(location.href);
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:15 2012
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:15 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

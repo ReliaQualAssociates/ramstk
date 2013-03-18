@@ -1,9 +1,9 @@
-ReliaFree - An open source solution for RAMS analysis.
+RelKit - An open source solution for RAMS analysis.
 ======================================================
 
 PRE-REQUISITES:
 
-To install the ReliaFree application you will need the following:
+To install the RelKit application you will need the following:
 
     1. lxml
     2. MySQL-Python
@@ -14,23 +14,23 @@ To install the ReliaFree application you will need the following:
 
 INSTALLATION:
 
-Installing ReliaFree is as simple as executing the setup.py script.
+Installing RelKit is as simple as executing the setup.py script.
 
     python setup.py install
 
-This will install ReliaFree to the default site-packages directory on your
+This will install RelKit to the default site-packages directory on your
 system.  It will also create/install the following:
 
     1. Directory /etc/reliafree for system-wide configuration files.
        Configuration files will also be installed in this directory.
     2. Directory /usr/share/pixmaps/reliafree/32x32/ for image files used by
-       ReliaFree.  Image files (*.png) will also be installed.
+       RelKit.  Image files (*.png) will also be installed.
     3. Directory /usr/share/doc/reliafree-0.1.0 for documentation files.  Files
        will also be installed.
-    4. Directory /usr/share/reliafree for ReliaFree shared files.  Files will
+    4. Directory /usr/share/reliafree for RelKit shared files.  Files will
        also be installed.
 
-Following installation of ReliaFree, it is necessary to create the reliafreecom
+Following installation of RelKit, it is necessary to create the reliafreecom
 MySQL database.  This can be done as follows:
 
     mysql -h <HOSTNAME> -u <USER WITH APPROPRIATE GRANTS> -p < /usr/share/reliafree/reliafreecom.sql
@@ -48,16 +48,16 @@ environment:
      andrew@aragorn ~ $ mkdir ~/.config/reliafree
      andrew@aragorn ~ $ cp /etc/reliafree/*.xml ~/.config/reliafree/
 
-At this point, ReliaFree can be invoked from the command line as follows:
+At this point, RelKit can be invoked from the command line as follows:
 
     andrew@aragorn ~ $ reliafree
 
 EXAMPLE PROGRAMS:
 
-Several example programs are provided with ReliaFree.  These are:
+Several example programs are provided with RelKit.  These are:
 
         mil_hdbk_217f - simply a "system" containing every component type
-                        found in MIL-HDBK-217F supported by ReliaFree.
+                        found in MIL-HDBK-217F supported by RelKit.
     class_a_amplifier - a simple bipolar transistor, class A amplifier.  A GEDA
                         schematic file and SPICE *.cir file are also provided.
 

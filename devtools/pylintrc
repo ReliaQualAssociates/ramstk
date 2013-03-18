@@ -1,8 +1,8 @@
 # This pylintrc is part of The RelKit Project
 #
-# Copyright (C) 2007-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+# Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
-# This is the pylint configuration file for the ReliaFree Project.
+# This is the pylint configuration file for the RelKit Project.
 # Please run pylint using this configuration file and fix issues
 # identified.  The goal is to make good code, not generate the highest
 # score.

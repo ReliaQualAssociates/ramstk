@@ -747,7 +747,7 @@ CREATE TABLE "tbl_survival_data" (
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
     "fld_left_interval" FLOAT DEFAULT(0),
     "fld_right_interval" FLOAT DEFAULT(0),
-    "fld_status" INTEGER DEFAULT(0),
+    "fld_status" VARCHAR(64) DEFAULT(''),
     "fld_quantity" INTEGER DEFAULT(1),
     "fld_unit" VARCHAR(256),
     "fld_part_num" VARCHAR(128),

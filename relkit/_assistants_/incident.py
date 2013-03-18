@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -1691,7 +1691,7 @@ class CreateDataSet:
             _temp = []
             try:
                 _temp.append(model.get_value(row, 13))
-                _temp.append(_parts[model.get_value(row, 1)][0:])
+                _temp.append(_parts[str(model.get_value(row, 1))][0:])
             except KeyError:
                 # TODO: Add error log message here.
                 pass
@@ -1809,6 +1809,9 @@ class CreateDataSet:
             f.close()
         except UnboundLocalError:
             pass
+
+        # Load the dataset gtk.TreeView with the newly created dataset.
+        self._app.DATASET.load_tree()
 
         return False
 

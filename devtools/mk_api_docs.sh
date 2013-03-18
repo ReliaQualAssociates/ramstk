@@ -6,11 +6,11 @@ LOGFILE=`pwd`/epydoc$TYPE.log
 case $TYPE in
 
 	html | HTML)
-		echo "Creating html api documentation for ReliaFree."
+		echo "Creating html api documentation for RelKit."
 		epydoc --config `pwd`/devtools/confightml > $LOGFILE
 		;;
 	pdf | PDF)
-		echo "Creating pdf api documentation for ReliaFree."
+		echo "Creating pdf api documentation for RelKit."
 		epydoc --config `pwd`/devtools/configpdf > $LOGFILE
 		;;
 	*)
@@ -20,10 +20,10 @@ case $TYPE in
 		;;
 esac
 
-echo "Completed generating $TYPE ReliaFree api documentation."
+echo "Completed generating $TYPE RelKit api documentation."
 
-echo "Uploading api documentation to ReliaFree website."
+echo "Uploading api documentation to RelKit website."
 rsync -aiv * weibullguy,reliafree@web.sourceforge.net:/home/project-web/reliafree/htdocs/apidocs/
-echo "Completed uploading api documentation to ReliaFree website."
+echo "Completed uploading api documentation to RelKit website."
 
 exit 0

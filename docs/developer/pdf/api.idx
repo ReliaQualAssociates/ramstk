@@ -282,12 +282,12 @@
 \indexentry{reliafree \textit{(package)}!reliafree.component \textit{(module)}!reliafree.component.Component \textit{(class)}!reliafree.component.Component.load\_part\_subcategory\_combo \textit{(method)}|hyperpage}{121}
 \indexentry{reliafree \textit{(package)}!reliafree.component \textit{(module)}!reliafree.component.Component \textit{(class)}!reliafree.component.Component.calculate \textit{(method)}|hyperpage}{121}
 \indexentry{reliafree \textit{(package)}!reliafree.component \textit{(module)}!reliafree.component.Component \textit{(class)}|)}{121}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}|(hyperpage}{122}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}!reliafree.configuration.ReliaFreeConf.\_\_init\_\_ \textit{(method)}|hyperpage}{122}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}!reliafree.configuration.ReliaFreeConf.create\_default\_configuration \textit{(method)}|hyperpage}{122}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}!reliafree.configuration.ReliaFreeConf.write\_configuration \textit{(method)}|hyperpage}{122}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}!reliafree.configuration.ReliaFreeConf.read\_configuration \textit{(method)}|hyperpage}{122}
-\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.ReliaFreeConf \textit{(class)}|)}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}|(hyperpage}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}!reliafree.configuration.RelKitConf.\_\_init\_\_ \textit{(method)}|hyperpage}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}!reliafree.configuration.RelKitConf.create\_default\_configuration \textit{(method)}|hyperpage}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}!reliafree.configuration.RelKitConf.write\_configuration \textit{(method)}|hyperpage}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}!reliafree.configuration.RelKitConf.read\_configuration \textit{(method)}|hyperpage}{122}
+\indexentry{reliafree \textit{(package)}!reliafree.configuration \textit{(module)}!reliafree.configuration.RelKitConf \textit{(class)}|)}{122}
 \indexentry{reliafree \textit{(package)}!reliafree.connections \textit{(package)}!reliafree.connections.connection \textit{(module)}!reliafree.connections.connection.Connection \textit{(class)}|(hyperpage}{123}
 \indexentry{reliafree \textit{(package)}!reliafree.connections \textit{(package)}!reliafree.connections.connection \textit{(module)}!reliafree.connections.connection.Connection \textit{(class)}!reliafree.connections.connection.Connection.\_\_init\_\_ \textit{(method)}|hyperpage}{123}
 \indexentry{reliafree \textit{(package)}!reliafree.connections \textit{(package)}!reliafree.connections.connection \textit{(module)}!reliafree.connections.connection.Connection \textit{(class)}!reliafree.connections.connection.Connection.create\_reliability\_inputs \textit{(method)}|hyperpage}{123}
@@ -421,11 +421,11 @@
 \indexentry{reliafree \textit{(package)}!reliafree.login \textit{(module)}!reliafree.login.Login \textit{(class)}!reliafree.login.Login.ok \textit{(method)}|hyperpage}{171}
 \indexentry{reliafree \textit{(package)}!reliafree.login \textit{(module)}!reliafree.login.Login \textit{(class)}!reliafree.login.Login.cancel \textit{(method)}|hyperpage}{172}
 \indexentry{reliafree \textit{(package)}!reliafree.login \textit{(module)}!reliafree.login.Login \textit{(class)}|)}{175}
-\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.ReliaFree \textit{(class)}|(hyperpage}{176}
-\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.ReliaFree \textit{(class)}!reliafree.main.ReliaFree.\_\_init\_\_ \textit{(method)}|hyperpage}{176}
-\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.ReliaFree \textit{(class)}!reliafree.main.ReliaFree.read\_configuration \textit{(method)}|hyperpage}{176}
-\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.ReliaFree \textit{(class)}!reliafree.main.ReliaFree.load\_system \textit{(method)}|hyperpage}{176}
-\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.ReliaFree \textit{(class)}|)}{176}
+\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.RelKit \textit{(class)}|(hyperpage}{176}
+\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.RelKit \textit{(class)}!reliafree.main.RelKit.\_\_init\_\_ \textit{(method)}|hyperpage}{176}
+\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.RelKit \textit{(class)}!reliafree.main.RelKit.read\_configuration \textit{(method)}|hyperpage}{176}
+\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.RelKit \textit{(class)}!reliafree.main.RelKit.load\_system \textit{(method)}|hyperpage}{176}
+\indexentry{reliafree \textit{(package)}!reliafree.main \textit{(module)}!reliafree.main.RelKit \textit{(class)}|)}{176}
 \indexentry{reliafree \textit{(package)}!reliafree.meters \textit{(package)}!reliafree.meters.meter \textit{(module)}!reliafree.meters.meter.ElapsedTime \textit{(class)}|(hyperpage}{177}
 \indexentry{reliafree \textit{(package)}!reliafree.meters \textit{(package)}!reliafree.meters.meter \textit{(module)}!reliafree.meters.meter.ElapsedTime \textit{(class)}!reliafree.meters.meter.ElapsedTime.\_\_init\_\_ \textit{(method)}|hyperpage}{177}
 \indexentry{reliafree \textit{(package)}!reliafree.meters \textit{(package)}!reliafree.meters.meter \textit{(module)}!reliafree.meters.meter.ElapsedTime \textit{(class)}!reliafree.meters.meter.ElapsedTime.create\_reliability\_inputs \textit{(method)}|hyperpage}{177}

@@ -20,7 +20,7 @@ reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Add contact po
 reliafree/.svn/text-base/requirement.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Requirements treeview.
 reliafree/.svn/text-base/validation.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
 reliafree/.svn/text-base/widgets.py.svn-base:    # TODO: Adjust the height of the row when the width is adjusted.
-reliafree/.svn/text-base/mysql.py.svn-base:    # TODO: Convert init_db this for use by the ReliaFree Project.
+reliafree/.svn/text-base/mysql.py.svn-base:    # TODO: Convert init_db this for use by the RelKit Project.
 reliafree/.svn/text-base/revision.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Revision treeview.
 reliafree/.svn/text-base/assembly.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
 reliafree/.svn/text-base/assembly.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
@@ -56,7 +56,7 @@ reliafree/.svn/text-base/partlist.py.svn-base:    # TODO: Write code to update n
 reliafree/.svn/text-base/partlist.py.svn-base:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
 reliafree/hardware.py:    # TODO: Write code to update notebook widgets when editing the System treeview.
 Binary file reliafree/calculations.pyc matches
-reliafree/mysql.py:    # TODO: Convert init_db this for use by the ReliaFree Project.
+reliafree/mysql.py:    # TODO: Convert init_db this for use by the RelKit Project.
 reliafree/assembly.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
 reliafree/assembly.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
 reliafree/calculations.py:    # TODO: Add database field for total cost results.

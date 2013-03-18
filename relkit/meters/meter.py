@@ -2,7 +2,7 @@
 """ These are the meter classes. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -68,12 +68,12 @@ class ElapsedTime:
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Elapsed Time Meter Component
         Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -126,12 +126,12 @@ class ElapsedTime:
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Elapsed Time Meter Component Class calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -188,11 +188,11 @@ class ElapsedTime:
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -205,11 +205,11 @@ class ElapsedTime:
 
     def assessment_results_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation results widgets with
+        Loads the RelKit Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -227,7 +227,7 @@ class ElapsedTime:
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the ReliaFree COMPONENT object.
+        part    -- the RelKit COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -252,7 +252,7 @@ class ElapsedTime:
         Keyword Arguments:
         entry   -- the entry widget calling this function.
         event   -- the event that triggered calling this function.
-        part    -- the ReliaFree COMPONENT object.
+        part    -- the RelKit COMPONENT object.
         convert -- the data type to convert the entry contents to.
         _index_ -- the position in the Component property array
                    associated with the data from the entry that called
@@ -424,12 +424,12 @@ class Panel:
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation input tab with the
+        Populates the RelKit Workbook calculation input tab with the
         widgets needed to select inputs for Panel Meter Component
         Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -494,12 +494,12 @@ class Panel:
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the ReliaFree Workbook calculation results tab with the
+        Populates the RelKit Workbook calculation results tab with the
         widgets to display Panel Meter Component Class calculation
         results.
 
         Keyword Arguments:
-        part   -- the ReliaFree COMPONENT object.
+        part   -- the RelKit COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -561,11 +561,11 @@ class Panel:
 
     def assessment_inputs_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation input widgets with
+        Loads the RelKit Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -582,11 +582,11 @@ class Panel:
 
     def assessment_results_load(self, part):
         """
-        Loads the ReliaFree Workbook calculation results widgets with
+        Loads the RelKit Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the ReliaFree COMPONENT object.
+        part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -606,7 +606,7 @@ class Panel:
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the ReliaFree COMPONENT object.
+        part    -- the RelKit COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -631,7 +631,7 @@ class Panel:
         Keyword Arguments:
         entry   -- the entry widget calling this function.
         event   -- the event that triggered calling this function.
-        part    -- the ReliaFree COMPONENT object.
+        part    -- the RelKit COMPONENT object.
         convert -- the data type to convert the entry contents to.
         _index_ -- the position in the Component property array
                    associated with the data from the entry that called

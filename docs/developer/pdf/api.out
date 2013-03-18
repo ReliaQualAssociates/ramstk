@@ -255,7 +255,7 @@
 \BOOKMARK [1][-]{section.91}{Class reliafree.component.Component}{}% 255
 \BOOKMARK [2][-]{subsection.91.1}{Methods}{section.91}% 256
 \BOOKMARK [2][-]{subsection.91.2}{Class Variables}{section.91}% 257
-\BOOKMARK [1][-]{section.92}{Class reliafree.configuration.ReliaFreeConf}{}% 258
+\BOOKMARK [1][-]{section.92}{Class reliafree.configuration.RelKitConf}{}% 258
 \BOOKMARK [2][-]{subsection.92.1}{Methods}{section.92}% 259
 \BOOKMARK [1][-]{section.93}{Class reliafree.connections.connection.Connection}{}% 260
 \BOOKMARK [2][-]{subsection.93.1}{Methods}{section.93}% 261
@@ -314,7 +314,7 @@
 \BOOKMARK [2][-]{subsection.119.1}{Methods}{section.119}% 314
 \BOOKMARK [2][-]{subsection.119.2}{Properties}{section.119}% 315
 \BOOKMARK [2][-]{subsection.119.3}{Class Variables}{section.119}% 316
-\BOOKMARK [1][-]{section.120}{Class reliafree.main.ReliaFree}{}% 317
+\BOOKMARK [1][-]{section.120}{Class reliafree.main.RelKit}{}% 317
 \BOOKMARK [2][-]{subsection.120.1}{Methods}{section.120}% 318
 \BOOKMARK [1][-]{section.121}{Class reliafree.meters.meter.ElapsedTime}{}% 319
 \BOOKMARK [2][-]{subsection.121.1}{Methods}{section.121}% 320

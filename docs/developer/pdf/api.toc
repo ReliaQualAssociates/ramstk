@@ -255,7 +255,7 @@
 \contentsline {section}{\numberline {91}Class reliafree.component.Component}{120}{section.91}
 \contentsline {subsection}{\numberline {91.1}Methods}{120}{subsection.91.1}
 \contentsline {subsection}{\numberline {91.2}Class Variables}{121}{subsection.91.2}
-\contentsline {section}{\numberline {92}Class reliafree.configuration.ReliaFreeConf}{122}{section.92}
+\contentsline {section}{\numberline {92}Class reliafree.configuration.RelKitConf}{122}{section.92}
 \contentsline {subsection}{\numberline {92.1}Methods}{122}{subsection.92.1}
 \contentsline {section}{\numberline {93}Class reliafree.connections.connection.Connection}{123}{section.93}
 \contentsline {subsection}{\numberline {93.1}Methods}{123}{subsection.93.1}
@@ -314,7 +314,7 @@
 \contentsline {subsection}{\numberline {119.1}Methods}{171}{subsection.119.1}
 \contentsline {subsection}{\numberline {119.2}Properties}{174}{subsection.119.2}
 \contentsline {subsection}{\numberline {119.3}Class Variables}{175}{subsection.119.3}
-\contentsline {section}{\numberline {120}Class reliafree.main.ReliaFree}{176}{section.120}
+\contentsline {section}{\numberline {120}Class reliafree.main.RelKit}{176}{section.120}
 \contentsline {subsection}{\numberline {120.1}Methods}{176}{subsection.120.1}
 \contentsline {section}{\numberline {121}Class reliafree.meters.meter.ElapsedTime}{177}{section.121}
 \contentsline {subsection}{\numberline {121.1}Methods}{177}{subsection.121.1}

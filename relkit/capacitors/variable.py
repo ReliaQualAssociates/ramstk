@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2012 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -56,12 +56,12 @@ class Ceramic(Capacitor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation results tab with the
+        """ Populates the RelKit Workbook calculation results tab with the
             widgets to display Variable Ceramic Capacitor Component Class
             calculation results.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -83,7 +83,7 @@ class Ceramic(Capacitor):
             Variable Ceramic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp
@@ -114,7 +114,7 @@ class Ceramic(Capacitor):
             the Variable Ceramic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -200,12 +200,12 @@ class Piston(Capacitor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation results tab with the
+        """ Populates the RelKit Workbook calculation results tab with the
             widgets to display Variable Piston Type Capacitor Component Class
             calculation results.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -227,7 +227,7 @@ class Piston(Capacitor):
             Variable Piston Type Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp
@@ -258,7 +258,7 @@ class Piston(Capacitor):
             the Variable Piston Type Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -344,12 +344,12 @@ class AirTrimmer(Capacitor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation results tab with the
+        """ Populates the RelKit Workbook calculation results tab with the
             widgets to display Variable Air Trimmer Capacitor Component Class
             calculation results.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -371,7 +371,7 @@ class AirTrimmer(Capacitor):
             Variable Air Trimmer Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp
@@ -402,7 +402,7 @@ class AirTrimmer(Capacitor):
             the Variable Air Trimmer Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -492,12 +492,12 @@ class Gas(Capacitor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation input tab with the
+        """ Populates the RelKit Workbook calculation input tab with the
             widgets needed to select inputs for Variable and Fixed Gas or
             Vacuum Capacitor Component Class prediction calculations.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- teh x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -520,11 +520,11 @@ class Gas(Capacitor):
 
     def assessment_inputs_load(self, part):
 
-        """ Loads the ReliaFree Workbook calculation input widgets with
+        """ Loads the RelKit Workbook calculation input widgets with
             calculation input information.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         Capacitor.assessment_inputs_load(self, part)
@@ -540,7 +540,7 @@ class Gas(Capacitor):
             Variable and Fixed Gas or Vacuum Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp
@@ -571,7 +571,7 @@ class Gas(Capacitor):
             the Variable and Fixed Gas or Vacuum Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp, sqrt

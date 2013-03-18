@@ -34,7 +34,7 @@
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
@@ -67,24 +67,24 @@
 <a name="L4"></a><tt class="py-lineno">   4</tt>  <tt class="py-line"> </tt>
 <a name="L5"></a><tt class="py-lineno">   5</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
 <a name="L6"></a><tt class="py-lineno">   6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L7"></a><tt class="py-lineno">   7</tt>  <tt class="py-line"><tt class="py-comment">#       requirement.py is part of The ReliaFree Project</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">   7</tt>  <tt class="py-line"><tt class="py-comment">#       requirement.py is part of The RelKit Project</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">   8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L9"></a><tt class="py-lineno">   9</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright (C) 2007-2012 Andrew "Weibullguy" Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">   9</tt>  <tt class="py-line"><tt class="py-comment">#       Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland &lt;darowland@ieee.org&gt;</tt> </tt>
 <a name="L10"></a><tt class="py-lineno">  10</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L11"></a><tt class="py-lineno">  11</tt>  <tt class="py-line"><tt class="py-comment"># All rights reserved.</tt> </tt>
 <a name="L12"></a><tt class="py-lineno">  12</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L13"></a><tt class="py-lineno">  13</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is free software: you can redistribute it and/or modify</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">  13</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is free software: you can redistribute it and/or modify</tt> </tt>
 <a name="L14"></a><tt class="py-lineno">  14</tt>  <tt class="py-line"><tt class="py-comment"># it under the terms of the GNU General Public License as published by</tt> </tt>
 <a name="L15"></a><tt class="py-lineno">  15</tt>  <tt class="py-line"><tt class="py-comment"># the Free Software Foundation, either version 3 of the License, or</tt> </tt>
 <a name="L16"></a><tt class="py-lineno">  16</tt>  <tt class="py-line"><tt class="py-comment"># (at your option) any later version.</tt> </tt>
 <a name="L17"></a><tt class="py-lineno">  17</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
-<a name="L18"></a><tt class="py-lineno">  18</tt>  <tt class="py-line"><tt class="py-comment"># ReliaFree is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">  18</tt>  <tt class="py-line"><tt class="py-comment"># RelKit is distributed in the hope that it will be useful,</tt> </tt>
 <a name="L19"></a><tt class="py-lineno">  19</tt>  <tt class="py-line"><tt class="py-comment"># but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
 <a name="L20"></a><tt class="py-lineno">  20</tt>  <tt class="py-line"><tt class="py-comment"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
 <a name="L21"></a><tt class="py-lineno">  21</tt>  <tt class="py-line"><tt class="py-comment"># GNU General Public License for more details.</tt> </tt>
 <a name="L22"></a><tt class="py-lineno">  22</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
 <a name="L23"></a><tt class="py-lineno">  23</tt>  <tt class="py-line"><tt class="py-comment"># You should have received a copy of the GNU General Public License</tt> </tt>
-<a name="L24"></a><tt class="py-lineno">  24</tt>  <tt class="py-line"><tt class="py-comment"># along with ReliaFree.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">  24</tt>  <tt class="py-line"><tt class="py-comment"># along with RelKit.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</tt> </tt>
 <a name="L25"></a><tt class="py-lineno">  25</tt>  <tt class="py-line"> </tt>
 <a name="L26"></a><tt class="py-lineno">  26</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
 <a name="L27"></a><tt class="py-lineno">  27</tt>  <tt class="py-line"> </tt>
@@ -112,7 +112,7 @@
 <a name="L49"></a><tt class="py-lineno">  49</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">gettext</tt> </tt>
 <a name="L50"></a><tt class="py-lineno">  50</tt>  <tt class="py-line"><tt class="py-name">_</tt> <tt class="py-op">=</tt> <tt class="py-name">gettext</tt><tt class="py-op">.</tt><tt class="py-name">gettext</tt> </tt>
 <a name="L51"></a><tt class="py-lineno">  51</tt>  <tt class="py-line"> </tt>
-<a name="L52"></a><tt class="py-lineno">  52</tt>  <tt class="py-line"><tt class="py-comment"># Import other ReliaFree modules.</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">  52</tt>  <tt class="py-line"><tt class="py-comment"># Import other RelKit modules.</tt> </tt>
 <a name="L53"></a><tt class="py-lineno">  53</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Module reliafree.configuration=reliafree.configuration-module.html"><a title="reliafree.configuration" class="py-name" href="#" onclick="return doclink('link-0', 'configuration', 'link-0');">configuration</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">_conf</tt> </tt>
 <a name="L54"></a><tt class="py-lineno">  54</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Module reliafree.utilities=reliafree.utilities-module.html"><a title="reliafree.utilities" class="py-name" href="#" onclick="return doclink('link-1', 'utilities', 'link-1');">utilities</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">_util</tt> </tt>
 <a name="L55"></a><tt class="py-lineno">  55</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module reliafree.widgets=reliafree.widgets-module.html"><a title="reliafree.widgets" class="py-name" href="#" onclick="return doclink('link-2', 'widgets', 'link-2');">widgets</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">_widg</tt> </tt>
@@ -147,7 +147,7 @@ reliafree.validation.Validation.n_attributes" class="py-name" href="#" onclick="
 <a name="L76"></a><tt class="py-lineno">  76</tt>  <tt class="py-line">        <tt class="py-docstring">""" Initializes the Requirements Object.</tt> </tt>
 <a name="L77"></a><tt class="py-lineno">  77</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L78"></a><tt class="py-lineno">  78</tt>  <tt class="py-line"><tt class="py-docstring">            Keyword Arguments:</tt> </tt>
-<a name="L79"></a><tt class="py-lineno">  79</tt>  <tt class="py-line"><tt class="py-docstring">            application -- the ReliaFree application.</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">  79</tt>  <tt class="py-line"><tt class="py-docstring">            application -- the RelKit application.</tt> </tt>
 <a name="L80"></a><tt class="py-lineno">  80</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L81"></a><tt class="py-lineno">  81</tt>  <tt class="py-line"> </tt>
 <a name="L82"></a><tt class="py-lineno">  82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_ready</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
@@ -540,7 +540,7 @@ reliafree.validation.Validation.n_attributes" class="py-name" href="#" onclick="
 <a name="L385"></a><tt class="py-lineno"> 385</tt>  <tt class="py-line">        <tt class="py-docstring">""" Creates the Requirements TreeView and connects it to callback</tt> </tt>
 <a name="L386"></a><tt class="py-lineno"> 386</tt>  <tt class="py-line"><tt class="py-docstring">            functions to handle editting.  Background and foreground</tt> </tt>
 <a name="L387"></a><tt class="py-lineno"> 387</tt>  <tt class="py-line"><tt class="py-docstring">            colors can be set using the user-defined values in the</tt> </tt>
-<a name="L388"></a><tt class="py-lineno"> 388</tt>  <tt class="py-line"><tt class="py-docstring">            ReliaFree configuration file.</tt> </tt>
+<a name="L388"></a><tt class="py-lineno"> 388</tt>  <tt class="py-line"><tt class="py-docstring">            RelKit configuration file.</tt> </tt>
 <a name="L389"></a><tt class="py-lineno"> 389</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L390"></a><tt class="py-lineno"> 390</tt>  <tt class="py-line"> </tt>
 <a name="L391"></a><tt class="py-lineno"> 391</tt>  <tt class="py-line">        <tt class="py-name">scrollwindow</tt> <tt class="py-op">=</tt> <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt class="py-name">ScrolledWindow</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -1232,14 +1232,14 @@ expandto(location.href);
       <th class="navbar" align="right" width="100%">
         <table border="0" cellpadding="0" cellspacing="0">
           <tr><th class="navbar" align="center"
-            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">ReliaFree</a></th>
+            ><a class="navbar" target="_top" href="https://sourceforge.net/apps/trac/reliafree/wiki">RelKit</a></th>
           </tr></table></th>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:19 2012
+    Generated by Epydoc 3.0.1 on Wed Apr 18 12:15:19 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       sensitive.py is part of The ReliaFree Project
+#       sensitive.py is part of The RelKit Project
 #
-#       Copyright 2007-2012 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+#       Copyright 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 #
 # All rights reserved.
 
@@ -56,12 +56,12 @@ class Sensitive(Switch):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation input tab with the
+        """ Populates the RelKit Workbook calculation input tab with the
             widgets needed to select inputs for Basic Sensitive Switch
             Component Class prediction calculations.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -93,12 +93,12 @@ class Sensitive(Switch):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the ReliaFree Workbook calculation results tab with the
+        """ Populates the RelKit Workbook calculation results tab with the
             widgets to display Basic Sensitive Switch Component Class
             calculation results.
 
             Keyword Arguments:
-            part   -- the ReliaFree COMPONENT object.
+            part   -- the RelKit COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -126,11 +126,11 @@ class Sensitive(Switch):
 
     def assessment_inputs_load(self, part):
 
-        """ Loads the ReliaFree Workbook calculation input widgets with
+        """ Loads the RelKit Workbook calculation input widgets with
             calculation input information.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0.}" + str(part.fmt) + "g}"
@@ -144,11 +144,11 @@ class Sensitive(Switch):
 
     def assessment_results_load(self, part):
 
-        """ Loads the ReliaFree Workbook calculation results widgets with
+        """ Loads the RelKit Workbook calculation results widgets with
             calculation results.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -166,7 +166,7 @@ class Sensitive(Switch):
             Basic Sensitive Switch Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         part._hrmodel = {}
@@ -207,7 +207,7 @@ class Sensitive(Switch):
             the Basic Sensitive Switch Component Class.
 
             Keyword Arguments:
-            part -- the ReliaFree COMPONENT object.
+            part -- the RelKit COMPONENT object.
         """
 
         from math import exp
