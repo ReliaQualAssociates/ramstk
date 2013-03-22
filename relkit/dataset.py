@@ -272,7 +272,7 @@ class Dataset:
         height = int(self._app.winWorkBook.height)
         width = int(self._app.winWorkBook.width / 2.0)
 
-        if(event.button == 3):
+        if(event.button == 3):          # Right click.
             window = gtk.Window()
             window.set_skip_pager_hint(True)
             window.set_skip_taskbar_hint(True)
@@ -309,15 +309,25 @@ class Dataset:
 
         toolbar = gtk.Toolbar()
 
-# Add item button.
+# Add record button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
         button.set_name('Add')
-        #button.connect('clicked', self._component_add)
+        #button.connect('clicked', self._record_add)
         button.set_tooltip_text(_(u"Adds a record to the selected data set."))
         toolbar.insert(button, 0)
+
+# Remove record button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        button.set_icon_widget(image)
+        button.set_name('Remove')
+        #button.connect('clicked', self._record_remove)
+        button.set_tooltip_text(_(u"Removes the selected record from the data set."))
+        toolbar.insert(button, 1)
 
 # Calculate button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
@@ -327,7 +337,7 @@ class Dataset:
         button.set_name('Calculate')
         button.connect('clicked', self._calculate)
         button.set_tooltip_text(_(u"Analyzes the selected data set."))
-        toolbar.insert(button, 1)
+        toolbar.insert(button, 2)
 
 # Save button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
@@ -337,7 +347,7 @@ class Dataset:
         button.set_name('Save')
         button.connect('clicked', self.dataset_save)
         button.set_tooltip_text(_(u"Saves the selected data set."))
-        toolbar.insert(button, 2)
+        toolbar.insert(button, 3)
 
 # Assign results to affected assembly.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
@@ -347,7 +357,7 @@ class Dataset:
         button.set_name('Assign')
         button.connect('clicked', self._assign_results)
         button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
-        toolbar.insert(button, 3)
+        toolbar.insert(button, 4)
 
         toolbar.show()
 
@@ -944,15 +954,15 @@ class Dataset:
         self.txtLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 19))))
         self.txtLocationLL.set_text(str(fmt.format(self.model.get_value(self.selected_row, 20))))
         self.txtLocationUL.set_text(str(fmt.format(self.model.get_value(self.selected_row, 21))))
-        self.txtShapeShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 22))))        # Scale variance (var 1)
-        self.txtShapeScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 23))))        # Scale variance (var 2)
-        self.txtShapeLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 24))))     # Location variance (var 3)
-        self.txtScaleShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
-        self.txtScaleScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-Shape variance (cov 1)
-        self.txtScaleLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Scale-Location variance (cov 2)
-        self.txtLocationShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Scale-Location variance (cov 2)
-        self.txtLocationScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))     # Shape-Location variance (cov 3)
-        self.txtLocationLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))  # Shape-Location variance (cov 3)
+        self.txtScaleScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 22))))        # Scale variance.
+        self.txtShapeShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 23))))        # Shape variance.
+        self.txtLocationLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 24))))  # Location variance.
+        self.txtShapeScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Shape-scale covariance.
+        self.txtScaleShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 25))))        # Scale-shape covariance.
+        self.txtScaleLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Scale-location covariance.
+        self.txtLocationScale.set_text(str(fmt.format(self.model.get_value(self.selected_row, 26))))     # Location-scale covariance.
+        self.txtShapeLocation.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))     # Shape-location covariance.
+        self.txtLocationShape.set_text(str(fmt.format(self.model.get_value(self.selected_row, 27))))     # Location-shape covariance.
         self.txtMHB.set_text(str(fmt.format(self.model.get_value(self.selected_row, 28))))
         self.txtLP.set_text(str(fmt.format(self.model.get_value(self.selected_row, 29))))
         self.txtLR.set_text(str(fmt.format(self.model.get_value(self.selected_row, 30))))
@@ -1078,6 +1088,50 @@ class Dataset:
 
         return False
 
+    def _record_add(self):
+
+        return False
+
+    def _record_remove(self, button):
+        """
+        Method to remove the selected record from the survival analysis
+        dataset.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this method.
+        """
+
+        selection = self.tvwDataset.get_selection()
+        (model, row) = selection.get_selected()
+
+        _record = model.get_value(row, 0)
+
+        _title_ = _(u"RelKit: Confirm Delete")
+        _dialog = _widg.make_dialog(_title_)
+
+        fixed = gtk.Fixed()
+
+        y_pos = 10
+
+        label = _widg.make_label(_(u"Are you sure you want to delete the selected survival data record."), 600, 250)
+        fixed.put(label, 5, y_pos)
+
+        fixed.show_all()
+
+        dialog.vbox.pack_start(fixed)
+
+        response = dialog.run()
+
+        if(response == gtk.RESPONSE_ACCEPT):
+            query = "DELETE * FROM tbl_survival_data \
+                     WHERE fld_record_id=%d" % _record
+            results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx,
+                                             True)
+
+        return False
+
     def _calculate(self, button):
         """
         Method to execute the selected analysis.
@@ -1094,6 +1148,7 @@ class Dataset:
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
+        _RELTIME_ = False
         _dataset_ = self.model.get_value(self.selected_row, 0)  # Dataset ID.
         _name = self.model.get_value(self.selected_row, 2)      # Dataset name.
         _analysis_ = self.cmbDistribution.get_active()          # Distribution ID.
@@ -1113,6 +1168,7 @@ class Dataset:
         # returned from the SQL queries to follow.
         if(_reltime_ == 0.0):
             _reltime_ = 1000000.0
+            _RELTIME_ = True
 
         # Determine the confidence bound z-value.
         _z_norm_ = norm.ppf(_conf_)
@@ -1694,8 +1750,8 @@ class Dataset:
                 shape = fit[0][0]
                 shapell = shape / exp(_z_norm_ * fit[1][0] / shape)
                 shapeul = shape * exp(_z_norm_ * fit[1][0] / shape)
-                scalescale = fit[1][0]**2
-                shapeshape = fit[1][1]**2
+                shapeshape = fit[1][0]**2
+                scalescale = fit[1][1]**2
                 mle = fit[3][0]
                 aic = fit[4][0]
                 bic = fit[5][0]
@@ -1806,9 +1862,11 @@ class Dataset:
                             _type_=2,
                             _marker_=['o'])
 
+        if(_RELTIME_):
+            _reltime_ = 0.0
+
         # Update gtk.TreeView with results.
         self.model.set_value(self.selected_row, 4, _analysis_)
-        self.model.set_value(self.selected_row, 5, _conf_)
         self.model.set_value(self.selected_row, 6, _type_)
         self.model.set_value(self.selected_row, 8, _fitmeth_)
         self.model.set_value(self.selected_row, 9, _reltime_)

@@ -744,6 +744,7 @@ CREATE TABLE "tbl_software_traceability" (
 );
 
 CREATE TABLE "tbl_survival_data" (
+    "fld_record_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
     "fld_left_interval" FLOAT DEFAULT(0),
     "fld_right_interval" FLOAT DEFAULT(0),
