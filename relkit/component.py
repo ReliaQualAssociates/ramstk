@@ -159,12 +159,12 @@ class Component():
 
 # Create generic toolbar action buttons.  These will call different methods or
 # functions depending on the COMPONENT Object notebook tab that is selected.
-        self.btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
-        self.btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
-        self.btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        self.btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        self.btnRollup = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        self.btnEdit = gtk.ToolButton(stock_id = gtk.STOCK_EDIT)
+        self.btnAddItem = gtk.ToolButton(stock_id=gtk.STOCK_ADD)
+        self.btnRemoveItem = gtk.ToolButton(stock_id=gtk.STOCK_REMOVE)
+        self.btnAnalyze = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        self.btnSaveResults = gtk.ToolButton(stock_id=gtk.STOCK_SAVE)
+        self.btnRollup = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        self.btnEdit = gtk.ToolButton(stock_id=gtk.STOCK_EDIT)
 
 # Create the General Data tab widgets for the COMPONENT object.
         self.txtName = _widg.make_entry()
@@ -342,7 +342,7 @@ class Component():
         self.txtYearMade.connect('focus-out-event',
                                  self._callback_entry, 'int', 587)
 
-        # Quadrant 3 (lower left) widgets.  These widghet are used to
+        # Quadrant 3 (lower left) widgets.  These widget are used to
         # display requirements information about the selected assembly.
         self.txtSpecification.set_tooltip_text(_("Enter the governing specification for the selected component, if any."))
         self.txtSpecification.connect('focus-out-event',
@@ -1338,7 +1338,7 @@ class Component():
 
         _derate.plot(_x_, _y_, 'r.-', linewidth=2)
         _derate.plot(_temperature_, _power_, 'go')
-        _derate.axis([0.95*_x_[0], 1.05*_x_[2], _y_[2], 1.05*_y_[0]])
+        _derate.axis([0.95 * _x_[0], 1.05 * _x_[2], _y_[2], 1.05 * _y_[0]])
 
         return False
 
@@ -1399,7 +1399,6 @@ class Component():
         self.tvwFMECA.set_model(model)
 
         cols = int(len(heading))
-        _visible = False
         for i in range(cols):
             self._fmeca_col_order.append(int(position[i].text))
 
@@ -1681,7 +1680,6 @@ class Component():
             assembly_id = self._app.DB.execute_query(query,
                                                      None,
                                                      self._app.ProgCnx)
-
 
             if(assembly_id[0][0] == ''):
                 self._app.debug_log.error("component.py: Failed to retrieve ID of new component.")

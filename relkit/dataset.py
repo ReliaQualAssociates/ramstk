@@ -3,7 +3,7 @@
     to Program survival data sets. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2013 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2012 - 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -83,6 +83,8 @@ class Dataset:
                       _("Distribution:"), _("Fit Method:"), _("Confidence:"),
                       _("Confidence Type:"), _("Confidence Method:"),
                       _("Start Time:"), _("End Time"), _("Number of Points:")]
+
+    _km = [(3.0, 3.0, u'Interval Censored'), (4.0, 4.0, u'Right Censored'), (5.7, 5.7, u'Right Censored'), (6.5, 6.5, u'Interval Censored'), (6.5, 6.5, u'Interval Censored'), (8.4, 8.4, u'Right Censored'), (10.0, 10.0, u'Interval Censored'), (10.0, 10.0, u'Right Censored'), (12.0, 12.0, u'Interval Censored'), (15.0, 15.0, u'Interval Censored')]
 
     _exp100 = [(u'', 48.146859, 48.146859, 0.0, 1), (u'', 20.564406, 20.564406, 0.0, 1), (u'', 94.072781, 94.072781, 0.0, 1), (u'', 177.992321, 177.992321, 0.0, 1),
                (u'', 89.103398, 89.103398, 0.0, 1), (u'', 350.577920, 350.577920, 0.0, 1), (u'', 82.223220, 82.223220, 0.0, 1),  (u'', 40.360083, 40.360083, 0.0, 1),
@@ -170,6 +172,10 @@ class Dataset:
         self.cmbSource = _widg.make_combo()
 
         self.tvwDataset = gtk.TreeView()
+        # make it searchable
+        self.tvwDataset.set_search_column(0)
+        # Allow drag and drop reordering of rows
+        self.tvwDataset.set_reorderable(True)
 
         self.txtConfidence = _widg.make_entry(_width_=100)
         self.txtDescription = _widg.make_entry(_width_=400)
@@ -178,14 +184,23 @@ class Dataset:
         self.txtRelPoints = _widg.make_entry(_width_=100)
 
         if self._analyses_input_widgets_create():
-            self.debug_app._log.error("dataset.py: Failed to create Analysis Input widgets.")
+            self._app.debug_log.error("dataset.py: Failed to create Analysis Input widgets.")
         if self._analyses_input_tab_create():
-            self.debug_app._log.error("dataset.py: Failed to create Analysis Input tab.")
+            self._app.debug_log.error("dataset.py: Failed to create Analysis Input tab.")
 
 # Create the Analyses Results tab widgets.
         self.txtMHB = _widg.make_entry(_width_=150)
+        self.txtChiSq = _widg.make_entry(_width_=150)
+        self.txtMHBPValue = _widg.make_entry(_width_=150)
+        self.lblMHBResult = _widg.make_label(_(u""), width=150)
         self.txtLP = _widg.make_entry(_width_=150)
+        self.txtZLPNorm = _widg.make_entry(_width_=150)
+        self.txtZLPPValue = _widg.make_entry(_width_=150)
+        self.lblZLPResult = _widg.make_label(_(u""), width=150)
         self.txtLR = _widg.make_entry(_width_=150)
+        self.txtZLRNorm = _widg.make_entry(_width_=150)
+        self.txtZLRPValue = _widg.make_entry(_width_=150)
+        self.lblZLRResult = _widg.make_label(_(u""), width=150)
         self.txtScale = _widg.make_entry(_width_=150)
         self.txtScaleLL = _widg.make_entry(_width_=150)
         self.txtScaleUL = _widg.make_entry(_width_=150)
@@ -222,9 +237,9 @@ class Dataset:
         self.tvwNonParResults = gtk.TreeView()
 
         if self._analyses_results_widgets_create():
-            self.debug_app._log.error("dataset.py: Failed to create Analysis Results widgets.")
+            self._app.debug_log.error("dataset.py: Failed to create Analysis Results widgets.")
         if self._analyses_results_tab_create():
-            self.debug_app._log.error("dataset.py: Failed to create Analysis Results tab.")
+            self._app.debug_log.error("dataset.py: Failed to create Analysis Results tab.")
 
 # Create the Plot tab widgets.
         height = (self._app.winWorkBook.height * 0.01) / 2.0
@@ -248,10 +263,8 @@ class Dataset:
         self.vbxPlot1 = gtk.VBox()
         self.vbxPlot2 = gtk.VBox()
 
-        if self._plot_widgets_create():
-            self.debug_app._log.error("dataset.py: Failed to create Plot widgets.")
         if self._plot_tab_create():
-            self.debug_app._log.error("dataset.py: Failed to create Plot tab.")
+            self._app.debug_log.error("dataset.py: Failed to create Plot tab.")
 
         self.vbxDataset = gtk.VBox()
         toolbar = self._toolbar_create()
@@ -310,27 +323,27 @@ class Dataset:
         toolbar = gtk.Toolbar()
 
 # Add record button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_ADD)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
         button.set_name('Add')
-        #button.connect('clicked', self._record_add)
+        button.connect('clicked', self._record_add)
         button.set_tooltip_text(_(u"Adds a record to the selected data set."))
         toolbar.insert(button, 0)
 
 # Remove record button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_DELETE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.set_name('Remove')
-        #button.connect('clicked', self._record_remove)
+        button.connect('clicked', self._record_remove)
         button.set_tooltip_text(_(u"Removes the selected record from the data set."))
         toolbar.insert(button, 1)
 
 # Calculate button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
@@ -340,7 +353,7 @@ class Dataset:
         toolbar.insert(button, 2)
 
 # Save button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_SAVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -350,7 +363,7 @@ class Dataset:
         toolbar.insert(button, 3)
 
 # Assign results to affected assembly.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         button.set_icon_widget(image)
@@ -417,9 +430,21 @@ class Dataset:
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_STRING)
+        model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_STRING)
         self.tvwDataset.set_model(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('visible', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Record\nID"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        column.set_visible(0)
+        self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
@@ -428,7 +453,8 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Affected\nUnit"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
+        column.set_attributes(cell, text=1)
+        column.set_sort_column_id(1)
         self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -438,7 +464,8 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Left"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
+        column.set_attributes(cell, text=2)
+        column.set_sort_column_id(2)
         self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -448,25 +475,27 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Right"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
+        column.set_attributes(cell, text=3)
+        column.set_sort_column_id(3)
         self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererCombo()
         cellmodel = gtk.ListStore(gobject.TYPE_STRING)
-        cellmodel.append([_(u"Right Censored")])
         cellmodel.append([_(u"Event")])
+        cellmodel.append([_(u"Right Censored")])
         cellmodel.append([_(u"Left Censored")])
         cellmodel.append([_(u"Interval Censored")])
+        cell.set_property('editable', True)
         cell.set_property('has-entry', False)
         cell.set_property('model', cellmodel)
-        cell.set_property('text-column', 3)
-        #cell.connect('changed', self._callback_combo_cell,
-        #                     int(position[i].text), model, cols)
+        cell.set_property('text-column', 0)
+        cell.connect('changed', self._callback_combo_cell, 4, model)
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Event"))
+        label = _widg.make_column_heading(_(u"Status"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=3)
+        column.set_attributes(cell, text=4)
+        column.set_visible(1)
         self.tvwDataset.append_column(column)
 
         return False
@@ -586,20 +615,43 @@ class Dataset:
         self.cmbAssembly.set_active(_index_)
 
         self.cmbSource.set_active(self.model.get_value(self.selected_row, 3))
-        self.cmbDistribution.set_active(self.model.get_value(self.selected_row, 4))
+        self.cmbDistribution.set_active(
+            self.model.get_value(self.selected_row, 4))
         self.cmbConfType.set_active(self.model.get_value(self.selected_row, 6))
-        self.cmbConfMethod.set_active(self.model.get_value(self.selected_row, 7))
-        self.cmbFitMethod.set_active(self.model.get_value(self.selected_row, 8))
+        self.cmbConfMethod.set_active(
+            self.model.get_value(self.selected_row, 7))
+        self.cmbFitMethod.set_active(
+            self.model.get_value(self.selected_row, 8))
 
-        self.txtDescription.set_text(str(self.model.get_value(self.selected_row, 2)))
-        self.txtConfidence.set_text(str(self.model.get_value(self.selected_row, 5)))
-        self.txtEndTime.set_text(str(self.model.get_value(self.selected_row, 9)))
-        self.txtRelPoints.set_text(str(self.model.get_value(self.selected_row, 10)))
-        self.txtStartTime.set_text(str(self.model.get_value(self.selected_row, 34)))
+        self.txtDescription.set_text(
+            str(self.model.get_value(self.selected_row, 2)))
+        self.txtConfidence.set_text(
+            str(self.model.get_value(self.selected_row, 5)))
+        self.txtEndTime.set_text(
+            str(self.model.get_value(self.selected_row, 9)))
+        self.txtRelPoints.set_text(
+            str(self.model.get_value(self.selected_row, 10)))
+        self.txtStartTime.set_text(
+            str(self.model.get_value(self.selected_row, 34)))
+
+        if(self.model.get_value(self.selected_row, 4) == 1 or
+           self.model.get_value(self.selected_row, 4) == 2):
+            self.cmbConfMethod.hide()
+            self.cmbFitMethod.hide()
+        else:
+            self.cmbConfMethod.show()
+            self.cmbFitMethod.show()
+
+        self._load_dataset_tree()
+
+        return False
+
+    def _load_dataset_tree(self):
+        """ Method used to load the survival dataset in the gtk.TreeView. """
 
         # Load the gtk.TreeView containing the list of failure/censoring times.
-        query = "SELECT fld_unit, fld_left_interval, fld_right_interval, \
-                        fld_status \
+        query = "SELECT fld_record_id, fld_unit, fld_left_interval, \
+                        fld_right_interval, fld_status \
                  FROM tbl_survival_data \
                  WHERE fld_dataset_id=%s \
                  ORDER BY fld_unit ASC, \
@@ -617,16 +669,40 @@ class Dataset:
         model.clear()
 
         for i in range(n_events):
-            model.append(results[i])
+            _data = [results[i][0], results[i][1], results[i][2],
+                     results[i][3], results[i][4]]
+            model.append(_data)
 
         return False
 
     def _analyses_results_widgets_create(self):
         """ Method for creating DATASET Class analysis results widgets. """
 
-        self.txtMHB.set_tooltip_text(_(u"Displays the value of the MIL-HDBK test for trend."))
-        self.txtLP.set_tooltip_text(_(u"Displays the value of the LaPlace test for trend."))
-        self.txtLR.set_tooltip_text(_(u"Displays the value of the Lewis-Robinson test for trend."))
+        self.tvwDataset.set_rubber_banding(True)
+        selection = self.tvwDataset.get_selection()
+        selection.set_mode(gtk.SELECTION_MULTIPLE)
+
+        self.txtMHB.set_tooltip_text(
+            _(u"Displays the value of the MIL-HDBK test for trend."))
+        self.txtChiSq.set_tooltip_text(
+            _(u"Displays the chi square critical value for the MIL-HDBK test \
+            for trend."))
+        self.txtMHBPValue.set_tooltip_text(
+            _(u"Displays the p-value for the MIL-HDBK test for trend."))
+        self.lblMHBResult.set_use_markup(True)
+        self.txtLP.set_tooltip_text(
+            _(u"Displays the value of the LaPlace test for trend."))
+        self.txtZLPNorm.set_tooltip_text(
+            _(u"Displays the standard normal critical value for the LaPlace \
+            test for trend."))
+        self.txtZLPPValue.set_tooltip_text(
+            _(u"Displays the p-value for the Laplace test for trend."))
+        self.lblZLPResult.set_use_markup(True)
+        self.txtLR.set_tooltip_text(
+            _(u"Displays the value of the Lewis-Robinson test for trend."))
+        self.txtZLRNorm.set_tooltip_text(_(u"Displays the standard normal critical value for the Lewis-Robinson test for trend."))
+        self.txtZLRPValue.set_tooltip_text(_(u"Displays the p-value for the Lewis-Robinson test for trend."))
+        self.lblZLRResult.set_use_markup(True)
         self.txtScale.set_tooltip_text(_(u"Displays the point estimate of the scale parameter."))
         self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the scale parameter."))
         self.txtScaleUL.set_tooltip_text(_(u"Displays the upper <span>\u03B1</span>% bound on the scale parameter."))
@@ -663,33 +739,33 @@ class Dataset:
         """
 
         hbox = gtk.HBox()
-
-        # Populate quadrant 2 (right half).
         vbox = gtk.VBox()
 
-        # Summary results.
+# =========================================================================== #
+# Summary of results.
+# =========================================================================== #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_("Summary"))
+        frame = _widg.make_frame(_label_=_(u"Summary"))
         frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         frame.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_("Number of Suspensions:"), width=200)
+        label = _widg.make_label(_(u"Number of Suspensions:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumSuspensions, 210, y_pos)
-        label = _widg.make_label(_("Estimated MTBF"), width=200)
+        label = _widg.make_label(_(u"Estimated MTBF"), width=200)
         fixed.put(label, 415, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("Number of Failures:"), width=200)
+        label = _widg.make_label(_(u"Number of Failures:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumFailures, 210, y_pos)
-        label = _widg.make_label(_("Lower Bound"), width=150)
+        label = _widg.make_label(_(u"Lower Bound"), width=150)
         fixed.put(label, 415, y_pos)
-        label = _widg.make_label(_("Point Estimate"), width=150)
+        label = _widg.make_label(_(u"Point Estimate"), width=150)
         fixed.put(label, 565, y_pos)
-        label = _widg.make_label(_("Upper Bound"), width=150)
+        label = _widg.make_label(_(u"Upper Bound"), width=150)
         fixed.put(label, 715, y_pos)
         y_pos += 30
 
@@ -700,7 +776,9 @@ class Dataset:
 
         vbox.pack_start(frame, True, True)
 
-        # Non-parametric table of results.
+# =========================================================================== #
+# Non-parametric table of results.
+# =========================================================================== #
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -711,7 +789,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_("Time"))
+        label = _widg.make_column_heading(_(u"Time"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
@@ -721,7 +799,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(""))
+        label = _widg.make_column_heading(_(u""))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=1)
@@ -731,7 +809,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(""))
+        label = _widg.make_column_heading(_(u""))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=2)
@@ -741,7 +819,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(""))
+        label = _widg.make_column_heading(_(u""))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=3)
@@ -751,7 +829,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_("S(t)"))
+        label = _widg.make_column_heading(_(u"S(t)"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=4)
@@ -761,7 +839,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_("Standard\nError"))
+        label = _widg.make_column_heading(_(u"Standard\nError"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=5)
@@ -771,7 +849,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_("Lower\nBound"))
+        label = _widg.make_column_heading(_(u"Lower\nBound"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=6)
@@ -781,7 +859,7 @@ class Dataset:
         cell.set_property('editable', 0)
         cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_("Upper\nBound"))
+        label = _widg.make_column_heading(_(u"Upper\nBound"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=7)
@@ -791,39 +869,64 @@ class Dataset:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwNonParResults)
 
-        frame = _widg.make_frame(_label_=_("Non-Parametric Estimates"))
+        frame = _widg.make_frame(_label_=_(u"Non-Parametric Estimates"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         vbox.pack_start(frame, True, True)
 
-        # Non-parametric goodness of fit statistics.
+# =========================================================================== #
+# Non-parametric statistics.
+# =========================================================================== #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_("Non-Parametric GOF Statistics"))
+        frame = _widg.make_frame(_label_=_(u"Non-Parametric Statistics"))
         frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         frame.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_("MIL Handbook"), width=150)
+        label = _widg.make_label(_(u"MIL Handbook"), width=150)
         fixed.put(label, 155, y_pos)
 
-        label = _widg.make_label(_("Laplace"), width=150)
+        label = _widg.make_label(_(u"Laplace"), width=150)
         fixed.put(label, 305, y_pos)
 
-        label = _widg.make_label(_("Lewis-Robinson"), width=150)
+        label = _widg.make_label(_(u"Lewis-Robinson"), width=150)
         fixed.put(label, 455, y_pos)
         y_pos += 30
 
+        label = _widg.make_label(_(u"Test Statistic"), width=150)
+        fixed.put(label, 5, y_pos)
         fixed.put(self.txtMHB, 155, y_pos)
         fixed.put(self.txtLP, 305, y_pos)
         fixed.put(self.txtLR, 455, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Critical Value"), width=150)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtChiSq, 155, y_pos)
+        fixed.put(self.txtZLPNorm, 305, y_pos)
+        fixed.put(self.txtZLRNorm, 455, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"p-Value"), width=150)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtMHBPValue, 155, y_pos)
+        fixed.put(self.txtZLPPValue, 305, y_pos)
+        fixed.put(self.txtZLRPValue, 455, y_pos)
+        y_pos += 30
+
+        fixed.put(self.lblMHBResult, 155, y_pos)
+        fixed.put(self.lblZLPResult, 305, y_pos)
+        fixed.put(self.lblZLRResult, 455, y_pos)
 
         vbox.pack_start(frame, True, True)
 
         hbox.pack_start(vbox, True, True)
 
-        # Parametric estimates.
+# =========================================================================== #
+# Parametric estimates.
+# =========================================================================== #
         vbox = gtk.VBox()
 
         fixed = gtk.Fixed()
@@ -865,7 +968,9 @@ class Dataset:
 
         vbox.pack_start(frame, True, True)
 
-        # Covariance matrix.
+# =========================================================================== #
+# Covariance matrix.
+# =========================================================================== #
         fixed = gtk.Fixed()
 
         frame = _widg.make_frame(_label_=_("Covariance Matrix"))
@@ -897,7 +1002,9 @@ class Dataset:
 
         vbox.pack_start(frame, True, True)
 
-        # Parametric goodness of fit statistics.
+# =========================================================================== #
+# Parametric goodness of fit statistics.
+# =========================================================================== #
         fixed = gtk.Fixed()
 
         frame = _widg.make_frame(_label_=_("Parametric GOF Statistics"))
@@ -969,10 +1076,6 @@ class Dataset:
         self.txtAIC.set_text(str(fmt.format(self.model.get_value(self.selected_row, 31))))
         self.txtBIC.set_text(str(fmt.format(self.model.get_value(self.selected_row, 32))))
         self.txtMLE.set_text(str(fmt.format(self.model.get_value(self.selected_row, 33))))
-
-        return False
-
-    def _plot_widgets_create(self):
 
         return False
 
@@ -1102,9 +1205,12 @@ class Dataset:
         """
 
         selection = self.tvwDataset.get_selection()
-        (model, row) = selection.get_selected()
+        (model, paths) = selection.get_selected_rows()
 
-        _record = model.get_value(row, 0)
+        _records = []
+        for i in range(len(paths)):
+            row = model.get_iter(paths[i])
+            _records.append(model.get_value(row, 0))
 
         _title_ = _(u"RelKit: Confirm Delete")
         _dialog = _widg.make_dialog(_title_)
@@ -1113,22 +1219,27 @@ class Dataset:
 
         y_pos = 10
 
-        label = _widg.make_label(_(u"Are you sure you want to delete the selected survival data record."), 600, 250)
+        label = _widg.make_label(_(u"Are you sure you want to delete the selected survival data record(s)."), 600, 250)
         fixed.put(label, 5, y_pos)
 
         fixed.show_all()
 
-        dialog.vbox.pack_start(fixed)
+        _dialog.vbox.pack_start(fixed)
 
-        response = dialog.run()
+        response = _dialog.run()
 
         if(response == gtk.RESPONSE_ACCEPT):
-            query = "DELETE * FROM tbl_survival_data \
-                     WHERE fld_record_id=%d" % _record
-            results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             True)
+            for i in range(len(_records)):
+                query = "DELETE FROM tbl_survival_data \
+                         WHERE fld_record_id=%d" % _records[i]
+                results = self._app.DB.execute_query(query,
+                                                     None,
+                                                     self._app.ProgCnx,
+                                                     True)
+                print results
+        _dialog.destroy()
+
+        self._load_dataset_tree()
 
         return False
 
@@ -1140,10 +1251,7 @@ class Dataset:
         button -- the gtk.ToolButton that called this method.
         """
 
-        import operator
-        import itertools
-
-        from math import exp, log, sqrt
+        from math import exp, floor, log, sqrt
         from scipy.stats import chi2, norm
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1155,7 +1263,7 @@ class Dataset:
         _conf_ = float(self.txtConfidence.get_text())           # Confidence.
         _type_ = self.cmbConfType.get_active()                  # Confidence type.
         _fitmeth_ = self.cmbFitMethod.get_active()              # Fit method.
-        _starttime_ = float(self.txtStartTime.get_text())       # Maximum time.
+        _starttime_ = float(self.txtStartTime.get_text())       # Minimum time.
         _reltime_ = float(self.txtEndTime.get_text())           # Maximum time.
 
         if(_type_ == 3):                    # Two-sided bounds.
@@ -1208,15 +1316,17 @@ class Dataset:
         scaleshape = 0.0
         scalescale = 0.0
         scalelocation = 0.0
-        locationshape = 0.0
-        locationscale = 0.0
         locationlocation = 0.0
         mhb = 0.0
-        lp = 0.0
-        lr = 0.0
+        zlp = 0.0
+        zlr = 0.0
         mle = 0.0
         aic = 0.0
         bic = 0.0
+
+        # Initialize some lists.
+        p_value = [1.0, 1.0, 1.0]
+        _text = [u"", u"", u""]
 
         if(_analysis_ == 1):                # MCF
             # Create a list of unique units.
@@ -1224,7 +1334,8 @@ class Dataset:
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_right_interval <= %f \
-                     AND fld_right_interval > 0.0" % (_dataset_, _reltime_)
+                     AND fld_right_interval > %f" % \
+                     (_dataset_, _reltime_, _starttime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
@@ -1238,8 +1349,9 @@ class Dataset:
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_right_interval <= %f \
-                     AND fld_right_interval > 0.0 \
-                     ORDER BY fld_right_interval ASC" % (_dataset_, _reltime_)
+                     AND fld_right_interval > %f \
+                     ORDER BY fld_right_interval ASC" % \
+                     (_dataset_, _reltime_, _starttime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
@@ -1249,9 +1361,10 @@ class Dataset:
                 _times_.append(results[i][0])
 
             # Get the entire dataset.
+            # Example of a record returned from the following query:
+            #     (u'HT36103', 0.0, 12.0, 12.0)
             query = "SELECT fld_unit, fld_left_interval, \
-                            fld_right_interval, fld_tbf, \
-                            fld_status \
+                            fld_right_interval, fld_tbf \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_right_interval <= %f \
@@ -1262,27 +1375,31 @@ class Dataset:
                                                  None,
                                                  self._app.ProgCnx)
 
-            # 0 = Event Time ti. (string)
-            # 1 = Delta array at time ti. (array of integers)
-            # 2 = d array at time ti. (array of integers)
-            # 3 = Sum of delta at time ti. (integer)
-            # 4 = Sum of d at time ti. (integer)
-            # 5 = d bar at time ti. (float)
-            # 6 = Variance of d bar at time ti. (float)
-            # 7 = Lower bound on mean cumulative function at time ti. (float)
-            # 8 = Upper bound on mean cumulative fucntion at time ti. (float)
-            # 9 = Mean cumulative function at time ti. (float)
-            nonpar = _calc.mean_cumulative_function(_units_, _times_, results, _conf_)
+# =========================================================================== #
+# 0 = Event Time ti. (string)
+# 1 = Delta array at time ti. (array of integers)
+# 2 = d array at time ti. (array of integers)
+# 3 = Sum of delta at time ti. (integer)
+# 4 = Sum of d at time ti. (integer)
+# 5 = d bar at time ti. (float)
+# 6 = Variance of d bar at time ti. (float)
+# 7 = Lower bound on mean cumulative function at time ti. (float)
+# 8 = Upper bound on mean cumulative fucntion at time ti. (float)
+# 9 = Mean cumulative function at time ti. (float)
+# =========================================================================== #
+            nonpar = _calc.mean_cumulative_function(_units_, _times_,
+                                                    results, _conf_)
 
+            # =============================================================== #
             # Get:
             #   Total number of records.
             #   List of unique failures times.
             #   List of MCF at each unique failure time.
             #   List of MCF lower bound at each unique failure time.
             #   List of MCF upper bound at each unique failure time.
-            #   Total number of failures.
             #   Maximum observed time.
-            n_points = len(nonpar)
+            # =============================================================== #
+            n_failures = len(nonpar)
             times = [x[0] for x in nonpar]
             muhat = [x[9] for x in nonpar]
             muhatll = [x[7] for x in nonpar]
@@ -1290,39 +1407,42 @@ class Dataset:
             ta = max(times)
 
             # Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test
-            # statistics.  These statistics are used to test for HPP vs. NHPP
-            # in the data.
-            mhb = 0.0
-            zlp = 0.0
+            # statistics.  Find the chi-square critical value.  These
+            # statistics are used to test for HPP vs. NHPP in the data.
             tbf = []
             failnum = []
-            for i in range(n_points):
+            _denominator_ = 0.0
+            for i in range(n_failures):
                 mhb += log(times[i] / ta)
+                _denominator_ += log(ta / times[i])
                 zlp += times[i] / ta
                 tbf.append(results[i][3])
                 failnum.append(i)
 
             mhb = -2.0 * mhb
-            zlp = (zlp - (n_points / 2.0)) / sqrt(n_points / 12.0)
+            zlp = (zlp - (n_failures / 2.0)) / sqrt(n_failures / 12.0)
             tau = numpy.mean(tbf)
             S = numpy.std(tbf)
             zlr = zlp * tau / S
 
+            _chisq_ = chi2.ppf(1.0 - _conf_, 2 * n_failures)
+            p_value[0] = chi2.cdf(mhb, 2 * n_failures)
+            p_value[1] = norm.cdf(abs(zlp))
+            p_value[2] = norm.cdf(abs(zlr))
+
+            _beta_ = n_failures / _denominator_
+            _eta_ = ta / n_failures**(1.0 / _beta_)
+
             # Find the covariance and variance of the interarrival times.  Use
             # these to calculate the sample serial correlation coefficient.
-            cov = numpy.cov(tbf[0:n_points-1], tbf[1:n_points])
+            cov = numpy.cov(tbf[0:n_failures-1], tbf[1:n_failures])
             var = numpy.var(tbf)
-            rho = sqrt(n_points - 1) * cov[0][1] / var
-
-            # Get the critical values for the chi-square and standard normal
-            # distributions.
-            _chi_sq = chi2.ppf(1.0 - _conf_, 2*n_points)
-            _z_norm = norm.ppf((1.0 + _conf_)/2.0)
+            rho = sqrt(n_failures - 1) * cov[0][1] / var
 
             # Load the table with the MCF results.
             model = self.tvwNonParResults.get_model()
             model.clear()
-            for i in range(n_points):
+            for i in range(n_failures):
                 _data_ = [str(nonpar[i][0]), int(nonpar[i][3]),
                           int(nonpar[i][4]), float(nonpar[i][5]),
                           float(nonpar[i][6]), float(nonpar[i][9]),
@@ -1364,15 +1484,6 @@ class Dataset:
             label.set_markup(_(u"<span weight='bold'>MCF Upper\nBound</span>"))
             column.set_widget(label)
 
-            # Set the values in the results widgets.
-            self.txtMTBF.set_text("")
-            self.txtMTBFLL.set_text("")
-            self.txtMTBFUL.set_text("")
-
-            self.txtMHB.set_text(str(fmt.format(mhb)))
-            self.txtLP.set_text(str(fmt.format(zlp)))
-            self.txtLR.set_text(str(fmt.format(zlr)))
-
             # Plot the mean cumulative function.
             self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
                             y2=muhatll, y3=muhatul,
@@ -1396,7 +1507,7 @@ class Dataset:
 
             # Plot the lag 1 plot.
             self._load_plot(self.axAxis4, self.pltPlot4,
-                            x=tbf[0:n_points-1], y1=tbf[1:n_points],
+                            x=tbf[0:n_failures - 1], y1=tbf[1:n_failures],
                             y2=None, y3=None,
                             _title_=_(u"Lag 1 Plot of %s") % _name,
                             _xlab_=_(u"Lagged Time Between Failure"),
@@ -1409,8 +1520,25 @@ class Dataset:
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
 
+            self.txtChiSq.set_text(str(fmt.format(_chisq_)))
+            self.txtZLPNorm.set_text(str(fmt.format(_z_norm_)))
+            self.txtZLRNorm.set_text(str(fmt.format(_z_norm_)))
+
+            if(mhb > _chisq_):
+                _text[0] = _(u"<span foreground='red'>Nonconstant</span>")
+            else:
+                _text[0] = _(u"<span foreground='green'>Constant</span>")
+            if(zlp > _z_norm_):
+                _text[1] = _(u"<span foreground='red'>Nonconstant</span>")
+            else:
+                _text[1] = _(u"<span foreground='green'>Constant</span>")
+            if(zlr > _z_norm_):
+                _text[2] = _(u"<span foreground='red'>Nonconstant</span>")
+            else:
+                _text[2] = _(u"<span foreground='green'>Constant</span>")
+
         elif(_analysis_ == 2):              # Kaplan-Meier
-            query = "SELECT fld_right_interval, fld_status \
+            query = "SELECT fld_left_interval, fld_right_interval, fld_status \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      ORDER BY fld_right_interval ASC, \
@@ -1419,41 +1547,49 @@ class Dataset:
                                                  None,
                                                  self._app.ProgCnx)
 
-            #    0 = total number of subjects in each curve.
-            #    1 = the time points at which the curve has a step.
-            #    2 = the number of subjects at risk at t.
-            #    3 = the number of events that occur at time t.
-            # 4 = the boolean inverse of three.
-            #    5 = the estimate of survival at time t+0. This may be a vector
-            #        or a matrix.
-            #    6 = type of survival censoring.
-            #    7 = the standard error of the cumulative hazard or
-            #        -log(survival).
-            #    8 = upper confidence limit for the survival curve.
-            #    9 = lower confidence limit for the survival curve.
-            #   10 = the approximation used to compute the confidence limits.
-            #   11 = the level of the confidence limits, e.g. 90 or 95%.
-            #   12 = the returned value from the na.action function, if any.
-            #        It will be used in the printout of the curve, e.g., the
-            #        number of observations deleted due to missing values.
+            # Make a list with the rank of the records that are failures.
+            r = []
+            for i in range(len(results)):
+                if(results[i][2] == 'Event' or
+                   results[i][2] == 'Interval Censored'):
+                    r.append(i + 1)
+
+# =========================================================================== #
+#    0 = total number of subjects in each curve.
+#    1 = the time points at which the curve has a step.
+#    2 = the number of subjects at risk at t.
+#    3 = the number of events that occur at time t.
+#    4 = the number of subjects that enter at time t (counting
+#        process data only).
+#    5 = the estimate of survival at time t+0. This may be a vector
+#        or a matrix.
+#    6 = type of survival censoring.
+#    7 = the standard error of the cumulative hazard or
+#        -log(survival).
+#    8 = upper confidence limit for the survival curve.
+#    9 = lower confidence limit for the survival curve.
+#   10 = the approximation used to compute the confidence limits.
+#   11 = the level of the confidence limits, e.g. 90 or 95%.
+#   12 = the returned value from the na.action function, if any.
+#        It will be used in the printout of the curve, e.g., the
+#        number of observations deleted due to missing values.
+# =========================================================================== #
             nonpar = _calc.kaplan_meier(results, _reltime_, _conf_)
 
+            n_points = nonpar[0][0]
             times = nonpar[1]
             Shat = nonpar[5]
-            Shatul = nonpar[8]
-            Shatll = nonpar[9]
+            Shatll = nonpar[8]
+            Shatul = nonpar[9]
 
-            n_points = len(times)
-
-            muhat = 0.0
-            ti = times[0]
-            tj = 0.0
             logtimes = []
             _H_ = []
             logH = []
             zShat = []
             _h_ = []
-            for i in range(n_points):
+            tr = []
+            S = []
+            for i in range(len(times)):
                 logtimes.append(log(times[i]))
 
                 # Calculate the cumulative hazard rate.
@@ -1461,24 +1597,47 @@ class Dataset:
                     _H_.append(-log(Shat[i]))
                 except ValueError:
                     _H_.append(_H_[i - 1])
+                except IndexError:
+                    print _H_
+                    print i
 
                 logH.append(log(_H_[i]))
                 zShat.append(norm.ppf(Shat[i]))
                 _h_.append(_H_[i] / times[i])
 
                 # Calculate the mean.
-                muhat = muhat + Shat[i] * (ti - tj)
-                tj = ti
-                ti = times[i]
+                if(nonpar[3][i] != 0):      # Event occured at this time.
+                    for j in range(int(floor(nonpar[3][i]))):
+                        tr.append(nonpar[1][i])
+                        S.append(nonpar[5][i])
+
+            # Calculate the number of failures and suspensions in the dataset.
+            n_failures = len(tr)
+            n_suspensions = n_points - n_failures
+
+            # Calculate the MTBF and the variance of the MTBF.
+            MTBF = tr[0]
+            A = []
+            for i in range(n_failures - 1):
+                MTBF += S[i] * (tr[i + 1] - tr[i])
+                A.append(S[i] * (tr[i + 1] - tr[i]))
+
+            for i in range(len(A)):
+                A[i] = sum(A[i:])**2 / \
+                       ((n_points - r[i]) * (n_points - r[i] + 1))
+            var_mu = (n_failures / (n_failures - 1)) * sum(A)
+
+            MTBFLL = MTBF - sqrt(var_mu) * _z_norm_
+            MTBFUL = MTBF + sqrt(var_mu) * _z_norm_
 
             # Load the table with the Kaplan-Meier results.
             model = self.tvwNonParResults.get_model()
             model.clear()
-            for i in range(n_points):
+            for i in range(len(times)):
                 _data_ = [str(nonpar[1][i]), int(nonpar[2][i]),
                           int(nonpar[3][i]), float(nonpar[5][i]),
                           float(nonpar[7][i]), float(nonpar[5][i]),
-                          float(nonpar[9][i]), float(nonpar[8][i])]
+                          float(nonpar[8][i]), float(nonpar[9][i])]
                 model.append(_data_)
 
             column = self.tvwNonParResults.get_column(1)
@@ -1516,18 +1675,13 @@ class Dataset:
             label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
             column.set_widget(label)
 
-            # Set the values in the results widgets.
-            self.txtMTBF.set_text(str(fmt.format(muhat)))
-            #self.txtMTBFLL.set_text(str(fmt.format(muhatll[n_points - 1])))
-            #self.txtMTBFUL.set_text(str(fmt.format(muhatul[n_points - 1])))
-
             # Plot the survival curve.
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=Shat,
                             y2=Shatll, y3=Shatul,
                             _title_=_("Kaplan-Meier Plot of %s") % _name,
                             _xlab_=_("Time"),
-                            _ylab_=_("Survival Function [S(t)]"),
+                            _ylab_=_("Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             # Plot the hazard rate curve.
@@ -1536,7 +1690,7 @@ class Dataset:
                             y2=None, y3=None,
                             _title_=_("Hazard Rate Plot of %s") % _name,
                             _xlab_=_("Time"),
-                            _ylab_=_("Hazard Rate [h(t)]"),
+                            _ylab_=_("Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             for plot in self.vbxPlot1.get_children():
@@ -1551,7 +1705,7 @@ class Dataset:
                             y2=None, y3=None,
                             _title_=_("Cumulative Hazard Plot of %s") % _name,
                             _xlab_=_("Time"),
-                            _ylab_=_("Cumulative Hazard Function [H(t)]"),
+                            _ylab_=_("Cumulative Hazard Function [H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             # Plot the log cumulative hazard curve.
@@ -1560,7 +1714,7 @@ class Dataset:
                             y2=None, y3=None,
                             _title_=_("Log Hazard Plot of %s") % _name,
                             _xlab_=_("Time"),
-                            _ylab_=_("Log Hazard Function [log H(t)]"),
+                            _ylab_=_("Log Hazard Function [log H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             for plot in self.vbxPlot2.get_children():
@@ -1599,8 +1753,6 @@ class Dataset:
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=scale),
                                 Rtimes, False)
-
-            _theo_ = R.rexp(100, rate=scale)
 
             # Display the widgets we need.
             self.txtScaleScale.show()
@@ -1823,42 +1975,51 @@ class Dataset:
             bins = list(hist[0])
             counts = list(hist[1])
 
+            # Plot the histogram of interarrival times.
+            __title__ = _(u"Histogram of Interarrival Times for %s") % _name
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=Rtimes, y1=bins,
-                            _title_=_("Histogram of Interarrival Times for %s") % _name,
-                            _xlab_=_("Interarrival Times"),
-                            _ylab_=_("Count"),
+                            _title_=__title__,
+                            _xlab_=_(u"Interarrival Times"),
+                            _ylab_=_(u"Count"),
                             _type_=3,
                             _marker_=['g'])
 
             # Plot the density function of interarrival times.
+            __title__ = _(u"Density Estimate of Interarrival Times for %s") \
+                % _name
             _dens_ = R.density(Rtimes)
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=_dens_[0], y1=_dens_[1],
-                            _title_=_("Density Estimate of Interarrival Times for %s") % _name,
-                            _xlab_=_(""),
-                            _ylab_=_("Density"),
+                            _title_=__title__,
+                            _xlab_=_(u""),
+                            _ylab_=_(u"f(t) "),
                             _type_=2,
                             _marker_=['g'])
 
             # Plot an ECDF of interarrival times.
+            __title__ = _(u"Empirical CDF of Interarrival Times for %s") \
+                % _name
             counts = numpy.cumsum(counts)
             cdf = []
             for i in range(len(counts)):
                 cdf.append(float(counts[i]) / float(max(counts)))
             self._load_plot(self.axAxis3, self.pltPlot3,
                             x=bins[1:], y1=cdf,
-                            _title_=_("Empirical CDF of Interarrival Times for %s") % _name,
-                            _xlab_=_("t"),
-                            _ylab_=_("F(t)"),
+                            _title_=__title__,
+                            _xlab_=_(u"t"),
+                            _ylab_=_(u"F(t) "),
                             _type_=2,
                             _marker_=['b-'])
 
+            # Plot the probability plot of interarrival times.
+            __title__ = _(u"Probability Plot of Interarrival Times for %s ") \
+                % _name
             self._load_plot(self.axAxis4, self.pltPlot4,
                             x=_qqplot_[0], y1=_qqplot_[1],
-                            _title_=_("Probability Plot of Interarrival Times for %s") % _name,
-                            _xlab_=_("Theoretical"),
-                            _ylab_=_("Observed"),
+                            _title_=__title__,
+                            _xlab_=_(u"Theoretical"),
+                            _ylab_=_(u"Observed"),
                             _type_=2,
                             _marker_=['o'])
 
@@ -1888,8 +2049,8 @@ class Dataset:
         self.model.set_value(self.selected_row, 26, scalelocation)
         self.model.set_value(self.selected_row, 27, shapelocation)
         self.model.set_value(self.selected_row, 28, mhb)
-        self.model.set_value(self.selected_row, 29, lp)
-        self.model.set_value(self.selected_row, 30, lr)
+        self.model.set_value(self.selected_row, 29, zlp)
+        self.model.set_value(self.selected_row, 30, zlr)
         self.model.set_value(self.selected_row, 31, aic)
         self.model.set_value(self.selected_row, 32, bic)
         self.model.set_value(self.selected_row, 33, mle)
@@ -1900,6 +2061,14 @@ class Dataset:
         self.txtMTBF.set_text(str(fmt.format(MTBF)))
         self.txtMTBFLL.set_text(str(fmt.format(MTBFLL)))
         self.txtMTBFUL.set_text(str(fmt.format(MTBFUL)))
+
+        self.txtMHBPValue.set_text(str(fmt.format(p_value[0])))
+        self.txtZLPPValue.set_text(str(fmt.format(p_value[1])))
+        self.txtZLRPValue.set_text(str(fmt.format(p_value[2])))
+
+        self.lblMHBResult.set_markup(_text[0])
+        self.lblZLPResult.set_markup(_text[1])
+        self.lblZLRResult.set_markup(_text[2])
 
         return False
 
@@ -1912,7 +2081,43 @@ class Dataset:
         button -- the gtk.Button widget that called this function.
         """
 
+        #model = self.tvwDataset.get_model()
+        #model.foreach(self._save_survival_record)
+
         self.model.foreach(self._save_line_item)
+
+        return False
+
+    def _save_survival_record(self, model, path, row):
+        """
+        Saves each of the survival data records that comprise the selected
+        DATASET to the RelKit Program MySQL or SQLite3 database.
+
+        Keyword Arguments:
+        model -- the DATASET tvwDataset gtk.ListStore.
+        path_ -- the path of the active row in the DATASET gtk.ListStore.
+        row   -- the selected row in the DATASET gtk.TreeView.
+        """
+
+        values = (model.get_value(row, 1), model.get_value(row, 2),
+                  model.get_value(row, 3), model.get_value(row, 4),
+                  model.get_value(row, 0))
+
+        if(_conf.BACKEND == 'mysql'):
+            query = "UPDATE tbl_survival_data \
+                     SET fld_unit='%s', fld_left_interval=%f, \
+                         fld_right_interval=%f, fld_status=%d \
+                     WHERE fld_record_id=%d"
+        elif(_conf.BACKEND == 'sqlite3'):
+            query = "UPDATE tbl_survival_data \
+                     SET fld_unit=?, fld_left_interval=?, \
+                         fld_right_interval=?, fld_status=? \
+                     WHERE fld_record_id=?"
+
+        results = self._app.DB.execute_query(query,
+                                             values,
+                                             self._app.ProgCnx,
+                                             commit=True)
 
         return False
 
@@ -2112,6 +2317,14 @@ class Dataset:
         else:
             _text_ = combo.get_active()
 
+        if(_index_ == 4):
+            if(_text_ == 1 or _text_ == 2):
+                self.cmbConfMethod.hide()
+                self.cmbFitMethod.hide()
+            else:
+                self.cmbConfMethod.show()
+                self.cmbFitMethod.show()
+
         self.model.set_value(self.selected_row, _index_, _text_)
 
         return False
@@ -2143,6 +2356,29 @@ class Dataset:
             _text_ = datetime.strptime(entry.get_text(), '%Y-%m-%d').toordinal()
 
         self.model.set_value(self.selected_row, _index_, _text_)
+
+        return False
+
+    def _callback_combo_cell(self, cell, path, row, col, treemodel):
+        """
+        Called whenever a TreeView CellRendererCombo changes.
+
+        Keyword Arguments:
+        cell      -- the gtk.CellRendererCombo that called this function
+        path      -- the path in the gtk.TreeView containing the
+                     gtk.CellRendererCombo that called this function.
+        row       -- the new gtk.TreeIter in the gtk.CellRendererCombo that
+                     called this function.
+        col       -- the index of the column in the gtk.TreeView containing
+                     the gtk.CellRendererCombo.
+        treemodel -- the gtk.TreeModel for the gtk.TreeView.
+        """
+
+        model = cell.get_property('model')
+        val = model.get_value(row, 0)
+
+        row = treemodel.get_iter(path)
+        treemodel.set_value(row, col, val)
 
         return False
 

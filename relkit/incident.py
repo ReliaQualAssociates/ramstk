@@ -508,29 +508,25 @@ class Incident:
         # January 1, 1970 as the default.
         dt = self.model.get_value(self.selected_row, 19)
         if(dt is not None and dt != '' and dt >= 1):
-            dt = datetime.fromordinal(int(dt))
-            self.txtRequestDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtRequestDate.set_text(dt)
         else:
             self.txtRequestDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 22)
         if(dt is not None and dt != '' and dt >= 1):
-            dt = datetime.fromordinal(int(dt))
-            self.txtReviewDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtReviewDate.set_text(dt)
         else:
             self.txtReviewDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 25)
         if(dt is not None and dt != '' and dt >= 1):
-            dt = datetime.fromordinal(int(dt))
-            self.txtApproveDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtApproveDate.set_text(dt)
         else:
             self.txtApproveDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 28)
         if(dt is not None and dt != '' and dt >= 1):
-            dt = datetime.fromordinal(int(dt))
-            self.txtCloseDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtCloseDate.set_text(dt)
         else:
             self.txtCloseDate.set_text('')
 
@@ -687,12 +683,10 @@ class Incident:
 
         dt = self.model.get_value(self.selected_row, 22)
         if(dt is not None and dt != ''):
-            dt = datetime.fromordinal(int(dt))
-            self.txtReviewDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtReviewDate.set_text(dt)
         dt = self.model.get_value(self.selected_row, 25)
         if(dt is not None and dt != ''):
-            dt = datetime.fromordinal(int(dt))
-            self.txtApproveDate.set_text(str(dt.strftime('%Y-%m-%d')))
+            self.txtApproveDate.set_text(dt)
 
         return False
 
@@ -722,7 +716,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 2, model)
+        cell.connect('toggled', self._component_list_edit, None, 1, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Initial\nInstall"))
         column.set_widget(label)
@@ -732,7 +726,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 3, model)
+        cell.connect('toggled', self._component_list_edit, None, 2, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Failure"))
         column.set_widget(label)
@@ -742,7 +736,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 4, model)
+        cell.connect('toggled', self._component_list_edit, None, 3, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Suspension"))
         column.set_widget(label)
@@ -752,7 +746,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 5, model)
+        cell.connect('toggled', self._component_list_edit, None, 4, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("OOT\nFailure"))
         column.set_widget(label)
@@ -762,7 +756,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 6, model)
+        cell.connect('toggled', self._component_list_edit, None, 5, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("CND/NFF"))
         column.set_widget(label)
@@ -772,7 +766,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 7, model)
+        cell.connect('toggled', self._component_list_edit, None, 6, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Interval\nCensored"))
         column.set_widget(label)
@@ -782,7 +776,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 8, model)
+        cell.connect('toggled', self._component_list_edit, None, 7, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Use\nOperating\nTime"))
         column.set_widget(label)
@@ -792,7 +786,7 @@ class Incident:
 
         cell = gtk.CellRendererToggle()
         cell.set_property('activatable', 1)
-        cell.connect('toggled', self._component_list_edit, None, 9, model)
+        cell.connect('toggled', self._component_list_edit, None, 8, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_("Use\nCalendar\nTime"))
         column.set_widget(label)
@@ -807,7 +801,7 @@ class Incident:
         label = _widg.make_column_heading(_("Time to\nFailure"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=10)
+        column.set_attributes(cell, text=9)
         self.tvwComponentList.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -817,7 +811,7 @@ class Incident:
         label = _widg.make_column_heading(_("Age at\nFailure"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=11)
+        column.set_attributes(cell, text=10)
         self.tvwComponentList.append_column(column)
 
         return False
@@ -870,7 +864,8 @@ class Incident:
 
     def _component_list_edit(self, cell, path, new_text, position, model):
         """
-        Called whenever a TreeView CellRenderer is edited.
+        Called whenever a component list gtk.TreeView gtk.CellRenderer is
+        edited.
 
         Keyword Arguments:
         cell     -- the CellRenderer that was edited.
@@ -883,82 +878,46 @@ class Incident:
         value = not cell.get_active()
         model[path][position] = value
 
-        if(position == 3):
-            model[path][4] = -1 * (value - 1)
-
-        elif(position == 4):
-            model[path][3] = -1 * (value - 1)
-
-        # If selecting "Use operating time", set the time to failure
-        # equal to age at incident.  Otherwise set the time to failure
-        # equal to zero.
-        elif(position == 8):
-            if(value == 1):
-                ttf = model[path][11]
-            elif(value == 0):
-                ttf = 0
-
-            model[path][9] = -1 * (value - 1)
-            model[path][10] = ttf
-
-        elif(position == 9):
-
-            from datetime import datetime
-
-            model[path][8] = -1 * (value - 1)
-
-            # Calculate the time to failure.  This is based on the elapsed
-            # calendar time since the last failure of this component.
-            _incident_id = self.model.get_value(self.selected_row, 0)
-            values = (model[path][0],)
-            if(_conf.BACKEND == 'mysql'):
-                query = "SELECT t1.fld_incident_id, t1.fld_request_date \
-                         FROM tbl_incident AS t1 \
-                         INNER JOIN tbl_incident_detail AS t2 \
-                         ON t1.fld_incident_id=t2.fld_incident_id \
-                         WHERE t2.fld_part_num='%s'"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT t1.fld_incident_id, t1.fld_request_date \
-                         FROM tbl_incident AS t1 \
-                         INNER JOIN tbl_incident_detail AS t2 \
-                         ON t1.fld_incident_id=t2.fld_incident_id \
-                         WHERE t2.fld_part_num=? \
-                         ORDER BY t1.fld_request_date"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx)
-
-            for i in range(len(results)):
-                if(results[i][0] == _incident_id):
-                    _incident_date = results[i][1]
-                    # If this is the first incident for this component,
-                    # find the warranty start date.
-                    if(i == 0):
-                        values = (self.model.get_value(self.selected_row, 11),)
-                        if(_conf.BACKEND == 'mysql'):
-                            query = "SELECT fld_warranty_date \
-                                     FROM tbl_units \
-                                     WHERE fld_serial_no='%s'"
-                        elif(_conf.BACKEND == 'sqlite3'):
-                            query = "SELECT fld_warranty_date \
-                                     FROM tbl_units \
-                                     WHERE fld_serial_no=?"
-
-                        results = self._app.DB.execute_query(query,
-                                                             values,
-                                                             self._app.ProgCnx)
-                        _prev_date = results[0][0]
-                    else:
-                        _prev_date = results[i-1][1]
-
-                    break
-
-            # Calculate the difference in days between events.
-            _incident_date = datetime.strptime(_incident_date, '%Y-%m-%d')
-            _prev_date = datetime.strptime(_prev_date, '%Y-%m-%d')
-            ttf = (_incident_date - _prev_date).days
-            model[path][10] = ttf
+        if(position == 1):                   # Initial installation.
+            model[path][2] = 0
+            model[path][3] = 0
+            model[path][4] = 0
+            model[path][5] = 0
+            model[path][6] = 0
+        elif(position == 2):                 # Failure.
+            model[path][1] = 0
+            model[path][3] = 0
+            model[path][4] = 0
+            model[path][5] = 0
+            model[path][6] = 0
+        elif(position == 3):                 # Suspension (right).
+            model[path][1] = 0
+            model[path][2] = 0
+            model[path][4] = 0
+            model[path][5] = 0
+            model[path][6] = 0
+        elif(position == 4):                 # OCC fault.
+            model[path][1] = 0
+            model[path][2] = 0
+            model[path][3] = 0
+            model[path][5] = 0
+            model[path][6] = 0
+        elif(position == 5):                 # CND/NFF fault.
+            model[path][1] = 0
+            model[path][2] = 0
+            model[path][3] = 0
+            model[path][4] = 0
+            model[path][6] = 0
+        elif(position == 6):                 # Interval censored.
+            model[path][1] = 0
+            model[path][2] = 0
+            model[path][3] = 0
+            model[path][4] = 0
+            model[path][5] = 0
+        elif(position == 7):                 # Use operating time.
+            model[path][8] = 0
+        elif(position == 8):                 # Use calendar time.
+            model[path][7] = 0
 
         return False
 
@@ -1198,6 +1157,10 @@ class Incident:
                                                                fg_color)
         self.treeview.set_enable_tree_lines(True)
 
+        # Allow sorting by the affected unit column.
+        column = self.treeview.get_column(13)
+        column.set_sort_column_id(13)
+
         self.treeview.set_tooltip_text(_("Displays a list of Program incidents."))
 
         scrollwindow.add(self.treeview)
@@ -1219,6 +1182,9 @@ class Incident:
         values -- the values that are used in the SQL query.
         """
 
+        from datetime import datetime
+
+#(0, 2203, 1, 0, u'', u'', 1, u'', u'', 0, u'', u'', 0.0, u'HTC8250', 167.95, 0, 8, -1, 0, 733811, 0, 0, 719163, 0, 0, 719163, 0, 0, 719163, 6, u'', 1)
         results = self._app.DB.execute_query(query,
                                              values,
                                              self._app.ProgCnx)
@@ -1229,8 +1195,23 @@ class Incident:
         self.n_incidents = len(results)
         self.model.clear()
         for i in range(self.n_incidents):
+            _data = [results[i][0], results[i][1] ,results[i][2],
+                     results[i][3], results[i][4], results[i][5],
+                     results[i][6], results[i][7], results[i][8],
+                     results[i][9], results[i][10], results[i][11],
+                     results[i][12], results[i][13], results[i][14],
+                     results[i][15], results[i][16], results[i][17],
+                     results[i][18],
+                     str(datetime.fromordinal(int(results[i][19])).strftime('%Y-%m-%d')),
+                     results[i][20], results[i][21],
+                     str(datetime.fromordinal(int(results[i][22])).strftime('%Y-%m-%d')),
+                     results[i][23], results[i][24],
+                     str(datetime.fromordinal(int(results[i][25])).strftime('%Y-%m-%d')),
+                     results[i][26], results[i][27],
+                     str(datetime.fromordinal(int(results[i][28])).strftime('%Y-%m-%d')),
+                     results[i][29], results[i][30], results[i][31]]
             try:
-                self.model.append(None, results[i])
+                self.model.append(None, _data)
             except TypeError:
                 pass
 

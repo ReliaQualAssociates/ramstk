@@ -2113,9 +2113,12 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
     Keyword Arguments:
     _dataset_  -- list of tuples where each tuple is in the form of:
-                  (Event Time, Event Status) and event status are:
-                  0 = censored
+                  (Left of Interval, Right of Interval, Event Status) and
+                  event status are:
+                  0 = right censored
                   1 = event at time
+                  2 = left censored
+                  3 = interval censored
     _reltime_  -- time at which to stop analysis (helps eliminate stretched
                   plots due to small number of events at high hours).
     _conf_     -- the confidence level of the KM estimates (default is 75%).
@@ -2131,7 +2134,18 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     if(_reltime_ != 0.0):
         _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
         times = [i[0] for i in _dataset_ if i[0] <= _reltime_]
-        status = [i[1] for i in _dataset_ if i[0] <= _reltime_]
+        times2 = [i[1] for i in _dataset_ if i[0] <= _reltime_]
+        status = [i[2] for i in _dataset_ if i[0] <= _reltime_]
+
+    for i in range(len(status)):
+        if(status[i] == "Right Censored"):
+            status[i] = 0
+        elif(status[i] == "Left Censored"):
+            status[i] = 2
+        elif(status[i] == "Interval Censored"):
+            status[i] = 3
+        else:
+            status[i] = 1
 
     # If Rpy2 is available, we will use that to perform the KM estimations.
     # Returns an object with the following fields:
@@ -2158,9 +2172,10 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         survival = importr('survival')
 
         times = robjects.FloatVector(times)
-        status = robjects.FloatVector(status)
+        times2 = robjects.FloatVector(times2)
+        status = robjects.IntVector(status)
 
-        surv = survival.Surv(times, status)
+        surv = survival.Surv(times, times2, status, type='interval')
         robjects.globalenv['surv'] = surv
         fmla = robjects.Formula('surv ~ 1')
         _KM_ = survival.survfit(fmla)
@@ -2238,12 +2253,10 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
         units  -- list of unique unit ID's in the dataset.
         times  -- list of unique failure times in the dataset.
         data   -- a data.frame or matrix where:
-                  Column 0 is event time
-                  Column 1 is unit ID
-                  Column 2 is event type coded as:
-                      0 = first appearance (left censoring time)
-                      1 = recurrence
-                      2 = last appearance (right censoring time)
+                  Column 0 is the failed unit id.
+                  Column 1 is the left of the interval.
+                  Column 2 is the right of the interval.
+                  Column 3 is the interarrival time.
         _conf_ -- the confidence level of the KM estimates (default is 75%).
     """
 
@@ -2259,9 +2272,9 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     _n_ = len(times)
 
     datad = []
+
     for i in range(len(data)):
-        if(data[i][4] == 1):
-            datad.append(data[i])
+        datad.append(data[i])
     data = numpy.asarray(data)
     datad = numpy.asarray(datad)
 

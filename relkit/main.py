@@ -57,7 +57,7 @@ from dataset import Dataset
 def main():
     """ This is the main function for the RelKit application. """
 
-    app = RelKit()
+    RelKit()
 
     gtk.main()
 
@@ -145,7 +145,7 @@ class RelKit:
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_("RelKit is not currently connected to a program database."))
+        self.icoStatus.set_tooltip(_(u"RelKit is not currently connected to a program database."))
 
         self.winTree.present()
 
@@ -155,7 +155,7 @@ class RelKit:
         user opens.
         """
 
-        self.winTree.statusbar.push(2, _("Opening Program Database..."))
+        self.winTree.statusbar.push(2, _(u"Opening Program Database..."))
         self.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
@@ -180,9 +180,9 @@ class RelKit:
         icon = _conf.ICON_DIR + '32x32/db-connected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_("RelKit is connected to program database %s." %
+        self.icoStatus.set_tooltip(_(u"RelKit is connected to program database %s." %
                                    _conf.RELIAFREE_PROG_INFO[2]))
-        self.winTree.set_title(_("RelKit - Analyzing %s" %
+        self.winTree.set_title(_(u"RelKit - Analyzing %s" %
                                _conf.RELIAFREE_PROG_INFO[2]))
 
         self.winTree.load_trees(self)

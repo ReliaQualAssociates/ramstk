@@ -1689,6 +1689,9 @@ class CreateDataSet:
 
         while row is not None:
             _temp = []
+            # Append the "Affected Unit" from the INCIDENT Object's
+            # gtk.TreeView.  Then append the failure information from the
+            # _parts dictionary created above.
             try:
                 _temp.append(model.get_value(row, 13))
                 _temp.append(_parts[str(model.get_value(row, 1))][0:])
@@ -1719,6 +1722,9 @@ class CreateDataSet:
                                                  self._app.ProgCnx,
                                                  commit=True)
 
+            # Find the ID of the last dataset to be created.  This is the
+            # value that will be written to the fld_dtaset_id field in the
+            # tbl_survival_data table.
             if(_conf.BACKEND == 'mysql'):
                 query = "SELECT LAST_INSERT_ID()"
             elif(_conf.BACKEND == 'sqlite3'):
@@ -1750,20 +1756,34 @@ class CreateDataSet:
             f.write("\n")
             f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\tMode Type\n")
 
-        _status = _data_set[0][1][3] * -1 + 1
+        if(_data_set[0][1][2]):
+            _status = "Event"
+        elif(_data_set[0][1][3]):
+            _status = "Right Censored"
+        elif(_data_set[0][1][7]):
+            _status = "Interval Censored"
+
         _tbf = float(_data_set[0][1][1])
         values = (dataset_id, 0.0, float(_data_set[0][1][1]),
-                  int(_status), 1, str(_data_set[0][0]),
+                  _status, 1, str(_data_set[0][0]),
                   str(_data_set[0][1][0]), '', '', float(_tbf), 0)
 
         # Insert the first data set record.
         if(self.optDatabase.get_active()):
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_survival_data \
-                         VALUES (%d, %f, %f, %d, %d, '%s', '%s', '%s', '%s', \
+                         (fld_dataset_id, fld_left_interval, \
+                          fld_right_interval, fld_status, fld_quantity, \
+                          fld_unit, fld_part_num, fld_market, fld_model, \
+                          fld_tbf, fld_mode_type) \
+                         VALUES (%d, %f, %f, '%s', %d, '%s', '%s', '%s', '%s', \
                                  %f, %d)"
             elif(_conf.BACKEND == 'sqlite3'):
                 query = "INSERT INTO tbl_survival_data \
+                         (fld_dataset_id, fld_left_interval, \
+                          fld_right_interval, fld_status, fld_quantity, \
+                          fld_unit, fld_part_num, fld_market, fld_model, \
+                          fld_tbf, fld_mode_type) \
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
             results = self._app.DB.execute_query(query,
@@ -1772,13 +1792,21 @@ class CreateDataSet:
                                                  commit=True)
         else:
             f.write(str(dataset_id) + '\t0.0' + '\t' +
-                    str(_data_set[0][1][1]) + '\t' + str(_status) + '\t1\t' +
+                    str(_data_set[0][1][1]) + '\t' + _status + '\t1\t' +
                     str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
                     '\t ' + '\t ' + '\t' + str(_tbf) + '0' + '\n')
 
         _unit = _data_set[0][0]
         for i in range(1, len(_data_set)):
-            _status = _data_set[i][1][3] * -1 + 1
+            if(_data_set[0][1][2]):
+                _status = "Event"
+            elif(_data_set[0][1][3]):
+                _status = "Right Censored"
+            elif(_data_set[0][1][7]):
+                _status = "Interval Censored"
+            else:
+                _status = "Interval Censored"
+
             if(_data_set[i][0] == _unit):
                 if(_data_set[i][1][1] != _data_set[i - 1][1][1]):
                     _left = _data_set[i - 1][1][1]
@@ -1789,7 +1817,7 @@ class CreateDataSet:
 
             if(self.optDatabase.get_active()):
                 values = (dataset_id, float(_left),
-                          float(_data_set[i][1][1]), int(_status), 1,
+                          float(_data_set[i][1][1]), _status, 1,
                           str(_data_set[i][0]), str(_data_set[i][1][0]),
                           '', '', float(_tbf), 0)
                 results = self._app.DB.execute_query(query,
@@ -1812,6 +1840,7 @@ class CreateDataSet:
 
         # Load the dataset gtk.TreeView with the newly created dataset.
         self._app.DATASET.load_tree()
+        self._app.winTree.notebook.set_current_page(7)
 
         return False
 

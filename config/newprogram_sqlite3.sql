@@ -755,7 +755,7 @@ CREATE TABLE "tbl_survival_data" (
     "fld_market" VARCHAR(32),
     "fld_model" VARCHAR(32),
     "fld_tbf" FLOAT DEFAULT(0),
-    "fld_mode_type" INTEGER DEFAULT(0)
+    "fld_mode_type" INTEGER DEFAULT(1)
 );
 
 CREATE TABLE "tbl_system" (

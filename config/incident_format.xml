@@ -169,7 +169,7 @@ experience. -->
         <column>
             <defaulttitle>Request Date</defaulttitle>
             <usertitle>Request Date</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>19</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -193,7 +193,7 @@ experience. -->
         <column>
             <defaulttitle>Date Reviewed</defaulttitle>
             <usertitle>Date Reviewed</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>22</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -217,7 +217,7 @@ experience. -->
         <column>
             <defaulttitle>Date Approved</defaulttitle>
             <usertitle>Date Approved</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>25</position>
             <editable>0</editable>
             <visible>0</visible>
@@ -241,7 +241,7 @@ experience. -->
         <column>
             <defaulttitle>Date Closed</defaulttitle>
             <usertitle>Date Closed</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>28</position>
             <editable>0</editable>
             <visible>0</visible>
