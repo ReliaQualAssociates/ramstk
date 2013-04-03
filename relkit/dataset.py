@@ -1390,7 +1390,6 @@ class Dataset:
             nonpar = _calc.mean_cumulative_function(_units_, _times_,
                                                     results, _conf_)
 
-            # =============================================================== #
             # Get:
             #   Total number of records.
             #   List of unique failures times.
@@ -1398,7 +1397,6 @@ class Dataset:
             #   List of MCF lower bound at each unique failure time.
             #   List of MCF upper bound at each unique failure time.
             #   Maximum observed time.
-            # =============================================================== #
             n_failures = len(nonpar)
             times = [x[0] for x in nonpar]
             muhat = [x[9] for x in nonpar]
@@ -1955,17 +1953,8 @@ class Dataset:
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 7):              # Fit to a WeiBayes.
+        #elif(_analysis_ == 7):              # Fit to a WeiBayes.
 
-            if(_fitmeth_ == 1):             # MLE
-                print fit[0]
-                print fit[1]
-                print fit[2]
-                print fit[3]
-                print fit[4]
-                print fit[5]
-
-            print "Fitting to WeiBayes"
 
         # Create and display parametric plots.
         if(_analysis_ > 2):
@@ -2318,12 +2307,30 @@ class Dataset:
             _text_ = combo.get_active()
 
         if(_index_ == 4):
-            if(_text_ == 1 or _text_ == 2):
+            if(_text_ == 1 or _text_ == 2): # MCF or Kaplan-Meier
                 self.cmbConfMethod.hide()
                 self.cmbFitMethod.hide()
             else:
                 self.cmbConfMethod.show()
                 self.cmbFitMethod.show()
+
+            if(_text_ == 7):                # WeiBayes
+                dialog = _widg.make_dialog(_(u"RelKit Information"),
+                            _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+
+                fixed = gtk.Fixed()
+
+                y_pos = 10
+                label = _widg.make_label(_(u"WeiBayes is not yet implemented \
+                    in RelKit."), width=300, height=100)
+                fixed.put(label, 5, y_pos)
+
+                fixed.show_all()
+
+                dialog.vbox.pack_start(fixed)
+                dialog.run()
+
+                dialog.destroy()
 
         self.model.set_value(self.selected_row, _index_, _text_)
 
