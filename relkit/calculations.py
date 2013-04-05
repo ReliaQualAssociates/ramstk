@@ -1970,6 +1970,7 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
 
     return(hr_similar)
 
+
 def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa):
 
     """
@@ -2042,10 +2043,10 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     elif(category == 8):                    # Resistor
         c_index = 4
     elif(category == 9):                    # Semiconductor
-        if(subcategory > 0 and \
+        if(subcategory > 0 and
            subcategory < 7):                # Diode
             c_index = 1
-        elif(subcategory > 6 and \
+        elif(subcategory > 6 and
              subcategory < 14):             # Transistor
             c_index = 2
     elif(category == 10):                   # Switching Device
@@ -2053,13 +2054,13 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
 
     # Now find the appropriate active to passive environment
     # index.
-    if(active_env > 0 and \
+    if(active_env > 0 and
        active_env < 4):                     # Ground
         if(dormant_env == 1):               # Ground
             e_index = 0
         else:
             e_index = 7
-    elif(active_env > 3 and \
+    elif(active_env > 3 and
          active_env < 6):                   # Naval
         if(dormant_env == 1):               # Ground
             e_index = 4
@@ -2067,7 +2068,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
             e_index = 3
         else:
             e_index = 7
-    elif(active_env > 5 and \
+    elif(active_env > 5 and
          active_env < 11):                  # Airborne
         if(dormant_env == 1):               # Ground
             e_index = 2
@@ -2090,6 +2091,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
 
     return(lambdad)
 
+
 def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.
@@ -2106,6 +2108,7 @@ def calculate_field_ttf(_dates_):
     ttf = _fail - _start
 
     return(ttf.days)
+
 
 def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     """
@@ -2245,6 +2248,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
         return(_KM_)
 
+
 def mean_cumulative_function(units, times, data, _conf_=0.75):
     """ This function estimates the mean cumulative function for a population
         of items.
@@ -2319,7 +2323,9 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
 
     return(_MCF_)
 
-def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponential'):
+
+def parametric_fit(_dataset_, _starttime_, _reltime_,
+                   _fitmeth_, _dist_='exponential'):
     """ Function to fit data to a parametric distribution and estimate the
         parameters.
 
@@ -2337,6 +2343,7 @@ def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponen
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
     _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
+    #_dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
 
     if(__USE_RPY__):
         print "Probably using Windoze."
@@ -2394,3 +2401,27 @@ def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_, _dist_='exponen
         print "No R"
 
     return(fit)
+
+
+def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
+
+    scale = []
+    shape = []
+    times = []
+    start = int(_starttime_)
+    end = int(_reltime_)
+
+    for i in range(start, end, _step_):
+        try:
+            fit = parametric_fit(_dataset_, start, end, 1,
+                                 _dist_='weibull')
+            scale.append(fit[0][1])
+            shape.append(fit[0][0])
+        except:
+            scale.append(scale[i - 1])
+            shape.append(shape[i - 1])
+
+        times.append(i)
+        start += _step_
+
+    return(scale, shape, times)
