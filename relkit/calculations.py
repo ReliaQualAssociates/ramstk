@@ -2404,24 +2404,50 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
 
 
 def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
+    """ 
+    Function to explore early life to useful life and useful life to wearout
+    transition times.
+    
+    Keyword aAguments:
+    _dtaset_    -- the dataset to perform the search on.
+    _starttime_ -- the time to start the search.
+    _endtime_   -- the time to end the search.
+    _step_      -- how large the time increment should be.
+    """
 
-    scale = []
-    shape = []
-    times = []
+    # Initialize scalar variables.
     start = int(_starttime_)
     end = int(_reltime_)
 
+    # Initialize list variables.
+    scale = [0]
+    deltascale = []
+    shape = [0]
+    deltashape = []
+    times = []
+
     for i in range(start, end, _step_):
         try:
-            fit = parametric_fit(_dataset_, start, end, 1,
-                                 _dist_='weibull')
+            fit = parametric_fit(_dataset_, start, end, 1, _dist_='weibull')
             scale.append(fit[0][1])
             shape.append(fit[0][0])
         except:
             scale.append(scale[i - 1])
             shape.append(shape[i - 1])
 
+        try:
+            delta = (scale[i] - scale[i - 1]) / scale[i - 1]
+        except ZeroDivisionError:
+            delta = 0.0
+        deltascale.append(delta)
+        
+        try:
+            delta = (shape[i] - shape[i - 1]) / shape[i - 1]
+        except ZeroDivisionError:
+            delta = 0.0
+        deltashape.append(delta)
+
         times.append(i)
         start += _step_
 
-    return(scale, shape, times)
+    return(scale, deltascale, shape, deltashape, times)

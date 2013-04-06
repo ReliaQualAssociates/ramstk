@@ -352,6 +352,16 @@ class Dataset:
         button.set_tooltip_text(_(u"Analyzes the selected data set."))
         toolbar.insert(button, 2)
 
+# Bathtub search button.
+        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/eyes.png')
+        button.set_icon_widget(image)
+        button.set_name('Bathtub Search')
+        button.connect('clicked', self._calculate)
+        button.set_tooltip_text(_(u"Searches the selected data set for transition points."))
+        toolbar.insert(button, 3)
+
 # Save button.
         button = gtk.ToolButton(stock_id=gtk.STOCK_SAVE)
         image = gtk.Image()
@@ -360,7 +370,7 @@ class Dataset:
         button.set_name('Save')
         button.connect('clicked', self.dataset_save)
         button.set_tooltip_text(_(u"Saves the selected data set."))
-        toolbar.insert(button, 3)
+        toolbar.insert(button, 4)
 
 # Assign results to affected assembly.
         button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
@@ -371,7 +381,7 @@ class Dataset:
         button.connect('clicked', self._assign_results)
         button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to \
 the selected assembly."))
-        toolbar.insert(button, 4)
+        toolbar.insert(button, 5)
 
         toolbar.show()
 
@@ -1311,7 +1321,7 @@ selected survival data record(s)."), 600, 250)
                                                      None,
                                                      self._app.ProgCnx,
                                                      True)
-                print results
+
         _dialog.destroy()
 
         self._load_dataset_tree()
@@ -1402,6 +1412,44 @@ selected survival data record(s)."), 600, 250)
         # Initialize some lists.
         p_value = [1.0, 1.0, 1.0]
         _text = [u"", u"", u""]
+
+        if(button.get_name() == 'Bathtub Search'):
+            (scale, deltascale, 
+             shape, deltashape, 
+             times) = _calc.bathtub_filter(results, _starttime_,
+                                           _reltime_, 1)
+
+            # Plot the estimated eta value versus starting time.
+            __title__ = _(u"Change in Eta")
+            self._load_plot(self.axAxis1, self.pltPlot1,
+                            x=times, y1=deltascale,
+                            _title_=__title__,
+                            _xlab_=_(u"t0"),
+                            _ylab_=_(u"Change in Eta"),
+                            _type_=2,
+                            _marker_=['g'])
+            
+            # Plot the estimated beta value versus starting time.                
+            __title__ = _(u"Change in Beta")
+            self._load_plot(self.axAxis2, self.pltPlot2,
+                            x=times, y1=deltashape,
+                            _title_=__title__,
+                            _xlab_=_(u"t0"),
+                            _ylab_=_(u"Change in Beta "),
+                            _type_=2,
+                            _marker_=['g'])
+            
+            for plot in self.vbxPlot1.get_children():
+                self.vbxPlot1.remove(plot)
+
+            self.vbxPlot1.pack_start(self.pltPlot1)
+            
+            for plot in self.vbxPlot2.get_children():
+                self.vbxPlot2.remove(plot)
+
+            self.vbxPlot2.pack_start(self.pltPlot2)
+
+            return False
 
         if(_analysis_ == 1):                # MCF
             # Create a list of unique units.
@@ -2029,20 +2077,7 @@ Lower\nBound</span>"))
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 7):              # Fit to a WeiBayes.
-            (scale, shape, times) = _calc.bathtub_filter(results, _starttime_,
-                                                         _reltime_, 1)
-
-            __title__ = _(u"Density Estimate of Interarrival Times for %s") \
-                % _name
-            self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=times, y1=shape,
-                            _title_=__title__,
-                            _xlab_=_(u"t0"),
-                            _ylab_=_(u"Eta "),
-                            _type_=2,
-                            _marker_=['g'])
-            return
+        #elif(_analysis_ == 7):              # Fit to a WeiBayes.
 
         # Create and display parametric plots.
         if(_analysis_ > 2):
@@ -2099,7 +2134,19 @@ Lower\nBound</span>"))
                             _ylab_=_(u"Observed"),
                             _type_=2,
                             _marker_=['o'])
+            
+            for plot in self.vbxPlot1.get_children():
+                self.vbxPlot1.remove(plot)
 
+            self.vbxPlot1.pack_start(self.pltPlot1)
+            self.vbxPlot1.pack_start(self.pltPlot3)
+            
+            for plot in self.vbxPlot2.get_children():
+                self.vbxPlot2.remove(plot)
+
+            self.vbxPlot2.pack_start(self.pltPlot2)
+            self.vbxPlot2.pack_start(self.pltPlot4)
+            
         if(_RELTIME_):
             _reltime_ = 0.0
 
