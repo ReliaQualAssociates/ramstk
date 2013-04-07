@@ -2404,10 +2404,10 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
 
 
 def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
-    """ 
+    """
     Function to explore early life to useful life and useful life to wearout
     transition times.
-    
+
     Keyword aAguments:
     _dtaset_    -- the dataset to perform the search on.
     _starttime_ -- the time to start the search.
@@ -2440,7 +2440,7 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
         except ZeroDivisionError:
             delta = 0.0
         deltascale.append(delta)
-        
+
         try:
             delta = (shape[i] - shape[i - 1]) / shape[i - 1]
         except ZeroDivisionError:
