@@ -2375,21 +2375,37 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
             fitdistrplus = importr('fitdistrplus')
 
             fit = fitdistrplus.fitdistcens(censdata, _dist_)
+            if(_dist_ == 'exp'):
+                para = robjects.r.list(rate=fit[0][0])
+            elif(_dist_ == 'weibull'):
+                para = robjects.r.list(shape=fit[0][0], scale=fit[0][1])
+
+            plot = fitdistrplus.plotdistcens(censdata, _dist_, parae)
 
         elif(_fitmeth_ == 2):               # Regression
             if(_dist_ == 'normal'):
                 _dist_ = 'gaussian'
 
             if(_reltime_ != 0.0):
-                time = [i[2] for i in _dataset_ if i[2] <= _reltime_]
-                time2 = [i[3] for i in _dataset_ if i[2] <= _reltime_]
+                time = [i[1] + 0.01 for i in _dataset_ if i[2] <= _reltime_]
+                time2 = [i[2] + 0.01 for i in _dataset_ if i[2] <= _reltime_]
                 status = [i[4] for i in _dataset_ if i[2] <= _reltime_]
 
             survival = importr('survival')
 
+            for i in range(len(status)):
+                if(status[i] == 'Right Censored'):
+                    status[i] = 0
+                elif(status[i] == 'Event'):
+                    status[i] = 1
+                elif(status[i] == 'Left Censored'):
+                    status[i] = 2
+                else:
+                    status[i] = 3
+
             time = robjects.FloatVector(time)
             time2 = robjects.FloatVector(time2)
-            status = robjects.FloatVector(status)
+            status = robjects.IntVector(status)
 
             surv = survival.Surv(time, time2, status, type='interval')
             robjects.globalenv['surv'] = surv

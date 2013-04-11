@@ -82,7 +82,7 @@ class Dataset:
     _ai_tab_labels = [_("Assembly:"), _("Description:"), _("Data Source:"),
                       _("Distribution:"), _("Fit Method:"), _("Confidence:"),
                       _("Confidence Type:"), _("Confidence Method:"),
-                      _("Start Time:"), _("End Time"), _("Number of Points:")]
+                      _("Start Time:"), _("End Time"), _("Step Interval:")]
 
     _km = [(3.0, 3.0, u'Interval Censored'), (4.0, 4.0, u'Right Censored'), (5.7, 5.7, u'Right Censored'), (6.5, 6.5, u'Interval Censored'), (6.5, 6.5, u'Interval Censored'), (8.4, 8.4, u'Right Censored'), (10.0, 10.0, u'Interval Censored'), (10.0, 10.0, u'Right Censored'), (12.0, 12.0, u'Interval Censored'), (15.0, 15.0, u'Interval Censored')]
 
@@ -1321,7 +1321,7 @@ selected survival data record(s)."), 600, 250)
                                                      None,
                                                      self._app.ProgCnx,
                                                      True)
-
+                print results
         _dialog.destroy()
 
         self._load_dataset_tree()
@@ -1350,6 +1350,7 @@ selected survival data record(s)."), 600, 250)
         _fitmeth_ = self.cmbFitMethod.get_active()              # Fit method.
         _starttime_ = float(self.txtStartTime.get_text())       # Minimum time.
         _reltime_ = float(self.txtEndTime.get_text())           # Maximum time.
+        _step_ = int(self.txtRelPoints.get_text())
 
         if(_type_ == 3):                    # Two-sided bounds.
             _conf_ = (100.0 + _conf_) / 200.0
@@ -1362,6 +1363,9 @@ selected survival data record(s)."), 600, 250)
         if(_reltime_ == 0.0):
             _reltime_ = 1000000.0
             _RELTIME_ = True
+
+        if(_step_ == 0):
+            _step_ = 1
 
         # Determine the confidence bound z-value.
         _z_norm_ = norm.ppf(_conf_)
@@ -1414,10 +1418,10 @@ selected survival data record(s)."), 600, 250)
         _text = [u"", u"", u""]
 
         if(button.get_name() == 'Bathtub Search'):
-            (scale, deltascale, 
-             shape, deltashape, 
+            (scale, deltascale,
+             shape, deltashape,
              times) = _calc.bathtub_filter(results, _starttime_,
-                                           _reltime_, 1)
+                                           _reltime_, _step_)
 
             # Plot the estimated eta value versus starting time.
             __title__ = _(u"Change in Eta")
@@ -1428,8 +1432,8 @@ selected survival data record(s)."), 600, 250)
                             _ylab_=_(u"Change in Eta"),
                             _type_=2,
                             _marker_=['g'])
-            
-            # Plot the estimated beta value versus starting time.                
+
+            # Plot the estimated beta value versus starting time.
             __title__ = _(u"Change in Beta")
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=times, y1=deltashape,
@@ -1438,12 +1442,12 @@ selected survival data record(s)."), 600, 250)
                             _ylab_=_(u"Change in Beta "),
                             _type_=2,
                             _marker_=['g'])
-            
+
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
 
             self.vbxPlot1.pack_start(self.pltPlot1)
-            
+
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
@@ -2134,19 +2138,19 @@ Lower\nBound</span>"))
                             _ylab_=_(u"Observed"),
                             _type_=2,
                             _marker_=['o'])
-            
+
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
 
             self.vbxPlot1.pack_start(self.pltPlot1)
             self.vbxPlot1.pack_start(self.pltPlot3)
-            
+
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
-            
+
         if(_RELTIME_):
             _reltime_ = 0.0
 

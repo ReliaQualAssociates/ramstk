@@ -508,25 +508,25 @@ class Incident:
         # January 1, 1970 as the default.
         dt = self.model.get_value(self.selected_row, 19)
         if(dt is not None and dt != '' and dt >= 1):
-            self.txtRequestDate.set_text(dt)
+            self.txtRequestDate.set_text(str(dt))
         else:
             self.txtRequestDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 22)
         if(dt is not None and dt != '' and dt >= 1):
-            self.txtReviewDate.set_text(dt)
+            self.txtReviewDate.set_text(str(dt))
         else:
             self.txtReviewDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 25)
         if(dt is not None and dt != '' and dt >= 1):
-            self.txtApproveDate.set_text(dt)
+            self.txtApproveDate.set_text(str(dt))
         else:
             self.txtApproveDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 28)
         if(dt is not None and dt != '' and dt >= 1):
-            self.txtCloseDate.set_text(dt)
+            self.txtCloseDate.set_text(str(dt))
         else:
             self.txtCloseDate.set_text('')
 
@@ -683,10 +683,15 @@ class Incident:
 
         dt = self.model.get_value(self.selected_row, 22)
         if(dt is not None and dt != ''):
-            self.txtReviewDate.set_text(dt)
+            self.txtReviewDate.set_text(str(dt))
+        else:
+            self.txtReviewDate.set_text("")
+
         dt = self.model.get_value(self.selected_row, 25)
         if(dt is not None and dt != ''):
-            self.txtApproveDate.set_text(dt)
+            self.txtApproveDate.set_text(str(dt))
+        else:
+            self.txtApproveDate.set_text("")
 
         return False
 

@@ -1585,12 +1585,30 @@ class CreateDataSet:
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
-        self.optDatabase = gtk.RadioButton(label="Save Data Set to Database")
+# Create the radio buttons that select the output as database or file.
+        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to Database"))
         self.optFile = gtk.RadioButton(group=self.optDatabase,
                                        label="Save Data Set to File")
 
         fixed.put(self.optDatabase, 5, 5)
         fixed.put(self.optFile, 5, 35)
+
+# Create the radio buttons that allow choice of MTTF or MTBF estimates.
+        self.optMTTF = gtk.RadioButton(label=_(u"Only include first failure \
+time for each unit."))
+        self.optMTBF = gtk.RadioButton(group=self.optMTTF,
+                                       label=_(u"Include all failure times \
+for each unit."))
+
+        fixed.put(self.optMTTF, 5, 75)
+        fixed.put(self.optMTBF, 5, 105)
+
+# Create the checkbutton to include or exclude zero hour failures.
+        self.chkIncludeZeroHour = _widg.make_check_button(
+        _label_=_(u"Include zero hour failures."))
+        self.chkIncludeZeroHour.set_active(True)
+
+        fixed.put(self.chkIncludeZeroHour, 5, 145)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
@@ -1646,6 +1664,10 @@ class CreateDataSet:
         _parts = dict()
         _data_set = []
 
+        _starttime_ = 0.01
+        if(self.chkIncludeZeroHour.get_active()):
+            _starttime_ = 0.0
+
         # Select everything from the incident detail table in the Program
         # database.
         #   Index       Field
@@ -1663,7 +1685,8 @@ class CreateDataSet:
                         fld_occ_fault, fld_initial_installation, \
                         fld_interval_censored \
                  FROM tbl_incident_detail \
-                 ORDER BY fld_incident_id ASC"
+                 WHERE fld_age_at_incident >= %f \
+                 ORDER BY fld_incident_id ASC" % _starttime_
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -1810,8 +1833,10 @@ class CreateDataSet:
             if(_data_set[i][0] == _unit):
                 if(_data_set[i][1][1] != _data_set[i - 1][1][1]):
                     _left = _data_set[i - 1][1][1]
+                else:
+                    _left = 0.0
             else:
-                _left = 0
+                _left = 0.0
 
             _tbf = float(_data_set[i][1][1]) - float(_left)
 
