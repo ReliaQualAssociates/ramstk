@@ -2375,12 +2375,8 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
             fitdistrplus = importr('fitdistrplus')
 
             fit = fitdistrplus.fitdistcens(censdata, _dist_)
-            if(_dist_ == 'exp'):
-                para = robjects.r.list(rate=fit[0][0])
-            elif(_dist_ == 'weibull'):
-                para = robjects.r.list(shape=fit[0][0], scale=fit[0][1])
-
-            plot = fitdistrplus.plotdistcens(censdata, _dist_, parae)
+            #para=R.list(scale=fit[0][1], shape=fit[0][0])
+            #fitdistrplus.plotdistcens(censdata, _dist_, para)
 
         elif(_fitmeth_ == 2):               # Regression
             if(_dist_ == 'normal'):

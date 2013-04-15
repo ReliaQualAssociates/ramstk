@@ -1227,42 +1227,42 @@ dataset."))
         axis.grid(True, which='both')
 
         if(y1 is not None):
-            if(_type_ == 1):
-                line, = axis.step(x, y1, _marker_[0], where='mid')
+            if(_type_[0] == 1):
+                line, = axis.step(x, y1, _marker_[0], where='mid', drawstyle='steps')
                 for i in range(n_points):
                     line.set_ydata(y1)
-            elif(_type_ == 2):
+            elif(_type_[0] == 2):
                 line, = axis.plot(x, y1, _marker_[0], linewidth=2)
                 for i in range(n_points):
                     line.set_ydata(y1)
-            elif(_type_ == 3):
+            elif(_type_[0] == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y1, color=_marker_[0])
 
         if(y2 is not None):
-            if(_type_ == 1):
+            if(_type_[1] == 1):
                 line2, = axis.step(x, y2, _marker_[1], where='mid')
                 for i in range(n_points):
                     line2.set_ydata(y2)
-            elif(_type_ == 2):
+            elif(_type_[1] == 2):
                 line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
                 for i in range(n_points):
                     line2.set_ydata(y2)
-            elif(_type_ == 3):
+            elif(_type_[1] == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
                 line2, = axis.plot(bins, y2)
 
         if(y3 is not None):
-            if(_type_ == 1):
+            if(_type_[2] == 1):
                 line3, = axis.step(x, y3, _marker_[2], where='mid')
                 for i in range(n_points):
                     line3.set_ydata(y3)
-            elif(_type_ == 2):
+            elif(_type_[2] == 2):
                 line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
                 for i in range(n_points):
                     line3.set_ydata(y3)
-            elif(_type_ == 3):
+            elif(_type_[2] == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
                 line3, = axis.plot(bins, y3)
@@ -2019,7 +2019,7 @@ Lower\nBound</span>"))
         elif(_analysis_ == 6):              # Fit to a Weibull.
 
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                       _fitmeth_, 'weibull')
+                                               _fitmeth_, 'weibull')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][1]
@@ -2038,6 +2038,9 @@ Lower\nBound</span>"))
                     MTBF = scale * R.gamma(1.0 + (1.0 / shape))[0]
                     MTBFLL = scalell * R.gamma(1.0 + (1.0 / shapell))[0]
                     MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapeul))[0]
+
+                para = R.list(shape=fit[0][0], scale=fit[0][1])
+                censdata = fit[6]
 
             elif(_fitmeth_ == 2):
                 scale = exp(fit[1][0])
@@ -2098,20 +2101,21 @@ Lower\nBound</span>"))
                             _title_=__title__,
                             _xlab_=_(u"Interarrival Times"),
                             _ylab_=_(u"Count"),
-                            _type_=3,
+                            _type_=[3],
                             _marker_=['g'])
 
-            # Plot the density function of interarrival times.
+            # Plot the observed CDF with the theoretical CDF overlain.
+            (x, y, theop) = self.plotdistcens(censdata, 'weibull', para)
             __title__ = _(u"Density Estimate of Interarrival Times for %s") \
                 % _name
             _dens_ = R.density(Rtimes)
             self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=_dens_[0], y1=_dens_[1],
+                            x=x, y1=y, y2=theop[1:],
                             _title_=__title__,
                             _xlab_=_(u""),
                             _ylab_=_(u"f(t) "),
-                            _type_=2,
-                            _marker_=['g'])
+                            _type_=[1, 2],
+                            _marker_=['g', 'r'])
 
             # Plot an ECDF of interarrival times.
             __title__ = _(u"Empirical CDF of Interarrival Times for %s") \
@@ -2125,7 +2129,7 @@ Lower\nBound</span>"))
                             _title_=__title__,
                             _xlab_=_(u"t"),
                             _ylab_=_(u"F(t) "),
-                            _type_=2,
+                            _type_=[2],
                             _marker_=['b-'])
 
             # Plot the probability plot of interarrival times.
@@ -2136,7 +2140,7 @@ Lower\nBound</span>"))
                             _title_=__title__,
                             _xlab_=_(u"Theoretical"),
                             _ylab_=_(u"Observed"),
-                            _type_=2,
+                            _type_=[2],
                             _marker_=['o'])
 
             for plot in self.vbxPlot1.get_children():
@@ -2668,3 +2672,97 @@ Lower\nBound</span>"))
         self.notebook.set_current_page(0)
 
         return False
+
+    def plotdistcens(self, _data_, distr, para):
+
+        import operator
+
+        rbase = importr('base')
+
+        n = len(_data_[0])
+        censdata = []
+        for i in range(n):
+            censdata.append([_data_[0][i], _data_[1][i]])
+
+        # Create a list with left censored data.
+        lcens = [i[1] for i in censdata if i[0] == 'NA']
+        ordlcens = R.order(robjects.FloatVector(lcens))
+        nlcens = len(lcens)
+
+        # Create a list with right censored data.
+        rcens = [i[0] for i in censdata if i[1] == 'NA']
+        ordrcens = R.order(robjects.FloatVector(rcens))
+        nrcens = len(rcens)
+
+        # Create a list with interval censored and exact failure time data.
+        noricens = [i for i in censdata if i[0] != 'NA' and i[1] != 'NA']
+        midnoricens = [(i[0] + i[1]) / 2.0 for i in noricens]
+        ordmid = R.order(robjects.FloatVector(midnoricens))
+        nnoricens = len(noricens)
+
+        xminright = min([i[1] for i in censdata if i[1] != 'NA'])
+        xminleft = min([i[0] for i in censdata if i[0] != 'NA'])
+        xmin = min(xminright, xminleft)
+
+        xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
+        xmaxleft = max([i[0] for i in censdata if i[0] != 'NA'])
+        xmax = max(xmaxright, xmaxleft)
+
+        xrange = xmax - xmin
+        xmin = xmin - 0.3 * xrange
+        xmax = xmax + 0.3 * xrange
+
+        xlim = R.c(xmin, xmax)
+
+        x = []
+        y = []
+        if(nlcens >= 1):
+            for i in range(nlcens):
+                _temp_ = float(i) / float(n)
+                diff = int(lcens[ordlcens[i]][1] - xmin)
+                for j in range(diff):
+                    x.append(xmin + j)
+                    y.append(_temp_)
+
+        if(nnoricens >= 1):
+            for i in range(nnoricens):
+                _temp_ = float((i + nlcens)) / float(n)
+                diff = int(noricens[ordmid[i] - 1][1] - noricens[ordmid[i] - 1][0])
+                if (noricens[i][0] != noricens[i][1]):
+                    for j in range(diff):
+                        x.append(noricens[ordmid[i] - 1][0] + j)
+                        y.append(_temp_)
+                else:
+                    x.append(noricens[ordmid[i] - 1][0])
+                    y.append(_temp_)
+
+        if(nrcens >= 1):
+            for i in range(nrcens):
+                _temp_ = float((i + nlcens + nnoricens)) / float(n)
+                diff = int(xmax - rcens[ordrcens[i]][1])
+                for j in range(diff):
+                    x.append(rcens[ordrcens[i]] + j)
+                    y.append(_temp_)
+
+        x1 = []
+        y1 = []
+        _x_unique = list(set(x))
+        for i in range(len(_x_unique)):
+            idx = max([j for j, k in enumerate(x) if k == _x_unique[i]])
+            x1.append(x[idx])
+            y1.append(y[idx])
+
+        # Add the theoretical distribution if one is specified.
+        if(distr != '' and distr is not None):
+            den = float(len(x))
+            ddistname = R.paste('d', distr, sep='')
+            pdistname = R.paste('p', distr, sep='')
+            densfun = R.get(ddistname, mode='function')
+            nm = R.names(para)
+            f = R.formals(densfun)
+            args = R.names(f)
+            m = R.match(nm, args)
+            s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
+            theop = rbase.do_call(pdistname, R.c(R.list(s), para))
+
+        return(x, y, theop)
