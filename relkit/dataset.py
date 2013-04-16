@@ -1202,7 +1202,7 @@ dataset."))
         return False
 
     def _load_plot(self, axis, plot, x, y1=None, y2=None, y3=None,
-                   _title_="", _xlab_="", _ylab_="", _type_=1,
+                   _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1],
                    _marker_=['g-', 'r-', 'b-']):
         """ Method to load the matplotlib plots.
 
@@ -1336,7 +1336,7 @@ selected survival data record(s)."), 600, 250)
         button -- the gtk.ToolButton that called this method.
         """
 
-        from math import exp, floor, log, sqrt
+        from math import exp, fabs, floor, log, sqrt
         from scipy.stats import chi2, norm
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1456,7 +1456,7 @@ selected survival data record(s)."), 600, 250)
             return False
 
         if(_analysis_ == 1):                # MCF
-            # Create a list of unique units.
+# Create a list of unique units.
             query = "SELECT DISTINCT(fld_unit) \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
@@ -1471,14 +1471,14 @@ selected survival data record(s)."), 600, 250)
             for i in range(len(results)):
                 _units_.append(results[i][0])
 
-            # Create a list of unique failures times.
+# Create a list of unique failures times.
             query = "SELECT DISTINCT(fld_right_interval) \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
+                     AND fld_right_interval >= %f \
                      AND fld_right_interval <= %f \
-                     AND fld_right_interval > %f \
                      ORDER BY fld_right_interval ASC" % \
-                     (_dataset_, _reltime_, _starttime_)
+                     (_dataset_, _starttime_, _reltime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
@@ -1487,17 +1487,18 @@ selected survival data record(s)."), 600, 250)
             for i in range(len(results)):
                 _times_.append(results[i][0])
 
-            # Get the entire dataset.
-            # Example of a record returned from the following query:
-            #     (u'HT36103', 0.0, 12.0, 12.0)
+# Get the entire dataset.
+# Example of a record returned from the following query:
+#     (u'HT36103', 0.0, 12.0, 12.0)
             query = "SELECT fld_unit, fld_left_interval, \
                             fld_right_interval, fld_tbf \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
+                     AND fld_right_interval >= %f \
                      AND fld_right_interval <= %f \
-                     AND fld_right_interval > 0.0 \
                      ORDER BY fld_unit ASC, \
-                              fld_left_interval ASC" % (_dataset_, _reltime_)
+                              fld_left_interval ASC" % \
+                     (_dataset_, _starttime_, _reltime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
@@ -1517,13 +1518,13 @@ selected survival data record(s)."), 600, 250)
             nonpar = _calc.mean_cumulative_function(_units_, _times_,
                                                     results, _conf_)
 
-            # Get:
-            #   Total number of records.
-            #   List of unique failures times.
-            #   List of MCF at each unique failure time.
-            #   List of MCF lower bound at each unique failure time.
-            #   List of MCF upper bound at each unique failure time.
-            #   Maximum observed time.
+# Get:
+#   Total number of failures.
+#   List of unique failures times.
+#   List of MCF at each unique failure time.
+#   List of MCF lower bound at each unique failure time.
+#   List of MCF upper bound at each unique failure time.
+#   Maximum observed time.
             n_failures = len(nonpar)
             times = [x[0] for x in nonpar]
             muhat = [x[9] for x in nonpar]
@@ -1531,9 +1532,22 @@ selected survival data record(s)."), 600, 250)
             muhatul = [x[8] for x in nonpar]
             ta = max(times)
 
-            # Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test
-            # statistics.  Find the chi-square critical value.  These
-            # statistics are used to test for HPP vs. NHPP in the data.
+# Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test statistics.
+# Find the chi-square critical value.  These statistics are used to test for
+# HPP vs. NHPP in the data.
+            query = "SELECT t1.fld_unit, t2.fld_tbf \
+                     FROM tbl_incident AS t1 \
+                     INNER JOIN tbl_survival_data AS t2 \
+                     WHERE t2.fld_record_id=t1.fld_incident_id \
+                     AND fld_dataset_id=%d \
+                     AND fld_right_interval >= %f \
+                     AND fld_right_interval <= %f \
+                     ORDER BY t1.fld_request_date ASC" % \
+                     (_dataset_, _starttime_, _reltime_)
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx)
+
             tbf = []
             failnum = []
             _denominator_ = 0.0
@@ -1541,7 +1555,7 @@ selected survival data record(s)."), 600, 250)
                 mhb += log(times[i] / ta)
                 _denominator_ += log(ta / times[i])
                 zlp += times[i] / ta
-                tbf.append(results[i][3])
+                tbf.append(results[i][1])
                 failnum.append(i)
 
             mhb = -2.0 * mhb
@@ -1558,13 +1572,23 @@ selected survival data record(s)."), 600, 250)
             _beta_ = n_failures / _denominator_
             _eta_ = ta / n_failures**(1.0 / _beta_)
 
-            # Find the covariance and variance of the interarrival times.  Use
-            # these to calculate the sample serial correlation coefficient.
+# Find the covariance and variance of the interarrival times.  Use these to
+# calculate the sample serial correlation coefficient.
             cov = numpy.cov(tbf[0:n_failures-1], tbf[1:n_failures])
             var = numpy.var(tbf)
             rho = sqrt(n_failures - 1) * cov[0][1] / var
 
-            # Load the table with the MCF results.
+# =========================================================================== #
+# Load the table with the MCF results.
+#   Column      Information
+#     1         Time (t_j)
+#     2         Delta dot
+#     3         d bar
+#     4         MCF standard error
+#     5         MCF point estimate
+#     6         MCF lower bound
+#     7         MCF upper bound
+# =========================================================================== #
             model = self.tvwNonParResults.get_model()
             model.clear()
             for i in range(n_failures):
@@ -1609,7 +1633,7 @@ selected survival data record(s)."), 600, 250)
             label.set_markup(_(u"<span weight='bold'>MCF Upper\nBound</span>"))
             column.set_widget(label)
 
-            # Plot the mean cumulative function.
+# Plot the mean cumulative function with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
                             y2=muhatll, y3=muhatul,
                             _title_=_(u"MCF Plot of %s") % _name,
@@ -1622,28 +1646,37 @@ selected survival data record(s)."), 600, 250)
 
             self.vbxPlot1.pack_start(self.pltPlot1)
 
-            # Plot the run sequence plot.
+# Plot the run sequence plot.
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=failnum, y1=tbf, y2=None, y3=None,
                             _title_=_(u"Run Sequence Plot of %s") % _name,
                             _xlab_=_(u"Failure Number"),
                             _ylab_=_(u"Time Between Failure"),
-                            _type_=2, _marker_=['g-'])
+                            _type_=[2], _marker_=['g-'])
 
-            # Plot the lag 1 plot.
-            self._load_plot(self.axAxis4, self.pltPlot4,
-                            x=tbf[0:n_failures - 1], y1=tbf[1:n_failures],
-                            y2=None, y3=None,
-                            _title_=_(u"Lag 1 Plot of %s") % _name,
-                            _xlab_=_(u"Lagged Time Between Failure"),
-                            _ylab_=_(u"Time Between Failure"),
-                            _type_=2, _marker_=['go'])
+# Create an event plot.
+            #query = "SELECT DISTINCT t1.fld_unit, t2.fld_age_at_incident \
+            #         FROM tbl_incident AS t1 \
+            #         INNER JOIN tbl_incident_detail AS t2 \
+            #         WHERE t2.fld_incident_id=t1.fld_incident_id \
+            #         ORDER BY t1.fld_unit ASC, \
+            #                  t2.fld_age_at_incident ASC"
+            #results = self._app.DB.execute_query(query,
+            #                                     None,
+            #                                     self._app.ProgCnx)
+            #self._load_plot(self.axAxis4, self.pltPlot4,
+            #                x=tbf[0:n_failures - 1], y1=tbf[1:n_failures],
+            #                y2=None, y3=None,
+            #                _title_=_(u"Lag 1 Plot of %s") % _name,
+            #                _xlab_=_(u"Lagged Time Between Failure"),
+            #                _ylab_=_(u"Time Between Failure"),
+            #                _type_=[2], _marker_=['go'])
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
             self.vbxPlot2.pack_start(self.pltPlot2)
-            self.vbxPlot2.pack_start(self.pltPlot4)
+            #self.vbxPlot2.pack_start(self.pltPlot4)
 
             self.txtChiSq.set_text(str(fmt.format(_chisq_)))
             self.txtZLPNorm.set_text(str(fmt.format(_z_norm_)))
@@ -1653,11 +1686,11 @@ selected survival data record(s)."), 600, 250)
                 _text[0] = _(u"<span foreground='red'>Nonconstant</span>")
             else:
                 _text[0] = _(u"<span foreground='green'>Constant</span>")
-            if(zlp > _z_norm_):
+            if(fabs(zlp) > _z_norm_):
                 _text[1] = _(u"<span foreground='red'>Nonconstant</span>")
             else:
                 _text[1] = _(u"<span foreground='green'>Constant</span>")
-            if(zlr > _z_norm_):
+            if(fabs(zlr) > _z_norm_):
                 _text[2] = _(u"<span foreground='red'>Nonconstant</span>")
             else:
                 _text[2] = _(u"<span foreground='green'>Constant</span>")
@@ -1709,26 +1742,41 @@ selected survival data record(s)."), 600, 250)
 
             logtimes = []
             _H_ = []
+            _Hll_ = []
+            _Hul_ = []
             logH = []
+            logHll = []
+            logHul = []
             zShat = []
             _h_ = []
+            _hll_ = []
+            _hul_ = []
             tr = []
             S = []
+# Calculate the cumulative hazard rate, the hazard rate, and the log
+# hazard rate.
             for i in range(len(times)):
                 logtimes.append(log(times[i]))
 
-                # Calculate the cumulative hazard rate.
                 try:
                     _H_.append(-log(Shat[i]))
+                    _Hll_.append(-log(Shatul[i]))
+                    _Hul_.append(-log(Shatll[i]))
                 except ValueError:
                     _H_.append(_H_[i - 1])
+                    _Hll_.append(_Hll_[i - 1])
+                    _Hul_.append(_Hul_[i - 1])
                 except IndexError:
-                    print _H_
-                    print i
+# TODO: Write error handling routine for KM cumulative hazard plots.
+                    print i, _H_, _Hll_, _Hul_
 
                 logH.append(log(_H_[i]))
+                #logHll.append(log(_Hll_[i]))
+                #logHul.append(log(_Hul_[i]))
                 zShat.append(norm.ppf(Shat[i]))
                 _h_.append(_H_[i] / times[i])
+                _hll_.append(_Hll_[i] / times[i])
+                _hul_.append(_Hul_[i] / times[i])
 
                 # Calculate the mean.
                 if(nonpar[3][i] != 0):      # Event occured at this time.
@@ -1755,7 +1803,7 @@ selected survival data record(s)."), 600, 250)
             MTBFLL = MTBF - sqrt(var_mu) * _z_norm_
             MTBFUL = MTBF + sqrt(var_mu) * _z_norm_
 
-            # Load the table with the Kaplan-Meier results.
+# Load the table with the Kaplan-Meier results.
             model = self.tvwNonParResults.get_model()
             model.clear()
             for i in range(len(times)):
@@ -1801,7 +1849,7 @@ Lower\nBound</span>"))
             label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
             column.set_widget(label)
 
-            # Plot the survival curve.
+# Plot the survival curve with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=Shat,
                             y2=Shatll, y3=Shatul,
@@ -1810,10 +1858,10 @@ Lower\nBound</span>"))
                             _ylab_=_("Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Plot the hazard rate curve.
+# Plot the hazard rate curve with confidence bounds.
             self._load_plot(self.axAxis3, self.pltPlot3,
                             x=times, y1=_h_,
-                            y2=None, y3=None,
+                            y2=_hll_, y3=_hul_,
                             _title_=_("Hazard Rate Plot of %s") % _name,
                             _xlab_=_("Time"),
                             _ylab_=_("Hazard Rate [h(t)] "),
@@ -1825,16 +1873,16 @@ Lower\nBound</span>"))
             self.vbxPlot1.pack_start(self.pltPlot1)
             self.vbxPlot1.pack_start(self.pltPlot3)
 
-            # Plot the cumulative hazard curve.
+# Plot the cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=times, y1=_H_,
-                            y2=None, y3=None,
+                            y2=_Hll_, y3=_Hul_,
                             _title_=_("Cumulative Hazard Plot of %s") % _name,
                             _xlab_=_("Time"),
                             _ylab_=_("Cumulative Hazard Function [H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Plot the log cumulative hazard curve.
+# Plot the log cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis4, self.pltPlot4,
                             x=times, y1=logH,
                             y2=None, y3=None,
