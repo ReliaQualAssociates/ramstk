@@ -2140,6 +2140,8 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         times2 = [i[1] for i in _dataset_ if i[0] <= _reltime_]
         status = [i[2] for i in _dataset_ if i[0] <= _reltime_]
 
+    units = [i[3] for i in _dataset_]
+
     for i in range(len(status)):
         if(status[i] == "Right Censored"):
             status[i] = 0
@@ -2182,6 +2184,13 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         robjects.globalenv['surv'] = surv
         fmla = robjects.Formula('surv ~ 1')
         _KM_ = survival.survfit(fmla)
+
+        # Every subject must have a censored time to use survrec.
+        #survrec = importr('survrec')
+        #units = robjects.StrVector(units)
+        #survr = survrec.Survr(units, times2, status2)
+        #fit = survrec.wc_fit(survr)
+        #print fit
 
         return(_KM_)
 

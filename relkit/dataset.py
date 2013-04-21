@@ -172,9 +172,7 @@ class Dataset:
         self.cmbSource = _widg.make_combo()
 
         self.tvwDataset = gtk.TreeView()
-        # make it searchable
         self.tvwDataset.set_search_column(0)
-        # Allow drag and drop reordering of rows
         self.tvwDataset.set_reorderable(True)
 
         self.txtConfidence = _widg.make_entry(_width_=100)
@@ -189,6 +187,17 @@ class Dataset:
             self._app.debug_log.error("dataset.py: Failed to create Analysis Input tab.")
 
 # Create the Analyses Results tab widgets.
+        self.fraSummary = _widg.make_frame(_label_=_(u"Summary"))
+        self.fraNonParEst = _widg.make_frame(_label_=_(u"Non-Parametric Estimates"))
+        self.fraNonParStats = _widg.make_frame(_label_=_(u"Non-Parametric Statistics"))
+        self.fraParEst = _widg.make_frame(_label_=_(u"Parametric Estimates"))
+        self.fraVarCov = _widg.make_frame(_label_=_(u"Covariance Matrix"))
+        self.fraParGOF = _widg.make_frame(_label_=_(u"Parametric GOF Statistics"))
+
+        self.hbxAnalysisResults = gtk.HBox()
+        self.vbxAnalysisResults1 = gtk.VBox()
+        self.vbxAnalysisResults2 = gtk.VBox()
+
         self.txtMHB = _widg.make_entry(_width_=150)
         self.txtChiSq = _widg.make_entry(_width_=150)
         self.txtMHBPValue = _widg.make_entry(_width_=150)
@@ -701,6 +710,13 @@ dataset."))
     def _analyses_results_widgets_create(self):
         """ Method for creating DATASET Class analysis results widgets. """
 
+        self.fraSummary.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.fraNonParEst.set_shadow_type(gtk.SHADOW_NONE)
+        self.fraNonParStats.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.fraParEst.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.fraVarCov.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.fraParGOF.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+
         self.tvwDataset.set_rubber_banding(True)
         selection = self.tvwDataset.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
@@ -786,17 +802,9 @@ MTBF."))
         with the appropriate widgets for the DATASET object.
         """
 
-        hbox = gtk.HBox()
-        vbox = gtk.VBox()
-
-# =========================================================================== #
 # Summary of results.
-# =========================================================================== #
         fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_(u"Summary"))
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        frame.add(fixed)
+        self.fraSummary.add(fixed)
 
         y_pos = 5
         label = _widg.make_label(_(u"Number of Suspensions:"), width=200)
@@ -822,11 +830,7 @@ MTBF."))
         fixed.put(self.txtMTBFUL, 715, y_pos)
         y_pos += 30
 
-        vbox.pack_start(frame, True, True)
-
-# =========================================================================== #
 # Non-parametric table of results.
-# =========================================================================== #
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -917,20 +921,11 @@ MTBF."))
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwNonParResults)
 
-        frame = _widg.make_frame(_label_=_(u"Non-Parametric Estimates"))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        self.fraNonParEst.add(scrollwindow)
 
-        vbox.pack_start(frame, True, True)
-
-# =========================================================================== #
 # Non-parametric statistics.
-# =========================================================================== #
         fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_(u"Non-Parametric Statistics"))
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        frame.add(fixed)
+        self.fraNonParStats.add(fixed)
 
         y_pos = 5
         label = _widg.make_label(_(u"MIL Handbook"), width=150)
@@ -968,20 +963,9 @@ MTBF."))
         fixed.put(self.lblZLPResult, 305, y_pos)
         fixed.put(self.lblZLRResult, 455, y_pos)
 
-        vbox.pack_start(frame, True, True)
-
-        hbox.pack_start(vbox, True, True)
-
-# =========================================================================== #
 # Parametric estimates.
-# =========================================================================== #
-        vbox = gtk.VBox()
-
         fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_("Parametric Estimates"))
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        frame.add(fixed)
+        self.fraParEst.add(fixed)
 
         y_pos = 5
         label = _widg.make_label(_("Scale"), width=150)
@@ -1014,16 +998,9 @@ MTBF."))
         fixed.put(self.txtShapeUL, 305, y_pos)
         fixed.put(self.txtLocationUL, 455, y_pos)
 
-        vbox.pack_start(frame, True, True)
-
-# =========================================================================== #
-# Covariance matrix.
-# =========================================================================== #
+# Variance-Covariance matrix.
         fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_("Covariance Matrix"))
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        frame.add(fixed)
+        self.fraVarCov.add(fixed)
 
         y_pos = 5
         fixed.put(self.lblRowScale, 155, y_pos)
@@ -1048,16 +1025,9 @@ MTBF."))
         fixed.put(self.txtLocationShape, 305, y_pos)
         fixed.put(self.txtLocationLocation, 455, y_pos)
 
-        vbox.pack_start(frame, True, True)
-
-# =========================================================================== #
 # Parametric goodness of fit statistics.
-# =========================================================================== #
         fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_("Parametric GOF Statistics"))
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        frame.add(fixed)
+        self.fraParGOF.add(fixed)
 
         y_pos = 5
         label = _widg.make_label("AIC", width=150)
@@ -1072,11 +1042,7 @@ MTBF."))
         fixed.put(self.txtBIC, 305, y_pos)
         fixed.put(self.txtMLE, 455, y_pos)
 
-        vbox.pack_start(frame, True, True)
-
-        hbox.pack_start(vbox, True, True)
-
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         _heading = _("Analysis\nResults")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -1085,8 +1051,7 @@ MTBF."))
         label.show_all()
         label.set_tooltip_text(_("Displays analysis results for the selected \
 dataset."))
-
-        self.notebook.insert_page(hbox,
+        self.notebook.insert_page(self.hbxAnalysisResults,
                                   tab_label=label,
                                   position=-1)
 
@@ -1099,67 +1064,101 @@ dataset."))
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
+# Get the distribtion ID.
+        _analysis_ = self.cmbDistribution.get_active()
+
+# Clear the tab.
+        for child in self.vbxAnalysisResults1.get_children():
+            self.vbxAnalysisResults1.remove(child)
+
+        for child in self.vbxAnalysisResults2.get_children():
+            self.vbxAnalysisResults2.remove(child)
+
+# Update summary information.
+        self.vbxAnalysisResults1.pack_start(self.fraSummary, True, True)
         self.txtNumSuspensions.set_text(
             str(self.model.get_value(self.selected_row, 11)))
         self.txtNumFailures.set_text(
             str(self.model.get_value(self.selected_row, 12)))
-        self.txtScale.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 13))))
-        self.txtScaleLL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 14))))
-        self.txtScaleUL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 15))))
-        self.txtShape.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 16))))
-        self.txtShapeLL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 17))))
-        self.txtShapeUL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 18))))
-        self.txtLocation.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 19))))
-        self.txtLocationLL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 20))))
-        self.txtLocationUL.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 21))))
-        # Scale variance.
-        self.txtScaleScale.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 22))))
-        # Shape variance.
-        self.txtShapeShape.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 23))))
-        # Location variance.
-        self.txtLocationLocation.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 24))))
-        # Shape-scale covariance.
-        self.txtShapeScale.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 25))))
-        # Scale-shape covariance.
-        self.txtScaleShape.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 25))))
-        # Scale-location covariance.
-        self.txtScaleLocation.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 26))))
-        # Location-scale covariance.
-        self.txtLocationScale.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 26))))
-        # Shape-location covariance.
-        self.txtShapeLocation.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 27))))
-        # Location-shape covariance.
-        self.txtLocationShape.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 27))))
-        self.txtMHB.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 28))))
-        self.txtLP.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 29))))
-        self.txtLR.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 30))))
-        self.txtAIC.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 31))))
-        self.txtBIC.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 32))))
-        self.txtMLE.set_text(
-            str(fmt.format(self.model.get_value(self.selected_row, 33))))
+
+# Update mean cumulative function information.
+        if(_analysis_ == 1):
+            self.vbxAnalysisResults1.pack_start(self.fraNonParStats, True, True)
+            self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            self.txtMHB.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 28))))
+            self.txtLP.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 29))))
+            self.txtLR.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 30))))
+
+# Update Kaplan-Meier analysis information.
+        elif(_analysis_ == 2):
+            self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+
+# Update parametric analysis information.
+        else:
+            self.vbxAnalysisResults1.pack_start(self.fraParEst, True, True)
+            self.vbxAnalysisResults2.pack_start(self.fraVarCov, True, True)
+            self.vbxAnalysisResults2.pack_start(self.fraParGOF, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+
+            self.txtScale.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 13))))
+            self.txtScaleLL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 14))))
+            self.txtScaleUL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 15))))
+            self.txtShape.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 16))))
+            self.txtShapeLL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 17))))
+            self.txtShapeUL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 18))))
+            self.txtLocation.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 19))))
+            self.txtLocationLL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 20))))
+            self.txtLocationUL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 21))))
+# Scale variance.
+            self.txtScaleScale.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 22))))
+# Shape variance.
+            self.txtShapeShape.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 23))))
+# Location variance.
+            self.txtLocationLocation.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 24))))
+# Shape-scale covariance.
+            self.txtShapeScale.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 25))))
+# Scale-shape covariance.
+            self.txtScaleShape.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 25))))
+# Scale-location covariance.
+            self.txtScaleLocation.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 26))))
+# Location-scale covariance.
+            self.txtLocationScale.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 26))))
+# Shape-location covariance.
+            self.txtShapeLocation.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 27))))
+# Location-shape covariance.
+            self.txtLocationShape.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 27))))
+            self.txtAIC.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 31))))
+            self.txtBIC.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 32))))
+            self.txtMLE.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 33))))
 
         return False
 
@@ -1171,7 +1170,7 @@ dataset."))
 
         hbox = gtk.HBox()
 
-        frame = _widg.make_frame(_label_=_("Survival Analysis Plots"))
+        frame = _widg.make_frame(_label_=_(u"Survival Analysis Plots"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(hbox)
         frame.show_all()
@@ -1194,7 +1193,7 @@ dataset."))
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays survival analyses plots."))
+        label.set_tooltip_text(_(u"Displays survival analyses plots."))
         self.notebook.insert_page(frame,
                                   tab_label=label,
                                   position=-1)
@@ -1321,7 +1320,7 @@ selected survival data record(s)."), 600, 250)
                                                      None,
                                                      self._app.ProgCnx,
                                                      True)
-                print results
+
         _dialog.destroy()
 
         self._load_dataset_tree()
@@ -1357,9 +1356,9 @@ selected survival data record(s)."), 600, 250)
         else:                               # One-sided bounds.
             _conf_ = _conf_ / 100.0
 
-        # Set maximum time to some very large value if the user has not
-        # set this themselves.  Keeping it at zero results in nothing being
-        # returned from the SQL queries to follow.
+ # Set maximum time to some very large value if the user has not set this
+ # themselves.  Keeping it at zero results in nothing being returned from the
+ # SQL queries to follow.
         if(_reltime_ == 0.0):
             _reltime_ = 1000000.0
             _RELTIME_ = True
@@ -1367,10 +1366,10 @@ selected survival data record(s)."), 600, 250)
         if(_step_ == 0):
             _step_ = 1
 
-        # Determine the confidence bound z-value.
+# Determine the confidence bound z-value.
         _z_norm_ = norm.ppf(_conf_)
 
-        # Get the entire dataset.
+# Get the entire dataset.
         query = "SELECT fld_unit, fld_left_interval, \
                         fld_right_interval, fld_tbf, \
                         fld_status \
@@ -1384,7 +1383,7 @@ selected survival data record(s)."), 600, 250)
                                              None,
                                              self._app.ProgCnx)
 
-        # Initialize variables.
+# Initialize variables.
         n_suspensions = 0
         n_failures = 0
         MTBF = 0.0
@@ -1413,41 +1412,50 @@ selected survival data record(s)."), 600, 250)
         aic = 0.0
         bic = 0.0
 
-        # Initialize some lists.
+# Initialize some lists.
         p_value = [1.0, 1.0, 1.0]
         _text = [u"", u"", u""]
 
+# =========================================================================== #
+# Perform the 'bathtub search.'  This is a search for the minimum and/or
+# maximum times at which the values of the Weibull scale and shape parameters
+# begin to differ by a given amount.
+# =========================================================================== #
         if(button.get_name() == 'Bathtub Search'):
             (scale, deltascale,
              shape, deltashape,
              times) = _calc.bathtub_filter(results, _starttime_,
                                            _reltime_, _step_)
 
-            # Plot the estimated eta value versus starting time.
+# Plot the estimated eta value versus starting time.
             __title__ = _(u"Change in Eta")
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=deltascale,
                             _title_=__title__,
                             _xlab_=_(u"t0"),
                             _ylab_=_(u"Change in Eta"),
-                            _type_=2,
+                            _type_=[2],
                             _marker_=['g'])
 
-            # Plot the estimated beta value versus starting time.
+# Plot the estimated beta value versus starting time.
             __title__ = _(u"Change in Beta")
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=times, y1=deltashape,
                             _title_=__title__,
                             _xlab_=_(u"t0"),
                             _ylab_=_(u"Change in Beta "),
-                            _type_=2,
+                            _type_=[2],
                             _marker_=['g'])
 
+# Plot the change in the Weibull scale parameter (eta) as a function of
+# minimum and/or maximum operating times.
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
 
             self.vbxPlot1.pack_start(self.pltPlot1)
 
+# Plot the change in the Weibull shape parameter (beta) as a function of
+# minimum and/or maximum operating times.
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
@@ -1455,6 +1463,9 @@ selected survival data record(s)."), 600, 250)
 
             return False
 
+# =========================================================================== #
+# Perform Nelson's mean cumulative function analysis.
+# =========================================================================== #
         if(_analysis_ == 1):                # MCF
 # Create a list of unique units.
             query = "SELECT DISTINCT(fld_unit) \
@@ -1471,7 +1482,7 @@ selected survival data record(s)."), 600, 250)
             for i in range(len(results)):
                 _units_.append(results[i][0])
 
-# Create a list of unique failures times.
+# Create a list of unique failure times.
             query = "SELECT DISTINCT(fld_right_interval) \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
@@ -1578,7 +1589,6 @@ selected survival data record(s)."), 600, 250)
             var = numpy.var(tbf)
             rho = sqrt(n_failures - 1) * cov[0][1] / var
 
-# =========================================================================== #
 # Load the table with the MCF results.
 #   Column      Information
 #     1         Time (t_j)
@@ -1588,7 +1598,6 @@ selected survival data record(s)."), 600, 250)
 #     5         MCF point estimate
 #     6         MCF lower bound
 #     7         MCF upper bound
-# =========================================================================== #
             model = self.tvwNonParResults.get_model()
             model.clear()
             for i in range(n_failures):
@@ -1695,24 +1704,30 @@ selected survival data record(s)."), 600, 250)
             else:
                 _text[2] = _(u"<span foreground='green'>Constant</span>")
 
+# =========================================================================== #
+# Perform a Kaplan-Meier analysis.
+# =========================================================================== #
         elif(_analysis_ == 2):              # Kaplan-Meier
-            query = "SELECT fld_left_interval, fld_right_interval, fld_status \
+            query = "SELECT fld_left_interval, fld_right_interval, fld_status, fld_unit \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
+                     AND fld_right_interval >= %f \
+                     AND fld_right_interval <= %f \
                      ORDER BY fld_right_interval ASC, \
-                     fld_status DESC" % _dataset_
+                     fld_status DESC" % (_dataset_, _starttime_, _reltime_)
             results = self._app.DB.execute_query(query,
                                                  None,
                                                  self._app.ProgCnx)
 
-            # Make a list with the rank of the records that are failures.
+# Make a list with the rank of the records that are failures.
             r = []
             for i in range(len(results)):
                 if(results[i][2] == 'Event' or
                    results[i][2] == 'Interval Censored'):
                     r.append(i + 1)
 
-# =========================================================================== #
+# The Kaplan-Meier function will retun a list of lists where the index of each
+# list is:
 #    0 = total number of subjects in each curve.
 #    1 = the time points at which the curve has a step.
 #    2 = the number of subjects at risk at t.
@@ -1731,7 +1746,6 @@ selected survival data record(s)."), 600, 250)
 #   12 = the returned value from the na.action function, if any.
 #        It will be used in the printout of the curve, e.g., the
 #        number of observations deleted due to missing values.
-# =========================================================================== #
             nonpar = _calc.kaplan_meier(results, _reltime_, _conf_)
 
             n_points = nonpar[0][0]
@@ -1740,6 +1754,7 @@ selected survival data record(s)."), 600, 250)
             Shatll = nonpar[8]
             Shatul = nonpar[9]
 
+# Initialize some list variables.
             logtimes = []
             _H_ = []
             _Hll_ = []
@@ -1753,6 +1768,7 @@ selected survival data record(s)."), 600, 250)
             _hul_ = []
             tr = []
             S = []
+
 # Calculate the cumulative hazard rate, the hazard rate, and the log
 # hazard rate.
             for i in range(len(times)):
@@ -1763,32 +1779,43 @@ selected survival data record(s)."), 600, 250)
                     _Hll_.append(-log(Shatul[i]))
                     _Hul_.append(-log(Shatll[i]))
                 except ValueError:
-                    _H_.append(_H_[i - 1])
-                    _Hll_.append(_Hll_[i - 1])
-                    _Hul_.append(_Hul_[i - 1])
+                    try:
+                        _H_.append(_H_[i - 1])
+                        _Hll_.append(_Hll_[i - 1])
+                        _Hul_.append(_Hul_[i - 1])
+                    except IndexError:
+                        _H_.append(0.0)
+                        _Hll_.append(0.0)
+                        _Hul_.append(0.0)
                 except IndexError:
 # TODO: Write error handling routine for KM cumulative hazard plots.
                     print i, _H_, _Hll_, _Hul_
 
-                logH.append(log(_H_[i]))
-                #logHll.append(log(_Hll_[i]))
-                #logHul.append(log(_Hul_[i]))
+                try:
+                    logH.append(log(_H_[i]))
+                    logHll.append(log(_Hll_[i]))
+                    logHul.append(log(_Hul_[i]))
+                except ValueError:
+                    logH.append(0.0)
+                    logHll.append(0.0)
+                    logHul.append(0.0)
+
                 zShat.append(norm.ppf(Shat[i]))
                 _h_.append(_H_[i] / times[i])
                 _hll_.append(_Hll_[i] / times[i])
                 _hul_.append(_Hul_[i] / times[i])
 
-                # Calculate the mean.
+# Calculate the mean time between failure.
                 if(nonpar[3][i] != 0):      # Event occured at this time.
                     for j in range(int(floor(nonpar[3][i]))):
                         tr.append(nonpar[1][i])
                         S.append(nonpar[5][i])
 
-            # Calculate the number of failures and suspensions in the dataset.
+# Calculate the number of failures and suspensions in the dataset.
             n_failures = len(tr)
             n_suspensions = n_points - n_failures
 
-            # Calculate the MTBF and the variance of the MTBF.
+# Calculate the MTBF and the variance of the MTBF.
             MTBF = tr[0]
             A = []
             for i in range(n_failures - 1):
@@ -1798,7 +1825,11 @@ selected survival data record(s)."), 600, 250)
             for i in range(len(A)):
                 A[i] = sum(A[i:])**2 / \
                     ((n_points - r[i]) * (n_points - r[i] + 1))
-            var_mu = (n_failures / (n_failures - 1)) * sum(A)
+
+            try:
+                var_mu = (n_failures / (n_failures - 1)) * sum(A)
+            except ZeroDivisionError:
+                var_mu = 0.0
 
             MTBFLL = MTBF - sqrt(var_mu) * _z_norm_
             MTBFUL = MTBF + sqrt(var_mu) * _z_norm_
@@ -1884,10 +1915,10 @@ Lower\nBound</span>"))
 
 # Plot the log cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis4, self.pltPlot4,
-                            x=times, y1=logH,
-                            y2=None, y3=None,
+                            x=logtimes, y1=logH,
+                            y2=logHll, y3=logHul,
                             _title_=_("Log Hazard Plot of %s") % _name,
-                            _xlab_=_("Time"),
+                            _xlab_=_("log(Time)"),
                             _ylab_=_("Log Hazard Function [log H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
@@ -1897,8 +1928,10 @@ Lower\nBound</span>"))
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
 
-        elif(_analysis_ == 3):              # Fit to an exponential.
-
+# =========================================================================== #
+# Fit the data to an exponential distribution and estimate it's parameters.
+# =========================================================================== #
+        elif(_analysis_ == 3):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'exponential')
 
@@ -1928,10 +1961,10 @@ Lower\nBound</span>"))
             _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=scale),
                                 Rtimes, False)
 
-            # Display the widgets we need.
+# Display the widgets we need.
             self.txtScaleScale.show()
 
-            # Hide widgets we don't need.
+# Hide widgets we don't need.
             self.lblRowShape.hide()
             self.lblColShape.hide()
             self.lblRowLocation.hide()
@@ -1945,8 +1978,10 @@ Lower\nBound</span>"))
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 4):              # Fit to a lognormal.
-
+# =========================================================================== #
+# Fit the data to a lognormal and estimate it's parameters.
+# =========================================================================== #
+        elif(_analysis_ == 4):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'lognormal')
 
@@ -1987,7 +2022,7 @@ Lower\nBound</span>"))
             _qqplot_ = R.qqplot(R.qlnorm(R.ppoints(Rtimes), meanlog=scale,
                                 sdlog=shape), Rtimes, False)
 
-            # Display the widgets we need.
+# Display the widgets we need.
             self.lblRowShape.show()
             self.lblColShape.show()
             self.lblRowScale.show()
@@ -1997,7 +2032,7 @@ Lower\nBound</span>"))
             self.txtScaleShape.show()
             self.txtScaleScale.show()
 
-            # Hide widgets we don't need.
+# Hide widgets we don't need.
             self.lblRowLocation.hide()
             self.lblColLocation.hide()
             self.txtShapeLocation.hide()
@@ -2006,8 +2041,10 @@ Lower\nBound</span>"))
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 5):              # Fit to a normal.
-
+# =========================================================================== #
+# Fit the data to a normal distibution and estimate it's parameters.
+# =========================================================================== #
+        elif(_analysis_ == 5):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'normal')
 
@@ -2045,7 +2082,7 @@ Lower\nBound</span>"))
             _qqplot_ = R.qqplot(R.qnorm(R.ppoints(Rtimes), mean=scale,
                                 sd=shape), Rtimes, False)
 
-            # Display the widgets we need.
+# Display the widgets we need.
             self.lblRowShape.show()
             self.lblColShape.show()
             self.lblRowScale.show()
@@ -2055,7 +2092,7 @@ Lower\nBound</span>"))
             self.txtScaleShape.show()
             self.txtScaleScale.show()
 
-            # Hide widgets we don't need.
+# Hide widgets we don't need.
             self.lblRowLocation.hide()
             self.lblColLocation.hide()
             self.txtShapeLocation.hide()
@@ -2064,10 +2101,12 @@ Lower\nBound</span>"))
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        elif(_analysis_ == 6):              # Fit to a Weibull.
-
+# =========================================================================== #
+# Fit the data to a Weibull distribution and estimate it's parameters.
+# =========================================================================== #
+        elif(_analysis_ == 6):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                               _fitmeth_, 'weibull')
+                                       _fitmeth_, 'weibull')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][1]
@@ -2113,7 +2152,29 @@ Lower\nBound</span>"))
             _qqplot_ = R.qqplot(R.qweibull(R.ppoints(Rtimes), shape=shape,
                                 scale=scale), Rtimes, False)
 
-            # Display the widgets we need.
+            xminleft = min([i[0] for i in censdata if i[0] != 'NA'])
+            xminright = min([i[1] for i in censdata if i[1] != 'NA'])
+            xmin = min(xminleft, xminright)
+
+            xmaxleft = max([i[0] for i in censdata if i[0] != 'NA'])
+            xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
+            xmax = max(xmaxleft, xmaxright)
+
+            xrange = xmax - xmin
+            xmin = xmin - 0.3 * xrange
+            xmax = xmax + 0.3 * xrange
+
+            rbase = importr('base')
+            den = float(len(censdata))
+            densfun = R.get('dweibull', mode='function')
+            nm = R.names(para)
+            f = R.formals(densfun)
+            args = R.names(f)
+            m = R.match(nm, args)
+            s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
+            theop = rbase.do_call('pweibull', R.c(R.list(s), para))
+
+# Display the widgets we need.
             self.lblRowShape.show()
             self.lblColShape.show()
             self.lblRowScale.show()
@@ -2123,7 +2184,7 @@ Lower\nBound</span>"))
             self.txtScaleShape.show()
             self.txtScaleScale.show()
 
-            # Hide widgets we don't need.
+# Hide widgets we don't need.
             self.lblRowLocation.hide()
             self.lblColLocation.hide()
             self.txtShapeLocation.hide()
@@ -2134,53 +2195,52 @@ Lower\nBound</span>"))
 
         #elif(_analysis_ == 7):              # Fit to a WeiBayes.
 
-        # Create and display parametric plots.
+# =========================================================================== #
+# Create and display parametric plots.
+# =========================================================================== #
         if(_analysis_ > 2):
-
-            # Plot a histogram of interarrival times.
+# Plot a histogram of interarrival times.
             hist = R.hist(Rtimes, plot='False')
             bins = list(hist[0])
             counts = list(hist[1])
 
-            # Plot the histogram of interarrival times.
             __title__ = _(u"Histogram of Interarrival Times for %s") % _name
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=Rtimes, y1=bins,
                             _title_=__title__,
                             _xlab_=_(u"Interarrival Times"),
-                            _ylab_=_(u"Count"),
+                            _ylab_=_(u"Count "),
                             _type_=[3],
                             _marker_=['g'])
 
-            # Plot the observed CDF with the theoretical CDF overlain.
-            (x, y, theop) = self.plotdistcens(censdata, 'weibull', para)
-            __title__ = _(u"Density Estimate of Interarrival Times for %s") \
-                % _name
-            _dens_ = R.density(Rtimes)
-            self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=x, y1=y, y2=theop[1:],
-                            _title_=__title__,
-                            _xlab_=_(u""),
-                            _ylab_=_(u"f(t) "),
-                            _type_=[1, 2],
-                            _marker_=['g', 'r'])
+# Plot the observed CDF with the theoretical CDF overlain.
+#            (x, y, theop) = self.plotdistcens(censdata, 'weibull', para)
+#            __title__ = _(u"Density Estimate of Interarrival Times for %s") \
+#                % _name
+#            _dens_ = R.density(Rtimes)
+#            self._load_plot(self.axAxis2, self.pltPlot2,
+#                            x=x, y1=y, y2=theop[1:],
+#                            _title_=__title__,
+#                            _xlab_=_(u""),
+#                            _ylab_=_(u"f(t) "),
+#                            _type_=[1, 2],
+#                            _marker_=['g', 'r'])
 
-            # Plot an ECDF of interarrival times.
+# Plot an ECDF of interarrival times.
+            Rstats = importr('stats')
+            Fn = Rstats.ecdf(Rtimes)
+            ecdf = Fn(Rtimes)
             __title__ = _(u"Empirical CDF of Interarrival Times for %s") \
                 % _name
-            counts = numpy.cumsum(counts)
-            cdf = []
-            for i in range(len(counts)):
-                cdf.append(float(counts[i]) / float(max(counts)))
             self._load_plot(self.axAxis3, self.pltPlot3,
-                            x=bins[1:], y1=cdf,
+                            x=Rtimes, y1=ecdf, y2=theop,
                             _title_=__title__,
                             _xlab_=_(u"t"),
                             _ylab_=_(u"F(t) "),
-                            _type_=[2],
-                            _marker_=['b-'])
+                            _type_=[1, 2],
+                            _marker_=['b-', 'r-'])
 
-            # Plot the probability plot of interarrival times.
+# Plot the probability plot of interarrival times.
             __title__ = _(u"Probability Plot of Interarrival Times for %s ") \
                 % _name
             self._load_plot(self.axAxis4, self.pltPlot4,
@@ -2206,7 +2266,7 @@ Lower\nBound</span>"))
         if(_RELTIME_):
             _reltime_ = 0.0
 
-        # Update gtk.TreeView with results.
+# Update gtk.TreeView with results.
         self.model.set_value(self.selected_row, 4, _analysis_)
         self.model.set_value(self.selected_row, 6, _type_)
         self.model.set_value(self.selected_row, 8, _fitmeth_)
@@ -2235,7 +2295,7 @@ Lower\nBound</span>"))
         self.model.set_value(self.selected_row, 32, bic)
         self.model.set_value(self.selected_row, 33, mle)
 
-        # Update widgets.
+# Update results widgets.
         self._analyses_results_tab_load()
 
         self.txtMTBF.set_text(str(fmt.format(MTBF)))
@@ -2345,6 +2405,7 @@ Lower\nBound</span>"))
                   self.model.get_value(self.selected_row, 31), \
                   self.model.get_value(self.selected_row, 32), \
                   self.model.get_value(self.selected_row, 33), \
+                  self.model.get_value(self.selected_row, 34), \
                   self.model.get_value(self.selected_row, 0))
 
         if(_conf.BACKEND == 'mysql'):
@@ -2362,7 +2423,8 @@ Lower\nBound</span>"))
                          fld_variance_2=%f, fld_variance_3=%f, \
                          fld_covariance_1=%f, fld_covariance_2=%f, \
                          fld_covariance_3=%f, fld_mhb=%f, fld_lp=%f, \
-                         fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f \
+                         fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f, \
+                         fld_start_time=%d \
                      WHERE fld_dataset_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
             query = "UPDATE tbl_dataset \
@@ -2379,7 +2441,8 @@ Lower\nBound</span>"))
                          fld_variance_2=?, fld_variance_3=?, \
                          fld_covariance_1=?, fld_covariance_2=?, \
                          fld_covariance_3=?, fld_mhb=?, fld_lp=?, \
-                         fld_lr=?, fld_aic=?, fld_bic=?, fld_mle=? \
+                         fld_lr=?, fld_aic=?, fld_bic=?, fld_mle=?, \
+                         fld_start_time=? \
                      WHERE fld_dataset_id=?"
 
         results = self._app.DB.execute_query(query,
@@ -2395,8 +2458,8 @@ Lower\nBound</span>"))
 
     def _assign_results(self, button):
         """
-        Assigns the MTBF results to the assembly associated with the dataset.
-        Values are assigned to the specified fields.
+        Assigns the MTBF and failure rateresults to the assembly associated
+        with the dataset.  Values are assigned to the specified fields.
 
         Keyword Arguments:
         button -- the gtk.Button widget that called this function.
@@ -2405,6 +2468,8 @@ Lower\nBound</span>"))
         height = int(self._app.winWorkBook.height)
         width = int(self._app.winWorkBook.width / 2.0)
 
+        # Gather a list of existing assemblies and revision names from the
+        # open RelKit project database.
         query = "SELECT t1.fld_description, t2.fld_name, t1.fld_assembly_id \
                  FROM tbl_system AS t1 \
                  INNER JOIN tbl_revisions AS t2 \
@@ -2425,6 +2490,7 @@ Lower\nBound</span>"))
         window.set_border_width(5)
         window.set_position(gtk.WIN_POS_NONE)
 
+        # Create a gtk.ListStore to hold the results of the query.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                               gobject.TYPE_INT)
 
@@ -2726,47 +2792,46 @@ Lower\nBound</span>"))
         import operator
 
         rbase = importr('base')
+        rgraphics = importr('graphics')
 
         n = len(_data_[0])
         censdata = []
         for i in range(n):
             censdata.append([_data_[0][i], _data_[1][i]])
 
-        # Create a list with left censored data.
+# Create a list with left censored data.
         lcens = [i[1] for i in censdata if i[0] == 'NA']
         ordlcens = R.order(robjects.FloatVector(lcens))
         nlcens = len(lcens)
 
-        # Create a list with right censored data.
+# Create a list with right censored data.
         rcens = [i[0] for i in censdata if i[1] == 'NA']
         ordrcens = R.order(robjects.FloatVector(rcens))
         nrcens = len(rcens)
 
-        # Create a list with interval censored and exact failure time data.
+# Create a list with interval censored and exact failure time data.
         noricens = [i for i in censdata if i[0] != 'NA' and i[1] != 'NA']
         midnoricens = [(i[0] + i[1]) / 2.0 for i in noricens]
         ordmid = R.order(robjects.FloatVector(midnoricens))
         nnoricens = len(noricens)
 
-        xminright = min([i[1] for i in censdata if i[1] != 'NA'])
         xminleft = min([i[0] for i in censdata if i[0] != 'NA'])
-        xmin = min(xminright, xminleft)
+        xminright = min([i[1] for i in censdata if i[1] != 'NA'])
+        xmin = min(xminleft, xminright)
 
-        xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
         xmaxleft = max([i[0] for i in censdata if i[0] != 'NA'])
-        xmax = max(xmaxright, xmaxleft)
+        xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
+        xmax = max(xmaxleft, xmaxright)
 
         xrange = xmax - xmin
         xmin = xmin - 0.3 * xrange
         xmax = xmax + 0.3 * xrange
 
-        xlim = R.c(xmin, xmax)
-
         x = []
         y = []
         if(nlcens >= 1):
             for i in range(nlcens):
-                _temp_ = float(i) / float(n)
+                _temp_ = float(i + 1) / float(n)
                 diff = int(lcens[ordlcens[i]][1] - xmin)
                 for j in range(diff):
                     x.append(xmin + j)
@@ -2774,9 +2839,9 @@ Lower\nBound</span>"))
 
         if(nnoricens >= 1):
             for i in range(nnoricens):
-                _temp_ = float((i + nlcens)) / float(n)
+                _temp_ = float((i + nlcens + 1)) / float(n)
                 diff = int(noricens[ordmid[i] - 1][1] - noricens[ordmid[i] - 1][0])
-                if (noricens[i][0] != noricens[i][1]):
+                if (noricens[ordmid[i] - 1][0] != noricens[ordmid[i] - 1][1]):
                     for j in range(diff):
                         x.append(noricens[ordmid[i] - 1][0] + j)
                         y.append(_temp_)
@@ -2786,21 +2851,13 @@ Lower\nBound</span>"))
 
         if(nrcens >= 1):
             for i in range(nrcens):
-                _temp_ = float((i + nlcens + nnoricens)) / float(n)
+                _temp_ = float((i + nlcens + nnoricens + 1)) / float(n)
                 diff = int(xmax - rcens[ordrcens[i]][1])
                 for j in range(diff):
                     x.append(rcens[ordrcens[i]] + j)
                     y.append(_temp_)
 
-        x1 = []
-        y1 = []
-        _x_unique = list(set(x))
-        for i in range(len(_x_unique)):
-            idx = max([j for j, k in enumerate(x) if k == _x_unique[i]])
-            x1.append(x[idx])
-            y1.append(y[idx])
-
-        # Add the theoretical distribution if one is specified.
+# Add the theoretical distribution if one is specified.
         if(distr != '' and distr is not None):
             den = float(len(x))
             ddistname = R.paste('d', distr, sep='')
