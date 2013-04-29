@@ -326,7 +326,10 @@ class RelKitConf:
                 if(response == -3):
                     reliafreecomlist = []
                     reliafreecomlist.append(txtDBHost.get_text())
-                    reliafreecomlist.append(int(txtDBSocket.get_text()))
+                    try:
+                        reliafreecomlist.append(int(txtDBSocket.get_text()))
+                    except ValueError:
+                        reliafreecomlist.append(txtDBSocket.get_text())
                     reliafreecomlist.append(txtDBName.get_text())
                     reliafreecomlist.append(txtDBUser.get_text())
                     reliafreecomlist.append(txtDBPassword.get_text())
