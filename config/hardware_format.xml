@@ -743,5 +743,37 @@ experience. -->
             <editable>0</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>MTBF LCL</defaulttitle>
+            <usertitle>MTBF LCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>91</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF UCL</defaulttitle>
+            <usertitle>MTBF UCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>92</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate LCL</defaulttitle>
+            <usertitle>Failure Rate LCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>93</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate UCL</defaulttitle>
+            <usertitle>Failure Rate UCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>94</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

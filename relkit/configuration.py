@@ -128,13 +128,18 @@ RELIAFREE_PREFIX = []
 #    1 = active, 0 = inactive.
 #
 #    Position 00: Revision module status
-#    Position 01: Function module status
-#    Position 02: Requirements module status
-#    Position 03: Validation module status
-#    Position 04: Reliability Growth module status
-#    Position 05: Field Incidents module status
-#    Position 06: Software module status
-#    Position 07: ? module status
+#    Position 01: Requirements module status
+#    Position 02: Function module status
+#    Position 03: Hardware module status
+#    Position 04: Software module status
+#    Position 05: Validation module status
+#    Position 06: Testing module status
+#    Position 07: Maintenance Policy module status
+#    Position 08: Field Incidents module status
+#    Position 09: FMECA module status
+#    Position 10: Survival Analysis module status
+#    Position 11: RBD module status
+#    Position 12: FTA module status
 RELIAFREE_MODULES = []
 
 # Global list for MySQL or SQLite3 connection information to the common
@@ -172,6 +177,7 @@ MTIME = 100.0
 
 # Variables to control GUI options.
 TABPOS = ['top', 'bottom', 'bottom']
+
 
 class RelKitConf:
     """ The RelKit configuration class. """

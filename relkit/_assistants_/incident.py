@@ -1668,18 +1668,18 @@ for each unit."))
         if(self.chkIncludeZeroHour.get_active()):
             _starttime_ = 0.0
 
-        # Select everything from the incident detail table in the Program
-        # database.
-        #   Index       Field
-        #     0      Incident ID
-        #     1      Part Number
-        #     2      Age at Incident
-        #     3      Failure
-        #     4      Suspension
-        #     5      CND/NFF
-        #     6      OCC
-        #     7      Initial Installation
-        #     8      Interval Censored
+# TODO: Revise the following query to include the hardware id from tbl_incident.
+# Select everything from the incident detail table in the Program database.
+#   Index       Field
+#     0      Incident ID
+#     1      Part Number
+#     2      Age at Incident
+#     3      Failure
+#     4      Suspension
+#     5      CND/NFF
+#     6      OCC
+#     7      Initial Installation
+#     8      Interval Censored
         query = "SELECT fld_incident_id, fld_part_num, fld_age_at_incident, \
                         fld_failure, fld_suspension, fld_cnd_nff, \
                         fld_occ_fault, fld_initial_installation, \
@@ -1691,30 +1691,30 @@ for each unit."))
                                              None,
                                              self._app.ProgCnx)
 
-        # Create a dictionary using the incident id as the key and the
-        # remaining columns in a list as the value.
+# Create a dictionary using the incident id as the key and the remaining
+# columns in a list as the value.
         n_parts = len(results)
         for i in range(n_parts):
             _parts[results[i][0]] = results[i][1:]
 
-        # Create a list of lists.
-        #    0.0 Unit
-        #    0.1.0 Part Number
-        #    0.1.1 Failure Time
-        #    0.1.2 Failure
-        #    0.1.3 Suspension
-        #    0.1.4 CND/NFF
-        #    0.1.5 OCC
-        #    0.1.6 Initial Installation
-        #    0.1.7 Interval Censored
+# Create a list of lists.
+#    0.0 Unit
+#    0.1.0 Part Number
+#    0.1.1 Failure Time
+#    0.1.2 Failure
+#    0.1.3 Suspension
+#    0.1.4 CND/NFF
+#    0.1.5 OCC
+#    0.1.6 Initial Installation
+#    0.1.7 Interval Censored
+# ['HTC8128', (u'50468', 465.0, 0, 0, 0, 0, 0, 1)]
         model = self._app.INCIDENT.model
         row = model.get_iter_root()
 
         while row is not None:
             _temp = []
-            # Append the "Affected Unit" from the INCIDENT Object's
-            # gtk.TreeView.  Then append the failure information from the
-            # _parts dictionary created above.
+# Append the "Affected Unit" from the INCIDENT Object's gtk.TreeView.  Then
+# append the failure information from the _parts dictionary created above.
             try:
                 _temp.append(model.get_value(row, 13))
                 _temp.append(_parts[str(model.get_value(row, 1))][0:])
@@ -1722,16 +1722,19 @@ for each unit."))
                 # TODO: Add error log message here.
                 pass
 
-            _data_set.append(_temp)
+# Add the temporary record if it has all the information needed.
+            if(len(_temp) == 2):
+                _data_set.append(_temp)
+
             row = model.iter_next(row)
 
-        # Sort the data set by unit first, then age at time of failure.
+# Sort the data set by unit first, then age at time of failure.
         try:
             _data_set.sort(key=lambda x:(str(x[0]), float(x[1][1])))
         except IndexError:
             pass
 
-        # Add a new dataset.
+# Add a new dataset.
         _confidence = float(self.txtConfidence.get_text())
         if(self.optDatabase.get_active()):
             query = "INSERT INTO tbl_dataset (fld_assembly_id, \
@@ -1745,9 +1748,8 @@ for each unit."))
                                                  self._app.ProgCnx,
                                                  commit=True)
 
-            # Find the ID of the last dataset to be created.  This is the
-            # value that will be written to the fld_dtaset_id field in the
-            # tbl_survival_data table.
+# Find the ID of the last dataset to be created.  This is the value that will
+# be written to the fld_dtaset_id field in the tbl_survival_data table.
             if(_conf.BACKEND == 'mysql'):
                 query = "SELECT LAST_INSERT_ID()"
             elif(_conf.BACKEND == 'sqlite3'):
@@ -1791,7 +1793,8 @@ for each unit."))
                   _status, 1, str(_data_set[0][0]),
                   str(_data_set[0][1][0]), '', '', float(_tbf), 0)
 
-        # Insert the first data set record.
+# Insert the first data set record.
+# TODO: Revise the following queries to include inserting the hardware id.
         if(self.optDatabase.get_active()):
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_survival_data \
@@ -1819,13 +1822,13 @@ for each unit."))
                     str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
                     '\t ' + '\t ' + '\t' + str(_tbf) + '0' + '\n')
 
-        _unit = _data_set[0][0]
+        _unit = _data_set[0][0]             # Get the first unit.
         for i in range(1, len(_data_set)):
-            if(_data_set[0][1][2]):
+            if(_data_set[i][1][2]):
                 _status = "Event"
-            elif(_data_set[0][1][3]):
+            elif(_data_set[i][1][3]):
                 _status = "Right Censored"
-            elif(_data_set[0][1][7]):
+            elif(_data_set[i][1][7]):
                 _status = "Interval Censored"
             else:
                 _status = "Interval Censored"
@@ -1863,9 +1866,10 @@ for each unit."))
         except UnboundLocalError:
             pass
 
-        # Load the dataset gtk.TreeView with the newly created dataset.
+# Load the dataset gtk.TreeView with the newly created dataset.
         self._app.DATASET.load_tree()
-        self._app.winTree.notebook.set_current_page(7)
+        _page = sum(_conf.RELIAFREE_MODULES[:11])
+        self._app.winTree.notebook.set_current_page(_page - 1)
 
         return False
 

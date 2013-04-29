@@ -43,6 +43,7 @@ if(name == 'posix'):
         from rpy2.robjects import r as R
         from rpy2.robjects.packages import importr
         import rpy2.rlike.container as rlc
+        import rpy2.rinterface as ri
         __USE_RPY__ = False
         __USE_RPY2__ = True
     except ImportError:
@@ -356,8 +357,8 @@ def calculate_hardware(treemodel, row, application):
         maf = treemodel.get_value(row, 57)
         pwrdiss = treemodel.get_value(row, 83)
 
-        # Calculate component hazard rates.  Determine the type of hazard
-        # rate calculation that needs to be performed.
+# Calculate component hazard rates.  Determine the type of hazard rate
+# calculation that needs to be performed.
         if(hr_type == 1):               # Assessed.
             if(treemodel.get_value(row, 63) == 0):      # Assembly
                 lambdaa = 0.0
@@ -366,7 +367,7 @@ def calculate_hardware(treemodel, row, application):
                 treemodel.set_value(row, 60, False)
                 icon = _conf.ICON_DIR + '32x32/assembly.png'
                 icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
-                treemodel.set_value(row, 91, icon)
+                treemodel.set_value(row, 95, icon)
 
             elif(treemodel.get_value(row, 63) == 1):    # Component
                 # Get the partlist full model and row associated with the selected
@@ -2092,6 +2093,22 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     return(lambdad)
 
 
+def moving_average(_data_, n=3):
+    """
+    Function to calculate the moving average of a dataset.
+
+    Keyword Arguments:
+    _data_ -- the dataset for which to find the moving average.
+    n      -- the desired period.
+    """
+
+    import numpy as np
+
+    _cumsum_ = np.cumsum(_data_, dtype=float)
+
+    return (_cumsum_[n - 1:] - _cumsum_[:1 - n]) / n
+
+
 def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.
@@ -2133,14 +2150,12 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
-    _dataset_ = [i for i in _dataset_ if i[0] > 0.0]
+    _dataset_ = [i for i in _dataset_ if i[0] >= 0.0]
     if(_reltime_ != 0.0):
         _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
         times = [i[0] for i in _dataset_ if i[0] <= _reltime_]
         times2 = [i[1] for i in _dataset_ if i[0] <= _reltime_]
         status = [i[2] for i in _dataset_ if i[0] <= _reltime_]
-
-    units = [i[3] for i in _dataset_]
 
     for i in range(len(status)):
         if(status[i] == "Right Censored"):
@@ -2190,7 +2205,6 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         #units = robjects.StrVector(units)
         #survr = survrec.Survr(units, times2, status2)
         #fit = survrec.wc_fit(survr)
-        #print fit
 
         return(_KM_)
 
@@ -2352,12 +2366,15 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
     _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
-    #_dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
+    _dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
 
     if(__USE_RPY__):
         print "Probably using Windoze."
 
     elif(__USE_RPY2__):
+
+        Rbase = importr('base')
+
         if(_fitmeth_ == 1):                 # MLE
             if(_dist_ == 'exponential'):
                 _dist_ = 'exp'
@@ -2373,19 +2390,25 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
                     right[i] = 'NA'
                 elif(_dataset_[i][4] == 1):
                     left[i] = right[i]
-                elif(_dataset_[4] == 2):
+                elif(_dataset_[i][4] == 2):
                     left[i] = 'NA'
 
             od = rlc.OrdDict([('left', robjects.FloatVector(left)),
                               ('right', robjects.FloatVector(right))])
 
             censdata = robjects.DataFrame(od)
-
-            fitdistrplus = importr('fitdistrplus')
-
-            fit = fitdistrplus.fitdistcens(censdata, _dist_)
-            #para=R.list(scale=fit[0][1], shape=fit[0][0])
-            #fitdistrplus.plotdistcens(censdata, _dist_, para)
+            n_row = Rbase.nrow(censdata)
+            if(n_row[0] > 1):
+                fitdistrplus = importr('fitdistrplus')
+                try:
+                    fit = fitdistrplus.fitdistcens(censdata, _dist_)
+                except ri.RRuntimeError:
+                    return(True)
+                    return(True)
+                #para=R.list(scale=fit[0][1], shape=fit[0][0])
+                #fitdistrplus.plotdistcens(censdata, _dist_, para)
+            else:
+                return(True)
 
         elif(_fitmeth_ == 2):               # Regression
             if(_dist_ == 'normal'):
@@ -2430,7 +2453,7 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
     transition times.
 
     Keyword aAguments:
-    _dtaset_    -- the dataset to perform the search on.
+    _dataset_    -- the dataset to perform the search on.
     _starttime_ -- the time to start the search.
     _endtime_   -- the time to end the search.
     _step_      -- how large the time increment should be.
@@ -2441,34 +2464,74 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
     end = int(_reltime_)
 
     # Initialize list variables.
-    scale = [0]
-    deltascale = []
-    shape = [0]
-    deltashape = []
     times = []
+    scale = [0]
+    shape = [0]
+    deltascale = []
+    deltashape = []
 
     for i in range(start, end, _step_):
+        fit = parametric_fit(_dataset_, i, end, 1, _dist_='weibull')
+
+        if(fit is True):
+            continue
+
+        j = int(((i - _starttime_) / _step_)) + 1
         try:
-            fit = parametric_fit(_dataset_, start, end, 1, _dist_='weibull')
-            scale.append(fit[0][1])
             shape.append(fit[0][0])
-        except:
-            scale.append(scale[i - 1])
-            shape.append(shape[i - 1])
-
-        try:
-            delta = (scale[i] - scale[i - 1]) / scale[i - 1]
+            scale.append(fit[0][1])
+            _deltascale = (scale[j] - scale[j - 1]) / scale[j - 1]
+            _deltashape = (shape[j] - shape[j - 1]) / shape[j - 1]
         except ZeroDivisionError:
-            delta = 0.0
-        deltascale.append(delta)
-
-        try:
-            delta = (shape[i] - shape[i - 1]) / shape[i - 1]
-        except ZeroDivisionError:
-            delta = 0.0
-        deltashape.append(delta)
+            try:
+                _deltascale = deltascale[j - 1]
+                _deltashape = deltashape[j - 1]
+            except IndexError:
+                _deltascale = 0.0
+                _deltashape = 0.0
+        except IndexError:
+            print i, j
+            _deltascale = 0.0
+            _deltashape = 0.0
+        deltascale.append(_deltascale * 100.0)
+        deltashape.append(_deltashape * 100.0)
 
         times.append(i)
-        start += _step_
 
     return(scale, deltascale, shape, deltashape, times)
+
+
+def theoretical_distribution(_data_, _distr_, _para_):
+
+
+    Rbase = importr('base')
+
+# Create the R density and probabilty distribution names.
+    ddistname = R.paste('d', _distr_, sep='')
+    pdistname = R.paste('p', _distr_, sep='')
+
+# Calculate the minimum and maximum values for x.
+    xminleft = min([i[0] for i in _data_ if i[0] != 'NA'])
+    xminright = min([i[1] for i in _data_ if i[1] != 'NA'])
+    xmin = min(xminleft, xminright)
+
+    xmaxleft = max([i[0] for i in _data_ if i[0] != 'NA'])
+    xmaxright = max([i[1] for i in _data_ if i[1] != 'NA'])
+    xmax = max(xmaxleft, xmaxright)
+
+    xrange = xmax - xmin
+    xmin = xmin - 0.3 * xrange
+    xmax = xmax + 0.3 * xrange
+
+# Creat a list of probabilities for the theoretical distribution with the
+# estimated parameters.
+    den = float(len(_data_))
+    densfun = R.get(ddistname, mode='function')
+    nm = R.names(_para_)
+    f = R.formals(densfun)
+    args = R.names(f)
+    m = R.match(nm, args)
+    s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
+    theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))
+
+    return(theop)

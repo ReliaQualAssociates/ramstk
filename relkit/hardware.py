@@ -154,12 +154,11 @@ class Hardware:
         self.model.clear()
         self.selected_row = None
 
-        # Create an empty dictionary to hold the Assembly ID/Hardware Tree
-        # treemodel paths.  This is used to keep the Hardware Tree and the
-        # Parts List in sync.
+# Create an empty dictionary to hold the Assembly ID/Hardware Tree treemodel
+# paths.  This is used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
 
-        # Load the model with the returned results.
+# Load the model with the returned results.
         for i in range(n_assemblies):
 
             if(results[i][62] == '-'):          # Its the top level element.
@@ -168,10 +167,9 @@ class Hardware:
             elif(results[i][62] != '-'):        # Its a child element.
                 piter = self.model.get_iter_from_string(results[i][62])
 
-            # Select the image to display.  If there is a problem with the
-            # part (overstressed, etc.), display the !.  If it is an assembly,
-            # display the assembly icon.  If it is a part, display the part
-            # icon.
+# Select the image to display.  If there is a problem with the part
+# (overstressed, etc.), display the !.  If it is an assembly, display the
+# assembly icon.  If it is a part, display the part icon.
             if(results[i][60] == 1):
                 icon = _conf.ICON_DIR + '32x32/overstress.png'
             elif(results[i][63] == 0):

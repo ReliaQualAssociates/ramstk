@@ -54,7 +54,7 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
-#from _assistants_.dataset import *
+from _assistants_.dataset import *
 
 # Add localization support.
 import locale
@@ -171,6 +171,9 @@ class Dataset:
         self.cmbFitMethod = _widg.make_combo()
         self.cmbSource = _widg.make_combo()
 
+        self.lblFitMethod = _widg.make_label(self._ai_tab_labels[4], 150, 25)
+        self.lblConfMethod = _widg.make_label(self._ai_tab_labels[7], 150, 25)
+
         self.tvwDataset = gtk.TreeView()
         self.tvwDataset.set_search_column(0)
         self.tvwDataset.set_reorderable(True)
@@ -274,6 +277,11 @@ class Dataset:
 
         if self._plot_tab_create():
             self._app.debug_log.error("dataset.py: Failed to create Plot tab.")
+
+        self.btnAssign = _widg.make_button(_width_=100, _label_="Assign",
+                                           _image_=None)
+        self.btnCancel = _widg.make_button(_width_=100, _label_="Cancel",
+                                           _image_=None)
 
         self.vbxDataset = gtk.VBox()
         toolbar = self._toolbar_create()
@@ -387,7 +395,7 @@ class Dataset:
         image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         button.set_icon_widget(image)
         button.set_name('Assign')
-        button.connect('clicked', self._assign_results)
+        button.connect('clicked', AssignResults, self._app)
         button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to \
 the selected assembly."))
         toolbar.insert(button, 5)
@@ -574,8 +582,7 @@ calculate reliability metrics."))
         fixed.put(self.cmbDistribution, 160, y_pos)
         y_pos += 35
 
-        label = _widg.make_label(self._ai_tab_labels[4], 150, 25)
-        fixed.put(label, 5, y_pos)
+        fixed.put(self.lblFitMethod, 5, y_pos)
         fixed.put(self.cmbFitMethod, 160, y_pos)
         y_pos += 35
 
@@ -589,8 +596,7 @@ calculate reliability metrics."))
         fixed.put(self.cmbConfType, 160, y_pos)
         y_pos += 35
 
-        label = _widg.make_label(self._ai_tab_labels[7], 150, 25)
-        fixed.put(label, 5, y_pos)
+        fixed.put(self.lblConfMethod, 5, y_pos)
         fixed.put(self.cmbConfMethod, 160, y_pos)
         y_pos += 35
 
@@ -665,14 +671,6 @@ dataset."))
             str(self.model.get_value(self.selected_row, 10)))
         self.txtStartTime.set_text(
             str(self.model.get_value(self.selected_row, 34)))
-
-        if(self.model.get_value(self.selected_row, 4) == 1 or
-           self.model.get_value(self.selected_row, 4) == 2):
-            self.cmbConfMethod.hide()
-            self.cmbFitMethod.hide()
-        else:
-            self.cmbConfMethod.show()
-            self.cmbFitMethod.show()
 
         self._load_dataset_tree()
 
@@ -1227,7 +1225,7 @@ dataset."))
 
         if(y1 is not None):
             if(_type_[0] == 1):
-                line, = axis.step(x, y1, _marker_[0], where='mid', drawstyle='steps')
+                line, = axis.step(x, y1, _marker_[0], where='mid')
                 for i in range(n_points):
                     line.set_ydata(y1)
             elif(_type_[0] == 2):
@@ -1383,6 +1381,10 @@ selected survival data record(s)."), 600, 250)
                                              None,
                                              self._app.ProgCnx)
 
+        censdata = []
+        for i in range(len(results)):
+            censdata.append([results[i][1], results[i][2]])
+
 # Initialize variables.
         n_suspensions = 0
         n_failures = 0
@@ -1428,24 +1430,24 @@ selected survival data record(s)."), 600, 250)
                                            _reltime_, _step_)
 
 # Plot the estimated eta value versus starting time.
-            __title__ = _(u"Change in Eta")
+            __title__ = _(u"Percent Change in Eta")
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=deltascale,
                             _title_=__title__,
-                            _xlab_=_(u"t0"),
-                            _ylab_=_(u"Change in Eta"),
+                            _xlab_=_(u"Start Time (t0)"),
+                            _ylab_=_(u"% Change in Eta"),
                             _type_=[2],
-                            _marker_=['g'])
+                            _marker_=['g-'])
 
 # Plot the estimated beta value versus starting time.
-            __title__ = _(u"Change in Beta")
+            __title__ = _(u"Percent Change in Beta")
             self._load_plot(self.axAxis2, self.pltPlot2,
                             x=times, y1=deltashape,
                             _title_=__title__,
-                            _xlab_=_(u"t0"),
-                            _ylab_=_(u"Change in Beta "),
+                            _xlab_=_(u"Start Time (t0)"),
+                            _ylab_=_(u"% Change in Beta "),
                             _type_=[2],
-                            _marker_=['g'])
+                            _marker_=['g-'])
 
 # Plot the change in the Weibull scale parameter (eta) as a function of
 # minimum and/or maximum operating times.
@@ -1708,7 +1710,10 @@ selected survival data record(s)."), 600, 250)
 # Perform a Kaplan-Meier analysis.
 # =========================================================================== #
         elif(_analysis_ == 2):              # Kaplan-Meier
-            query = "SELECT fld_left_interval, fld_right_interval, fld_status, fld_unit \
+# TODO: Revise tbl_dataset to include a field for the hardware id.
+# TODO: Revise the following query to include the hardware id field that will be added.
+            query = "SELECT fld_left_interval, fld_right_interval, \
+                            fld_status, fld_unit \
                      FROM tbl_survival_data \
                      WHERE fld_dataset_id=%d \
                      AND fld_right_interval >= %f \
@@ -1796,9 +1801,14 @@ selected survival data record(s)."), 600, 250)
                     logHll.append(log(_Hll_[i]))
                     logHul.append(log(_Hul_[i]))
                 except ValueError:
-                    logH.append(0.0)
-                    logHll.append(0.0)
-                    logHul.append(0.0)
+                    try:
+                        logH.append(logH[i - 1])
+                        logHll.append(logHll[i - 1])
+                        logHul.append(logHul[i - 1])
+                    except IndexError:
+                        logH.append(0.0)
+                        logHll.append(0.0)
+                        logHul.append(0.0)
 
                 zShat.append(norm.ppf(Shat[i]))
                 _h_.append(_H_[i] / times[i])
@@ -1823,8 +1833,13 @@ selected survival data record(s)."), 600, 250)
                 A.append(S[i] * (tr[i + 1] - tr[i]))
 
             for i in range(len(A)):
-                A[i] = sum(A[i:])**2 / \
-                    ((n_points - r[i]) * (n_points - r[i] + 1))
+                try:
+                    A[i] = sum(A[i:])**2 / \
+                        ((n_points - r[i]) * (n_points - r[i] + 1))
+                except ZeroDivisionError:
+                    A[i] = A[i - 1]
+                except IndexError:
+                    A[i] = 0.0
 
             try:
                 var_mu = (n_failures / (n_failures - 1)) * sum(A)
@@ -1889,14 +1904,32 @@ Lower\nBound</span>"))
                             _ylab_=_("Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
+            # Create the legend.
+            leg = self.axAxis1.legend(('Survival Function [S(t)]',
+                                       'Lower CB', 'Upper CB'), 'upper right',
+                                       shadow=True)
+            for t in leg.get_texts():
+                t.set_fontsize('small')
+            for l in leg.get_lines():
+                l.set_linewidth(0.5)
+
 # Plot the hazard rate curve with confidence bounds.
             self._load_plot(self.axAxis3, self.pltPlot3,
-                            x=times, y1=_h_,
-                            y2=_hll_, y3=_hul_,
+                            x=times[1:], y1=_h_[1:],
+                            y2=_hll_[1:], y3=_hul_[1:],
                             _title_=_("Hazard Rate Plot of %s") % _name,
                             _xlab_=_("Time"),
                             _ylab_=_("Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
+
+            # Create the legend.
+            leg = self.axAxis3.legend(('Hazard Rate [h(t)]',
+                                       'Lower CB', 'Upper CB'), 'upper right',
+                                       shadow=True)
+            for t in leg.get_texts():
+                t.set_fontsize('small')
+            for l in leg.get_lines():
+                l.set_linewidth(0.5)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
@@ -1913,14 +1946,32 @@ Lower\nBound</span>"))
                             _ylab_=_("Cumulative Hazard Function [H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
+            # Create the legend.
+            leg = self.axAxis2.legend(('Cum. Hazard Function [H(t)]',
+                                       'Lower CB', 'Upper CB'), 'upper left',
+                                       shadow=True)
+            for t in leg.get_texts():
+                t.set_fontsize('small')
+            for l in leg.get_lines():
+                l.set_linewidth(0.5)
+
 # Plot the log cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis4, self.pltPlot4,
-                            x=logtimes, y1=logH,
+                            x=logtimes, y1=logH[:len(logtimes)],
                             y2=logHll, y3=logHul,
-                            _title_=_("Log Hazard Plot of %s") % _name,
+                            _title_=_("Log Cum. Hazard Plot of %s") % _name,
                             _xlab_=_("log(Time)"),
-                            _ylab_=_("Log Hazard Function [log H(t)] "),
+                            _ylab_=_("Log Cum. Hazard Function [log H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
+
+            # Create the legend.
+            leg = self.axAxis4.legend(('Log Cum. Hazard Function [log H(t)]',
+                                       'Lower CB', 'Upper CB'), 'upper left',
+                                       shadow=True)
+            for t in leg.get_texts():
+                t.set_fontsize('small')
+            for l in leg.get_lines():
+                l.set_linewidth(0.5)
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
@@ -1954,6 +2005,9 @@ Lower\nBound</span>"))
             MTBF = 1.0 / scale
             MTBFLL = 1.0 / scaleul
             MTBFUL = 1.0 / scalell
+
+            para = R.list(rate=scale)
+            _theop_ = _calc.theoretical_distribution(censdata, 'exp', para)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
@@ -2016,6 +2070,9 @@ Lower\nBound</span>"))
             MTBFLL = exp(scalell + 0.5 * shapell**2.0)
             MTBFUL = exp(scaleul + 0.5 * shapeul**2.0)
 
+            para = R.list(sdlog=shape, meanlog=scale)
+            _theop_ = _calc.theoretical_distribution(censdata, 'lnorm', para)
+
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
@@ -2076,6 +2133,9 @@ Lower\nBound</span>"))
             MTBFLL = scalell
             MTBFUL = scaleul
 
+            para = R.list(sd=shape, mean=scale)
+            _theop_ = _calc.theoretical_distribution(censdata, 'norm', para)
+
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
@@ -2126,10 +2186,7 @@ Lower\nBound</span>"))
                     MTBFLL = scalell * R.gamma(1.0 + (1.0 / shapell))[0]
                     MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapeul))[0]
 
-                para = R.list(shape=fit[0][0], scale=fit[0][1])
-                censdata = fit[6]
-
-            elif(_fitmeth_ == 2):
+            elif(_fitmeth_ == 2):           # Regression
                 scale = exp(fit[1][0])
                 shape = exp(fit[1][1])
                 scalescale = fit[2][0]
@@ -2146,33 +2203,14 @@ Lower\nBound</span>"))
                     MTBFLL = scalell * R.gamma(1.0 + (1.0 / shapeul))[0]
                     MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapell))[0]
 
+            para = R.list(shape=shape, scale=scale)
+            _theop_ = _calc.theoretical_distribution(censdata, 'weibull', para)
+
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qweibull(R.ppoints(Rtimes), shape=shape,
                                 scale=scale), Rtimes, False)
-
-            xminleft = min([i[0] for i in censdata if i[0] != 'NA'])
-            xminright = min([i[1] for i in censdata if i[1] != 'NA'])
-            xmin = min(xminleft, xminright)
-
-            xmaxleft = max([i[0] for i in censdata if i[0] != 'NA'])
-            xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
-            xmax = max(xmaxleft, xmaxright)
-
-            xrange = xmax - xmin
-            xmin = xmin - 0.3 * xrange
-            xmax = xmax + 0.3 * xrange
-
-            rbase = importr('base')
-            den = float(len(censdata))
-            densfun = R.get('dweibull', mode='function')
-            nm = R.names(para)
-            f = R.formals(densfun)
-            args = R.names(f)
-            m = R.match(nm, args)
-            s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
-            theop = rbase.do_call('pweibull', R.c(R.list(s), para))
 
 # Display the widgets we need.
             self.lblRowShape.show()
@@ -2213,32 +2251,20 @@ Lower\nBound</span>"))
                             _type_=[3],
                             _marker_=['g'])
 
-# Plot the observed CDF with the theoretical CDF overlain.
-#            (x, y, theop) = self.plotdistcens(censdata, 'weibull', para)
-#            __title__ = _(u"Density Estimate of Interarrival Times for %s") \
-#                % _name
-#            _dens_ = R.density(Rtimes)
-#            self._load_plot(self.axAxis2, self.pltPlot2,
-#                            x=x, y1=y, y2=theop[1:],
-#                            _title_=__title__,
-#                            _xlab_=_(u""),
-#                            _ylab_=_(u"f(t) "),
-#                            _type_=[1, 2],
-#                            _marker_=['g', 'r'])
-
 # Plot an ECDF of interarrival times.
             Rstats = importr('stats')
             Fn = Rstats.ecdf(Rtimes)
             ecdf = Fn(Rtimes)
+
             __title__ = _(u"Empirical CDF of Interarrival Times for %s") \
                 % _name
             self._load_plot(self.axAxis3, self.pltPlot3,
-                            x=Rtimes, y1=ecdf, y2=theop,
+                            x=Rtimes, y1=ecdf, y2=_theop_[1:],
                             _title_=__title__,
                             _xlab_=_(u"t"),
                             _ylab_=_(u"F(t) "),
                             _type_=[1, 2],
-                            _marker_=['b-', 'r-'])
+                            _marker_=['b-', 'r:'])
 
 # Plot the probability plot of interarrival times.
             __title__ = _(u"Probability Plot of Interarrival Times for %s ") \
@@ -2260,7 +2286,7 @@ Lower\nBound</span>"))
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
-            self.vbxPlot2.pack_start(self.pltPlot2)
+            #self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
 
         if(_RELTIME_):
@@ -2456,86 +2482,6 @@ Lower\nBound</span>"))
 
         return False
 
-    def _assign_results(self, button):
-        """
-        Assigns the MTBF and failure rateresults to the assembly associated
-        with the dataset.  Values are assigned to the specified fields.
-
-        Keyword Arguments:
-        button -- the gtk.Button widget that called this function.
-        """
-
-        height = int(self._app.winWorkBook.height)
-        width = int(self._app.winWorkBook.width / 2.0)
-
-        # Gather a list of existing assemblies and revision names from the
-        # open RelKit project database.
-        query = "SELECT t1.fld_description, t2.fld_name, t1.fld_assembly_id \
-                 FROM tbl_system AS t1 \
-                 INNER JOIN tbl_revisions AS t2 \
-                 WHERE t1.fld_revision_id=t2.fld_revision_id"
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
-
-        if(results == '' or not results):
-            return True
-
-        n_assemblies = len(results)
-
-        window = gtk.Window()
-        window.set_skip_pager_hint(True)
-        window.set_skip_taskbar_hint(True)
-        window.set_default_size(width, height)
-        window.set_border_width(5)
-        window.set_position(gtk.WIN_POS_NONE)
-
-        # Create a gtk.ListStore to hold the results of the query.
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
-                              gobject.TYPE_INT)
-
-        for i in range(n_assemblies):
-            model.append(results[i])
-
-        treeview = gtk.TreeView(model)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Assembly"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
-        treeview.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Revision"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
-        treeview.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Assembly ID"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
-
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.add_with_viewport(treeview)
-
-        window.add(scrollwindow)
-
-        window.show_all()
-
-        return False
-
     def _callback_combo(self, combo, _index_):
         """
         Callback function to retrieve and save combobox changes.
@@ -2565,11 +2511,15 @@ Lower\nBound</span>"))
 
         if(_index_ == 4):
             if(_text_ == 1 or _text_ == 2): # MCF or Kaplan-Meier
-                self.cmbConfMethod.hide()
+                self.lblFitMethod.hide()
+                self.lblConfMethod.hide()
                 self.cmbFitMethod.hide()
+                self.cmbConfMethod.hide()
             else:
-                self.cmbConfMethod.show()
+                self.lblFitMethod.show()
+                self.lblConfMethod.show()
                 self.cmbFitMethod.show()
+                self.cmbConfMethod.show()
 
             if(_text_ == 7):                # WeiBayes
                 dialog = _widg.make_dialog(_(u"RelKit Information"),
@@ -2689,6 +2639,19 @@ Lower\nBound</span>"))
         if self.selected_row is not None:
             self.dataset_id = self.model.get_value(self.selected_row, 0)
             self.load_notebook()
+
+            if(self.model.get_value(self.selected_row, 4) == 1 or
+               self.model.get_value(self.selected_row, 4) == 2):
+                self.lblFitMethod.hide()
+                self.lblConfMethod.hide()
+                self.cmbFitMethod.hide()
+                self.cmbConfMethod.hide()
+            else:
+                self.lblFitMethod.show()
+                self.lblConfMethod.show()
+                self.cmbFitMethod.show()
+                self.cmbConfMethod.show()
+
             return False
         else:
             return True
@@ -2786,88 +2749,3 @@ Lower\nBound</span>"))
         self.notebook.set_current_page(0)
 
         return False
-
-    def plotdistcens(self, _data_, distr, para):
-
-        import operator
-
-        rbase = importr('base')
-        rgraphics = importr('graphics')
-
-        n = len(_data_[0])
-        censdata = []
-        for i in range(n):
-            censdata.append([_data_[0][i], _data_[1][i]])
-
-# Create a list with left censored data.
-        lcens = [i[1] for i in censdata if i[0] == 'NA']
-        ordlcens = R.order(robjects.FloatVector(lcens))
-        nlcens = len(lcens)
-
-# Create a list with right censored data.
-        rcens = [i[0] for i in censdata if i[1] == 'NA']
-        ordrcens = R.order(robjects.FloatVector(rcens))
-        nrcens = len(rcens)
-
-# Create a list with interval censored and exact failure time data.
-        noricens = [i for i in censdata if i[0] != 'NA' and i[1] != 'NA']
-        midnoricens = [(i[0] + i[1]) / 2.0 for i in noricens]
-        ordmid = R.order(robjects.FloatVector(midnoricens))
-        nnoricens = len(noricens)
-
-        xminleft = min([i[0] for i in censdata if i[0] != 'NA'])
-        xminright = min([i[1] for i in censdata if i[1] != 'NA'])
-        xmin = min(xminleft, xminright)
-
-        xmaxleft = max([i[0] for i in censdata if i[0] != 'NA'])
-        xmaxright = max([i[1] for i in censdata if i[1] != 'NA'])
-        xmax = max(xmaxleft, xmaxright)
-
-        xrange = xmax - xmin
-        xmin = xmin - 0.3 * xrange
-        xmax = xmax + 0.3 * xrange
-
-        x = []
-        y = []
-        if(nlcens >= 1):
-            for i in range(nlcens):
-                _temp_ = float(i + 1) / float(n)
-                diff = int(lcens[ordlcens[i]][1] - xmin)
-                for j in range(diff):
-                    x.append(xmin + j)
-                    y.append(_temp_)
-
-        if(nnoricens >= 1):
-            for i in range(nnoricens):
-                _temp_ = float((i + nlcens + 1)) / float(n)
-                diff = int(noricens[ordmid[i] - 1][1] - noricens[ordmid[i] - 1][0])
-                if (noricens[ordmid[i] - 1][0] != noricens[ordmid[i] - 1][1]):
-                    for j in range(diff):
-                        x.append(noricens[ordmid[i] - 1][0] + j)
-                        y.append(_temp_)
-                else:
-                    x.append(noricens[ordmid[i] - 1][0])
-                    y.append(_temp_)
-
-        if(nrcens >= 1):
-            for i in range(nrcens):
-                _temp_ = float((i + nlcens + nnoricens + 1)) / float(n)
-                diff = int(xmax - rcens[ordrcens[i]][1])
-                for j in range(diff):
-                    x.append(rcens[ordrcens[i]] + j)
-                    y.append(_temp_)
-
-# Add the theoretical distribution if one is specified.
-        if(distr != '' and distr is not None):
-            den = float(len(x))
-            ddistname = R.paste('d', distr, sep='')
-            pdistname = R.paste('p', distr, sep='')
-            densfun = R.get(ddistname, mode='function')
-            nm = R.names(para)
-            f = R.formals(densfun)
-            args = R.names(f)
-            m = R.match(nm, args)
-            s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
-            theop = rbase.do_call(pdistname, R.c(R.list(s), para))
-
-        return(x, y, theop)

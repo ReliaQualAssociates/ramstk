@@ -581,15 +581,14 @@ class Revision:
         widget -- the widget that called this method.
         """
 
-        # Create the revision code.
+# Create the revision code.
         _code = str(_conf.RELIAFREE_PREFIX[0]) + ' ' + str(_conf.RELIAFREE_PREFIX[1])
 
-        # Increment the revision index.
+# Increment the revision index.
         _conf.RELIAFREE_PREFIX[1] = _conf.RELIAFREE_PREFIX[1] + 1
 
-        # First we add the new revision.  Second we retrieve thew new revision
-        # id.  Third, we create a new, top-level system entry for this
-        # revision.
+# First we add the new revision.  Second we retrieve thew new revision id.
+# Third, we create a new, top-level system entry for this revision.
         values = ('New Revision', '', _code)
 
         if(_conf.BACKEND == 'mysql'):
@@ -620,11 +619,11 @@ class Revision:
                                                  self._app.ProgCnx)
 
 
-        # Create the default description of the assembly.
+# Create the default description of the assembly.
         _descrip = str(_conf.RELIAFREE_PREFIX[4]) + ' ' + \
                    str(_conf.RELIAFREE_PREFIX[5])
 
-        # Increment the assembly index.
+# Increment the assembly index.
         _conf.RELIAFREE_PREFIX[5] = _conf.RELIAFREE_PREFIX[5] + 1
 
         query="SELECT fld_parent_assembly, fld_description \
@@ -634,19 +633,28 @@ class Revision:
                                              self._app.ProgCnx)
 
         for i in range(len(systems)):
-            values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
-                      systems[i][0], systems[i][1])
-
             if(_conf.BACKEND == 'mysql'):
+                values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
+                          systems[i][0], systems[i][1])
                 query = "INSERT INTO tbl_system \
                          (fld_revision_id, fld_entered_by, \
                           fld_parent_assembly, fld_description) \
                          VALUES (%d, '%s', '%s', '%s')"
             elif(_conf.BACKEND == 'sqlite3'):
+                query = "SELECT MAX(fld_assembly_id) \
+                         FROM tbl_system"
+                results = self._app.DB.execute_query(query,
+                                                     None,
+                                                     self._app.ProgCnx)
+                assembly_id = int(results[0][0]) + 1
+                values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
+                          systems[i][0], systems[i][1], assembly_id)
+
                 query = "INSERT INTO tbl_system \
                          (fld_revision_id, fld_entered_by, \
-                          fld_parent_assembly, fld_description) \
-                         VALUES (?, ?, ?, ?)"
+                          fld_parent_assembly, fld_description, \
+                          fld_assembly_id) \
+                         VALUES (?, ?, ?, ?, ?)"
 
             results = self._app.DB.execute_query(query,
                                                  values,
@@ -659,19 +667,20 @@ class Revision:
 
             if(_conf.BACKEND == 'mysql'):
                 query = "SELECT LAST_INSERT_ID()"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT seq \
-                         FROM sqlite_sequence \
-                         WHERE name='tbl_system'"
+            #elif(_conf.BACKEND == 'sqlite3'):
+            #    query = "SELECT seq \
+            #             FROM sqlite_sequence \
+            #             WHERE name='tbl_system'"
 
-            assembly_id = self._app.DB.execute_query(query,
-                                                     None,
-                                                     self._app.ProgCnx)
+                assembly_id = self._app.DB.execute_query(query,
+                                                         None,
+                                                         self._app.ProgCnx)
+                assembly_id = assembly_id[0][0]
 
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to retrieve new assembly ID.")
+                if not results:
+                    self._app.debug_log.error("revision.py: Failed to retrieve new assembly ID.")
 
-            values = (revision_id[0][0], assembly_id[0][0])
+            values = (revision_id[0][0], assembly_id)
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_allocation \
                          (fld_revision_id, fld_assembly_id) \

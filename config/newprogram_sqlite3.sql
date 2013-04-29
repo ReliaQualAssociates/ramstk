@@ -407,7 +407,7 @@ CREATE TABLE "tbl_program_info" (
     "fld_rcm_active" TINYINT NOT NULL DEFAULT (1),
     "fld_fraca_active" TINYINT NOT NULL DEFAULT (1),
     "fld_fmeca_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_maintainability_active" TINYINT NOT NULL DEFAULT (1),
+    "fld_survival_active" TINYINT NOT NULL DEFAULT (1),
     "fld_rbd_active" TINYINT NOT NULL DEFAULT (1),
     "fld_fta_active" TINYINT NOT NULL DEFAULT (1),
     "fld_created_on" datetime DEFAULT NULL,
@@ -755,7 +755,8 @@ CREATE TABLE "tbl_survival_data" (
     "fld_market" VARCHAR(32),
     "fld_model" VARCHAR(32),
     "fld_tbf" FLOAT DEFAULT(0),
-    "fld_mode_type" INTEGER DEFAULT(1)
+    "fld_mode_type" INTEGER DEFAULT(1),
+    "fld_assembly_id" INTEGER DEFAULT (0)
 );
 
 CREATE TABLE "tbl_system" (
@@ -849,9 +850,13 @@ CREATE TABLE "tbl_system" (
     "fld_year_of_manufacture" INTEGER NOT NULL DEFAULT (2002),
     "fld_ht_model" VARCHAR(512) DEFAULT (''),
     "fld_reliability_goal_measure" INTEGER NOT NULL DEFAULT (0),
-    "fld_reliability_goal" REAL NOT NULL DEFAULT (1)
+    "fld_reliability_goal" REAL NOT NULL DEFAULT (1),
+    "fld_mtbf_lcl" REAL NOT NULL DEFAULT (0),
+    "fld_mtbf_ucl" REAL NOT NULL DEFAULT (0),
+    "fld_failure_rate_lcl" REAL NOT NULL DEFAULT (0),
+    "fld_failure_rate_ucl" REAL NOT NULL DEFAULT (0)
 );
-INSERT INTO "tbl_system" VALUES(0,0,0.0,0,'',0.0,'',1.0,1.0,'',1,0,'',0.0,0.0,0.0,1,'System',0.0,100.0,100.0,'',0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,'',0.0,'',0.0,0.0,'',0,-1,0.0,100.0,0.0,'',0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0,0.0,'','',0,'','-',0,'',0.0,0.0,1,'',0.0,0.0,'',0,0.0,0.0,1,0.0,'',0,0,0.0,0.0,0,0.0,0.0,0,'',2002,'',0,1.0);
+INSERT INTO "tbl_system" VALUES(0,0,0.0,0,'',0.0,'',1.0,1.0,'',1,0,'',0.0,0.0,0.0,1,'System',0.0,100.0,100.0,'',0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,'',0.0,'',0.0,0.0,'',0,-1,0.0,100.0,0.0,'',0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0,0.0,'','',0,'','-',0,'',0.0,0.0,1,'',0.0,0.0,'',0,0.0,0.0,1,0.0,'',0,0,0.0,0.0,0,0.0,0.0,0,'',2002,'',0,1.0,0.0,0.0,0.0,0.0);
 
 CREATE TABLE "tbl_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
