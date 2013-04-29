@@ -36,19 +36,18 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
-# Import R library if on a POSIX system.
-if(name == 'posix'):
-    try:
-        from rpy2 import robjects
-        from rpy2.robjects import r as R
-        from rpy2.robjects.packages import importr
-        import rpy2.rlike.container as rlc
-        import rpy2.rinterface as ri
-        __USE_RPY__ = False
-        __USE_RPY2__ = True
-    except ImportError:
-        __USE_RPY__ = False
-        __USE_RPY2__ = False
+# Import R library.
+try:
+    from rpy2 import robjects
+    from rpy2.robjects import r as R
+    from rpy2.robjects.packages import importr
+    import rpy2.rlike.container as rlc
+    import rpy2.rinterface as ri
+    __USE_RPY__ = False
+    __USE_RPY2__ = True
+except ImportError:
+    __USE_RPY__ = False
+    __USE_RPY2__ = False
 
 # Import other RelKit modules.
 import configuration as _conf
