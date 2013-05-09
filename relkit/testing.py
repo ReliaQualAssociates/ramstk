@@ -808,19 +808,14 @@ class Testing:
             else:
                 mtbfs.append((MTBFI * (times[i] / ti)**AvgGR) / (1.0 - AvgGR))
 
-            # Build teh planned curve.
-            T0 = sum(TPT[:j])
-            T1 = sum(TPT[:j+1])
-            if(times[i] < T0):
-                mtbfa.append(MTBFA[j])
-            elif(times[i] > T0 and times[i] < T1):
-                mtbfa.append(MTBFA[j])
-            elif(times[i] > T0 and times[i] <= T1):
+            # Build the planned curve.
+            T0 = int(sum(TPT[:j]))
+            T1 = int(sum(TPT[:j+1]))
+            if(int(times[i]) >= T0 and int(times[i]) < T1):
                 mtbfa.append(MTBFA[j])
             else:
                 mtbfa.append(np.nan)
                 j += 1
-
 
 # Plot the reliability growth program curves.
         __title__ = _(u"")
