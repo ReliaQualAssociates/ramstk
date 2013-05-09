@@ -1,0 +1,186 @@
+<!--
+-*- coding: utf-8 -*-
+
+      testing_format.xml is part of The RelKit Project
+
+      Copyright 2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+# All rights reserved.
+-->
+
+<!-- This file contains information used by the RelKit application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Testing">
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test ID</defaulttitle>
+            <usertitle>Test ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Name</defaulttitle>
+            <usertitle>Test Name</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Description</defaulttitle>
+            <usertitle>Test Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Type</defaulttitle>
+            <usertitle>Test Type</usertitle>
+            <datatype>gint</datatype>
+            <position>4</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Initial Program MTBF</defaulttitle>
+            <usertitle>Initial Program MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Final Program MTBF</defaulttitle>
+            <usertitle>Final Program MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Potential MTBF</defaulttitle>
+            <usertitle>Growth Potential MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Required Program MTBF</defaulttitle>
+            <usertitle>Required Program MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>8</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Consumer Risk</defaulttitle>
+            <usertitle>Consumer Risk</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Producer Risk</defaulttitle>
+            <usertitle>Producer Risk</usertitle>
+            <datatype>gfloat</datatype>
+            <position>10</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Plan Model</defaulttitle>
+            <usertitle>Growth Plan Model</usertitle>
+            <datatype>gint</datatype>
+            <position>11</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Assessment Model</defaulttitle>
+            <usertitle>Growth Plan Model</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Growth Phases</defaulttitle>
+            <usertitle>Number of Growth Phases</usertitle>
+            <datatype>gint</datatype>
+            <position>13</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Attachment</defaulttitle>
+            <usertitle>Attachment</usertitle>
+            <datatype>gchararray</datatype>
+            <position>14</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time</defaulttitle>
+            <usertitle>Total Test Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Average Growth Rate</defaulttitle>
+            <usertitle>Average Growth Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average MS</defaulttitle>
+            <usertitle>Average MS</usertitle>
+            <datatype>gfloat</datatype>
+            <position>17</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability of Seeing Failure</defaulttitle>
+            <usertitle>Probability of Seeing Failure</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Time to First Fix</defaulttitle>
+            <usertitle>Time to First Fix</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average FEF</defaulttitle>
+            <usertitle>Average FEF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

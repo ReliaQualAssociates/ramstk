@@ -1385,6 +1385,9 @@ class ImportIncident:
 
         from datetime import datetime
 
+        window = self.assistant.get_root_window()
+        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+
         model = self.tvwFileFields.get_model()
         row = model.get_iter_root()
 
@@ -1409,6 +1412,8 @@ class ImportIncident:
                         contents.append(self._file_contents[i][self._file_index[j]])
                     except IndexError:
                         contents.append('')
+
+            contents[14] = contents[14].lstrip('$')
 
             # Convert all the date fields to ordinal dates.
             contents[19] = _util.date_to_ordinal(contents[19])
@@ -1458,7 +1463,7 @@ class ImportIncident:
                           int(contents[6]), contents[7], contents[8],
                           int(contents[9]), contents[10], contents[11],
                           float(contents[12]), contents[13],
-                          float(contents[14].lstrip('$')), int(contents[15]),
+                          float(contents[14]), int(contents[15]),
                           int(contents[16]), int(contents[17]), contents[18],
                           int(contents[19]), int(contents[20]),
                           contents[21], int(contents[22]), int(contents[23]),
@@ -1527,6 +1532,8 @@ class ImportIncident:
         elif(_conf.BACKEND == 'sqlite3'):
             query = "SELECT * FROM tbl_incident\
                      WHERE fld_revision_id=?"
+
+        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
         self._app.INCIDENT.load_tree(query, values)
 
@@ -1661,6 +1668,9 @@ for each unit."))
         button -- the gtk.Button that called this method.
         """
 
+        window = self.assistant.get_root_window()
+        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+
         _parts = dict()
         _data_set = []
 
@@ -1781,11 +1791,22 @@ for each unit."))
             f.write("\n")
             f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\tMode Type\n")
 
-        if(_data_set[0][1][2]):
+        try:
+            _event = _data_set[0][1][2]
+            _right = _data_set[0][1][3]
+            _interval = _data_set[0][1][7]
+        except IndexError:
+            _event = 0
+            _right = 0
+            _interval = 1
+
+        if(_event):
             _status = "Event"
-        elif(_data_set[0][1][3]):
+        elif(_right):
             _status = "Right Censored"
-        elif(_data_set[0][1][7]):
+        elif(_interval):
+            _status = "Interval Censored"
+        else:
             _status = "Interval Censored"
 
         _tbf = float(_data_set[0][1][1])
@@ -1802,8 +1823,8 @@ for each unit."))
                           fld_right_interval, fld_status, fld_quantity, \
                           fld_unit, fld_part_num, fld_market, fld_model, \
                           fld_tbf, fld_mode_type) \
-                         VALUES (%d, %f, %f, '%s', %d, '%s', '%s', '%s', '%s', \
-                                 %f, %d)"
+                         VALUES (%d, %f, %f, '%s', %d, '%s', '%s', '%s', \
+                                 '%s', %f, %d)"
             elif(_conf.BACKEND == 'sqlite3'):
                 query = "INSERT INTO tbl_survival_data \
                          (fld_dataset_id, fld_left_interval, \
@@ -1824,11 +1845,20 @@ for each unit."))
 
         _unit = _data_set[0][0]             # Get the first unit.
         for i in range(1, len(_data_set)):
-            if(_data_set[i][1][2]):
+            try:
+                _event = _data_set[0][1][2]
+                _right = _data_set[0][1][3]
+                _interval = _data_set[0][1][7]
+            except IndexError:
+                _event = 0
+                _right = 0
+                _interval = 1
+
+            if(_event):
                 _status = "Event"
-            elif(_data_set[i][1][3]):
+            elif(_right):
                 _status = "Right Censored"
-            elif(_data_set[i][1][7]):
+            elif(_interval):
                 _status = "Interval Censored"
             else:
                 _status = "Interval Censored"
@@ -1865,6 +1895,8 @@ for each unit."))
             f.close()
         except UnboundLocalError:
             pass
+
+        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
 # Load the dataset gtk.TreeView with the newly created dataset.
         self._app.DATASET.load_tree()

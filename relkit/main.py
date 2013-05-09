@@ -28,6 +28,12 @@ import getpass
 import datetime
 import logging
 
+# We need to explicitly import the following module otherwise pyinstaller
+# won't pick it up and add it to the executable on Windows.
+if(os.name == 'nt'):
+    from scipy.sparse.csgraph import _validation
+
+
 # Add localization support.
 import gettext
 _ = gettext.gettext
@@ -52,6 +58,7 @@ from assembly import Assembly
 from component import Component
 from software import Software
 from dataset import Dataset
+from testing import Testing
 
 
 def main():
@@ -137,6 +144,7 @@ class RelKit:
         self.ASSEMBLY = Assembly(self)
         self.COMPONENT = Component(self)
         self.DATASET = Dataset(self)
+        self.TESTING = Testing(self)
 
         self.winTree = _tree.TreeWindow(self)
         self.winParts = _parts.PartsListWindow(self)
@@ -174,8 +182,10 @@ class RelKit:
             _conf.RELIAFREE_PREFIX.append(results[0][i + 1])
 
         # Find which modules are active in this project.
-        for i in range(9):
+        for i in range(10):
             _conf.RELIAFREE_MODULES.append(results[0][i + 19])
+            if results[0][i + 19] == 1:
+                _conf.RELKIT_PAGE_NUMBER.append(i)
 
         icon = _conf.ICON_DIR + '32x32/db-connected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
@@ -205,14 +215,20 @@ class RelKit:
         elif(_conf.RELIAFREE_MODULES[5] == 1):  # V&V Tracking
             self.VALIDATION.treeview.grab_focus()
 
+        elif(_conf.RELIAFREE_MODULES[6] == 1):  # Reliability Testing
+            self.TESTING.treeview.grab_focus()
+
+        #elif(_conf.RELIAFREE_MODULES[7] == 1):  # Maintenance Policy
+        #    self.MAINTENANCE.treeview.grab_focus()
+
         elif(_conf.RELIAFREE_MODULES[8] == 1):  # Field incident tracking
             self.INCIDENT.treeview.grab_focus()
 
         self.LOADED = True
 
-        self.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-        self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-        self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+        self.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
         self.winTree.statusbar.pop(2)
 
 if __name__ == '__main__':

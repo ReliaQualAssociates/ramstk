@@ -62,17 +62,17 @@ class Assembly:
     """
 
     # TODO: Add tooltips to all widgets.
-    _gd_tab_labels = [[_("Assembly Name:"), _("Part Number:"),
-                       _("Alternate Part #:"), "", "",
-                       _("Ref Designator:"), _("Composite Ref Des:"),
-                       _("Quantity:"), _("Description:")],
-                      [_("Specification:"), _("Page Number:"),
-                       _("Figure Number:"), _("Image File:"),
-                       _("Attachments:"), _("Mission Time:")],
-                      [_("Manufacturer:"), _("CAGE Code:"), _("LCN:"),
-                       _("NSN:"), _("Manufacture Year:")],
-                      [_("Revision ID:"), _("Repairable?"), _("Tagged?"),
-                       _("Remarks:")]]
+    _gd_tab_labels = [[_(u"Assembly Name:"), _(u"Part Number:"),
+                       _(u"Alternate Part #:"), "", "",
+                       _(u"Ref Designator:"), _(u"Composite Ref Des:"),
+                       _(u"Quantity:"), _(u"Description:")],
+                      [_(u"Specification:"), _(u"Page Number:"),
+                       _(u"Figure Number:"), _(u"Image File:"),
+                       _(u"Attachments:"), _(u"Mission Time:")],
+                      [_(u"Manufacturer:"), _(u"CAGE Code:"), _(u"LCN:"),
+                       _(u"NSN:"), _(u"Manufacture Year:")],
+                      [_(u"Revision ID:"), _(u"Repairable?"), _(u"Tagged?"),
+                       _(u"Remarks:")]]
     _al_tab_labels = [_("Measure:"), _("Reliability:"), _("MTTF/MTBF:"),
                       _("Failure Rate:"), _("Allocation Type:"),
                       _("Elements:"), _("Operating Time:")]
@@ -193,9 +193,9 @@ class Assembly:
 
         self.notebook.connect('switch-page', self._notebook_page_switched)
 
-        # Create generic toolbar action buttons.  These will call different
-        # methods or functions depending on the ASSEMBLY Object notebook tab
-        # that is selected.
+# Create generic toolbar action buttons.  These will call different
+# methods or functions depending on the ASSEMBLY Object notebook tab
+# that is selected.
         self.btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
         self.btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
         self.btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
@@ -358,8 +358,8 @@ class Assembly:
 
         toolbar = gtk.Toolbar()
 
-        # Add sibling assembly button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+# Add sibling assembly button.
+        button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
@@ -367,8 +367,8 @@ class Assembly:
         button.connect('clicked', self.assembly_add, 0)
         toolbar.insert(button, 0)
 
-        # Add child assembly button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+# Add child assembly button.
+        button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Adds a new assembly one indenture level subordinate to the selected assembly to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
@@ -376,8 +376,8 @@ class Assembly:
         button.connect('clicked', self.assembly_add, 1)
         toolbar.insert(button, 1)
 
-        # Delete assembly button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+# Delete assembly button
+        button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Removes the currently selected assembly from the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
@@ -387,8 +387,8 @@ class Assembly:
 
         toolbar.insert(gtk.SeparatorToolItem(), 3)
 
-        # Add item button.  Depending on the notebook page selected will
-        # determine what type of item is added.
+# Add item button.  Depending on the notebook page selected will determine
+# what type of item is added.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnAddItem.set_icon_widget(image)
@@ -396,8 +396,8 @@ class Assembly:
         self.btnAddItem.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnAddItem, 4)
 
-        # Remove item button.  Depending on the notebook page selected will
-        # determine what type of item is removed.
+# Remove item button.  Depending on the notebook page selected will determine
+# what type of item is removed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         self.btnRemoveItem.set_icon_widget(image)
@@ -405,8 +405,8 @@ class Assembly:
         self.btnRemoveItem.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnRemoveItem, 5)
 
-        # Perform analysis button.  Depending on the notebook page selected
-        # will determine which analysis is executed.
+# Perform analysis button.  Depending on the notebook page selected will
+# determine which analysis is executed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         self.btnAnalyze.set_icon_widget(image)
@@ -414,8 +414,8 @@ class Assembly:
         self.btnAnalyze.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnAnalyze, 6)
 
-        # Save results button.  Depending on the notebook page selected will
-        # determine which results are saved.
+# Save results button.  Depending on the notebook page selected will determine
+# which results are saved.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         self.btnSaveResults.set_icon_widget(image)
@@ -437,8 +437,8 @@ class Assembly:
         self.btnEdit.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnEdit, 9)
 
-        # Create an import button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+# Create an import button.
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
         button.set_icon_widget(image)
@@ -447,8 +447,8 @@ class Assembly:
         button.set_tooltip_text(_("Launches the hardware import assistant."))
         toolbar.insert(button, 10)
 
-        # Create an export button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+# Create an export button.
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
         button.set_icon_widget(image)
@@ -459,7 +459,7 @@ class Assembly:
 
         toolbar.show()
 
-        # Hide the toolbar buttons associated with specific analyses.
+# Hide the toolbar buttons associated with specific analyses.
         self.btnAddItem.hide()
         self.btnRemoveItem.hide()
         self.btnAnalyze.hide()
@@ -472,8 +472,8 @@ class Assembly:
     def _general_data_widgets_create(self):
         """ Method to create General Data widgets. """
 
-        # Quadrant 1 (upper left) widgets.  These widgets are used to
-        # display general information about the selected assembly.
+# Quadrant 1 (upper left) widgets.  These widgets are used to display general
+# information about the selected assembly.
         self.txtName.set_tooltip_text(_("Enter the name of the selected assembly."))
         self.txtName.connect('focus-out-event',
                              self._callback_entry, 'text', 58)
@@ -523,8 +523,8 @@ class Assembly:
 
         self.fxdGenDataQuad1.show_all()
 
-        # Quadrant 2 (upper right) widgets.  These widgets are used to
-        # display logistics information about the selected assembly.
+# Quadrant 2 (upper right) widgets.  These widgets are used to display
+# logistics information about the selected assembly.
         self.cmbManufacturer.set_tooltip_text(_("Select the manufacturer of the selected assembly."))
         self.cmbManufacturer.connect('changed',
                                      self._callback_combo, 43)
@@ -571,8 +571,8 @@ class Assembly:
 
         self.fxdGenDataQuad2.show_all()
 
-        # Quadrant 3 (lower left) widgets.  These widghet are used to
-        # display requirements information about the selected assembly.
+# Quadrant 3 (lower left) widgets.  These widget are used to display
+# requirements information about the selected assembly.
         self.txtSpecification.set_tooltip_text(_("Enter the governing specification for the selected assembly, if any."))
         self.txtSpecification.connect('focus-out-event',
                                       self._callback_entry, 'text', 77)
@@ -616,17 +616,15 @@ class Assembly:
 
         self.fxdGenDataQuad3.show_all()
 
-        # Quadrant 4 (lower right) widgets.  These widgets are used to
-        # display miscellaneous information about the selected assembly.
+# Quadrant 4 (lower right) widgets.  These widgets are used to display
+# miscellaneous information about the selected assembly.
         self.txtRevisionID.set_tooltip_text(_("Displays the currently selected revision."))
 
         self.chkRepairable.set_tooltip_text(_("Indicates whether or not the selected assembly is repairable."))
-        self.chkRepairable.connect('toggled',
-                                   self._callback_check, 75)
+        self.chkRepairable.connect('toggled', self._callback_check, 75)
 
         self.chkTagged.set_tooltip_text(_("Indicates whether or not the selected assembly is tagged."))
-        self.chkTagged.connect('toggled',
-                               self._callback_check, 79)
+        self.chkTagged.connect('toggled', self._callback_check, 79)
 
         y_pos = 5
         for i in range(len(self._gd_tab_labels[3])):
@@ -640,7 +638,7 @@ class Assembly:
         self.fxdGenDataQuad4.put(self.chkTagged, 155, y_pos)
         y_pos += 30
 
-        self.txtRemarks.set_tooltip_text(_("Enter any remarks associated with the selected assembly."))
+        self.txtRemarks.set_tooltip_text(_(u"Enter any remarks associated with the selected assembly."))
         self.txtRemarks.get_child().get_child().connect('focus-out-event',
                                                         self._callback_entry,
                                                         'text', 71)
@@ -658,12 +656,12 @@ class Assembly:
 
         hbox = gtk.HBox()
 
-        # Populate quadrant 1 (upper left).
+# Populate quadrant 1 (upper left).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdGenDataQuad1)
 
-        frame = _widg.make_frame(_label_=_("General Information"))
+        frame = _widg.make_frame(_label_=_(u"General Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -671,12 +669,12 @@ class Assembly:
 
         vpaned.pack1(frame, True, True)
 
-        # Populate quadrant 2 (lower left).
+# Populate quadrant 2 (lower left).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdGenDataQuad2)
 
-        frame = _widg.make_frame(_label_=_("Manufacturer Information"))
+        frame = _widg.make_frame(_label_=_(u"Manufacturer Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -684,25 +682,25 @@ class Assembly:
 
         hbox.pack_start(vpaned)
 
-        # Populate quadrant 3 (upper right).
+# Populate quadrant 3 (upper right).
         vpaned = gtk.VPaned()
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdGenDataQuad3)
 
-        frame = _widg.make_frame(_label_=_("Specification Information"))
+        frame = _widg.make_frame(_label_=_(u"Specification Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         vpaned.pack1(frame, True, True)
 
-        # Populate quadrant 4 (lower right).
+# Populate quadrant 4 (lower right).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdGenDataQuad4)
 
-        frame = _widg.make_frame(_label_=_("Miscellaneous Information"))
+        frame = _widg.make_frame(_label_=_(u"Miscellaneous Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -710,14 +708,14 @@ class Assembly:
 
         hbox.pack_start(vpaned)
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
-        _heading = _("General\nData")
+        _heading = _(u"General\nData")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays general information about the selected assembly."))
+        label.set_tooltip_text(_(u"Displays general information about the selected assembly."))
 
         self.notebook.insert_page(hbox,
                                   tab_label=label,
@@ -2468,6 +2466,13 @@ class Assembly:
 
         self.notebook.set_current_page(0)
 
+        self.btnAddItem.hide()
+        self.btnRemoveItem.hide()
+        self.btnAnalyze.hide()
+        self.btnSaveResults.hide()
+        self.btnRollup.hide()
+        self.btnEdit.hide()
+
         return False
 
     def _allocate(self):
@@ -3004,7 +3009,7 @@ Change cost is cost[1-8]\n \
 User float is uf[1-3]\n \
 User integer is ui[1-3]\n \
 Function result is res[1-5]\n\n \
-For example, pi1*pi2+pi3, multiplies the first change factors and adds the value to the third change factor."), 600, 250)
+For example, pi1*pi2+pi3, multiplies the first change factors and adds the value to the third change factor."), 600, 350)
         fixed.put(label, 5, y_pos)
         y_pos += 260
 

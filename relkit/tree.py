@@ -105,12 +105,10 @@ class TreeWindow(gtk.Window):
         self.scwRequirement = self._app.REQUIREMENT.create_tree()
         self.scwHardware = self._app.HARDWARE.create_tree()
         self.scwSoftware = self._app.SOFTWARE.create_tree()
+        self.scwTesting = self._app.TESTING.create_tree()
         # TODO: Implement Maintenance Policy tree.
         # This is just a placeholder for now.
         # self.scwMaintenance = self._app.MAINTENANCE.create_tree()
-        # TODO: Implement Reliability Testing tree.
-        # This is just a placeholder for now.
-        #self.scwTesting = self._app.TESTING.create_tree()
         self.scwValidation = self._app.VALIDATION.create_tree()
         self.scwIncidents = self._app.INCIDENT.create_tree()
         self.scwDatasets = self._app.DATASET.create_tree()
@@ -148,72 +146,87 @@ class TreeWindow(gtk.Window):
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
             label.set_tooltip_text(_("Displays the program revisions."))
-            self.notebook.insert_page(self.scwRevision, tab_label=label, position=-1)
+            self.notebook.insert_page(self.scwRevision,
+                                      tab_label=label,
+                                      position=-1)
             _app.REVISION.load_tree()
 
         if(_conf.RELIAFREE_MODULES[2] == 1):
             label = gtk.Label()
-            _heading = _("Functions")
+            _heading = _(u"Functions")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
             label.set_tooltip_text(_("Displays the system functional hierarchy."))
-            self.notebook.insert_page(self.scwFunction, tab_label=label, position=-1)
+            self.notebook.insert_page(self.scwFunction,
+                                      tab_label=label,
+                                      position=-1)
             _app.FUNCTION.load_tree()
 
         if(_conf.RELIAFREE_MODULES[1] == 1):
             label = gtk.Label()
-            _heading = _("Requirements")
+            _heading = _(u"Requirements")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
             label.set_tooltip_text(_("Displays the system requirement hierarchy."))
-            self.notebook.insert_page(self.scwRequirement, tab_label=label, position=-1)
+            self.notebook.insert_page(self.scwRequirement,
+                                      tab_label=label,
+                                      position=-1)
             _app.REQUIREMENT.load_tree()
 
         if(_conf.RELIAFREE_MODULES[3] == 1):
             label = gtk.Label()
-            _heading = _("Hardware")
+            _heading = _(u"Hardware")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
             label.set_tooltip_text(_("Displays the system hardware hierarchy."))
-            self.notebook.insert_page(self.scwHardware, tab_label=label, position=-1)
+            self.notebook.insert_page(self.scwHardware,
+                                      tab_label=label,
+                                      position=-1)
             _app.HARDWARE.load_tree()
 
         if(_conf.RELIAFREE_MODULES[4] == 1):
             label = gtk.Label()
-            _heading = _("Software")
+            _heading = _(u"Software")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
             label.set_tooltip_text(_("Displays the system software hierarchy."))
-            self.notebook.insert_page(self.scwSoftware, tab_label=label, position=-1)
+            self.notebook.insert_page(self.scwSoftware,
+                                      tab_label=label,
+                                      position=-1)
             _app.SOFTWARE.load_tree()
 
         if(_conf.RELIAFREE_MODULES[5] == 1):
             label = gtk.Label()
-            _heading = _("V &amp; V Tasks")
+            _heading = _(u"V &amp; V Tasks")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system verification and validation activities."))
-            self.notebook.insert_page(self.scwValidation, tab_label=label, position=-1)
+            label.set_tooltip_text(_(u"Displays the system verification and validation activities."))
+            self.notebook.insert_page(self.scwValidation,
+                                      tab_label=label,
+                                      position=-1)
 
         if(_conf.RELIAFREE_MODULES[6] == 1):
             label = gtk.Label()
-            _heading = _("Reliability\nTesting")
+            _heading = _(u"Reliability\nTesting")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system reliability testing plans and results."))
-            self.notebook.insert_page(self.scwRGIncidents, tab_label=label, position=-1)
+            label.set_tooltip_text(_(u"Displays the system reliability testing plans and results."))
+            self.notebook.insert_page(self.scwTesting,
+                                      tab_label=label,
+                                      position=-1)
+            _app.TESTING.load_tree()
 
         #if(_conf.RELIAFREE_MODULES[7] == 1):
             #label = gtk.Label(_("Maintenance Analysis"))
@@ -222,12 +235,12 @@ class TreeWindow(gtk.Window):
 
         if(_conf.RELIAFREE_MODULES[8] == 1):
             label = gtk.Label()
-            _heading = _("Program\nIncidents")
+            _heading = _(u"Program\nIncidents")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system field incidents."))
+            label.set_tooltip_text(_(u"Displays the system field incidents."))
             self.notebook.insert_page(self.scwIncidents, tab_label=label, position=-1)
 
             # Find the current revision if using the revision module, otherwise
@@ -752,13 +765,13 @@ class TreeWindow(gtk.Window):
                     2 = Requirements Tree
                     3 = Hardware Tree
                     4 = Software Tree
-                    4 = Validation Tree
-                    5 = Reliability Testing Tree
-                    6 = Field Incident Tree
-                    7 = Survival Analyses Tree
+                    5 = Validation Tree
+                    6 = Reliability Testing Tree
+                    7 = Field Incident Tree
+                    8 = Survival Analyses Tree
         """
 
-        if(page_num == 0):
+        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
             try:
                 self._app.REVISION.treeview.grab_focus()
                 model = self._app.REVISION.model
@@ -767,7 +780,7 @@ class TreeWindow(gtk.Window):
                 self._app.REVISION.treeview.row_activated(path, column)
             except TypeError:               # There are no revisions.
                 pass
-        elif(page_num == 1):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 1):
             try:
                 self._app.FUNCTION.treeview.grab_focus()
                 model = self._app.FUNCTION.model
@@ -776,7 +789,7 @@ class TreeWindow(gtk.Window):
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
                 self._app.FUNCTION.load_notebook()
-        elif(page_num == 2):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 2):
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
                 model = self._app.REQUIREMENT.model
@@ -785,7 +798,7 @@ class TreeWindow(gtk.Window):
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
                 self._app.REQUIREMENT.load_notebook()
-        elif(page_num == 3):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()
                 model = self._app.HARDWARE.model
@@ -794,7 +807,7 @@ class TreeWindow(gtk.Window):
                 self._app.HARDWARE.treeview.row_activated(path, column)
             except TypeError:               # There is no hardware.
                 pass
-        elif(page_num == 4):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 4):
             try:
                 self._app.SOFTWARE.treeview.grab_focus()
                 model = self._app.SOFTWARE.model
@@ -805,7 +818,7 @@ class TreeWindow(gtk.Window):
                 self._app.SOFTWARE.load_notebook()
             except:                         # There are no software modules.
                 pass
-        elif(page_num == 5):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
             try:
                 self._app.VALIDATION.treeview.grab_focus()
                 model = self._app.VALIDATION.model
@@ -814,8 +827,23 @@ class TreeWindow(gtk.Window):
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
             except:                         # There are no V&V tasks.
+                self._app.VALIDATION.load_notebook()
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
+            try:
+                self._app.TESTING.treeview.grab_focus()
+                model = self._app.TESTING.model
+                self._app.winParts.tvwPartsList.set_model(None)
+                path = model.get_path(model.get_iter_root())
+                column = self._app.TESTING.treeview.get_column(0)
+                self._app.TESTING.treeview.row_activated(path, column)
+            except:
+                self._app.TESTING.load_notebook()
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
+            try:
+                print "You selected Maintenance Policy"
+            except:
                 pass
-        elif(page_num == 6):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
             try:
                 self._app.INCIDENT.treeview.grab_focus()
                 model = self._app.INCIDENT.model
@@ -825,12 +853,12 @@ class TreeWindow(gtk.Window):
                 self._app.INCIDENT.treeview.row_activated(path, column)
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(page_num == 7):
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 9):
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model
-                #self._app.winParts.tvwPartsList.set_model(None)
-                #path = model.get_path(model.get_iter_root())
+                self._app.winParts.tvwPartsList.set_model(None)
+                path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
             except:                         # There are no datasets.

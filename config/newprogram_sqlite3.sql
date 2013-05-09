@@ -858,6 +858,48 @@ CREATE TABLE "tbl_system" (
 );
 INSERT INTO "tbl_system" VALUES(0,0,0.0,0,'',0.0,'',1.0,1.0,'',1,0,'',0.0,0.0,0.0,1,'System',0.0,100.0,100.0,'',0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,'',0.0,'',0.0,0.0,'',0,-1,0.0,100.0,0.0,'',0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0,0.0,'','',0,'','-',0,'',0.0,0.0,1,'',0.0,0.0,'',0,0.0,0.0,1,0.0,'',0,0,0.0,0.0,0,0.0,0.0,0,'',2002,'',0,1.0,0.0,0.0,0.0,0.0);
 
+CREATE TABLE "tbl_tests" (
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_test_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_test_name" VARCHAR(512),
+    "fld_test_description" BLOB,
+    "fld_test_type" INTEGER NOT NULL DEFAULT(0),
+    "fld_mi" REAL DEFAULT (0),
+    "fld_mg" REAL DEFAULT (0),
+    "fld_mgp" REAL DEFAULT (0),
+    "fld_tr" REAL DEFAULT (0),
+    "fld_consumer_risk" REAL DEFAULT (0),
+    "fld_producer_risk" REAL DEFAULT (0),
+    "fld_rg_plan_model" INTEGER DEFAULT (0),
+    "fld_rg_assess_model" INTEGER DEFAULT (0),
+    "fld_num_phases" INTEGER DEFAULT (1),
+    "fld_attachment" VARCHAR(512),
+    "fld_ttt" REAL DEFAULT (0),
+    "fld_avg_growth" REAL DEFAULT (0.3),
+    "fld_avg_ms" REAL DEFAULT (0),
+    "fld_prob" REAL DEFAULT(0.75),
+    "fld_ttff" REAL DEFAULT(0),
+    "fld_avg_fef" REAL DEFAULT(0.7)
+);
+
+CREATE TABLE "tbl_rel_growth" (
+    "fld_test_id" INTEGER,
+    "fld_phase_id" INTEGER,
+    "fld_growth_rate" REAL DEFAULT (0),
+    "fld_ms" REAL DEFAULT (0),
+    "fld_fef_avg" REAL DEFAULT (0),
+    "fld_mi" REAL DEFAULT (0),
+    "fld_mf" REAL DEFAULT (0),
+    "fld_ma" REAL DEFAULT (0),
+    "fld_ff_prob" REAL DEFAULT (0),
+    "fld_ti" REAL DEFAULT (0),
+    "fld_test_time" REAL DEFAULT (0),
+    "fld_num_fails" INTEGER DEFAULT (0),
+    "fld_start_date" VARCHAR(16),
+    "fld_end_date" VARCHAR(16),
+    PRIMARY KEY ("fld_test_id", "fld_phase_id")
+);
+
 CREATE TABLE "tbl_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
     "fld_model" VARCHAR(64),

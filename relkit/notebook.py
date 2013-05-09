@@ -62,7 +62,7 @@ class WorkBookWindow(gtk.Window):
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
-        self.set_title(_("RelKit Work Bench"))
+        self.set_title(_(u"RelKit Work Bench"))
 
         n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         width = gtk.gdk.screen_width() / n_screens

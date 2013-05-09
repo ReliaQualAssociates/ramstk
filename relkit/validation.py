@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-""" This is the Class that is used to represent and hold information related
-    to verification and validation tasks of the Program. """
+"""
+This is the Class that is used to represent and hold information related to
+verification and validation tasks of the Program.
+"""
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
@@ -118,11 +120,11 @@ class Validation:
         if self._general_data_tab_create():
             self._app.debug_log.error("validation.py: Failed to create General Data tab.")
 
-        self.vbxValidatiaon = gtk.VBox()
+        self.vbxValidation = gtk.VBox()
         toolbar = self._toolbar_create()
 
-        self.vbxValidatiaon.pack_start(toolbar, expand=False)
-        self.vbxValidatiaon.pack_start(self.notebook)
+        self.vbxValidation.pack_start(toolbar, expand=False)
+        self.vbxValidation.pack_start(self.notebook)
 
         #self.notebook.connect('switch-page', self._notebook_page_switched)
 
@@ -338,12 +340,12 @@ class Validation:
         # Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
-                         _("General\nData") +
+                         _(u"General\nData") +
                          "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays general information about the selected V&V task."))
+        label.set_tooltip_text(_(u"Displays general information about the selected V&V task."))
         self.notebook.insert_page(frame,
                                   tab_label=label,
                                   position=-1)
@@ -376,17 +378,23 @@ class Validation:
         return False
 
     def load_notebook(self):
-        """ Method to load the VALIDATION Object gtk.Notebook. """
+        """
+        Method to load the VALIDATION Object gtk.Notebook.
+         """
 
-        self._general_data_tab_load()
+        if self.selected_row is not None:
+            self._general_data_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
-        self._app.winWorkBook.add(self.vbxValidatiaon)
+        self._app.winWorkBook.add(self.vbxValidation)
         self._app.winWorkBook.show_all()
 
-        _title_ = _("RelKit Work Bench: Analyzing %s") % \
-                  self.model.get_value(self.selected_row, 2)
+        try:
+            _title_ = _(u"RelKit Work Bench: Analyzing %s") % \
+                      self.model.get_value(self.selected_row, 2)
+        except TypeError:
+            _title_ = _(u"RelKit Work Bench")
         self._app.winWorkBook.set_title(_title_)
 
         return False
@@ -740,9 +748,12 @@ class Validation:
             _text_ = int(entry.get_text())
 
         elif(convert == 'float'):
-            _text_ = float(entry.get_text().replace('$', ''))
+            try:
+                _text_ = float(entry.get_text().replace('$', ''))
+            except ValueError:
+                _text_ = ""
 
-        # Update the Validation Tree.
+# Update the Validation Tree.
         try:
             self.model.set_value(self.selected_row, _index_, _text_)
         except TypeError:

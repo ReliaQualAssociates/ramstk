@@ -515,9 +515,9 @@ class ImportAssistant:
                                                  None,
                                                  self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 
@@ -765,9 +765,9 @@ class ImportAssistant:
                                                    None,
                                                    self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 
@@ -946,9 +946,9 @@ class ImportAssistant:
         return(response, sheet, order)
 
     def _field_incident_import(self):
-
-        """ This function imports field incident information from an external
-            source to the program database.
+        """
+        This function imports field incident information from an external
+        source to the program database.
         """
 
         from datetime import datetime
@@ -1054,9 +1054,9 @@ class ImportAssistant:
                                                    None,
                                                    self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 

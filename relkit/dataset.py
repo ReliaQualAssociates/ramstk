@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-""" This is the Class that is used to represent and hold information related
-    to Program survival data sets. """
+"""
+This is the Class that is used to represent and hold information related to
+Program survival data sets.
+"""
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2012 - 2013 Andrew "Weibullguy" Rowland'
@@ -289,10 +291,11 @@ class Dataset:
         self.vbxDataset.pack_start(self.notebook)
 
     def _expand_plot(self, event):
-        """ Method to display a plot in it's own window.
+        """
+        Method to display a plot in it's own window.
 
-            Keyword Arguments:
-            event -- the matplotlib MouseEvent that called this method.
+        Keyword Arguments:
+        event -- the matplotlib MouseEvent that called this method.
         """
 
         plot = event.canvas
@@ -301,7 +304,7 @@ class Dataset:
         height = int(self._app.winWorkBook.height)
         width = int(self._app.winWorkBook.width / 2.0)
 
-        if(event.button == 3):          # Right click.
+        if(event.button == 3):              # Right click.
             window = gtk.Window()
             window.set_skip_pager_hint(True)
             window.set_skip_taskbar_hint(True)
@@ -339,7 +342,7 @@ class Dataset:
         toolbar = gtk.Toolbar()
 
 # Add record button.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_ADD)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
@@ -349,7 +352,7 @@ class Dataset:
         toolbar.insert(button, 0)
 
 # Remove record button.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_DELETE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -359,7 +362,7 @@ class Dataset:
         toolbar.insert(button, 1)
 
 # Calculate button.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
@@ -369,7 +372,7 @@ class Dataset:
         toolbar.insert(button, 2)
 
 # Bathtub search button.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/eyes.png')
         button.set_icon_widget(image)
@@ -379,7 +382,7 @@ class Dataset:
         toolbar.insert(button, 3)
 
 # Save button.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -389,14 +392,13 @@ class Dataset:
         toolbar.insert(button, 4)
 
 # Assign results to affected assembly.
-        button = gtk.ToolButton(stock_id=gtk.STOCK_NO)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         button.set_icon_widget(image)
         button.set_name('Assign')
         button.connect('clicked', AssignResults, self._app)
-        button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to \
-the selected assembly."))
+        button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
         toolbar.insert(button, 5)
 
         toolbar.show()
@@ -406,65 +408,54 @@ the selected assembly."))
     def _analyses_input_widgets_create(self):
         """ Method to create the Analysis Input widgets. """
 
-        # Quadrant 1 (upper left) widgets.
-        self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the \
-assembly associated with the dataset."))
+# Quadrant 1 (upper left) widgets.
+        self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the assembly associated with the dataset."))
         self.cmbAssembly.connect('changed', self._callback_combo, 1)
 
-        self.cmbSource.set_tooltip_text(_(u"Selects and displays the source \
-of the selected data set."))
+        self.cmbSource.set_tooltip_text(_(u"Selects and displays the source of the selected data set."))
         results = [["ALT"], ["Reliability Growth"],
                    ["Reliability Demonstration"], ["Field"]]
         _widg.load_combo(self.cmbSource, results)
         self.cmbSource.connect('changed', self._callback_combo, 3)
 
-        self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the \
-statistical distribution used to fit the data."))
+        self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the statistical distribution used to fit the data."))
         results = [["MCF"], ["Kaplan-Meier"], ["Exponential"], ["Lognormal"],
                    ["Normal"], ["Weibull"], ["WeiBayes"]]
         _widg.load_combo(self.cmbDistribution, results)
         self.cmbDistribution.connect('changed', self._callback_combo, 4)
 
-        self.cmbConfType.set_tooltip_text(_(u"Selects and displays the \
-confidence bound type."))
+        self.cmbConfType.set_tooltip_text(_(u"Selects and displays the confidence bound type."))
         results = [["Lower One-Sided"], ["Upper One-Sided"], ["Two-Sided"]]
         _widg.load_combo(self.cmbConfType, results)
         self.cmbConfType.connect('changed', self._callback_combo, 6)
 
-        self.cmbConfMethod.set_tooltip_text(_(u"Selects and displays the \
-method for developing confidence bounds."))
+        self.cmbConfMethod.set_tooltip_text(_(u"Selects and displays the method for developing confidence bounds."))
         results = [["Fisher Matrix"], ["Likelihood"], ["Bootstrap"]]
         _widg.load_combo(self.cmbConfMethod, results)
         self.cmbConfMethod.connect('changed', self._callback_combo, 7)
 
-        self.cmbFitMethod.set_tooltip_text(_(u"Selects and displays the \
-method used to fit the data to the selected distribution."))
+        self.cmbFitMethod.set_tooltip_text(_(u"Selects and displays the method used to fit the data to the selected distribution."))
         results = [["MLE"], ["Rank Regression"]]
         _widg.load_combo(self.cmbFitMethod, results)
         self.cmbFitMethod.connect('changed', self._callback_combo, 8)
 
-        self.txtDescription.set_tooltip_text(_(u"Description of the selected \
-data set."))
+        self.txtDescription.set_tooltip_text(_(u"Description of the selected data set."))
         self.txtDescription.connect('focus-out-event',
                                     self._callback_entry, 'text', 2)
 
-        self.txtConfidence.set_tooltip_text(_(u"Desired statistical \
-confidence"))
+        self.txtConfidence.set_tooltip_text(_(u"Desired statistical confidence"))
         self.txtConfidence.connect('focus-out-event',
                                    self._callback_entry, 'float', 5)
 
-        self.txtStartTime.set_tooltip_text(_(u"Earliest time to use for \
-calculating reliability metrics."))
+        self.txtStartTime.set_tooltip_text(_(u"Earliest time to use for calculating reliability metrics."))
         self.txtStartTime.connect('focus-out-event',
                                   self._callback_entry, 'float', 34)
 
-        self.txtEndTime.set_tooltip_text(_(u"Latest time to use for \
-calculating reliability metrics."))
+        self.txtEndTime.set_tooltip_text(_(u"Latest time to use for calculating reliability metrics."))
         self.txtEndTime.connect('focus-out-event',
                                 self._callback_entry, 'float', 9)
 
-        self.txtRelPoints.set_tooltip_text(_(u"Number of points at which to \
-calculate reliability metrics."))
+        self.txtRelPoints.set_tooltip_text(_(u"Number of points at which to calculate reliability metrics."))
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
@@ -552,7 +543,7 @@ calculate reliability metrics."))
 
         hbox.pack_start(scrollwindow, True, True)
 
-        # Populate tab.
+# Populate tab.
         fixed = gtk.Fixed()
 
         frame = _widg.make_frame(_label_=_(u"Analyses Inputs"))
@@ -617,15 +608,14 @@ calculate reliability metrics."))
 
         hbox.pack_start(frame, True, True)
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         _heading = _(u"Analysis\nInputs")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_(u"Displays analysis inputs for the selected \
-dataset."))
+        label.set_tooltip_text(_(u"Displays analysis inputs for the selected dataset."))
 
         self.notebook.insert_page(hbox,
                                   tab_label=label,
@@ -678,7 +668,7 @@ dataset."))
     def _load_dataset_tree(self):
         """ Method used to load the survival dataset in the gtk.TreeView. """
 
-        # Load the gtk.TreeView containing the list of failure/censoring times.
+# Load the gtk.TreeView containing the list of failure/censoring times.
         query = "SELECT fld_record_id, fld_unit, fld_left_interval, \
                         fld_right_interval, fld_status \
                  FROM tbl_survival_data \
@@ -718,78 +708,44 @@ dataset."))
         selection = self.tvwDataset.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
 
-        self.txtMHB.set_tooltip_text(_(u"Displays the value of the MIL-HDBK \
-test for trend."))
-        self.txtChiSq.set_tooltip_text(_(u"Displays the chi square critical \
-value for the MIL-HDBK test for trend."))
-        self.txtMHBPValue.set_tooltip_text(_(u"Displays the p-value for the \
-MIL-HDBK test for trend."))
+        self.txtMHB.set_tooltip_markup(_(u"Displays the value of the MIL-HDBK test for trend."))
+        self.txtChiSq.set_tooltip_markup(_(u"Displays the chi square critical value for the MIL-HDBK test for trend."))
+        self.txtMHBPValue.set_tooltip_markup(_(u"Displays the p-value for the MIL-HDBK test for trend."))
         self.lblMHBResult.set_use_markup(True)
-        self.txtLP.set_tooltip_text(_(u"Displays the value of the LaPlace \
-test for trend."))
-        self.txtZLPNorm.set_tooltip_text(_(u"Displays the standard normal \
-critical value for the LaPlace test for trend."))
-        self.txtZLPPValue.set_tooltip_text(_(u"Displays the p-value for the \
-Laplace test for trend."))
+        self.txtLP.set_tooltip_markup(_(u"Displays the value of the LaPlace test for trend."))
+        self.txtZLPNorm.set_tooltip_markup(_(u"Displays the standard normal critical value for the LaPlace test for trend."))
+        self.txtZLPPValue.set_tooltip_markup(_(u"Displays the p-value for the Laplace test for trend."))
         self.lblZLPResult.set_use_markup(True)
-        self.txtLR.set_tooltip_text(_(u"Displays the value of the \
-Lewis-Robinson test for trend."))
-        self.txtZLRNorm.set_tooltip_text(_(u"Displays the standard normal \
-critical value for the Lewis-Robinson test for trend."))
-        self.txtZLRPValue.set_tooltip_text(_(u"Displays the p-value for the \
-Lewis-Robinson test for trend."))
+        self.txtLR.set_tooltip_markup(_(u"Displays the value of the Lewis-Robinson test for trend."))
+        self.txtZLRNorm.set_tooltip_markup(_(u"Displays the standard normal critical value for the Lewis-Robinson test for trend."))
+        self.txtZLRPValue.set_tooltip_markup(_(u"Displays the p-value for the Lewis-Robinson test for trend."))
         self.lblZLRResult.set_use_markup(True)
-        self.txtScale.set_tooltip_text(_(u"Displays the point estimate of the \
-scale parameter."))
-        self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower \
-<span>\u03B1</span>% bound on the scale parameter."))
-        self.txtScaleUL.set_tooltip_text(_(u"Displays the upper \
-<span>\u03B1</span>% bound on the scale parameter."))
-        self.txtShape.set_tooltip_text(_(u"Displays the point estimate of the \
-shape parameter."))
-        self.txtShapeLL.set_tooltip_text(_(u"Displays the lower \
-<span>\u03B1</span>% bound on the shape parameter."))
-        self.txtShapeUL.set_tooltip_text(_(u"Displays the upper \
-<span>\u03B1</span>% bound on the shape parameter."))
-        self.txtLocation.set_tooltip_text(_(u"Displays the point estimate of \
-the location parameter."))
-        self.txtLocationLL.set_tooltip_text(_(u"Displays the lower \
-<span>\u03B1</span>% bound on the location parameter."))
-        self.txtLocationUL.set_tooltip_text(_(u"Displays the upper \
-<span>\u03B1</span>% bound on the location parameter."))
-        self.txtShapeShape.set_tooltip_text(_(u"Dispalys the variance of the \
-shape parameter."))
-        self.txtShapeScale.set_tooltip_text(_(u"Displays the covariance of \
-the shape and scale parameters."))
-        self.txtShapeLocation.set_tooltip_text(_(u"Displays the covariance of \
-the shape and location parameters."))
-        self.txtScaleShape.set_tooltip_text(_(u"Displays the covariance of \
-the scale and shape parameters."))
-        self.txtScaleScale.set_tooltip_text(_(u"Displays the variance of the \
-scale parameter."))
-        self.txtScaleLocation.set_tooltip_text(_(u"Displays the covariance of \
-the scale and location parameters."))
-        self.txtLocationShape.set_tooltip_text(_(u"Displays the covariance of \
-the location and shape parameters."))
-        self.txtLocationScale.set_tooltip_text(_(u"Displays the covariance of \
-the location and scale parameters."))
-        self.txtLocationLocation.set_tooltip_text(_(u"Displays the variance \
-of the location parameter."))
-        self.txtAIC.set_tooltip_text(_(u"Displays the value of Aikike's \
-information criterion."))
-        self.txtBIC.set_tooltip_text(_(u"Displays the value of Bayes' \
-information criterion."))
-        self.txtMLE.set_tooltip_text(_(u"Displays the likelihood value."))
-        self.txtNumSuspensions.set_tooltip_text(_(u"Displays the number of \
-suspensions in the data set."))
-        self.txtNumFailures.set_tooltip_text(_(u"Displays the number of \
-failures in the dat set."))
-        self.txtMTBF.set_tooltip_text(_(u"Displays the point estimate of the \
-MTBF."))
-        self.txtMTBFLL.set_tooltip_text(_(u"Displays the lower \
-<span>\u03B1</span>% bound on the MTBF."))
-        self.txtMTBFUL.set_tooltip_text(_(u"Displays the upper \
-<span>\u03B1</span>% bound on the MTBF."))
+        self.txtScale.set_tooltip_markup(_(u"Displays the point estimate of the scale parameter."))
+        self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the scale parameter."))
+        self.txtScaleUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the scale parameter."))
+        self.txtShape.set_tooltip_markup(_(u"Displays the point estimate of the shape parameter."))
+        self.txtShapeLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the shape parameter."))
+        self.txtShapeUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the shape parameter."))
+        self.txtLocation.set_tooltip_markup(_(u"Displays the point estimate of the location parameter."))
+        self.txtLocationLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the location parameter."))
+        self.txtLocationUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the location parameter."))
+        self.txtShapeShape.set_tooltip_markup(_(u"Dispalys the variance of the shape parameter."))
+        self.txtShapeScale.set_tooltip_markup(_(u"Displays the covariance of the shape and scale parameters."))
+        self.txtShapeLocation.set_tooltip_markup(_(u"Displays the covariance of the shape and location parameters."))
+        self.txtScaleShape.set_tooltip_markup(_(u"Displays the covariance of the scale and shape parameters."))
+        self.txtScaleScale.set_tooltip_markup(_(u"Displays the variance of the scale parameter."))
+        self.txtScaleLocation.set_tooltip_markup(_(u"Displays the covariance of the scale and location parameters."))
+        self.txtLocationShape.set_tooltip_markup(_(u"Displays the covariance of the location and shape parameters."))
+        self.txtLocationScale.set_tooltip_markup(_(u"Displays the covariance of the location and scale parameters."))
+        self.txtLocationLocation.set_tooltip_markup(_(u"Displays the variance of the location parameter."))
+        self.txtAIC.set_tooltip_markup(_(u"Displays the value of Aikike's information criterion."))
+        self.txtBIC.set_tooltip_markup(_(u"Displays the value of Bayes' information criterion."))
+        self.txtMLE.set_tooltip_markup(_(u"Displays the likelihood value."))
+        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number of suspensions in the data set."))
+        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of failures in the dat set."))
+        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate of the MTBF."))
+        self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the MTBF."))
+        self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the MTBF."))
 
         return False
 
@@ -965,31 +921,31 @@ MTBF."))
         self.fraParEst.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_("Scale"), width=150)
+        label = _widg.make_label(_(u"Scale"), width=150)
         fixed.put(label, 155, y_pos)
 
-        label = _widg.make_label(_("Shape"), width=150)
+        label = _widg.make_label(_(u"Shape"), width=150)
         fixed.put(label, 305, y_pos)
 
-        label = _widg.make_label(_("Location"), width=150)
+        label = _widg.make_label(_(u"Location"), width=150)
         fixed.put(label, 455, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("Lower Bound"), width=150)
+        label = _widg.make_label(_(u"Lower Bound"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScaleLL, 155, y_pos)
         fixed.put(self.txtShapeLL, 305, y_pos)
         fixed.put(self.txtLocationLL, 455, y_pos)
         y_pos += 25
 
-        label = _widg.make_label(_("Point Estimate"), width=150)
+        label = _widg.make_label(_(u"Point Estimate"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScale, 155, y_pos)
         fixed.put(self.txtShape, 305, y_pos)
         fixed.put(self.txtLocation, 455, y_pos)
         y_pos += 25
 
-        label = _widg.make_label(_("Upper Bound"), width=150)
+        label = _widg.make_label(_(u"Upper Bound"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtScaleUL, 155, y_pos)
         fixed.put(self.txtShapeUL, 305, y_pos)
@@ -1041,13 +997,12 @@ MTBF."))
 
 # Insert the tab.
         label = gtk.Label()
-        _heading = _("Analysis\nResults")
+        _heading = _(u"Analysis\nResults")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays analysis results for the selected \
-dataset."))
+        label.set_tooltip_text(_(u"Displays analysis results for the selected dataset."))
         self.notebook.insert_page(self.hbxAnalysisResults,
                                   tab_label=label,
                                   position=-1)
@@ -1184,9 +1139,7 @@ dataset."))
 
         # Insert the tab.
         label = gtk.Label()
-        label.set_markup("<span weight='bold'>" +
-                         _("Analysis\nPlots") +
-                         "</span>")
+        label.set_markup("<span weight='bold'>Analysis\nPlots</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
@@ -1299,8 +1252,7 @@ dataset."))
 
         y_pos = 10
 
-        label = _widg.make_label(_(u"Are you sure you want to delete the \
-selected survival data record(s)."), 600, 250)
+        label = _widg.make_label(_(u"Are you sure you want to delete the selected survival data record(s)."), 600, 250)
         fixed.put(label, 5, y_pos)
 
         fixed.show_all()
@@ -1885,8 +1837,7 @@ selected survival data record(s)."), 600, 250)
 
             column = self.tvwNonParResults.get_column(6)
             label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>S(t) \
-Lower\nBound</span>"))
+            label.set_markup(_(u"<span weight='bold'>S(t) Lower\nBound</span>"))
             column.set_widget(label)
 
             column = self.tvwNonParResults.get_column(7)
@@ -1898,15 +1849,16 @@ Lower\nBound</span>"))
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=Shat,
                             y2=Shatll, y3=Shatul,
-                            _title_=_("Kaplan-Meier Plot of %s") % _name,
-                            _xlab_=_("Time"),
-                            _ylab_=_("Survival Function [S(t)] "),
+                            _title_=_(u"Kaplan-Meier Plot of %s") % _name,
+                            _xlab_=_(u"Time"),
+                            _ylab_=_(u"Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             # Create the legend.
-            leg = self.axAxis1.legend(('Survival Function [S(t)]',
-                                       'Lower CB', 'Upper CB'), 'upper right',
-                                       shadow=True)
+            leg = self.axAxis1.legend((u"Survival Function [S(t)]",
+                                       u"Lower CB", u"Upper CB"),
+                                      'upper right',
+                                      shadow=True)
             for t in leg.get_texts():
                 t.set_fontsize('small')
             for l in leg.get_lines():
@@ -1916,15 +1868,16 @@ Lower\nBound</span>"))
             self._load_plot(self.axAxis3, self.pltPlot3,
                             x=times[1:], y1=_h_[1:],
                             y2=_hll_[1:], y3=_hul_[1:],
-                            _title_=_("Hazard Rate Plot of %s") % _name,
-                            _xlab_=_("Time"),
-                            _ylab_=_("Hazard Rate [h(t)] "),
+                            _title_=_(u"Hazard Rate Plot of %s") % _name,
+                            _xlab_=_(u"Time"),
+                            _ylab_=_(u"Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
             # Create the legend.
-            leg = self.axAxis3.legend(('Hazard Rate [h(t)]',
-                                       'Lower CB', 'Upper CB'), 'upper right',
-                                       shadow=True)
+            leg = self.axAxis3.legend((u"Hazard Rate [h(t)]",
+                                       u"Lower CB", u"Upper CB"),
+                                      'upper right',
+                                      shadow=True)
             for t in leg.get_texts():
                 t.set_fontsize('small')
             for l in leg.get_lines():
@@ -2346,9 +2299,6 @@ Lower\nBound</span>"))
         button -- the gtk.Button widget that called this function.
         """
 
-        #model = self.tvwDataset.get_model()
-        #model.foreach(self._save_survival_record)
-
         self.model.foreach(self._save_line_item)
 
         return False
@@ -2527,8 +2477,7 @@ Lower\nBound</span>"))
                 fixed = gtk.Fixed()
 
                 y_pos = 10
-                label = _widg.make_label(_(u"WeiBayes is not yet implemented \
-                    in RelKit."), width=300, height=100)
+                label = _widg.make_label(_(u"WeiBayes is not yet implemented in RelKit."), width=300, height=100)
                 fixed.put(label, 5, y_pos)
 
                 fixed.show_all()
@@ -2672,7 +2621,7 @@ Lower\nBound</span>"))
                                                                fg_color)
         self.treeview.set_enable_tree_lines(True)
 
-        self.treeview.set_tooltip_text(_("Displays a list of survival data sets."))
+        self.treeview.set_tooltip_text(_(u"Displays a list of survival data sets."))
 
         scrollwindow.add(self.treeview)
         self.model = self.treeview.get_model()
@@ -2706,7 +2655,7 @@ Lower\nBound</span>"))
 
         self.model.clear()
 
-        # Load the model with the returned results.
+# Load the model with the returned results.
         for i in range(self.n_datasets):
             self.model.append(None, results[i])
 
@@ -2718,7 +2667,7 @@ Lower\nBound</span>"))
             col = self.treeview.get_column(0)
             self.treeview.row_activated(path, col)
 
-        # Load the Assembly combo.
+# Load the Assembly combo.
         query = "SELECT fld_description, fld_assembly_id, fld_name \
                  FROM tbl_system"
         results = self._app.DB.execute_query(query,
@@ -2734,14 +2683,14 @@ Lower\nBound</span>"))
         if self.selected_row is not None:
             self._analyses_input_tab_load()
             self._analyses_results_tab_load()
-        #    self._load_component_list()
+            #self._load_component_list()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
 
-        _title = _("RelKit Work Bench: Program Survival Analyses (%d Datasets)") % \
+        _title = _(u"RelKit Work Bench: Program Survival Analyses (%d Datasets)") % \
                    self.n_datasets
         self._app.winWorkBook.set_title(_title)
 

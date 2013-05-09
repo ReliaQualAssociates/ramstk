@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-""" This file contains configuration information and functions for
-    RelKit.
+"""
+This file contains configuration information and functions for RelKit.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
@@ -25,7 +25,6 @@ import utilities as _util
 import widgets as _widg
 
 #TODO: Create GUI to manipulate user configuration values.
-
 
 grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
                3.203, 3.298, 3.902, 3.910, 4.000, 4.247, 4.411, 4.456,
@@ -66,7 +65,7 @@ LOG_DIR = ''
 #    Position 08: Similar Item Analysis formatting.
 #    Position 09: FMECA worksheet formatting.
 #    Position 10: Failure Modes List formatting.
-#    Position 11: ALT/ADT Planning List formatting.
+#    Position 11: Test Planning List formatting.
 #    Position 12: Failure Mechanisms List formatting.
 #    Position 13: Reliability Growth Incident List formatting.
 #    Position 14: Field Incident List formatting.
@@ -87,10 +86,12 @@ RELIAFREE_FORMAT_FILE = []
 #    Position 07: Assembly row foreground color
 #    Position 08: Validation row background color
 #    Position 09: Validation row foreground color
-#    Position 10: Reliability Growth row background color
-#    Position 11: Reliability Growth row foreground color
+#    Position 10: Reliability Testing row background color
+#    Position 11: Reliability Testing row foreground color
 #    Position 12: Program Incident row background color
 #    Position 13: Program Incident row foreground color
+# Dataset row background color
+# Dataset row foreground color
 #    Position 14: Part List row background color
 #    Position 15: Part List row foreground color
 #    Position 16: Overstressed Part row background color
@@ -141,6 +142,7 @@ RELIAFREE_PREFIX = []
 #    Position 11: RBD module status
 #    Position 12: FTA module status
 RELIAFREE_MODULES = []
+RELKIT_PAGE_NUMBER = []
 
 # Global list for MySQL or SQLite3 connection information to the common
 # database.
@@ -392,7 +394,7 @@ class RelKitConf:
                 config.set('Files', 'siaformat', 'sia_format.xml')
                 config.set('Files', 'fmecaformat', 'fmeca_format.xml')
                 config.set('Files', 'modeformat', 'mode_format.xml')
-                config.set('Files', 'altformat', 'alt_format.xml')
+                config.set('Files', 'testformat', 'testing_format.xml')
                 config.set('Files', 'mechanismformat', 'mechanism_format.xml')
                 config.set('Files', 'softwareformat', 'software_format.xml')
                 config.set('Files', 'datasetformat', 'dataset_format.xml')
@@ -481,19 +483,26 @@ class RelKitConf:
             config.set('Directories', 'icondir', 'icons')
             config.set('Directories', 'logdir', 'log')
 
-            # Position 00: Revision Tree formatting.
-            # Position 01: Function Tree formatting.
-            # Position 02: Requirements Tree formatting.
-            # Position 03: Hardware Tree formatting.
-            # Position 04: Validation Tree formatting.
-            # Position 05: Reliability Growth Tree formatting.
-            # Position 06: Field Incidents Tree formatting.
-            # Position 07: Parts List formatting.
-            # Position 08: Similar Item Analysis formatting.
-            # Position 09: FMECA worksheet formatting.
-            # Position 10: Failure Modes List formatting.
-            # Position 11: Failure Effects List formatting.
-            # Position 12: Failure Mechanisms List formatting.
+# =========================================================================== #
+# The following writes to the Files section.  This is the section containing
+# the list of files describing the format of the various gtk.TreeView used in
+# the application.
+#
+#       Position        Tree to Format
+#           0           Revision Tree
+#           1           Function Tree
+#           2           Requirements Tree
+#           3           Hardware Tree
+#           4           Validation Tree
+#           5           Reliability Testing Tree
+#           6           Field Incidents Tree
+#           7           Parts List
+#           8           Similar Item Analysis
+#           9           FMECA worksheet
+#          10           Failure Modes List
+#          11           Failure Effects List
+#          12           Failure Mechanisms List
+# =========================================================================== #
             config.add_section('Files')
             config.set('Files', 'revisionformat', path.basename(RELIAFREE_FORMAT_FILE[0]))
             config.set('Files', 'functionformat', path.basename(RELIAFREE_FORMAT_FILE[1]))
@@ -506,7 +515,7 @@ class RelKitConf:
             config.set('Files', 'siaformat', path.basename(RELIAFREE_FORMAT_FILE[8]))
             config.set('Files', 'fmecaformat', path.basename(RELIAFREE_FORMAT_FILE[9]))
             config.set('Files', 'modeformat', path.basename(RELIAFREE_FORMAT_FILE[10]))
-            config.set('Files', 'altformat', path.basename(RELIAFREE_FORMAT_FILE[11]))
+            config.set('Files', 'testformat', path.basename(RELIAFREE_FORMAT_FILE[11]))
             config.set('Files', 'mechanismformat', path.basename(RELIAFREE_FORMAT_FILE[12]))
             config.set('Files', 'rgincidentformat', path.basename(RELIAFREE_FORMAT_FILE[13]))
             config.set('Files', 'incidentformat', path.basename(RELIAFREE_FORMAT_FILE[14]))
@@ -514,27 +523,34 @@ class RelKitConf:
             config.set('Files', 'datasetformat', path.basename(RELIAFREE_FORMAT_FILE[16]))
             config.set('Files', 'riskformat', path.basename(RELIAFREE_FORMAT_FILE[17]))
 
-            # Position 00: Revision row background color
-            # Position 01: Revision row foreground color
-            # Position 02: Function row background color
-            # Position 03: Function row foreground color
-            # Position 04: Requirement row background color
-            # Position 05: Requirement row foreground color
-            # Position 06: Assembly row background color
-            # Position 07: Assembly row foreground color
-            # Position 08: Validation row background color
-            # Position 09: Validation row foreground color
-            # Position 10: Reliability Growth row background color
-            # Position 11: Reliability Growth row foreground color
-            # Position 12: Field Incident row background color
-            # Position 13: Field Incident row foreground color
-            # Position 14: Part List row background color
-            # Position 15: Part List row foreground color
-            # Position 16: Overstressed Part row background color
-            # Position 17: Overstressed Part row foreground color
-            # Position 18: Tagged Part row background color
-            # Position 19: Tagged Part row foreground color
-            # Position 20: Part with no failure rate model row foreground color
+# =========================================================================== #
+# The following write to the Colors section.  This is the section containing
+# the forground (text) and background color of the cells in the various
+# gtk.TreeView used in the application.
+#
+#       Position        Tree to Color
+#           0           Revision Tree background color
+#           1           Revision Tree foreground color
+#           2           Function Tree background color
+#           3           Function Tree foreground color
+#           4           Requirement Tree background color
+#           5           Requirement Tree foreground color
+#           6           Assembly Tree background color
+#           7           Assembly Tree foreground color
+#           8           Validation Tree background color
+#           9           Validation Tree foreground color
+#          10           Reliability Growth Tree background color
+#          11           Reliability Growth Tree foreground color
+#          12           Field Incident Tree background color
+#          13           Field Incident Tree foreground color
+#          14           Part List Tree background color
+#          15           Part List Tree foreground color
+#          16           Overstressed Part Tree background color
+#          17           Overstressed Part Tree foreground color
+#          18           Tagged Part Tree background color
+#          19           Tagged Part Tree foreground color
+#          20           Part with no failure rate model row foreground color
+# =========================================================================== #
             config.add_section('Colors')
             config.set('Colors', 'revisionbg', RELIAFREE_COLORS[0])
             config.set('Colors', 'revisionfg', RELIAFREE_COLORS[1])

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -63,7 +63,7 @@ class ImportHardware:
         self.assistant.connect('close', self._cancel)
 
 # Initialize some variables.
-        self._file_index = [-1] * 92
+        self._file_index = [-1] * 96
 
 # Create the introduction page.
         fixed = gtk.Fixed()
@@ -174,7 +174,8 @@ class ImportHardware:
                       "Total Part Quantity", "Total Power", "Vibration",
                       "Weibull Data Set", "Weibull File",
                       "Year of Manufacture", "Hazard Rate Model",
-                      "Reliability Goal Measure", "Reliability Goal"]
+                      "Reliability Goal Measure", "Reliability Goal",
+                      "MTBF LCL", "MTBF UCL", "h(t) LCL", "h(t) UCL"]
 
         for i in range(len(_db_fields)):
             model.append([i, _db_fields[i], ""])
@@ -298,7 +299,7 @@ class ImportHardware:
         model = self.tvwFileFields.get_model()
         row = model.get_iter_root()
 
-        # Find the number ofexisting incidents.
+# Find the number of existing hardware items.
         if(_conf.BACKEND == 'mysql'):
             query = "SELECT COUNT(*) FROM tbl_system"
         elif(_conf.BACKEND == 'sqlite3'):
@@ -333,7 +334,7 @@ class ImportHardware:
             # Convert missing float values to correct default value.
             for i in [2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,
                       34, 39, 40, 44, 46, 48, 49, 50, 51, 52, 54, 55, 65, 66,
-                      73, 74, 76, 83, 84]:
+                      73, 74, 76, 83, 84, 91, 92, 93, 94]:
                 _temp[i] = self._missing_to_default(_temp[i], 0.0)
 
             for i in [7, 8, 53, 57, 69, 70, 90]:
@@ -382,7 +383,9 @@ class ImportHardware:
                   int(_root[79]), float(_root[80]), float(_root[81]),
                   int(_root[82]), float(_root[83]), float(_root[84]),
                   int(_root[85]), str(_root[86]), int(_root[87]),
-                  str(_root[88]), int(_root[89]), float(_root[90]))
+                  str(_root[88]), int(_root[89]), float(_root[90]),
+                  float(_root[91]), float(_root[92]), float(_root[93]),
+                  float(_root[94]))
 
         if(_conf.BACKEND == 'mysql'):
             query = "UPDATE tbl_system \
@@ -441,7 +444,9 @@ class ImportHardware:
                          fld_weibull_data_set=%d, fld_weibull_file='%s', \
                          fld_year_of_manufacture=%d, fld_ht_model='%s', \
                          fld_reliability_goal_measure=%d, \
-                         fld_reliability_goal=%f \
+                         fld_reliability_goal=%f, fld_mtbf_lcl=%f, \
+                         fld_mtbf_ucl=%f, fld_failure_rate_lcl=%f, \
+                         fld_failure_rate_ucl=%f \
                      WHERE fld_parent_assembly='-'"
         elif(_conf.BACKEND == 'sqlite3'):
             query = "UPDATE tbl_system \
@@ -499,7 +504,9 @@ class ImportHardware:
                          fld_weibull_data_set=?, fld_weibull_file=?, \
                          fld_year_of_manufacture=?, fld_ht_model=?, \
                          fld_reliability_goal_measure=?, \
-                         fld_reliability_goal=? \
+                         fld_reliability_goal=?, fld_mtbf_lcl=?, \
+                         fld_mtbf_ucl=?, fld_failure_rate_lcl=?, \
+                         fld_failure_rate_ucl=? \
                      WHERE fld_parent_assembly='-'"
 
         results = self._app.DB.execute_query(query,
@@ -565,7 +572,9 @@ class ImportHardware:
                               float(_root[i][84]), int(_root[i][85]),
                               str(_root[i][86]), int(_root[i][87]),
                               str(_root[i][88]), int(_root[i][89]),
-                              float(_root[i][90]))
+                              float(_root[i][90]), float(_root[i][91]),
+                              float(_root[i][92]), float(_root[i][93]),
+                              float(_root[i][94]))
 
                     if(_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_system \
@@ -579,7 +588,8 @@ class ImportHardware:
                                          '%s', '%s', %d, '%s', '%s', %d, '%s', \
                                          %f, %f, %d, '%s', %f, %f, '%s', %d, \
                                          %f, %f, %d, %f, '%s', %d, %d, %f, %f, \
-                                         %d, %f, %f, %d, '%s', %d, '%s', %d, %f)"
+                                         %d, %f, %f, %d, '%s', %d, '%s', %d, \
+                                         %f, %f, %f, %f, %f)"
                     elif(_conf.BACKEND == 'sqlite3'):
                         query = "INSERT INTO tbl_system \
                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
@@ -589,7 +599,7 @@ class ImportHardware:
                                          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                         ?, ?, ?, ?, ?, ?, ?)"
+                                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
                     results = self._app.DB.execute_query(query,
                                                          values,

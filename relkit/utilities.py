@@ -121,7 +121,7 @@ def read_configuration():
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'modeformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'altformat')
+    formatfile = conf.read_configuration().get('Files', 'testformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'mechanismformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
@@ -578,9 +578,9 @@ def save_project(widget, _app):
     conf = _conf.RelKitConf('user')
     #conf.write_configuration()
 
-    _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-    _app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
-    _app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+    _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    _app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    _app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
     _app.winTree.statusbar.pop(2)
 

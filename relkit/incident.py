@@ -482,7 +482,10 @@ class Incident:
 
         # Load the hardware combo with a list of the assemblies in the system.
         # TODO: Create code that will use either fld_description of fld_name depending on which the user uses.
-        query = "SELECT DISTINCT fld_description FROM tbl_system WHERE fld_part=0 ORDER BY fld_description ASC"
+        query = "SELECT DISTINCT fld_name \
+                 FROM tbl_system \
+                 WHERE fld_part=0 AND fld_level<2 \
+                 ORDER BY fld_name ASC"
         results = self._app.COMDB.execute_query(query,
                                                 None,
                                                 self._app.ProgCnx)

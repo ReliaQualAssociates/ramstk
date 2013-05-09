@@ -1,111 +1,69 @@
-reliafree/revision.py:    # TODO: Write code to update notebook widgets when editing the Revision treeview.
-reliafree/requirement.py:    # TODO: Write code to update notebook widgets when editing the Requirements treeview.
-reliafree/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/component.py:                # TODO: Implement MIL-HDBK-217F part count model for all component types.
-reliafree/component.py:                # TODO: Implement MIL-HDBK-217FN1 part stress model.
-reliafree/component.py:                # TODO: Implement MIL-HDBK-217FN1 part count model.
-reliafree/component.py:                # TODO: Implement MIL-HDBK-217FN2 part stress model.
-reliafree/component.py:                # TODO: Implement MIL-HDBK-217FN2 part count model.
-reliafree/component.py:                # TODO: Implement NSWC-07 model.
-reliafree/.svn/text-base/main.py.svn-base:        # TODO: Change the 'site_developer' to 'site' prior to release.
-reliafree/.svn/text-base/main.py.svn-base:        # TODO: Change the 'user_developer' to 'user' prior to release.
-reliafree/.svn/text-base/calculations.py.svn-base:    # TODO: Add database field for total cost results.
-reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Overstress calculations for miscellaneous
-reliafree/.svn/text-base/calculations.py.svn-base:        print "TODO: Overstress calculations for miscellaneous"
-reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Add contact power overstress calculations for relays
-reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Add temperature limit overstress calculations for resistors
-reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Add voltage ratio overstress calculations for variable resistors.
-reliafree/.svn/text-base/calculations.py.svn-base:        # TODO: Add contact power overstress calculations for switches
-reliafree/.svn/text-base/requirement.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Requirements treeview.
-reliafree/.svn/text-base/validation.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-reliafree/.svn/text-base/widgets.py.svn-base:    # TODO: Adjust the height of the row when the width is adjusted.
-reliafree/.svn/text-base/mysql.py.svn-base:    # TODO: Convert init_db this for use by the RelKit Project.
-reliafree/.svn/text-base/revision.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Revision treeview.
-reliafree/.svn/text-base/assembly.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/.svn/text-base/assembly.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the Allocation tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the FMECA worksheet tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the ALT Planning tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the verification and validation tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the RG Planning tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the RG incident tab.
-reliafree/.svn/text-base/notebook.py.svn-base:        # TODO: Implement the field incident tab.
-reliafree/.svn/text-base/hardware.py.svn-base:    # TODO: Write code to update notebook widgets when editing the System treeview.
-reliafree/.svn/text-base/configuration.py.svn-base:#TODO: Create GUI to manipulate user configuration values.
-reliafree/.svn/text-base/utilities.py.svn-base:    # TODO: Write code to cut/copy/paste.
-reliafree/.svn/text-base/utilities.py.svn-base:    # TODO: Write code to select all items in treeviews.
-reliafree/.svn/text-base/utilities.py.svn-base:    # TODO: Write code to find, find next, find previous, and replace search terms.
-reliafree/.svn/text-base/utilities.py.svn-base:    # TODO: Write code to undo changes.
-reliafree/.svn/text-base/utilities.py.svn-base:    # TODO: Write code to redo changes.
-reliafree/.svn/text-base/tree.py.svn-base:    #TODO: Create GUI to set/edit user-defined column headings for all trees.
-reliafree/.svn/text-base/tree.py.svn-base:        # TODO: Add Reliability Growth Tree.
-reliafree/.svn/text-base/tree.py.svn-base:        # TODO: Add Field Incident Tree.
-reliafree/.svn/text-base/tree.py.svn-base:        # TODO: Functions to create charts and graphs.
-reliafree/.svn/text-base/tree.py.svn-base:        # TODO: Functions to create reports.
-reliafree/.svn/text-base/component.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/.svn/text-base/component.py.svn-base:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement MIL-HDBK-217F part count model for all component types.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement MIL-HDBK-217FN1 part stress model.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement MIL-HDBK-217FN1 part count model.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement MIL-HDBK-217FN2 part stress model.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement MIL-HDBK-217FN2 part count model.
-reliafree/.svn/text-base/component.py.svn-base:                # TODO: Implement NSWC-07 model.
-reliafree/.svn/text-base/function.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Function treeview.
-reliafree/.svn/text-base/partlist.py.svn-base:    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
-reliafree/.svn/text-base/partlist.py.svn-base:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
-reliafree/hardware.py:    # TODO: Write code to update notebook widgets when editing the System treeview.
-Binary file reliafree/calculations.pyc matches
-reliafree/mysql.py:    # TODO: Convert init_db this for use by the RelKit Project.
-reliafree/assembly.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/assembly.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/calculations.py:    # TODO: Add database field for total cost results.
-reliafree/calculations.py:        # TODO: Overstress calculations for miscellaneous
-reliafree/calculations.py:        print "TODO: Overstress calculations for miscellaneous"
-reliafree/calculations.py:        # TODO: Add contact power overstress calculations for relays
-reliafree/calculations.py:        # TODO: Add temperature limit overstress calculations for resistors
-reliafree/calculations.py:        # TODO: Add voltage ratio overstress calculations for variable resistors.
-reliafree/calculations.py:        # TODO: Add contact power overstress calculations for switches
-reliafree/configuration.py:#TODO: Create GUI to manipulate user configuration values.
-reliafree/main.py:        # TODO: Change the 'site_developer' to 'site' prior to release.
-reliafree/main.py:        # TODO: Change the 'user_developer' to 'user' prior to release.
-reliafree/validation.py:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-reliafree/component.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/component.py~:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/component.py~:            # TODO: Implement MIL-HDBK-217F part count model for all component types.
-reliafree/component.py~:            # TODO: Implement MIL-HDBK-217FN1 part stress model.
-reliafree/component.py~:            # TODO: Implement MIL-HDBK-217FN1 part count model.
-reliafree/component.py~:            # TODO: Implement MIL-HDBK-217FN2 part stress model.
-reliafree/component.py~:            # TODO: Implement MIL-HDBK-217FN2 part count model.
-reliafree/component.py~:            # TODO: Implement NSWC-07 model.
-reliafree/function.py:    # TODO: Write code to update notebook widgets when editing the Function treeview.
-reliafree/utilities.py:    # TODO: Write code to cut/copy/paste.
-reliafree/utilities.py:    # TODO: Write code to select all items in treeviews.
-reliafree/utilities.py:    # TODO: Write code to find, find next, find previous, and replace search terms.
-reliafree/utilities.py:    # TODO: Write code to undo changes.
-reliafree/utilities.py:    # TODO: Write code to redo changes.
-reliafree/partlist.py:    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
-reliafree/partlist.py:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
-reliafree/tree.py:    #TODO: Create GUI to set/edit user-defined column headings for all trees.
-reliafree/tree.py:        # TODO: Add Reliability Growth Tree.
-reliafree/tree.py:        # TODO: Add Field Incident Tree.
-reliafree/tree.py:        # TODO: Functions to create charts and graphs.
-reliafree/tree.py:        # TODO: Functions to create reports.
-reliafree/connections/.svn/text-base/solder.py.svn-base:        #TODO: Lookup base hazard rate for PTH in MIL-HDBK-217.
-reliafree/connections/.svn/text-base/solder.py.svn-base:        #TODO: Lookup lammbda_b in MIL-HDBK-217.
-reliafree/connections/solder.py:        #TODO: Lookup base hazard rate for PTH in MIL-HDBK-217.
-reliafree/connections/solder.py:        #TODO: Lookup lammbda_b in MIL-HDBK-217.
-reliafree/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-reliafree/widgets.py:    # TODO: Adjust the height of the row when the width is adjusted.
-reliafree/semiconductors/transistor.py:        # TODO: Validate index 64 is operating power.
-reliafree/semiconductors/transistor.py:        # TODO: Validate index 64 is operating power.
-reliafree/semiconductors/.svn/text-base/transistor.py.svn-base:        # TODO: Validate index 64 is operating power.
-reliafree/semiconductors/.svn/text-base/transistor.py.svn-base:        # TODO: Validate index 64 is operating power.
-reliafree/notebook.py:        # TODO: Implement the Allocation tab.
-reliafree/notebook.py:        # TODO: Implement the FMECA worksheet tab.
-reliafree/notebook.py:        # TODO: Implement the ALT Planning tab.
-reliafree/notebook.py:        # TODO: Implement the verification and validation tab.
-reliafree/notebook.py:        # TODO: Implement the RG Planning tab.
-reliafree/notebook.py:        # TODO: Implement the RG incident tab.
-reliafree/notebook.py:        # TODO: Implement the field incident tab.
+relkit/requirement.py:    # TODO: Write code to update notebook widgets when editing the Requirements treeview.
+relkit/requirement.py:    # TODO: Add tooltips to all widgets.
+relkit/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+relkit/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+relkit/software.py:    # TODO: Write code to update notebook widgets when editing the
+relkit/hardware.py:    # TODO: Write code to update notebook widgets when editing the System treeview.
+relkit/imports.py:        # TODO: Add support for importing data from other than Excel files.
+Binary file relkit/calculations.pyc matches
+relkit/incident.py:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
+relkit/incident.py:    # TODO: Add tooltips to all widgets.
+relkit/incident.py:        # TODO: Create code that will use either fld_description of fld_name depending on which the user uses.
+relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217F part count model for all component types.
+relkit/calculations.py:                        # TODO: Need to change lambda and pi output labels and gtk.Entry based on model selected (idx).
+relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217FN1 part stress model.
+relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217FN1 part count model.
+relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217FN2 part stress model.
+relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217FN2 part count model.
+relkit/calculations.py:                        # TODO: Implement NSWC-07 model.
+relkit/calculations.py:                    # TODO: Need to add field to database for holding the overstress reason.
+relkit/calculations.py:    # TODO: Add database field for total cost results.
+relkit/calculations.py:            # TODO: Overstress calculations for crystals.
+relkit/calculations.py:            print "TODO: Overstress calculations for crystals."
+relkit/calculations.py:            # TODO: Overstress calculations for fuses.
+relkit/calculations.py:            print "TODO: Overstress calculations for fuses."
+relkit/calculations.py:            # TODO: Overstress calculations for filters.
+relkit/calculations.py:            print "TODO: Overstress calculations for filters."
+relkit/calculations.py:        # TODO: Add contact power overstress calculations for relays
+relkit/calculations.py:        # TODO: Add temperature limit overstress calculations for resistors
+relkit/calculations.py:        # TODO: Add voltage ratio overstress calculations for variable resistors.
+relkit/calculations.py:        # TODO: Add contact power overstress calculations for switches
+relkit/configuration.py:#TODO: Create GUI to manipulate user configuration values.
+relkit/validation.py:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
+relkit/validation.py:    # TODO: Add tooltips to all widgets.
+relkit/integrated_circuits/vlsi.py:        # TODO: Implement MIL-HDBK-217F parts count methodology for VLSI IC.
+relkit/function.py:    # TODO: Write code to update notebook widgets when editing the Function treeview.
+relkit/function.py:# TODO: Move the functional matrix to the parts window?
+relkit/function.py:        # TODO: Implement Diagram Worksheet for FUNCTION.
+relkit/function.py:        # TODO: Implement FMECA Worksheet for FUNCTION.
+relkit/utilities.py:    # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
+relkit/utilities.py:    # TODO: Write code to cut/copy/paste.
+relkit/utilities.py:    # TODO: Write code to select all items in treeviews.
+relkit/utilities.py:    # TODO: Write code to find, find next, find previous, and replace search terms.
+relkit/utilities.py:    # TODO: Write code to undo changes.
+relkit/utilities.py:    # TODO: Write code to redo changes.
+relkit/_assistants_/incident.py:# TODO: Revise the following query to include the hardware id from tbl_incident.
+relkit/_assistants_/incident.py:                # TODO: Add error log message here.
+relkit/_assistants_/incident.py:# TODO: Revise the following queries to include inserting the hardware id.
+relkit/partlist.py:    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
+relkit/partlist.py:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
+relkit/tree.py:    #TODO: Create GUI to set/edit user-defined column headings for all trees.
+relkit/tree.py:        # TODO: Implement Maintenance Policy tree.
+relkit/tree.py:        # TODO: Implement Reliability Testing tree.
+relkit/tree.py:        # TODO: Add index to RELKIT_MODULES array for data sets.
+relkit/tree.py:        # TODO: Functions to create charts and graphs.
+relkit/tree.py:        # TODO: Functions to create reports.
+relkit/connections/solder.py:        #TODO: Lookup base hazard rate for PTH in MIL-HDBK-217.
+relkit/connections/solder.py:        #TODO: Lookup lammbda_b in MIL-HDBK-217.
+relkit/assembly.py:    # TODO: Add tooltips to all widgets.
+relkit/assembly.py:        # TODO: Implement Diagram Worksheet for ASSEMBLY.
+relkit/assembly.py:        # TODO: Implement FMEA/FMECA for ASSEMBLY.
+relkit/assembly.py:        # TODO: Implement Maintenance Planning for ASSEMBLY.
+relkit/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+relkit/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+relkit/widgets.py:    # TODO: Adjust the height of the row when the width is adjusted.
+relkit/dataset.py:# TODO: Revise tbl_dataset to include a field for the hardware id.
+relkit/dataset.py:# TODO: Revise the following query to include the hardware id field that will be added.
+relkit/dataset.py:# TODO: Write error handling routine for KM cumulative hazard plots.
+relkit/semiconductors/transistor.py:        # TODO: Validate index 64 is operating power.
+relkit/semiconductors/transistor.py:        # TODO: Validate index 64 is operating power.
