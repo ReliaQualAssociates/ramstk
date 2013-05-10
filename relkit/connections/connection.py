@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.configuration as _conf
-    import reliafree.widgets as _widg
+    import relkit.configuration as _conf
+    import relkit.widgets as _widg
 except ImportError:
     import configuration as _conf
     import widgets as _widg
@@ -46,7 +46,7 @@ class Connection:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 8                   # Category in reliafreecom database.
+        self.category = 8                   # Category in relkitcom database.
 
         # Label text for input data.
         self._in_labels.append(_("Quality:"))

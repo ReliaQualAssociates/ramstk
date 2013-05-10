@@ -67,12 +67,12 @@ class install_dev_docs(Command):
         ('doc-type=', None,
          "whether to install html (default) or pdf documentation."),
         ('doc-path=', None,
-         "path to install documentation (defaults to /usr/share/doc/reliafree-" + _version + "/developer")
+         "path to install documentation (defaults to /usr/share/doc/relkit-" + _version + "/developer")
         ]
 
     def initialize_options(self):
         self.doc_type = "html"
-        self.doc_path = "/usr/share/doc/reliafree-" + _version + "/developer"
+        self.doc_path = "/usr/share/doc/relkit-" + _version + "/developer"
 
     def finalize_options(self):
         if(self.doc_type == "pdf"):
@@ -111,7 +111,7 @@ class install_user_docs(Command):
         ('doc-type=', None,
          "whether to install html (default) or pdf documentation."),
         ('doc-path=', None,
-         "path to install documentation (defaults to /usr/share/doc/reliafree-" + _version + "/user"),
+         "path to install documentation (defaults to /usr/share/doc/relkit-" + _version + "/user"),
         ('models', 'm',
          "install documentation related to hazard rate models supported by RelKit."),
         ('specs', 's',
@@ -122,7 +122,7 @@ class install_user_docs(Command):
 
     def initialize_options(self):
         self.doc_type = "html"
-        self.doc_path = "/usr/share/doc/reliafree-" + _version + "/user"
+        self.doc_path = "/usr/share/doc/relkit-" + _version + "/user"
 
         self.models = False
         self.specs = False
@@ -182,52 +182,52 @@ class install_user_docs(Command):
                 for f in files:
                     distutils.file_util.copy_file(os.path.join(root, f), "%s/%s" % (path, d))
 
-_package_data={"reliafree": [""],
-               "reliafree": ["config/*.conf"],
-               "reliafree": ["config/*.xml"],
-               "reliafree": ["config/icons/16x16/*.png"],
-               "reliafree": ["config/icons/32x32/*.png"]}
+_package_data={"relkit": [""],
+               "relkit": ["config/*.conf"],
+               "relkit": ["config/*.xml"],
+               "relkit": ["config/icons/16x16/*.png"],
+               "relkit": ["config/icons/32x32/*.png"]}
 
-_data_files=[("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/add.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/calculate.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/charts.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/copy.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/cut.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/db-connected.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/db-disconnected.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/delete.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/edit.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/exit.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/import.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/new.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/open.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/overstress.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/part.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/paste.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/redo.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/remove.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/reports.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/save.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/save-exit.png"]),
-             ("%s/reliafree/32x32" % _icondir, ["config/icons/32x32/undo.png"]),
+_data_files=[("%s/relkit/32x32" % _icondir, ["config/icons/32x32/add.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/calculate.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/charts.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/copy.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/cut.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/db-connected.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/db-disconnected.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/delete.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/edit.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/exit.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/import.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/new.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/open.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/overstress.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/part.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/paste.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/redo.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/remove.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/reports.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/save.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/save-exit.png"]),
+             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/undo.png"]),
              (_icondir, ["config/icons/RelKit.png"]),
-             ("/etc/reliafree", ["config/site.conf"]),
-             ("/etc/reliafree", ["config/reliafree.conf"]),
-             ("/etc/reliafree", ["config/fmeca_format.xml"]),
-             ("/etc/reliafree", ["config/fraca_format.xml"]),
-             ("/etc/reliafree", ["config/function_format.xml"]),
-             ("/etc/reliafree", ["config/hardware_format.xml"]),
-             ("/etc/reliafree", ["config/part_format.xml"]),
-             ("/etc/reliafree", ["config/requirement_format.xml"]),
-             ("/etc/reliafree", ["config/revision_format.xml"]),
-             ("/etc/reliafree", ["config/sia_format.xml"]),
-             ("/etc/reliafree", ["config/validation_format.xml"]),
-             ("share/reliafree/examples", ["config/example1.sql"]),
-             ("share/reliafree", ["config/newprogram_mysql.sql"]),
-             ("share/reliafree", ["config/newprogram_sqlite3.sql"]),
-             ("share/reliafree", ["config/reliafreecom.sql"]),
-             ("share/doc/reliafree-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
+             ("/etc/relkit", ["config/site.conf"]),
+             ("/etc/relkit", ["config/relkit.conf"]),
+             ("/etc/relkit", ["config/fmeca_format.xml"]),
+             ("/etc/relkit", ["config/fraca_format.xml"]),
+             ("/etc/relkit", ["config/function_format.xml"]),
+             ("/etc/relkit", ["config/hardware_format.xml"]),
+             ("/etc/relkit", ["config/part_format.xml"]),
+             ("/etc/relkit", ["config/requirement_format.xml"]),
+             ("/etc/relkit", ["config/revision_format.xml"]),
+             ("/etc/relkit", ["config/sia_format.xml"]),
+             ("/etc/relkit", ["config/validation_format.xml"]),
+             ("share/relkit/examples", ["config/example1.sql"]),
+             ("share/relkit", ["config/newprogram_mysql.sql"]),
+             ("share/relkit", ["config/newprogram_sqlite3.sql"]),
+             ("share/relkit", ["config/relkitcom.sql"]),
+             ("share/doc/relkit-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
              ("share/applications", ["RelKit.desktop"]),
              ]
 
@@ -253,7 +253,7 @@ _classifiers=["Development Status :: 3 - Alpha",
 
 entry_points={
               "gui": [
-              "reliafree = reliafree.main:main"
+              "relkit = relkit.main:main"
               ]
 }
 
@@ -276,14 +276,14 @@ setup(
     author_email = "darowland@ieee.org",
     maintainer = "Andrew Rowland",
     maintainer_email = "darowland@ieee.org",
-    url = "http://sourceforge.net/apps/mediawiki/reliafree/index.php?title=Main_Page",
+    url = "http://sourceforge.net/apps/mediawiki/relkit/index.php?title=Main_Page",
     description = "RAM Analyses Tools",
     long_description = """RelKit is a Python and PyGTK based suite of tools to
                           assist in Reliability, Availability, Maintainability,
                           and Safety (RAMS) analyses. RelKit is intended to be
                           an Open Source alternative to proprietary RAMS analyses
                           solutions.""",
-    download_url = "http://sourceforge.net/projects/reliafree/",
+    download_url = "http://sourceforge.net/projects/relkit/",
     platforms = "Linux",
     license = "GPL3",
     cmdclass = _cmdclass,
@@ -293,7 +293,7 @@ setup(
     package_data = _package_data,
     data_files = _data_files,
     entry_points = """[console_scripts]
-                      reliafree = reliafree.main:main
+                      relkit = relkit.main:main
                    """,
     classifiers = _classifiers
     )

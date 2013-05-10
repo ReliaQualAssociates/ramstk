@@ -10,8 +10,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except:
     import calculations as _calc
     import widgets as _widg
@@ -39,7 +39,7 @@ class Ceramic(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 55                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 55                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -183,7 +183,7 @@ class Piston(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 56                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 56                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -327,7 +327,7 @@ class AirTrimmer(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 57                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 57                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -473,7 +473,7 @@ class Gas(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 58                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 58                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

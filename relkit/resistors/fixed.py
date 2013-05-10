@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -41,7 +41,7 @@ class Composition(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 25               # Subcategory ID in reliafreecom database.
+        self.subcategory = 25               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -160,7 +160,7 @@ class Film(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 26               # Subcategory ID in reliafreecom database.
+        self.subcategory = 26               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -335,7 +335,7 @@ class FilmNetwork(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 28               # Subcategory ID in reliafreecom database.
+        self.subcategory = 28               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -556,7 +556,7 @@ class FilmPower(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 27               # Subcategory ID in reliafreecom database.
+        self.subcategory = 27               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -675,7 +675,7 @@ class Wirewound(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 29               # Subcategory ID in reliafreecom database.
+        self.subcategory = 29               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -808,7 +808,7 @@ class WirewoundPower(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 30               # Subcategory ID in reliafreecom database.
+        self.subcategory = 30               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1096,7 +1096,7 @@ class WirewoundPowerChassis(Resistor):
 
         Resistor.__init__(self)
 
-        self.subcategory = 31               # Subcategory ID in reliafreecom database.
+        self.subcategory = 31               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

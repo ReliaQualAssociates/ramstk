@@ -36,19 +36,21 @@ grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
                16.0]
 
 # Path to the directory containing icon files used by RelKit.  Defaults to
-# /usr/share/pixmaps/reliafree/.
+# /usr/share/pixmaps/relkit/ on POSIX systems.
 ICON_DIR = ''
 
 # Path to the directory containing data files used by RelKit.  Defaults to
-# /usr/share/reliafree/.
+# /usr/share/relkit/ on POSIX systems.
 DATA_DIR = ''
 
 # Path to the directory containing configuration files used by RelKit.
-# Defaults to $HOME/.config/reliafree/ on POSIX systems.
+# Defaults to $HOME/.config/relkit/ on POSIX systems.
+# Defaults to C:\\Users\<USER NAME>\config\relkit\ on NT systems.
 CONF_DIR = ''
 
 # Path to the directory containing log files used by RelKit.
-# Defaults to $HOME/.config/reliafree/ on POSIX systems.
+# Defaults to $HOME/.config/relkit/logs/ on POSIX systems.
+# Defaults to C:\\Users\<USER NAME>\config\relkit\logs\ on NT systems.
 LOG_DIR = ''
 
 # Global list containing the path to the format files to use for various
@@ -195,62 +197,62 @@ class RelKitConf:
 
         if(name == 'posix'):
             self.OS = 'Linux'
-            _SITEDIR = '/etc/reliafree/'
-            _DATADIR = '/usr/share/reliafree/'
-            _ICONDIR = '/usr/share/pixmaps/reliafree/'
-            _LOGDIR = '/var/log/reliafree/'
+            _SITEDIR = '/etc/relkit/'
+            _DATADIR = '/usr/share/relkit/'
+            _ICONDIR = '/usr/share/pixmaps/relkit/'
+            _LOGDIR = '/var/log/relkit/'
             _HOMEDIR = environ['HOME']
 
         elif(name == 'nt'):
             self.OS = 'Windows'
             _HOMEDIR = environ['USERPROFILE']
-            _DATADIR = _HOMEDIR + '/.config/reliafree/'
-            _SITEDIR = _HOMEDIR + '/.config/reliafree/'
-            _ICONDIR = _HOMEDIR + '/.config/reliafree/icons/'
-            _LOGDIR = _HOMEDIR + '/.config/reliafree/logs/'
+            _DATADIR = _HOMEDIR + '/.config/relkit/'
+            _SITEDIR = _HOMEDIR + '/.config/relkit/'
+            _ICONDIR = _HOMEDIR + '/.config/relkit/icons/'
+            _LOGDIR = _HOMEDIR + '/.config/relkit/logs/'
 
         if(level == 'site'):
             if(_util.dir_exists(_SITEDIR)):
                 self.conf_dir = _SITEDIR
             else:
-                self.conf_dir = _HOMEDIR + '/.config/reliafree/'
+                self.conf_dir = _HOMEDIR + '/.config/relkit/'
 
             if(_util.dir_exists(_DATADIR)):
                 self.data_dir = _DATADIR
             else:
-                self.data_dir = _HOMEDIR + '/.config/reliafree/data/'
+                self.data_dir = _HOMEDIR + '/.config/relkit/data/'
 
             if(_util.dir_exists(_ICONDIR)):
                 self.icon_dir = _ICONDIR
             else:
-                self.icon_dir = _HOMEDIR + '/.config/reliafree/icons'
+                self.icon_dir = _HOMEDIR + '/.config/relkit/icons'
 
             if(_util.dir_exists(_LOGDIR)):
                 self.log_dir = _LOGDIR
             else:
-                self.log_dir = _HOMEDIR + '/.config/reliafree/logs/'
+                self.log_dir = _HOMEDIR + '/.config/relkit/logs/'
 
             self._conf_file = self.conf_dir + '/site.conf'
 
         elif(level == 'user'):
-            self.conf_dir = _HOMEDIR + '/.config/reliafree/'
+            self.conf_dir = _HOMEDIR + '/.config/relkit/'
 
             if(_util.dir_exists(_DATADIR)):
                 self.data_dir = _DATADIR
             else:
-                self.data_dir = _HOMEDIR + '/.config/reliafree/data/'
+                self.data_dir = _HOMEDIR + '/.config/relkit/data/'
 
             if(_util.dir_exists(_ICONDIR)):
                 self.icon_dir = _ICONDIR
             else:
-                self.icon_dir = _HOMEDIR + '/.config/reliafree/icons'
+                self.icon_dir = _HOMEDIR + '/.config/relkit/icons'
 
             if(_util.dir_exists(_LOGDIR)):
                 self.log_dir = _LOGDIR
             else:
-                self.log_dir = _HOMEDIR + '/.config/reliafree/logs/'
+                self.log_dir = _HOMEDIR + '/.config/relkit/logs/'
 
-            self._conf_file = self.conf_dir + 'reliafree.conf'
+            self._conf_file = self.conf_dir + 'relkit.conf'
 
         if not _util.file_exists(self._conf_file):
             self.create_default_configuration()
@@ -290,7 +292,7 @@ class RelKitConf:
                 label = _widg.make_label("RelKit common database name:",
                                          width=340)
                 txtDBName = _widg.make_entry()
-                txtDBName.set_text("reliafreecom")
+                txtDBName.set_text("relkitcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBName, 345, y_pos)
                 y_pos += 30
@@ -298,7 +300,7 @@ class RelKitConf:
                 label = _widg.make_label("RelKit common database user name:",
                                          width=340)
                 txtDBUser = _widg.make_entry()
-                txtDBUser.set_text("reliafreecom")
+                txtDBUser.set_text("relkitcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBUser, 345, y_pos)
                 y_pos += 30
@@ -308,7 +310,7 @@ class RelKitConf:
                 txtDBPassword = _widg.make_entry()
                 txtDBPassword.set_invisible_char("*")
                 txtDBPassword.set_visibility(False)
-                txtDBPassword.set_text("reliafreecom")
+                txtDBPassword.set_text("relkitcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBPassword, 345, y_pos)
                 y_pos += 30
@@ -326,16 +328,16 @@ class RelKitConf:
                 response = dialog.run()
 
                 if(response == -3):
-                    reliafreecomlist = []
-                    reliafreecomlist.append(txtDBHost.get_text())
+                    relkitcomlist = []
+                    relkitcomlist.append(txtDBHost.get_text())
                     try:
-                        reliafreecomlist.append(int(txtDBSocket.get_text()))
+                        relkitcomlist.append(int(txtDBSocket.get_text()))
                     except ValueError:
-                        reliafreecomlist.append(txtDBSocket.get_text())
-                    reliafreecomlist.append(txtDBName.get_text())
-                    reliafreecomlist.append(txtDBUser.get_text())
-                    reliafreecomlist.append(txtDBPassword.get_text())
-                    reliafreecomlist.append(cmbDBType.get_active_text())
+                        relkitcomlist.append(txtDBSocket.get_text())
+                    relkitcomlist.append(txtDBName.get_text())
+                    relkitcomlist.append(txtDBUser.get_text())
+                    relkitcomlist.append(txtDBPassword.get_text())
+                    relkitcomlist.append(cmbDBType.get_active_text())
 
                 dialog.destroy()
 
@@ -346,14 +348,14 @@ class RelKitConf:
                 config.set('Modules', 'maintenance', 'True')
                 config.set('Modules', 'fraca', 'True')
                 config.add_section('Backend')
-                config.set('Backend', 'host', reliafreecomlist[0])
-                config.set('Backend', 'socket', reliafreecomlist[1])
-                config.set('Backend', 'database', reliafreecomlist[2])
-                config.set('Backend', 'user', reliafreecomlist[3])
-                config.set('Backend', 'password', reliafreecomlist[4])
-                config.set('Backend', 'type', reliafreecomlist[5])
+                config.set('Backend', 'host', relkitcomlist[0])
+                config.set('Backend', 'socket', relkitcomlist[1])
+                config.set('Backend', 'database', relkitcomlist[2])
+                config.set('Backend', 'user', relkitcomlist[3])
+                config.set('Backend', 'password', relkitcomlist[4])
+                config.set('Backend', 'type', relkitcomlist[5])
 
-            elif(basename(self._conf_file) == 'reliafree.conf'):
+            elif(basename(self._conf_file) == 'relkit.conf'):
                 config.add_section('General')
                 config.set('General', 'reportsize', 'letter')
                 config.set('General', 'repairtimeunit', 'hours')

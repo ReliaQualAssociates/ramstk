@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.widgets as _widg
+    import relkit.widgets as _widg
 except ImportError:
     import widgets as _widg
 
@@ -38,7 +38,7 @@ class IntegratedCircuit:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 1                   # Category ID in reliafreecom database.
+        self.category = 1                   # Category ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

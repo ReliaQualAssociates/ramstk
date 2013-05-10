@@ -367,7 +367,7 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '16x16/exit.png')
         menu_item.set_label(_("Exit"))
         menu_item.set_image(image)
-        menu_item.connect('activate', self.quit_reliafree)
+        menu_item.connect('activate', self.quit_relkit)
         menu.append(menu_item)
 
         mnuFile = gtk.MenuItem(label=_("_File"), use_underline=True)
@@ -727,25 +727,25 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-        # Save and quit button
+# Save and quit button
         button = gtk.ToolButton(label=_("Save & Quit"))
         button.set_tooltip_text(_("Save the currently open RelKit Program Database then quit"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
         button.show()
-        button.connect('clicked', self.save_quit_reliafree)
+        button.connect('clicked', self.save_quit_relkit)
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Quit without saving button
+# Quit without saving button
         button = gtk.ToolButton(stock_id = gtk.STOCK_QUIT)
         button.set_tooltip_text(_("Quit without saving the currently open RelKit Program Database"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
         button.show()
-        button.connect('clicked', self.quit_reliafree)
+        button.connect('clicked', self.quit_relkit)
         toolbar.insert(button, _pos)
 
         toolbar.show()
@@ -899,7 +899,7 @@ class TreeWindow(gtk.Window):
 
         return False
 
-    def save_quit_reliafree(self, button):
+    def save_quit_relkit(self, button):
         """
         Used to save, then quit the RelKit application.
 
@@ -913,7 +913,7 @@ class TreeWindow(gtk.Window):
 
         return False
 
-    def quit_reliafree(self, button):
+    def quit_relkit(self, button):
         """
         Used to quit the RelKit application without saving the open
         database.

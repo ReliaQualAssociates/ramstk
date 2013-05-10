@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
+    import relkit.calculations as _calc
 except ImportError:
     import calculations as _calc
 
@@ -40,7 +40,7 @@ class PaperBypass(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 40               # Subcategory ID in reliafreecom database.
+        self.subcategory = 40               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -186,7 +186,7 @@ class PaperFeedthrough(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 41               # Subcategory ID in reliafreecom database.
+        self.subcategory = 41               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -324,7 +324,7 @@ class PlasticFilm(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 42               # Subcategory ID in reliafreecom database.
+        self.subcategory = 42               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -481,7 +481,7 @@ class MetallizedPaper(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 43               # Subcategory ID in reliafreecom database.
+        self.subcategory = 43               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -627,7 +627,7 @@ class Plastic(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 44               # Subcategory ID in reliafreecom database.
+        self.subcategory = 44               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -760,7 +760,7 @@ class SuperMetallizedPlastic(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 45               # Subcategory ID in reliafreecom database.
+        self.subcategory = 45               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -892,7 +892,7 @@ class Mica(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 46               # Subcategory ID in reliafreecom database.
+        self.subcategory = 46               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1037,7 +1037,7 @@ class MicaButton(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 46               # Subcategory ID in reliafreecom database.
+        self.subcategory = 46               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1171,7 +1171,7 @@ class Glass(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 48               # Subcategory ID in reliafreecom database.
+        self.subcategory = 48               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1318,7 +1318,7 @@ class CeramicGeneral(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 39               # Subcategory ID in reliafreecom database.
+        self.subcategory = 39               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1464,7 +1464,7 @@ class CeramicChip(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 50               # Subcategory ID in reliafreecom database.
+        self.subcategory = 50               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

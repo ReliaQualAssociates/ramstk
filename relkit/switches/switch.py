@@ -10,7 +10,7 @@
 import pango
 
 try:
-    import reliafree.widgets as _widg
+    import relkit.widgets as _widg
 except:
     import widgets as _widg
 
@@ -32,7 +32,7 @@ class Switch:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 7                       # Category in reliafreecom database.
+        self.category = 7                       # Category in relkitcom database.
 
         # Label text for input data.
         self._in_labels.append(u"Quality:")

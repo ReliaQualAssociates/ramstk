@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -70,8 +70,8 @@ class Mechanical:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 6                   # Category in reliafreecom database.
-        self.subcategory = 64               # Subcategory in reliafreecom database.
+        self.category = 6                   # Category in relkitcom database.
+        self.subcategory = 64               # Subcategory in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -902,8 +902,8 @@ class SolidState:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 6                       # Category in reliafreecom database.
-        self.subcategory = 65                   # Subcategory in reliafreecom database.
+        self.category = 6                       # Category in relkitcom database.
+        self.subcategory = 65                   # Subcategory in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

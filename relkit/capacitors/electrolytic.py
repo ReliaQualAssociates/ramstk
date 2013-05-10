@@ -11,8 +11,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except:
     import calculations as _calc
     import widgets as _widg
@@ -41,7 +41,7 @@ class TantalumSolid(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 51                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 51                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -266,7 +266,7 @@ class TantalumNonSolid(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 52                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 52                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -487,7 +487,7 @@ class Aluminum(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 53                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 53                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -616,7 +616,7 @@ class AluminumDry(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 54                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 54                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

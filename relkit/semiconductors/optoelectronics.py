@@ -13,9 +13,9 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.configuration as _conf
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.configuration as _conf
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import configuration as _conf
@@ -52,7 +52,7 @@ class Detector(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 22               # Subcategory ID in reliafreecom database.
+        self.subcategory = 22               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -308,7 +308,7 @@ class Display(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 23               # Subcategory ID in reliafreecom database.
+        self.subcategory = 23               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -543,7 +543,7 @@ class LaserDiode(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 24               # Subcategory ID in reliafreecom database.
+        self.subcategory = 24               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

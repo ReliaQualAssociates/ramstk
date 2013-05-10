@@ -11,8 +11,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -34,7 +34,7 @@ class MemoryDRAM(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 7                    # Subcategory ID in reliafreecom database.
+        self.subcategory = 7                    # Subcategory ID in relkitcom database.
 
         self._B = [16384, 65536, 262144, 1024000]
 
@@ -271,7 +271,7 @@ class MemoryEEPROM(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 6                    # Subcategory ID in reliafreecom database.
+        self.subcategory = 6                    # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -630,7 +630,7 @@ class MemoryROM(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 5        # Subcategory ID in reliafreecom database.
+        self.subcategory = 5        # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -856,7 +856,7 @@ class MemorySRAM(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 8                    # Subcategory ID in reliafreecom database.
+        self.subcategory = 8                    # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

@@ -12,9 +12,9 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.configuration as _conf
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.configuration as _conf
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import configuration as _conf
@@ -49,7 +49,7 @@ class PTH(Connection):
 
         Connection.__init__(self)
 
-        self.subcategory = 75               # Subcategory ID in reliafreecom database.
+        self.subcategory = 75               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -310,7 +310,7 @@ class Solder(Connection):
         Connection.__init__(self)
 
         if(type == 1):
-            self.subcategory = 76           # Subcategory ID in reliafreecom database.
+            self.subcategory = 76           # Subcategory ID in relkitcom database.
             self._lambdab = 0.00012
             self._piQ = [1.0]
             self._lambdab_count = [0.00012, 0.00024, 0.00084, 0.00048, 0.0013,
@@ -321,21 +321,21 @@ class Solder(Connection):
                              _("Manual, MIL-SPEC Tools with Two Pull Test"),
                              _("Manual, MIL-SPEC Tools with One Pull Test"),
                              _("Lower")]
-            self.subcategory = 83           # Subcategory ID in reliafreecom database.
+            self.subcategory = 83           # Subcategory ID in relkitcom database.
             self._lambdab = 0.00026
             self._piQ = [1.0, 1.0, 2.0, 20.0]
             self._lambdab_count = [0.00026, 0.00052, 0.0018, 0.0010, 0.0029,
                                    0.0010, 0.0016, 0.0016, 0.0021, 0.0042,
                                    0.00013, 0.0023, 0.0062, 0.11]
         elif(type == 3):
-            self.subcategory = 84           # Subcategory ID in reliafreecom database.
+            self.subcategory = 84           # Subcategory ID in relkitcom database.
             self._lambdab = 0.0026
             self._piQ = [1.0]
             self._lambdab_count = [0.0026, 0.0052, 0.018, 0.010, 0.029, 0.010,
                                    0.016, 0.016, 0.021, 0.042, 0.0013, 0.023,
                                    0.062, 1.1]
         elif(type == 8):
-            self.subcategory = 85           # Subcategory ID in reliafreecom database.
+            self.subcategory = 85           # Subcategory ID in relkitcom database.
             self._lambdab = 0.000069
             self._piQ = [1.0]
             self._lambdab_count = [0.000069, 0.000138, 0.000483, 0.000276,
@@ -343,7 +343,7 @@ class Solder(Connection):
                                    0.000552, 0.001104, 0.000035, 0.000621,
                                    0.001656, 0.02898]
         elif(type == 9):
-            self.subcategory = 86           # Subcategory ID in reliafreecom database.
+            self.subcategory = 86           # Subcategory ID in relkitcom database.
             self._lambdab = 0.00005
             self._piQ = [1.0]
             self._lambdab_count = [0.000050, 0.000100, 0.000350, 0.000200,
@@ -351,7 +351,7 @@ class Solder(Connection):
                                    0.000400, 0.000800, 0.000025, 0.000450,
                                    0.001200, 0.021000]
         elif(type == 10):
-            self.subcategory = 87           # Subcategory ID in reliafreecom database.
+            self.subcategory = 87           # Subcategory ID in relkitcom database.
             self._lambdab = 0.00014
             self._piQ = [1.0]
             self._lambdab_count = [0.00014, 0.00028, 0.00096, 0.00056, 0.0015,

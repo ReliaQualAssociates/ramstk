@@ -33,7 +33,6 @@ import logging
 if(os.name == 'nt'):
     from scipy.sparse.csgraph import _validation
 
-
 # Add localization support.
 import gettext
 _ = gettext.gettext

@@ -11,8 +11,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -41,7 +41,7 @@ class VLSI(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 11       # Subcategory ID in reliafreecom database.
+        self.subcategory = 11       # Subcategory ID in relkitcom database.
 
         self._in_labels[2] = "# of Transistors:"
         self._in_labels.append("Man Process:")

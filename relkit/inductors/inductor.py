@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.widgets as _widg
+    import relkit.widgets as _widg
 except ImportError:
     import widgets as _widg
 
@@ -34,7 +34,7 @@ class Inductor:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 5                   # Category in reliafreecom database.
+        self.category = 5                   # Category in relkitcom database.
 
         # Label text for input data.
         self._in_labels.append(u"Quality:")

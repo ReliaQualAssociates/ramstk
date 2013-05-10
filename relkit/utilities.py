@@ -465,7 +465,7 @@ def open_project(widget, app, dlg=1, filename=''):
             if(results[i][0] != 'information_schema' and \
                results[i][0] != 'test' and \
                results[i][0] != 'mysql' and \
-               results[i][0] != 'reliafreecom' and
+               results[i][0] != 'relkitcom' and
                results[i][0] != '#mysql50#lost+found'):
                 iter_ = model.append(None, [results[i][0]])
 

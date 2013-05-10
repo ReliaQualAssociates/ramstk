@@ -10,8 +10,8 @@
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except:
     import calculations as _calc
     import widgets as _widg
@@ -19,25 +19,25 @@ except:
 from switch import Switch
 
 class Thumbwheel(Switch):
+    """
+    Thumbwheel Switch Component Class.
+    Covers specifications MIL-S-22710.
 
-    """ Thumbwheel Switch Component Class.
-        Covers specifications MIL-S-22710.
-
-        Hazard Rate Models:
-            1. MIL-HDBK-217F, section 14.4
-
+    Hazard Rate Models:
+        1. MIL-HDBK-217F, section 14.4
     """
 
     _application = ["", u"Resistive", u"Inductive", u"Lamp"]
     _quality = ["", u"MIL-SPEC", u"Lower"]
 
     def __init__(self):
-
-        """ Initializes the Toggle or Pushbutton Switch Component Class. """
+        """
+        Initializes the Toggle or Pushbutton Switch Component Class.
+        """
 
         Switch.__init__(self)
 
-        self.subcategory = 70                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 70                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -57,16 +57,16 @@ class Thumbwheel(Switch):
         self._out_labels.append(u"\u03C0<sub>L</sub>:")
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RelKit Workbook calculation input tab with the widgets
+        needed to select inputs for Toggle or Pushbutton Switch Component Class
+        prediction calculations.
 
-        """ Populates the RelKit Workbook calculation input tab with the
-            widgets needed to select inputs for Toggle or Pushbutton Switch
-            Component Class prediction calculations.
-
-            Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
-            layout -- the layout widget to contain the display widgets.
-            x_pos  -- the x position of the widgets.
-            y_pos  -- the y position of the first widget.
+        Keyword Arguments:
+        part   -- the RelKit COMPONENT object.
+        layout -- the layout widget to contain the display widgets.
+        x_pos  -- the x position of the widgets.
+        y_pos  -- the y position of the first widget.
         """
 
         y_pos = Switch.assessment_inputs_create(self, part, layout,

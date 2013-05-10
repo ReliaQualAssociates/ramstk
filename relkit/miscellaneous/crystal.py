@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -39,8 +39,8 @@ class Crystal:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 10                      # Category in reliafreecom database.
-        self.subcategory = 80                   # Subcategory in reliafreecom database.
+        self.category = 10                      # Category in relkitcom database.
+        self.subcategory = 80                   # Subcategory in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

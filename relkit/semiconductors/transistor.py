@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -39,7 +39,7 @@ class LFBipolar(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 14               # Subcategory ID in reliafreecom database.
+        self.subcategory = 14               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -374,7 +374,7 @@ class LFSiFET(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 15               # Subcategory ID in reliafreecom database.
+        self.subcategory = 15               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -667,7 +667,7 @@ class Unijunction(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 16               # Subcategory ID in reliafreecom database.
+        self.subcategory = 16               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -843,7 +843,7 @@ class HFLNBipolar(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 17               # Subcategory ID in reliafreecom database.
+        self.subcategory = 17               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1124,7 +1124,7 @@ class HFHPBipolar(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 18               # Subcategory ID in reliafreecom database.
+        self.subcategory = 18               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1487,7 +1487,7 @@ class HFGaAsFET(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 19               # Subcategory ID in reliafreecom database.
+        self.subcategory = 19               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1797,7 +1797,7 @@ class HFSiFET(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 20               # Subcategory ID in reliafreecom database.
+        self.subcategory = 20               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

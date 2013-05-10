@@ -13,9 +13,9 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.configuration as _conf
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.configuration as _conf
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import configuration as _conf
@@ -50,7 +50,7 @@ class ICSocket(Connection):
 
         Connection.__init__(self)
 
-        self.subcategory = 74                   # Subcategory ID in reliafreecom database.
+        self.subcategory = 74                   # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

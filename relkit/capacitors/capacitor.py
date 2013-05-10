@@ -23,8 +23,8 @@ import gettext
 _ = gettext.gettext
 
 try:
-    import reliafree.configuration as _conf
-    import reliafree.widgets as _widg
+    import relkit.configuration as _conf
+    import relkit.widgets as _widg
 except:
     import configuration as _conf
     import widgets as _widg
@@ -47,7 +47,7 @@ class Capacitor:
         self._in_labels = []
         self._out_labels = []
 
-        self.category = 4                       # Category in reliafreecom database.
+        self.category = 4                       # Category in relkitcom database.
 
         # Label text for input data.
         self._in_labels.append(_("Quality:"))

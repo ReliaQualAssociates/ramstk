@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 import pango
 
 try:
-    import reliafree.calculations as _calc
-    import reliafree.widgets as _widg
+    import relkit.calculations as _calc
+    import relkit.widgets as _widg
 except ImportError:
     import calculations as _calc
     import widgets as _widg
@@ -41,7 +41,7 @@ class LowFrequency(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 12               # Subcategory ID in reliafreecom database.
+        self.subcategory = 12               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -369,7 +369,7 @@ class HighFrequency(Semiconductor):
 
         Semiconductor.__init__(self)
 
-        self.subcategory = 13               # Subcategory ID in reliafreecom database.
+        self.subcategory = 13               # Subcategory ID in relkitcom database.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
