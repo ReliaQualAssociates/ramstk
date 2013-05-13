@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       dataset.py is part of The RelKit Project
+#       updates.py is part of The RelKit Project
 #
 # All rights reserved.
 
+import os
 import sys
 import pango
+
+from os import environ, name
+from datetime import datetime
 
 # Modules required for the GUI.
 try:
@@ -33,7 +37,6 @@ except ImportError:
 
 # Import other RelKit modules.
 import configuration as _conf
-#import utilities as _util
 import widgets as _widg
 
 # Add localization support.
@@ -47,7 +50,7 @@ import gettext
 _ = gettext.gettext
 
 
-class AssignResults:
+class AssignMTBFResults:
     """
     Assigns the MTBF and failure rate results to the assembly associated with
     the dataset.  Values are assigned to the specified fields.
