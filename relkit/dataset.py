@@ -55,7 +55,7 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
-from _assistants_.dataset import *
+from _assistants_.updates import AssignMTBFResults
 
 # Add localization support.
 import locale
@@ -201,6 +201,8 @@ class Dataset:
         self.hbxAnalysisResults = gtk.HBox()
         self.vbxAnalysisResults1 = gtk.VBox()
         self.vbxAnalysisResults2 = gtk.VBox()
+        self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+        self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
         self.txtMHB = _widg.make_entry(_width_=150)
         self.txtChiSq = _widg.make_entry(_width_=150)
@@ -397,7 +399,7 @@ class Dataset:
         image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         button.set_icon_widget(image)
         button.set_name('Assign')
-        button.connect('clicked', AssignResults, self._app)
+        button.connect('clicked', AssignMTBFResults, self._app)
         button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
         toolbar.insert(button, 5)
 
@@ -1022,7 +1024,6 @@ class Dataset:
 # Clear the tab.
         for child in self.vbxAnalysisResults1.get_children():
             self.vbxAnalysisResults1.remove(child)
-
         for child in self.vbxAnalysisResults2.get_children():
             self.vbxAnalysisResults2.remove(child)
 
@@ -1037,8 +1038,8 @@ class Dataset:
         if(_analysis_ == 1):
             self.vbxAnalysisResults1.pack_start(self.fraNonParStats, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
             self.txtMHB.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 28))))
             self.txtLP.set_text(
@@ -1049,16 +1050,16 @@ class Dataset:
 # Update Kaplan-Meier analysis information.
         elif(_analysis_ == 2):
             self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
 # Update parametric analysis information.
         else:
             self.vbxAnalysisResults1.pack_start(self.fraParEst, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraVarCov, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraParGOF, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
             self.txtScale.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 13))))
@@ -1854,7 +1855,7 @@ class Dataset:
                             _ylab_=_(u"Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Create the legend.
+# Create the legend.
             leg = self.axAxis1.legend((u"Survival Function [S(t)]",
                                        u"Lower CB", u"Upper CB"),
                                       'upper right',

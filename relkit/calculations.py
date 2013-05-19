@@ -49,6 +49,10 @@ except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
 
+# Import mathematical functions.
+import numpy as np
+from math import ceil, exp, floor, log, sqrt
+
 # Import other RelKit modules.
 import configuration as _conf
 import utilities as _util
@@ -114,6 +118,7 @@ def calculate_project(button, application, index):
 
     return False
 
+
 def calculate_revision(widget=None, application=None):
     """
     Calculates active hazard rate, dormant hazard rate, software hazard rate,
@@ -125,8 +130,6 @@ def calculate_revision(widget=None, application=None):
     widget      -- the gtk.Widget that called this function.
     application -- the RelKit application object.
     """
-
-    from math import exp
 
     _parent = application.HARDWARE.model.get_string_from_iter(application.HARDWARE.selected_row)
     if _parent is None:
@@ -189,6 +192,7 @@ def calculate_revision(widget=None, application=None):
     application.REVISION.load_notebook()
 
     return False
+
 
 def calculate_function(_model_, _row_, application):
     """
@@ -268,6 +272,7 @@ def calculate_function(_model_, _row_, application):
 
     return False
 
+
 def calculate_hardware(treemodel, row, application):
     """
     Iterively calculates active hazard rate, dormant hazard rate,
@@ -281,8 +286,6 @@ def calculate_hardware(treemodel, row, application):
     row         -- the row in the gtk.Treemodel to read/write values.
     application -- the RelKit application object.
     """
-
-    from math import exp
 
     application.winTree.progressbar.pulse()
 
@@ -573,6 +576,7 @@ def calculate_hardware(treemodel, row, application):
 
     return(cost, lambdaa, lambdad, lambdas, lambdap, partcount, pwrdiss)
 
+
 def calculate_part(dictionary):
     """
     Calculates the hazard rate for a component.
@@ -591,6 +595,7 @@ def calculate_part(dictionary):
     lambdap = eval(dictionary['equation'])
 
     return(lambdap)
+
 
 def calculate_software(treemodel, row, application):
     """
@@ -630,6 +635,7 @@ def calculate_software(treemodel, row, application):
             RPFOM = 0
 
     return(RPFOM)
+
 
 def calculate_csci(treemodel, row, application):
     """
@@ -923,6 +929,7 @@ def calculate_csci(treemodel, row, application):
 
     return(RPFOM)
 
+
 def calculate_do_factor(_devel_id, values, application):
     """
     This function calculate the software development environment factors
@@ -962,6 +969,7 @@ def calculate_do_factor(_devel_id, values, application):
         Do = (0.018 * Dc - 0.003) / 0.008
 
     return(De, Dc, Do)
+
 
 def calculate_am_factor(values, application):
     """
@@ -1005,6 +1013,7 @@ def calculate_am_factor(values, application):
 
     return(AM, SA)
 
+
 def calculate_st_factor(_phase_id, values, application):
     """
     This function calculate the software requirements traceability factor (ST).
@@ -1041,6 +1050,7 @@ def calculate_st_factor(_phase_id, values, application):
         ST = 1.1
 
     return(ST)
+
 
 def calculate_sq_factor(values, application):
     """
@@ -1082,6 +1092,7 @@ def calculate_sq_factor(values, application):
 
     return(DR, SQ)
 
+
 def calculate_sl_factor(values, application):
     """
     This function calculate the software lines of code factor (SL).
@@ -1121,6 +1132,7 @@ def calculate_sl_factor(values, application):
         SL = 1.0
 
     return(ALOC, HLOC, SLOC, SL)
+
 
 def calculate_sx_factor(values, application):
     """
@@ -1205,6 +1217,7 @@ def calculate_sx_factor(values, application):
 
     return(nm, ax, bx, cx, SX)
 
+
 def calculate_sm_factor(nm, values, application):
     """
     This function calculates the software modularity factor (SM).
@@ -1269,6 +1282,7 @@ def calculate_sm_factor(nm, values, application):
 
     return(um, xm, wm, SM)
 
+
 def calculate_sr_factor(values, application):
     """
     This function calculates the software standards review factor (SR).
@@ -1308,6 +1322,7 @@ def calculate_sr_factor(values, application):
         SR = 0.75
 
     return(DF, SR)
+
 
 def calculate_tm_factor(values, application):
     """
@@ -1375,6 +1390,7 @@ def calculate_tm_factor(values, application):
         TM = 1.1
 
     return(TT, TU, TM)
+
 
 def overstressed(partmodel, partrow, systemmodel, systemrow):
     """
@@ -1839,6 +1855,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
 
     return(overstress, reason)
 
+
 def similar_hazard_rate(component, new_qual, new_environ, new_temp):
 
     """
@@ -2144,7 +2161,6 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     _type_     -- the confidence interval type for the KM estimates.
     """
 
-    from math import log, sqrt
     from scipy.stats import norm
 
     # Eliminate zero time failures and failures occurring after any
@@ -2286,9 +2302,6 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
         _conf_ -- the confidence level of the KM estimates (default is 75%).
     """
 
-    import numpy
-
-    from math import sqrt
     from scipy.stats import norm
 
     # Determine the confidence bound z-value.
@@ -2301,22 +2314,22 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
 
     for i in range(len(data)):
         datad.append(data[i])
-    data = numpy.asarray(data)
-    datad = numpy.asarray(datad)
+    data = np.asarray(data)
+    datad = np.asarray(datad)
 
-    _d_ = numpy.zeros(shape=(_m_, _n_))
-    _delta_ = numpy.zeros(shape=(_m_, _n_))
+    _d_ = np.zeros(shape=(_m_, _n_))
+    _delta_ = np.zeros(shape=(_m_, _n_))
 
     for i in range(_n_):
-        k = numpy.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
-        _u_ = numpy.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
+        k = np.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
+        _u_ = np.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
         for j in range(len(_u_)):
             k = [a for a, x in enumerate(units) if x == _u_[j]]     #
             _delta_[k, 0:i+1] = 1
 
     for i in range(_n_):
-        k = numpy.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
-        _u_ = numpy.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
+        k = np.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
+        _u_ = np.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
         for j in range(len(_u_)):
             k = [a for a, x in enumerate(units) if x == _u_[j]]     #
             _d_[k, i] += 1
@@ -2502,7 +2515,6 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
 
 def theoretical_distribution(_data_, _distr_, _para_):
 
-
     Rbase = importr('base')
 
 # Create the R density and probabilty distribution names.
@@ -2534,3 +2546,213 @@ def theoretical_distribution(_data_, _distr_, _para_):
     theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))
 
     return(theop)
+
+
+def calculate_rg_phase(model, row):
+    """
+    Function to calculate the values for an individual reliability growth
+    phase.
+
+    Keyword Arguments:
+    model -- the gtk.TreeModel containing the RG phase information.
+    row   -- the selected gtk.Iter containning the specific RG phase
+             information.
+    """
+
+# Read the RG phase-specific values.
+    MSi = model.get_value(row, 3)
+    FEFi = model.get_value(row, 4)
+    Probi = model.get_value(row, 5)
+    ti = model.get_value(row, 6)
+    TTTi = model.get_value(row, 7)
+    GRi = model.get_value(row, 8)
+    MTBFi = model.get_value(row, 9)
+    MTBFf = model.get_value(row, 10)
+    MTBFa = model.get_value(row, 11)
+
+# Calculate the average growth rate for the phase.
+    if(GRi == 0.0 or GRi == '' or GRi is None):
+        try:
+            GRi = -log(TTTi / ti) - 1.0 + sqrt((1.0 + log(TTTi / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
+        except(ValueError, ZeroDivisionError):
+            GRi = 0.0
+        model.set_value(row, 8, GRi)
+
+# Calculate initial MTBF for the phase.
+        if(MTBFi == 0.0 or MTBFi == '' or MTBFi is None):
+            try:
+                MTBFi = (-1.0 * ti * MSi) / log(1.0 - Probi)
+            except(ValueError, ZeroDivisionError):
+                try:
+                    MTBFi = MTBFf / exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
+                except(ValueError, ZeroDivisionError):
+                    try:
+                        MTBFi = (ti * (TTTi / ti)**(1.0 - GRi)) / Ni
+                    except(ValueError, ZeroDivisionError):
+                        MTBFi = 0.0
+            model.set_value(row, 9, MTBFi)
+
+# Calculate final MTBF for the phase.
+        if(MTBFf == 0.0 or MTBFf == '' or MTBFf is None):
+            try:
+                MTBFf = MTBFi * exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
+            except (ValueError, ZeroDivisionError):
+                MTBFf = 0.0
+            model.set_value(row, 10, MTBFf)
+
+# Calculate Prob for the phase.
+        if(Probi == 0.0 or Probi == '' or Probi is None):
+            try:
+                Probi = 1.0 - exp(-1.0 * (ti * MSi / MTBFi))
+            except(ValueError, ZeroDivisionError):
+                Probi = 0.0
+            model.set_value(row, 5, Probi)
+
+# Calculate the management strategy for the phase.
+        if(MSi == 0.0 or MSi == '' or MSi is None):
+            try:
+                MSi = log(1.0 - Probi) * MTBFi / (-1.0 * ti)
+            except(ValueError, ZeroDivisionError):
+                MSi = 0.0
+            model.set_value(row, 3, MSi)
+
+# Calculate the time to first fix for the phase.
+        if(ti == 0.0 or ti == '' or ti is None):
+            try:
+                ti = log(1.0 - Probi) * MTBFi / (-1.0 * MSi)
+            except(ValueError, ZeroDivisionError):
+                ti = 0.0
+            model.set_value(row, 6, ti)
+
+# Calculate total test time for the phase.
+        if(TTTi == 0.0 or TTTi == '' or TTTi is None):
+            try:
+                TTTi = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
+            except(ValueError, ZeroDivisionError):
+                TTTi = 0.0
+            model.set_value(row, 7, TTTi)
+
+    return(GRi, TTTi)
+
+
+def calculate_rgtmc_individual(F, X):
+    """
+    Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
+    continous model using Option for Individual Failure Data.
+
+    Keyword Arguments:
+    F -- list of failure counts.
+    X -- list of individual failures times.
+    """
+
+# Find the total time on test and total number of failures.
+    TTT = X[len(X) - 1:][0]
+    FFF = sum(F)
+
+    _rho = []
+    _mu = []
+    for i in range(len(X)):
+        try:
+            _iters = int(floor(X[i] - X[i - 1]))
+        except IndexError:
+            _iters = int(floor(X[i]))
+        for j in range(_iters - 1):
+            try:
+                _rho.append(F[i] / (X[i] - X[i - 1]))
+                _mu.append((X[i] - X[i - 1]) / F[i])
+            except IndexError:
+                _rho.append(F[i] / X[i])
+                _mu.append(X[i] / F[i])
+            except ZeroDivisionError:
+                _rho.append(_rho[i - 1])
+                _mu.append(_mu[i - 1])
+        _rho.append(np.nan)
+        _mu.append(np.nan)
+
+# Append non-plotting values to pad the failure rate and MTBF lists so they
+# have the same length as everything else being plotted.
+    if(len(_rho) < int(TTT)):
+        for j in range(int(TTT) - len(_rho)):
+            _rho.append(np.nan)
+            _mu.append(np.nan)
+
+    logX = [log(x) for x in X]
+
+    _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
+    _lambda_hat = FFF / TTT**_beta_hat
+
+    return(_beta_hat, _lambda_hat, _rho, _mu)
+
+
+def calculate_rgtmc_grouped(F, X, I):
+    """
+    Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
+    continous model using Option for Grouped Failure Data.
+
+    Keyword Arguments:
+    F -- list of failure counts.
+    X -- list of individual failures times.
+    I -- the grouping interval width.
+    """
+
+    from scipy.optimize import fsolve
+
+# Define the function that will be set equal to zero and solved for beta.
+    def _beta(b, f, t, logt):
+        """ Function for estimating the beta value from grouped data. """
+
+        return(sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) / (t[1:]**b - t[:-1]**b) - log(max(t)))))
+
+# Find the total time on test.
+    TTT = X[len(X) - 1:][0]
+    FFF = sum(F)
+
+# Calculate the number of intervals we need, then create a list of zeros the
+# same length as the number of intervals.
+    _num_intervals = int(ceil(TTT / I))
+    _cum_fails = [0] * _num_intervals
+    _rho = []
+    _mu = []
+
+# Iterate through the data and count the nuber of failures in each interval.
+    for i in range(len(X)):
+        for j in range(_num_intervals):
+            if(X[i] > j * I and X[i] <= (j + 1) * I):
+                _cum_fails[j] += F[i]
+
+# Estimate the failure rate and MTBF of this interval.
+            try:
+                _rho.append(_cum_fails[j] / I)
+                _mu.append(1.0 / _rho[j])
+            except ZeroDivisionError:
+                try:
+                    _rho.append(_rho[j - 1])
+                    _mu.append(_mu[j - 1])
+                except IndexError:
+                    _rho.append(0.0)
+                    _mu.append(0.0)
+
+# Append non-plotting values to pad the failure rate and MTBF lists so they
+# have the same length as everything else being plotted.
+    print TTT, len(_rho)
+    if(len(_rho) < int(TTT)):
+        for j in range(int(TTT) - len(_rho)):
+            _rho.append(np.nan)
+            _mu.append(np.nan)
+
+    f = [0]
+    t = [1]
+    logt = [0]
+    for i in range(len(X)):
+        f.append(F[i])
+        t.append(X[i])
+        logt.append(log(X[i]))
+
+    f = np.array(f)
+    t = np.array(t)
+    logt = np.array(logt)
+
+    _beta_hat = fsolve(_beta, 1.0, args=(f, t, logt))[0]
+    _lambda_hat = FFF / TTT**_beta_hat
+    print len(_mu)
+    return(_beta_hat, _lambda_hat, _rho, _mu)

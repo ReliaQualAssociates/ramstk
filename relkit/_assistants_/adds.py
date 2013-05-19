@@ -473,6 +473,12 @@ class AddTestPlan:
     creating a new test plan in the open RelKit Program database.
     """
 
+    _labels = [_(u"Assembly:"), _(u"Test Type:"), _(u"Test Title:"),
+               _(u"Detailed Test Description")]
+
+    _rg_labels = [_(u"Initial MTBF:"), _(u"Goal MTBF:"),
+                  _(u"Growth Potential MTBF:"), _(u"Technical Requirement:")]
+
     def __init__(self, button, app):
         """
         Method to initialize the Test Plan Creation Assistant.
@@ -485,93 +491,213 @@ class AddTestPlan:
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Test Plan Creation Assistant"))
-        #self.assistant.connect('apply', self._create)
+        self.assistant.set_title(_(u"RelKit Test Plan Creation Assistant"))
+        #self.assistant.set_forward_page_func(self._next_page)
+
+        #self.assistant.connect('prepare', self._set_next_page)
+        self.assistant.connect('apply', self._test_plan_add)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
+        self._next_page = 0
+
+# --------------------------------------------------------------------------- #
 # Create the introduction page.
+# --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit test plan creation assistant.  It will help you create a new test plan in the open RelKit Program.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RelKit test plan creation assistant.  It will help you create a new test plan in the open RelKit Program.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_title(fixed, _(u"Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-# Create a page to select where data set should be saved.
+# --------------------------------------------------------------------------- #
+# Create a page to describe the overall test plan.
+# --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
 
         frame = _widg.make_frame(_label_=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
-# Create the radio buttons that select the output as database or file.
-        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to Database"))
-        self.optFile = gtk.RadioButton(group=self.optDatabase,
-                                       label="Save Data Set to File")
+# Create the gtk.Combo that allow one of multiple selections.
+        self.cmbAssembly = _widg.make_combo(simple=False)
+        self.cmbAssembly.set_tooltip_text(_(u"Select the assembly associated with the test plan."))
+        query = "SELECT fld_name, fld_assembly_id, fld_description \
+                 FROM tbl_system"
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+        _widg.load_combo(self.cmbAssembly, results, simple=False)
 
-        fixed.put(self.optDatabase, 5, 5)
-        fixed.put(self.optFile, 5, 35)
+        self.cmbTestType = _widg.make_combo()
+        self.cmbTestType.set_tooltip_text(_(u"Select the type of test to add."))
+        results = [[u"HALT"], [u"HASS"], [u"ALT"], [u"ESS"],
+                   [u"Reliability Growth"], [u"Reliability Demonstration"],
+                   [u"PRVT"]]
+        _widg.load_combo(self.cmbTestType, results)
 
-# Create the radio buttons that allow choice of MTTF or MTBF estimates.
-        self.optMTTF = gtk.RadioButton(label=_(u"Only include first failure time for each unit."))
-        self.optMTBF = gtk.RadioButton(group=self.optMTTF,
-                                       label=_(u"Include all failure times for each unit."))
-
-        fixed.put(self.optMTTF, 5, 75)
-        fixed.put(self.optMTBF, 5, 105)
-
-# Create the checkbutton to include or exclude zero hour failures.
-        self.chkIncludeZeroHour = _widg.make_check_button(
-        _label_=_(u"Include zero hour failures."))
-        self.chkIncludeZeroHour.set_active(True)
-
-        fixed.put(self.chkIncludeZeroHour, 5, 145)
-
-        self.assistant.append_page(frame)
-        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
-                                      _("Select Where to Save Data Set"))
-        self.assistant.set_page_complete(frame, True)
-
-# Create a page to select where data set should be saved.
-        fixed = gtk.Fixed()
-
-        frame = _widg.make_frame(_label_=_(""))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(fixed)
-
-        self.txtDescription = _widg.make_entry()
-        self.txtConfidence = _widg.make_entry(_width_=50)
-
-        label = _widg.make_label("Data Set Description:")
+        label = _widg.make_label(self._labels[0], 150, 25)
         fixed.put(label, 5, 5)
-        fixed.put(self.txtDescription, 205, 5)
+        fixed.put(self.cmbAssembly, 160, 5)
 
-        label = _widg.make_label("Analysis Confidence (%):")
-        fixed.put(label, 5, 35)
-        fixed.put(self.txtConfidence, 205, 35)
+        label = _widg.make_label(self._labels[1], 150, 25)
+        fixed.put(label, 5, 40)
+        fixed.put(self.cmbTestType, 160, 40)
+
+# Create the gtk.Entry that allow free-form user input.
+        self.txtName = _widg.make_entry(_width_=400)
+        self.txtName.set_tooltip_text(_(u"Enter a brief description or title for the test."))
+
+        self.txtDescription = gtk.TextBuffer()
+        textview = _widg.make_text_view(buffer_=self.txtDescription,
+                                        width=555)
+        textview.set_tooltip_text(_(u"Enter a detailed description of the test."))
+
+        label = _widg.make_label(self._labels[2], 160, 25)
+        fixed.put(label, 5, 75)
+        fixed.put(self.txtName, 160, 75)
+
+        label = _widg.make_label(self._labels[3], 250, 25)
+        fixed.put(label, 5, 105)
+        fixed.put(textview, 5, 130)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
         self.assistant.set_page_title(frame,
-                                      _("Describe the Data Set"))
+                                      _(u"Describe the Test Plan"))
         self.assistant.set_page_complete(frame, True)
 
-# Create the page to apply the import criteria.
+# --------------------------------------------------------------------------- #
+# Create a page to describe the reliability growth test plan.
+# --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _("Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+        self.txtMTBFI = _widg.make_entry(_width_=50)
+        self.txtMTBFG = _widg.make_entry(_width_=50)
+        self.txtMTBFGP = _widg.make_entry(_width_=50)
+        self.txtTechReq = _widg.make_entry(_width_=50)
+
+        label = _widg.make_label(self._rg_labels[0], 250, 25)
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtMTBFI, 260, 5)
+
+        label = _widg.make_label(self._rg_labels[1], 250, 25)
+        fixed.put(label, 5, 35)
+        fixed.put(self.txtMTBFG, 260, 35)
+
+        label = _widg.make_label(self._rg_labels[2], 250, 25)
+        fixed.put(label, 5, 65)
+        fixed.put(self.txtMTBFGP, 260, 65)
+
+        label = _widg.make_label(self._rg_labels[3], 250, 25)
+        fixed.put(label, 5, 95)
+        fixed.put(self.txtTechReq, 260, 95)
+
+        self.assistant.append_page(frame)
+        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(frame,
+                                      _(u"Describe the Reliability Growth Plan"))
+        self.assistant.set_page_complete(frame, True)
+
+# --------------------------------------------------------------------------- #
+# Create the page to create the test plan.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+        _text_ = _(u"Press 'Apply' to create the test plan or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
                                      gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _("Create Data Set"))
+        self.assistant.set_page_title(fixed, _(u"Create Test Plan"))
         self.assistant.set_page_complete(fixed, True)
 
         self.assistant.show_all()
+
+    def _set_next_page(self, _assistant_, _page_):
+
+        _cur_page = self.assistant.get_current_page()
+        if(_cur_page == 2):
+            _test_type = self.cmbTestType.get_active()
+            if(_test_type == 5):
+                self._next_page = 2
+            else:
+                self._next_page = 3
+        else:
+            self._next_page += 1
+
+        return False
+
+    def _next_page(self, _page_):
+
+        self.assistant.set_current_page(self._next_page)
+
+        return False
+
+    def _test_plan_add(self, button):
+        """
+        Method to add a new test plan for the selected hardware item to the
+        open RelKit Program.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+# Find the assembly ID selected by the user.  If none is selected, use the
+# top-level assembly by default.
+        model = self.cmbAssembly.get_model()
+        row = self.cmbAssembly.get_active_iter()
+        if(row is not None):
+            _assembly_id = int(model.get_value(row, 1))
+        else:
+            _assembly_id = 0
+
+        _title = self.txtName.get_text()
+
+        _bounds = self.txtDescription.get_bounds()
+        _description = self.txtDescription.get_text(_bounds[0], _bounds[1])
+
+# Find the ID of the last test.
+        query = "SELECT MAX(fld_test_id) FROM tbl_tests"
+        _test_id = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+        _test_id = int(_test_id[0][0]) + 1
+
+# Find out what type of test we're trying to add.  Then build the correct
+# query for the test type.
+        _test_type = self.cmbTestType.get_active()
+
+        if(_test_type == 5):                # Reliability growth test plan.
+            _mi = float(self.txtMTBFI.get_text())
+            _mg = float(self.txtMTBFG.get_text())
+            _mgp = float(self.txtMTBFGP.get_text())
+            _tr = float(self.txtTechReq.get_text())
+
+            query = "INSERT INTO tbl_tests \
+                     (fld_assembly_id, fld_test_id, fld_test_name, \
+                      fld_test_description, fld_mi, fld_mg, fld_mgp, fld_tr) \
+                     VALUES(%d, %d, '%s', '%s', %f, %f, %f, %f)" % \
+                     (_assembly_id, _test_id, _title, _description, \
+                      _mi, _mg, _mgp, _tr)
+
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+        if not _results:
+            self._app.debug_log.error("adds.py: Failed to add new test plan to test table.")
+            return True
+
+        self._app.TESTING.load_tree()
+
+        return False
 
     def _cancel(self, button):
         """
@@ -583,6 +709,168 @@ class AddTestPlan:
         """
 
         self.assistant.destroy()
+
+
+class AddRGRecord(gtk.Assistant):
+    """
+    This is the gtk.Assistant that walks the user through the process of
+    adding a test record to the currently selected test plan in the open
+    RelKit Program database.
+    """
+
+    _labels = [_(u"Date:"), _(u"Time:"), _(u"Number of Failures:")]
+
+    def __init__(self, button, app):
+        """
+        Method to initialize the Reliability Growth Record Add Assistant.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this assistant.
+        app    -- the RelKit application.
+        """
+
+        gtk.Assistant.__init__(self)
+        self.set_title(_(u"RelKit Reliability Growth Record Assistant"))
+        self.connect('apply', self._test_record_add)
+        self.connect('cancel', self._cancel)
+        self.connect('close', self._cancel)
+
+        self._app = app
+
+# --------------------------------------------------------------------------- #
+# Create the introduction page.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+        _text_ = _(u"This is the RelKit reliability growth record assistant.  It will help you add a record for reliability growth tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.append_page(fixed)
+        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_title(fixed, _(u"Introduction"))
+        self.set_page_complete(fixed, True)
+
+# --------------------------------------------------------------------------- #
+# Create the page to gather the necessary inputs.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+# Create the gtk.Combo that allow one of multiple selections.
+        self.txtDate = _widg.make_entry()
+        self.txtDate.set_tooltip_text(_(u"Date test record was generated.  This is not necessarily the date the record is being added."))
+        self.txtTime = _widg.make_entry()
+        self.txtTime.set_tooltip_text(_(u"Test time."))
+        self.chkAdditional = _widg.make_check_button(_(u"Additional"))
+        self.chkAdditional.set_tooltip_text(_(u"If checked, the test time is additional test time.  If unchecked, the test time is cumulative since the start of testing."))
+        self.chkAdditional.set_active(False)
+        self.txtNumFails = _widg.make_entry()
+        self.txtNumFails.set_tooltip_text(_(u"Number of failures observed."))
+        self.txtNumFails.set_text("1")
+
+        label = _widg.make_label(self._labels[0], 150, 25)
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtDate, 160, 5)
+
+        label = _widg.make_label(self._labels[1], 150, 25)
+        fixed.put(label, 5, 40)
+        fixed.put(self.txtTime, 160, 40)
+        fixed.put(self.chkAdditional, 365, 40)
+
+        label = _widg.make_label(self._labels[2], 150, 25)
+        fixed.put(label, 5, 75)
+        fixed.put(self.txtNumFails, 160, 75)
+
+        self.append_page(frame)
+        self.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(frame, _(u"Enter Reliability Growth Data"))
+        self.set_page_complete(frame, True)
+
+# --------------------------------------------------------------------------- #
+# Create the page to apply the import criteria.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+        _text_ = _(u"Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.append_page(fixed)
+        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_title(fixed, _(u"Add Reliability Growth Record"))
+        self.set_page_complete(fixed, True)
+
+        self.show_all()
+
+    def _test_record_add(self, button):
+        """
+        Method to add a new test record for the selected test plan to the
+        open RelKit Program.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this method.
+        """
+
+        model = self._app.TESTING.model
+        row = self._app.TESTING.selected_row
+        idx = self._app.TESTING._col_order[0]
+
+        query = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
+                 FROM tbl_survival_data \
+                 WHERE fld_dataset_id=%d" % self._app.TESTING.test_id
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx,
+                                              commit=False)
+        _last_id = _results[0][0]
+        _last_time = float(_results[0][1])
+        if(not _last_id or _last_id is None or _last_id == ''):
+            _last_id = 1
+            _last_time = 0.0
+        else:
+            _last_id += 1
+
+        _assembly_id = model.get_value(row, idx)
+# Read the test time entered by the user.  If this is entered as additional
+# test time, calculate the cumulative test time.
+        _time = float(self.txtTime.get_text())
+        if(self.chkAdditional.get_active()):
+            _time = _time + _last_time
+        _n_fails = int(self.txtNumFails.get_text())
+
+        query = "INSERT INTO tbl_survival_data \
+                 (fld_record_id, fld_dataset_id, fld_left_interval, \
+                  fld_right_interval, fld_quantity, fld_unit, \
+                  fld_part_num, fld_market, fld_model, fld_mode_type, \
+                  fld_assembly_id) \
+                 VALUES (%d, %d, %f, %f, %d, '%s', '%s', '%s', '%s', \
+                         %d, %d)" % (_last_id, self._app.TESTING.test_id, \
+                                     0.0, _time, _n_fails, '', '', '', '', \
+                                     0, _assembly_id)
+
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx,
+                                             commit=True)
+
+        if not results:
+            self._app.debug_log.error("adds.py: Failed to add new test record to survival data table.")
+            return True
+
+        self._app.TESTING._load_test_assessment_tree()
+
+        return False
+
+    def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        self.destroy()
 
 
 class CreateDataSet:

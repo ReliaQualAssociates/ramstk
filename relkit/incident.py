@@ -38,7 +38,10 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
-from _assistants_.incident import *
+from _assistants_.adds import AddIncident, CreateDataSet
+from _assistants_.imports import ImportIncident
+#from _assistants_.exports import ExportIncident
+from _assistants_.filters import FilterIncident
 
 # Add localization support.
 import locale
@@ -220,12 +223,12 @@ class Incident:
         image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
         button.set_icon_widget(image)
         button.set_name('Export')
-        #button.connect('clicked', ImportIncident, self._app)
+        #button.connect('clicked', ExportIncident, self._app)
         button.set_tooltip_text(_("Launches the Program Incident export assistant."))
         toolbar.insert(button, 5)
 
 # Create a data set creation button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/wizard.png')
         button.set_icon_widget(image)

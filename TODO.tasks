@@ -1,13 +1,5 @@
-relkit/requirement.py:    # TODO: Write code to update notebook widgets when editing the Requirements treeview.
-relkit/requirement.py:    # TODO: Add tooltips to all widgets.
 relkit/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-relkit/component.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-relkit/software.py:    # TODO: Write code to update notebook widgets when editing the
-relkit/hardware.py:    # TODO: Write code to update notebook widgets when editing the System treeview.
 relkit/imports.py:        # TODO: Add support for importing data from other than Excel files.
-Binary file relkit/calculations.pyc matches
-relkit/incident.py:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-relkit/incident.py:    # TODO: Add tooltips to all widgets.
 relkit/incident.py:        # TODO: Create code that will use either fld_description of fld_name depending on which the user uses.
 relkit/calculations.py:                        # TODO: Implement MIL-HDBK-217F part count model for all component types.
 relkit/calculations.py:                        # TODO: Need to change lambda and pi output labels and gtk.Entry based on model selected (idx).
@@ -19,20 +11,14 @@ relkit/calculations.py:                        # TODO: Implement NSWC-07 model.
 relkit/calculations.py:                    # TODO: Need to add field to database for holding the overstress reason.
 relkit/calculations.py:    # TODO: Add database field for total cost results.
 relkit/calculations.py:            # TODO: Overstress calculations for crystals.
-relkit/calculations.py:            print "TODO: Overstress calculations for crystals."
 relkit/calculations.py:            # TODO: Overstress calculations for fuses.
-relkit/calculations.py:            print "TODO: Overstress calculations for fuses."
 relkit/calculations.py:            # TODO: Overstress calculations for filters.
-relkit/calculations.py:            print "TODO: Overstress calculations for filters."
 relkit/calculations.py:        # TODO: Add contact power overstress calculations for relays
 relkit/calculations.py:        # TODO: Add temperature limit overstress calculations for resistors
 relkit/calculations.py:        # TODO: Add voltage ratio overstress calculations for variable resistors.
 relkit/calculations.py:        # TODO: Add contact power overstress calculations for switches
 relkit/configuration.py:#TODO: Create GUI to manipulate user configuration values.
-relkit/validation.py:    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-relkit/validation.py:    # TODO: Add tooltips to all widgets.
 relkit/integrated_circuits/vlsi.py:        # TODO: Implement MIL-HDBK-217F parts count methodology for VLSI IC.
-relkit/function.py:    # TODO: Write code to update notebook widgets when editing the Function treeview.
 relkit/function.py:# TODO: Move the functional matrix to the parts window?
 relkit/function.py:        # TODO: Implement Diagram Worksheet for FUNCTION.
 relkit/function.py:        # TODO: Implement FMECA Worksheet for FUNCTION.
@@ -45,21 +31,17 @@ relkit/utilities.py:    # TODO: Write code to redo changes.
 relkit/_assistants_/incident.py:# TODO: Revise the following query to include the hardware id from tbl_incident.
 relkit/_assistants_/incident.py:                # TODO: Add error log message here.
 relkit/_assistants_/incident.py:# TODO: Revise the following queries to include inserting the hardware id.
-relkit/partlist.py:    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
 relkit/partlist.py:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
 relkit/tree.py:    #TODO: Create GUI to set/edit user-defined column headings for all trees.
 relkit/tree.py:        # TODO: Implement Maintenance Policy tree.
-relkit/tree.py:        # TODO: Implement Reliability Testing tree.
 relkit/tree.py:        # TODO: Add index to RELKIT_MODULES array for data sets.
 relkit/tree.py:        # TODO: Functions to create charts and graphs.
 relkit/tree.py:        # TODO: Functions to create reports.
 relkit/connections/solder.py:        #TODO: Lookup base hazard rate for PTH in MIL-HDBK-217.
 relkit/connections/solder.py:        #TODO: Lookup lammbda_b in MIL-HDBK-217.
-relkit/assembly.py:    # TODO: Add tooltips to all widgets.
 relkit/assembly.py:        # TODO: Implement Diagram Worksheet for ASSEMBLY.
 relkit/assembly.py:        # TODO: Implement FMEA/FMECA for ASSEMBLY.
 relkit/assembly.py:        # TODO: Implement Maintenance Planning for ASSEMBLY.
-relkit/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
 relkit/assembly.py:        #TODO: Need to find and select the previously selected revision before loading the hardware tree.
 relkit/widgets.py:    # TODO: Adjust the height of the row when the width is adjusted.
 relkit/dataset.py:# TODO: Revise tbl_dataset to include a field for the hardware id.

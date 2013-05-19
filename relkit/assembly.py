@@ -41,8 +41,8 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
-import _assistants_.incident as _incs
-from _assistants_.hardware import *
+from _assistants_.imports import ImportHardware
+from _assistants_.exports import ExportHardware
 
 # Add localization support.
 import locale
@@ -196,12 +196,12 @@ class Assembly:
 # Create generic toolbar action buttons.  These will call different
 # methods or functions depending on the ASSEMBLY Object notebook tab
 # that is selected.
-        self.btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
-        self.btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
-        self.btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        self.btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        self.btnRollup = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        self.btnEdit = gtk.ToolButton(stock_id = gtk.STOCK_EDIT)
+        self.btnAddItem = gtk.ToolButton()
+        self.btnRemoveItem = gtk.ToolButton()
+        self.btnAnalyze = gtk.ToolButton()
+        self.btnSaveResults = gtk.ToolButton()
+        self.btnRollup = gtk.ToolButton()
+        self.btnEdit = gtk.ToolButton()
 
 # Create the General Data tab widgets for the ASSEMBLY object.
         self.fxdGenDataQuad1 = gtk.Fixed()

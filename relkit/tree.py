@@ -42,6 +42,8 @@ import configuration as _conf
 import imports as _impt
 import utilities as _util
 
+from _assistants_.adds import AddTestPlan
+
 
 class TreeWindow(gtk.Window):
     """
@@ -471,7 +473,8 @@ class TreeWindow(gtk.Window):
         toolbar = gtk.Toolbar()
 
         _pos = 0
-        # New file button.
+
+# New file button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
         button.set_tooltip_text(_("Create a new RelKit Program Database."))
         image = gtk.Image()
@@ -481,7 +484,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Connect button
+# Connect button
         button = gtk.ToolButton(stock_id = gtk.STOCK_OPEN)
         button.set_tooltip_text(_("Connect to an existing RelKit Program Database."))
         image = gtk.Image()
@@ -491,7 +494,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Save button
+# Save button
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
         button.set_tooltip_text(_("Save the currently open RelKit Program Database."))
         image = gtk.Image()
@@ -504,107 +507,30 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-        # Import data button
-        button = gtk.ToolButton(label=_("Import"))
-        button.set_tooltip_text(_("Imports data to the currently open RelKit Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self._import_data)
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        # Insert item button
-        button = gtk.MenuToolButton(stock_id = gtk.STOCK_ADD)
+# Insert item button
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Add an item to the current product structure."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("Revision"))
-        menu_item.set_tooltip_text(_("Add a new revision."))
-        menu_item.connect('activate', self._app.REVISION.revision_add)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Sibling Function"))
-        menu_item.set_tooltip_text(_("Add a new function at the same level as the selected function."))
-        menu_item.connect('activate', self._app.FUNCTION.function_add, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Child Function"))
-        menu_item.set_tooltip_text(_("Add a new function subordinate to the selected function."))
-        menu_item.connect('activate', self._app.FUNCTION.function_add, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Sibling Requirement"))
-        menu_item.set_tooltip_text(_("Add a new requirement at the same level as the selected requirement."))
-        menu_item.connect('activate', self._app.REQUIREMENT.requirement_add, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Derived Requirement"))
-        menu_item.set_tooltip_text(_("Add a new requirement subordinate to the selected requirement."))
-        menu_item.connect('activate', self._app.REQUIREMENT.requirement_add, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Sibling Assembly"))
-        menu_item.set_tooltip_text(_("Add a new hardware assembly at the same level as the selected hardware assembly."))
-        menu_item.connect('activate', self._app.ASSEMBLY.assembly_add, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Child Assembly"))
-        menu_item.set_tooltip_text(_("Add a new hardware assembly subordinate to the selected hardware assembly."))
-        menu_item.connect('activate', self._app.ASSEMBLY.assembly_add, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Component"))
-        menu_item.set_tooltip_text(_("Add a new component to the selected hardware assembly."))
-        menu_item.connect('activate', self._app.COMPONENT.component_add, None)
-        menu.add(menu_item)
-        #menu_item = gtk.MenuItem(label="Failure Cause")
-        #menu_item.connect('activate', self._app.FMEA.add_cause)
-        #menu.add(menu_item)
-        #menu_item = gtk.MenuItem(label="Recommended Action")
-        #menu_item.connect('activate', self._app.FMEA.add_action)
-        #menu.add(menu_item)
-        button.set_menu(menu)
-        menu.show_all()
+        button.connect('clicked', self._add_item)
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Delete item button
-        button = gtk.MenuToolButton(stock_id = gtk.STOCK_DELETE)
+# Delete item button
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Delete the currently selected item."))
         image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
+        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("Project"))
-        menu_item.set_tooltip_text(_("Delete the currently open RelKit project."))
-        menu_item.connect('activate', _util.delete_project, self._app)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Revision"))
-        menu_item.set_tooltip_text(_("Delete the currently selected revision."))
-        menu_item.connect('activate', self._app.REVISION.revision_delete, None)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Function"))
-        menu_item.set_tooltip_text(_("Delete the currently selected function."))
-        menu_item.connect('activate', self._app.FUNCTION.function_delete)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Requirement"))
-        menu_item.set_tooltip_text(_("Delete the currently selected requirement."))
-        menu_item.connect('activate', self._app.REQUIREMENT.requirement_delete)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Assembly"))
-        menu_item.set_tooltip_text(_("Delete the currently selected hardware assembly."))
-        menu_item.connect('activate', self._app.ASSEMBLY.assembly_delete)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Component"))
-        menu_item.set_tooltip_text(_("Delete the currently selected component."))
-        menu_item.set_property("name", "tree")
-        menu_item.connect('activate', self._app.COMPONENT.component_delete)
-        menu.add(menu_item)
-        button.set_menu(menu)
-        menu.show_all()
+        button.connect('clicked', self._remove_item)
         toolbar.insert(button, _pos)
         _pos += 1
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-        # Cut button
+# Cut button
         button = gtk.ToolButton(stock_id = gtk.STOCK_CUT)
         button.set_tooltip_text(_("Cut the currently selected item."))
         image = gtk.Image()
@@ -616,7 +542,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Copy button
+# Copy button
         button = gtk.ToolButton(stock_id = gtk.STOCK_COPY)
         button.set_tooltip_text(_("Copy the currently selected item."))
         image = gtk.Image()
@@ -628,7 +554,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Paste button
+# Paste button
         button = gtk.ToolButton(stock_id = gtk.STOCK_PASTE)
         button.set_tooltip_text(_("Paste the clipboard contents."))
         image = gtk.Image()
@@ -643,7 +569,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-        # Undo button
+# Undo button
         button = gtk.ToolButton(stock_id = gtk.STOCK_UNDO)
         button.set_tooltip_text(_("Undo the last change."))
         image = gtk.Image()
@@ -655,7 +581,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Redo button
+# Redo button
         button = gtk.ToolButton(stock_id = gtk.STOCK_REDO)
         button.set_tooltip_text(_("Redo the last change."))
         image = gtk.Image()
@@ -670,7 +596,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-        # Calculate button
+# Calculate button
         button = gtk.MenuToolButton(None, label = "Calculate")
         button.set_tooltip_text(_("Perform various calculations on the system."))
         image = gtk.Image()
@@ -700,8 +626,8 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Graphs button
-        # TODO: Functions to create charts and graphs.
+# Graphs button
+# TODO: Functions to create charts and graphs.
         button = gtk.ToolButton(label=_("Charts & Graphs"))
         button.set_tooltip_text(_("Create charts and graphs"))
         image = gtk.Image()
@@ -712,8 +638,8 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-        # Reports button
-        # TODO: Functions to create reports.
+# Reports button
+# TODO: Functions to create reports.
         button = gtk.ToolButton(label=_("Reports"))
         button.set_tooltip_text(_("Create text reports"))
         image = gtk.Image()
@@ -752,6 +678,60 @@ class TreeWindow(gtk.Window):
 
         return(toolbar)
 
+    def _add_item(self, button):
+        """
+        Method to add an item to the open RelKit Program.  What is added
+        depends on the selected RelKit Module.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this method.
+        """
+
+        page_num = self.notebook.get_current_page()
+
+        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
+            self._app.REVISION.revision_add()
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
+            self._app.VALIDATION.vandv_task_add()
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
+            #self._app.TESTING.test_plan_add()
+            AddTestPlan(button, self._app)
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
+            print "Add an incident"
+# TODO: Create method to add an incident to the database.
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
+            print "Add a dataset"
+# TODO: Crate method to add a dataset to the database.
+
+        return False
+
+    def _remove_item(self, button):
+        """
+        Method to remove an item from the open RelKit Program.  What is added
+        depends on the selected RelKit Module.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this method.
+        """
+
+        page_num = self.notebook.get_current_page()
+        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
+            #self._app.REVISION.revision_add()
+            print "Remove selected revision."
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
+            #self._app.VALIDATION.vandv_task_add()
+            print "Remove selected V&V task."
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
+            self._app.TESTING.test_plan_remove()
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
+            print "Remove selected incident."
+# TODO: Create method to add an incident to the database.
+        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
+            print "Remove selected dataset."
+# TODO: Crate method to add a dataset to the database.
+
+        return False
+
     def _notebook_page_switched(self, notebook, page, page_num):
         """
         Called whenever the Tree Book notebook page is changed.
@@ -771,6 +751,8 @@ class TreeWindow(gtk.Window):
                     8 = Survival Analyses Tree
         """
 
+        button = self.toolbar.get_nth_item(4)
+
         if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
             try:
                 self._app.REVISION.treeview.grab_focus()
@@ -778,6 +760,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.REVISION.treeview.get_column(0)
                 self._app.REVISION.treeview.row_activated(path, column)
+                button.set_tooltip_text(_(u"Add a new revision to the current RelKit Program."))
             except TypeError:               # There are no revisions.
                 pass
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 1):
@@ -826,6 +809,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
+                button.set_tooltip_text(_(u"Add a new verification and validation task to the current RelKit Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
@@ -836,6 +820,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.TESTING.treeview.get_column(0)
                 self._app.TESTING.treeview.row_activated(path, column)
+                button.set_tooltip_text(_(u"Add a new test plan to the current RelKit Program."))
             except:
                 self._app.TESTING.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
@@ -851,6 +836,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
+                button.set_tooltip_text(_(u"Add a new incident to the current RelKit Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 9):
@@ -861,6 +847,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
+                button.set_tooltip_text(_(u"Add a new dataset to the current RelKit Program."))
             except:                         # There are no datasets.
                 self._app.DATASET.load_notebook()
 

@@ -144,7 +144,7 @@ class Validation:
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
         button.set_name('Add')
-        button.connect('clicked', self._vandv_task_add)
+        button.connect('clicked', self.vandv_task_add)
         button.set_tooltip_text(_("Adds a new V&V activity."))
         toolbar.insert(button, 0)
 
@@ -548,7 +548,7 @@ class Validation:
 
         model[path][position] = new_text
 
-    def _vandv_task_add(self, widget):
+    def vandv_task_add(self, widget):
         """
         Adds a new Verfication & Validation activity to the RelKit Program's
         MySQL or SQLite3 database.

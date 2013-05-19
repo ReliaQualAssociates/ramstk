@@ -38,7 +38,6 @@ import calculations as _calc
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
-import _assistants_.incident as _incs
 
 # Add localization support.
 import locale
