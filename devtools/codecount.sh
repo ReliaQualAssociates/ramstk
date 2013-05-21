@@ -15,7 +15,7 @@ do
 	echo "$f has $SLOC lines of code for a total of $SLOCTOT lines of code." >> $OUTFILE
 	
 	`pylint --rcfile=devtools/pylintrc --files-output=yes --output-format=html $f`
-	X=`ls pylint_reliafree* | cut -d '.' -f2- | sed 's/.html//'`
+	X=`ls pylint_relkit* | cut -d '.' -f2- | sed 's/.html//'`
 	mv pylint_global.html pylint_relkit.${X}_global.html
 	mv -f *.html $OUTDIR
 

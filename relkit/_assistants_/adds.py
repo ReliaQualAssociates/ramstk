@@ -822,13 +822,18 @@ class AddRGRecord(gtk.Assistant):
                                               None,
                                               self._app.ProgCnx,
                                               commit=False)
-        _last_id = _results[0][0]
-        _last_time = float(_results[0][1])
-        if(not _last_id or _last_id is None or _last_id == ''):
-            _last_id = 1
+
+        if(_results[0][0] is None or _results[0][0] == ''):
+            _last_id = 0
+        else:
+            _last_id = _results[0][0]
+
+        if(_results[0][1] is None or _results[0][1] == ''):
             _last_time = 0.0
         else:
-            _last_id += 1
+            _last_time = float(_results[0][1])
+
+        _last_id += 1
 
         _assembly_id = model.get_value(row, idx)
 # Read the test time entered by the user.  If this is entered as additional

@@ -2653,29 +2653,38 @@ def calculate_rgtmc_individual(F, X):
     _mu = []
     for i in range(len(X)):
         try:
-            _iters = int(floor(X[i] - X[i - 1]))
+            _iters = int(X[i] - X[i - 1])
         except IndexError:
-            _iters = int(floor(X[i]))
+            _iters = int(X[i])
+
+# Estimate the failure rate of this interval.
         for j in range(_iters - 1):
             try:
                 _rho.append(F[i] / (X[i] - X[i - 1]))
-                _mu.append((X[i] - X[i - 1]) / F[i])
             except IndexError:
                 _rho.append(F[i] / X[i])
-                _mu.append(X[i] / F[i])
             except ZeroDivisionError:
                 _rho.append(_rho[i - 1])
-                _mu.append(_mu[i - 1])
         _rho.append(np.nan)
+
+# Estimate the MTBF of this interval.
+        for j in range(_iters - 1):
+            try:
+                _mu.append((X[i] - X[i - 1]) / F[i])
+            except IndexError:
+                _mu.append(X[i] / F[i])
+            except ZeroDivisionError:
+                _mu.append(_mu[i - 1])
         _mu.append(np.nan)
 
 # Append non-plotting values to pad the failure rate and MTBF lists so they
 # have the same length as everything else being plotted.
+    print len(_rho), len(_mu)
     if(len(_rho) < int(TTT)):
         for j in range(int(TTT) - len(_rho)):
             _rho.append(np.nan)
             _mu.append(np.nan)
-
+    print len(_rho), len(_mu)
     logX = [log(x) for x in X]
 
     _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
@@ -2720,21 +2729,29 @@ def calculate_rgtmc_grouped(F, X, I):
             if(X[i] > j * I and X[i] <= (j + 1) * I):
                 _cum_fails[j] += F[i]
 
-# Estimate the failure rate and MTBF of this interval.
+    for j in range(_num_intervals):
+# Estimate the failure rate of this interval.
+        try:
+            _rho.extend([_cum_fails[j] / I] * (int(I) - 1))
+        except ZeroDivisionError:
             try:
-                _rho.append(_cum_fails[j] / I)
-                _mu.append(1.0 / _rho[j])
-            except ZeroDivisionError:
-                try:
-                    _rho.append(_rho[j - 1])
-                    _mu.append(_mu[j - 1])
-                except IndexError:
-                    _rho.append(0.0)
-                    _mu.append(0.0)
+                _rho.extend([_rho[j - 1]] * (int(I) - 1))
+            except IndexError:
+                _rho.extend([0.0] * (int(I) - 1))
+        _rho.append(np.nan)
+
+# Estimate the MTBF of this interval.
+        try:
+            _mu.extend([I / _cum_fails[j]] * (int(I) - 1))
+        except ZeroDivisionError:
+            try:
+                _mu.extend([_mu[j - 1]] * (int(I) - 1))
+            except IndexError:
+                _mu.extend([0.0] * (int(I) - 1))
+        _mu.append(np.nan)
 
 # Append non-plotting values to pad the failure rate and MTBF lists so they
 # have the same length as everything else being plotted.
-    print TTT, len(_rho)
     if(len(_rho) < int(TTT)):
         for j in range(int(TTT) - len(_rho)):
             _rho.append(np.nan)
@@ -2754,5 +2771,5 @@ def calculate_rgtmc_grouped(F, X, I):
 
     _beta_hat = fsolve(_beta, 1.0, args=(f, t, logt))[0]
     _lambda_hat = FFF / TTT**_beta_hat
-    print len(_mu)
+
     return(_beta_hat, _lambda_hat, _rho, _mu)
