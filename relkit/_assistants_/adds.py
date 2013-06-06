@@ -1015,13 +1015,17 @@ class CreateDataSet:
 #     6      OCC
 #     7      Initial Installation
 #     8      Interval Censored
-        query = "SELECT fld_incident_id, fld_part_num, fld_age_at_incident, \
-                        fld_failure, fld_suspension, fld_cnd_nff, \
-                        fld_occ_fault, fld_initial_installation, \
-                        fld_interval_censored \
-                 FROM tbl_incident_detail \
-                 WHERE fld_age_at_incident >= %f \
-                 ORDER BY fld_incident_id ASC" % _starttime_
+#     9      Assembly ID
+        query = "SELECT t1.fld_incident_id, t1.fld_part_num, \
+                        t1.fld_age_at_incident, t1.fld_failure, \
+                        t1.fld_suspension, t1.fld_cnd_nff, t1.fld_occ_fault, \
+                        t1.fld_initial_installation, \
+                        t1.fld_interval_censored, t2.fld_hardware_id \
+                 FROM tbl_incident_detail AS t1 \
+                 INNER JOIN tbl_incident AS t2 \
+                 ON t2.fld_incident_id=t1.fld_incident_id \
+                 WHERE t1.fld_age_at_incident >= %f \
+                 ORDER BY t1.fld_incident_id ASC" % _starttime_
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -1042,7 +1046,8 @@ class CreateDataSet:
 #    0.1.5 OCC
 #    0.1.6 Initial Installation
 #    0.1.7 Interval Censored
-# ['HTC8128', (u'50468', 465.0, 0, 0, 0, 0, 0, 1)]
+#    0.1.8 Assembly ID
+# ['HTC8128', (u'50468', 465.0, 0, 0, 0, 0, 0, 1, 4)]
         model = self._app.INCIDENT.model
         row = model.get_iter_root()
 
@@ -1137,38 +1142,41 @@ class CreateDataSet:
         _tbf = float(_data_set[0][1][1])
         values = (dataset_id, 0.0, float(_data_set[0][1][1]),
                   _status, 1, str(_data_set[0][0]),
-                  str(_data_set[0][1][0]), '', '', float(_tbf), 0)
+                  str(_data_set[0][1][0]), '', '', float(_tbf), 0,
+                  int(_data_set[0][1][8]))
 
 # Insert the first data set record.
-# TODO: Revise the following queries to include inserting the hardware id.
+        _record_id = 1
         if(self.optDatabase.get_active()):
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_survival_data \
-                         (fld_dataset_id, fld_left_interval, \
+                         (fld_record_id, fld_dataset_id, fld_left_interval, \
                           fld_right_interval, fld_status, fld_quantity, \
                           fld_unit, fld_part_num, fld_market, fld_model, \
-                          fld_tbf, fld_mode_type) \
-                         VALUES (%d, %f, %f, '%s', %d, '%s', '%s', '%s', \
-                                 '%s', %f, %d)"
+                          fld_tbf, fld_mode_type, fld_assembly_id) \
+                         VALUES (%d, %d, %f, %f, '%s', %d, '%s', '%s', '%s', \
+                                 '%s', %f, %d, %d)"
             elif(_conf.BACKEND == 'sqlite3'):
                 query = "INSERT INTO tbl_survival_data \
-                         (fld_dataset_id, fld_left_interval, \
+                         (fld_record_id, fld_dataset_id, fld_left_interval, \
                           fld_right_interval, fld_status, fld_quantity, \
                           fld_unit, fld_part_num, fld_market, fld_model, \
-                          fld_tbf, fld_mode_type) \
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                          fld_tbf, fld_mode_type, fld_assembly_id) \
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
             results = self._app.DB.execute_query(query,
                                                  values,
                                                  self._app.ProgCnx,
                                                  commit=True)
         else:
-            f.write(str(dataset_id) + '\t0.0' + '\t' +
+            f.write(str(_record_id) + '\t' + str(dataset_id) + '\t0.0' + '\t' +
                     str(_data_set[0][1][1]) + '\t' + _status + '\t1\t' +
                     str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
-                    '\t ' + '\t ' + '\t' + str(_tbf) + '0' + '\n')
+                    '\t ' + '\t ' + '\t' + str(_tbf) + '0\t' +
+                    str(_data_set[0][1][0]) + '\n')
 
         _unit = _data_set[0][0]             # Get the first unit.
+        _record_id += 1
         for i in range(1, len(_data_set)):
             try:
                 _event = _data_set[0][1][2]
@@ -1199,22 +1207,24 @@ class CreateDataSet:
             _tbf = float(_data_set[i][1][1]) - float(_left)
 
             if(self.optDatabase.get_active()):
-                values = (dataset_id, float(_left),
+                values = (_record_id, dataset_id, float(_left),
                           float(_data_set[i][1][1]), _status, 1,
                           str(_data_set[i][0]), str(_data_set[i][1][0]),
-                          '', '', float(_tbf), 0)
+                          '', '', float(_tbf), 0, int(_data_set[i][1][8]))
                 results = self._app.DB.execute_query(query,
                                                      values,
                                                      self._app.ProgCnx,
                                                      commit=True)
             else:
-                f.write(str(dataset_id) + '\t' + str(_left) + '\t' +
-                        str(_data_set[i][1][1]) + '\t' + str(_status) +
-                        '\t1\t' + str(_data_set[i][0]) + '\t' +
+                f.write(str(_record_id)  + '\t' + str(dataset_id) + '\t' +
+                        str(_left) + '\t' + str(_data_set[i][1][1]) + '\t' +
+                        str(_status) + '\t1\t' + str(_data_set[i][0]) + '\t' +
                         str(_data_set[i][1][0]) + '\t ' + '\t ' + '\t' +
-                        str(_tbf) + '0' + '\n')
+                        str(_tbf) + '0\t' + '\t ' +
+                        str(_data_set[i][1][8]) + '\n')
 
             _unit = _data_set[i][0]
+            _record_id += 1
 
         try:
             f.close()

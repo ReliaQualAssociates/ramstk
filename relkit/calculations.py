@@ -2548,7 +2548,7 @@ def theoretical_distribution(_data_, _distr_, _para_):
     return(theop)
 
 
-def calculate_rg_phase(model, row):
+def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):
     """
     Function to calculate the values for an individual reliability growth
     phase.
@@ -2557,151 +2557,73 @@ def calculate_rg_phase(model, row):
     model -- the gtk.TreeModel containing the RG phase information.
     row   -- the selected gtk.Iter containning the specific RG phase
              information.
+    MS    -- the management strategy for this program.
+    FEF   -- the average FEF for this program.
+    Prob  -- the probability of seeing one failure.
+    ti    -- the growth start time; time to first fix for this program.
     """
 
 # Read the RG phase-specific values.
-    MSi = model.get_value(row, 3)
-    FEFi = model.get_value(row, 4)
-    Probi = model.get_value(row, 5)
-    ti = model.get_value(row, 6)
-    TTTi = model.get_value(row, 7)
-    GRi = model.get_value(row, 8)
-    MTBFi = model.get_value(row, 9)
-    MTBFf = model.get_value(row, 10)
-    MTBFa = model.get_value(row, 11)
+    TTTi = model.get_value(row, 4)
+    MTBFi = model.get_value(row, 6)
+    MTBFf = model.get_value(row, 7)
+    MTBFa = model.get_value(row, 8)
 
 # Calculate the average growth rate for the phase.
-    if(GRi == 0.0 or GRi == '' or GRi is None):
+    if(GR == 0.0 or GR == '' or GR is None):
         try:
             GRi = -log(TTTi / ti) - 1.0 + sqrt((1.0 + log(TTTi / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
         except(ValueError, ZeroDivisionError):
             GRi = 0.0
-        model.set_value(row, 8, GRi)
+    else:
+        GRi = GR
+
+    model.set_value(row, 5, GRi)
 
 # Calculate initial MTBF for the phase.
-        if(MTBFi == 0.0 or MTBFi == '' or MTBFi is None):
+    if(MTBFi == 0.0 or MTBFi == '' or MTBFi is None):
+        try:
+            MTBFi = (-1.0 * ti * MS) / log(1.0 - Prob)
+        except(ValueError, ZeroDivisionError):
             try:
-                MTBFi = (-1.0 * ti * MSi) / log(1.0 - Probi)
+                MTBFi = MTBFf / exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
             except(ValueError, ZeroDivisionError):
                 try:
-                    MTBFi = MTBFf / exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
+                    MTBFi = (ti * (TTTi / ti)**(1.0 - GRi)) / Ni
                 except(ValueError, ZeroDivisionError):
-                    try:
-                        MTBFi = (ti * (TTTi / ti)**(1.0 - GRi)) / Ni
-                    except(ValueError, ZeroDivisionError):
-                        MTBFi = 0.0
-            model.set_value(row, 9, MTBFi)
+                    MTBFi = 0.0
+        model.set_value(row, 6, MTBFi)
 
 # Calculate final MTBF for the phase.
-        if(MTBFf == 0.0 or MTBFf == '' or MTBFf is None):
-            try:
-                MTBFf = MTBFi * exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
-            except (ValueError, ZeroDivisionError):
-                MTBFf = 0.0
-            model.set_value(row, 10, MTBFf)
-
-# Calculate Prob for the phase.
-        if(Probi == 0.0 or Probi == '' or Probi is None):
-            try:
-                Probi = 1.0 - exp(-1.0 * (ti * MSi / MTBFi))
-            except(ValueError, ZeroDivisionError):
-                Probi = 0.0
-            model.set_value(row, 5, Probi)
-
-# Calculate the management strategy for the phase.
-        if(MSi == 0.0 or MSi == '' or MSi is None):
-            try:
-                MSi = log(1.0 - Probi) * MTBFi / (-1.0 * ti)
-            except(ValueError, ZeroDivisionError):
-                MSi = 0.0
-            model.set_value(row, 3, MSi)
-
-# Calculate the time to first fix for the phase.
-        if(ti == 0.0 or ti == '' or ti is None):
-            try:
-                ti = log(1.0 - Probi) * MTBFi / (-1.0 * MSi)
-            except(ValueError, ZeroDivisionError):
-                ti = 0.0
-            model.set_value(row, 6, ti)
+    if(MTBFf == 0.0 or MTBFf == '' or MTBFf is None):
+        try:
+            MTBFf = MTBFi * exp(GRi * (0.5 * GRi + log(TTTi / ti) + 1.0))
+        except (ValueError, ZeroDivisionError):
+            MTBFf = 0.0
+        model.set_value(row, 7, MTBFf)
 
 # Calculate total test time for the phase.
-        if(TTTi == 0.0 or TTTi == '' or TTTi is None):
-            try:
-                TTTi = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
-            except(ValueError, ZeroDivisionError):
-                TTTi = 0.0
-            model.set_value(row, 7, TTTi)
+    if(TTTi == 0.0 or TTTi == '' or TTTi is None):
+        try:
+            TTTi = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
+        except(ValueError, ZeroDivisionError):
+            TTTi = 0.0
+        model.set_value(row, 4, TTTi)
 
     return(GRi, TTTi)
 
 
-def calculate_rgtmc_individual(F, X):
+def calculate_rgtmc(F, X, I, _grouped=False):
     """
     Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
-    continous model using Option for Individual Failure Data.
-
-    Keyword Arguments:
-    F -- list of failure counts.
-    X -- list of individual failures times.
-    """
-
-# Find the total time on test and total number of failures.
-    TTT = X[len(X) - 1:][0]
-    FFF = sum(F)
-
-    _rho = []
-    _mu = []
-    for i in range(len(X)):
-        try:
-            _iters = int(X[i] - X[i - 1])
-        except IndexError:
-            _iters = int(X[i])
-
-# Estimate the failure rate of this interval.
-        for j in range(_iters - 1):
-            try:
-                _rho.append(F[i] / (X[i] - X[i - 1]))
-            except IndexError:
-                _rho.append(F[i] / X[i])
-            except ZeroDivisionError:
-                _rho.append(_rho[i - 1])
-        _rho.append(np.nan)
-
-# Estimate the MTBF of this interval.
-        for j in range(_iters - 1):
-            try:
-                _mu.append((X[i] - X[i - 1]) / F[i])
-            except IndexError:
-                _mu.append(X[i] / F[i])
-            except ZeroDivisionError:
-                _mu.append(_mu[i - 1])
-        _mu.append(np.nan)
-
-# Append non-plotting values to pad the failure rate and MTBF lists so they
-# have the same length as everything else being plotted.
-    print len(_rho), len(_mu)
-    if(len(_rho) < int(TTT)):
-        for j in range(int(TTT) - len(_rho)):
-            _rho.append(np.nan)
-            _mu.append(np.nan)
-    print len(_rho), len(_mu)
-    logX = [log(x) for x in X]
-
-    _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
-    _lambda_hat = FFF / TTT**_beta_hat
-
-    return(_beta_hat, _lambda_hat, _rho, _mu)
-
-
-def calculate_rgtmc_grouped(F, X, I):
-    """
-    Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
-    continous model using Option for Grouped Failure Data.
+    continous model using either the Option for Individual Failure Data
+    (default) or the Option for Grouped Failure Data.
 
     Keyword Arguments:
     F -- list of failure counts.
     X -- list of individual failures times.
     I -- the grouping interval width.
+    _grouped -- whether or not to use grouped data.
     """
 
     from scipy.optimize import fsolve
@@ -2716,39 +2638,99 @@ def calculate_rgtmc_grouped(F, X, I):
     TTT = X[len(X) - 1:][0]
     FFF = sum(F)
 
-# Calculate the number of intervals we need, then create a list of zeros the
-# same length as the number of intervals.
-    _num_intervals = int(ceil(TTT / I))
-    _cum_fails = [0] * _num_intervals
     _rho = []
     _mu = []
 
-# Iterate through the data and count the nuber of failures in each interval.
-    for i in range(len(X)):
-        for j in range(_num_intervals):
-            if(X[i] > j * I and X[i] <= (j + 1) * I):
-                _cum_fails[j] += F[i]
-
-    for j in range(_num_intervals):
-# Estimate the failure rate of this interval.
-        try:
-            _rho.extend([_cum_fails[j] / I] * (int(I) - 1))
-        except ZeroDivisionError:
+    if(not _grouped):
+        for i in range(len(X)):
             try:
-                _rho.extend([_rho[j - 1]] * (int(I) - 1))
+                _iters = int(X[i] - X[i - 1])
             except IndexError:
-                _rho.extend([0.0] * (int(I) - 1))
-        _rho.append(np.nan)
+                _iters = int(X[i])
+
+# Estimate the failure rate of this interval.
+            for j in range(_iters - 1):
+                _rho.append(np.nan)
+
+            try:
+                _rho_ = F[i] / (X[i] - X[i - 1])
+            except IndexError:
+                _rho_ = F[i] / X[i]
+            except ZeroDivisionError:
+                _rho_ = _rho[i - 1]
+
+            if(_rho_ < 0):
+                _rho_ = 0.0
+            _rho.append(_rho_)
 
 # Estimate the MTBF of this interval.
-        try:
-            _mu.extend([I / _cum_fails[j]] * (int(I) - 1))
-        except ZeroDivisionError:
+            for j in range(_iters - 1):
+                _mu.append(np.nan)
+
             try:
-                _mu.extend([_mu[j - 1]] * (int(I) - 1))
+                _mu_ = (X[i] - X[i - 1]) / F[i]
             except IndexError:
-                _mu.extend([0.0] * (int(I) - 1))
-        _mu.append(np.nan)
+                _mu_ = X[i] / F[i]
+            except ZeroDivisionError:
+                _mu_ = _mu[i - 1]
+
+            if(_mu_ < 0):
+                _mu_ = 0.0
+
+            _mu.append(_mu_)
+
+        logX = [log(x) for x in X]
+
+        _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
+        _lambda_hat = FFF / TTT**_beta_hat
+
+    elif(_grouped):
+# Calculate the number of intervals we need, then create a list of zeros the
+# same length as the number of intervals.
+        _num_intervals = int(ceil(TTT / I))
+        _cum_fails = [0] * _num_intervals
+
+# Iterate through the data and count the nuber of failures in each interval.
+        for i in range(len(X)):
+            for j in range(_num_intervals):
+                if(X[i] > j * I and X[i] <= (j + 1) * I):
+                    _cum_fails[j] += F[i]
+
+        for j in range(_num_intervals):
+# Estimate the failure rate of this interval.
+            try:
+                _rho.extend([_cum_fails[j] / I] * (int(I) - 1))
+            except ZeroDivisionError:
+                try:
+                    _rho.extend([_rho[j - 1]] * (int(I) - 1))
+                except IndexError:
+                    _rho.extend([0.0] * (int(I) - 1))
+            _rho.append(np.nan)
+
+# Estimate the MTBF of this interval.
+            try:
+                _mu.extend([I / _cum_fails[j]] * (int(I) - 1))
+            except ZeroDivisionError:
+                try:
+                    _mu.extend([_mu[j - 1]] * (int(I) - 1))
+                except IndexError:
+                    _mu.extend([0.0] * (int(I) - 1))
+            _mu.append(np.nan)
+
+        f = [0]
+        t = [1]
+        logt = [0]
+        for i in range(len(X)):
+            f.append(F[i])
+            t.append(X[i])
+            logt.append(log(X[i]))
+
+        f = np.array(f)
+        t = np.array(t)
+        logt = np.array(logt)
+
+        _beta_hat = fsolve(_beta, 1.0, args=(f, t, logt))[0]
+        _lambda_hat = FFF / TTT**_beta_hat
 
 # Append non-plotting values to pad the failure rate and MTBF lists so they
 # have the same length as everything else being plotted.
@@ -2756,20 +2738,5 @@ def calculate_rgtmc_grouped(F, X, I):
         for j in range(int(TTT) - len(_rho)):
             _rho.append(np.nan)
             _mu.append(np.nan)
-
-    f = [0]
-    t = [1]
-    logt = [0]
-    for i in range(len(X)):
-        f.append(F[i])
-        t.append(X[i])
-        logt.append(log(X[i]))
-
-    f = np.array(f)
-    t = np.array(t)
-    logt = np.array(logt)
-
-    _beta_hat = fsolve(_beta, 1.0, args=(f, t, logt))[0]
-    _lambda_hat = FFF / TTT**_beta_hat
 
     return(_beta_hat, _lambda_hat, _rho, _mu)

@@ -86,6 +86,8 @@ def make_check_button(_label_=None):
     """
 
     checkbutton = gtk.CheckButton(_label_, True)
+    if(_label_ is not None):
+        checkbutton.get_child().set_use_markup(True)
 
     return(checkbutton)
 
@@ -508,3 +510,81 @@ def make_column_heading(_heading_=""):
     label.show_all()
 
     return(label)
+
+
+
+def load_plot(axis, plot, x, y1=None, y2=None, y3=None,
+              _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1],
+              _marker_=['g-', 'r-', 'b-']):
+    """
+    Function to load the matplotlib plots.
+
+    Keyword Arguments:
+    axis     -- the matplotlib axis object.
+    plot     -- the matplotlib plot object.
+    x        -- the x values to plot.
+    y1       -- the first data set y values to plot.
+    y2       -- the second data set y values to plot.
+    y3       -- the third data set y values to plot.
+    _title_  -- the title for the plot.
+    _xlab_   -- the x asis label for the plot.
+    _ylab_   -- the y axis label for the plot.
+    _type_   -- the type of line to plot (1=step, 2=plot, 3=histogram).
+    _marker_ -- the marker to use on the plot.
+    """
+
+    n_points = len(x)
+
+    axis.cla()
+
+    axis.grid(True, which='both')
+
+    if(y1 is not None):
+        if(_type_[0] == 1):
+            line, = axis.step(x, y1, _marker_[0], where='mid')
+            for i in range(n_points):
+                line.set_ydata(y1)
+        elif(_type_[0] == 2):
+            line, = axis.plot(x, y1, _marker_[0], linewidth=2)
+            for i in range(n_points):
+                line.set_ydata(y1)
+        elif(_type_[0] == 3):
+            axis.grid(False, which='both')
+            n, bins, patches = axis.hist(x, bins=y1, color=_marker_[0])
+    if(y2 is not None):
+        if(_type_[1] == 1):
+            line2, = axis.step(x, y2, _marker_[1], where='mid')
+            for i in range(n_points):
+                line2.set_ydata(y2)
+        elif(_type_[1] == 2):
+            line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
+            for i in range(n_points):
+                line2.set_ydata(y2)
+        elif(_type_[1] == 3):
+            axis.grid(False, which='both')
+            n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
+            line2, = axis.plot(bins, y2)
+
+    if(y3 is not None):
+        if(_type_[2] == 1):
+            line3, = axis.step(x, y3, _marker_[2], where='mid')
+            for i in range(n_points):
+                line3.set_ydata(y3)
+        elif(_type_[2] == 2):
+            line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
+            for i in range(n_points):
+                line3.set_ydata(y3)
+        elif(_type_[2] == 3):
+            axis.grid(False, which='both')
+            n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
+            line3, = axis.plot(bins, y3)
+        elif(_type_[0] == 4):
+            line3, = axis.scatter(x, y1, _marker_[2])
+
+    axis.set_title(_title_)
+    axis.set_xlabel(_xlab_)
+    axis.set_ylabel(_ylab_)
+
+    plot.draw()
+
+    return False

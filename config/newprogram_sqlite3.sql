@@ -896,8 +896,12 @@ CREATE TABLE "tbl_rel_growth" (
     "fld_ti" REAL DEFAULT (0),
     "fld_test_time" REAL DEFAULT (0),
     "fld_num_fails" INTEGER DEFAULT (0),
-    "fld_start_date" VARCHAR(16),
-    "fld_end_date" VARCHAR(16),
+    "fld_start_date" INTEGER,
+    "fld_end_date" INTEGER,
+    "fld_weeks" REAL DEFAULT (0),
+    "fld_test_units" INTEGER DEFAULT (0),
+    "fld_tpu" REAL DEFAULT (0),
+    "fld_tpupw" REAL DEFAULT (0),
     PRIMARY KEY ("fld_test_id", "fld_phase_id")
 );
 

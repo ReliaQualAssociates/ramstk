@@ -1144,6 +1144,7 @@ class Assembly:
                 cellmodel = gtk.ListStore(gobject.TYPE_STRING,
                                           gobject.TYPE_INT)
 
+                cellmodel.append([_(u"None"), 0])
                 for j in range(len(risk_category)):
                     cellmodel.append(risk_category[j])
 
@@ -1176,7 +1177,7 @@ class Assembly:
             column.pack_start(cell, True)
             column.set_attributes(cell, text=int(position[i].text))
 
-            label = _widg.make_column_heading(heading[i].text)
+            label = _widg.make_column_heading(_(heading[i].text))
             column.set_widget(label)
 
             column.set_cell_data_func(cell, _widg.format_cell,

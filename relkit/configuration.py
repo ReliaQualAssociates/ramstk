@@ -24,8 +24,6 @@ _ = gettext.gettext
 import utilities as _util
 import widgets as _widg
 
-#TODO: Create GUI to manipulate user configuration values.
-
 grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
                3.203, 3.298, 3.902, 3.910, 4.000, 4.247, 4.411, 4.456,
                4.517, 4.899, 4.910, 5.676, 5.755, 6.137, 6.221, 6.311,
