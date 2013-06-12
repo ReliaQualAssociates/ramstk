@@ -468,6 +468,12 @@ class Testing:
         self.txtDescription.connect('changed',
                                     self._callback_entry, None, 'text', 3)
 
+        # Create a tag named hyperlink if it doesn't already exist.
+        tagtable = self.txtAttachment.get_tag_table()
+        tag = tagtable.lookup('hyperlink')
+        if(tag is None):
+            tag = self.txtAttachment.create_tag('hyperlink', foreground='blue')
+        tag.connect('event', self._hyperlink_handler)
         self.txtAttachment.connect('changed',
                                    self._callback_entry, None, 'text', 14)
 
@@ -826,7 +832,7 @@ class Testing:
             self.model.get_value(self.selected_row, self._col_order[13]))
         self.txtAttachment.set_text(
             str(self.model.get_value(self.selected_row, self._col_order[14])))
-        #self._load_hyperlinks()
+        self._load_hyperlinks()
         self.txtTTT.set_text(str(fmt.format(
             self.model.get_value(self.selected_row, self._col_order[15]))))
         self.txtAverageGR.set_text(str(fmt.format(
@@ -1004,7 +1010,7 @@ class Testing:
         with the appropriate widgets for the TESTING object.
         """
 
-        hbox = gtk.HBox()
+        hpaned = gtk.HPaned()
 
 # =========================================================================== #
 # Create the left pane to enter/display the observed reliability growth data.
@@ -1067,7 +1073,7 @@ class Testing:
         scrollwindow.add_with_viewport(self.tvwTestAssessment)
 
         vbox.pack_start(frame)
-        hbox.pack_start(vbox, expand=False)
+        hpaned.pack1(vbox)
 
 # =========================================================================== #
 # Create the center pane to display the estimated parameters.
@@ -1115,12 +1121,15 @@ class Testing:
         frame.add(fixed)
         frame.show_all()
 
-        hbox.pack_start(frame, expand=False)
+        hpaned.pack2(frame)
 
 # =========================================================================== #
 # Create the right pane to display the reliability growth plot.
 # =========================================================================== #
         vbox = gtk.VBox()
+
+        hpaned2 = gtk.HPaned()
+        hpaned2.pack1(hpaned)
 
         fixed = gtk.Fixed()
 
@@ -1143,7 +1152,8 @@ class Testing:
 
         vbox.pack_start(fixed, expand=False)
         vbox.pack_start(frame)
-        hbox.pack_start(vbox)
+
+        hpaned2.pack2(vbox)
 
 # Insert the tab.
         label = gtk.Label()
@@ -1153,86 +1163,101 @@ class Testing:
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
         label.set_tooltip_text(_(u"Displays reliability test results."))
-        self.notebook.insert_page(hbox,
+        self.notebook.insert_page(hpaned2,
                                   tab_label=label,
                                   position=-1)
 
         return False
 
-    def _assessment_tab_load(self, TPT, MTBFA, mtbfo):
+    def _assessment_tab_load(self, TPT, MTBFA, _obs_):
         """
         Loads the widgets with test results for the TESTING Object.
 
         Keyword Arguments:
         TPT   -- a list of the planned test times for each test phase.
-        MTBFA -- a list of planned, average MTBF values for each test phase.
-        mtbfo -- a list of observed, MTBF values for each test phase.
+        MTBFA -- a list of planned average MTBF values for each test phase.
+        _obs_ -- a list of observed values for each test phase.
         """
 
 # Read overall program inputs.
 # MTBFI -- initial MTBF.
-# MTBFF -- program goal MTBF.
 # TTT   -- total time on test over entire reliability growth plan.
 # AvgGR -- average growth rate over entire reliability growth plan.
-# AvgMS -- average management strategy over entire reliability growth plan.
-# Prob  -- the probability of seeing one failure during a period of time.
 # ti    -- the estimated time the first fix will be implemented.
         MTBFI = self.model.get_value(self.selected_row, 5)
-        MTBFF = self.model.get_value(self.selected_row, 6)
         TTT = self.model.get_value(self.selected_row, 15)
         AvgGR = self.model.get_value(self.selected_row, 16)
-        AvgMS = self.model.get_value(self.selected_row, 17)
-        Prob = self.model.get_value(self.selected_row, 18)
         ti = self.model.get_value(self.selected_row, 19)
 
 # Build the idealized growth and planned program curves.
         times = list(xrange(int(TTT)))
-        mtbfs = []
-        mtbfa = []
+        ideal = []
+        plan = []
         j = 0
-        for i in range(len(times)):
-            # Build the idealized curve.
-            if(times[i] < int(ti)):
-                mtbfs.append(MTBFI)
-            elif(times[i] == int(ti)):
-                mtbfs.append(np.nan)
-            else:
-                mtbfs.append((MTBFI * (times[i] / ti)**AvgGR) / (1.0 - AvgGR))
+        if(self.optMTBF.get_active()):
+            _ylabel = _(u"MTBF")
+            for i in range(len(times)):
+                # Build the idealized curve.
+                if(times[i] < int(ti)):
+                    ideal.append(MTBFI)
+                elif(times[i] == int(ti)):
+                    ideal.append(np.nan)
+                else:
+                    ideal.append((MTBFI * (times[i] / ti)**AvgGR) / (1.0 - AvgGR))
 
-            # Build the planned curve.
-            T0 = int(sum(TPT[:j]))
-            T1 = int(sum(TPT[:j+1]))
-            if(int(times[i]) >= T0 and int(times[i]) < T1):
-                mtbfa.append(MTBFA[j])
-            else:
-                mtbfa.append(np.nan)
-                j += 1
+                # Build the planned curve.
+                T0 = int(sum(TPT[:j]))
+                T1 = int(sum(TPT[:j+1]))
+                if(int(times[i]) >= T0 and int(times[i]) < T1):
+                    plan.append(MTBFA[j])
+                else:
+                    plan.append(np.nan)
+                    j += 1
+        elif(self.optFailureIntensity.get_active()):
+            _ylabel = _(u"Failure Intensity")
+            for i in range(len(times)):
+                # Build the idealized curve.
+                if(times[i] < int(ti)):
+                    ideal.append(1.0 / MTBFI)
+                elif(times[i] == int(ti)):
+                    ideal.append(np.nan)
+                else:
+                    ideal.append((1.0 - AvgGR) / (MTBFI * (times[i] / ti)**AvgGR))
+
+                # Build the planned curve.
+                T0 = int(sum(TPT[:j]))
+                T1 = int(sum(TPT[:j+1]))
+                if(int(times[i]) >= T0 and int(times[i]) < T1):
+                    plan.append(1.0 / MTBFA[j])
+                else:
+                    plan.append(np.nan)
+                    j += 1
 
 # Pad the observed values with non-plotting values when the actual total test
 # is less than the planned total test time.
-        while(len(mtbfo) < len(mtbfa)):
-            mtbfo.append(np.nan)
+        while(len(_obs_) < len(plan)):
+            _obs_.append(np.nan)
 
 # Plot the reliability growth program curves.
         __title__ = _(u"")
         if(not self.optGrouped.get_active()):
             _widg.load_plot(self.axAxis1, self.pltPlot1,
-                            x=times, y1=mtbfs, y2=mtbfa, y3=mtbfo,
+                            x=times, y1=ideal, y2=plan, y3=_obs_,
                             _title_=__title__,
                             _xlab_=_(u"Test Time (t)"),
-                            _ylab_=_(u"MTBF"),
+                            _ylab_=_ylabel,
                             _type_=[2, 2, 2],
                             _marker_=['k-', 'r-', 'bD'])
         else:
             _widg.load_plot(self.axAxis1, self.pltPlot1,
-                            x=times, y1=mtbfs, y2=mtbfa, y3=mtbfo,
+                            x=times, y1=ideal, y2=plan, y3=_obs_,
                             _title_=__title__,
                             _xlab_=_(u"Test Time (t)"),
-                            _ylab_=_(u"MTBF"),
+                            _ylab_=_ylabel,
                             _type_=[2, 2, 2],
                             _marker_=['k-', 'r-', 'b-'])
 
-        if(self.optLogarithmic):
+        if(self.optLogarithmic.get_active()):
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
         else:
@@ -1241,7 +1266,7 @@ class Testing:
 
 # Create the legend.
         leg = self.axAxis1.legend((u"Idealized Growth Curve",
-                                   u"Planned Growth", u"Observed"),
+                                   u"Planned Growth Curve", u"Observed"),
                                   'upper left',
                                   shadow=True)
         for t in leg.get_texts():
@@ -1255,33 +1280,49 @@ class Testing:
 
     def _load_hyperlinks(self):
         """
-        Method for creating hyperlinks in the Attachment gtk.TextView.
+        Method for creating hyperlinks in the Attachment gtk.TextBuffer.
         """
 
         _text_ = str(self.model.get_value(self.selected_row, self._col_order[14]))
 
-        def _hyperlink_handler(tag, widget, event, iter):
-            line_number = iter.get_line()
-            print(line_number)
-            if event.type == gtk.gdk.BUTTON_RELEASE:
-                print(result[line_number])
-
-        hyperlink = gtk.TextTag()
-        hyperlink.connect('event', _hyperlink_handler)
-
-        for line in _text_:
-            self.txtAttachment.insert_at_cursor(line + '\n')
-
-        iter1 = self.txtAttachment.get_start_iter()
         iter = self.txtAttachment.get_start_iter()
+        iter2 = self.txtAttachment.get_end_iter()
 
-        flag = iter.forward_to_line_end()
+        self.txtAttachment.delete(iter, iter2)
+        if(_text_ != 'None'):
+            self.txtAttachment.insert_with_tags_by_name(iter, _text_ + '\n',
+                                                        'hyperlink')
 
-        while(flag != 0) :
-            self.txtAttachment.apply_tag(hyperlink, iter, iter1)
-            flag = iter.forward_line()
-            iter1 = iter.copy()
-            iter.forward_to_line_end()
+        return False
+
+    def _hyperlink_handler(self, tag, widget, event, iter):
+        """
+        Method for retrieving the line (hyperlink) that was clicked in the
+        Attachment gtk.TextBuffer and opening the link in the default
+        application.
+
+        Keyword Arguments:
+        tag    -- the gtk.TextTag that called this method.
+        widget -- the gtk.TextView that contains the tag calling this method.
+        event  -- the mouse button event calling this method.
+        iter   -- the gtk.TextIter that called this method.
+        """
+
+        import magic
+
+        line_number = iter.get_line()
+        start_iter =  self.txtAttachment.get_iter_at_line(line_number)
+        end_iter =  self.txtAttachment.get_iter_at_line(line_number + 1)
+
+        _text_ = self.txtAttachment.get_text(start_iter, end_iter,
+                                             include_hidden_chars=False)
+
+        if(len(_text_) > 1 and event.type == gtk.gdk.BUTTON_RELEASE):
+            mime = magic.Magic(mime=True)
+            try:
+                print mime.from_file(_text_)
+            except IOError:
+                _util.application_error(_(u"File %s does not exist" % _text_))
 
         return False
 
@@ -1511,7 +1552,10 @@ class Testing:
             _mu = []
 
         self._assess_plan_feasibility(TTTi, N)
-        self._assessment_tab_load(TTTi, MTBFAP, _mu)
+        if(self.optMTBF.get_active()):
+            self._assessment_tab_load(TTTi, MTBFAP, _mu)
+        elif(self.optFailureIntensity.get_active()):
+            self._assessment_tab_load(TTTi, MTBFAP, _rho)
 
         return False
 

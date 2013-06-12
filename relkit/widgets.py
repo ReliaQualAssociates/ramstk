@@ -503,10 +503,13 @@ def make_column_heading(_heading_=""):
     _heading_ -- the text to use for the heading.
     """
 
+    _heading_ = "<span weight='bold'>%s</span>" % unicode(_heading_)
+
     label = gtk.Label()
-    label.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+    label.set_markup(_heading_)
     label.set_alignment(xalign=0.5, yalign=0.5)
     label.set_justify(gtk.JUSTIFY_CENTER)
+    label.set_line_wrap(True)
     label.show_all()
 
     return(label)

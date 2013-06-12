@@ -17,7 +17,6 @@ relkit/calculations.py:        # TODO: Add contact power overstress calculations
 relkit/calculations.py:        # TODO: Add temperature limit overstress calculations for resistors
 relkit/calculations.py:        # TODO: Add voltage ratio overstress calculations for variable resistors.
 relkit/calculations.py:        # TODO: Add contact power overstress calculations for switches
-relkit/configuration.py:#TODO: Create GUI to manipulate user configuration values.
 relkit/integrated_circuits/vlsi.py:        # TODO: Implement MIL-HDBK-217F parts count methodology for VLSI IC.
 relkit/function.py:# TODO: Move the functional matrix to the parts window?
 relkit/function.py:        # TODO: Implement Diagram Worksheet for FUNCTION.
@@ -28,7 +27,6 @@ relkit/utilities.py:    # TODO: Write code to select all items in treeviews.
 relkit/utilities.py:    # TODO: Write code to find, find next, find previous, and replace search terms.
 relkit/utilities.py:    # TODO: Write code to undo changes.
 relkit/utilities.py:    # TODO: Write code to redo changes.
-relkit/_assistants_/incident.py:# TODO: Revise the following query to include the hardware id from tbl_incident.
 relkit/_assistants_/incident.py:                # TODO: Add error log message here.
 relkit/_assistants_/incident.py:# TODO: Revise the following queries to include inserting the hardware id.
 relkit/partlist.py:    # TODO: Create GUI to set/edit user-defined column headings for all trees.
