@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       assembly.py is part of The RelKit Project
+#       assembly.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,7 +34,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import imports as _impt
@@ -160,7 +160,7 @@ class Assembly:
         Initializes the Assembly Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -360,7 +360,7 @@ class Assembly:
 
 # Add sibling assembly button.
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
@@ -369,7 +369,7 @@ class Assembly:
 
 # Add child assembly button.
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Adds a new assembly one indenture level subordinate to the selected assembly to the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Adds a new assembly one indenture level subordinate to the selected assembly to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
@@ -378,7 +378,7 @@ class Assembly:
 
 # Delete assembly button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Removes the currently selected assembly from the RelKit Program Database."))
+        button.set_tooltip_text(_(u"Removes the currently selected assembly from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
         button.set_icon_widget(image)
@@ -2461,7 +2461,7 @@ class Assembly:
         self._app.winWorkBook.add(self.vbxAssembly)
         self._app.winWorkBook.show_all()
 
-        _title_ = _("RelKit Work Bench: Analyzing %s") % \
+        _title_ = _("RTK Work Bench: Analyzing %s") % \
                   self.system_model.get_value(self.system_selected_row, 17)
         self._app.winWorkBook.set_title(_title_)
 
@@ -2995,7 +2995,7 @@ class Assembly:
             selection = self.tvwSIA.get_selection()
             (model, row) = selection.get_selected()
 
-        dialog = _widg.make_dialog(_("RelKit - Edit Risk Analysis or Similar Item Functions"),
+        dialog = _widg.make_dialog(_("RTK - Edit Risk Analysis or Similar Item Functions"),
                                    self._app.winWorkBook)
 
         fixed = gtk.Fixed()
@@ -3603,7 +3603,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             if(index_ == 10):               # Calculation model
                 self._trickledown(model, row, index_, int(combo.get_active()))
                 if(int(combo.get_active()) > 2):
-                    _title_ = _("RelKit Information")
+                    _title_ = _("RTK Information")
 
                     dialog = _widg.make_dialog(_title_,
                              _flags_=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
@@ -4032,7 +4032,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnSaveResults.hide()
             self.btnRollup.hide()
             self.btnEdit.hide()
-            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RelKit Program Database."))
+            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
         elif(page_num == 5):                # Assessment results tab
             self.btnAddItem.hide()
             self.btnRemoveItem.hide()

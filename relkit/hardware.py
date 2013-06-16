@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       hardware.py is part of The RelKit Project
+#       hardware.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,7 +34,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import widgets as _widg
 
@@ -52,7 +52,7 @@ _ = gettext.gettext
 class Hardware:
     """
     The HARDWARE meta-class is simply the treeview that holds and displays
-    the system tree in the RelKit Treebook.  The HARDWARE meta-class also
+    the system tree in the RTK Treebook.  The HARDWARE meta-class also
     includes functions for interacting with the treeview.
     """
 
@@ -65,7 +65,7 @@ class Hardware:
         Initializes the HARDWARE Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -93,7 +93,7 @@ class Hardware:
         """
         Creates the HARDWARE treeview and connects it to callback functions to
         handle editting.  Background and foreground colors can be set using the
-        user-defined values in the RelKit configuration file.
+        user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()

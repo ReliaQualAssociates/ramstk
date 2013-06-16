@@ -2,7 +2,7 @@
 """ widgets contains functions for creating, populating, destroying, and
     interacting with pyGTK widgets.  Import this module as _widg in other
     modules that create, populate, destroy, or interact with pyGTK widgets in
-    the RelKit application.
+    the RTK application.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       widgets.py is part of The RelKit Project
+#       widgets.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -37,7 +37,7 @@ except ImportError:
 
 import pango
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 
 import gettext
@@ -309,7 +309,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
                    for.
         fmt_idx -- the index of the format file to use when creating the
                    TreeView.
-        _app    -- the RelKit application.
+        _app    -- the RTK application.
         _list   -- the list of items to load into the gtk.CellRendererCombo.
         bg_col  -- the background color to use for each row.  Defaults to
                    white.

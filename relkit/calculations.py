@@ -1,12 +1,12 @@
 #!/usr/bin/env python2
-""" This file contains various calculations used by the RelKit Project. """
+""" This file contains various calculations used by the RTK Project. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       calculations.py is part of The RelKit Project
+#       calculations.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -53,7 +53,7 @@ except ImportError:
 import numpy as np
 from math import ceil, exp, floor, log, sqrt
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 
@@ -64,7 +64,7 @@ def calculate_project(button, application, index):
 
     Keyword Arguments:
     button      -- the gtk.Toolbutton that called this function.
-    application -- the RelKit application object.
+    application -- the RTK application object.
     index       -- an index indicating what to calculate:
                    0 - everything below.
                    1 - just the selected Revision.
@@ -128,7 +128,7 @@ def calculate_revision(widget=None, application=None):
 
     Keyword Arguments:
     widget      -- the gtk.Widget that called this function.
-    application -- the RelKit application object.
+    application -- the RTK application object.
     """
 
     _parent = application.HARDWARE.model.get_string_from_iter(application.HARDWARE.selected_row)
@@ -204,7 +204,7 @@ def calculate_function(_model_, _row_, application):
     Keyword Arguments:
     _model_     --
     _row_       --
-    application -- the RelKit application object.
+    application -- the RTK application object.
     """
 
     #selection = application.FUNCTION.treeview.get_selection()
@@ -284,7 +284,7 @@ def calculate_hardware(treemodel, row, application):
     treemodel   -- the gtk.Treemodel containing the information to use in
                    calculations.
     row         -- the row in the gtk.Treemodel to read/write values.
-    application -- the RelKit application object.
+    application -- the RTK application object.
     """
 
     application.winTree.progressbar.pulse()
@@ -605,7 +605,7 @@ def calculate_software(treemodel, row, application):
     Keyword Arguments:
     treemodel   -- the gtk.Treemodel containing the information to edit.
     row         -- the row in the gtk.Treemodel to read/write values.
-    application -- the RelKit application object.
+    application -- the RTK application object.
     """
 
     _level_id = treemodel.get_value(row, 2)
@@ -645,7 +645,7 @@ def calculate_csci(treemodel, row, application):
     Keyword Arguments:
     treemodel   -- the gtk.Treemodel containing the information to edit.
     row         -- the row in the gtk.Treemodel to read/write values.
-    application -- the RelKit application object.
+    application -- the RTK application object.
     """
 
     _fault_density = [0.0, 0.0128, 0.0092, 0.0078, 0.0018, 0.0085, 0.0123]
@@ -939,7 +939,7 @@ def calculate_do_factor(_devel_id, values, application):
     _devel_id   -- the index of the type of development environment in which
                    the software module is being developed.
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -977,7 +977,7 @@ def calculate_am_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Get a count of the AM questions answered yes and no for the selected
@@ -1022,7 +1022,7 @@ def calculate_st_factor(_phase_id, values, application):
     _hase_id    -- the index of the development phase for the software module
                    being calculated.
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -1058,7 +1058,7 @@ def calculate_sq_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Get a count of the SQ questions answered yes and no for the selected
@@ -1099,7 +1099,7 @@ def calculate_sl_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Get a count of the number of lines of assembly code, higher order
@@ -1140,7 +1140,7 @@ def calculate_sx_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Get a count of the number of units comprising the selected software
@@ -1226,7 +1226,7 @@ def calculate_sm_factor(nm, values, application):
     nm          -- the total number of units comprising the selected software
                    module.
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Find the counts of all the units in the CSCI with less than 200 lines
@@ -1289,7 +1289,7 @@ def calculate_sr_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -1330,7 +1330,7 @@ def calculate_tm_factor(values, application):
 
     Keyword Arguments:
     values      -- a tuple containing the values to use in the SQL query.
-    application -- the RelKit application.
+    application -- the RTK application.
     """
 
     # Find the sum of all the test methods recommended for the software module
@@ -1398,12 +1398,12 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     rules.
 
     Keyword arguments:
-    application -- the RelKit application.
-    partmodel   -- the RelKit winParts full gtk.TreeModel.
+    application -- the RTK application.
+    partmodel   -- the RTK winParts full gtk.TreeModel.
     partrow     -- the currently selected row in the winParts full
                    gtk.TreeModel.
-    systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-    systemrow   -- the currently selected row in the RelKit HARWARE
+    systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+    systemrow   -- the currently selected row in the RTK HARWARE
                    object gtk.TreeModel.
 
     Currently only default derating rules from Reliability Toolkit:

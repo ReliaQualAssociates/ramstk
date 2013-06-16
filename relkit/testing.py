@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       testing.py is part of The RelKit Project
+#       testing.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -51,7 +51,7 @@ except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import imports as _impt
@@ -118,7 +118,7 @@ class Testing:
         Initializes the Testing Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -345,7 +345,7 @@ class Testing:
             window.set_default_size(width, height)
             window.set_border_width(5)
             window.set_position(gtk.WIN_POS_NONE)
-            window.set_title(_(u"RelKit Plot"))
+            window.set_title(_(u"RTK Plot"))
 
             window.connect('delete_event', self._close_plot, plot, parent)
 
@@ -1328,7 +1328,7 @@ class Testing:
 
     def test_plan_remove(self):
         """
-        Method to remove the selected test plan from the open RelKit Program.
+        Method to remove the selected test plan from the open RTK Program.
         """
 
         selection = self.treeview.get_selection()
@@ -1339,7 +1339,7 @@ class Testing:
             row = model.get_iter(paths[i])
             _records.append(model.get_value(row, 1))
 
-        _title_ = _(u"RelKit: Confirm Delete")
+        _title_ = _(u"RTK: Confirm Delete")
         _dialog = _widg.make_dialog(_title_)
 
         fixed = gtk.Fixed()
@@ -1668,7 +1668,7 @@ class Testing:
 
     def _save_line_item(self, model, path_, row):
         """
-        Saves each row in the TESTING Object treeview model to the RelKit's
+        Saves each row in the TESTING Object treeview model to the RTK's
         Program MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -2100,7 +2100,7 @@ class Testing:
         """
         Creates the TESTING treeview and connects it to callback functions to
         handle editting.  Background and foreground colors can be set using the
-        user-defined values in the RelKit configuration file.
+        user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -2302,7 +2302,7 @@ class Testing:
         self._app.winWorkBook.add(self.vbxTesting)
         self._app.winWorkBook.show_all()
 
-        _title = _(u"RelKit Work Bench: Program Reliability Testing (%d Tests)") % \
+        _title = _(u"RTK Work Bench: Program Reliability Testing (%d Tests)") % \
                    self.n_tests
         self._app.winWorkBook.set_title(_title)
 

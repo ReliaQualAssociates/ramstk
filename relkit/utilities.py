@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-""" utilities contains utility functions for interacting with the RelKit
+""" utilities contains utility functions for interacting with the RTK
     application.  Import this module as _util in other modules that need to
-    interact with the RelKit application.
+    interact with the RTK application.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       utilities.py is part of The RelKit Project
+#       utilities.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -38,7 +38,7 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import login as _login
 import widgets as _widg
@@ -48,7 +48,7 @@ def read_configuration():
 
     """
     This method reads the site and user configuration files to establish
-    settings for The RelKit application.
+    settings for The RTK application.
     """
 
     # Get a config instance for the site configuration file.
@@ -297,20 +297,20 @@ def file_exists(_file_):
         return False
 
 def create_project(widget, app):
-    """ Creates a new RelKit Project.
+    """ Creates a new RTK Project.
 
         Keyword Arguments:
         widget -- the widget that called this function.
-        app    -- the RelKit application.
+        app    -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
 
-        login = _login.Login(_(u"Create a RelKit Program Database"))
+        login = _login.Login(_(u"Create a RTK Program Database"))
         if(login.answer != gtk.RESPONSE_ACCEPT):
             return True
 
-        dialog = _widg.make_dialog(_(u"RelKit - New Program"))
+        dialog = _widg.make_dialog(_(u"RTK - New Program"))
 
         label = _widg.make_label(_(u"New Program Name"))
         txtProgName = _widg.make_entry()
@@ -386,7 +386,7 @@ def create_project(widget, app):
 
     elif(_conf.BACKEND == 'sqlite3'):
 
-        dialog = gtk.FileChooserDialog(title=_(u"Create a RelKit Program Database"),
+        dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program Database"),
                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
                                        buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT,
                                                 gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
@@ -418,12 +418,12 @@ def create_project(widget, app):
 
 def open_project(widget, app, dlg=1, filename=''):
     """
-    Shows the RelKit databases available on the selected server and allows the
+    Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
 
     Keyword Arguments:
     widget -- the widget that called this function.
-    app    -- the RelKit application.
+    app    -- the RTK application.
     dlg    -- whether or not to display a file chooser dialog.  0=No, 1=Yes.
     """
 
@@ -431,7 +431,7 @@ def open_project(widget, app, dlg=1, filename=''):
 
     if(_conf.BACKEND == 'mysql'):
 
-        login = _login.Login(_(u"RelKit Program Database Login"))
+        login = _login.Login(_(u"RTK Program Database Login"))
 
         if(login.answer != gtk.RESPONSE_ACCEPT):
             return True
@@ -442,7 +442,7 @@ def open_project(widget, app, dlg=1, filename=''):
                                        None,
                                        cnx)
 
-        dialog = _widg.make_dialog(_(u"RelKit: Open Program"))
+        dialog = _widg.make_dialog(_(u"RTK: Open Program"))
 
         model = gtk.TreeStore(gobject.TYPE_STRING)
         treeview = gtk.TreeView(model)
@@ -490,13 +490,13 @@ def open_project(widget, app, dlg=1, filename=''):
     elif(_conf.BACKEND == 'sqlite3'):
 
         if(dlg == 1):
-            dialog = gtk.FileChooserDialog(title=_(u"RelKit - Open Program"),
+            dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
                                            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
             # Set some filters to select all files or only some text files.
             filter = gtk.FileFilter()
-            filter.set_name(_(u"RelKit Project Files"))
+            filter.set_name(_(u"RTK Project Files"))
             #filter.add_mime_type("text/txt")
             filter.add_pattern("*.rfb")
             dialog.add_filter(filter)
@@ -523,11 +523,11 @@ def open_project(widget, app, dlg=1, filename=''):
 
 def save_project(widget, _app):
     """
-    Saves the RelKit information to the project's MySQL database.
+    Saves the RTK information to the project's MySQL database.
 
     Keyword Arguments:
     widget -- the widget that is calling this function.
-    _app   -- the RelKit application.
+    _app   -- the RTK application.
     """
 
     if not _app.LOADED:
@@ -588,11 +588,11 @@ def save_project(widget, _app):
 
 def delete_project(widget, _app):
     """
-    Deletes an existing RelKit Project.
+    Deletes an existing RTK Project.
 
     Keyword Arguments:
     widget -- the widget that called this function.
-    _app   -- the RelKit application.
+    _app   -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -603,7 +603,7 @@ def delete_project(widget, _app):
                                         None,
                                         cnx)
 
-        dialog = _widg.make_dialog(_("RelKit - Delete Program"))
+        dialog = _widg.make_dialog(_("RTK - Delete Program"))
 
         model = gtk.TreeStore(gobject.TYPE_STRING)
         treeview = gtk.TreeView(model)
@@ -656,7 +656,7 @@ def delete_project(widget, _app):
 
         import os
 
-        dialog = gtk.FileChooserDialog(_("RelKit - Delete Program"),
+        dialog = gtk.FileChooserDialog(_("RTK - Delete Program"),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
@@ -681,7 +681,7 @@ def import_project(widget, app):
 
     Keyword Arguments:
     widget -- the GTK widget that called the function.
-    app    -- the RelKit application object.
+    app    -- the RTK application object.
     """
 
     # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
@@ -738,7 +738,7 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     _parent_ -- the parent window, if any, for the dialog.
     """
 
-    dialog = _widg.make_dialog(_("RelKit Error"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = _widg.make_dialog(_("RTK Error"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
     hbox = gtk.HBox()
 
@@ -767,7 +767,7 @@ def add_items(_class_):
                component).
     """
 
-    _title_ = _("RelKit - Add %s") % _class_
+    _title_ = _("RTK - Add %s") % _class_
 
     dialog = _widg.make_dialog(_title_)
 
@@ -895,7 +895,7 @@ def create_comp_ref_des(widget, app):
 
     Keyword Arguments:
     widget -- the GTK widget that called the function.
-    app    -- the RelKit application object.
+    app    -- the RTK application object.
     """
 
     treemodel = app.HARDWARE.model
@@ -1256,7 +1256,7 @@ def options(widget, _app):
 
     Keyword Arguments:
     widget -- the pyGTK widget calling this function.
-    _app   -- the RelKit application.
+    _app   -- the RTK application.
     """
 
     opts = Options(_app)
@@ -1297,15 +1297,15 @@ class Options:
         Allows a user to set site-wide options.
 
         Keyword Arguments:
-        app    -- the RelKit application object.
+        app    -- the RTK application object.
         """
 
         self.winOptions = gtk.Window()
-        self.winOptions.set_title(_("RelKit - Options"))
+        self.winOptions.set_title(_("RTK - Options"))
 
         notebook = gtk.Notebook()
 
-        # ----- ----- ----- -- RelKit module options - ----- ----- ----- #
+        # ----- ----- ----- -- RTK module options - ----- ----- ----- #
         if(_conf.RELIAFREE_PROG_INFO[2] != ''):
             fixed = gtk.Fixed()
 
@@ -1348,8 +1348,8 @@ class Options:
             self.chkRG.set_active(results[0][5])
             self.chkIncidents.set_active(results[0][6])
 
-            label = gtk.Label(_("RelKit Modules"))
-            label.set_tooltip_text(_("Select active RelKit modules."))
+            label = gtk.Label(_("RTK Modules"))
+            label.set_tooltip_text(_("Select active RTK modules."))
             notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
@@ -1373,7 +1373,7 @@ class Options:
         fixed.put(self.btnListEdit, 5, 205)
 
         label = gtk.Label(_("Edit Lists"))
-        label.set_tooltip_text(_("Allows editting of lists used in RelKit."))
+        label.set_tooltip_text(_("Allows editting of lists used in RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
@@ -1396,7 +1396,7 @@ class Options:
         fixed.put(self.btnTreeEdit, 5, 205)
 
         label = gtk.Label(_("Edit Tree Layouts"))
-        label.set_tooltip_text(_("Allows editting of tree layouts used in RelKit."))
+        label.set_tooltip_text(_("Allows editting of tree layouts used in RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 

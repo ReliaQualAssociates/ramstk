@@ -7,7 +7,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       incident.py is part of The RelKit Project
+#       incident.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -32,7 +32,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import imports as _impt
 import utilities as _util
@@ -80,7 +80,7 @@ class Incident:
         Initializes the Incident Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -980,7 +980,7 @@ class Incident:
 
     def _component_delete(self, button):
         """
-        Deletes the currently selected component from the RelKit Program's
+        Deletes the currently selected component from the RTK Program's
         MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -1031,7 +1031,7 @@ class Incident:
 
     def _save_line_item(self, model, path_, row):
         """
-        Saves each row in the Incident Object treeview model to the RelKit's
+        Saves each row in the Incident Object treeview model to the RTK's
         Program MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -1155,7 +1155,7 @@ class Incident:
         """
         Creates the Field Incident TreeView and connects it to callback
         functions to handle editting.  Background and foreground colors can be
-        set using the user-defined values in the RelKit configuration file.
+        set using the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1289,7 +1289,7 @@ class Incident:
         self._app.winWorkBook.add(self.vbxIncident)
         self._app.winWorkBook.show_all()
 
-        _title = _("RelKit Work Bench: Program Incident (%d Incidents)") % \
+        _title = _("RTK Work Bench: Program Incident (%d Incidents)") % \
                    self.n_incidents
         self._app.winWorkBook.set_title(_title)
 

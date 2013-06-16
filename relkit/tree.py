@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-""" This is the System Tree window for RelKit. """
+""" This is the System Tree window for RTK. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       tree.py is part of The RelKit Project
+#       tree.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -36,7 +36,7 @@ import locale
 import gettext
 _ = gettext.gettext
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import imports as _impt
@@ -57,7 +57,7 @@ class TreeWindow(gtk.Window):
         Initializes the TreeBook Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._app = application
@@ -67,7 +67,7 @@ class TreeWindow(gtk.Window):
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
-        self.set_title(_("RelKit"))
+        self.set_title(_("RTK"))
 
         n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         width = gtk.gdk.screen_width() / n_screens
@@ -129,7 +129,7 @@ class TreeWindow(gtk.Window):
         self.add(vbox)
         self.show_all()
 
-        _title = _("RelKit Work Book")
+        _title = _("RTK Work Book")
         self._app.winWorkBook.set_title(_title)
 
         self.notebook.set_current_page(0)
@@ -252,7 +252,7 @@ class TreeWindow(gtk.Window):
             else:
                 values = (0, )
 
-            # Select all the unaccepted field incidents from the open RelKit
+            # Select all the unaccepted field incidents from the open RTK
             # Program database.
             if(_conf.BACKEND == 'mysql'):
                 query = "SELECT * FROM tbl_incident \
@@ -476,7 +476,7 @@ class TreeWindow(gtk.Window):
 
 # New file button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Create a new RelKit Program Database."))
+        button.set_tooltip_text(_("Create a new RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/new.png')
         button.set_icon_widget(image)
@@ -486,7 +486,7 @@ class TreeWindow(gtk.Window):
 
 # Connect button
         button = gtk.ToolButton(stock_id = gtk.STOCK_OPEN)
-        button.set_tooltip_text(_("Connect to an existing RelKit Program Database."))
+        button.set_tooltip_text(_("Connect to an existing RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/open.png')
         button.set_icon_widget(image)
@@ -496,7 +496,7 @@ class TreeWindow(gtk.Window):
 
 # Save button
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        button.set_tooltip_text(_("Save the currently open RelKit Program Database."))
+        button.set_tooltip_text(_("Save the currently open RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -605,7 +605,7 @@ class TreeWindow(gtk.Window):
         button.set_label(_("Calculate"))
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("Project"))
-        menu_item.set_tooltip_text(_("Calculate the currently open RelKit project."))
+        menu_item.set_tooltip_text(_("Calculate the currently open RTK project."))
         menu_item.connect('activate', _calc.calculate_project, self._app, 0)
         menu.add(menu_item)
         menu_item = gtk.MenuItem(label=_("Revision"))
@@ -655,7 +655,7 @@ class TreeWindow(gtk.Window):
 
 # Save and quit button
         button = gtk.ToolButton(label=_("Save & Quit"))
-        button.set_tooltip_text(_("Save the currently open RelKit Program Database then quit"))
+        button.set_tooltip_text(_("Save the currently open RTK Program Database then quit"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
@@ -666,7 +666,7 @@ class TreeWindow(gtk.Window):
 
 # Quit without saving button
         button = gtk.ToolButton(stock_id = gtk.STOCK_QUIT)
-        button.set_tooltip_text(_("Quit without saving the currently open RelKit Program Database"))
+        button.set_tooltip_text(_("Quit without saving the currently open RTK Program Database"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
@@ -680,8 +680,8 @@ class TreeWindow(gtk.Window):
 
     def _add_item(self, button):
         """
-        Method to add an item to the open RelKit Program.  What is added
-        depends on the selected RelKit Module.
+        Method to add an item to the open RTK Program.  What is added
+        depends on the selected RTK Module.
 
         Keyword Arguments:
         button -- the gtk.ToolButton that called this method.
@@ -707,8 +707,8 @@ class TreeWindow(gtk.Window):
 
     def _remove_item(self, button):
         """
-        Method to remove an item from the open RelKit Program.  What is added
-        depends on the selected RelKit Module.
+        Method to remove an item from the open RTK Program.  What is added
+        depends on the selected RTK Module.
 
         Keyword Arguments:
         button -- the gtk.ToolButton that called this method.
@@ -760,7 +760,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.REVISION.treeview.get_column(0)
                 self._app.REVISION.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new revision to the current RelKit Program."))
+                button.set_tooltip_text(_(u"Add a new revision to the current RTK Program."))
             except TypeError:               # There are no revisions.
                 pass
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 1):
@@ -809,7 +809,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new verification and validation task to the current RelKit Program."))
+                button.set_tooltip_text(_(u"Add a new verification and validation task to the current RTK Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
@@ -820,7 +820,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.TESTING.treeview.get_column(0)
                 self._app.TESTING.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new test plan to the current RelKit Program."))
+                button.set_tooltip_text(_(u"Add a new test plan to the current RTK Program."))
             except:
                 self._app.TESTING.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
@@ -836,7 +836,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new incident to the current RelKit Program."))
+                button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
         elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 9):
@@ -847,7 +847,7 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new dataset to the current RelKit Program."))
+                button.set_tooltip_text(_(u"Add a new dataset to the current RTK Program."))
             except:                         # There are no datasets.
                 self._app.DATASET.load_notebook()
 
@@ -862,7 +862,7 @@ class TreeWindow(gtk.Window):
         """
 
         if(_conf.RELIAFREE_PROG_INFO[2] == ''):
-            _util.application_error(_("There is no active RelKit Project.  You must open a Project before importing data."),
+            _util.application_error(_("There is no active RTK Project.  You must open a Project before importing data."),
                                     _image_='warning')
             return True
         else:
@@ -871,11 +871,11 @@ class TreeWindow(gtk.Window):
 
     def delete_event(self, widget, event, data=None):
         """
-        Used to quit the RelKit application when the X in the upper
+        Used to quit the RTK application when the X in the upper
         right corner is pressed.
 
         Keyword Arguments:
-        winmain -- the RelKit application main window widget.
+        winmain -- the RTK application main window widget.
         event   -- the gdk event (GDK_DELETE in this case).
         data    -- any data to pass when exiting the application.
         """
@@ -888,7 +888,7 @@ class TreeWindow(gtk.Window):
 
     def save_quit_relkit(self, button):
         """
-        Used to save, then quit the RelKit application.
+        Used to save, then quit the RTK application.
 
         Keyword Arguments:
         button -- the toolbar button that was pressed.
@@ -902,7 +902,7 @@ class TreeWindow(gtk.Window):
 
     def quit_relkit(self, button):
         """
-        Used to quit the RelKit application without saving the open
+        Used to quit the RTK application without saving the open
         database.
 
         Keyword Arguments:

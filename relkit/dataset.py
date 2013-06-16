@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2012 - 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       dataset.py is part of The RelKit Project
+#       dataset.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -48,7 +48,7 @@ except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import imports as _impt
@@ -139,7 +139,7 @@ class Dataset:
         Initializes the Dataset Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -315,7 +315,7 @@ class Dataset:
             window.set_default_size(width, height)
             window.set_border_width(5)
             window.set_position(gtk.WIN_POS_NONE)
-            window.set_title(_(u"RelKit Plot"))
+            window.set_title(_(u"RTK Plot"))
 
             window.connect('delete_event', self._close_plot, plot, parent)
 
@@ -1253,7 +1253,7 @@ class Dataset:
             row = model.get_iter(paths[i])
             _records.append(model.get_value(row, 0))
 
-        _title_ = _(u"RelKit: Confirm Delete")
+        _title_ = _(u"RTK: Confirm Delete")
         _dialog = _widg.make_dialog(_title_)
 
         fixed = gtk.Fixed()
@@ -2352,7 +2352,7 @@ class Dataset:
     def _save_survival_record(self, model, path, row):
         """
         Saves each of the survival data records that comprise the selected
-        DATASET to the RelKit Program MySQL or SQLite3 database.
+        DATASET to the RTK Program MySQL or SQLite3 database.
 
         Keyword Arguments:
         model -- the DATASET tvwDataset gtk.ListStore.
@@ -2384,7 +2384,7 @@ class Dataset:
 
     def _save_line_item(self, model, path_, row):
         """
-        Saves each row in the DATASET Object treeview model to the RelKit's
+        Saves each row in the DATASET Object treeview model to the RTK's
         Program MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -2517,13 +2517,13 @@ class Dataset:
                 self.cmbConfMethod.show()
 
             if(_text_ == 7):                # WeiBayes
-                dialog = _widg.make_dialog(_(u"RelKit Information"),
+                dialog = _widg.make_dialog(_(u"RTK Information"),
                             _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
                 fixed = gtk.Fixed()
 
                 y_pos = 10
-                label = _widg.make_label(_(u"WeiBayes is not yet implemented in RelKit."), width=300, height=100)
+                label = _widg.make_label(_(u"WeiBayes is not yet implemented in RTK."), width=300, height=100)
                 fixed.put(label, 5, y_pos)
 
                 fixed.show_all()
@@ -2654,7 +2654,7 @@ class Dataset:
         """
         Creates the DATASET treeview and connects it to callback functions to
         handle editting.  Background and foreground colors can be set using the
-        user-defined values in the RelKit configuration file.
+        user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -2736,7 +2736,7 @@ class Dataset:
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
 
-        _title = _(u"RelKit Work Bench: Program Survival Analyses (%d Datasets)") % \
+        _title = _(u"RTK Work Bench: Program Survival Analyses (%d Datasets)") % \
                    self.n_datasets
         self._app.winWorkBook.set_title(_title)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This file contains configuration information and functions for RelKit.
+This file contains configuration information and functions for RTK.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       configuration.py is part of The RelKit Project
+#       configuration.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -20,7 +20,7 @@ import locale
 import gettext
 _ = gettext.gettext
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import utilities as _util
 import widgets as _widg
 
@@ -33,20 +33,20 @@ grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
                14.028, 14.035, 14.173, 14.173, 14.449, 14.587, 14.610, 15.07,
                16.0]
 
-# Path to the directory containing icon files used by RelKit.  Defaults to
+# Path to the directory containing icon files used by RTK.  Defaults to
 # /usr/share/pixmaps/relkit/ on POSIX systems.
 ICON_DIR = ''
 
-# Path to the directory containing data files used by RelKit.  Defaults to
+# Path to the directory containing data files used by RTK.  Defaults to
 # /usr/share/relkit/ on POSIX systems.
 DATA_DIR = ''
 
-# Path to the directory containing configuration files used by RelKit.
+# Path to the directory containing configuration files used by RTK.
 # Defaults to $HOME/.config/relkit/ on POSIX systems.
 # Defaults to C:\\Users\<USER NAME>\config\relkit\ on NT systems.
 CONF_DIR = ''
 
-# Path to the directory containing log files used by RelKit.
+# Path to the directory containing log files used by RTK.
 # Defaults to $HOME/.config/relkit/logs/ on POSIX systems.
 # Defaults to C:\\Users\<USER NAME>\config\relkit\logs\ on NT systems.
 LOG_DIR = ''
@@ -182,11 +182,11 @@ TABPOS = ['top', 'bottom', 'bottom']
 
 
 class RelKitConf:
-    """ The RelKit configuration class. """
+    """ The RTK configuration class. """
 
     def __init__(self, level='site'):
         """
-        Initializes the RelKit configuration parser.
+        Initializes the RTK configuration parser.
 
         Keyword Arguments:
         level -- indicates which configuration file is to be read.
@@ -267,19 +267,19 @@ class RelKitConf:
             config = ConfigParser.ConfigParser()
 
             if(basename(self._conf_file) == 'site.conf'):
-                dialog = _widg.make_dialog("RelKit common database information...")
+                dialog = _widg.make_dialog("RTK common database information...")
 
                 fixed = _widg.make_fixed()
 
                 y_pos = 10
-                label = _widg.make_label("RelKit common database host name:",
+                label = _widg.make_label("RTK common database host name:",
                                          width=340)
                 txtDBHost = _widg.make_entry()
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBHost, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RelKit common database socket:",
+                label = _widg.make_label("RTK common database socket:",
                                          width=340)
                 txtDBSocket = _widg.make_entry()
                 txtDBSocket.set_text("3306")
@@ -287,7 +287,7 @@ class RelKitConf:
                 fixed.put(txtDBSocket, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RelKit common database name:",
+                label = _widg.make_label("RTK common database name:",
                                          width=340)
                 txtDBName = _widg.make_entry()
                 txtDBName.set_text("relkitcom")
@@ -295,7 +295,7 @@ class RelKitConf:
                 fixed.put(txtDBName, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RelKit common database user name:",
+                label = _widg.make_label("RTK common database user name:",
                                          width=340)
                 txtDBUser = _widg.make_entry()
                 txtDBUser.set_text("relkitcom")
@@ -303,7 +303,7 @@ class RelKitConf:
                 fixed.put(txtDBUser, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RelKit common database password:",
+                label = _widg.make_label("RTK common database password:",
                                          width=340)
                 txtDBPassword = _widg.make_entry()
                 txtDBPassword.set_invisible_char("*")
@@ -313,7 +313,7 @@ class RelKitConf:
                 fixed.put(txtDBPassword, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RelKit common database type:",
+                label = _widg.make_label("RTK common database type:",
                                          width=340)
                 cmbDBType = _widg.make_combo()
                 _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
@@ -428,29 +428,29 @@ class RelKitConf:
                 config.write(parser)
                 parser.close()
 
-                print _("RelKit default configuration created.")
+                print _("RTK default configuration created.")
                 return True
             except EnvironmentError:
-                print _("Could not save your RelKit configuration.")
+                print _("Could not save your RTK configuration.")
                 return False
 
         else:
             try:
                 mkdir(self.conf_dir)
-                print _("RelKit configuration directory (%s) created.") % \
+                print _("RTK configuration directory (%s) created.") % \
                 self.conf_dir
                 mkdir(self.data_dir)
-                print _("RelKit data directory (%s) created.") % \
+                print _("RTK data directory (%s) created.") % \
                 self.data_dir
                 mkdir(self.log_dir)
-                print _("RelKit log file directory (%s) created.") % \
+                print _("RTK log file directory (%s) created.") % \
                 self.log_dir
                 mkdir(self.icon_dir)
-                print _("RelKit icon directory (%s) created.") % \
+                print _("RTK icon directory (%s) created.") % \
                 self.icon_dir
                 self.__init__()
             except EnvironmentError:
-                print _("Could not create RelKit default configuration.")
+                print _("Could not create RTK default configuration.")
 
     def write_configuration(self):
         """ Writes changes to the user's configuration file. """
@@ -579,7 +579,7 @@ class RelKitConf:
                 config.write(parser)
                 parser.close()
             except EnvironmentError:
-                print _("Could not save your RelKit configuration.")
+                print _("Could not save your RTK configuration.")
 
     def read_configuration(self):
         """ Reads the user's configuration file. """

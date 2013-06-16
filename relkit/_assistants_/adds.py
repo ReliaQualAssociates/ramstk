@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       addrecord.py is part of The RelKit Project
+#       addrecord.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,7 +35,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import widgets as _widg
 
@@ -53,7 +53,7 @@ _ = gettext.gettext
 class AddIncident:
     """
     This is the gtkAssistant that walks the user through the process of adding
-    a Field Incident records to the open RelKit Program database.
+    a Field Incident records to the open RTK Program database.
     """
 
     def __init__(self, button, app):
@@ -62,20 +62,20 @@ class AddIncident:
 
         Keyword Arguments:
         button -- the gtk.Button widget that calling this Assistant.
-        app    -- the instance of the RelKit application calling the Assistant.
+        app    -- the instance of the RTK application calling the Assistant.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Add Incident Assistant"))
+        self.assistant.set_title(_("RTK Add Incident Assistant"))
         self.assistant.connect('apply', self._add_incident)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit incident addition assistant.  It will help you add a new hardware or software incident to the database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _("This is the RTK incident addition assistant.  It will help you add a new hardware or software incident to the database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=300, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -470,7 +470,7 @@ class AddIncident:
 class AddTestPlan:
     """
     This is the gtk.Assistant that walks the user through the process of
-    creating a new test plan in the open RelKit Program database.
+    creating a new test plan in the open RTK Program database.
     """
 
     _labels = [_(u"Assembly:"), _(u"Test Type:"), _(u"Test Title:"),
@@ -485,13 +485,13 @@ class AddTestPlan:
 
         Keyword Arguments:
         button -- the gtk.Button widget that called this method.
-        app    -- the RelKit application.
+        app    -- the RTK application.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RelKit Test Plan Creation Assistant"))
+        self.assistant.set_title(_(u"RTK Test Plan Creation Assistant"))
         #self.assistant.set_forward_page_func(self._next_page)
 
         #self.assistant.connect('prepare', self._set_next_page)
@@ -505,7 +505,7 @@ class AddTestPlan:
 # Create the introduction page.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RelKit test plan creation assistant.  It will help you create a new test plan in the open RelKit Program.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RTK test plan creation assistant.  It will help you create a new test plan in the open RTK Program.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -644,7 +644,7 @@ class AddTestPlan:
     def _test_plan_add(self, button):
         """
         Method to add a new test plan for the selected hardware item to the
-        open RelKit Program.
+        open RTK Program.
 
         Keyword Arguments:
         button -- the gtk.Button that called this method.
@@ -715,7 +715,7 @@ class AddRGRecord(gtk.Assistant):
     """
     This is the gtk.Assistant that walks the user through the process of
     adding a test record to the currently selected test plan in the open
-    RelKit Program database.
+    RTK Program database.
     """
 
     _labels = [_(u"Date:"), _(u"Time:"), _(u"Number of Failures:")]
@@ -726,11 +726,11 @@ class AddRGRecord(gtk.Assistant):
 
         Keyword Arguments:
         button -- the gtk.ToolButton that called this assistant.
-        app    -- the RelKit application.
+        app    -- the RTK application.
         """
 
         gtk.Assistant.__init__(self)
-        self.set_title(_(u"RelKit Reliability Growth Record Assistant"))
+        self.set_title(_(u"RTK Reliability Growth Record Assistant"))
         self.connect('apply', self._test_record_add)
         self.connect('cancel', self._cancel)
         self.connect('close', self._cancel)
@@ -741,7 +741,7 @@ class AddRGRecord(gtk.Assistant):
 # Create the introduction page.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RelKit reliability growth record assistant.  It will help you add a record for reliability growth tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RTK reliability growth record assistant.  It will help you add a record for reliability growth tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.append_page(fixed)
@@ -805,7 +805,7 @@ class AddRGRecord(gtk.Assistant):
     def _test_record_add(self, button):
         """
         Method to add a new test record for the selected test plan to the
-        open RelKit Program.
+        open RTK Program.
 
         Keyword Arguments:
         button -- the gtk.ToolButton that called this method.
@@ -882,7 +882,7 @@ class CreateDataSet:
     """
     This is the gtk.Assistant that walks the user through the process of
     creating a datset for survival analysis from the Field Incident records
-    in the open RelKit Program database.
+    in the open RTK Program database.
     """
 
     def __init__(self, button, app):
@@ -891,20 +891,20 @@ class CreateDataSet:
 
         Keyword Arguments:
         button -- the gtk.Button widget that called this method.
-        app    -- the RelKit application.
+        app    -- the RTK application.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Survival Data Set Creation Assistant"))
+        self.assistant.set_title(_("RTK Survival Data Set Creation Assistant"))
         self.assistant.connect('apply', self._create)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit survival data set assistant.  It will help you create a data set for survival (Weibull) analysis from the Program Incidents.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _("This is the RTK survival data set assistant.  It will help you create a data set for survival (Weibull) analysis from the Program Incidents.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -1102,7 +1102,7 @@ class CreateDataSet:
                                                     self._app.ProgCnx)
             dataset_id = dataset_id[0][0]
         else:
-            dialog = gtk.FileChooserDialog(_("RelKit: Save Data Set to File ..."),
+            dialog = gtk.FileChooserDialog(_("RTK: Save Data Set to File ..."),
                                            None,
                                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
