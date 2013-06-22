@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       component.py is part of The RelKit Project
+#       component.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -159,12 +159,12 @@ class Component():
 
 # Create generic toolbar action buttons.  These will call different methods or
 # functions depending on the COMPONENT Object notebook tab that is selected.
-        self.btnAddItem = gtk.ToolButton(stock_id=gtk.STOCK_ADD)
-        self.btnRemoveItem = gtk.ToolButton(stock_id=gtk.STOCK_REMOVE)
-        self.btnAnalyze = gtk.ToolButton(stock_id=gtk.STOCK_NO)
-        self.btnSaveResults = gtk.ToolButton(stock_id=gtk.STOCK_SAVE)
-        self.btnRollup = gtk.ToolButton(stock_id=gtk.STOCK_NO)
-        self.btnEdit = gtk.ToolButton(stock_id=gtk.STOCK_EDIT)
+        self.btnAddItem = gtk.ToolButton()
+        self.btnRemoveItem = gtk.ToolButton()
+        self.btnAnalyze = gtk.ToolButton()
+        self.btnSaveResults = gtk.ToolButton()
+        self.btnRollup = gtk.ToolButton()
+        self.btnEdit = gtk.ToolButton()
 
 # Create the General Data tab widgets for the COMPONENT object.
         self.txtName = _widg.make_entry()
@@ -203,6 +203,7 @@ class Component():
                                                  width=400)
 
 # Create the FMECA tab widgets for the COMPONENT object.
+        self.tvwFMECA = gtk.TreeView()
 
         self.vbxComponent = gtk.VBox()
         toolbar = self._toolbar_create()
@@ -1342,14 +1343,11 @@ class Component():
 
         return False
 
-    def _fmeca_worksheet_widgets_create(self):
+    def _fmeca_widgets_create(self):
         """ Method to create the FMECA widgets. """
 
         import pango
         from lxml import etree
-
-        # Create the gtk.TreeView for displaying the FMECA information.
-        self.tvwFMECA = gtk.TreeView()
 
         # Retrieve the column heading text from the format file.
         path = "/root/tree[@name='FMECA']/column/usertitle"
@@ -1475,7 +1473,7 @@ class Component():
 
         return False
 
-    def _fmeca_worksheet_tab_create(self):
+    def _fmeca_tab_create(self):
         """
         Method to create the FMECA gtk.Notebook tab and populate it with the
         appropriate widgets.
@@ -1500,71 +1498,48 @@ class Component():
         self.notebook.insert_page(frame,
                                   tab_label=label,
                                   position=-1)
+
         return False
 
-    def _fmeca_worksheet_tab_load(self):
+    def _fmeca_tab_load(self):
         """
         Loads the widgets with FMECA information for the COMPONENT Object.
         """
 
-        # Find the revision ID.
+# Find the revision ID.
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,
-                      self._app.ASSEMBLY.assembly_id)
+            _values = (self._app.REVISION.revision_id,
+                       self._app.ASSEMBLY.assembly_id)
         else:
-            values = (0, self._app.ASSEMBLY.assembly_id)
+            _values = (0, self._app.ASSEMBLY.assembly_id)
 
-        # Now load the FMECA gtk.TreeView.
-        # Load the FMECA failure mode gtk.TreeView.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT fld_mode_id, fld_mode_description, \
-                            fld_mission_phase, fld_local_effect, \
-                            fld_next_effect, fld_end_effect, \
-                            fld_detection_method, fld_other_indications, \
-                            fld_isolation_method, fld_design_provisions, \
-                            fld_operator_provisions, fld_severity_class, \
-                            fld_hazard_rate_source, fld_effect_probability, \
-                            fld_mode_ratio, fld_mode_failure_rate, \
-                            fld_mode_op_time, fld_mode_criticality, \
-                            fld_rpn_severity, fld_immediate_cause, \
-                            fld_root_cause, fld_rpn_occurence, \
-                            fld_detection_control, fld_prevention_control, \
-                            fld_rpn_detectability, fld_rpn, \
-                            fld_recommended_action, fld_action_taken, \
-                            fld_rpn_severity_new, fld_rpn_occurrence_new, \
-                            fld_rpn_detectability_new, fld_rpn_new, \
-                            fld_critical_item, fld_single_point, \
-                            fld_remarks \
-                     FROM tbl_fmeca \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d \
-                     ORDER BY fld_mode_id"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT fld_mode_id, fld_mode_description, \
-                            fld_mission_phase, fld_local_effect, \
-                            fld_next_effect, fld_end_effect, \
-                            fld_detection_method, fld_other_indications, \
-                            fld_isolation_method, fld_design_provisions, \
-                            fld_operator_provisions, fld_severity_class, \
-                            fld_hazard_rate_source, fld_effect_probability, \
-                            fld_mode_ratio, fld_mode_failure_rate, \
-                            fld_mode_op_time, fld_mode_criticality, \
-                            fld_rpn_severity, fld_immediate_cause, \
-                            fld_root_cause, fld_rpn_occurence, \
-                            fld_detection_control, fld_prevention_control, \
-                            fld_rpn_detectability, fld_rpn, \
-                            fld_recommended_action, fld_action_taken, \
-                            fld_rpn_severity_new, fld_rpn_occurrence_new, \
-                            fld_rpn_detectability_new, fld_rpn_new, \
-                            fld_critical_item, fld_single_point, \
-                            fld_remarks \
-                     FROM tbl_fmeca \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=? \
-                     ORDER BY fld_mode_id"
+# Now load the FMECA gtk.TreeView.
+# Load the FMECA failure mode gtk.TreeView.
+        query = "SELECT fld_mode_id, fld_mode_description, \
+                        fld_mission_phase, fld_local_effect, \
+                        fld_next_effect, fld_end_effect, \
+                        fld_detection_method, fld_other_indications, \
+                        fld_isolation_method, fld_design_provisions, \
+                        fld_operator_provisions, fld_severity_class, \
+                        fld_hazard_rate_source, fld_effect_probability, \
+                        fld_mode_ratio, fld_mode_failure_rate, \
+                        fld_mode_op_time, fld_mode_criticality, \
+                        fld_rpn_severity, fld_immediate_cause, \
+                        fld_root_cause, fld_rpn_occurence, \
+                        fld_detection_control, fld_prevention_control, \
+                        fld_rpn_detectability, fld_rpn, \
+                        fld_recommended_action, fld_action_taken, \
+                        fld_rpn_severity_new, fld_rpn_occurrence_new, \
+                        fld_rpn_detectability_new, fld_rpn_new, \
+                        fld_critical_item, fld_single_point, \
+                        fld_remarks \
+                 FROM tbl_fmeca \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d \
+                 ORDER BY fld_mode_id" % _values
 
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx)
 
         model = self.tvwFMECA.get_model()
@@ -1870,18 +1845,18 @@ class Component():
         if self._assessment_results_tab_create():
             self._app.debug_log.error("component.py: Failed to create Assessment Results tab.")
         self._assessment_results_tab_load()
-        if self._fmeca_worksheet_widgets_create():
+        if self._fmeca_widgets_create():
             self._app.debug_log.error("component.py: Failed to create FMECA tab widgets.")
-        if self._fmeca_worksheet_tab_create():
+        if self._fmeca_tab_create():
             self._app.debug_log.error("component.py: Failed to create FMECA tab.")
-        self._fmeca_worksheet_tab_load()
+        self._fmeca_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxComponent)
         self._app.winWorkBook.show_all()
 
-        _title_ = _("RelKit Work Bench: Analyzing %s") % \
+        _title_ = _(u"RTK Work Bench: Analyzing %s") % \
                   self.system_model.get_value(self.system_selected_row, 17)
         self._app.winWorkBook.set_title(_title_)
         self.notebook.set_current_page(0)
@@ -1903,20 +1878,14 @@ class Component():
         row = combo.get_active_iter()
         values = (int(model.get_value(row, 1)),)
 
-        # Retrieve part subcategory values.
-        if(_conf.COM_BACKEND == 'mysql'):
-            query = "SELECT fld_subcategory_id, fld_subcategory_noun \
-                     FROM tbl_subcategory \
-                     WHERE fld_category_id=%d \
-                     ORDER BY fld_subcategory_noun ASC"
-        elif(_conf.COM_BACKEND == 'sqlite3'):
-            query = "SELECT fld_subcategory_id, fld_subcategory_noun \
-                     FROM tbl_subcategory \
-                     WHERE fld_category_id=? \
-                     ORDER BY fld_subcategory_noun ASC"
+# Retrieve part subcategory values.
+        query = "SELECT fld_subcategory_id, fld_subcategory_noun \
+                 FROM tbl_subcategory \
+                 WHERE fld_category_id=%d \
+                 ORDER BY fld_subcategory_noun ASC" % values
 
         results = self._app.COMDB.execute_query(query,
-                                                values,
+                                                None,
                                                 self._app.ComCnx)
 
         model = gtk.TreeStore(gobject.TYPE_STRING,
@@ -2049,8 +2018,7 @@ class Component():
 
         _type_ = gobject.type_name(model.get_column_type(position))
 
-        # If this is the critical item or single point column,
-        # toggle the check box.
+# If this is the critical item or single point column, toggle the check box.
         if(position == 32 or position == 33):
             model[path][position] = not cell.get_active()
         elif(_type_ == 'gchararray'):
@@ -2087,82 +2055,54 @@ class Component():
                    gtk.TreeView.
         """
 
-        values = (model.get_value(row, 1), model.get_value(row, 2),
-                  model.get_value(row, 3), model.get_value(row, 4),
-                  model.get_value(row, 5), model.get_value(row, 6),
-                  model.get_value(row, 7), model.get_value(row, 8),
-                  model.get_value(row, 9), model.get_value(row, 10),
-                  model.get_value(row, 11), model.get_value(row, 12),
-                  model.get_value(row, 13), model.get_value(row, 14),
-                  model.get_value(row, 15), model.get_value(row, 16),
-                  model.get_value(row, 17), model.get_value(row, 18),
-                  model.get_value(row, 19), model.get_value(row, 20),
-                  model.get_value(row, 21), model.get_value(row, 22),
-                  model.get_value(row, 23), model.get_value(row, 24),
-                  model.get_value(row, 25), model.get_value(row, 26),
-                  model.get_value(row, 27), model.get_value(row, 28),
-                  model.get_value(row, 29), model.get_value(row, 30),
-                  model.get_value(row, 31), model.get_value(row, 32),
-                  model.get_value(row, 33), model.get_value(row, 34),
-                  model.get_value(row, 0))
+        _values = (model.get_value(row, 1), model.get_value(row, 2),
+                   model.get_value(row, 3), model.get_value(row, 4),
+                   model.get_value(row, 5), model.get_value(row, 6),
+                   model.get_value(row, 7), model.get_value(row, 8),
+                   model.get_value(row, 9), model.get_value(row, 10),
+                   model.get_value(row, 11), model.get_value(row, 12),
+                   model.get_value(row, 13), model.get_value(row, 14),
+                   model.get_value(row, 15), model.get_value(row, 16),
+                   model.get_value(row, 17), model.get_value(row, 18),
+                   model.get_value(row, 19), model.get_value(row, 20),
+                   model.get_value(row, 21), model.get_value(row, 22),
+                   model.get_value(row, 23), model.get_value(row, 24),
+                   model.get_value(row, 25), model.get_value(row, 26),
+                   model.get_value(row, 27), model.get_value(row, 28),
+                   model.get_value(row, 29), model.get_value(row, 30),
+                   model.get_value(row, 31), model.get_value(row, 32),
+                   model.get_value(row, 33), model.get_value(row, 34),
+                   model.get_value(row, 0))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_fmeca \
-                     SET fld_mode_description='%s', 'fld_mission_phase=%d, \
-                         fld_local_effect=%d, \
-                         fld_next_effect='%s', fld_end_effect='%s', \
-                         fld_detection_method='%s', \
-                         fld_other_indications='%s', \
-                         fld_isolation_method='%s', \
-                         fld_design_provisions='%s', \
-                         fld_operator_provisions='%s', \
-                         fld_severity_class=%d, \
-                         fld_hazard_rate_source='%s', \
-                         fld_effect_probability=%f, fld_mode_ratio=%f, \
-                         fld_mode_failure_rate=%f, fld_mode_op_time=%f, \
-                         fld_mode_criticality=%f, fld_rpn_severity=%d, \
-                         fld_immediate_cause='%s', fld_root_cause='%s', \
-                         fld_rpn_occurence=%d, \
-                         fld_detection_control='%s', \
-                         fld_prevention_control='%s', \
-                         fld_rpn_detectability=%d, fld_rpn=%d, \
-                         fld_recommended_action='%s', \
-                         fld_action_taken='%s', fld_rpn_severity_new=%d, \
-                         fld_rpn_occurrence_new=%d, \
-                         fld_rpn_detectability_new=%d, fld_rpn_new=%d, \
-                         fld_critical_item=%d, fld_single_point=%d, \
-                         fld_remarks='%s' \
-                     WHERE fld_mode_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_fmeca \
-                     SET fld_mode_description=?, fld_mission_phase=?, \
-                         fld_local_effect=?, \
-                         fld_next_effect=?, fld_end_effect=?, \
-                         fld_detection_method=?, \
-                         fld_other_indications=?, \
-                         fld_isolation_method=?, \
-                         fld_design_provisions=?, \
-                         fld_operator_provisions=?, \
-                         fld_severity_class=?, \
-                         fld_hazard_rate_source=?, \
-                         fld_effect_probability=?, fld_mode_ratio=?, \
-                         fld_mode_failure_rate=?, fld_mode_op_time=?, \
-                         fld_mode_criticality=?, fld_rpn_severity=?, \
-                         fld_immediate_cause=?, fld_root_cause=?, \
-                         fld_rpn_occurence=?, \
-                         fld_detection_control=?, \
-                         fld_prevention_control=?, \
-                         fld_rpn_detectability=?, fld_rpn=?, \
-                         fld_recommended_action=?, \
-                         fld_action_taken=?, fld_rpn_severity_new=?, \
-                         fld_rpn_occurrence_new=?, \
-                         fld_rpn_detectability_new=?, fld_rpn_new=?, \
-                         fld_critical_item=?, fld_single_point=?, \
-                         fld_remarks=? \
-                     WHERE fld_mode_id=?"
+        query = "UPDATE tbl_fmeca \
+                 SET fld_mode_description='%s', 'fld_mission_phase=%d, \
+                     fld_local_effect=%d, \
+                     fld_next_effect='%s', fld_end_effect='%s', \
+                     fld_detection_method='%s', \
+                     fld_other_indications='%s', \
+                     fld_isolation_method='%s', \
+                     fld_design_provisions='%s', \
+                     fld_operator_provisions='%s', \
+                     fld_severity_class=%d, \
+                     fld_hazard_rate_source='%s', \
+                     fld_effect_probability=%f, fld_mode_ratio=%f, \
+                     fld_mode_failure_rate=%f, fld_mode_op_time=%f, \
+                     fld_mode_criticality=%f, fld_rpn_severity=%d, \
+                     fld_immediate_cause='%s', fld_root_cause='%s', \
+                     fld_rpn_occurence=%d, \
+                     fld_detection_control='%s', \
+                     fld_prevention_control='%s', \
+                     fld_rpn_detectability=%d, fld_rpn=%d, \
+                     fld_recommended_action='%s', \
+                     fld_action_taken='%s', fld_rpn_severity_new=%d, \
+                     fld_rpn_occurrence_new=%d, \
+                     fld_rpn_detectability_new=%d, fld_rpn_new=%d, \
+                     fld_critical_item=%d, fld_single_point=%d, \
+                     fld_remarks='%s' \
+                 WHERE fld_mode_id=%d" % _values
 
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -2177,24 +2117,19 @@ class Component():
         Method to add a failure mode to the selected assembly.
         """
 
-        # Find the revision ID.
+# Find the revision ID.
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,
-                      self._app.ASSEMBLY.assembly_id)
+            _values = (self._app.REVISION.revision_id,
+                       self._app.ASSEMBLY.assembly_id)
         else:
-            values = (0, self._app.ASSEMBLY.assembly_id)
+            _values = (0, self._app.ASSEMBLY.assembly_id)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_fmeca \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (%d, %d)"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_fmeca \
-                     (fld_revision_id, fld_assembly_id) \
-                     VALUES (?, ?)"
+        query = "INSERT INTO tbl_fmeca \
+                 (fld_revision_id, fld_assembly_id) \
+                 VALUES (%d, %d)" % _values
 
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -2216,17 +2151,13 @@ class Component():
         selection = self.tvwFMECA.get_selection()
         (model, row) = selection.get_selected()
 
-        values = (model.get_value(row, 0),)
+        _values = (model.get_value(row, 0), )
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_fmeca \
-                     WHERE fld_mode_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_fmeca \
-                     WHERE fld_mode_id=?"
+        query = "DELETE FROM tbl_fmeca \
+                 WHERE fld_mode_id=%d" % _values
 
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 

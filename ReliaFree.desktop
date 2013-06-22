@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=RelKit
+Name=RTK
 Type=Application
-Comment=An open-source RAMS analyses solution.
-Exec=reliafree
-TryExec=reliafree
-Icon=RelKit
+Comment=A RAMS analyses solution.
+Exec=rtk
+TryExec=rtk
+Icon=RTK
 Categories=Math;Science;

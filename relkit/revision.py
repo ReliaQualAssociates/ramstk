@@ -139,8 +139,9 @@ class Revision:
 
         toolbar = gtk.Toolbar()
 
-        # Save requirement button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+# Save requirement button.
+        button = gtk.ToolButton()
+        button.set_label(_(u"Save Revision"))
         button.set_tooltip_text(_("Saves revision changes to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -148,8 +149,9 @@ class Revision:
         button.connect('clicked', self.revision_save)
         toolbar.insert(button, 0)
 
-        # Add requirement button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+# Add requirement button.
+        button = gtk.ToolButton()
+        button.set_label(_(u"Add Revision"))
         button.set_tooltip_text(_("Adds a new revision to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -157,8 +159,9 @@ class Revision:
         button.connect('clicked', self.revision_add)
         toolbar.insert(button, 1)
 
-        # Delete requirement button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+# Delete requirement button
+        button = gtk.ToolButton()
+        button.set_label(_(u"Delete Revision"))
         button.set_tooltip_text(_("Removes the currently selected revision from the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -166,8 +169,9 @@ class Revision:
         button.connect('clicked', self.revision_delete)
         toolbar.insert(button, 2)
 
-        # Calculate requirement button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
+# Calculate requirement button
+        button = gtk.ToolButton()
+        button.set_label(_(u"Calculate Revision"))
         button.set_tooltip_text(_("Calculate the currently selected revision."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')

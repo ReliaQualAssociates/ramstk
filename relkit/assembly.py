@@ -178,7 +178,12 @@ class Assembly:
         self._risk_col_order = []
         self._sia_col_order = []
 
+# Define dictionaries.
+        self._mission = {}
         self._hrmodel = {}
+        self._mechanisms = {}
+        self._fmeca_controls = {}
+        self._fmeca_actions = {}
 
 # Create the Notebook for the ASSEMBLY object.
         self.notebook = gtk.Notebook()
@@ -197,6 +202,7 @@ class Assembly:
 # methods or functions depending on the ASSEMBLY Object notebook tab
 # that is selected.
         self.btnAddItem = gtk.ToolButton()
+        self.btnFMECAAdd = gtk.MenuToolButton(None, label = "")
         self.btnRemoveItem = gtk.ToolButton()
         self.btnAnalyze = gtk.ToolButton()
         self.btnSaveResults = gtk.ToolButton()
@@ -340,7 +346,50 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to create Assessment Results tab.")
 
 # Create the FMEA/FMECA tab widgets for the ASSEMBLY object.
-        # TODO: Implement FMEA/FMECA for ASSEMBLY.
+        bg_color = _conf.RELIAFREE_COLORS[6]
+        fg_color = _conf.RELIAFREE_COLORS[7]
+        (self.tvwFMECA,
+         self._FMECA_col_order) = _widg.make_treeview('FMECA', 9,
+                                                      self._app,
+                                                      None,
+                                                      bg_color,
+                                                      fg_color)
+
+        self.fraFMECADetails = _widg.make_frame(_label_=_(u"Failure Mechanism Details"))
+
+        # Create the widgets to display the failure mechanism/cause details.
+        self.fxdMechanism = gtk.Fixed()
+        self.cmbOccurenceI = _widg.make_combo()
+        self.cmbDetectionI = _widg.make_combo()
+        self.cmbOccurrenceN = _widg.make_combo()
+        self.cmbDetectionN = _widg.make_combo()
+        self.txtMechanismID = _widg.make_entry(_width_=50)
+        self.txtMechanismDescription = _widg.make_entry()
+        self.txtRPNI = _widg.make_entry(_width_=50)
+        self.txtRPNN = _widg.make_entry(_width_=50)
+
+        # Create the widgets to display the current controls details.
+        self.fxdControl = gtk.Fixed()
+        self.cmbControlType = _widg.make_combo()
+        self.txtControlID = _widg.make_entry(_width_=50)
+        self.txtControlDescription = _widg.make_entry()
+
+        # Create the widgets to display the recommended action details.
+        self.fxdAction = gtk.Fixed()
+        self.cmbActionCategory = _widg.make_combo()
+        self.cmbActionStatus = _widg.make_combo()
+        self.cmbActionResponsible = _widg.make_combo()
+        self.cmbActionApproved = _widg.make_combo()
+        self.cmbActionClosed = _widg.make_combo()
+        self.txtActionID = _widg.make_entry(_width_=50)
+        self.txtActionDueDate = _widg.make_entry()
+        self.txtActionApproveDate = _widg.make_entry()
+        self.txtActionCloseDate = _widg.make_entry()
+        self.txtActionRecommended = _widg.make_text_view(height=400)
+        self.txtActionTaken = _widg.make_text_view(height=400)
+
+        if self._fmeca_tab_create():
+            self._app.debug_log.error("assembly.py: Failed to create FMECA tab.")
 
 # Create the Maintenance Planning tab widgets for the ASSEMBLY object.
         # TODO: Implement Maintenance Planning for ASSEMBLY.
@@ -358,6 +407,8 @@ class Assembly:
 
         toolbar = gtk.Toolbar()
 
+        _pos = 0
+
 # Add sibling assembly button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RTK Program Database."))
@@ -365,7 +416,8 @@ class Assembly:
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.assembly_add, 0)
-        toolbar.insert(button, 0)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Add child assembly button.
         button = gtk.ToolButton()
@@ -374,7 +426,8 @@ class Assembly:
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.assembly_add, 1)
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Delete assembly button
         button = gtk.ToolButton()
@@ -383,9 +436,11 @@ class Assembly:
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.assembly_delete)
-        toolbar.insert(button, 2)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), 3)
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
 
 # Add item button.  Depending on the notebook page selected will determine
 # what type of item is added.
@@ -394,7 +449,36 @@ class Assembly:
         self.btnAddItem.set_icon_widget(image)
         self.btnAddItem.set_name('Add')
         self.btnAddItem.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnAddItem, 4)
+        toolbar.insert(self.btnAddItem, _pos)
+        _pos += 1
+
+        self.btnFMECAAdd.set_tooltip_text(_(u"Perform various calculations on the system."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnFMECAAdd.set_icon_widget(image)
+        self.btnFMECAAdd.set_label(_(u"Add"))
+        menu = gtk.Menu()
+        menu_item = gtk.MenuItem(label=_(u"Mode"))
+        menu_item.set_tooltip_text(_("Add a new failure mode to the currently selected assembly."))
+        menu_item.connect('activate', self._toolbutton_pressed)
+        menu.add(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"Mechanism"))
+        menu_item.set_tooltip_text(_(u"Add a new failure mechanism to the currently selected failure mode."))
+        menu_item.connect('activate', self._toolbutton_pressed)
+        menu.add(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"Control"))
+        menu_item.set_tooltip_text(_(u"Add a new control to the currently selected failure mechanism."))
+        menu_item.connect('activate', self._toolbutton_pressed)
+        menu.add(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"Action"))
+        menu_item.set_tooltip_text(_("Add a new acion to the currently selected failure mechanism."))
+        menu_item.connect('activate', self._toolbutton_pressed)
+        menu.add(menu_item)
+        self.btnFMECAAdd.set_menu(menu)
+        menu.show_all()
+        self.btnFMECAAdd.show()
+        toolbar.insert(self.btnFMECAAdd, _pos)
+        _pos += 1
 
 # Remove item button.  Depending on the notebook page selected will determine
 # what type of item is removed.
@@ -403,7 +487,8 @@ class Assembly:
         self.btnRemoveItem.set_icon_widget(image)
         self.btnRemoveItem.set_name('Remove')
         self.btnRemoveItem.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnRemoveItem, 5)
+        toolbar.insert(self.btnRemoveItem, _pos)
+        _pos += 1
 
 # Perform analysis button.  Depending on the notebook page selected will
 # determine which analysis is executed.
@@ -412,7 +497,8 @@ class Assembly:
         self.btnAnalyze.set_icon_widget(image)
         self.btnAnalyze.set_name('Analyze')
         self.btnAnalyze.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnAnalyze, 6)
+        toolbar.insert(self.btnAnalyze, _pos)
+        _pos += 1
 
 # Save results button.  Depending on the notebook page selected will determine
 # which results are saved.
@@ -421,21 +507,24 @@ class Assembly:
         self.btnSaveResults.set_icon_widget(image)
         self.btnSaveResults.set_name('Save')
         self.btnSaveResults.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnSaveResults, 7)
+        toolbar.insert(self.btnSaveResults, _pos)
+        _pos += 1
 
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/rollup.png')
         self.btnRollup.set_icon_widget(image)
         self.btnRollup.set_name('Rollup')
         self.btnRollup.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnRollup, 8)
+        toolbar.insert(self.btnRollup, _pos)
+        _pos += 1
 
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/edit.png')
         self.btnEdit.set_icon_widget(image)
         self.btnEdit.set_name('Edit')
         self.btnEdit.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnEdit, 9)
+        toolbar.insert(self.btnEdit, _pos)
+        _pos += 1
 
 # Create an import button.
         button = gtk.ToolButton()
@@ -444,8 +533,9 @@ class Assembly:
         button.set_icon_widget(image)
         button.set_name('Import')
         button.connect('clicked', ImportHardware, self._app)
-        button.set_tooltip_text(_("Launches the hardware import assistant."))
-        toolbar.insert(button, 10)
+        button.set_tooltip_text(_(u"Launches the hardware import assistant."))
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Create an export button.
         button = gtk.ToolButton()
@@ -454,13 +544,14 @@ class Assembly:
         button.set_icon_widget(image)
         button.set_name('Export')
         button.connect('clicked', ExportHardware, self._app)
-        button.set_tooltip_text(_("Launches the hardware export assistant."))
-        toolbar.insert(button, 11)
+        button.set_tooltip_text(_(u"Launches the hardware export assistant."))
+        toolbar.insert(button, _pos)
 
         toolbar.show()
 
 # Hide the toolbar buttons associated with specific analyses.
         self.btnAddItem.hide()
+        self.btnFMECAAdd.hide()
         self.btnRemoveItem.hide()
         self.btnAnalyze.hide()
         self.btnSaveResults.hide()
@@ -1130,7 +1221,7 @@ class Assembly:
         bg_color = _conf.RELIAFREE_COLORS[6]
         fg_color = _conf.RELIAFREE_COLORS[7]
 
-        # Create the model and treeview.
+# Create the model and treeview.
         model = gtk.TreeStore(*gobject_types)
         self.tvwRisk.set_model(model)
 
@@ -1191,8 +1282,8 @@ class Assembly:
 
             self.tvwRisk.append_column(column)
 
-        # Add eight more invisible columns at the end to hold the integer
-        # values of the risk categories.
+# Add eight more invisible columns at the end to hold the integer values of
+# the risk categories.
         for i in range(7):
             cell = gtk.CellRendererText()
             column = gtk.TreeViewColumn()
@@ -1201,7 +1292,7 @@ class Assembly:
             column.set_attributes(cell, text=cols + i)
             self.tvwRisk.append_column(column)
 
-        self.tvwRisk.set_tooltip_text(_("Displays the risk analysis for the selected Assembly."))
+        self.tvwRisk.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
         self.tvwRisk.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         return False
@@ -1221,12 +1312,12 @@ class Assembly:
         frame.add(scrollwindow)
 
         label = gtk.Label()
-        _heading = _("Risk\nAnalysis")
+        _heading = _(u"Risk\nAnalysis")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays the risk analysis for the selected Assembly."))
+        label.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
 
         self.notebook.insert_page(frame,
                                   tab_label=label,
@@ -1251,7 +1342,7 @@ class Assembly:
             values = (0, path_)
 
         if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t1.fld_risk_id, t2.fld_description, \
+            query = "SELECT t1.fld_risk_id, t2.fld_name, \
                             t1.fld_change_desc_1, t1.fld_change_category_1, \
                             t1.fld_change_effort_1, t1.fld_change_cost_1, \
                             t1.fld_change_desc_2, t1.fld_change_category_2, \
@@ -1288,7 +1379,7 @@ class Assembly:
                      WHERE t1.fld_revision_id=%d \
                      AND t2.fld_parent_assembly='%s'"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t1.fld_risk_id, t2.fld_description, \
+            query = "SELECT t1.fld_risk_id, t2.fld_name, \
                             t1.fld_change_desc_1, t1.fld_change_category_1, \
                             t1.fld_change_effort_1, t1.fld_change_cost_1, \
                             t1.fld_change_desc_2, t1.fld_change_category_2, \
@@ -1497,7 +1588,7 @@ class Assembly:
             values = (0, path_)
 
         if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t1.fld_sia_id, t2.fld_description, \
+            query = "SELECT t1.fld_sia_id, t2.fld_name, \
                             t2.fld_failure_rate_predicted, \
                             t1.fld_change_desc_1, t1.fld_change_factor_1, \
                             t1.fld_change_desc_2, t1.fld_change_factor_2, \
@@ -1523,7 +1614,7 @@ class Assembly:
                      WHERE t1.fld_revision_id=%d \
                      AND t2.fld_parent_assembly='%s'"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t1.fld_sia_id, t2.fld_description, \
+            query = "SELECT t1.fld_sia_id, t2.fld_name, \
                             t2.fld_failure_rate_predicted, \
                             t1.fld_change_desc_1, t1.fld_change_factor_1, \
                             t1.fld_change_desc_2, t1.fld_change_factor_2, \
@@ -1851,31 +1942,31 @@ class Assembly:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdRelInputQuad1)
 
-        frame = _widg.make_frame(_label_=_("Reliability Inputs"))
+        frame = _widg.make_frame(_label_=_(u"Reliability Inputs"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         hbox.pack_start(frame)
 
-        # Populate quadrant 2 (upper right).
+# Populate quadrant 2 (upper right).
         vbox = gtk.VBox()
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdRelInputQuad2)
 
-        frame = _widg.make_frame(_label_=_("Maintainability Inputs"))
+        frame = _widg.make_frame(_label_=_(u"Maintainability Inputs"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         vbox.pack_start(frame)
 
-        # Populate quadrant 4 (lower right)
+# Populate quadrant 4 (lower right)
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdRelInputQuad4)
 
-        frame = _widg.make_frame(_label_=_("Miscellaneous Inputs"))
+        frame = _widg.make_frame(_label_=_(u"Miscellaneous Inputs"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -1884,12 +1975,12 @@ class Assembly:
         hbox.pack_start(vbox)
 
         label = gtk.Label()
-        _heading = _("Assessment\nInputs")
+        _heading = _(u"Assessment\nInputs")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Allows entering reliability, maintainability, and other assessment inputs for the selected assembly."))
+        label.set_tooltip_text(_(u"Allows entering reliability, maintainability, and other assessment inputs for the selected assembly."))
 
         self.notebook.insert_page(hbox,
                                   tab_label=label,
@@ -1944,17 +2035,17 @@ class Assembly:
     def _assessment_results_widgets_create(self):
         """ Method to create the Assessment Results widgets. """
 
-        # Create the quadrant 1 (upper left) widgets.
-        self.txtActiveHt.set_tooltip_text(_("Displays the active failure intensity for the selected assembly."))
-        self.txtDormantHt.set_tooltip_text(_("Displays the dormant failure intensity for the selected assembly."))
-        self.txtSoftwareHt2.set_tooltip_text(_("Displays the software failure intensity for the selected assembly."))
-        self.txtPredictedHt.set_tooltip_text(_("Displays the predicted failure intensity for the selected assembly.  This is the sum of the active, dormant, and software failure intensities."))
-        self.txtMissionHt.set_tooltip_text(_("Displays the mission failure intensity for the selected assembly."))
-        self.txtHtPerCent.set_tooltip_text(_("Displays the percent of the total system failure intensity attributable to the selected assembly."))
-        self.txtMTBF.set_tooltip_text(_("Displays the limiting mean time between failure (MTBF) for the selected assembly."))
-        self.txtMissionMTBF.set_tooltip_text(_("Displays the mission mean time between failure (MTBF) for the selected assembly."))
-        self.txtReliability.set_tooltip_text(_("Displays the limiting reliability for the selected assembly."))
-        self.txtMissionRt.set_tooltip_text(_("Displays the mission reliability for the selected assembly."))
+# Create the quadrant 1 (upper left) widgets.
+        self.txtActiveHt.set_tooltip_text(_(u"Displays the active failure intensity for the selected assembly."))
+        self.txtDormantHt.set_tooltip_text(_(u"Displays the dormant failure intensity for the selected assembly."))
+        self.txtSoftwareHt2.set_tooltip_text(_(u"Displays the software failure intensity for the selected assembly."))
+        self.txtPredictedHt.set_tooltip_text(_(u"Displays the predicted failure intensity for the selected assembly.  This is the sum of the active, dormant, and software failure intensities."))
+        self.txtMissionHt.set_tooltip_text(_(u"Displays the mission failure intensity for the selected assembly."))
+        self.txtHtPerCent.set_tooltip_text(_(u"Displays the percent of the total system failure intensity attributable to the selected assembly."))
+        self.txtMTBF.set_tooltip_text(_(u"Displays the limiting mean time between failure (MTBF) for the selected assembly."))
+        self.txtMissionMTBF.set_tooltip_text(_(u"Displays the mission mean time between failure (MTBF) for the selected assembly."))
+        self.txtReliability.set_tooltip_text(_(u"Displays the limiting reliability for the selected assembly."))
+        self.txtMissionRt.set_tooltip_text(_(u"Displays the mission reliability for the selected assembly."))
 
         y_pos = 5
         for i in range(len(self._ar_tab_labels[0])):
@@ -2141,6 +2232,280 @@ class Assembly:
         self.txtAssemblyCrit.set_text(str(sys_tree_model.get_value(sys_tree_row, 5)))
         self.txtPartCount.set_text(str(fmt.format(sys_tree_model.get_value(sys_tree_row, 82))))
         self.txtTotalPwr.set_text(str(fmt.format(sys_tree_model.get_value(sys_tree_row, 83))))
+
+        return False
+
+    def _fmeca_tab_create(self):
+        """
+        Method to create the FMECA gtk.Notebook tab and populate it with the
+        appropriate widgets.
+        """
+
+        self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode, effects, and criticality analysis (FMECA) for the selected assembly."))
+        self.tvwFMECA.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+# Load the severity clssification gtk.CellRendererCombo.
+        column = self.tvwFMECA.get_column(self._FMECA_col_order[11])
+        cell = column.get_cell_renderers()
+        cellmodel = cell[0].get_property('model')
+        cellmodel.clear()
+        query = "SELECT fld_criticality_id, fld_criticality_name, \
+                        fld_criticality_cat \
+                 FROM tbl_criticality"
+        _results = self._app.COMDB.execute_query(query,
+                                              None,
+                                              self._app.ComCnx)
+
+        if(_results != ''):
+            _phases = len(_results)
+            cellmodel.append([""])
+            for i in range(_phases):
+                cellmodel.append([_results[i][2] + " - " + _results[i][1]])
+
+# Load the qualitative failure probability gtk.CellRendererCombo.
+        #column = self.tvwFMECA.get_column(self._FMECA_col_order[13])
+        #cell = column.get_cell_renderers()
+        #cellmodel = cell[0].get_property('model')
+        #cellmodel.clear()
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(self.tvwFMECA)
+
+        frame = _widg.make_frame(_label_=_(u"Failure Mode, Effects, and Criticality Analysis"))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        hpane = gtk.HPaned()
+        hpane.pack1(frame)
+
+# Create the detailed information gtk.Fixed widget for failure mechanisms.
+        y_pos = 5
+
+
+        label = _widg.make_label(_(u"Mechanism ID:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.txtMechanismID, 155, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Mechanism:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.txtMechanismDescription, 155, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Occurence:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.cmbOccurenceI, 155, y_pos)
+        y_pos += 35
+
+        label = _widg.make_label(_(u"Detection:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.cmbDetectionI, 155, y_pos)
+        label = _widg.make_label(_(u"RPN:"), 50, 25)
+        self.fxdMechanism.put(label, 360, y_pos)
+        self.fxdMechanism.put(self.txtRPNI, 415, y_pos)
+        y_pos += 35
+
+        label = _widg.make_label(_(u"New Occurence:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.cmbOccurrenceN, 155, y_pos)
+        y_pos += 35
+
+        label = _widg.make_label(_(u"New Detection:"), 150, 25)
+        self.fxdMechanism.put(label, 5, y_pos)
+        self.fxdMechanism.put(self.cmbDetectionN, 155, y_pos)
+        label = _widg.make_label(_(u"New RPN:"), 50, 25)
+        self.fxdMechanism.put(label, 360, y_pos)
+        self.fxdMechanism.put(self.txtRPNN, 415, y_pos)
+
+# Create the detailed information gtk.Fixed widget for current controls.
+        y_pos = 5
+
+        self.fxdControl.put(self.txtControlID, 5, y_pos)
+        y_pos += 30
+
+        self.fxdControl.put(self.txtControlDescription, 5, y_pos)
+        y_pos += 30
+
+        self.fxdControl.put(self.cmbControlType, 5, y_pos)
+
+# Create the detailed information gtk.Fixed widget for recommended actions.
+        y_pos = 5
+
+        self.fxdAction.put(self.txtActionID, 5, y_pos)
+        y_pos += 30
+
+        self.fxdAction.put(self.txtActionRecommended, 5, y_pos)
+        y_pos += 405
+
+        self.fxdAction.put(self.cmbActionCategory, 5, y_pos)
+        y_pos += 35
+
+        self.fxdAction.put(self.cmbActionResponsible, 5, y_pos)
+        self.fxdAction.put(self.txtActionDueDate, 210, y_pos)
+        self.fxdAction.put(self.cmbActionStatus, 415, y_pos)
+        y_pos += 35
+
+        self.fxdAction.put(self.txtActionTaken, 5, y_pos)
+        y_pos += 405
+
+        self.fxdAction.put(self.cmbActionApproved, 5, y_pos)
+        self.fxdAction.put(self.txtActionApproveDate, 210, y_pos)
+        y_pos += 35
+
+        self.fxdAction.put(self.cmbActionClosed, 5, y_pos)
+        self.fxdAction.put(self.txtActionCloseDate, 210, y_pos)
+
+        self.fraFMECADetails.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.fraFMECADetails.add(self.fxdMechanism)
+
+        hpane.pack2(self.fraFMECADetails, resize=True, shrink=False)
+
+        label = gtk.Label()
+        _heading = _(u"FMEA/FMECA\nWorksheet")
+        label.set_markup("<span weight='bold'>" + _heading + "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_(u"Failure mode, effects, and criticality analysis (FMECA) for the selected assembly."))
+
+        self.notebook.insert_page(hpane,
+                                  tab_label=label,
+                                  position=-1)
+
+        return False
+
+    def _fmeca_tab_load(self):
+        """ Method to load the FMECA tab information. """
+
+        model = self.tvwFMECA.get_model()
+        model.clear()
+
+# Load the mission phase gtk.CellRendererCombo.
+        column = self.tvwFMECA.get_column(self._FMECA_col_order[2])
+        cell = column.get_cell_renderers()
+        cellmodel = cell[0].get_property('model')
+        cellmodel.clear()
+
+        query = "SELECT fld_phase_id, fld_phase_name, fld_phase_time \
+                 FROM tbl_mission_phase"
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+
+        if(_results != ''):
+            _phases = len(_results)
+            cellmodel.append([""])
+            for i in range(_phases):
+                self._mission[_results[i][0]] = _results[i][2]
+                cellmodel.append([_results[i][1]])
+
+# Load the failure modes to the gtk.TreeView.
+        query = "SELECT * FROM tbl_fmeca \
+                 WHERE fld_assembly_id=%d" % self.assembly_id
+
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+        if(not results or results == ''):
+            return True
+
+        _n_modes = len(results)
+        for i in range(_n_modes):
+            _data = [results[i][2], _util.none_to_string(results[i][3]),
+                     _util.none_to_string(results[i][4]),
+                     _util.none_to_string(results[i][5]),
+                     _util.none_to_string(results[i][6]),
+                     _util.none_to_string(results[i][7]),
+                     _util.none_to_string(results[i][8]),
+                     _util.none_to_string(results[i][9]),
+                     _util.none_to_string(results[i][10]),
+                     _util.none_to_string(results[i][11]),
+                     _util.none_to_string(results[i][12]),
+                     _util.none_to_string(results[i][13]),
+                     _util.none_to_string(results[i][14]),
+                     _util.none_to_string(results[i][15]), results[i][16],
+                     results[i][17], results[i][18], results[i][19],
+                     results[i][20], results[i][21], results[i][22],
+                     results[i][23], _util.none_to_string(results[i][24])]
+
+            try:
+                model.append(None, _data)
+            except TypeError:
+                pass
+        return False
+# Load the failure mechanisms to the gtk.TreeView.
+        query = "SELECT * FROM tbl_fmeca_mechanisms \
+                 WHERE fld_assembly_id=%d" % self.assembly_id
+
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+
+        if(not _results or _results == ''):
+            return True
+
+        _n_mechanisms = len(_results)
+        for i in range(_n_mechanisms):
+            _piter = model.get_iter_from_string(_results[i][10])
+            self._mechanisms[_results[i][2]] = [_results[i][3:]]
+            _data = [_results[i][2], _util.none_to_string(_results[i][3]),
+                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, ""]
+
+            try:
+                model.insert(_piter, i, _data)
+            except TypeError:
+                pass
+
+# Load the controls to the gtk.TreeView.
+        query = "SELECT * FROM tbl_fmeca_controls \
+                 WHERE fld_assembly_id=%d" % self.assembly_id
+
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+
+        if(not _results or _results == ''):
+            return True
+
+        _n_controls = len(_results)
+        for i in range(_n_controls):
+            _piter = model.get_iter_from_string(_results[i][6])
+            self._fmeca_controls[_results[i][3]] = [_results[i][4:]]
+            _data = [_results[i][3], _util.none_to_string(_results[i][4]),
+                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, ""]
+
+            try:
+                model.insert(_piter, i, _data)
+            except TypeError:
+                pass
+
+# Load the actions to the gtk.TreeView.
+        query = "SELECT * FROM tbl_fmeca_actions \
+                 WHERE fld_assembly_id=%d" % self.assembly_id
+
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+
+        if(not _results or _results == ''):
+            return True
+
+        _n_actions = len(_results)
+        for i in range(_n_actions):
+            _piter = model.get_iter_from_string(_results[i][14])
+            self._fmeca_actions[_results[i][3]] = [_results[i][4:]]
+            _data = [_results[i][3], _util.none_to_string(_results[i][4]),
+                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, ""]
+
+            try:
+                model.insert(_piter, i, _data)
+            except TypeError:
+                pass
 
         return False
 
@@ -2454,6 +2819,7 @@ class Assembly:
         self._similar_item_tab_load()
         self._assessment_inputs_tab_load()
         self.assessment_results_tab_load()
+        self._fmeca_tab_load()
         #self._maintenance_planning_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
@@ -2461,7 +2827,7 @@ class Assembly:
         self._app.winWorkBook.add(self.vbxAssembly)
         self._app.winWorkBook.show_all()
 
-        _title_ = _("RTK Work Bench: Analyzing %s") % \
+        _title_ = _(u"RTK Work Bench: Analyzing %s") % \
                   self.system_model.get_value(self.system_selected_row, 17)
         self._app.winWorkBook.set_title(_title_)
 
@@ -3996,6 +4362,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
         if(page_num == 1):                  # Allocation tab
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4005,6 +4372,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
         elif(page_num == 2):                # Risk analysis tab
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4016,6 +4384,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnEdit.set_tooltip_text(_("Create/edit current risk analysis functions."))
         elif(page_num == 3):                # Similar items tab
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4027,6 +4396,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnEdit.set_tooltip_text(_("Create/edit current similar item analysis functions."))
         elif(page_num == 4):                # Assessment inputs tab
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
             self.btnSaveResults.hide()
@@ -4035,13 +4405,15 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
         elif(page_num == 5):                # Assessment results tab
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.hide()
             self.btnSaveResults.hide()
             self.btnRollup.hide()
             self.btnEdit.hide()
         elif(page_num == 6):                # FMEA/FMECA tab
-            self.btnAddItem.show()
+            self.btnAddItem.hide()
+            self.btnFMECAAdd.show()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4054,6 +4426,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnRollup.set_tooltip_text(_("Summarizes the lower level FMEA/FMECA results."))
         elif(page_num == 7):                # Maintenance planning tab
             self.btnAddItem.show()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4065,6 +4438,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             #self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
         elif(page_num == 8):                # RG planning tab
             self.btnAddItem.show()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4076,6 +4450,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             #self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
         elif(page_num == 9):                # RG tracking tab
             self.btnAddItem.show()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
@@ -4086,6 +4461,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             #self.btnSaveResults.set_tooltip_text(_("Saves the allocation results for the selected assembly."))
         else:
             self.btnAddItem.hide()
+            self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.hide()
             self.btnSaveResults.hide()
@@ -4138,8 +4514,35 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             if(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)
         elif(_page_ == 6):                  # FMEA/FMECA tab.
-            if(_button_ == 'Add'):
-                print "Add mode/mechanism/cause"
+            if(widget.get_label() == 'Mode'):
+                query = "SELECT seq FROM sqlite_sequence WHERE name=tbl_fmeca"
+                _last_id = self._app.DB.execute_query(query,
+                                                      None,
+                                                      self._app.ProgCnx)
+
+                if(not _last_id):
+                    _last_id = 0
+                else:
+                    _last_id += 1
+
+                query = "INSERT INTO tbl_fmeca \
+                         (fld_assembly_id, fld_mode_id) \
+                         VALUES (%d, %d)" % (self.assembly_id, _last_id)
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           True)
+                self._fmeca_tab_load()
+
+            elif(widget.get_label() == 'Mechanism'):
+                print "Add a fuckin' mechanism"
+            elif(widget.get_label() == 'Control'):
+                print "Add a control"
+            elif(widget.get_label() == 'Action'):
+                print "Add an action, motha fucka"
+
+            elif(_button_ == 'Remove'):
+                print "Remove mode/mechanism/cause"
             elif(_button_ == 'Analyze'):
                 print "Criticality calculations"
             elif(_button_ == 'Save'):

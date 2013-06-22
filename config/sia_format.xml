@@ -1,7 +1,7 @@
 <!--
 -*- coding: utf-8 -*-
 
-      sia_format.xml is part of The RelKit Project
+      sia_format.xml is part of the RTK Project
 
       Copyright (C) 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
@@ -40,8 +40,8 @@ All rights reserved. -->
             <defaulttitle>Change Description 1</defaulttitle>
             <usertitle>Change Description 1</usertitle>
             <datatype>gchararray</datatype>
-            <widget>text</widget>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -148,7 +148,7 @@ All rights reserved. -->
             <defaulttitle>Change Description 7</defaulttitle>
             <usertitle>Change Description 7</usertitle>
             <datatype>gchararray</datatype>
-            <position>15</position></position>
+            <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>

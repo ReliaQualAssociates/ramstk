@@ -7,7 +7,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       requirement.py is part of The RelKit Project
+#       requirement.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -32,7 +32,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
@@ -119,9 +119,9 @@ class Requirement:
 # Create the V & V tab widgets for the REQUIREMENT object.
         self.tvwValidation = gtk.TreeView()
         self.scwValidation = gtk.ScrolledWindow()
-        self.btnSaveVandVTask = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        self.btnAddVandVTask = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
-        self.btnAssignVandVTask = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
+        self.btnSaveVandVTask = gtk.ToolButton()
+        self.btnAddVandVTask = gtk.ToolButton()
+        self.btnAssignVandVTask = gtk.ToolButton()
         self.cmbVandVTasks = _widg.make_combo(simple=False)
         if self._vandv_widgets_create():
             self._app.debug_log.error("requirement.py: Failed to create V & V widgets.")
@@ -140,7 +140,7 @@ class Requirement:
         toolbar = gtk.Toolbar()
 
         # Save requirement button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Saves requirement changes to the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -149,7 +149,7 @@ class Requirement:
         toolbar.insert(button, 0)
 
         # Add sibling requirement button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new requirement at the same indenture level as the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
@@ -158,7 +158,7 @@ class Requirement:
         toolbar.insert(button, 1)
 
         # Add child (derived) requirement button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new requirement one indenture level subordinate to the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
@@ -167,7 +167,7 @@ class Requirement:
         toolbar.insert(button, 2)
 
         # Delete requirement button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Removes the currently selected requirement from the RelKit Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -210,7 +210,7 @@ class Requirement:
 
         toolbar.show()
 
-        # Hide the toolbar items associated with the V&V tab.
+# Hide the toolbar items associated with the V&V tab.
         self.btnAddVandVTask.hide()
         self.btnAssignVandVTask.hide()
         self.btnSaveVandVTask.hide()
@@ -221,7 +221,7 @@ class Requirement:
     def _general_data_widgets_create(self):
         """ Method to create the General Data widgets. """
 
-        # Create quadrant 1 (upper left) widgets.
+# Create quadrant 1 (upper left) widgets.
         self.txtCode.set_tooltip_text(_("Displays the unique code for the selected requirement."))
         self.txtCode.connect('focus-out-event',
                              self._callback_entry, 'text', 5)
@@ -342,7 +342,7 @@ class Requirement:
 
         fixed.show_all()
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
                          _("General\nData") +
@@ -450,7 +450,7 @@ class Requirement:
         column.set_attributes(cell, text=4)
         self.tvwValidation.append_column(column)
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
                          _("V &amp; V Tasks") +

@@ -168,7 +168,7 @@ class Incident:
         toolbar = gtk.Toolbar()
 
 # Add item button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
@@ -178,7 +178,7 @@ class Incident:
         toolbar.insert(button, 0)
 
 # Remove item button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -188,7 +188,7 @@ class Incident:
         toolbar.insert(button, 1)
 
 # Save results button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)

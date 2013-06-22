@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      alt_format.xml is part of The RelKit Project
+      alt_format.xml is part of the RTK Project
 
       Copyright 2011-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
 
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -19,6 +19,7 @@ experience. -->
             <usertitle>Mode ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -27,6 +28,7 @@ experience. -->
             <usertitle>Mechanism ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -35,6 +37,7 @@ experience. -->
             <usertitle>Mechanism Description</usertitle>
             <datatype>gchararray</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -43,6 +46,7 @@ experience. -->
             <usertitle>Damaging Conditions</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -51,6 +55,7 @@ experience. -->
             <usertitle>Damage Model</usertitle>
             <datatype>gchararray</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -59,6 +64,7 @@ experience. -->
             <usertitle>Primary Measureable Parameter</usertitle>
             <datatype>gchararray</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -67,6 +73,7 @@ experience. -->
             <usertitle>Secondary Measureable Parameter</usertitle>
             <datatype>gchararray</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -75,6 +82,7 @@ experience. -->
             <usertitle>Tertiary Measureable Parameter</usertitle>
             <datatype>gchararray</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -83,6 +91,7 @@ experience. -->
             <usertitle>Mean Load History</usertitle>
             <datatype>gchararray</datatype>
             <position>8</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -91,6 +100,7 @@ experience. -->
             <usertitle>Required Boundary Conditions</usertitle>
             <datatype>gchararray</datatype>
             <position>9</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>

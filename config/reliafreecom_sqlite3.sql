@@ -85,6 +85,21 @@ CREATE TABLE "tbl_cost_type" (
 INSERT INTO "tbl_cost_type" VALUES (1,'Calculated');
 INSERT INTO "tbl_cost_type" VALUES (2,'Specified');
 
+--
+-- Create tables for storing failure probability and failure criticality
+-- category information.
+--
+DROP TABLE IF EXISTS "tbl_failure_probability";
+CREATE TABLE "tbl_failure_probability" (
+    "fld_probability_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_probability_name" VARCHAR(256)
+);
+INSERT INTO "tbl_failure_probability" VALUES(0, "Level A - Frequent");
+INSERT INTO "tbl_failure_probability" VALUES(1, "Level B - Reasonably Probable");
+INSERT INTO "tbl_failure_probability" VALUES(2, "Level C - Occasional");
+INSERT INTO "tbl_failure_probability" VALUES(3, "Level D - Remote");
+INSERT INTO "tbl_failure_probability" VALUES(4, "Level E - Extremely Unlikely");
+
 DROP TABLE IF EXISTS "tbl_criticality";
 CREATE TABLE "tbl_criticality" (
   "fld_criticality_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

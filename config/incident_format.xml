@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      incident_format.xml is part of The RelKit Project
+      incident_format.xml is part of the RTK Project
 
       Copyright 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
       All rights reserved.
 -->
 
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -19,6 +19,7 @@ experience. -->
             <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -27,6 +28,7 @@ experience. -->
             <usertitle>Incident ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -35,6 +37,7 @@ experience. -->
             <usertitle>Incident Category</usertitle>
             <datatype>gint</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -43,6 +46,7 @@ experience. -->
             <usertitle>Incident Type</usertitle>
             <datatype>gint</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -51,6 +55,7 @@ experience. -->
             <usertitle>Short Description</usertitle>
             <datatype>gchararray</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -59,6 +64,7 @@ experience. -->
             <usertitle>Long Description</usertitle>
             <datatype>gchararray</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -67,6 +73,7 @@ experience. -->
             <usertitle>Criticality</usertitle>
             <datatype>gint</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -75,6 +82,7 @@ experience. -->
             <usertitle>Detection Method</usertitle>
             <datatype>gchararray</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -83,6 +91,7 @@ experience. -->
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
             <position>8</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -91,6 +100,7 @@ experience. -->
             <usertitle>Status</usertitle>
             <datatype>gint</datatype>
             <position>9</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -99,6 +109,7 @@ experience. -->
             <usertitle>Foudn During Test</usertitle>
             <datatype>gchararray</datatype>
             <position>10</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -107,6 +118,7 @@ experience. -->
             <usertitle>Found During Test Case</usertitle>
             <datatype>gchararray</datatype>
             <position>11</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -115,6 +127,7 @@ experience. -->
             <usertitle>Execution Time</usertitle>
             <datatype>gfloat</datatype>
             <position>12</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -123,6 +136,7 @@ experience. -->
             <usertitle>Affected Unit</usertitle>
             <datatype>gchararray</datatype>
             <position>13</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -131,6 +145,7 @@ experience. -->
             <usertitle>Cost of Incident</usertitle>
             <datatype>gfloat</datatype>
             <position>14</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -139,6 +154,7 @@ experience. -->
             <usertitle>Incident Age</usertitle>
             <datatype>gint</datatype>
             <position>15</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -147,6 +163,7 @@ experience. -->
             <usertitle>Hardware ID</usertitle>
             <datatype>gint</datatype>
             <position>16</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -155,6 +172,7 @@ experience. -->
             <usertitle>Software ID</usertitle>
             <datatype>gint</datatype>
             <position>17</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -163,6 +181,7 @@ experience. -->
             <usertitle>Requested By</usertitle>
             <datatype>gint</datatype>
             <position>18</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -171,6 +190,7 @@ experience. -->
             <usertitle>Request Date</usertitle>
             <datatype>gchararray</datatype>
             <position>19</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -179,6 +199,7 @@ experience. -->
             <usertitle>Reviewed</usertitle>
             <datatype>gint</datatype>
             <position>20</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -187,6 +208,7 @@ experience. -->
             <usertitle>Reviewed By</usertitle>
             <datatype>gint</datatype>
             <position>21</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -195,6 +217,7 @@ experience. -->
             <usertitle>Date Reviewed</usertitle>
             <datatype>gchararray</datatype>
             <position>22</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -203,6 +226,7 @@ experience. -->
             <usertitle>Approved</usertitle>
             <datatype>gint</datatype>
             <position>23</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -211,6 +235,7 @@ experience. -->
             <usertitle>Approved By</usertitle>
             <datatype>gint</datatype>
             <position>24</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -219,6 +244,7 @@ experience. -->
             <usertitle>Date Approved</usertitle>
             <datatype>gchararray</datatype>
             <position>25</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -227,6 +253,7 @@ experience. -->
             <usertitle>Closed</usertitle>
             <datatype>gint</datatype>
             <position>26</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -235,6 +262,7 @@ experience. -->
             <usertitle>Closed By</usertitle>
             <datatype>gint</datatype>
             <position>27</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -243,6 +271,7 @@ experience. -->
             <usertitle>Date Closed</usertitle>
             <datatype>gchararray</datatype>
             <position>28</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -251,6 +280,7 @@ experience. -->
             <usertitle>Life Cycle</usertitle>
             <datatype>gint</datatype>
             <position>29</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -259,6 +289,7 @@ experience. -->
             <usertitle>Analysis</usertitle>
             <datatype>gchararray</datatype>
             <position>30</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -267,6 +298,7 @@ experience. -->
             <usertitle>Accepted</usertitle>
             <datatype>gint</datatype>
             <position>31</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

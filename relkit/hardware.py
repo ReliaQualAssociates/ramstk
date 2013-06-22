@@ -105,7 +105,7 @@ class Hardware:
                                                                bg_color,
                                                                fg_color)
 
-        self.treeview.set_tooltip_text(_("Displays an indentured list (tree) of hardware."))
+        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of hardware."))
         self.treeview.set_enable_tree_lines(True)
         scrollwindow.add(self.treeview)
         self.model = self.treeview.get_model()

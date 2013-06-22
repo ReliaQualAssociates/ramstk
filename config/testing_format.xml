@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      testing_format.xml is part of The RelKit Project
+      testing_format.xml is part of the RTK Project
 
       Copyright 2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
 
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -19,6 +19,7 @@ experience. -->
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -27,6 +28,7 @@ experience. -->
             <usertitle>Test ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -35,6 +37,7 @@ experience. -->
             <usertitle>Test Name</usertitle>
             <datatype>gchararray</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -43,6 +46,7 @@ experience. -->
             <usertitle>Test Description</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -51,6 +55,7 @@ experience. -->
             <usertitle>Test Type</usertitle>
             <datatype>gint</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -59,6 +64,7 @@ experience. -->
             <usertitle>Initial Program MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -67,6 +73,7 @@ experience. -->
             <usertitle>Final Program MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -75,6 +82,7 @@ experience. -->
             <usertitle>Growth Potential MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -83,6 +91,7 @@ experience. -->
             <usertitle>Required Program MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>8</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -91,6 +100,7 @@ experience. -->
             <usertitle>Consumer Risk</usertitle>
             <datatype>gfloat</datatype>
             <position>9</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -99,6 +109,7 @@ experience. -->
             <usertitle>Producer Risk</usertitle>
             <datatype>gfloat</datatype>
             <position>10</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -107,6 +118,7 @@ experience. -->
             <usertitle>Growth Plan Model</usertitle>
             <datatype>gint</datatype>
             <position>11</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -115,6 +127,7 @@ experience. -->
             <usertitle>Growth Plan Model</usertitle>
             <datatype>gint</datatype>
             <position>12</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -123,6 +136,7 @@ experience. -->
             <usertitle>Number of Growth Phases</usertitle>
             <datatype>gint</datatype>
             <position>13</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -131,6 +145,7 @@ experience. -->
             <usertitle>Attachment</usertitle>
             <datatype>gchararray</datatype>
             <position>14</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -139,6 +154,7 @@ experience. -->
             <usertitle>Total Test Time</usertitle>
             <datatype>gfloat</datatype>
             <position>15</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -147,6 +163,7 @@ experience. -->
             <usertitle>Average Growth Rate</usertitle>
             <datatype>gfloat</datatype>
             <position>16</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -155,6 +172,7 @@ experience. -->
             <usertitle>Average MS</usertitle>
             <datatype>gfloat</datatype>
             <position>17</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -163,6 +181,7 @@ experience. -->
             <usertitle>Probability of Seeing Failure</usertitle>
             <datatype>gfloat</datatype>
             <position>18</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -171,6 +190,7 @@ experience. -->
             <usertitle>Time to First Fix</usertitle>
             <datatype>gfloat</datatype>
             <position>19</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -179,6 +199,7 @@ experience. -->
             <usertitle>Average FEF</usertitle>
             <datatype>gfloat</datatype>
             <position>20</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>

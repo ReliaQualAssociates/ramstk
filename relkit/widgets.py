@@ -301,20 +301,18 @@ def make_fixed():
 
 
 def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
+    """
+    Utility function to create TreeView widgets.
 
-    """ Utility function to create TreeView widgets.
-
-        Keyword Arguments:
-        name    -- the name of the TreeView to read formatting information
-                   for.
-        fmt_idx -- the index of the format file to use when creating the
-                   TreeView.
-        _app    -- the RTK application.
-        _list   -- the list of items to load into the gtk.CellRendererCombo.
-        bg_col  -- the background color to use for each row.  Defaults to
-                   white.
-        fg_col  -- the foreground (text) color to use for each row.  Defaults
-                   to black.
+    Keyword Arguments:
+    name    -- the name of the TreeView to read formatting information for.
+    fmt_idx -- the index of the format file to use when creating the
+               TreeView.
+    _app    -- the RTK application.
+    _list   -- the list of items to load into the gtk.CellRendererCombo.
+    bg_col  -- the background color to use for each row.  Defaults to white.
+    fg_col  -- the foreground (text) color to use for each row.  Defaults to
+               black.
     """
 
     from lxml import etree
@@ -330,6 +328,10 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     # Retrieve the column position from the format file.
     path = "/root/tree[@name='%s']/column/position" % name
     position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+
+    # Retrieve the cell renderer type from the format file.
+    path = "/root/tree[@name='%s']/column/widget" % name
+    widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve whether or not the column is editable from the format file.
     path = "/root/tree[@name='%s']/column/editable" % name
@@ -373,12 +375,31 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     for i in range(cols):
         order.append(int(position[i].text))
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', int(editable[i].text))
+        if(widget[i].text == 'combo'):
+            cell = gtk.CellRendererCombo()
+            cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+            cellmodel.append([""])
+
+            cell.set_property('has-entry', False)
+            cell.set_property('model', cellmodel)
+            cell.set_property('text-column', 0)
+            cell.set_property('editable', int(editable[i].text))
+        elif(widget[i].text == 'spin'):
+            cell = gtk.CellRendererSpin()
+            adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
+            cell.set_property('adjustment', adjustment)
+            cell.set_property('digits', 2)
+            cell.set_property('editable', int(editable[i].text))
+        elif(widget[i].text == 'toggle'):
+            cell = gtk.CellRendererToggle()
+            cell.set_property('activatable', int(editable[i].text))
+        else:
+            cell = gtk.CellRendererText()
+            cell.set_property('editable', int(editable[i].text))
 
         if(int(editable[i].text) == 0):
             cell.set_property('background', 'light gray')
-        else:
+        elif(int(editable[i].text) == 1 and widget[i].text != 'toggle'):
             cell.set_property('background', bg_col)
             cell.set_property('foreground', fg_col)
             cell.set_property('wrap-width', 250)
@@ -441,21 +462,24 @@ def format_cell(column, cell, model, iter, data_):
         return
 
     val = model.get_value(iter, data_[0])
-    cell.set_property('text', fmt.format(val))
+    try:
+        cell.set_property('text', fmt.format(val))
+    except TypeError:                       # It's a gtk.CellRendererToggle
+        pass
 
     return
 
 
 def edit_tree(cell, path, new_text, position, model):
+    """
+    Called whenever a TreeView CellRenderer is edited.
 
-    """ Called whenever a TreeView CellRenderer is edited.
-
-        Keyword Arguments:
-        cell     -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        new_text -- the new text in the edited CellRenderer.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
+    Keyword Arguments:
+    cell     -- the CellRenderer that was edited.
+    path     -- the TreeView path of the CellRenderer that was edited.
+    new_text -- the new text in the edited CellRenderer.
+    position -- the column position of the edited CellRenderer.
+    model    -- the TreeModel the CellRenderer belongs to.
     """
 
     type = gobject.type_name(model.get_column_type(position))

@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      dataset_format.xml is part of The RelKit Project
+      dataset_format.xml is part of the RTK Project
 
       Copyright 2011 - 2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
 
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -19,6 +19,7 @@ experience. -->
             <usertitle>Dataset ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -27,6 +28,7 @@ experience. -->
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -35,6 +37,7 @@ experience. -->
             <usertitle>Dataset Description</usertitle>
             <datatype>gchararray</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -43,6 +46,7 @@ experience. -->
             <usertitle>Dataset Source</usertitle>
             <datatype>gint</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -51,6 +55,7 @@ experience. -->
             <usertitle>Distribution ID</usertitle>
             <datatype>gint</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -59,6 +64,7 @@ experience. -->
             <usertitle>Confidence</usertitle>
             <datatype>gfloat</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -67,6 +73,7 @@ experience. -->
             <usertitle>Confidence Type</usertitle>
             <datatype>gint</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -75,6 +82,7 @@ experience. -->
             <usertitle>Confidence Method</usertitle>
             <datatype>gint</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -83,6 +91,7 @@ experience. -->
             <usertitle>Fit Method</usertitle>
             <datatype>gint</datatype>
             <position>8</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -91,6 +100,7 @@ experience. -->
             <usertitle>Reliability Time</usertitle>
             <datatype>gfloat</datatype>
             <position>9</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -99,6 +109,7 @@ experience. -->
             <usertitle>Number of Reliability Points</usertitle>
             <datatype>gint</datatype>
             <position>10</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -107,6 +118,7 @@ experience. -->
             <usertitle>Number of Suspensions</usertitle>
             <datatype>gint</datatype>
             <position>11</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -115,6 +127,7 @@ experience. -->
             <usertitle>Number of Failures</usertitle>
             <datatype>gint</datatype>
             <position>12</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -123,6 +136,7 @@ experience. -->
             <usertitle>Scale Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>13</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -131,6 +145,7 @@ experience. -->
             <usertitle>Scale Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>14</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -139,6 +154,7 @@ experience. -->
             <usertitle>Scale Parameter, Upper Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>15</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -147,6 +163,7 @@ experience. -->
             <usertitle>Shape Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>16</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -155,6 +172,7 @@ experience. -->
             <usertitle>Shape Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>17</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -163,6 +181,7 @@ experience. -->
             <usertitle>Shape Parameter, Upper Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>18</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -171,6 +190,7 @@ experience. -->
             <usertitle>Location Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>19</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -180,6 +200,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>20</position>
             <editable>1</editable>
+            <widget>text</widget>
             <visible>1</visible>
         </column>
         <column>
@@ -187,6 +208,7 @@ experience. -->
             <usertitle>Location Parameter, Upper Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>21</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -195,6 +217,7 @@ experience. -->
             <usertitle>Scale Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>22</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -203,6 +226,7 @@ experience. -->
             <usertitle>Shape Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>23</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -211,6 +235,7 @@ experience. -->
             <usertitle>Location Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>24</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -219,6 +244,7 @@ experience. -->
             <usertitle>Scale-Shape Covariance</usertitle>
             <datatype>gfloat</datatype>
             <position>25</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -227,6 +253,7 @@ experience. -->
             <usertitle>Scale-Location Covariance</usertitle>
             <datatype>gfloat</datatype>
             <position>26</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -235,6 +262,7 @@ experience. -->
             <usertitle>Shape-Location Covariance</usertitle>
             <datatype>gfloat</datatype>
             <position>27</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -243,6 +271,7 @@ experience. -->
             <usertitle>MIL Handbook GOF</usertitle>
             <datatype>gfloat</datatype>
             <position>28</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -251,6 +280,7 @@ experience. -->
             <usertitle>Laplace GOF</usertitle>
             <datatype>gfloat</datatype>
             <position>29</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -259,6 +289,7 @@ experience. -->
             <usertitle>Lewis-Robinson GOF</usertitle>
             <datatype>gfloat</datatype>
             <position>30</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -267,6 +298,7 @@ experience. -->
             <usertitle>AIC</usertitle>
             <datatype>gfloat</datatype>
             <position>31</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -275,6 +307,7 @@ experience. -->
             <usertitle>BIC</usertitle>
             <datatype>gfloat</datatype>
             <position>32</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -283,6 +316,7 @@ experience. -->
             <usertitle>MLE</usertitle>
             <datatype>gfloat</datatype>
             <position>33</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -291,6 +325,7 @@ experience. -->
             <usertitle>Start Time</usertitle>
             <datatype>gfloat</datatype>
             <position>34</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>

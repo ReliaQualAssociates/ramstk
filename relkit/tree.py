@@ -67,7 +67,7 @@ class TreeWindow(gtk.Window):
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
-        self.set_title(_("RTK"))
+        self.set_title(_(u"RTK"))
 
         n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         width = gtk.gdk.screen_width() / n_screens
@@ -118,7 +118,7 @@ class TreeWindow(gtk.Window):
         vbox.pack_start(self.notebook, expand=True, fill=True)
 
         self.statusbar = gtk.Statusbar()
-        self.statusbar.push(1, _("Ready"))
+        self.statusbar.push(1, _(u"Ready"))
 
         self.progressbar = gtk.ProgressBar(adjustment=None)
         self.progressbar.set_pulse_step(0.25)
@@ -129,7 +129,7 @@ class TreeWindow(gtk.Window):
         self.add(vbox)
         self.show_all()
 
-        _title = _("RTK Work Book")
+        _title = _(u"RTK Work Book")
         self._app.winWorkBook.set_title(_title)
 
         self.notebook.set_current_page(0)
@@ -475,8 +475,9 @@ class TreeWindow(gtk.Window):
         _pos = 0
 
 # New file button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Create a new RTK Program Database."))
+        button = gtk.ToolButton()
+        button.set_label(_(u"New"))
+        button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/new.png')
         button.set_icon_widget(image)
@@ -485,7 +486,8 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Connect button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_OPEN)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Open"))
         button.set_tooltip_text(_("Connect to an existing RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/open.png')
@@ -495,7 +497,8 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Save button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Save"))
         button.set_tooltip_text(_("Save the currently open RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -509,6 +512,7 @@ class TreeWindow(gtk.Window):
 
 # Insert item button
         button = gtk.ToolButton()
+        button.set_label(_(u"Add"))
         button.set_tooltip_text(_("Add an item to the current product structure."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -519,6 +523,7 @@ class TreeWindow(gtk.Window):
 
 # Delete item button
         button = gtk.ToolButton()
+        button.set_label(_(u"Delete"))
         button.set_tooltip_text(_("Delete the currently selected item."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -531,36 +536,36 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Cut button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_CUT)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Cut"))
         button.set_tooltip_text(_("Cut the currently selected item."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/cut.png')
         button.set_icon_widget(image)
-        button.set_label(_("Cut"))
         button.connect('clicked', _util.cut_copy_paste, 0)
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 
 # Copy button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_COPY)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Copy"))
         button.set_tooltip_text(_("Copy the currently selected item."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/copy.png')
         button.set_icon_widget(image)
-        button.set_label(_("Copy"))
         button.connect('clicked', _util.cut_copy_paste, 1)
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 
 # Paste button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_PASTE)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Paste"))
         button.set_tooltip_text(_("Paste the clipboard contents."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/paste.png')
         button.set_icon_widget(image)
-        button.set_label(_("Paste"))
         button.connect('clicked', _util.cut_copy_paste, 2)
         button.show()
         toolbar.insert(button, _pos)
@@ -570,24 +575,24 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Undo button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_UNDO)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Undo"))
         button.set_tooltip_text(_("Undo the last change."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/undo.png')
         button.set_icon_widget(image)
-        button.set_label(_("Undo"))
         button.connect('clicked', _util.undo, self)
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 
 # Redo button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_REDO)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Redo"))
         button.set_tooltip_text(_("Redo the last change."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/redo.png')
         button.set_icon_widget(image)
-        button.set_label(_("Redo"))
         button.connect('clicked', _util.redo, self)
         button.show()
         toolbar.insert(button, _pos)
@@ -597,12 +602,12 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Calculate button
-        button = gtk.MenuToolButton(None, label = "Calculate")
+        button = gtk.MenuToolButton(None, label = "")
         button.set_tooltip_text(_("Perform various calculations on the system."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
-        button.set_label(_("Calculate"))
+        button.set_label(_(u"Calculate"))
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("Project"))
         menu_item.set_tooltip_text(_("Calculate the currently open RTK project."))
@@ -628,24 +633,24 @@ class TreeWindow(gtk.Window):
 
 # Graphs button
 # TODO: Functions to create charts and graphs.
-        button = gtk.ToolButton(label=_("Charts & Graphs"))
+        button = gtk.ToolButton()
+        button.set_label(_(u"Graphs"))
         button.set_tooltip_text(_("Create charts and graphs"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/charts.png')
         button.set_icon_widget(image)
-        button.set_label(_("Graphs"))
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 
 # Reports button
 # TODO: Functions to create reports.
-        button = gtk.ToolButton(label=_("Reports"))
+        button = gtk.ToolButton()
+        button.set_label(_(u"Reports"))
         button.set_tooltip_text(_("Create text reports"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
         button.set_icon_widget(image)
-        button.set_label(_("Reports"))
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1
@@ -654,7 +659,8 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Save and quit button
-        button = gtk.ToolButton(label=_("Save & Quit"))
+        button = gtk.ToolButton()
+        button.set_label(_(u"Save & Quit"))
         button.set_tooltip_text(_("Save the currently open RTK Program Database then quit"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
@@ -665,7 +671,8 @@ class TreeWindow(gtk.Window):
         _pos += 1
 
 # Quit without saving button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_QUIT)
+        button = gtk.ToolButton()
+        button.set_label(_(u"Quit"))
         button.set_tooltip_text(_("Quit without saving the currently open RTK Program Database"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')

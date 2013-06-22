@@ -1,7 +1,7 @@
 <!--
 -*- coding: utf-8 -*-
 
-      part_format.xml is part of the RelKit Project
+      part_format.xml is part of the RTK Project
 
       Copyright (C) 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
@@ -14,6 +14,7 @@ All rights reserved. -->
             <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -21,7 +22,7 @@ All rights reserved. -->
             <defaulttitle>Assembly ID</defaulttitle>
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
-            <position>1</position>
+            <position>1</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -29,7 +30,7 @@ All rights reserved. -->
             <defaulttitle>Function ID</defaulttitle>
             <usertitle>Function ID</usertitle>
             <datatype>gint</datatype>
-            <position>2</position>
+            <position>2</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -37,7 +38,7 @@ All rights reserved. -->
             <defaulttitle>A1</defaulttitle>
             <usertitle>A1</usertitle>
             <datatype>gfloat</datatype>
-            <position>3</position>
+            <position>3</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -45,7 +46,7 @@ All rights reserved. -->
             <defaulttitle>A2</defaulttitle>
             <usertitle>A2</usertitle>
             <datatype>gfloat</datatype>
-            <position>4</position>
+            <position>4</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -53,7 +54,7 @@ All rights reserved. -->
             <defaulttitle>Application ID</defaulttitle>
             <usertitle>Application ID</usertitle>
             <datatype>gint</datatype>
-            <position>5</position>
+            <position>5</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -61,7 +62,7 @@ All rights reserved. -->
             <defaulttitle>Burn In Temperature</defaulttitle>
             <usertitle>Burn In Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>6</position>
+            <position>6</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -69,7 +70,7 @@ All rights reserved. -->
             <defaulttitle>Burn In Time</defaulttitle>
             <usertitle>Burn In Time</usertitle>
             <datatype>gfloat</datatype>
-            <position>7</position>
+            <position>7</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -77,7 +78,7 @@ All rights reserved. -->
             <defaulttitle>C1</defaulttitle>
             <usertitle>C1</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
+            <position>8</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -85,7 +86,7 @@ All rights reserved. -->
             <defaulttitle>C2</defaulttitle>
             <usertitle>C2</usertitle>
             <datatype>gfloat</datatype>
-            <position>9</position>
+            <position>9</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -93,7 +94,7 @@ All rights reserved. -->
             <defaulttitle>C3</defaulttitle>
             <usertitle>C3</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
+            <position>10</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -101,7 +102,7 @@ All rights reserved. -->
             <defaulttitle>C4</defaulttitle>
             <usertitle>C4</usertitle>
             <datatype>gfloat</datatype>
-            <position>11</position>
+            <position>11</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -109,7 +110,7 @@ All rights reserved. -->
             <defaulttitle>C5</defaulttitle>
             <usertitle>C5</usertitle>
             <datatype>gfloat</datatype>
-            <position>12</position>
+            <position>12</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -117,7 +118,7 @@ All rights reserved. -->
             <defaulttitle>C6</defaulttitle>
             <usertitle>C6</usertitle>
             <datatype>gfloat</datatype>
-            <position>13</position>
+            <position>13</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -125,7 +126,7 @@ All rights reserved. -->
             <defaulttitle>C7</defaulttitle>
             <usertitle>C7</usertitle>
             <datatype>gfloat</datatype>
-            <position>14</position>
+            <position>14</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -133,7 +134,7 @@ All rights reserved. -->
             <defaulttitle>Capacitance</defaulttitle>
             <usertitle>Capacitance</usertitle>
             <datatype>gfloat</datatype>
-            <position>15</position>
+            <position>15</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -141,7 +142,7 @@ All rights reserved. -->
             <defaulttitle>Construction ID</defaulttitle>
             <usertitle>Construction ID</usertitle>
             <datatype>gint</datatype>
-            <position>16</position>
+            <position>16</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -149,7 +150,7 @@ All rights reserved. -->
             <defaulttitle>Current Ratio</defaulttitle>
             <usertitle>Current Ratio</usertitle>
             <datatype>gfloat</datatype>
-            <position>17</position>
+            <position>17</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -157,7 +158,7 @@ All rights reserved. -->
             <defaulttitle>Cycles ID</defaulttitle>
             <usertitle>Cycles ID</usertitle>
             <datatype>gint</datatype>
-            <position>18</position>
+            <position>18</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -165,7 +166,7 @@ All rights reserved. -->
             <defaulttitle>Cycling Rate</defaulttitle>
             <usertitle>Cycling Rate</usertitle>
             <datatype>gfloat</datatype>
-            <position>19</position>
+            <position>19</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -173,7 +174,7 @@ All rights reserved. -->
             <defaulttitle># Devices, Lab</defaulttitle>
             <usertitle># Devices, Lab</usertitle>
             <datatype>gint</datatype>
-            <position>20</position>
+            <position>20</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -181,7 +182,7 @@ All rights reserved. -->
             <defaulttitle>Die Area</defaulttitle>
             <usertitle>Die Area</usertitle>
             <datatype>gfloat</datatype>
-            <position>21</position>
+            <position>21</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -189,7 +190,7 @@ All rights reserved. -->
             <defaulttitle>Activation Energy</defaulttitle>
             <usertitle>Activation Energy</usertitle>
             <datatype>gfloat</datatype>
-            <position>22</position>
+            <position>22</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -197,7 +198,7 @@ All rights reserved. -->
             <defaulttitle>ECC ID</defaulttitle>
             <usertitle>ECC ID</usertitle>
             <datatype>gint</datatype>
-            <position>23</position>
+            <position>23</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -205,7 +206,7 @@ All rights reserved. -->
             <defaulttitle>Element ID</defaulttitle>
             <usertitle>Element ID</usertitle>
             <datatype>gint</datatype>
-            <position>24</position>
+            <position>24</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -213,7 +214,7 @@ All rights reserved. -->
             <defaulttitle>ESD Susceptibility</defaulttitle>
             <usertitle>ESD Susceptibility</usertitle>
             <datatype>gfloat</datatype>
-            <position>25</position>
+            <position>25</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -221,7 +222,7 @@ All rights reserved. -->
             <defaulttitle># Failure, Field</defaulttitle>
             <usertitle># Failure, Field</usertitle>
             <datatype>gint</datatype>
-            <position>26</position>
+            <position>26</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -229,7 +230,7 @@ All rights reserved. -->
             <defaulttitle># Failures, Lab</defaulttitle>
             <usertitle># Failures, Lab</usertitle>
             <datatype>gint</datatype>
-            <position>27</position>
+            <position>27</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -237,7 +238,7 @@ All rights reserved. -->
             <defaulttitle>Family ID</defaulttitle>
             <usertitle>Family ID</usertitle>
             <datatype>gint</datatype>
-            <position>28</position>
+            <position>28</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -245,7 +246,7 @@ All rights reserved. -->
             <defaulttitle>Feature Size</defaulttitle>
             <usertitle>Feature Size</usertitle>
             <datatype>gfloat</datatype>
-            <position>29</position>
+            <position>29</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -253,7 +254,7 @@ All rights reserved. -->
             <defaulttitle>Function ID</defaulttitle>
             <usertitle>Function ID</usertitle>
             <datatype>gint</datatype>
-            <position>30</position>
+            <position>30</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -261,7 +262,7 @@ All rights reserved. -->
             <defaulttitle>I1</defaulttitle>
             <usertitle>I1</usertitle>
             <datatype>gfloat</datatype>
-            <position>31</position>
+            <position>31</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -269,7 +270,7 @@ All rights reserved. -->
             <defaulttitle>I2</defaulttitle>
             <usertitle>I2</usertitle>
             <datatype>gfloat</datatype>
-            <position>32</position>
+            <position>32</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -277,7 +278,7 @@ All rights reserved. -->
             <defaulttitle>I3</defaulttitle>
             <usertitle>I3</usertitle>
             <datatype>gfloat</datatype>
-            <position>33</position>
+            <position>33</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -285,7 +286,7 @@ All rights reserved. -->
             <defaulttitle>I4</defaulttitle>
             <usertitle>I4</usertitle>
             <datatype>gfloat</datatype>
-            <position>34</position>
+            <position>34</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -293,7 +294,7 @@ All rights reserved. -->
             <defaulttitle>I5</defaulttitle>
             <usertitle>I5</usertitle>
             <datatype>gfloat</datatype>
-            <position>35</position>
+            <position>35</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -301,7 +302,7 @@ All rights reserved. -->
             <defaulttitle>I6</defaulttitle>
             <usertitle>I6</usertitle>
             <datatype>gfloat</datatype>
-            <position>36</position>
+            <position>36</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -309,7 +310,7 @@ All rights reserved. -->
             <defaulttitle>Initial Temperature</defaulttitle>
             <usertitle>Initial Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>37</position>
+            <position>37</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -317,7 +318,7 @@ All rights reserved. -->
             <defaulttitle>Insulation ID</defaulttitle>
             <usertitle>Insulation ID</usertitle>
             <datatype>gint</datatype>
-            <position>38</position>
+            <position>38</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -325,7 +326,7 @@ All rights reserved. -->
             <defaulttitle>Junction Temperature</defaulttitle>
             <usertitle>Junction Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>39</position>
+            <position>39</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -333,7 +334,7 @@ All rights reserved. -->
             <defaulttitle>K1</defaulttitle>
             <usertitle>K1</usertitle>
             <datatype>gfloat</datatype>
-            <position>40</position>
+            <position>40</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -341,7 +342,7 @@ All rights reserved. -->
             <defaulttitle>K2</defaulttitle>
             <usertitle>K2</usertitle>
             <datatype>gfloat</datatype>
-            <position>41</position>
+            <position>41</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -349,7 +350,7 @@ All rights reserved. -->
             <defaulttitle>K3</defaulttitle>
             <usertitle>K3</usertitle>
             <datatype>gfloat</datatype>
-            <position>42</position>
+            <position>42</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -357,7 +358,7 @@ All rights reserved. -->
             <defaulttitle>Knee Temperature</defaulttitle>
             <usertitle>Knee Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>43</position>
+            <position>43</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -365,7 +366,7 @@ All rights reserved. -->
             <defaulttitle>L1</defaulttitle>
             <usertitle>L1</usertitle>
             <datatype>gfloat</datatype>
-            <position>44</position>
+            <position>44</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -373,7 +374,7 @@ All rights reserved. -->
             <defaulttitle>L2</defaulttitle>
             <usertitle>L2</usertitle>
             <datatype>gfloat</datatype>
-            <position>45</position>
+            <position>45</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -381,7 +382,7 @@ All rights reserved. -->
             <defaulttitle>lambda b</defaulttitle>
             <usertitle>lambda b</usertitle>
             <datatype>gfloat</datatype>
-            <position>46</position>
+            <position>46</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -389,7 +390,7 @@ All rights reserved. -->
             <defaulttitle>lambda b0</defaulttitle>
             <usertitle>lambda b0</usertitle>
             <datatype>gfloat</datatype>
-            <position>47</position>
+            <position>47</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -397,7 +398,7 @@ All rights reserved. -->
             <defaulttitle>lambda b1</defaulttitle>
             <usertitle>lambda b1</usertitle>
             <datatype>gfloat</datatype>
-            <position>48</position>
+            <position>48</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -405,7 +406,7 @@ All rights reserved. -->
             <defaulttitle>lambda b2</defaulttitle>
             <usertitle>lambda b2</usertitle>
             <datatype>gfloat</datatype>
-            <position>49</position>
+            <position>49</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -413,7 +414,7 @@ All rights reserved. -->
             <defaulttitle>lambda BD</defaulttitle>
             <usertitle>lambda BD</usertitle>
             <datatype>gfloat</datatype>
-            <position>50</position>
+            <position>50</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -421,7 +422,7 @@ All rights reserved. -->
             <defaulttitle>lambda EOS</defaulttitle>
             <usertitle>lambda EOS</usertitle>
             <datatype>gfloat</datatype>
-            <position>51</position>
+            <position>51</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -429,7 +430,7 @@ All rights reserved. -->
             <defaulttitle>lambda g</defaulttitle>
             <usertitle>lambda g</usertitle>
             <datatype>gfloat</datatype>
-            <position>52</position>
+            <position>52</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -437,7 +438,7 @@ All rights reserved. -->
             <defaulttitle>lambda o</defaulttitle>
             <usertitle>lambda o</usertitle>
             <datatype>gfloat</datatype>
-            <position>53</position>
+            <position>53</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -445,7 +446,7 @@ All rights reserved. -->
             <defaulttitle>Manufacturing ID</defaulttitle>
             <usertitle>Manufacturing ID</usertitle>
             <datatype>gint</datatype>
-            <position>54</position>
+            <position>54</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -453,7 +454,7 @@ All rights reserved. -->
             <defaulttitle>Max Rated Temperature</defaulttitle>
             <usertitle>Max Rated Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>55</position>
+            <position>55</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -461,7 +462,7 @@ All rights reserved. -->
             <defaulttitle>Min Rated Temperature</defaulttitle>
             <usertitle>Min Rated Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>56</position>
+            <position>56</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -469,7 +470,7 @@ All rights reserved. -->
             <defaulttitle># of Contacts</defaulttitle>
             <usertitle># of Contacts</usertitle>
             <datatype>gint</datatype>
-            <position>57</position>
+            <position>57</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -477,7 +478,7 @@ All rights reserved. -->
             <defaulttitle># of Elements</defaulttitle>
             <usertitle># of Elements</usertitle>
             <datatype>gint</datatype>
-            <position>58</position>
+            <position>58</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -485,7 +486,7 @@ All rights reserved. -->
             <defaulttitle># of Hand Solders</defaulttitle>
             <usertitle># if Hand Solders</usertitle>
             <datatype>gint</datatype>
-            <position>59</position>
+            <position>59</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -493,7 +494,7 @@ All rights reserved. -->
             <defaulttitle># of Pins</defaulttitle>
             <usertitle># of Pins</usertitle>
             <datatype>gint</datatype>
-            <position>60</position>
+            <position>60</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -501,7 +502,7 @@ All rights reserved. -->
             <defaulttitle># of Wave Solders</defaulttitle>
             <usertitle># of Wave Solders</usertitle>
             <datatype>gint</datatype>
-            <position>61</position>
+            <position>61</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -509,7 +510,7 @@ All rights reserved. -->
             <defaulttitle>Operating Current</defaulttitle>
             <usertitle>Operating Current</usertitle>
             <datatype>gfloat</datatype>
-            <position>62</position>
+            <position>62</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -517,7 +518,7 @@ All rights reserved. -->
             <defaulttitle>Operating Freq</defaulttitle>
             <usertitle>Operating Freq</usertitle>
             <datatype>gfloat</datatype>
-            <position>63</position>
+            <position>63</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -525,7 +526,7 @@ All rights reserved. -->
             <defaulttitle>Operating Power</defaulttitle>
             <usertitle>Operating Power</usertitle>
             <datatype>gfloat</datatype>
-            <position>64</position>
+            <position>64</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -533,7 +534,7 @@ All rights reserved. -->
             <defaulttitle>Operating Time, Field</defaulttitle>
             <usertitle>Operating Time, Field</usertitle>
             <datatype>gfloat</datatype>
-            <position>65</position>
+            <position>65</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -541,7 +542,7 @@ All rights reserved. -->
             <defaulttitle>Operating Voltage</defaulttitle>
             <usertitle>Operating Voltage</usertitle>
             <datatype>gfloat</datatype>
-            <position>66</position>
+            <position>66</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -549,7 +550,7 @@ All rights reserved. -->
             <defaulttitle>Package ID</defaulttitle>
             <usertitle>Package ID</usertitle>
             <datatype>gint</datatype>
-            <position>67</position>
+            <position>67</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -557,7 +558,7 @@ All rights reserved. -->
             <defaulttitle>Pi A</defaulttitle>
             <usertitle>Pi A</usertitle>
             <datatype>gfloat</datatype>
-            <position>68</position>
+            <position>68</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -565,7 +566,7 @@ All rights reserved. -->
             <defaulttitle>Pi C</defaulttitle>
             <usertitle>Pi C</usertitle>
             <datatype>gfloat</datatype>
-            <position>69</position>
+            <position>69</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -573,7 +574,7 @@ All rights reserved. -->
             <defaulttitle>Pi CF</defaulttitle>
             <usertitle>Pi CF</usertitle>
             <datatype>gfloat</datatype>
-            <position>70</position>
+            <position>70</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -581,7 +582,7 @@ All rights reserved. -->
             <defaulttitle>Pi CYC</defaulttitle>
             <usertitle>Pi CYC</usertitle>
             <datatype>gfloat</datatype>
-            <position>71</position>
+            <position>71</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -589,7 +590,7 @@ All rights reserved. -->
             <defaulttitle>Pi E</defaulttitle>
             <usertitle>Pi E</usertitle>
             <datatype>gfloat</datatype>
-            <position>72</position>
+            <position>72</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -597,7 +598,7 @@ All rights reserved. -->
             <defaulttitle>Pi ECC</defaulttitle>
             <usertitle>Pi ECC</usertitle>
             <datatype>gfloat</datatype>
-            <position>73</position>
+            <position>73</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -605,7 +606,7 @@ All rights reserved. -->
             <defaulttitle>Pi F</defaulttitle>
             <usertitle>Pi F</usertitle>
             <datatype>gfloat</datatype>
-            <position>74</position>
+            <position>74</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -613,7 +614,7 @@ All rights reserved. -->
             <defaulttitle>Pi K</defaulttitle>
             <usertitle>Pi K</usertitle>
             <datatype>gfloat</datatype>
-            <position>75</position>
+            <position>75</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -621,7 +622,7 @@ All rights reserved. -->
             <defaulttitle>Pi M</defaulttitle>
             <usertitle>Pi M</usertitle>
             <datatype>gfloat</datatype>
-            <position>76</position>
+            <position>76</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -629,7 +630,7 @@ All rights reserved. -->
             <defaulttitle>Pi MFG</defaulttitle>
             <usertitle>Pi MFG</usertitle>
             <datatype>gfloat</datatype>
-            <position>77</position>
+            <position>77</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -637,7 +638,7 @@ All rights reserved. -->
             <defaulttitle>Pi PT</defaulttitle>
             <usertitle>Pi PT</usertitle>
             <datatype>gfloat</datatype>
-            <position>78</position>
+            <position>78</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -645,7 +646,7 @@ All rights reserved. -->
             <defaulttitle>Pi Q</defaulttitle>
             <usertitle>Pi Q</usertitle>
             <datatype>gfloat</datatype>
-            <position>79</position>
+            <position>79</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -653,7 +654,7 @@ All rights reserved. -->
             <defaulttitle>Pi R</defaulttitle>
             <usertitle>Pi R</usertitle>
             <datatype>gfloat</datatype>
-            <position>80</position>
+            <position>80</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -661,7 +662,7 @@ All rights reserved. -->
             <defaulttitle>Pi SR</defaulttitle>
             <usertitle>Pi SR</usertitle>
             <datatype>gfloat</datatype>
-            <position>81</position>
+            <position>81</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -669,7 +670,7 @@ All rights reserved. -->
             <defaulttitle>Pi U</defaulttitle>
             <usertitle>Pi U</usertitle>
             <datatype>gfloat</datatype>
-            <position>82</position>
+            <position>82</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -677,7 +678,7 @@ All rights reserved. -->
             <defaulttitle>Pi V</defaulttitle>
             <usertitle>Pi V</usertitle>
             <datatype>gfloat</datatype>
-            <position>83</position>
+            <position>83</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -685,7 +686,7 @@ All rights reserved. -->
             <defaulttitle>Power Ratio</defaulttitle>
             <usertitle>Power Ratio</usertitle>
             <datatype>gfloat</datatype>
-            <position>84</position>
+            <position>84</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -693,7 +694,7 @@ All rights reserved. -->
             <defaulttitle>Quality ID</defaulttitle>
             <usertitle>Quality ID</usertitle>
             <datatype>gint</datatype>
-            <position>85</position>
+            <position>85</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -701,7 +702,7 @@ All rights reserved. -->
             <defaulttitle>R1</defaulttitle>
             <usertitle>R1</usertitle>
             <datatype>gfloat</datatype>
-            <position>86</position>
+            <position>86</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -709,7 +710,7 @@ All rights reserved. -->
             <defaulttitle>R2</defaulttitle>
             <usertitle>R2</usertitle>
             <datatype>gfloat</datatype>
-            <position>87</position>
+            <position>87</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -717,7 +718,7 @@ All rights reserved. -->
             <defaulttitle>R3</defaulttitle>
             <usertitle>R3</usertitle>
             <datatype>gfloat</datatype>
-            <position>88</position>
+            <position>88</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -725,7 +726,7 @@ All rights reserved. -->
             <defaulttitle>R4</defaulttitle>
             <usertitle>R4</usertitle>
             <datatype>gfloat</datatype>
-            <position>89</position>
+            <position>89</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -733,7 +734,7 @@ All rights reserved. -->
             <defaulttitle>R5</defaulttitle>
             <usertitle>R5</usertitle>
             <datatype>gfloat</datatype>
-            <position>90</position>
+            <position>90</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -741,7 +742,7 @@ All rights reserved. -->
             <defaulttitle>R6</defaulttitle>
             <usertitle>R6</usertitle>
             <datatype>gfloat</datatype>
-            <position>91</position>
+            <position>91</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -749,7 +750,7 @@ All rights reserved. -->
             <defaulttitle>Rated Current</defaulttitle>
             <usertitle>Rated Current</usertitle>
             <datatype>gfloat</datatype>
-            <position>92</position>
+            <position>92</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -757,7 +758,7 @@ All rights reserved. -->
             <defaulttitle>Rated Power</defaulttitle>
             <usertitle>Rated Power</usertitle>
             <datatype>gfloat</datatype>
-            <position>93</position>
+            <position>93</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -765,7 +766,7 @@ All rights reserved. -->
             <defaulttitle>Rated Voltage</defaulttitle>
             <usertitle>Rated Voltage</usertitle>
             <datatype>gfloat</datatype>
-            <position>94</position>
+            <position>94</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -773,7 +774,7 @@ All rights reserved. -->
             <defaulttitle>Resistance</defaulttitle>
             <usertitle>Resistance</usertitle>
             <datatype>gfloat</datatype>
-            <position>95</position>
+            <position>95</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -781,7 +782,7 @@ All rights reserved. -->
             <defaulttitle>Resistance ID</defaulttitle>
             <usertitle>Resistance ID</usertitle>
             <datatype>gint</datatype>
-            <position>96</position>
+            <position>96</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -789,7 +790,7 @@ All rights reserved. -->
             <defaulttitle>S1</defaulttitle>
             <usertitle>S1</usertitle>
             <datatype>gfloat</datatype>
-            <position>97</position>
+            <position>97</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -797,7 +798,7 @@ All rights reserved. -->
             <defaulttitle>S2</defaulttitle>
             <usertitle>S2</usertitle>
             <datatype>gfloat</datatype>
-            <position>98</position>
+            <position>98</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -805,7 +806,7 @@ All rights reserved. -->
             <defaulttitle>S3</defaulttitle>
             <usertitle>S3</usertitle>
             <datatype>gfloat</datatype>
-            <position>99</position>
+            <position>99</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -813,7 +814,7 @@ All rights reserved. -->
             <defaulttitle>S4</defaulttitle>
             <usertitle>S4</usertitle>
             <datatype>gfloat</datatype>
-            <position>100</position>
+            <position>100</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -821,7 +822,7 @@ All rights reserved. -->
             <defaulttitle>Specification ID</defaulttitle>
             <usertitle>Specification ID</usertitle>
             <datatype>gint</datatype>
-            <position>101</position>
+            <position>101</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -829,7 +830,7 @@ All rights reserved. -->
             <defaulttitle>Spec. Sheet ID</defaulttitle>
             <usertitle>Spec. Sheet ID</usertitle>
             <datatype>gint</datatype>
-            <position>102</position>
+            <position>102</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -837,7 +838,7 @@ All rights reserved. -->
             <defaulttitle>Temperature, Base</defaulttitle>
             <usertitle>Temperature, Base</usertitle>
             <datatype>gfloat</datatype>
-            <position>103</position>
+            <position>103</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -845,7 +846,7 @@ All rights reserved. -->
             <defaulttitle>Technology ID</defaulttitle>
             <usertitle>Technology ID</usertitle>
             <datatype>gint</datatype>
-            <position>104</position>
+            <position>104</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -853,7 +854,7 @@ All rights reserved. -->
             <defaulttitle>Case Temperature</defaulttitle>
             <usertitle>Case Temperature</usertitle>
             <datatype>gfloat</datatype>
-            <position>105</position>
+            <position>105</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -861,7 +862,7 @@ All rights reserved. -->
             <defaulttitle>Temperature, Lab</defaulttitle>
             <usertitle>Temperature, Lab</usertitle>
             <datatype>gfloat</datatype>
-            <position>106</position>
+            <position>106</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -869,7 +870,7 @@ All rights reserved. -->
             <defaulttitle>Temperature Rise</defaulttitle>
             <usertitle>Temperature Rise</usertitle>
             <datatype>gfloat</datatype>
-            <position>107</position>
+            <position>107</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -877,7 +878,7 @@ All rights reserved. -->
             <defaulttitle>Test Time, Lab</defaulttitle>
             <usertitle>Test Time, Lab</usertitle>
             <datatype>gfloat</datatype>
-            <position>108</position>
+            <position>108</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -886,6 +887,7 @@ All rights reserved. -->
             <usertitle>Theta JC</usertitle>
             <datatype>gfloat</datatype>
             <position>109</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -894,6 +896,7 @@ All rights reserved. -->
             <usertitle>Tref</usertitle>
             <datatype>gfloat</datatype>
             <position>110</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -902,6 +905,7 @@ All rights reserved. -->
             <usertitle>Voltage Ratio</usertitle>
             <datatype>gfloat</datatype>
             <position>111</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -910,6 +914,7 @@ All rights reserved. -->
             <usertitle>Years in Production</usertitle>
             <datatype>gint</datatype>
             <position>112</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -918,6 +923,7 @@ All rights reserved. -->
             <usertitle>Part Number</usertitle>
             <datatype>gchararray</datatype>
             <position>113</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -926,6 +932,7 @@ All rights reserved. -->
             <usertitle>Reference Designator</usertitle>
             <datatype>gchararray</datatype>
             <position>114</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>

@@ -1,7 +1,7 @@
 <!--
 -*- coding: utf-8 -*-
 
-      software_format.xml is part of The RelKit Project
+      software_format.xml is part of The RTK Project
 
       Copyright (C) 2009 - 2013 Andrew "Weibullguy" Rowland
                                 <darowland@ieee.org>
@@ -15,6 +15,7 @@ All rights reserved. -->
             <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -23,6 +24,7 @@ All rights reserved. -->
             <usertitle>Spftware ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -31,6 +33,7 @@ All rights reserved. -->
             <usertitle>Level ID</usertitle>
             <datatype>gint</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -39,6 +42,7 @@ All rights reserved. -->
             <usertitle>Software Description</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -47,6 +51,7 @@ All rights reserved. -->
             <usertitle>Application ID</usertitle>
             <datatype>gint</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -55,6 +60,7 @@ All rights reserved. -->
             <usertitle>Development ID</usertitle>
             <datatype>gint</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -63,6 +69,7 @@ All rights reserved. -->
             <usertitle>Application Factor (A)</usertitle>
             <datatype>gfloat</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -71,6 +78,7 @@ All rights reserved. -->
             <usertitle>Do</usertitle>
             <datatype>gfloat</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -79,6 +87,7 @@ All rights reserved. -->
             <usertitle>Dd</usertitle>
             <datatype>gint</datatype>
             <position>8</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -87,6 +96,7 @@ All rights reserved. -->
             <usertitle>Dc</usertitle>
             <datatype>gfloat</datatype>
             <position>9</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -95,6 +105,7 @@ All rights reserved. -->
             <usertitle>Development Factor (D)</usertitle>
             <datatype>gfloat</datatype>
             <position>10</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -103,6 +114,7 @@ All rights reserved. -->
             <usertitle>AM</usertitle>
             <datatype>gfloat</datatype>
             <position>11</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -111,6 +123,7 @@ All rights reserved. -->
             <usertitle>SA</usertitle>
             <datatype>gfloat</datatype>
             <position>12</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -119,6 +132,7 @@ All rights reserved. -->
             <usertitle>ST</usertitle>
             <datatype>gfloat</datatype>
             <position>13</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -127,6 +141,7 @@ All rights reserved. -->
             <usertitle>DR</usertitle>
             <datatype>gfloat</datatype>
             <position>14</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -135,6 +150,7 @@ All rights reserved. -->
             <usertitle>SQ</usertitle>
             <datatype>gfloat</datatype>
             <position>15</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -143,6 +159,7 @@ All rights reserved. -->
             <usertitle>S1</usertitle>
             <datatype>gfloat</datatype>
             <position>16</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -151,6 +168,7 @@ All rights reserved. -->
             <usertitle>Higher-Order Language Lines of Code (HLOC)</usertitle>
             <datatype>gint</datatype>
             <position>17</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -159,6 +177,7 @@ All rights reserved. -->
             <usertitle>Assembly Language Lines of Code (ALOC)</usertitle>
             <datatype>gint</datatype>
             <position>18</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -167,6 +186,7 @@ All rights reserved. -->
             <usertitle>Total Lines of Code (MLOC)</usertitle>
             <datatype>gint</datatype>
             <position>19</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -175,6 +195,7 @@ All rights reserved. -->
             <usertitle>SL</usertitle>
             <datatype>gfloat</datatype>
             <position>20</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -183,6 +204,7 @@ All rights reserved. -->
             <usertitle>AX</usertitle>
             <datatype>gint</datatype>
             <position>21</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -191,6 +213,7 @@ All rights reserved. -->
             <usertitle>BX</usertitle>
             <datatype>gint</datatype>
             <position>22</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -199,6 +222,7 @@ All rights reserved. -->
             <usertitle>CX</usertitle>
             <datatype>gint</datatype>
             <position>23</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -207,6 +231,7 @@ All rights reserved. -->
             <usertitle>Number of Modules (NM)</usertitle>
             <datatype>gint</datatype>
             <position>24</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -215,6 +240,7 @@ All rights reserved. -->
             <usertitle>SX</usertitle>
             <datatype>gfloat</datatype>
             <position>25</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -223,6 +249,7 @@ All rights reserved. -->
             <usertitle>UM</usertitle>
             <datatype>gint</datatype>
             <position>26</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -231,6 +258,7 @@ All rights reserved. -->
             <usertitle>WM</usertitle>
             <datatype>gint</datatype>
             <position>27</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -239,6 +267,7 @@ All rights reserved. -->
             <usertitle>XM</usertitle>
             <datatype>gint</datatype>
             <position>28</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -247,6 +276,7 @@ All rights reserved. -->
             <usertitle>SM</usertitle>
             <datatype>gfloat</datatype>
             <position>29</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -255,6 +285,7 @@ All rights reserved. -->
             <usertitle>DF</usertitle>
             <datatype>gfloat</datatype>
             <position>30</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -263,6 +294,7 @@ All rights reserved. -->
             <usertitle>SR</usertitle>
             <datatype>gfloat</datatype>
             <position>31</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -271,6 +303,7 @@ All rights reserved. -->
             <usertitle>S2</usertitle>
             <datatype>gfloat</datatype>
             <position>32</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -279,6 +312,7 @@ All rights reserved. -->
             <usertitle>RPFOM</usertitle>
             <datatype>gfloat</datatype>
             <position>33</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -287,6 +321,7 @@ All rights reserved. -->
             <usertitle>Parent Module</usertitle>
             <datatype>gchararray</datatype>
             <position>34</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -295,6 +330,7 @@ All rights reserved. -->
             <usertitle>Development Assessment Type</usertitle>
             <datatype>gint</datatype>
             <position>35</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -303,6 +339,7 @@ All rights reserved. -->
             <usertitle>Development Phase ID</usertitle>
             <datatype>gint</datatype>
             <position>36</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -311,6 +348,7 @@ All rights reserved. -->
             <usertitle>Test Confidence Level</usertitle>
             <datatype>gint</datatype>
             <position>37</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -319,6 +357,7 @@ All rights reserved. -->
             <usertitle>Test Path</usertitle>
             <datatype>gint</datatype>
             <position>38</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -327,6 +366,7 @@ All rights reserved. -->
             <usertitle>Software Category</usertitle>
             <datatype>gint</datatype>
             <position>39</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -335,6 +375,7 @@ All rights reserved. -->
             <usertitle>Test Effort</usertitle>
             <datatype>gint</datatype>
             <position>40</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -343,6 +384,7 @@ All rights reserved. -->
             <usertitle>Test Approach</usertitle>
             <datatype>gint</datatype>
             <position>41</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -351,6 +393,7 @@ All rights reserved. -->
             <usertitle>Labor Hours, Test</usertitle>
             <datatype>gfloat</datatype>
             <position>42</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -359,6 +402,7 @@ All rights reserved. -->
             <usertitle>Labor Hours, Development</usertitle>
             <datatype>gfloat</datatype>
             <position>43</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -367,6 +411,7 @@ All rights reserved. -->
             <usertitle>Budget, Test</usertitle>
             <datatype>gfloat</datatype>
             <position>44</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -375,6 +420,7 @@ All rights reserved. -->
             <usertitle>Budget, Development</usertitle>
             <datatype>gfloat</datatype>
             <position>45</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -383,6 +429,7 @@ All rights reserved. -->
             <usertitle>Schedule, Test</usertitle>
             <datatype>gfloat</datatype>
             <position>46</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -391,6 +438,7 @@ All rights reserved. -->
             <usertitle>Schedule, Development</usertitle>
             <datatype>gfloat</datatype>
             <position>47</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -399,6 +447,7 @@ All rights reserved. -->
             <usertitle>Total Branches</usertitle>
             <datatype>gint</datatype>
             <position>48</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -407,6 +456,7 @@ All rights reserved. -->
             <usertitle>Branches Tested</usertitle>
             <datatype>gint</datatype>
             <position>49</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -415,6 +465,7 @@ All rights reserved. -->
             <usertitle>Total Inputs</usertitle>
             <datatype>gint</datatype>
             <position>50</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -423,6 +474,7 @@ All rights reserved. -->
             <usertitle>Inputs Tested</usertitle>
             <datatype>gint</datatype>
             <position>51</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -431,6 +483,7 @@ All rights reserved. -->
             <usertitle>Units Tested</usertitle>
             <datatype>gint</datatype>
             <position>52</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -439,6 +492,7 @@ All rights reserved. -->
             <usertitle>Total Interfaces</usertitle>
             <datatype>gint</datatype>
             <position>53</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -447,6 +501,7 @@ All rights reserved. -->
             <usertitle>Interfaces Tested</usertitle>
             <datatype>gint</datatype>
             <position>54</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -455,6 +510,7 @@ All rights reserved. -->
             <usertitle>TE</usertitle>
             <datatype>gfloat</datatype>
             <position>55</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -463,6 +519,7 @@ All rights reserved. -->
             <usertitle>TC</usertitle>
             <datatype>gfloat</datatype>
             <position>56</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -471,6 +528,7 @@ All rights reserved. -->
             <usertitle>TM</usertitle>
             <datatype>gfloat</datatype>
             <position>57</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -479,6 +537,7 @@ All rights reserved. -->
             <usertitle>T</usertitle>
             <datatype>gfloat</datatype>
             <position>58</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -487,6 +546,7 @@ All rights reserved. -->
             <usertitle>Average Failure Rate During Test</usertitle>
             <datatype>gfloat</datatype>
             <position>59</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -495,6 +555,7 @@ All rights reserved. -->
             <usertitle>Average Failure Rate at EOT</usertitle>
             <datatype>gfloat</datatype>
             <position>60</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -503,6 +564,7 @@ All rights reserved. -->
             <usertitle>Reliability Estimation Number During Test</usertitle>
             <datatype>gfloat</datatype>
             <position>61</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -511,6 +573,7 @@ All rights reserved. -->
             <usertitle>Reliability Estimation Number EOT</usertitle>
             <datatype>gfloat</datatype>
             <position>62</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -519,6 +582,7 @@ All rights reserved. -->
             <usertitle>Number of Exceptions</usertitle>
             <datatype>gfloat</datatype>
             <position>63</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -527,6 +591,7 @@ All rights reserved. -->
             <usertitle>Variability of Input</usertitle>
             <datatype>gfloat</datatype>
             <position>64</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -535,6 +600,7 @@ All rights reserved. -->
             <usertitle>Total Execution Time</usertitle>
             <datatype>gfloat</datatype>
             <position>65</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -543,6 +609,7 @@ All rights reserved. -->
             <usertitle>OS Overhead Time</usertitle>
             <datatype>gfloat</datatype>
             <position>66</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -551,6 +618,7 @@ All rights reserved. -->
             <usertitle>Workload</usertitle>
             <datatype>gfloat</datatype>
             <position>67</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -559,6 +627,7 @@ All rights reserved. -->
             <usertitle>E</usertitle>
             <datatype>gfloat</datatype>
             <position>68</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -567,6 +636,7 @@ All rights reserved. -->
             <usertitle>Estimated Failure Rate</usertitle>
             <datatype>gfloat</datatype>
             <position>69</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

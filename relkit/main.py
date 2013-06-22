@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-""" This is the main program for The RelKit application. """
+""" This is the main program for the RTK application. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       main.py is part of The RelKit Project
+#       main.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -61,7 +61,7 @@ from testing import Testing
 
 
 def main():
-    """ This is the main function for the RelKit application. """
+    """ This is the main function for the RTK application. """
 
     RelKit()
 
@@ -71,7 +71,7 @@ def main():
 
 
 class RelKit:
-    """ This is the RelKit class. """
+    """ This is the RTK class. """
 
     def __init__(self):
 
@@ -152,7 +152,7 @@ class RelKit:
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_(u"RelKit is not currently connected to a program database."))
+        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a program database."))
 
         self.winTree.present()
 
@@ -189,9 +189,9 @@ class RelKit:
         icon = _conf.ICON_DIR + '32x32/db-connected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_(u"RelKit is connected to program database %s." %
+        self.icoStatus.set_tooltip(_(u"RTK is connected to program database %s." %
                                    _conf.RELIAFREE_PROG_INFO[2]))
-        self.winTree.set_title(_(u"RelKit - Analyzing %s" %
+        self.winTree.set_title(_(u"RTK - Analyzing %s" %
                                _conf.RELIAFREE_PROG_INFO[2]))
 
         self.winTree.load_trees(self)

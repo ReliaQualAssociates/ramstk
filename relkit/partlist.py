@@ -80,7 +80,7 @@ class PartsListWindow(gtk.Window):
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
-        self.set_title(_("RelKit Parts List"))
+        self.set_title(_(u"RTK Parts List"))
         self.set_resizable(True)
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
@@ -179,7 +179,7 @@ class PartsListWindow(gtk.Window):
         self.add(vbox)
         self.show_all()
 
-        self.statusbar.push(1, _("Ready"))
+        self.statusbar.push(1, _(u"Ready"))
 
     def _parts_list_tab_create(self):
         """
@@ -213,7 +213,7 @@ class PartsListWindow(gtk.Window):
         frame.add(scrollwindow)
 
         label = gtk.Label()
-        _heading = _("Parts List")
+        _heading = _(u"Parts List")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
@@ -242,12 +242,12 @@ class PartsListWindow(gtk.Window):
         frame.add(scrollwindow)
 
         label = gtk.Label()
-        _heading = _("Reliability\nTests")
+        _heading = _(u"Reliability\nTests")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays the list of HALT, HASS, ALT, ESS, reliability growth and reliability demonstration tests for the selected Assembly."))
+        label.set_tooltip_text(_(u"Displays the list of HALT, HASS, ALT, ESS, reliability growth and reliability demonstration tests for the selected Assembly."))
 
         self.notebook.insert_page(frame,
                                   tab_label=label,
@@ -270,12 +270,12 @@ class PartsListWindow(gtk.Window):
         frame.add(scrollwindow)
 
         label = gtk.Label()
-        _heading = _("Program\nIncidents")
+        _heading = _(u"Program\nIncidents")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays the list of program incidents for the selected Assembly."))
+        label.set_tooltip_text(_(u"Displays the list of program incidents for the selected Assembly."))
 
         self.notebook.insert_page(frame,
                                   tab_label=label,

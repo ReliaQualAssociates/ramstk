@@ -1,26 +1,12 @@
 <!--
 -*- coding: utf-8 -*-
 
-      fraca_format.xml is part of The RelKit Project
+      fraca_format.xml is part of the RTK Project
 
       Copyright (C) 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+-->
 
-All rights reserved.
-
-RelKit is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-RelKit is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with RelKit.  If not, see <http://www.gnu.org/licenses/>. -->
-
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -30,7 +16,7 @@ experience. -->
             <defaulttitle>Revision ID</defaulttitle>
             <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
-            <position>0</position>
+            <position>0</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -38,7 +24,7 @@ experience. -->
             <defaulttitle>Assembly ID</defaulttitle>
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
-            <position>1</position>
+            <position>1</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -46,7 +32,7 @@ experience. -->
             <defaulttitle>Additive Adjustment Factor</defaulttitle>
             <usertitle>Additive Adjustment Factor</usertitle>
             <datatype>gfloat</datatype>
-            <position>2</position>
+            <position>2</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -54,7 +40,7 @@ experience. -->
             <defaulttitle>Allocation Wt. Factor</defaulttitle>
             <usertitle>Allocation Wt. Factor</usertitle>
             <datatype>gfloat</datatype>
-            <position>3</position>
+            <position>3</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -62,7 +48,7 @@ experience. -->
             <defaulttitle>Alternate Part Number</defaulttitle>
             <usertitle>Alternate Part Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>4</position>
+            <position>4</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -70,7 +56,7 @@ experience. -->
             <defaulttitle>Assembly Criticality</defaulttitle>
             <usertitle>Assembly Criticality</usertitle>
             <datatype>gfloat</datatype>
-            <position>5</position>
+            <position>5</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -78,7 +64,7 @@ experience. -->
             <defaulttitle>Attachments</defaulttitle>
             <usertitle>Attachements</usertitle>
             <datatype>gchararray</datatype>
-            <position>6</position>
+            <position>6</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -86,7 +72,7 @@ experience. -->
             <defaulttitle>Availability, Predicted</defaulttitle>
             <usertitle>Availability, Predicted</usertitle>
             <datatype>gfloat</datatype>
-            <position>7</position>
+            <position>7</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -94,7 +80,7 @@ experience. -->
             <defaulttitle>Availability, Mission</defaulttitle>
             <usertitle>Availability, Mission</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
+            <position>8</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -102,7 +88,7 @@ experience. -->
             <defaulttitle>CAGE Code</defaulttitle>
             <usertitle>CAGE Code</usertitle>
             <datatype>gchararray</datatype>
-            <position>9</position>
+            <position>9</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -110,7 +96,7 @@ experience. -->
             <defaulttitle>Calculation Model</defaulttitle>
             <usertitle>Calculation Model</usertitle>
             <datatype>gint</datatype>
-            <position>10</position>
+            <position>10</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -118,7 +104,7 @@ experience. -->
             <defaulttitle>Category ID</defaulttitle>
             <usertitle>Category ID</usertitle>
             <datatype>gint</datatype>
-            <position>11</position>
+            <position>11</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -126,7 +112,7 @@ experience. -->
             <defaulttitle>Composite Ref. Des.</defaulttitle>
             <usertitle>Composite Ref. Des.</usertitle>
             <datatype>gchararray</datatype>
-            <position>12</position>
+            <position>12</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -134,7 +120,7 @@ experience. -->
             <defaulttitle>Cost</defaulttitle>
             <usertitle>Cost</usertitle>
             <datatype>gfloat</datatype>
-            <position>13</position>
+            <position>13</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -142,7 +128,7 @@ experience. -->
             <defaulttitle>Cost/Failure</defaulttitle>
             <usertitle>Cost/Failure</usertitle>
             <datatype>gfloat</datatype>
-            <position>14</position>
+            <position>14</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -150,7 +136,7 @@ experience. -->
             <defaulttitle>Cost/Hour</defaulttitle>
             <usertitle>Cost/Hour</usertitle>
             <datatype>gfloat</datatype>
-            <position>15</position>
+            <position>15</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -158,7 +144,7 @@ experience. -->
             <defaulttitle>Cost Type</defaulttitle>
             <usertitle>Cost Type</usertitle>
             <datatype>gint</datatype>
-            <position>16</position>
+            <position>16</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -166,7 +152,7 @@ experience. -->
             <defaulttitle>Description</defaulttitle>
             <usertitle>Description</usertitle>
             <datatype>gchararray</datatype>
-            <position>17</position>
+            <position>17</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -174,7 +160,7 @@ experience. -->
             <defaulttitle>Failure Rate, Detection</defaulttitle>
             <usertitle>Failure Rate, Detection</usertitle>
             <datatype>gfloat</datatype>
-            <position>18</position>
+            <position>18</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -182,7 +168,7 @@ experience. -->
             <defaulttitle>Detection %</defaulttitle>
             <usertitle>Detection %</usertitle>
             <datatype>gfloat</datatype>
-            <position>19</position>
+            <position>19</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -190,7 +176,7 @@ experience. -->
             <defaulttitle>Duty Cycle</defaulttitle>
             <usertitle>Duty Cycle</usertitle>
             <datatype>gfloat</datatype>
-            <position>20</position>
+            <position>20</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -198,7 +184,7 @@ experience. -->
             <defaulttitle>Entered By</defaulttitle>
             <usertitle>Entered By</usertitle>
             <datatype>gchararray</datatype>
-            <position>21</position>
+            <position>21</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -206,7 +192,7 @@ experience. -->
             <defaulttitle>Environment, Active</defaulttitle>
             <usertitle>Environment, Active</usertitle>
             <datatype>gint</datatype>
-            <position>22</position>
+            <position>22</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -214,7 +200,7 @@ experience. -->
             <defaulttitle>Environment, Dormant</defaulttitle>
             <usertitle>Environment, Dormant</usertitle>
             <datatype>gint</datatype>
-            <position>23</position>
+            <position>23</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -222,7 +208,7 @@ experience. -->
             <defaulttitle>Failure Distribution</defaulttitle>
             <usertitle>Failure Distribution</usertitle>
             <datatype>gint</datatype>
-            <position>24</position>
+            <position>24</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -230,7 +216,7 @@ experience. -->
             <defaulttitle>Failure Parameter 1</defaulttitle>
             <usertitle>Failure Parameter 1</usertitle>
             <datatype>gfloat</datatype>
-            <position>25</position>
+            <position>25</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -238,7 +224,7 @@ experience. -->
             <defaulttitle>Failure Parameter 2</defaulttitle>
             <usertitle>Failure Parameter 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>26</position>
+            <position>26</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -246,7 +232,7 @@ experience. -->
             <defaulttitle>Failure Parameter 3</defaulttitle>
             <usertitle>Failure Parameter 3</usertitle>
             <datatype>gfloat</datatype>
-            <position>27</position>
+            <position>27</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -254,7 +240,7 @@ experience. -->
             <defaulttitle>Failure Rate, Active</defaulttitle>
             <usertitle>Failure Rate, Active</usertitle>
             <datatype>gfloat</datatype>
-            <position>28</position>
+            <position>28</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -262,7 +248,7 @@ experience. -->
             <defaulttitle>Failure Rate, Dormant</defaulttitle>
             <usertitle>Failure Rate, Dormant</usertitle>
             <datatype>gfloat</datatype>
-            <position>29</position>
+            <position>29</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -270,7 +256,7 @@ experience. -->
             <defaulttitle>Failure Rate, Mission</defaulttitle>
             <usertitle>Failure Rate, Mission</usertitle>
             <datatype>gfloat</datatype>
-            <position>30</position>
+            <position>30</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -278,7 +264,7 @@ experience. -->
             <defaulttitle>Failure Rate, Percent</defaulttitle>
             <usertitle>Failure Rate, Percent</usertitle>
             <datatype>gfloat</datatype>
-            <position>31</position>
+            <position>31</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -286,7 +272,7 @@ experience. -->
             <defaulttitle>Failure Rate, Predicted</defaulttitle>
             <usertitle>Failure Rate, Predicted</usertitle>
             <datatype>gfloat</datatype>
-            <position>32</position>
+            <position>32</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -294,7 +280,7 @@ experience. -->
             <defaulttitle>Failure Rate, Software</defaulttitle>
             <usertitle>Failure Rate, Software</usertitle>
             <datatype>gfloat</datatype>
-            <position>33</position>
+            <position>33</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -302,7 +288,7 @@ experience. -->
             <defaulttitle>Failure Rate, Specified</defaulttitle>
             <usertitle>Failure Rate, Specified</usertitle>
             <datatype>gfloat</datatype>
-            <position>34</position>
+            <position>34</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -310,7 +296,7 @@ experience. -->
             <defaulttitle>Failure Rate Type</defaulttitle>
             <usertitle>Failure Rate Type</usertitle>
             <datatype>gint</datatype>
-            <position>35</position>
+            <position>35</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -318,7 +304,7 @@ experience. -->
             <defaulttitle>Figure Number</defaulttitle>
             <usertitle>Figure Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>36</position>
+            <position>36</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -326,7 +312,7 @@ experience. -->
             <defaulttitle>Humidity</defaulttitle>
             <usertitle>Humidity</usertitle>
             <datatype>gfloat</datatype>
-            <position>37</position>
+            <position>37</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -334,7 +320,7 @@ experience. -->
             <defaulttitle>Image File</defaulttitle>
             <usertitle>Image File</usertitle>
             <datatype>gchararray</datatype>
-            <position>38</position>
+            <position>38</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -342,7 +328,7 @@ experience. -->
             <defaulttitle>Isolation Failure Rate</defaulttitle>
             <usertitle>Isolation Failure Rate</usertitle>
             <datatype>gfloat</datatype>
-            <position>39</position>
+            <position>39</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -350,7 +336,7 @@ experience. -->
             <defaulttitle>Isolation Percent</defaulttitle>
             <usertitle>Isolation Percent</usertitle>
             <datatype>gfloat</datatype>
-            <position>40</position>
+            <position>40</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -358,7 +344,7 @@ experience. -->
             <defaulttitle>LCN</defaulttitle>
             <usertitle>LCN</usertitle>
             <datatype>gchararray</datatype>
-            <position>41</position>
+            <position>41</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -366,7 +352,7 @@ experience. -->
             <defaulttitle>Level</defaulttitle>
             <usertitle>Level</usertitle>
             <datatype>gint</datatype>
-            <position>42</position>
+            <position>42</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -374,7 +360,7 @@ experience. -->
             <defaulttitle>Manufacturer</defaulttitle>
             <usertitle>Manufacturer</usertitle>
             <datatype>gint</datatype>
-            <position>43</position>
+            <position>43</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -382,7 +368,7 @@ experience. -->
             <defaulttitle>MCMT</defaulttitle>
             <usertitle>MCMT</usertitle>
             <datatype>gfloat</datatype>
-            <position>44</position>
+            <position>44</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -390,7 +376,7 @@ experience. -->
             <defaulttitle>Mission Time</defaulttitle>
             <usertitle>Mission Time</usertitle>
             <datatype>gfloat</datatype>
-            <position>45</position>
+            <position>45</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -398,7 +384,7 @@ experience. -->
             <defaulttitle>MMT</defaulttitle>
             <usertitle>MMT</usertitle>
             <datatype>gfloat</datatype>
-            <position>46</position>
+            <position>46</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -406,7 +392,7 @@ experience. -->
             <defaulttitle>Modified By</defaulttitle>
             <usertitle>Modified By</usertitle>
             <datatype>gchararray</datatype>
-            <position>47</position>
+            <position>47</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -414,7 +400,7 @@ experience. -->
             <defaulttitle>MPMT</defaulttitle>
             <usertitle>MPMT</usertitle>
             <datatype>gfloat</datatype>
-            <position>48</position>
+            <position>48</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -422,7 +408,7 @@ experience. -->
             <defaulttitle>MTBF, Mission</defaulttitle>
             <usertitle>MTBF, Mission</usertitle>
             <datatype>gfloat</datatype>
-            <position>49</position>
+            <position>49</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -430,7 +416,7 @@ experience. -->
             <defaulttitle>MTBF, Predicted</defaulttitle>
             <usertitle>MTBF, Predicted</usertitle>
             <datatype>gfloat</datatype>
-            <position>50</position>
+            <position>50</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -438,7 +424,7 @@ experience. -->
             <defaulttitle>MTBF, Specified</defaulttitle>
             <usertitle>MTBF, Specified</usertitle>
             <datatype>gfloat</datatype>
-            <position>51</position>
+            <position>51</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -446,7 +432,7 @@ experience. -->
             <defaulttitle>MTTR</defaulttitle>
             <usertitle>MTTR</usertitle>
             <datatype>gfloat</datatype>
-            <position>52</position>
+            <position>52</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -454,7 +440,7 @@ experience. -->
             <defaulttitle>MTTR Add. Adj. Factor</defaulttitle>
             <usertitle>MTTR Add. Adj. Factor</usertitle>
             <datatype>gfloat</datatype>
-            <position>53</position>
+            <position>53</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -462,7 +448,7 @@ experience. -->
             <defaulttitle>MTTR Mult. Adj. Factor</defaulttitle>
             <usertitle>MTTR Mult. Adj. Factor</usertitle>
             <datatype>gfloat</datatype>
-            <position>54</position>
+            <position>54</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -470,7 +456,7 @@ experience. -->
             <defaulttitle>MTTR, Specified</defaulttitle>
             <usertitle>MTTR, Specified</usertitle>
             <datatype>gfloat</datatype>
-            <position>55</position>
+            <position>55</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -478,7 +464,7 @@ experience. -->
             <defaulttitle>MTTR Type</defaulttitle>
             <usertitle>MTTR Type</usertitle>
             <datatype>gint</datatype>
-            <position>56</position>
+            <position>56</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -486,7 +472,7 @@ experience. -->
             <defaulttitle>Mult. Adj. Factor</defaulttitle>
             <usertitle>Mult. Adj. Factor</usertitle>
             <datatype>gfloat</datatype>
-            <position>57</position>
+            <position>57</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -494,7 +480,7 @@ experience. -->
             <defaulttitle>Name</defaulttitle>
             <usertitle>Name</usertitle>
             <datatype>gchararray</datatype>
-            <position>58</position>
+            <position>58</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -502,7 +488,7 @@ experience. -->
             <defaulttitle>NSN</defaulttitle>
             <usertitle>NSN</usertitle>
             <datatype>gchararray</datatype>
-            <position>59</position>
+            <position>59</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -510,7 +496,7 @@ experience. -->
             <defaulttitle>Overstress</defaulttitle>
             <usertitle>Overstress</usertitle>
             <datatype>gint</datatype>
-            <position>60</position>
+            <position>60</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -518,7 +504,7 @@ experience. -->
             <defaulttitle>Page Number</defaulttitle>
             <usertitle>Page Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>61</position>
+            <position>61</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -526,7 +512,7 @@ experience. -->
             <defaulttitle>Parent Assembly</defaulttitle>
             <usertitle>Parent Assembly</usertitle>
             <datatype>gchararray</datatype>
-            <position>62</position>
+            <position>62</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -534,7 +520,7 @@ experience. -->
             <defaulttitle>Part</defaulttitle>
             <usertitle>Part</usertitle>
             <datatype>gint</datatype>
-            <position>63</position>
+            <position>63</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -542,7 +528,7 @@ experience. -->
             <defaulttitle>Part Number</defaulttitle>
             <usertitle>Part Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>64</position>
+            <position>64</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -550,7 +536,7 @@ experience. -->
             <defaulttitle>Percent Isolation Group</defaulttitle>
             <usertitle>Percent Isolation Group</usertitle>
             <datatype>gfloat</datatype>
-            <position>65</position>
+            <position>65</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -558,7 +544,7 @@ experience. -->
             <defaulttitle>Percent Isolation Single</defaulttitle>
             <usertitle>Percent Isolation Single</usertitle>
             <datatype>gfloat</datatype>
-            <position>66</position>
+            <position>66</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -566,7 +552,7 @@ experience. -->
             <defaulttitle>Quantity</defaulttitle>
             <usertitle>Quantity</usertitle>
             <datatype>gint</datatype>
-            <position>67</position>
+            <position>67</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -574,7 +560,7 @@ experience. -->
             <defaulttitle>Reference Designator</defaulttitle>
             <usertitle>Reference Designator</usertitle>
             <datatype>gchararray</datatype>
-            <position>68</position>
+            <position>68</position><widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -582,7 +568,7 @@ experience. -->
             <defaulttitle>Reliability, Mission</defaulttitle>
             <usertitle>Reliability, Mission</usertitle>
             <datatype>gfloat</datatype>
-            <position>69</position>
+            <position>69</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -590,7 +576,7 @@ experience. -->
             <defaulttitle>Reliability, Predicted</defaulttitle>
             <usertitle>Reliability, Predicted</usertitle>
             <datatype>gfloat</datatype>
-            <position>70</position>
+            <position>70</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -598,7 +584,7 @@ experience. -->
             <defaulttitle>Remarks</defaulttitle>
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
-            <position>71</position>
+            <position>71</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -606,7 +592,7 @@ experience. -->
             <defaulttitle>Repair Distribution</defaulttitle>
             <usertitle>Repair Distribution</usertitle>
             <datatype>gint</datatype>
-            <position>72</position>
+            <position>72</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -614,7 +600,7 @@ experience. -->
             <defaulttitle>Repair Parameter 1</defaulttitle>
             <usertitle>Repair Parameter 1</usertitle>
             <datatype>gfloat</datatype>
-            <position>73</position>
+            <position>73</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -622,7 +608,7 @@ experience. -->
             <defaulttitle>Repair Parameter 2</defaulttitle>
             <usertitle>Repair Parameter 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>74</position>
+            <position>74</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -630,7 +616,7 @@ experience. -->
             <defaulttitle>Repairable</defaulttitle>
             <usertitle>Repairable</usertitle>
             <datatype>gint</datatype>
-            <position>75</position>
+            <position>75</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -638,7 +624,7 @@ experience. -->
             <defaulttitle>RPM</defaulttitle>
             <usertitle>RPM</usertitle>
             <datatype>gfloat</datatype>
-            <position>76</position>
+            <position>76</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -646,7 +632,7 @@ experience. -->
             <defaulttitle>Specification</defaulttitle>
             <usertitle>Specification</usertitle>
             <datatype>gchararray</datatype>
-            <position>77</position>
+            <position>77</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -654,7 +640,7 @@ experience. -->
             <defaulttitle>Subcategory ID</defaulttitle>
             <usertitle>Subcategory ID</usertitle>
             <datatype>gint</datatype>
-            <position>78</position>
+            <position>78</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -662,7 +648,7 @@ experience. -->
             <defaulttitle>Tagged Part</defaulttitle>
             <usertitle>Tagged Part</usertitle>
             <datatype>gint</datatype>
-            <position>79</position>
+            <position>79</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -670,7 +656,7 @@ experience. -->
             <defaulttitle>Temperature, Active</defaulttitle>
             <usertitle>Temperature, Active</usertitle>
             <datatype>gfloat</datatype>
-            <position>80</position>
+            <position>80</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -678,7 +664,7 @@ experience. -->
             <defaulttitle>Temperature, Dormant</defaulttitle>
             <usertitle>Temperature, Dormant</usertitle>
             <datatype>gfloat</datatype>
-            <position>81</position>
+            <position>81</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -686,7 +672,7 @@ experience. -->
             <defaulttitle>Total Part Quantity</defaulttitle>
             <usertitle>Total Part Quantity</usertitle>
             <datatype>gint</datatype>
-            <position>82</position>
+            <position>82</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -694,7 +680,7 @@ experience. -->
             <defaulttitle>Total Power Dissipation</defaulttitle>
             <usertitle>Total Power Dissipation</usertitle>
             <datatype>gfloat</datatype>
-            <position>83</position>
+            <position>83</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -702,7 +688,7 @@ experience. -->
             <defaulttitle>Vibration</defaulttitle>
             <usertitle>Vibration</usertitle>
             <datatype>gfloat</datatype>
-            <position>84</position>
+            <position>84</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -710,7 +696,7 @@ experience. -->
             <defaulttitle>Weibull Data Set</defaulttitle>
             <usertitle>Weibull Data Set</usertitle>
             <datatype>gint</datatype>
-            <position>85</position>
+            <position>85</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -718,7 +704,7 @@ experience. -->
             <defaulttitle>Weibull File</defaulttitle>
             <usertitle>Weibull File</usertitle>
             <datatype>gchararray</datatype>
-            <position>86</position>
+            <position>86</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -726,7 +712,7 @@ experience. -->
             <defaulttitle>Year of Manufacture</defaulttitle>
             <usertitle>Year of Manufacture</usertitle>
             <datatype>gint</datatype>
-            <position>87</position>
+            <position>87</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

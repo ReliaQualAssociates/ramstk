@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      incident_format.xml is part of The RelKit Project
+      incident_format.xml is part of the RTK Project
 
       Copyright 2010-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
 
-<!-- This file contains information used by the RelKit application to draw
+<!-- This file contains information used by the RTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
@@ -19,6 +19,7 @@ experience. -->
             <usertitle>Test ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -27,6 +28,7 @@ experience. -->
             <usertitle>Test Code</usertitle>
             <datatype>gchararray</datatype>
             <position>1</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -35,6 +37,7 @@ experience. -->
             <usertitle>Test Type</usertitle>
             <datatype>gint</datatype>
             <position>2</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -43,6 +46,7 @@ experience. -->
             <usertitle>Short Description</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -51,6 +55,7 @@ experience. -->
             <usertitle>Long Description</usertitle>
             <datatype>gchararray</datatype>
             <position>4</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -59,6 +64,7 @@ experience. -->
             <usertitle>Start Date</usertitle>
             <datatype>gchararray</datatype>
             <position>5</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -67,6 +73,7 @@ experience. -->
             <usertitle>End Date</usertitle>
             <datatype>gchararray</datatype>
             <position>6</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -75,6 +82,7 @@ experience. -->
             <usertitle>Total Test Hours</usertitle>
             <datatype>gchararray</datatype>
             <position>7</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>

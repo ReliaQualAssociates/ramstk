@@ -339,11 +339,17 @@ def calculate_hardware(treemodel, row, application):
 
             if(hr_type == 2):               # Specified, hazard rate.
                 lambdaa = treemodel.get_value(row, 34)
-                mtbf = 1.0 / lambdaa
+                try:
+                    mtbf = 1.0 / lambdaa
+                except ZeroDivisionError:
+                    mtbf = 0.0
 
             elif(hr_type == 3):             # Specified, MTBF.
                 mtbf = treemodel.get_value(row, 51)
-                lambdaa = 1.0 / mtbf
+                try:
+                    lambdaa = 1.0 / mtbf
+                except ZeroDivisionError:
+                    lambdaa = 0.0
 
             lambdaa = (lambdaa + aaf) * num * maf * (dutycycle / 100.0)
             lambdad = 0.0
