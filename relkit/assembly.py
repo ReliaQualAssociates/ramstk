@@ -2271,10 +2271,12 @@ class Assembly:
         cellmodel.clear()
         query = "SELECT * FROM tbl_failure_probability"
         _results = self._app.COMDB.execute_query(query,
-                                              None,
-                                              self._app.ComCnx)
+                                                 None,
+                                                 self._app.ComCnx)
 
-        if(_results != ''):
+        if(_results == '' or not _results or _results is None):
+            _util.application_error(_(u"There was a problem loading the failure probability list.  This may indicate your RTK common database is corrupt or out of date."))
+        else:
             _probs = len(_results)
             cellmodel.append([""])
             for i in range(_probs):
