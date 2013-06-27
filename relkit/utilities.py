@@ -748,6 +748,7 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     hbox.pack_start(image)
 
     label = _widg.make_label(_prompt_, width=400, height=200)
+    label.set_justify(gtk.JUSTIFY_LEFT)
     hbox.pack_end(label)
     dialog.vbox.pack_start(hbox)
     hbox.show_all()

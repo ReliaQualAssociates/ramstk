@@ -180,6 +180,8 @@ MTIME = 100.0
 # Variables to control GUI options.
 TABPOS = ['top', 'bottom', 'bottom']
 
+# Variables to hold various control parameters.
+FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
 class RelKitConf:
     """ The RTK configuration class. """

@@ -361,11 +361,11 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     gobject_types = [gobject.type_from_name(types[ix])
          for ix in range(len(types))]
 
-    # If this is the Hardware tree, add a column for a pixbuf.
-    if(fmt_idx == 3):
+# If this is the Hardware tree, add a column for a pixbuf.
+    if(fmt_idx == 3 or fmt_idx == 9):
         gobject_types.append(gtk.gdk.Pixbuf)
 
-    # Create the model and treeview.
+# Create the model and treeview.
     model = gtk.TreeStore(*gobject_types)
     treeview = gtk.TreeView(model)
     treeview.set_name(name)
@@ -379,7 +379,6 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell = gtk.CellRendererCombo()
             cellmodel = gtk.ListStore(gobject.TYPE_STRING)
             cellmodel.append([""])
-
             cell.set_property('has-entry', False)
             cell.set_property('model', cellmodel)
             cell.set_property('text-column', 0)
@@ -406,8 +405,14 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.connect('edited', edit_tree, int(position[i].text), model)
 
-        # If this is the Hardware tree, add a column for a pixbuf.
+# If this is the Hardware or FMECA tree, add a column for a pixbuf.
         if(i == 1 and fmt_idx == 3):
+            column = gtk.TreeViewColumn("")
+            column.set_visible(1)
+            cellpb = gtk.CellRendererPixbuf()
+            column.pack_start(cellpb, True)
+            column.set_attributes(cellpb, pixbuf=cols)
+        elif(i == 0 and fmt_idx == 9):
             column = gtk.TreeViewColumn("")
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
@@ -514,7 +519,10 @@ def resize_wrap(column, param, cell):
     else:
         width += 10
 
-    cell.set_property('wrap-width', width)
+    try:
+        cell.set_property('wrap-width', width)
+    except TypeError:                       # This is a gtk.CellRendererToggle
+        cell.set_property('width', width)
 
     return False
 

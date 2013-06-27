@@ -411,7 +411,7 @@ class PartsListWindow(gtk.Window):
 
         return(toolbar)
 
-    def load_part_tree(self, query, values):
+    def load_part_tree(self, _query_, _values_):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Revision, Function, or Assembly.
@@ -423,15 +423,14 @@ class PartsListWindow(gtk.Window):
         values -- the tuple of values to pass with the query.
         """
 
-        results = self._app.DB.execute_query(query,
-                                             values,
+        results = self._app.DB.execute_query(_query_,
+                                             _values_,
                                              self._app.ProgCnx)
 
         self.full_model.clear()
 
-        # Create an empty dictionary to hold the Assembly ID/Hardware Tree
-        # treemodel paths.  This is used to keep the Hardware Tree and the
-        # Parts List in sync.
+# Create an empty dictionary to hold the Assembly ID/Hardware Tree treemodel
+# paths.  This is used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
 
         n_parts = len(results)

@@ -44,22 +44,15 @@ CREATE TABLE "tbl_program_info" (
 );
 INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,0,0,1,1,1,1,1,'0000-00-00 00:00:00','',NULL,NULL);
 
-CREATE TABLE "tbl_mission" (
-    "fld_mission_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_mission_name" VARCHAR(512),
-    "fld_mission_description" BLOB,
-    "fld_num_phases" INTEGER DEFAULT(1),
-    "fld_mission_time" REAL
-);
-
 CREATE TABLE "tbl_mission_phase" (
-    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_phase_id" INTEGER NOT NULL,
+    "fld_phase_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_phase_name" VARCHAR(64),
     "fld_phase_description" BLOB,
-    "fld_phase_time" REAL,
-    PRIMARY KEY("fld_mission_id", "fld_phase_id")
+    "fld_phase_time" REAL
 );
+INSERT INTO "tbl_mission_phase" VALUES(0, 'Phase I', 'This is the first phase of a default mission created for all systems.', 0.5);
+INSERT INTO "tbl_mission_phase" VALUES(1, 'Phase II', 'This is the second phase of a default mission created for all systems.', 90.0);
+INSERT INTO "tbl_mission_phase" VALUES(2, 'Phase III', 'This is the third phase of a default mission created for all systems.', 9.5);
 
 CREATE TABLE "tbl_revisions" (
     "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -969,7 +962,7 @@ CREATE TABLE "tbl_fmeca" (
 CREATE TABLE "tbl_fmeca_mechanisms" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_mechanism_id" INTEGER NOT NULL,
+    "fld_mechanism_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_mechanism_description" VARCHAR(512),
     "fld_rpn_occurrence" INTEGER DEFAULT (0),
     "fld_rpn_detection" INTEGER DEFAULT (0),
@@ -977,26 +970,24 @@ CREATE TABLE "tbl_fmeca_mechanisms" (
     "fld_rpn_occurrence_new" INTEGER DEFAULT (0),
     "fld_rpn_detection_new" INTEGER DEFAULT (0),
     "fld_rpn_new" INTEGER DEFAULT (0),
-    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0'),
-    PRIMARY KEY ("fld_assembly_id", "fld_mode_id", "fld_mechanism_id")
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0')
 );
 
 CREATE TABLE "tbl_fmeca_controls" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
     "fld_mechanism_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_control_id" INTEGER NOT NULL,
+    "fld_control_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_control_description" VARCHAR(512),
     "fld_control_type" INTEGER DEFAULT (0),
-    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0:0'),
-    PRIMARY KEY ("fld_assembly_id", "fld_mode_id", "fld_mechanism_id", "fld_control_id")
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0:0')
 );
 
 CREATE TABLE "tbl_fmeca_actions" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
     "fld_mechanism_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_action_id" INTEGER NOT NULL,
+    "fld_action_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_action_recommended" BLOB,
     "fld_action_category" VARCHAR(64),
     "fld_action_owner" VARCHAR(64),
@@ -1007,8 +998,7 @@ CREATE TABLE "tbl_fmeca_actions" (
     "fld_action_approve_date" INTEGER DEFAULT (0),
     "fld_action_closed" VARCHAR(64),
     "fld_action_close_date" INTEGER DEFAULT (0),
-    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0:0:0'),
-    PRIMARY KEY ("fld_assembly_id", "fld_mode_id", "fld_mechanism_id", "fld_action_id")
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT ('0:0')
 );
 
 

@@ -175,11 +175,13 @@ class Assembly:
         self._subcategory = 0
         self._mode_id = 0
 
+# Define lists.
         self._risk_col_order = []
         self._sia_col_order = []
 
 # Define dictionaries.
         self._mission = {}
+        self._mission_phase = {}
         self._hrmodel = {}
         self._mechanisms = {}
         self._fmeca_controls = {}
@@ -2244,7 +2246,7 @@ class Assembly:
         self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode, effects, and criticality analysis (FMECA) for the selected assembly."))
         self.tvwFMECA.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
-# Load the severity clssification gtk.CellRendererCombo.
+# Load the severity classification gtk.CellRendererCombo.
         column = self.tvwFMECA.get_column(self._FMECA_col_order[11])
         cell = column.get_cell_renderers()
         cellmodel = cell[0].get_property('model')
@@ -2263,10 +2265,20 @@ class Assembly:
                 cellmodel.append([_results[i][2] + " - " + _results[i][1]])
 
 # Load the qualitative failure probability gtk.CellRendererCombo.
-        #column = self.tvwFMECA.get_column(self._FMECA_col_order[13])
-        #cell = column.get_cell_renderers()
-        #cellmodel = cell[0].get_property('model')
-        #cellmodel.clear()
+        column = self.tvwFMECA.get_column(self._FMECA_col_order[13])
+        cell = column.get_cell_renderers()
+        cellmodel = cell[0].get_property('model')
+        cellmodel.clear()
+        query = "SELECT * FROM tbl_failure_probability"
+        _results = self._app.COMDB.execute_query(query,
+                                              None,
+                                              self._app.ComCnx)
+
+        if(_results != ''):
+            _probs = len(_results)
+            cellmodel.append([""])
+            for i in range(_probs):
+                cellmodel.append([_results[i][1]])
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -2393,17 +2405,18 @@ class Assembly:
                                               None,
                                               self._app.ProgCnx)
 
-        if(_results != ''):
+        if(not _results or _results == ''):
+            pass
+        else:
             _phases = len(_results)
             cellmodel.append([""])
             for i in range(_phases):
-                self._mission[_results[i][0]] = _results[i][2]
+                self._mission_phase[_results[i][0]] = _results[i][2]
                 cellmodel.append([_results[i][1]])
 
 # Load the failure modes to the gtk.TreeView.
         query = "SELECT * FROM tbl_fmeca \
                  WHERE fld_assembly_id=%d" % self.assembly_id
-
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -2412,29 +2425,39 @@ class Assembly:
             return True
 
         _n_modes = len(results)
+        icon = _conf.ICON_DIR + '32x32/stop.png'
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         for i in range(_n_modes):
-            _data = [results[i][2], _util.none_to_string(results[i][3]),
-                     _util.none_to_string(results[i][4]),
-                     _util.none_to_string(results[i][5]),
-                     _util.none_to_string(results[i][6]),
-                     _util.none_to_string(results[i][7]),
-                     _util.none_to_string(results[i][8]),
-                     _util.none_to_string(results[i][9]),
-                     _util.none_to_string(results[i][10]),
-                     _util.none_to_string(results[i][11]),
-                     _util.none_to_string(results[i][12]),
-                     _util.none_to_string(results[i][13]),
-                     _util.none_to_string(results[i][14]),
-                     _util.none_to_string(results[i][15]), results[i][16],
-                     results[i][17], results[i][18], results[i][19],
-                     results[i][20], results[i][21], results[i][22],
-                     results[i][23], _util.none_to_string(results[i][24])]
+            _data = [results[i][self._FMECA_col_order[2]],
+                     _util.none_to_string(results[i][self._FMECA_col_order[3]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[4]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[5]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[6]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[7]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[8]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[9]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[10]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[11]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[12]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[13]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[14]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[15]]),
+                     _util.none_to_string(results[i][self._FMECA_col_order[16]]),
+                     str(results[i][self._FMECA_col_order[17]]),
+                     str(results[i][self._FMECA_col_order[18]]),
+                     str(results[i][self._FMECA_col_order[19]]),
+                     str(results[i][self._FMECA_col_order[20]]),
+                     str(results[i][self._FMECA_col_order[21]]),
+                     results[i][self._FMECA_col_order[22]],
+                     results[i][self._FMECA_col_order[23]],
+                     _util.none_to_string(results[i][self._FMECA_col_order[24]]),
+                     icon]
 
             try:
                 model.append(None, _data)
             except TypeError:
                 pass
-        return False
+
 # Load the failure mechanisms to the gtk.TreeView.
         query = "SELECT * FROM tbl_fmeca_mechanisms \
                  WHERE fld_assembly_id=%d" % self.assembly_id
@@ -2447,12 +2470,14 @@ class Assembly:
             return True
 
         _n_mechanisms = len(_results)
+        icon = _conf.ICON_DIR + '32x32/overstress.png'
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         for i in range(_n_mechanisms):
             _piter = model.get_iter_from_string(_results[i][10])
             self._mechanisms[_results[i][2]] = [_results[i][3:]]
             _data = [_results[i][2], _util.none_to_string(_results[i][3]),
-                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-                     "", "", "", "", 0, 0, ""]
+                     "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", "", 0, 0, "", icon]
 
             try:
                 model.insert(_piter, i, _data)
@@ -2468,20 +2493,25 @@ class Assembly:
                                               self._app.ProgCnx)
 
         if(not _results or _results == ''):
-            return True
+            pass
+        else:
+            _n_controls = len(_results)
+            icon = _conf.ICON_DIR + '32x32/overstress.png'
+            icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+            for i in range(_n_controls):
+                try:
+                    _piter = model.get_iter_from_string(_results[i][6])
+                except ValueError:
+                    _piter = None
+                self._fmeca_controls[_results[i][3]] = [_results[i][4:]]
+                _data = [_results[i][3], _util.none_to_string(_results[i][4]),
+                         "", "", "", "", "", "", "", "", "", "", "", "",
+                         "", "", "", "", "", "", 0, 0, "", icon]
 
-        _n_controls = len(_results)
-        for i in range(_n_controls):
-            _piter = model.get_iter_from_string(_results[i][6])
-            self._fmeca_controls[_results[i][3]] = [_results[i][4:]]
-            _data = [_results[i][3], _util.none_to_string(_results[i][4]),
-                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-                     "", "", "", "", 0, 0, ""]
-
-            try:
-                model.insert(_piter, i, _data)
-            except TypeError:
-                pass
+                try:
+                    model.insert(_piter, i, _data)
+                except TypeError:
+                    pass
 
 # Load the actions to the gtk.TreeView.
         query = "SELECT * FROM tbl_fmeca_actions \
@@ -2495,12 +2525,14 @@ class Assembly:
             return True
 
         _n_actions = len(_results)
+        icon = _conf.ICON_DIR + '32x32/overstress.png'
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         for i in range(_n_actions):
             _piter = model.get_iter_from_string(_results[i][14])
             self._fmeca_actions[_results[i][3]] = [_results[i][4:]]
             _data = [_results[i][3], _util.none_to_string(_results[i][4]),
-                     "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-                     "", "", "", "", 0, 0, ""]
+                     "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", "", "", 0, 0, "", icon]
 
             try:
                 model.insert(_piter, i, _data)
@@ -2544,6 +2576,7 @@ class Assembly:
         """
 
         if self._app.HARDWARE.ispart:
+            _util.application_error(_(u"An assembly can not be added as a child of a component.  Please select an assembly to create a child assembly."))
             return True
         else:
             if(type_ == 0):
@@ -2556,14 +2589,14 @@ class Assembly:
 
         for i in range(n_new_assembly):
 
-            # Create the default description of the assembly.
+# Create the default description of the assembly.
             _descrip = str(_conf.RELIAFREE_PREFIX[4]) + ' ' + \
                        str(_conf.RELIAFREE_PREFIX[5])
 
-            # Increment the assembly index.
+# Increment the assembly index.
             _conf.RELIAFREE_PREFIX[5] = _conf.RELIAFREE_PREFIX[5] + 1
 
-            # Find the revision ID.
+# Find the revision ID.
             if(_conf.RELIAFREE_MODULES[0] == 1):
                 _revision = self._app.REVISION.revision_id
                 values = (self._app.REVISION.revision_id,
@@ -2574,9 +2607,10 @@ class Assembly:
                 values = (0, str(_conf.RELIAFREE_PROG_INFO[3]),
                           _parent, _descrip)
 
-            # First we add the assembly to the system table.  Next we find the
-            # the ID of the newly inserted assembly.  Finally, we add this new
-            # assembly to the similar item table.
+# First we add the assembly to the system table.  Next we find the the ID of
+# the newly inserted assembly.  Finally, we add this new assembly to the
+# allocation table, risk analysis table, similar item table, and functional
+# matrix table.
             if(_conf.BACKEND == 'mysql'):
                 query = "INSERT INTO tbl_system \
                          (fld_revision_id, fld_entered_by, \
@@ -2711,18 +2745,13 @@ class Assembly:
         model = self._app.HARDWARE.model
         row = self._app.HARDWARE.selected_row
 
-        values = (model.get_string_from_iter(row),)
+        _values = (model.get_string_from_iter(row),)
 
-        # First delete all of the children from the system table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_system \
-                     WHERE fld_parent_assembly=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_system \
-                     WHERE fld_parent_assembly=?"
-
+# First delete all of the children from the system table.
+        query = "DELETE FROM tbl_system \
+                 WHERE fld_parent_assembly=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -2731,23 +2760,17 @@ class Assembly:
             return True
 
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id, model.get_value(row, 1))
+            _values = (self._app.REVISION.revision_id, model.get_value(row, 1))
         else:
-            values = (0, model.get_value(row, 1))
+            _values = (0, model.get_value(row, 1))
 
-        # Second delete the parent from the system table, then from the
-        # similar item table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_system \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_system \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+# Second delete the parent from the system table, then from the allocation
+# table, risk analysis table, similar item table, and functional matrix.
+        query = "DELETE FROM tbl_system \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -2755,17 +2778,11 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to delete assembly from system table.")
             return True
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_allocation \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_allocation \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+        query = "DELETE FROM tbl_allocation \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -2773,22 +2790,40 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to delete assembly from allocation table.")
             return True
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_similar_item \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_similar_item \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+        query = "DELETE FROM tbl_risk_analysis \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
+                                             self._app.ProgCnx,
+                                             commit=True)
+
+        if not results:
+            self._app.debug_log.error("assembly.py: Failed to delete assembly from risk analysis table.")
+            return True
+
+        query = "DELETE FROM tbl_similar_item \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
+        results = self._app.DB.execute_query(query,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
         if not results:
             self._app.debug_log.error("assembly.py: Failed to delete assembly from similar item table.")
+            return True
+
+        query = "DELETE FROM tbl_functional_matrix \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx,
+                                             commit=True)
+
+        if not results:
+            self._app.debug_log.error("assembly.py: Failed to delete assembly from functional matrix table.")
             return True
 
         self._app.REVISION.load_tree()
@@ -3261,44 +3296,31 @@ class Assembly:
                  gtk.TreeView.
         """
 
-        values = (model.get_value(row, 3), model.get_value(row, 4), \
-                  model.get_value(row, 5), model.get_value(row, 12), \
-                  model.get_value(row, 13), model.get_value(row, 8), \
-                  model.get_value(row, 9), model.get_value(row, 10), \
-                  model.get_value(row, 11), model.get_value(row, 21), \
-                  model.get_value(row, 19), model.get_value(row, 15), \
-                  model.get_value(row, 17), model.get_value(row, 0), \
-                  model.get_value(row, 1))
+        _values = (model.get_value(row, 3), model.get_value(row, 4), \
+                   model.get_value(row, 5), model.get_value(row, 12), \
+                   model.get_value(row, 13), model.get_value(row, 8), \
+                   model.get_value(row, 9), model.get_value(row, 10), \
+                   model.get_value(row, 11), model.get_value(row, 21), \
+                   model.get_value(row, 19), model.get_value(row, 15), \
+                   model.get_value(row, 17), model.get_value(row, 0), \
+                   model.get_value(row, 1))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_allocation \
-                     SET fld_included=%d, fld_n_sub_systems=%d, \
-                         fld_n_sub_elements=%d, fld_weight_factor=%f, \
-                         fld_percent_wt_factor=%f, fld_int_factor=%d, \
-                         fld_soa_factor=%d, fld_op_time_factor=%d, \
-                         fld_env_factor=%d, fld_availability_alloc=%f, \
-                         fld_reliability_alloc=%f, fld_failure_rate_alloc=%f, \
-                         fld_mtbf_alloc=%f \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_allocation \
-                     SET fld_included=?, fld_n_sub_systems=?, \
-                         fld_n_sub_elements=?, fld_weight_factor=?, \
-                         fld_percent_wt_factor=?, fld_int_factor=?, \
-                         fld_soa_factor=?, fld_op_time_factor=?, \
-                         fld_env_factor=?, fld_availability_alloc=?, \
-                         fld_reliability_alloc=?, fld_failure_rate_alloc=?, \
-                         fld_mtbf_alloc=? \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+        query = "UPDATE tbl_allocation \
+                 SET fld_included=%d, fld_n_sub_systems=%d, \
+                     fld_n_sub_elements=%d, fld_weight_factor=%f, \
+                     fld_percent_wt_factor=%f, fld_int_factor=%d, \
+                     fld_soa_factor=%d, fld_op_time_factor=%d, \
+                     fld_env_factor=%d, fld_availability_alloc=%f, \
+                     fld_reliability_alloc=%f, fld_failure_rate_alloc=%f, \
+                     fld_mtbf_alloc=%f \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
-        # Trickle down the reliability goals.
+# Trickle down the reliability goals.
         if(self.chkApplyResults.get_active()):
 
             measure = self.cmbRqmtType.get_active()
@@ -3311,34 +3333,24 @@ class Assembly:
             else:
                 value = 1.0
 
-            values = (model.get_value(row, 15), model.get_value(row, 17), \
-                      measure, value, model.get_value(row, 0), \
-                      model.get_value(row, 1))
+            _values = (model.get_value(row, 15), model.get_value(row, 17), \
+                       measure, value, model.get_value(row, 0), \
+                       model.get_value(row, 1))
 
-            if(_conf.BACKEND == 'mysql'):
-                query = "UPDATE tbl_system \
-                         SET fld_failure_rate_predicted=%f, \
-                             fld_mtbf_predicted=%f, \
-                             fld_reliability_goal_measure=%d, \
-                             fld_reliability_goal=%f \
-                         WHERE fld_revision_id=%d \
-                         AND fld_assembly_id=%d"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "UPDATE tbl_system \
-                         SET fld_failure_rate_predicted=?, \
-                             fld_mtbf_predicted=?, \
-                             fld_reliability_goal_measure=?, \
-                             fld_reliability_goal=? \
-                         WHERE fld_revision_id=? \
-                         AND fld_assembly_id=?"
-
+            query = "UPDATE tbl_system \
+                     SET fld_failure_rate_predicted=%f, \
+                         fld_mtbf_predicted=%f, \
+                         fld_reliability_goal_measure=%d, \
+                         fld_reliability_goal=%f \
+                     WHERE fld_revision_id=%d \
+                     AND fld_assembly_id=%d" % _values
             results = self._app.DB.execute_query(query,
-                                                 values,
+                                                 None,
                                                  self._app.ProgCnx,
                                                  commit=True)
 
         if not results:
-            self._app.debug_log.error("assembly.py: Failed to save assembly to allocation table.")
+            self._app.debug_log.error("assembly.py: Failed to update system table with allocation results.")
             return True
 
         return False
@@ -3361,14 +3373,14 @@ class Assembly:
             selection = self.tvwSIA.get_selection()
             (model, row) = selection.get_selected()
 
-        dialog = _widg.make_dialog(_("RTK - Edit Risk Analysis or Similar Item Functions"),
+        dialog = _widg.make_dialog(_(u"RTK - Edit Risk Analysis or Similar Item Functions"),
                                    self._app.winWorkBook)
 
         fixed = gtk.Fixed()
 
         y_pos = 10
 
-        label = _widg.make_label(_("You can define up to five functions using the Risk Analysis or Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
+        label = _widg.make_label(_(u"You can define up to five functions using the Risk Analysis or Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
 Assembly hazard rate is hr\n \
 Risk category index is cat[1-8]\n \
 Change factor is pi[1-8]\n \
@@ -3378,9 +3390,9 @@ User integer is ui[1-3]\n \
 Function result is res[1-5]\n\n \
 For example, pi1*pi2+pi3, multiplies the first change factors and adds the value to the third change factor."), 600, 350)
         fixed.put(label, 5, y_pos)
-        y_pos += 260
+        y_pos += 360
 
-        label = _widg.make_label(_("User function 1:"))
+        label = _widg.make_label(_(u"User function 1:"))
         txtFunction1 = _widg.make_entry()
         if(_index_ == 0):
             txtFunction1.set_text(model.get_value(row, 34))
@@ -3391,7 +3403,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         fixed.put(txtFunction1, 195, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("User function 2:"))
+        label = _widg.make_label(_(u"User function 2:"))
         txtFunction2 = _widg.make_entry()
         if(_index_ == 0):
             txtFunction1.set_text(model.get_value(row, 35))
@@ -3401,7 +3413,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         fixed.put(txtFunction2, 195, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("User function 3:"))
+        label = _widg.make_label(_(u"User function 3:"))
         txtFunction3 = _widg.make_entry()
         if(_index_ == 0):
             txtFunction1.set_text(model.get_value(row, 36))
@@ -3411,7 +3423,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         fixed.put(txtFunction3, 195, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("User function 4:"))
+        label = _widg.make_label(_(u"User function 4:"))
         txtFunction4 = _widg.make_entry()
         if(_index_ == 0):
             txtFunction1.set_text(model.get_value(row, 37))
@@ -3421,7 +3433,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         fixed.put(txtFunction4, 195, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_("User function 5:"))
+        label = _widg.make_label(_(u"User function 5:"))
         txtFunction5 = _widg.make_entry()
         if(_index_ == 0):
             txtFunction1.set_text(model.get_value(row, 38))
@@ -3431,7 +3443,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         fixed.put(txtFunction5, 195, y_pos)
         y_pos += 30
 
-        chkApplyAll = gtk.CheckButton(label="Apply to all assemblies.")
+        chkApplyAll = gtk.CheckButton(label=_(u"Apply to all assemblies."))
         fixed.put(chkApplyAll, 5, y_pos)
 
         fixed.show_all()
@@ -3478,37 +3490,25 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
         model = self._app.HARDWARE.model
         row = self._app.HARDWARE.selected_row
-        values = (model.get_string_from_iter(row),)
+        _values = model.get_string_from_iter(row)
 
         # Select all of the lower level element change descriptions for
         # the selected assembly.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t2.fld_description, t1.fld_change_desc_1, \
-                            t1.fld_change_desc_2, t1.fld_change_desc_3, \
-                            t1.fld_change_desc_4, t1.fld_change_desc_5, \
-                            t1.fld_change_desc_6, t1.fld_change_desc_7, \
-                            t1.fld_change_desc_8 \
-                     FROM tbl_risk_analysis AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_assembly_id=t2.fld_assembly_id \
-                     WHERE t2.fld_parent_assembly='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t2.fld_description, t1.fld_change_desc_1, \
-                            t1.fld_change_desc_2, t1.fld_change_desc_3, \
-                            t1.fld_change_desc_4, t1.fld_change_desc_5, \
-                            t1.fld_change_desc_6, t1.fld_change_desc_7, \
-                            t1.fld_change_desc_8 \
-                     FROM tbl_risk_analysis AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_assembly_id=t2.fld_assembly_id \
-                     WHERE t2.fld_parent_assembly=?"
-
+        query = "SELECT t2.fld_description, t1.fld_change_desc_1, \
+                        t1.fld_change_desc_2, t1.fld_change_desc_3, \
+                        t1.fld_change_desc_4, t1.fld_change_desc_5, \
+                        t1.fld_change_desc_6, t1.fld_change_desc_7, \
+                        t1.fld_change_desc_8 \
+                 FROM tbl_risk_analysis AS t1 \
+                 INNER JOIN tbl_system AS t2 \
+                 ON t1.fld_assembly_id=t2.fld_assembly_id \
+                 WHERE t2.fld_parent_assembly='%s'" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx)
 
-        # Combine the changes descriptions into a single change description
-        # for each change category.
+# Combine the changes descriptions into a single change description for each
+# change category.
         summary = ["", "", "", "", "", "", "", ""]
         for i in range(len(results)):
             system = results[i][0]
@@ -3517,66 +3517,44 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                     summary[j] = summary[j] + system + ":\n" + \
                                  results[i][j+1] + "\n"
 
-        # Now find the sums of the five result fields.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
-                            SUM(t1.fld_result_3), SUM(t1.fld_result_4), \
-                            SUM(t1.fld_result_5) \
-                     FROM tbl_risk_analysis AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_assembly_id=t2.fld_assembly_id \
-                     WHERE t2.fld_parent_assembly='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
-                            SUM(t1.fld_result_3), SUM(t1.fld_result_4), \
-                            SUM(t1.fld_result_5) \
-                     FROM tbl_risk_analysis AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_assembly_id=t2.fld_assembly_id \
-                     WHERE t2.fld_parent_assembly=?"
-
+# Now find the sums of the five result fields.
+        query = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
+                        SUM(t1.fld_result_3), SUM(t1.fld_result_4), \
+                        SUM(t1.fld_result_5) \
+                 FROM tbl_risk_analysis AS t1 \
+                 INNER JOIN tbl_system AS t2 \
+                 ON t1.fld_assembly_id=t2.fld_assembly_id \
+                 WHERE t2.fld_parent_assembly='%s'" % _values
         sums = self._app.DB.execute_query(query,
-                                          values,
+                                          None,
                                           self._app.ProgCnx)
 
         # Update the selected assembly's change descriptions with the combined
         # change description.
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (summary[0], summary[1], summary[2], summary[3], \
-                      summary[4], summary[5], summary[6], summary[7], \
-                      sums[0][0], sums[0][1], sums[0][2], sums[0][3], \
-                      sums[0][4], \
-                      self._app.REVISION.revision_id, self.assembly_id)
+            _values = (summary[0], summary[1], summary[2], summary[3], \
+                       summary[4], summary[5], summary[6], summary[7], \
+                       sums[0][0], sums[0][1], sums[0][2], sums[0][3], \
+                       sums[0][4], \
+                       self._app.REVISION.revision_id, self.assembly_id)
         else:
-            values = (summary[0], summary[1], summary[2], summary[3], \
-                      summary[4], summary[5], summary[6], summary[7], \
-                      sums[0][0], sums[0][1], sums[0][2], sums[0][3], \
-                      sums[0][4], 0, self.assembly_id)
+            _values = (summary[0], summary[1], summary[2], summary[3], \
+                       summary[4], summary[5], summary[6], summary[7], \
+                       sums[0][0], sums[0][1], sums[0][2], sums[0][3], \
+                       sums[0][4], 0, self.assembly_id)
 
-        # Update the database.
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_risk_analysis \
-                     SET fld_change_desc_1='%s', fld_change_desc_2='%s', \
-                         fld_change_desc_3='%s', fld_change_desc_4='%s', \
-                         fld_change_desc_5='%s', fld_change_desc_6='%s', \
-                         fld_change_desc_7='%s', fld_change_desc_8='%s', \
-                         fld_result_1=%d, fld_result_2=%d, \
-                         fld_result_3=%d, fld_result_4=%d, \
-                         fld_result_5=%d \
-                     WHERE fld_revision_id=%d AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_risk_analysis \
-                     SET fld_change_desc_1=?, fld_change_desc_2=?, \
-                         fld_change_desc_3=?, fld_change_desc_4=?, \
-                         fld_change_desc_5=?, fld_change_desc_6=?, \
-                         fld_change_desc_7=?, fld_change_desc_8=?, \
-                         fld_result_1=?, fld_result_2=?, \
-                         fld_result_3=?, fld_result_4=?, \
-                         fld_result_5=? \
-                     WHERE fld_revision_id=? AND fld_assembly_id=?"
-
+# Update the database.
+        query = "UPDATE tbl_risk_analysis \
+                 SET fld_change_desc_1='%s', fld_change_desc_2='%s', \
+                     fld_change_desc_3='%s', fld_change_desc_4='%s', \
+                     fld_change_desc_5='%s', fld_change_desc_6='%s', \
+                     fld_change_desc_7='%s', fld_change_desc_8='%s', \
+                     fld_result_1=%d, fld_result_2=%d, \
+                     fld_result_3=%d, fld_result_4=%d, \
+                     fld_result_5=%d \
+                 WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values
         self._app.DB.execute_query(query,
-                                   values,
+                                   None,
                                    self._app.ProgCnx,
                                    commit=True)
 
@@ -3620,139 +3598,103 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             equation4 = model.get_value(row, self._risk_col_order[37])
             equation5 = model.get_value(row, self._risk_col_order[38])
 
-        values = (model.get_value(row, self._risk_col_order[2]), \
-                  model.get_value(row, self._risk_col_order[3]), \
-                  model.get_value(row, self._risk_col_order[4]), \
-                  model.get_value(row, self._risk_col_order[5]), \
-                  model.get_value(row, self._risk_col_order[6]), \
-                  model.get_value(row, self._risk_col_order[7]), \
-                  model.get_value(row, self._risk_col_order[8]), \
-                  model.get_value(row, self._risk_col_order[9]), \
-                  model.get_value(row, self._risk_col_order[10]), \
-                  model.get_value(row, self._risk_col_order[11]), \
-                  model.get_value(row, self._risk_col_order[12]), \
-                  model.get_value(row, self._risk_col_order[13]), \
-                  model.get_value(row, self._risk_col_order[14]), \
-                  model.get_value(row, self._risk_col_order[15]), \
-                  model.get_value(row, self._risk_col_order[16]), \
-                  model.get_value(row, self._risk_col_order[17]), \
-                  model.get_value(row, self._risk_col_order[18]), \
-                  model.get_value(row, self._risk_col_order[19]), \
-                  model.get_value(row, self._risk_col_order[20]), \
-                  model.get_value(row, self._risk_col_order[21]), \
-                  model.get_value(row, self._risk_col_order[22]), \
-                  model.get_value(row, self._risk_col_order[23]), \
-                  model.get_value(row, self._risk_col_order[24]), \
-                  model.get_value(row, self._risk_col_order[25]), \
-                  model.get_value(row, self._risk_col_order[26]), \
-                  model.get_value(row, self._risk_col_order[27]), \
-                  model.get_value(row, self._risk_col_order[28]), \
-                  model.get_value(row, self._risk_col_order[29]), \
-                  model.get_value(row, self._risk_col_order[30]), \
-                  model.get_value(row, self._risk_col_order[31]), \
-                  model.get_value(row, self._risk_col_order[32]), \
-                  model.get_value(row, self._risk_col_order[33]), \
-                  equation1, \
-                  equation2, \
-                  equation3, \
-                  equation4, \
-                  equation5, \
-                  model.get_value(row, self._risk_col_order[39]), \
-                  model.get_value(row, self._risk_col_order[40]), \
-                  model.get_value(row, self._risk_col_order[41]), \
-                  model.get_value(row, self._risk_col_order[42]), \
-                  model.get_value(row, self._risk_col_order[43]), \
-                  model.get_value(row, self._risk_col_order[44]), \
-                  model.get_value(row, self._risk_col_order[45]), \
-                  model.get_value(row, self._risk_col_order[46]), \
-                  model.get_value(row, self._risk_col_order[47]), \
-                  model.get_value(row, self._risk_col_order[48]), \
-                  model.get_value(row, self._risk_col_order[49]), \
-                  model.get_value(row, self._risk_col_order[50]), \
-                  model.get_value(row, self._risk_col_order[51]), \
-                  model.get_value(row, self._risk_col_order[52]), \
-                  model.get_value(row, 53), \
-                  model.get_value(row, 54), \
-                  model.get_value(row, 55), \
-                  model.get_value(row, 56), \
-                  model.get_value(row, 57), \
-                  model.get_value(row, 58), \
-                  model.get_value(row, 59), \
-                  model.get_value(row, 60), \
-                  self._app.REVISION.revision_id, \
-                  model.get_value(row, self._risk_col_order[0]))
+        _values = (model.get_value(row, self._risk_col_order[2]), \
+                   model.get_value(row, self._risk_col_order[3]), \
+                   model.get_value(row, self._risk_col_order[4]), \
+                   model.get_value(row, self._risk_col_order[5]), \
+                   model.get_value(row, self._risk_col_order[6]), \
+                   model.get_value(row, self._risk_col_order[7]), \
+                   model.get_value(row, self._risk_col_order[8]), \
+                   model.get_value(row, self._risk_col_order[9]), \
+                   model.get_value(row, self._risk_col_order[10]), \
+                   model.get_value(row, self._risk_col_order[11]), \
+                   model.get_value(row, self._risk_col_order[12]), \
+                   model.get_value(row, self._risk_col_order[13]), \
+                   model.get_value(row, self._risk_col_order[14]), \
+                   model.get_value(row, self._risk_col_order[15]), \
+                   model.get_value(row, self._risk_col_order[16]), \
+                   model.get_value(row, self._risk_col_order[17]), \
+                   model.get_value(row, self._risk_col_order[18]), \
+                   model.get_value(row, self._risk_col_order[19]), \
+                   model.get_value(row, self._risk_col_order[20]), \
+                   model.get_value(row, self._risk_col_order[21]), \
+                   model.get_value(row, self._risk_col_order[22]), \
+                   model.get_value(row, self._risk_col_order[23]), \
+                   model.get_value(row, self._risk_col_order[24]), \
+                   model.get_value(row, self._risk_col_order[25]), \
+                   model.get_value(row, self._risk_col_order[26]), \
+                   model.get_value(row, self._risk_col_order[27]), \
+                   model.get_value(row, self._risk_col_order[28]), \
+                   model.get_value(row, self._risk_col_order[29]), \
+                   model.get_value(row, self._risk_col_order[30]), \
+                   model.get_value(row, self._risk_col_order[31]), \
+                   model.get_value(row, self._risk_col_order[32]), \
+                   model.get_value(row, self._risk_col_order[33]), \
+                   equation1, \
+                   equation2, \
+                   equation3, \
+                   equation4, \
+                   equation5, \
+                   model.get_value(row, self._risk_col_order[39]), \
+                   model.get_value(row, self._risk_col_order[40]), \
+                   model.get_value(row, self._risk_col_order[41]), \
+                   model.get_value(row, self._risk_col_order[42]), \
+                   model.get_value(row, self._risk_col_order[43]), \
+                   model.get_value(row, self._risk_col_order[44]), \
+                   model.get_value(row, self._risk_col_order[45]), \
+                   model.get_value(row, self._risk_col_order[46]), \
+                   model.get_value(row, self._risk_col_order[47]), \
+                   model.get_value(row, self._risk_col_order[48]), \
+                   model.get_value(row, self._risk_col_order[49]), \
+                   model.get_value(row, self._risk_col_order[50]), \
+                   model.get_value(row, self._risk_col_order[51]), \
+                   model.get_value(row, self._risk_col_order[52]), \
+                   model.get_value(row, 53), \
+                   model.get_value(row, 54), \
+                   model.get_value(row, 55), \
+                   model.get_value(row, 56), \
+                   model.get_value(row, 57), \
+                   model.get_value(row, 58), \
+                   model.get_value(row, 59), \
+                   model.get_value(row, 60), \
+                   self._app.REVISION.revision_id, \
+                   model.get_value(row, self._risk_col_order[0]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_risk_analysis \
-                     SET fld_change_desc_1='%s', fld_change_category_1=%d, \
-                         fld_change_effort_1=%f, fld_change_cost_1=%f, \
-                         fld_change_desc_2='%s', fld_change_category_2=%d, \
-                         fld_change_effort_2=%f, fld_change_cost_2=%f, \
-                         fld_change_desc_3='%s', fld_change_category_3=%d, \
-                         fld_change_effort_3=%f, fld_change_cost_3=%f, \
-                         fld_change_desc_4='%s', fld_change_category_4=%d, \
-                         fld_change_effort_4=%f, fld_change_cost_4=%f, \
-                         fld_change_desc_5='%s', fld_change_category_5=%d, \
-                         fld_change_effort_5=%f, fld_change_cost_5=%f, \
-                         fld_change_desc_6='%s', fld_change_category_6=%d, \
-                         fld_change_effort_6=%f, fld_change_cost_6=%f, \
-                         fld_change_desc_7='%s', fld_change_category_7=%d, \
-                         fld_change_effort_7=%f, fld_change_cost_7=%f, \
-                         fld_change_desc_8='%s', fld_change_category_8=%d, \
-                         fld_change_effort_8=%f, fld_change_cost_8=%f, \
-                         fld_function_1='%s', fld_function_2='%s', \
-                         fld_function_3='%s', fld_function_4='%s', \
-                         fld_function_5='%s', \
-                         fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
-                         fld_result_4=%f, fld_result_5=%f, \
-                         fld_user_blob_1='%s', fld_user_blob_2='%s', \
-                         fld_user_blob_3='%s', fld_user_float_1=%f, \
-                         fld_user_float_2=%f, fld_user_float_3=%f, \
-                         fld_user_int_1=%d, fld_user_int_2=%d, \
-                         fld_user_int_3=%d, \
-                         fld_category_value_1=%d, fld_category_value_2=%d, \
-                         fld_category_value_3=%d, fld_category_value_4=%d, \
-                         fld_category_value_5=%d, fld_category_value_6=%d, \
-                         fld_category_value_7=%d, fld_category_value_8=%d \
-                     WHERE fld_revision_id=%d \
-                     AND fld_risk_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_risk_analysis \
-                     SET fld_change_desc_1=?, fld_change_category_1=?, \
-                         fld_change_effort_1=?, fld_change_cost_1=?, \
-                         fld_change_desc_2=?, fld_change_category_2=?, \
-                         fld_change_effort_2=?, fld_change_cost_2=?, \
-                         fld_change_desc_3=?, fld_change_category_3=?, \
-                         fld_change_effort_3=?, fld_change_cost_3=?, \
-                         fld_change_desc_4=?, fld_change_category_4=?, \
-                         fld_change_effort_4=?, fld_change_cost_4=?, \
-                         fld_change_desc_5=?, fld_change_category_5=?, \
-                         fld_change_effort_5=?, fld_change_cost_5=?, \
-                         fld_change_desc_6=?, fld_change_category_6=?, \
-                         fld_change_effort_6=?, fld_change_cost_6=?, \
-                         fld_change_desc_7=?, fld_change_category_7=?, \
-                         fld_change_effort_7=?, fld_change_cost_7=?, \
-                         fld_change_desc_8=?, fld_change_category_8=?, \
-                         fld_change_effort_8=?, fld_change_cost_8=?, \
-                         fld_function_1=?, fld_function_2=?, \
-                         fld_function_3=?, fld_function_4=?, \
-                         fld_function_5=?, \
-                         fld_result_1=?, fld_result_2=?, fld_result_3=?, \
-                         fld_result_4=?, fld_result_5=?, \
-                         fld_user_blob_1=?, fld_user_blob_2=?, \
-                         fld_user_blob_3=?, fld_user_float_1=?, \
-                         fld_user_float_2=?, fld_user_float_3=?, \
-                         fld_user_int_1=?, fld_user_int_2=?, \
-                         fld_user_int_3=?, \
-                         fld_category_value_1=?, fld_category_value_2=?, \
-                         fld_category_value_3=?, fld_category_value_4=?, \
-                         fld_category_value_5=?, fld_category_value_6=?, \
-                         fld_category_value_7=?, fld_category_value_8=? \
-                     WHERE fld_revision_id=? \
-                     AND fld_risk_id=?"
-
+        query = "UPDATE tbl_risk_analysis \
+                 SET fld_change_desc_1='%s', fld_change_category_1=%d, \
+                     fld_change_effort_1=%f, fld_change_cost_1=%f, \
+                     fld_change_desc_2='%s', fld_change_category_2=%d, \
+                     fld_change_effort_2=%f, fld_change_cost_2=%f, \
+                     fld_change_desc_3='%s', fld_change_category_3=%d, \
+                     fld_change_effort_3=%f, fld_change_cost_3=%f, \
+                     fld_change_desc_4='%s', fld_change_category_4=%d, \
+                     fld_change_effort_4=%f, fld_change_cost_4=%f, \
+                     fld_change_desc_5='%s', fld_change_category_5=%d, \
+                     fld_change_effort_5=%f, fld_change_cost_5=%f, \
+                     fld_change_desc_6='%s', fld_change_category_6=%d, \
+                     fld_change_effort_6=%f, fld_change_cost_6=%f, \
+                     fld_change_desc_7='%s', fld_change_category_7=%d, \
+                     fld_change_effort_7=%f, fld_change_cost_7=%f, \
+                     fld_change_desc_8='%s', fld_change_category_8=%d, \
+                     fld_change_effort_8=%f, fld_change_cost_8=%f, \
+                     fld_function_1='%s', fld_function_2='%s', \
+                     fld_function_3='%s', fld_function_4='%s', \
+                     fld_function_5='%s', \
+                     fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
+                     fld_result_4=%f, fld_result_5=%f, \
+                     fld_user_blob_1='%s', fld_user_blob_2='%s', \
+                     fld_user_blob_3='%s', fld_user_float_1=%f, \
+                     fld_user_float_2=%f, fld_user_float_3=%f, \
+                     fld_user_int_1=%d, fld_user_int_2=%d, \
+                     fld_user_int_3=%d, \
+                     fld_category_value_1=%d, fld_category_value_2=%d, \
+                     fld_category_value_3=%d, fld_category_value_4=%d, \
+                     fld_category_value_5=%d, fld_category_value_6=%d, \
+                     fld_category_value_7=%d, fld_category_value_8=%d \
+                 WHERE fld_revision_id=%d \
+                 AND fld_risk_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -3800,97 +3742,104 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             equation4 = model.get_value(row, self._sia_col_order[22])
             equation5 = model.get_value(row, self._sia_col_order[23])
 
-        values = (model.get_value(row, self._sia_col_order[3]), \
-                  model.get_value(row, self._sia_col_order[4]), \
-                  model.get_value(row, self._sia_col_order[5]), \
-                  model.get_value(row, self._sia_col_order[6]), \
-                  model.get_value(row, self._sia_col_order[7]), \
-                  model.get_value(row, self._sia_col_order[8]), \
-                  model.get_value(row, self._sia_col_order[9]), \
-                  model.get_value(row, self._sia_col_order[10]), \
-                  model.get_value(row, self._sia_col_order[11]), \
-                  model.get_value(row, self._sia_col_order[12]), \
-                  model.get_value(row, self._sia_col_order[13]), \
-                  model.get_value(row, self._sia_col_order[14]), \
-                  model.get_value(row, self._sia_col_order[15]), \
-                  model.get_value(row, self._sia_col_order[16]), \
-                  model.get_value(row, self._sia_col_order[17]), \
-                  model.get_value(row, self._sia_col_order[18]), \
-                  equation1, \
-                  equation2, \
-                  equation3, \
-                  equation4, \
-                  equation5, \
-                  model.get_value(row, self._sia_col_order[24]), \
-                  model.get_value(row, self._sia_col_order[25]), \
-                  model.get_value(row, self._sia_col_order[26]), \
-                  model.get_value(row, self._sia_col_order[27]), \
-                  model.get_value(row, self._sia_col_order[28]), \
-                  model.get_value(row, self._sia_col_order[29]), \
-                  model.get_value(row, self._sia_col_order[30]), \
-                  model.get_value(row, self._sia_col_order[31]), \
-                  model.get_value(row, self._sia_col_order[32]), \
-                  model.get_value(row, self._sia_col_order[33]), \
-                  model.get_value(row, self._sia_col_order[34]), \
-                  model.get_value(row, self._sia_col_order[35]), \
-                  model.get_value(row, self._sia_col_order[36]), \
-                  model.get_value(row, self._sia_col_order[37]), \
-                  self._app.REVISION.revision_id, \
-                  model.get_value(row, self._sia_col_order[0]))
+        _values = (model.get_value(row, self._sia_col_order[3]), \
+                   model.get_value(row, self._sia_col_order[4]), \
+                   model.get_value(row, self._sia_col_order[5]), \
+                   model.get_value(row, self._sia_col_order[6]), \
+                   model.get_value(row, self._sia_col_order[7]), \
+                   model.get_value(row, self._sia_col_order[8]), \
+                   model.get_value(row, self._sia_col_order[9]), \
+                   model.get_value(row, self._sia_col_order[10]), \
+                   model.get_value(row, self._sia_col_order[11]), \
+                   model.get_value(row, self._sia_col_order[12]), \
+                   model.get_value(row, self._sia_col_order[13]), \
+                   model.get_value(row, self._sia_col_order[14]), \
+                   model.get_value(row, self._sia_col_order[15]), \
+                   model.get_value(row, self._sia_col_order[16]), \
+                   model.get_value(row, self._sia_col_order[17]), \
+                   model.get_value(row, self._sia_col_order[18]), \
+                   equation1, \
+                   equation2, \
+                   equation3, \
+                   equation4, \
+                   equation5, \
+                   model.get_value(row, self._sia_col_order[24]), \
+                   model.get_value(row, self._sia_col_order[25]), \
+                   model.get_value(row, self._sia_col_order[26]), \
+                   model.get_value(row, self._sia_col_order[27]), \
+                   model.get_value(row, self._sia_col_order[28]), \
+                   model.get_value(row, self._sia_col_order[29]), \
+                   model.get_value(row, self._sia_col_order[30]), \
+                   model.get_value(row, self._sia_col_order[31]), \
+                   model.get_value(row, self._sia_col_order[32]), \
+                   model.get_value(row, self._sia_col_order[33]), \
+                   model.get_value(row, self._sia_col_order[34]), \
+                   model.get_value(row, self._sia_col_order[35]), \
+                   model.get_value(row, self._sia_col_order[36]), \
+                   model.get_value(row, self._sia_col_order[37]), \
+                   self._app.REVISION.revision_id, \
+                   model.get_value(row, self._sia_col_order[0]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_similar_item \
-                     SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
-                         fld_change_desc_2='%s', fld_change_factor_2=%f, \
-                         fld_change_desc_3='%s', fld_change_factor_3=%f, \
-                         fld_change_desc_4='%s', fld_change_factor_4=%f, \
-                         fld_change_desc_5='%s', fld_change_factor_5=%f, \
-                         fld_change_desc_6='%s', fld_change_factor_6=%f, \
-                         fld_change_desc_7='%s', fld_change_factor_7=%f, \
-                         fld_change_desc_8='%s', fld_change_factor_8=%f, \
-                         fld_function_1='%s', fld_function_2='%s', \
-                         fld_function_3='%s', fld_function_4='%s', \
-                         fld_function_5='%s', \
-                         fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
-                         fld_result_4=%f, fld_result_5=%f, \
-                         fld_user_blob_1='%s', fld_user_blob_2='%s', \
-                         fld_user_blob_3='%s', fld_user_float_1=%f, \
-                         fld_user_float_2=%f, fld_user_float_3=%f, \
-                         fld_user_int_1=%d, fld_user_int_2=%d, \
-                         fld_user_int_3=%d \
-                     WHERE fld_revision_id=%d \
-                     AND fld_sia_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_similar_item \
-                     SET fld_change_desc_1=?, fld_change_factor_1=?, \
-                         fld_change_desc_2=?, fld_change_factor_2=?, \
-                         fld_change_desc_3=?, fld_change_factor_3=?, \
-                         fld_change_desc_4=?, fld_change_factor_4=?, \
-                         fld_change_desc_5=?, fld_change_factor_5=?, \
-                         fld_change_desc_6=?, fld_change_factor_6=?, \
-                         fld_change_desc_7=?, fld_change_factor_7=?, \
-                         fld_change_desc_8=?, fld_change_factor_8=?, \
-                         fld_function_1=?, fld_function_2=?, \
-                         fld_function_3=?, fld_function_4=?, \
-                         fld_function_5=?, \
-                         fld_result_1=?, fld_result_2=?, fld_result_3=?, \
-                         fld_result_4=?, fld_result_5=?, \
-                         fld_user_blob_1=?, fld_user_blob_2=?, \
-                         fld_user_blob_3=?, fld_user_float_1=?, \
-                         fld_user_float_2=?, fld_user_float_3=?, \
-                         fld_user_int_1=?, fld_user_int_2=?, \
-                         fld_user_int_3=? \
-                     WHERE fld_revision_id=? \
-                     AND fld_sia_id=?"
-
+        query = "UPDATE tbl_similar_item \
+                 SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
+                     fld_change_desc_2='%s', fld_change_factor_2=%f, \
+                     fld_change_desc_3='%s', fld_change_factor_3=%f, \
+                     fld_change_desc_4='%s', fld_change_factor_4=%f, \
+                     fld_change_desc_5='%s', fld_change_factor_5=%f, \
+                     fld_change_desc_6='%s', fld_change_factor_6=%f, \
+                     fld_change_desc_7='%s', fld_change_factor_7=%f, \
+                     fld_change_desc_8='%s', fld_change_factor_8=%f, \
+                     fld_function_1='%s', fld_function_2='%s', \
+                     fld_function_3='%s', fld_function_4='%s', \
+                     fld_function_5='%s', \
+                     fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
+                     fld_result_4=%f, fld_result_5=%f, \
+                     fld_user_blob_1='%s', fld_user_blob_2='%s', \
+                     fld_user_blob_3='%s', fld_user_float_1=%f, \
+                     fld_user_float_2=%f, fld_user_float_3=%f, \
+                     fld_user_int_1=%d, fld_user_int_2=%d, \
+                     fld_user_int_3=%d \
+                 WHERE fld_revision_id=%d \
+                 AND fld_sia_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
         if not results:
             self._app.debug_log.error("assembly.py: Failed to save assembly to similar item table.")
             return True
+
+        return False
+
+    def _fmeca_save(self):
+        """
+        Saves the ASSEMBLY Object FMECA gtk.TreeView information to the
+        Program's MySQL or SQLite3 database.
+        """
+
+        model = self.tvwSIA.get_model()
+        model.foreach(self._sia_save_line_item)
+
+        return False
+
+    def _fmeca_save_line_item(self, model, path, row):
+        """
+        Saves each row in the Assembly Object similar item analysis treeview
+        model to the database.
+
+        Keyword Arguments:
+        model -- the Assembly Object similar item analysis gtk.TreeModel.
+        path_ -- the path of the active row in the Assembly Object
+                 similar item analysis gtk.TreeModel.
+        row   -- the selected row in the Assembly Object similar item
+                 analysis gtk.TreeView.
+        """
+
+        #_values = (model.get_value(row, self._sia_col_order[3]), \
+        #           model.get_value(row, self._sia_col_order[4]), \
+        #           model.get_value(row, self._sia_col_order[5]), \
+        #           model.get_value(row, self._sia_col_order[6]), \
 
         return False
 
@@ -4515,7 +4464,9 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                 _calc.calculate_project(widget, self._app, 3)
         elif(_page_ == 6):                  # FMEA/FMECA tab.
             if(widget.get_label() == 'Mode'):
-                query = "SELECT seq FROM sqlite_sequence WHERE name=tbl_fmeca"
+# Find the id of the next failure mode.
+                query = "SELECT seq FROM sqlite_sequence \
+                         WHERE name='tbl_fmeca'"
                 _last_id = self._app.DB.execute_query(query,
                                                       None,
                                                       self._app.ProgCnx)
@@ -4523,11 +4474,12 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                 if(not _last_id):
                     _last_id = 0
                 else:
-                    _last_id += 1
+                    _last_id = _last_id[0][0] + 1
 
+# Insert the new failure mode.
                 query = "INSERT INTO tbl_fmeca \
-                         (fld_assembly_id, fld_mode_id) \
-                         VALUES (%d, %d)" % (self.assembly_id, _last_id)
+                         (fld_assembly_id, fld_function_id, fld_mode_id) \
+                         VALUES (%d, 0, %d)" % (self.assembly_id, _last_id)
                 self._app.DB.execute_query(query,
                                            None,
                                            self._app.ProgCnx,
@@ -4535,11 +4487,125 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                 self._fmeca_tab_load()
 
             elif(widget.get_label() == 'Mechanism'):
-                print "Add a fuckin' mechanism"
+# Find the id and gtk.TreeIter of the parent failure mode.
+                _selection = self.tvwFMECA.get_selection()
+                (model, row) = _selection.get_selected()
+                _mode_id = model.get_value(row, 0)
+                _parent =  model.get_string_from_iter(row)
+
+                if(_parent.count(':') != 0):
+                    _util.application_error(_(u"  A failure mechanism can only be the child of a failure mode, not another failure mechanism, control, or action."))
+                    return True
+
+# Find the id of the next failure mechanism.
+                query = "SELECT seq FROM sqlite_sequence \
+                         WHERE name='tbl_fmeca_mechanisms'"
+                _next_id = self._app.DB.execute_query(query,
+                                                      None,
+                                                      self._app.ProgCnx)
+
+                if(not _next_id):
+                    _next_id = 0
+                else:
+                    _next_id = _next_id[0][0] + 1
+
+# Insert the new failure mechanism.
+                query = "INSERT INTO tbl_fmeca_mechanisms \
+                         (fld_assembly_id, fld_mode_id, \
+                          fld_mechanism_id, fld_parent) \
+                         VALUES (%d, %d, %d, '%s')" % (self.assembly_id,
+                                                       _mode_id, _next_id,
+                                                       _parent)
+
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           True)
+                self._fmeca_tab_load()
+
             elif(widget.get_label() == 'Control'):
-                print "Add a control"
+# Find the id and gtk.TreeIter of the parent failure mechanism.
+                _selection = self.tvwFMECA.get_selection()
+                (model, row) = _selection.get_selected()
+                _mechanism_id = model.get_value(row, 0)
+                _parent =  model.get_string_from_iter(row)
+
+                if(_parent.count(':') != 1):
+                    _util.application_error(_(u"A control can only be the child of a failure mechanism, not another control, failure mode, or action."))
+                    return True
+
+# Find the id of the grand-parent failure mode.
+                row = model.iter_parent(row)
+                _mode_id = model.get_value(row, 0)
+
+# Find the id of the next control.
+                query = "SELECT seq FROM sqlite_sequence \
+                         WHERE name='tbl_fmeca_controls'"
+                _next_id = self._app.DB.execute_query(query,
+                                                      None,
+                                                      self._app.ProgCnx)
+
+                if(not _next_id):
+                    _next_id = 0
+                else:
+                    _next_id = _next_id[0][0] + 1
+
+# Insert the new control.
+                    query = "INSERT INTO tbl_fmeca_controls \
+                             (fld_assembly_id, fld_mode_id, \
+                              fld_mechanism_id, fld_control_id, fld_parent) \
+                             VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                               _mode_id,
+                                                               _mechanism_id,
+                                                               _next_id,
+                                                               _parent)
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           True)
+                self._fmeca_tab_load()
+
             elif(widget.get_label() == 'Action'):
-                print "Add an action, motha fucka"
+# Find the id and gtk.TreeIter of the parent failure mechanism.
+                _selection = self.tvwFMECA.get_selection()
+                (model, row) = _selection.get_selected()
+                _mechanism_id = model.get_value(row, 0)
+                _parent =  model.get_string_from_iter(row)
+
+                if(_parent.count(':') != 1):
+                    _util.application_error(_(u"An action can only be the child of a failure mechanism, not another action, failure mode, or control."))
+                    return True
+
+# Find the id of the grand-parent failure mode.
+                row = model.iter_parent(row)
+                _mode_id = model.get_value(row, 0)
+
+# Find the id of the next control.
+                query = "SELECT seq FROM sqlite_sequence \
+                         WHERE name='tbl_fmeca_actions'"
+                _next_id = self._app.DB.execute_query(query,
+                                                      None,
+                                                      self._app.ProgCnx)
+
+                if(not _next_id):
+                    _next_id = 0
+                else:
+                    _next_id = _next_id[0][0] + 1
+
+# Insert the new action.
+                query = "INSERT INTO tbl_fmeca_actions \
+                         (fld_assembly_id, fld_mode_id, \
+                          fld_mechanism_id, fld_action_id, fld_parent) \
+                         VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                           _mode_id,
+                                                           _mechanism_id,
+                                                           _next_id,
+                                                           _parent)
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           True)
+                self._fmeca_tab_load()
 
             elif(_button_ == 'Remove'):
                 print "Remove mode/mechanism/cause"

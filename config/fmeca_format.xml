@@ -144,7 +144,7 @@ experience. -->
         <column>
             <defaulttitle>Effect Probability</defaulttitle>
             <usertitle>Effect Probability</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>14</position>
             <widget>spin</widget>
             <editable>1</editable>
@@ -153,7 +153,7 @@ experience. -->
         <column>
             <defaulttitle>Mode Ratio</defaulttitle>
             <usertitle>Mode Ratio</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
@@ -162,7 +162,7 @@ experience. -->
         <column>
             <defaulttitle>Mode Failure Rate</defaulttitle>
             <usertitle>Mode Failure Rate</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>16</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -171,7 +171,7 @@ experience. -->
         <column>
             <defaulttitle>Mode Operating Time</defaulttitle>
             <usertitle>Mode Operating Time</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>17</position>
             <widget>text</widget>
             <editable>1</editable>
@@ -180,7 +180,7 @@ experience. -->
         <column>
             <defaulttitle>Mode Criticality</defaulttitle>
             <usertitle>Mode Criticality</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>18</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -189,7 +189,7 @@ experience. -->
         <column>
             <defaulttitle>Severity (RPN)</defaulttitle>
             <usertitle>Severity (RPN)</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>19</position>
             <widget>text</widget>
             <editable>1</editable>

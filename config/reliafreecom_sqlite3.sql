@@ -1,6 +1,9 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
+--
+-- Create tables for storing environmental information.
+--
 DROP TABLE IF EXISTS "tbl_active_environs";
 CREATE TABLE "tbl_active_environs" (
   "fld_subcategory_id" INTEGER NOT NULL,
@@ -27,6 +30,19 @@ INSERT INTO "tbl_active_environs" VALUES (1,1,11,'SF','Space, Flight',0.5);
 INSERT INTO "tbl_active_environs" VALUES (1,1,12,'MF','Missile, Flight',5);
 INSERT INTO "tbl_active_environs" VALUES (1,1,13,'ML','Missile, Launch',12);
 INSERT INTO "tbl_active_environs" VALUES (1,1,14,'CL','Cannon, Launch',220);
+
+DROP TABLE IF EXISTS "tbl_dormant_environs";
+CREATE TABLE "tbl_dormant_environs" (
+  "fld_model_id" INTEGER NOT NULL,
+  "fld_dormant_environ_id" INTEGER NOT NULL,
+  "fld_dormant_environ_noun" VARCHAR(64) NOT NULL,
+  PRIMARY KEY ("fld_model_id","fld_dormant_environ_id"),
+  CONSTRAINT "tbl_dormant_environs_ibfk_1" FOREIGN KEY ("fld_model_id") REFERENCES "tbl_calculation_model" ("fld_model_id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+INSERT INTO "tbl_dormant_environs" VALUES (1,1,'Ground');
+INSERT INTO "tbl_dormant_environs" VALUES (1,2,'Naval');
+INSERT INTO "tbl_dormant_environs" VALUES (1,3,'Airborne');
+
 
 DROP TABLE IF EXISTS "tbl_allocation_models";
 CREATE TABLE "tbl_allocation_models" (
@@ -112,6 +128,10 @@ INSERT INTO "tbl_criticality" VALUES (2,"Critical","II","Could result in permane
 INSERT INTO "tbl_criticality" VALUES (3,"Marginal","III","Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.");
 INSERT INTO "tbl_criticality" VALUES (4,"Negligble","IV","Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.");
 
+--
+-- Create tables used to store information for software reliability
+-- predictions.
+--
 DROP TABLE IF EXISTS "tbl_development_environment";
 CREATE TABLE "tbl_development_environment" (
   "fld_development_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -144,18 +164,6 @@ INSERT INTO "tbl_distributions" VALUES (2,'Exponential');
 INSERT INTO "tbl_distributions" VALUES (3,'LogNormal');
 INSERT INTO "tbl_distributions" VALUES (4,'Uniform');
 INSERT INTO "tbl_distributions" VALUES (5,'Weibull');
-
-DROP TABLE IF EXISTS "tbl_dormant_environs";
-CREATE TABLE "tbl_dormant_environs" (
-  "fld_model_id" INTEGER NOT NULL,
-  "fld_dormant_environ_id" INTEGER NOT NULL,
-  "fld_dormant_environ_noun" VARCHAR(64) NOT NULL,
-  PRIMARY KEY ("fld_model_id","fld_dormant_environ_id"),
-  CONSTRAINT "tbl_dormant_environs_ibfk_1" FOREIGN KEY ("fld_model_id") REFERENCES "tbl_calculation_model" ("fld_model_id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "tbl_dormant_environs" VALUES (1,1,'Ground');
-INSERT INTO "tbl_dormant_environs" VALUES (1,2,'Naval');
-INSERT INTO "tbl_dormant_environs" VALUES (1,3,'Airborne');
 
 DROP TABLE IF EXISTS "tbl_failure_modes";
 CREATE TABLE "tbl_failure_modes" (
