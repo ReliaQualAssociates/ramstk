@@ -2223,8 +2223,8 @@ class Testing:
         Method to load the TESTING Object test data gtk.TreeView.
         """
 
-        query = "SELECT fld_record_id, fld_left_interval, fld_right_interval, \
-                        fld_quantity \
+        query = "SELECT fld_record_id, fld_left_interval, \
+                        fld_right_interval, fld_quantity \
                  FROM tbl_survival_data \
                  WHERE fld_dataset_id=%d" % self.test_id
         _results = self._app.DB.execute_query(query,

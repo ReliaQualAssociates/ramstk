@@ -126,17 +126,13 @@ class Hardware:
         """
 
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,)
+            _values = (self._app.REVISION.revision_id,)
         else:
-            values = (0,)
+            _values = (0,)
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT * FROM tbl_system WHERE fld_revision_id=%d"
-        if(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT * FROM tbl_system WHERE fld_revision_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
+        _query = "SELECT * FROM tbl_system WHERE fld_revision_id=%d" % _values
+        results = self._app.DB.execute_query(_query,
+                                             None,
                                              self._app.ProgCnx)
 
         if(results == '' or not results):
@@ -268,7 +264,11 @@ class Hardware:
         (self.model, self.selected_row) = selection.get_selected()
         self._assembly_id = self.model.get_value(self.selected_row, 1)
 
-        _path_ = self.model.get_string_from_iter(self.selected_row)
+        if(self.model.get_value(self.selected_row, 63) == 0):
+            _path_ = self.model.get_string_from_iter(self.selected_row)
+        elif(self.model.get_value(self.selected_row, 63) == 1):
+            _row_ = self.model.iter_parent(self.selected_row)
+            _path_ = self.model.get_string_from_iter(_row_)
 
 # Find the current revision if using the revision module, otherwise set this
 # to the default value.
@@ -281,10 +281,12 @@ class Hardware:
 
 # Build the queries to select the reliability tests and program incidents
 # associated with the selected HARDWARE.
-        qryParts = "SELECT * FROM tbl_system \
-                    WHERE fld_part=1 \
-                    AND fld_revision_id=%d \
-                    AND fld_parent_assembly='%s'" % _values1
+        qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
+                    FROM tbl_prediction AS t1 \
+                    INNER JOIN tbl_system AS t2 \
+                    ON t1.fld_assembly_id=t2.fld_assembly_id \
+                    WHERE t2.fld_revision_id=%d \
+                    AND t2.fld_parent_assembly='%s'" % _values1
         qryIncidents = "SELECT * FROM tbl_incident\
                         WHERE fld_revision_id=%d \
                         AND fld_hardware_id=%d \
@@ -300,13 +302,11 @@ class Hardware:
             if(self.model.get_value(self.selected_row, 63) == 0):
                 self.ispart = False
                 self.assembly = _path_
-                #self._app.winParts.filter_parts_list(3)
                 self._app.ASSEMBLY.load_notebook()
 
             elif(self.model.get_value(self.selected_row, 63) == 1):
                 self.ispart = True
                 self.assembly = self.model.get_value(self.selected_row, 62)
-                #self._app.winParts.filter_parts_list(3)
                 self._find_parts_list_row()
                 self._app.COMPONENT.load_notebook()
 
@@ -320,13 +320,14 @@ class Hardware:
         the HARDWARE Object gtk.TreeView is a COMPONENT Object.
         """
 
-        row = self._app.winParts.model.get_iter_first()
-        while(self._app.winParts.model.get_value(row, 1) != self._assembly_id):
-            row = self._app.winParts.model.iter_next(row)
+        model = self._app.winParts.tvwPartsList.get_model()
+        row = model.get_iter_first()
+        while(model.get_value(row, 1) != self._assembly_id):
+            row = model.iter_next(row)
 
         if(row is not None):
             self._app.winParts.selected_row = row
-            _path_ = self._app.winParts.model.get_path(row)
+            _path_ = self._app.winParts.full_model.get_path(row)
             self._app.winParts.tvwPartsList.set_cursor(_path_)
 
         return False
@@ -450,105 +451,56 @@ class Hardware:
                   self._app.REVISION.revision_id,
                   model.get_value(row, self._col_order[1]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_system \
-                     SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
-                         fld_alt_part_number='%s', fld_assembly_criticality=%f, \
-                         fld_attachments='%s', fld_availability=%f, \
-                         fld_availability_mission=%f, fld_cage_code='%s', \
-                         fld_calculation_model=%d, fld_category_id=%d, \
-                         fld_comp_ref_des='%s', fld_cost=%f, \
-                         fld_cost_failure=%f, fld_cost_hour=%f, \
-                         fld_cost_type=%f, fld_description='%s', \
-                         fld_detection_fr=%f, fld_detection_percent=%f, \
-                         fld_duty_cycle=%f, fld_entered_by='%s', \
-                         fld_environment_active=%d, fld_environment_dormant=%d, \
-                         fld_failure_dist=%d, fld_failure_parameter_1=%f, \
-                         fld_failure_parameter_2=%f, fld_failure_parameter_3=%f, \
-                         fld_failure_rate_active=%f, fld_failure_rate_dormant=%f, \
-                         fld_failure_rate_mission=%f, fld_failure_rate_percent=%f, \
-                         fld_failure_rate_predicted=%f, fld_failure_rate_software=%f, \
-                         fld_failure_rate_specified=%f, fld_failure_rate_type=%d, \
-                         fld_figure_number='%s', fld_humidity=%f, \
-                         fld_image_file='%s', fld_isolation_fr=%f, \
-                         fld_isolation_percent=%f, fld_lcn='%s', \
-                         fld_level=%d, fld_manufacturer=%d, \
-                         fld_mcmt=%f, fld_mission_time=%f, \
-                         fld_mmt=%f, fld_modified_by='%s', \
-                         fld_mpmt=%f, fld_mtbf_mission=%f, \
-                         fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
-                         fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
-                         fld_mttr_mult_adj_factor=%f, fld_mttr_specified=%f, \
-                         fld_mttr_type=%d, fld_mult_adj_factor=%f, \
-                         fld_name='%s', fld_nsn='%s', \
-                         fld_overstress=%d, fld_page_number='%s', \
-                         fld_parent_assembly='%s', fld_part=%d, \
-                         fld_part_number='%s', fld_percent_isolation_group_ri=%f, \
-                         fld_percent_isolation_single_ri=%f, fld_quantity=%d, \
-                         fld_ref_des='%s', fld_reliability_mission=%f, \
-                         fld_reliability_predicted=%f, fld_remarks='%s', \
-                         fld_repair_dist=%d, fld_repair_parameter_1=%f, \
-                         fld_repair_parameter_2=%f, fld_repairable=%d, \
-                         fld_rpm=%f, fld_specification_number='%s', \
-                         fld_subcategory_id=%d, fld_tagged_part=%d, \
-                         fld_temperature_active=%f, fld_temperature_dormant=%f, \
-                         fld_total_part_quantity=%d, fld_total_power_dissipation=%f, \
-                         fld_vibration=%f, fld_weibull_data_set=%d, \
-                         fld_weibull_file='%s', fld_year_of_manufacture=%d, \
-                         fld_ht_model='%s', fld_reliability_goal_measure=%d, \
-                         fld_reliability_goal=%f \
-                 WHERE fld_revision_id=%d AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_system \
-                     SET fld_add_adj_factor=?, fld_allocation_type=?, \
-                         fld_alt_part_number=?, fld_assembly_criticality=?, \
-                         fld_attachments=?, fld_availability=?, \
-                         fld_availability_mission=?, fld_cage_code=?, \
-                         fld_calculation_model=?, fld_category_id=?, \
-                         fld_comp_ref_des=?, fld_cost=?, \
-                         fld_cost_failure=?, fld_cost_hour=?, \
-                         fld_cost_type=?, fld_description=?, \
-                         fld_detection_fr=?, fld_detection_percent=?, \
-                         fld_duty_cycle=?, fld_entered_by=?, \
-                         fld_environment_active=?, fld_environment_dormant=?, \
-                         fld_failure_dist=?, fld_failure_parameter_1=?, \
-                         fld_failure_parameter_2=?, fld_failure_parameter_3=?, \
-                         fld_failure_rate_active=?, fld_failure_rate_dormant=?, \
-                         fld_failure_rate_mission=?, fld_failure_rate_percent=?, \
-                         fld_failure_rate_predicted=?, fld_failure_rate_software=?, \
-                         fld_failure_rate_specified=?, fld_failure_rate_type=?, \
-                         fld_figure_number=?, fld_humidity=?, \
-                         fld_image_file=?, fld_isolation_fr=?, \
-                         fld_isolation_percent=?, fld_lcn=?, \
-                         fld_level=?, fld_manufacturer=?, \
-                         fld_mcmt=?, fld_mission_time=?, \
-                         fld_mmt=?, fld_modified_by=?, \
-                         fld_mpmt=?, fld_mtbf_mission=?, \
-                         fld_mtbf_predicted=?, fld_mtbf_specified=?, \
-                         fld_mttr=?, fld_mttr_add_adj_factor=?, \
-                         fld_mttr_mult_adj_factor=?, fld_mttr_specified=?, \
-                         fld_mttr_type=?, fld_mult_adj_factor=?, \
-                         fld_name=?, fld_nsn=?, \
-                         fld_overstress=?, fld_page_number=?, \
-                         fld_parent_assembly=?, fld_part=?, \
-                         fld_part_number=?, fld_percent_isolation_group_ri=?, \
-                         fld_percent_isolation_single_ri=?, fld_quantity=?, \
-                         fld_ref_des=?, fld_reliability_mission=?, \
-                         fld_reliability_predicted=?, fld_remarks=?, \
-                         fld_repair_dist=?, fld_repair_parameter_1=?, \
-                         fld_repair_parameter_2=?, fld_repairable=?, \
-                         fld_rpm=?, fld_specification_number=?, \
-                         fld_subcategory_id=?, fld_tagged_part=?, \
-                         fld_temperature_active=?, fld_temperature_dormant=?, \
-                         fld_total_part_quantity=?, fld_total_power_dissipation=?, \
-                         fld_vibration=?, fld_weibull_data_set=?, \
-                         fld_weibull_file=?, fld_year_of_manufacture=?,"" \
-                         fld_ht_model=?, fld_reliability_goal_measure=?, \
-                         fld_reliability_goal=? \
-                    WHERE fld_revision_id=? AND fld_assembly_id=?"
+        query = "UPDATE tbl_system \
+                 SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
+                     fld_alt_part_number='%s', fld_assembly_criticality='%s', \
+                     fld_attachments='%s', fld_availability=%f, \
+                     fld_availability_mission=%f, fld_cage_code='%s', \
+                     fld_calculation_model=%d, fld_category_id=%d, \
+                     fld_comp_ref_des='%s', fld_cost=%f, \
+                     fld_cost_failure=%f, fld_cost_hour=%f, \
+                     fld_cost_type=%f, fld_description='%s', \
+                     fld_detection_fr=%f, fld_detection_percent=%f, \
+                     fld_duty_cycle=%f, fld_entered_by='%s', \
+                     fld_environment_active=%d, fld_environment_dormant=%d, \
+                     fld_failure_dist=%d, fld_failure_parameter_1=%f, \
+                     fld_failure_parameter_2=%f, fld_failure_parameter_3=%f, \
+                     fld_failure_rate_active=%f, fld_failure_rate_dormant=%f, \
+                     fld_failure_rate_mission=%f, fld_failure_rate_percent=%f, \
+                     fld_failure_rate_predicted=%f, fld_failure_rate_software=%f, \
+                     fld_failure_rate_specified=%f, fld_failure_rate_type=%d, \
+                     fld_figure_number='%s', fld_humidity=%f, \
+                     fld_image_file='%s', fld_isolation_fr=%f, \
+                     fld_isolation_percent=%f, fld_lcn='%s', \
+                     fld_level=%d, fld_manufacturer=%d, \
+                     fld_mcmt=%f, fld_mission_time=%f, \
+                     fld_mmt=%f, fld_modified_by='%s', \
+                     fld_mpmt=%f, fld_mtbf_mission=%f, \
+                     fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
+                     fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
+                     fld_mttr_mult_adj_factor=%f, fld_mttr_specified=%f, \
+                     fld_mttr_type=%d, fld_mult_adj_factor=%f, \
+                     fld_name='%s', fld_nsn='%s', \
+                     fld_overstress=%d, fld_page_number='%s', \
+                     fld_parent_assembly='%s', fld_part=%d, \
+                     fld_part_number='%s', fld_percent_isolation_group_ri=%f, \
+                     fld_percent_isolation_single_ri=%f, fld_quantity=%d, \
+                     fld_ref_des='%s', fld_reliability_mission=%f, \
+                     fld_reliability_predicted=%f, fld_remarks='%s', \
+                     fld_repair_dist=%d, fld_repair_parameter_1=%f, \
+                     fld_repair_parameter_2=%f, fld_repairable=%d, \
+                     fld_rpm=%f, fld_specification_number='%s', \
+                     fld_subcategory_id=%d, fld_tagged_part=%d, \
+                     fld_temperature_active=%f, fld_temperature_dormant=%f, \
+                     fld_total_part_quantity=%d, fld_total_power_dissipation=%f, \
+                     fld_vibration=%f, fld_weibull_data_set=%d, \
+                     fld_weibull_file='%s', fld_year_of_manufacture=%d, \
+                     fld_ht_model='%s', fld_reliability_goal_measure=%d, \
+                     fld_reliability_goal=%f \
+             WHERE fld_revision_id=%d AND fld_assembly_id=%d" % values
 
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 

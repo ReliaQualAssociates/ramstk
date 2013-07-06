@@ -2051,7 +2051,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
               [0.04, 0.02, 0.01, 0.03, 0.01, 0.08, 0.20, 0.00],
               [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
-    # First find the component category/subcategory index.
+# First find the component category/subcategory index.
     if(category == 1):                      # Capacitor
         c_index = 3
     elif(category == 2):                    # Connection
@@ -2075,8 +2075,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     elif(category == 10):                   # Switching Device
         c_index = 5
 
-    # Now find the appropriate active to passive environment
-    # index.
+# Now find the appropriate active to passive environment index.
     if(active_env > 0 and
        active_env < 4):                     # Ground
         if(dormant_env == 1):               # Ground
@@ -2113,6 +2112,54 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
         lambdad = 0.0
 
     return(lambdad)
+
+
+def criticality_analysis(_CA_, _ItemCA_, _RPN_):
+    """
+    Function to perform criticality calculations for FMECA.
+
+    Keyword Arguments:
+    _CA_     -- list containing inputs for the MIL-STD-1629A mode criticality
+                calculation.
+    _ItemCA_ -- list containing inputs for the MIL-STD-1629A item criticality
+                calculation.
+    _RPN_    -- list containing inputs for the automotive criticality
+                calculation.
+    """
+
+    fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+
+    _item_crit = u''
+
+# First, calculate the mode criticality and assign result to position 4.
+# Second, calculate the mode failure rate and assign result to position 5.
+# Third, calculate the item criticality and assign result to position 6.
+    _keys = _CA_.keys()
+    for i in range(len(_keys)):
+        _CA_[_keys[i]][4] = _CA_[_keys[i]][0] * _CA_[_keys[i]][1] * _CA_[_keys[i]][2] * _CA_[_keys[i]][3]
+        _CA_[_keys[i]][5] = _CA_[_keys[i]][1] * _CA_[_keys[i]][2]
+
+# Now calculate the item criticality in accordance with MIL-STD-1629A.
+    _keys = _ItemCA_.keys()
+    for i in range(len(_keys)):
+        _cats = sorted(list(set([j[1] for j in _ItemCA_[_keys[i]]])))
+        for k in range(len(_cats)):
+            _crit = 0.0
+            _modes = [j[0] for j in _ItemCA_[_keys[i]] if j[1] == _cats[k]]
+            for l in range(len(_modes)):
+                _crit += _CA_[_modes[l]][4]
+
+            _item_crit = _item_crit + _cats[k] + ": " + str(fmt.format(_crit)) + "\n"
+
+        _ItemCA_[_keys[i]].append(_item_crit)
+
+# Now calculate the RPN criticality.
+    _keys = _RPN_.keys()
+    for i in range(len(_keys)):
+        _RPN_[_keys[i]][3] = _RPN_[_keys[i]][0] * _RPN_[_keys[i]][1] * _RPN_[_keys[i]][2]
+        _RPN_[_keys[i]][7] = _RPN_[_keys[i]][4] * _RPN_[_keys[i]][5] * _RPN_[_keys[i]][6]
+
+    return(_CA_, _ItemCA_, _RPN_)
 
 
 def moving_average(_data_, n=3):

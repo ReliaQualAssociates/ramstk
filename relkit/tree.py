@@ -510,31 +510,6 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-# Insert item button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Add"))
-        button.set_tooltip_text(_("Add an item to the current product structure."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self._add_item)
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Delete item button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Delete"))
-        button.set_tooltip_text(_("Delete the currently selected item."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self._remove_item)
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
 # Cut button
         button = gtk.ToolButton()
         button.set_label(_(u"Cut"))
@@ -684,60 +659,6 @@ class TreeWindow(gtk.Window):
         toolbar.show()
 
         return(toolbar)
-
-    def _add_item(self, button):
-        """
-        Method to add an item to the open RTK Program.  What is added
-        depends on the selected RTK Module.
-
-        Keyword Arguments:
-        button -- the gtk.ToolButton that called this method.
-        """
-
-        page_num = self.notebook.get_current_page()
-
-        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
-            self._app.REVISION.revision_add()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
-            self._app.VALIDATION.vandv_task_add()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
-            #self._app.TESTING.test_plan_add()
-            AddTestPlan(button, self._app)
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
-            print "Add an incident"
-# TODO: Create method to add an incident to the database.
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
-            print "Add a dataset"
-# TODO: Crate method to add a dataset to the database.
-
-        return False
-
-    def _remove_item(self, button):
-        """
-        Method to remove an item from the open RTK Program.  What is added
-        depends on the selected RTK Module.
-
-        Keyword Arguments:
-        button -- the gtk.ToolButton that called this method.
-        """
-
-        page_num = self.notebook.get_current_page()
-        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
-            #self._app.REVISION.revision_add()
-            print "Remove selected revision."
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
-            #self._app.VALIDATION.vandv_task_add()
-            print "Remove selected V&V task."
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
-            self._app.TESTING.test_plan_remove()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
-            print "Remove selected incident."
-# TODO: Create method to add an incident to the database.
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
-            print "Remove selected dataset."
-# TODO: Crate method to add a dataset to the database.
-
-        return False
 
     def _notebook_page_switched(self, notebook, page, page_num):
         """

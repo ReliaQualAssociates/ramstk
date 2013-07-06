@@ -362,7 +362,13 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
          for ix in range(len(types))]
 
 # If this is the Hardware tree, add a column for a pixbuf.
-    if(fmt_idx == 3 or fmt_idx == 9):
+# If this is the FMECA tree, add an integer column and a column for a pixbuf.
+    if(fmt_idx == 3):
+        gobject_types.append(gtk.gdk.Pixbuf)
+    elif(fmt_idx == 9):
+        gobject_types.append(gobject.TYPE_INT)
+        gobject_types.append(gobject.TYPE_STRING)
+        gobject_types.append(gobject.TYPE_BOOLEAN)
         gobject_types.append(gtk.gdk.Pixbuf)
 
 # Create the model and treeview.
@@ -379,50 +385,61 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell = gtk.CellRendererCombo()
             cellmodel = gtk.ListStore(gobject.TYPE_STRING)
             cellmodel.append([""])
+            cell.set_property('background', bg_col)
+            cell.set_property('editable', int(editable[i].text))
+            cell.set_property('foreground', fg_col)
             cell.set_property('has-entry', False)
             cell.set_property('model', cellmodel)
             cell.set_property('text-column', 0)
-            cell.set_property('editable', int(editable[i].text))
+            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-mode', pango.WRAP_WORD)
+            cell.connect('edited', edit_tree, int(position[i].text), model)
         elif(widget[i].text == 'spin'):
             cell = gtk.CellRendererSpin()
             adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
             cell.set_property('adjustment', adjustment)
+            cell.set_property('background', bg_col)
             cell.set_property('digits', 2)
             cell.set_property('editable', int(editable[i].text))
+            cell.set_property('foreground', fg_col)
+            cell.connect('edited', edit_tree, int(position[i].text), model)
         elif(widget[i].text == 'toggle'):
             cell = gtk.CellRendererToggle()
             cell.set_property('activatable', int(editable[i].text))
+            cell.connect('toggled', cell_toggled, int(position[i].text), model)
         else:
             cell = gtk.CellRendererText()
+            cell.set_property('background', bg_col)
             cell.set_property('editable', int(editable[i].text))
+            cell.set_property('foreground', fg_col)
+            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-mode', pango.WRAP_WORD)
+            cell.connect('edited', edit_tree, int(position[i].text), model)
 
         if(int(editable[i].text) == 0):
             cell.set_property('background', 'light gray')
-        elif(int(editable[i].text) == 1 and widget[i].text != 'toggle'):
-            cell.set_property('background', bg_col)
-            cell.set_property('foreground', fg_col)
-            cell.set_property('wrap-width', 250)
-            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-            cell.connect('edited', edit_tree, int(position[i].text), model)
 
-# If this is the Hardware or FMECA tree, add a column for a pixbuf.
+        column = gtk.TreeViewColumn("")
+
+# If this is the Hardware tree, add a column for a pixbuf.
+# If this is the FMECA tree, add a column for an integer and a pixbuf
         if(i == 1 and fmt_idx == 3):
-            column = gtk.TreeViewColumn("")
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
             column.set_attributes(cellpb, pixbuf=cols)
         elif(i == 0 and fmt_idx == 9):
-            column = gtk.TreeViewColumn("")
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
-            column.set_attributes(cellpb, pixbuf=cols)
+            column.set_attributes(cellpb, pixbuf=cols + 3)
         else:
-            column = gtk.TreeViewColumn()
             column.set_visible(int(visible[i].text))
             column.pack_start(cell, True)
-            column.set_attributes(cell, text=int(position[i].text))
+            if(widget[i].text == 'toggle'):
+                column.set_attributes(cell, active=int(position[i].text))
+            else:
+                column.set_attributes(cell, text=int(position[i].text))
 
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
@@ -440,6 +457,14 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
         if(i > 0):
             column.set_reorderable(True)
 
+        treeview.append_column(column)
+
+    if(fmt_idx == 9):
+        column = gtk.TreeViewColumn("")
+        column.set_visible(0)
+        cell = gtk.CellRendererText()
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=cols)
         treeview.append_column(column)
 
     return(treeview, order)
@@ -495,6 +520,22 @@ def edit_tree(cell, path, new_text, position, model):
         model[path][position] = int(new_text)
     elif(type == 'gfloat'):
         model[path][position] = float(new_text)
+
+    return False
+
+
+def cell_toggled(cell, path, position, model):
+    """
+    Called whenever a TreeView CellRenderer is edited.
+
+    Keyword Arguments:
+    cell     -- the CellRenderer that was edited.
+    path     -- the TreeView path of the CellRenderer that was edited.
+    position -- the column position of the edited CellRenderer.
+    model    -- the TreeModel the CellRenderer belongs to.
+    """
+
+    model[path][position] = not cell.get_active()
 
     return False
 

@@ -218,8 +218,8 @@ class Component():
 
         toolbar = gtk.Toolbar()
 
-        # Add item button.  Depending on the notebook page selected will
-        # determine what type of item is added.
+# Add item button.  Depending on the notebook page selected will determine what
+# type of item is added.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnAddItem.set_icon_widget(image)
@@ -227,8 +227,8 @@ class Component():
         self.btnAddItem.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnAddItem, 0)
 
-        # Remove item button.  Depending on the notebook page selected will
-        # determine what type of item is removed.
+# Remove item button.  Depending on the notebook page selected will determine
+# what type of item is removed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         self.btnRemoveItem.set_icon_widget(image)
@@ -238,8 +238,8 @@ class Component():
 
         toolbar.insert(gtk.SeparatorToolItem(), 2)
 
-        # Perform analysis button.  Depending on the notebook page selected
-        # will determine which analysis is executed.
+# Perform analysis button.  Depending on the notebook page selected will
+# determine which analysis is executed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         self.btnAnalyze.set_icon_widget(image)
@@ -247,8 +247,8 @@ class Component():
         self.btnAnalyze.connect('clicked', self._toolbutton_pressed)
         toolbar.insert(self.btnAnalyze, 3)
 
-        # Save results button.  Depending on the notebook page selected will
-        # determine which results are saved.
+# Save results button.  Depending on the notebook page selected will determine
+# which results are saved.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         self.btnSaveResults.set_icon_widget(image)
@@ -556,6 +556,9 @@ class Component():
         treemodel = self._app.HARDWARE.model
         row = self._app.HARDWARE.selected_row
 
+# Get the remarks gtk.TextBuffer.
+        _remarks = self.txtRemarks.get_children()[0].get_children()[0].get_buffer()
+
         self.txtRevisionID.set_text(str(treemodel.get_value(row, 0)))
         self.txtAltPartNum.set_text(treemodel.get_value(row, 4))
         self.txtAttachments.set_text(treemodel.get_value(row, 6))
@@ -573,9 +576,9 @@ class Component():
         self.txtQuantity.set_text(str(treemodel.get_value(row, 67)))
         self.txtRefDes.set_text(treemodel.get_value(row, 68))
         if treemodel.get_value(row, 71) is None:
-            self.txtRemarks.set_text("")
+            _remarks.set_text("")
         else:
-            self.txtRemarks.set_text(treemodel.get_value(row, 71))
+            _remarks.set_text(treemodel.get_value(row, 71))
         self.chkRepairable.set_active(treemodel.get_value(row, 75))
         self.txtSpecification.set_text(treemodel.get_value(row, 77))
         self.chkTagged.set_active(treemodel.get_value(row, 79))
@@ -1339,7 +1342,10 @@ class Component():
 
         _derate.plot(_x_, _y_, 'r.-', linewidth=2)
         _derate.plot(_temperature_, _power_, 'go')
-        _derate.axis([0.95 * _x_[0], 1.05 * _x_[2], _y_[2], 1.05 * _y_[0]])
+        if(_x_[0] != _x_[2] and _y_[0] != _y_[2]):
+            _derate.axis([0.95 * _x_[0], 1.05 * _x_[2], _y_[2], 1.05 * _y_[0]])
+        else:
+            _derate.axis([0.95, 1.05, 0.0, 1.05])
 
         return False
 
@@ -1591,7 +1597,7 @@ class Component():
         event  -- which button was pressed to call this function.
         """
 
-        n_new_components = _util.add_items(_("Component"))
+        n_new_components = _util.add_items(_(u"Component"))
 
         for i in range(n_new_components):
 
@@ -1698,17 +1704,11 @@ class Component():
                 self._app.debug_log.error("component.py: Failed to add new component to functional matrix table.")
                 return True
 
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_fmeca_items \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_fmeca_items \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (?, ?)"
-
+            query = "INSERT INTO tbl_fmeca_items \
+                     (fld_assembly_id) \
+                     VALUES (%d)" % self._app.ASSEMBLY.assembly_id
             #results = self._app.DB.execute_query(query,
-            #                                     values,
+            #                                     None,
             #                                     self._app.ProgCnx,
             #                                     commit=True)
 
@@ -1735,21 +1735,15 @@ class Component():
         if not self._app.HARDWARE.ispart:
             return True
 
-        values = (self._app.REVISION.revision_id,
-                  self._app.ASSEMBLY.assembly_id)
+        _values = (self._app.REVISION.revision_id,
+                   self._app.ASSEMBLY.assembly_id)
 
-        # First delete the part from the System Table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_system \
+# First delete the part from the System Table.
+        query = "DELETE FROM tbl_system \
                  WHERE fld_revision_id=%d \
-                 AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_system \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -1757,18 +1751,12 @@ class Component():
             self._app.debug_log.error("component.py: Failed to delete component from system table.")
             return True
 
-        # Then delete the part information from the Functional Matrix table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_functional_matrix \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_functional_matrix \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+# Then delete the part information from the Functional Matrix table.
+        query = "DELETE FROM tbl_functional_matrix \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -1776,18 +1764,12 @@ class Component():
             self._app.debug_log.error("component.py: Failed to delete component from functional matrix table.")
             return True
 
-        # Then delete the part information from the Prediction table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_prediction \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_prediction \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+# Then delete the part information from the Prediction table.
+        query = "DELETE FROM tbl_prediction \
+                 WHERE fld_revision_id=%d \
+                 AND fld_assembly_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -1795,18 +1777,11 @@ class Component():
             self._app.debug_log.error("component.py: Failed to delete component from prediction table.")
             return True
 
-        # Then delete the part information from the FMECA table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_fmeca_items \
-                     WHERE fld_revision_id=%d \
-                     AND fld_assembly_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_fmeca_items \
-                     WHERE fld_revision_id=? \
-                     AND fld_assembly_id=?"
-
+# Then delete the part information from the FMECA table.
+        query = "DELETE FROM tbl_fmeca \
+                 WHERE fld_assembly_id=%d" % self._app.ASSEMBLY.assembly_id
         #results = self._app.DB.execute_query(query,
-        #                                     values,
+        #                                     None,
         #                                     self._app.ProgCnx,
         #                                     commit=True)
 
@@ -1830,7 +1805,7 @@ class Component():
             self.model = self._app.winParts.full_model
             self.selected_row = self._app.winParts.selected_row
 
-        # Remove existing gtk.Notebook pages except the General Data page.
+# Remove existing gtk.Notebook pages except the General Data page.
         while(self.notebook.get_n_pages() > 1):
             self.notebook.remove_page(-1)
 
@@ -1857,7 +1832,7 @@ class Component():
         self._app.winWorkBook.show_all()
 
         _title_ = _(u"RTK Work Bench: Analyzing %s") % \
-                  self.system_model.get_value(self.system_selected_row, 17)
+                  self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 17)
         self._app.winWorkBook.set_title(_title_)
         self.notebook.set_current_page(0)
 

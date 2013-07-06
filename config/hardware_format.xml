@@ -58,7 +58,7 @@ experience. -->
         <column>
             <defaulttitle>Assembly Criticality</defaulttitle>
             <usertitle>Assembly Criticality</usertitle>
-            <datatype>gfloat</datatype>
+            <datatype>gchararray</datatype>
             <position>5</position><widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>

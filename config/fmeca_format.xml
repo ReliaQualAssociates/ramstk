@@ -187,19 +187,37 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Severity (RPN)</defaulttitle>
-            <usertitle>Severity (RPN)</usertitle>
+            <defaulttitle>Item Criticality</defaulttitle>
+            <usertitle>Item Criticality</usertitle>
             <datatype>gchararray</datatype>
             <position>19</position>
             <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity (RPN)</defaulttitle>
+            <usertitle>Severity (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>20</position>
+            <widget>combo</widget>
             <editable>1</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity New (RPN)</defaulttitle>
+            <usertitle>Severity New (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>21</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
         </column>
         <column>
             <defaulttitle>Critical Item</defaulttitle>
             <usertitle>Critical Item</usertitle>
             <datatype>gint</datatype>
-            <position>20</position>
+            <position>22</position>
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -208,7 +226,7 @@ experience. -->
             <defaulttitle>Single Point of Failure</defaulttitle>
             <usertitle>Single Point of Failure</usertitle>
             <datatype>gint</datatype>
-            <position>21</position>
+            <position>23</position>
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -217,7 +235,7 @@ experience. -->
             <defaulttitle>Remarks</defaulttitle>
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
-            <position>22</position>
+            <position>24</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>

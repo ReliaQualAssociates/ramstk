@@ -22,7 +22,8 @@ All rights reserved. -->
             <defaulttitle>Assembly ID</defaulttitle>
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
-            <position>1</position><widget>text</widget>
+            <position>1</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -30,7 +31,8 @@ All rights reserved. -->
             <defaulttitle>Function ID</defaulttitle>
             <usertitle>Function ID</usertitle>
             <datatype>gint</datatype>
-            <position>2</position><widget>text</widget>
+            <position>2</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

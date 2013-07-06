@@ -223,6 +223,7 @@ def split_string(string):
 
     return(strlist)
 
+
 def none_to_string(string):
     """ Converts None types to an empty string. """
 
@@ -230,6 +231,7 @@ def none_to_string(string):
         return('')
     else:
         return(string)
+
 
 def string_to_boolean(string):
     """ Converts string representations of TRUE/FALSE to an integer value for
@@ -248,6 +250,7 @@ def string_to_boolean(string):
         result = 1
 
     return(result)
+
 
 def date_to_ordinal(date):
     """ Converts date strings to oridinal dates for use in the database.
@@ -1332,9 +1335,12 @@ class Options:
             fixed.put(self.btnSaveOptions, 5, 215)
 
             query = "SELECT fld_revision_active, fld_function_active, \
-                            fld_fmeca_active, fld_maintainability_active, \
-                            fld_rcm_active, fld_rbd_active, fld_fta_active, \
-                            fld_fraca_active, fld_software_active \
+                            fld_requirement_active, fld_hardware_active, \
+                            fld_software_active, fld_vandv_active, \
+                            fld_testing_active, fld_rcm_active, \
+                            fld_fraca_active, fld_fmeca_active, \
+                            fld_survival_active, fld_rbd_active, \
+                            fld_fta_active \
                      FROM tbl_program_info"
             results = _app.DB.execute_query(query,
                                             None,
@@ -1344,10 +1350,10 @@ class Options:
             self.chkRevisions.set_active(results[0][0])
             self.chkFunctions.set_active(results[0][1])
             self.chkRequirements.set_active(results[0][2])
-            self.chkSoftware.set_active(results[0][3])
-            self.chkValidation.set_active(results[0][4])
-            self.chkRG.set_active(results[0][5])
-            self.chkIncidents.set_active(results[0][6])
+            self.chkSoftware.set_active(results[0][4])
+            self.chkValidation.set_active(results[0][5])
+            self.chkRG.set_active(results[0][6])
+            self.chkIncidents.set_active(results[0][8])
 
             label = gtk.Label(_("RTK Modules"))
             label.set_tooltip_text(_("Select active RTK modules."))
@@ -1357,11 +1363,11 @@ class Options:
         # ----- ----- ----- - Create list edit options - ----- ----- ----- #
         fixed = gtk.Fixed()
 
-        self.rdoMeasurement = gtk.RadioButton(group=None, label=_("Edit measurement units"))
-        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoMeasurement, label=_("Edit requirement types"))
-        self.rdoRiskCategory = gtk.RadioButton(group=self.rdoMeasurement, label=_("Edit risk categories"))
-        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoMeasurement, label=_("Edit V&V activity types"))
-        self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement, label=_("Edit user list"))
+        self.rdoMeasurement = gtk.RadioButton(group=None, label=_(u"Edit measurement units"))
+        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit requirement types"))
+        self.rdoRiskCategory = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit risk categories"))
+        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit V&V activity types"))
+        self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit user list"))
 
         self.btnListEdit = gtk.Button(stock=gtk.STOCK_EDIT)
         self.btnListEdit.connect('clicked', self.edit_lists)
@@ -1381,28 +1387,251 @@ class Options:
         # ----- ----- ----- - Create tree edit options - ----- ----- ----- #
         fixed = gtk.Fixed()
 
-        self.rdoRevision = gtk.RadioButton(group=None, label=_("Edit Revision tree layout"))
-        self.rdoFunction = gtk.RadioButton(group=self.rdoRevision, label=_("Edit Function tree layout"))
-        self.rdoRequirement = gtk.RadioButton(group=self.rdoRevision, label=_("Edit Requirement tree layout"))
-        self.rdoHardware = gtk.RadioButton(group=self.rdoRevision, label=_("Edit Hardware tree layout"))
-        self.rdoValidation = gtk.RadioButton(group=self.rdoRevision, label=_("Edit V&V tree layout"))
+        self.rdoRevision = gtk.RadioButton(group=None, label=_(u"Edit Revision tree layout"))
+        self.rdoFunction = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Function tree layout"))
+        self.rdoRequirement = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Requirement tree layout"))
+        self.rdoHardware = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Hardware tree layout"))
+        self.rdoValidation = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit V&V tree layout"))
+        self.rdoRiskAnalysis = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Risk Analysis list layout"))
 
         self.btnTreeEdit = gtk.Button(stock=gtk.STOCK_EDIT)
+        self.btnTreeEdit.connect('released', self._edit_tree)
 
         fixed.put(self.rdoRevision, 5, 5)
         fixed.put(self.rdoFunction, 5, 35)
-        fixed.put(self.rdoRequirement, 5, 70)
-        fixed.put(self.rdoHardware, 5, 105)
-        fixed.put(self.rdoValidation, 5, 135)
-        fixed.put(self.btnTreeEdit, 5, 205)
+        fixed.put(self.rdoRequirement, 5, 65)
+        fixed.put(self.rdoHardware, 5, 95)
+        fixed.put(self.rdoValidation, 5, 125)
+        fixed.put(self.rdoRiskAnalysis, 5, 155)
+        fixed.put(self.btnTreeEdit, 5, 215)
 
-        label = gtk.Label(_("Edit Tree Layouts"))
-        label.set_tooltip_text(_("Allows editting of tree layouts used in RTK."))
+        label = gtk.Label(_(u"Edit Tree Layouts"))
+        label.set_tooltip_text(_(u"Allows editting of tree layouts used in RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+
+        # ----- ----- ----- Create tree edit gtk.TreeView ----- ----- ----- #
+        vbox = gtk.VBox()
+
+        self.tvwEditTree = gtk.TreeView()
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_INT, gobject.TYPE_STRING,
+                              gobject.TYPE_STRING)
+        self.tvwEditTree.set_model(model)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.add(self.tvwEditTree)
+
+        vbox.pack_start(scrollwindow)
+
+        fixed = gtk.Fixed()
+
+        self.btnSaveTree = gtk.Button(_(u"Save Layout"))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSaveTree.set_image(image)
+        self.btnSaveTree.connect('clicked', self._save_tree_layout)
+
+        fixed.put(self.btnSaveTree, 5, 5)
+
+        vbox.pack_end(fixed)
+
+        label = gtk.Label(_(u"Edit Tree"))
+        label.set_tooltip_text(_(u"Allows editting of tree layouts used in RTK."))
+        notebook.insert_page(vbox, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         self.winOptions.add(notebook)
         self.winOptions.show_all()
+
+    def _edit_tree(self, button):
+        """
+        Method to edit gtk.TreeView layouts
+        """
+
+        import pango
+        from lxml import etree
+
+        _edit_tree_labels = [_(u"Default\nTitle"), _(u"User\nTitle"),
+                             _(u"Column\nPosition"), _(u"Can\nEdit?"),
+                             _(u"Is\nVisible?")]
+
+        if(self.rdoRiskAnalysis.get_active()):
+            _name = 'Risk'
+            _fmt_idx = 17
+
+# Retrieve the default heading text from the format file.
+        path = "/root/tree[@name='%s']/column/defaulttitle" % _name
+        default = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve the default heading text from the format file.
+        path = "/root/tree[@name='%s']/column/usertitle" % _name
+        user = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve the column position from the format file.
+        path = "/root/tree[@name='%s']/column/position" % _name
+        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve whether or not the column is editable from the format file.
+        path = "/root/tree[@name='%s']/column/editable" % _name
+        editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve whether or not the column is visible from the format file.
+        path = "/root/tree[@name='%s']/column/visible" % _name
+        visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve datatypes from the format file.
+        path = "/root/tree[@name='%s']/column/datatype" % _name
+        datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+# Retrieve widget types from the format file.
+        path = "/root/tree[@name='%s']/column/widget" % _name
+        widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+
+        model = self.tvwEditTree.get_model()
+        model.clear()
+
+        for i in range(5):
+
+            if(i == 0):
+                cell = gtk.CellRendererText()
+                cell.set_property('background', 'light gray')
+                cell.set_property('editable', 0)
+                cell.set_property('foreground', '#000000')
+                cell.set_property('wrap-width', 250)
+                cell.set_property('wrap-mode', pango.WRAP_WORD)
+            elif(i > 0 and i < 3):
+                cell = gtk.CellRendererText()
+                cell.set_property('background', '#FFFFFF')
+                cell.set_property('editable', 1)
+                cell.set_property('foreground', '#000000')
+                cell.set_property('wrap-width', 250)
+                cell.set_property('wrap-mode', pango.WRAP_WORD)
+                cell.connect('edited', self._cell_edit, i, model)
+            elif(i > 4):
+                cell = gtk.CellRendererText()
+                cell.set_property('editable', 0)
+            else:
+                cell = gtk.CellRendererToggle()
+                cell.set_property('activatable', 1)
+                cell.connect('toggled', self._cell_toggled, i, model)
+
+            column = gtk.TreeViewColumn(_edit_tree_labels[i])
+            column.pack_start(cell, True)
+            if(i < 3):
+                column.set_attributes(cell, text=i)
+            elif(i > 4):
+                column.set_visible(0)
+            else:
+                column.set_attributes(cell, active=i)
+
+            self.tvwEditTree.append_column(column)
+
+        for i in range(len(default)):
+            _data = [default[i].text, user[i].text, int(position[i].text),
+                     int(editable[i].text), int(visible[i].text),
+                     datatype[i].text, widget[i].text]
+            model.append(_data)
+
+        notebook = self.winOptions.get_children()
+        notebook[0].set_current_page(2)
+
+        return False
+
+    def _cell_edit(self, cell, path, new_text, position, model):
+        """
+        Called whenever a TreeView CellRenderer is edited.
+
+        Keyword Arguments:
+        cell     -- the CellRenderer that was edited.
+        path     -- the TreeView path of the CellRenderer that was edited.
+        new_text -- the new text in the edited CellRenderer.
+        position -- the column position of the edited CellRenderer.
+        model    -- the TreeModel the CellRenderer belongs to.
+        """
+
+        type = gobject.type_name(model.get_column_type(position))
+
+        if(type == 'gchararray'):
+            model[path][position] = str(new_text)
+        elif(type == 'gint'):
+            model[path][position] = int(new_text)
+        elif(type == 'gfloat'):
+            model[path][position] = float(new_text)
+
+        return False
+
+    def _cell_toggled(self, cell, path, position, model):
+        """
+        Called whenever a TreeView CellRenderer is edited.
+
+        Keyword Arguments:
+        cell     -- the CellRenderer that was edited.
+        path     -- the TreeView path of the CellRenderer that was edited.
+        position -- the column position of the edited CellRenderer.
+        model    -- the TreeModel the CellRenderer belongs to.
+        """
+
+        model[path][position] = not cell.get_active()
+
+        return False
+
+    def _save_tree_layout(self, button):
+        """
+        Method for saving the gtk.TreeView layout file.
+
+        Keyword Arguments:
+        button --
+        """
+
+        from lxml import etree
+        import os
+
+        if(self.rdoRiskAnalysis.get_active()):
+            _name = 'Risk'
+            _fmt_idx = 17
+
+        _format_file = _conf.RELIAFREE_FORMAT_FILE[_fmt_idx]
+        _basename = os.path.basename(_format_file)
+
+        file = '/tmp/tempfile.xml'
+        f = open(file, 'w')
+
+        f.write("<!--\n")
+        f.write("-*- coding: utf-8 -*-\n\n")
+        f.write("%s is part of the RTK Project\n\n" % _basename)
+        f.write('Copyright 2011-2013 Andrew "Weibullguy" Rowland <andrew DOT rowland AT reliaqual DOT com>\n\n')
+        f.write("All rights reserved.-->\n\n")
+        f.write("<!-- This file contains information used by the RTK application to draw\n")
+        f.write("various widgets.  These values can be changed by the user to personalize\n")
+        f.write("their experience. -->\n\n")
+
+        f.write("<root>\n")
+        f.write('\t<tree name="%s">\n' % _name)
+
+        model = self.tvwEditTree.get_model()
+        row = model.get_iter_first()
+        while row is not None:
+            f.write("\t\t<column>\n")
+            f.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" % model.get_value(row, 0))
+            f.write("\t\t\t<usertitle>%s</usertitle>\n"% model.get_value(row, 1))
+            f.write("\t\t\t<datatype>%s</datatype>\n" % model.get_value(row, 5))
+            f.write('\t\t\t<position>%d</position>\n' % model.get_value(row, 2))
+            f.write("\t\t\t<widget>%s</widget>\n" % model.get_value(row, 6))
+            f.write("\t\t\t<editable>%d</editable>\n" % model.get_value(row, 3))
+            f.write("\t\t\t<visible>%d</visible>\n" % model.get_value(row, 4))
+            f.write("\t\t</column>\n")
+
+            row = model.iter_next(row)
+
+        f.write("\t</tree>\n")
+        f.write("</root>")
+        f.close()
+
+        self.winOptions.destroy()
+
+        return False
 
     def save_options(self, button):
 

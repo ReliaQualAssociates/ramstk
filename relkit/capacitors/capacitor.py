@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       capacitor.py is part of The RelKit Project
+#       capacitor.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -276,7 +276,7 @@ class Capacitor:
 
         #try:
         model = part._app.winParts.full_model
-        row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
+        row = part._app.winParts.selected_row
         #except:
         #    return True
 
