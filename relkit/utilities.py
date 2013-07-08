@@ -1296,6 +1296,10 @@ def date_select(widget, entry):
 
 class Options:
 
+    _edit_tree_labels = [_(u"Default\nTitle"), _(u"User\nTitle"),
+                         _(u"Column\nPosition"), _(u"Can\nEdit?"),
+                         _(u"Is\nVisible?")]
+
     def __init__(self, _app):
         """
         Allows a user to set site-wide options.
@@ -1303,6 +1307,8 @@ class Options:
         Keyword Arguments:
         app    -- the RTK application object.
         """
+
+        import pango
 
         self.winOptions = gtk.Window()
         self.winOptions.set_title(_("RTK - Options"))
@@ -1391,8 +1397,18 @@ class Options:
         self.rdoFunction = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Function tree layout"))
         self.rdoRequirement = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Requirement tree layout"))
         self.rdoHardware = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Hardware tree layout"))
+        self.rdoSoftware = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Software tree layout"))
         self.rdoValidation = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit V&V tree layout"))
-        self.rdoRiskAnalysis = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Risk Analysis list layout"))
+        self.rdoIncident = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Program Incident tree layout"))
+        self.rdoTesting = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Testing tree layout"))
+        self.rdoSurvival = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Survival Analysis tree layout"))
+
+        self.rdoPart = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Part list layout"))
+
+        self.rdoAllocation = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Reliability Allocation worksheet layout"))
+        self.rdoRiskAnalysis = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Risk Analysis worksheet layout"))
+        self.rdoSimilarItem = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Similar Item Analysis worksheet layout"))
+        self.rdoFMECA = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit FMEA/FMECA worksheet layout"))
 
         self.btnTreeEdit = gtk.Button(stock=gtk.STOCK_EDIT)
         self.btnTreeEdit.connect('released', self._edit_tree)
@@ -1401,9 +1417,17 @@ class Options:
         fixed.put(self.rdoFunction, 5, 35)
         fixed.put(self.rdoRequirement, 5, 65)
         fixed.put(self.rdoHardware, 5, 95)
-        fixed.put(self.rdoValidation, 5, 125)
-        fixed.put(self.rdoRiskAnalysis, 5, 155)
-        fixed.put(self.btnTreeEdit, 5, 215)
+        fixed.put(self.rdoSoftware, 5, 125)
+        fixed.put(self.rdoValidation, 5, 155)
+        fixed.put(self.rdoTesting, 5, 185)
+        fixed.put(self.rdoIncident, 5, 215)
+        fixed.put(self.rdoSurvival, 5, 245)
+        #fixed.put(self.rdoAllocation, 5, 275)
+        fixed.put(self.rdoPart, 5, 275)
+        fixed.put(self.rdoRiskAnalysis, 5, 305)
+        fixed.put(self.rdoSimilarItem, 5, 335)
+        fixed.put(self.rdoFMECA, 5, 365)
+        fixed.put(self.btnTreeEdit, 5, 405)
 
         label = gtk.Label(_(u"Edit Tree Layouts"))
         label.set_tooltip_text(_(u"Allows editting of tree layouts used in RTK."))
@@ -1420,6 +1444,52 @@ class Options:
                               gobject.TYPE_STRING)
         self.tvwEditTree.set_model(model)
 
+        for i in range(5):
+
+            if(i == 0):
+                cell = gtk.CellRendererText()
+                cell.set_property('background', 'light gray')
+                cell.set_property('editable', 0)
+                cell.set_property('foreground', '#000000')
+                cell.set_property('wrap-width', 250)
+                cell.set_property('wrap-mode', pango.WRAP_WORD)
+            elif(i > 0 and i < 3):
+                cell = gtk.CellRendererText()
+                cell.set_property('background', '#FFFFFF')
+                cell.set_property('editable', 1)
+                cell.set_property('foreground', '#000000')
+                cell.set_property('wrap-width', 250)
+                cell.set_property('wrap-mode', pango.WRAP_WORD)
+                cell.connect('edited', self._cell_edit, i, model)
+            elif(i > 4):
+                cell = gtk.CellRendererText()
+                cell.set_property('editable', 0)
+            else:
+                cell = gtk.CellRendererToggle()
+                cell.set_property('activatable', 1)
+                cell.connect('toggled', self._cell_toggled, i, model)
+
+            label = gtk.Label()
+            label.set_line_wrap(True)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_markup("<span weight='bold'>" +
+                             self._edit_tree_labels[i] + "</span>")
+            label.show_all()
+
+            column = gtk.TreeViewColumn()
+            column.set_widget(label)
+            column.set_alignment(0.5)
+            column.pack_start(cell, True)
+            if(i < 3):
+                column.set_attributes(cell, text=i)
+            elif(i > 4):
+                column.set_visible(0)
+            else:
+                column.set_attributes(cell, active=i)
+
+            self.tvwEditTree.append_column(column)
+
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.add(self.tvwEditTree)
 
@@ -1435,10 +1505,10 @@ class Options:
 
         fixed.put(self.btnSaveTree, 5, 5)
 
-        vbox.pack_end(fixed)
+        vbox.pack_end(fixed, expand=False)
 
-        label = gtk.Label(_(u"Edit Tree"))
-        label.set_tooltip_text(_(u"Allows editting of tree layouts used in RTK."))
+        label = gtk.Label(_(u"Editor"))
+        label.set_tooltip_text(_(u"Displays the editor."))
         notebook.insert_page(vbox, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
@@ -1450,16 +1520,9 @@ class Options:
         Method to edit gtk.TreeView layouts
         """
 
-        import pango
         from lxml import etree
 
-        _edit_tree_labels = [_(u"Default\nTitle"), _(u"User\nTitle"),
-                             _(u"Column\nPosition"), _(u"Can\nEdit?"),
-                             _(u"Is\nVisible?")]
-
-        if(self.rdoRiskAnalysis.get_active()):
-            _name = 'Risk'
-            _fmt_idx = 17
+        (_name, _fmt_idx) = self._get_format_info()
 
 # Retrieve the default heading text from the format file.
         path = "/root/tree[@name='%s']/column/defaulttitle" % _name
@@ -1492,42 +1555,6 @@ class Options:
         model = self.tvwEditTree.get_model()
         model.clear()
 
-        for i in range(5):
-
-            if(i == 0):
-                cell = gtk.CellRendererText()
-                cell.set_property('background', 'light gray')
-                cell.set_property('editable', 0)
-                cell.set_property('foreground', '#000000')
-                cell.set_property('wrap-width', 250)
-                cell.set_property('wrap-mode', pango.WRAP_WORD)
-            elif(i > 0 and i < 3):
-                cell = gtk.CellRendererText()
-                cell.set_property('background', '#FFFFFF')
-                cell.set_property('editable', 1)
-                cell.set_property('foreground', '#000000')
-                cell.set_property('wrap-width', 250)
-                cell.set_property('wrap-mode', pango.WRAP_WORD)
-                cell.connect('edited', self._cell_edit, i, model)
-            elif(i > 4):
-                cell = gtk.CellRendererText()
-                cell.set_property('editable', 0)
-            else:
-                cell = gtk.CellRendererToggle()
-                cell.set_property('activatable', 1)
-                cell.connect('toggled', self._cell_toggled, i, model)
-
-            column = gtk.TreeViewColumn(_edit_tree_labels[i])
-            column.pack_start(cell, True)
-            if(i < 3):
-                column.set_attributes(cell, text=i)
-            elif(i > 4):
-                column.set_visible(0)
-            else:
-                column.set_attributes(cell, active=i)
-
-            self.tvwEditTree.append_column(column)
-
         for i in range(len(default)):
             _data = [default[i].text, user[i].text, int(position[i].text),
                      int(editable[i].text), int(visible[i].text),
@@ -1536,6 +1563,8 @@ class Options:
 
         notebook = self.winOptions.get_children()
         notebook[0].set_current_page(2)
+        _child = notebook[0].get_nth_page(notebook[0].get_current_page())
+        notebook[0].set_tab_label_text(_child, _(u"Edit %s Tree" % _name))
 
         return False
 
@@ -1585,19 +1614,23 @@ class Options:
         button --
         """
 
-        from lxml import etree
         import os
+        from lxml import etree
+        from shutil import copyfile
 
-        if(self.rdoRiskAnalysis.get_active()):
-            _name = 'Risk'
-            _fmt_idx = 17
+        (_name, _fmt_idx) = self._get_format_info()
 
+# Get the format file for the gtk.TreeView to be edited.
         _format_file = _conf.RELIAFREE_FORMAT_FILE[_fmt_idx]
         _basename = os.path.basename(_format_file)
 
-        file = '/tmp/tempfile.xml'
-        f = open(file, 'w')
+# Make a copy of the original format file.
+        copyfile(_format_file, _format_file + '.bak')
 
+# Open the format file for writing.
+        f = open(_format_file, 'w')
+
+# Create the new format file.
         f.write("<!--\n")
         f.write("-*- coding: utf-8 -*-\n\n")
         f.write("%s is part of the RTK Project\n\n" % _basename)
@@ -1632,6 +1665,53 @@ class Options:
         self.winOptions.destroy()
 
         return False
+
+    def _get_format_info(self):
+        """
+        Method to retrieve the name and index of the selected format file.
+        """
+
+        if(self.rdoRevision.get_active()):
+            _name = 'Revision'
+            _fmt_idx = 0
+        elif(self.rdoFunction.get_active()):
+            _name = 'Function'
+            _fmt_idx = 1
+        elif(self.rdoRequirement.get_active()):
+            _name = 'Requirement'
+            _fmt_idx = 2
+        elif(self.rdoHardware.get_active()):
+            _name = 'Hardware'
+            _fmt_idx = 3
+        elif(self.rdoSoftware.get_active()):
+            _name = 'Software'
+            _fmt_idx = 15
+        elif(self.rdoValidation.get_active()):
+            _name = 'Validation'
+            _fmt_idx = 4
+        elif(self.rdoTesting.get_active()):
+            _name = 'Testing'
+            _fmt_idx = 11
+        elif(self.rdoIncident.get_active()):
+            _name = 'Incidents'
+            _fmt_idx = 14
+        elif(self.rdoSurvival.get_active()):
+            _name = 'Dataset'
+            _fmt_idx = 16
+        elif(self.rdoPart.get_active()):
+            _name = 'Parts'
+            _fmt_idx = 7
+        elif(self.rdoRiskAnalysis.get_active()):
+            _name = 'Risk'
+            _fmt_idx = 17
+        elif(self.rdoSimilarItem.get_active()):
+            _name = 'SIA'
+            _fmt_idx = 8
+        elif(self.rdoFMECA.get_active()):
+            _name = 'FMECA'
+            _fmt_idx = 9
+
+        return(_name, _fmt_idx)
 
     def save_options(self, button):
 

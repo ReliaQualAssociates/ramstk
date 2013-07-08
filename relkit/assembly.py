@@ -1259,12 +1259,21 @@ class Assembly:
                 cell.connect('edited', _widg.edit_tree, int(position[i].text),
                              model)
 
+            label = gtk.Label()
+            label.set_line_wrap(True)
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            _text = heading[i].text.replace("  ", "\n")
+            label.set_markup("<span weight='bold'>" + _text + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+
             column = gtk.TreeViewColumn()
             column.set_visible(int(visible[i].text))
             column.pack_start(cell, True)
             column.set_attributes(cell, text=int(position[i].text))
 
-            label = _widg.make_column_heading(_(heading[i].text))
+            #label = _widg.make_column_heading(_(heading[i].text))
             column.set_widget(label)
 
             column.set_cell_data_func(cell, _widg.format_cell,
@@ -4869,7 +4878,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             elif(_button_ == 'Edit'):
                 self._function_edit(_index_=1)
         elif(_page_ == 4):                  # Assessment inputs tab.
-            if(_button == 'Add'):
+            if(_button_ == 'Add'):
                 self._app.COMPONENT.component_add(widget, None)
             elif(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)

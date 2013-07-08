@@ -487,8 +487,8 @@ class Incident:
         # TODO: Create code that will use either fld_description of fld_name depending on which the user uses.
         query = "SELECT DISTINCT fld_name \
                  FROM tbl_system \
-                 WHERE fld_part=0 AND fld_level<2 \
-                 ORDER BY fld_name ASC"
+                 WHERE fld_part=0 AND fld_level<2 AND fld_name != '' \
+                 ORDER BY fld_assembly_id ASC"
         results = self._app.COMDB.execute_query(query,
                                                 None,
                                                 self._app.ProgCnx)
@@ -1195,7 +1195,6 @@ class Incident:
 
         from datetime import datetime
 
-#(0, 2203, 1, 0, u'', u'', 1, u'', u'', 0, u'', u'', 0.0, u'HTC8250', 167.95, 0, 8, -1, 0, 733811, 0, 0, 719163, 0, 0, 719163, 0, 0, 719163, 6, u'', 1)
         results = self._app.DB.execute_query(query,
                                              values,
                                              self._app.ProgCnx)

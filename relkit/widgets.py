@@ -392,7 +392,8 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('model', cellmodel)
             cell.set_property('text-column', 0)
             cell.set_property('wrap-width', 250)
-            cell.set_property('wrap-mode', pango.WRAP_WORD)
+            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
         elif(widget[i].text == 'spin'):
             cell = gtk.CellRendererSpin()
@@ -402,6 +403,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('digits', 2)
             cell.set_property('editable', int(editable[i].text))
             cell.set_property('foreground', fg_col)
+            cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
         elif(widget[i].text == 'toggle'):
             cell = gtk.CellRendererToggle()
@@ -413,7 +415,8 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('editable', int(editable[i].text))
             cell.set_property('foreground', fg_col)
             cell.set_property('wrap-width', 250)
-            cell.set_property('wrap-mode', pango.WRAP_WORD)
+            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
 
         if(int(editable[i].text) == 0):
@@ -444,14 +447,16 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        text = _(heading[i].text)
-        label.set_markup("<span weight='bold'>" + text + "</span>")
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        _text = heading[i].text.replace("  ", "\n")
+        label.set_markup("<span weight='bold'>" + _text + "</span>")
+        label.set_use_markup(True)
         label.show_all()
         column.set_widget(label)
-
         column.set_cell_data_func(cell, format_cell,
                                   (int(position[i].text), datatype[i].text))
         column.set_resizable(True)
+        column.set_alignment(0.5)
         column.connect('notify::width', resize_wrap, cell)
 
         if(i > 0):
