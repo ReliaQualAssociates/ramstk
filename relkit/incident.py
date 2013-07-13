@@ -510,8 +510,8 @@ class Incident:
         self.txtLongDescription.set_text(self.model.get_value(self.selected_row, 5))
         self.txtRemarks.set_text(self.model.get_value(self.selected_row, 8))
 
-        # Set dates.  If there is no date or the date is invalid, set it to
-        # January 1, 1970 as the default.
+# Set dates.  If there is no date or the date is invalid, set it to
+# January 1, 1970 as the default.
         dt = self.model.get_value(self.selected_row, 19)
         if(dt is not None and dt != '' and dt >= 1):
             self.txtRequestDate.set_text(str(dt))

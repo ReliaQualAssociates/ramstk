@@ -3337,81 +3337,93 @@ class Assembly:
         row = model.get_iter_first()
 
         while row is not None:
-            sia = {}
+            risk = {}
 
-            # Get the change category values.
-            sia['cat1'] = model.get_value(row, 53)
-            sia['cat2'] = model.get_value(row, 54)
-            sia['cat3'] = model.get_value(row, 55)
-            sia['cat4'] = model.get_value(row, 56)
-            sia['cat5'] = model.get_value(row, 57)
-            sia['cat6'] = model.get_value(row, 58)
-            sia['cat7'] = model.get_value(row, 59)
-            sia['cat8'] = model.get_value(row, 60)
+# Get the system failure intensity.
+            system_row = self.system_model.get_iter_root()
+            risk['sys_hr'] = self.system_model.get_value(system_row, 32)
 
-            # Get the change cost values.
-            sia['cost1'] = float(model.get_value(row, 5))
-            sia['cost2'] = float(model.get_value(row, 9))
-            sia['cost3'] = float(model.get_value(row, 13))
-            sia['cost4'] = float(model.get_value(row, 17))
-            sia['cost5'] = float(model.get_value(row, 21))
-            sia['cost6'] = float(model.get_value(row, 25))
-            sia['cost7'] = float(model.get_value(row, 29))
-            sia['cost8'] = float(model.get_value(row, 33))
+# Get the assembly failure intensity.
+            risk['hr'] = self.system_model.get_value(self.system_selected_row, 32)
 
-            # Get the user-defined float and integer values.
-            sia['uf1'] = float(model.get_value(row, 47))
-            sia['uf2'] = float(model.get_value(row, 48))
-            sia['uf3'] = float(model.get_value(row, 49))
-            sia['ui1'] = float(model.get_value(row, 50))
-            sia['ui2'] = float(model.get_value(row, 51))
-            sia['ui3'] = float(model.get_value(row, 52))
+# Get the change category values.
+            risk['cat1'] = model.get_value(row, 53)
+            risk['cat2'] = model.get_value(row, 54)
+            risk['cat3'] = model.get_value(row, 55)
+            risk['cat4'] = model.get_value(row, 56)
+            risk['cat5'] = model.get_value(row, 57)
+            risk['cat6'] = model.get_value(row, 58)
+            risk['cat7'] = model.get_value(row, 59)
+            risk['cat8'] = model.get_value(row, 60)
 
-            # Get the user-defined functions.
-            sia['equation1'] = model.get_value(row, 34)
-            sia['equation2'] = model.get_value(row, 35)
-            sia['equation3'] = model.get_value(row, 36)
-            sia['equation4'] = model.get_value(row, 37)
-            sia['equation5'] = model.get_value(row, 38)
+# Get the change cost values.
+            risk['cost1'] = float(model.get_value(row, 5))
+            risk['cost2'] = float(model.get_value(row, 9))
+            risk['cost3'] = float(model.get_value(row, 13))
+            risk['cost4'] = float(model.get_value(row, 17))
+            risk['cost5'] = float(model.get_value(row, 21))
+            risk['cost6'] = float(model.get_value(row, 25))
+            risk['cost7'] = float(model.get_value(row, 29))
+            risk['cost8'] = float(model.get_value(row, 33))
 
-            # Get the existing results.  This allows the use of the
-            # results fields to be manually set to a float values by
-            # the user.  Essentially creating five more user-defined
-            # float values.
-            sia['res1'] = model.get_value(row, 39)
-            sia['res2'] = model.get_value(row, 40)
-            sia['res3'] = model.get_value(row, 41)
-            sia['res4'] = model.get_value(row, 42)
-            sia['res5'] = model.get_value(row, 43)
+# Get the user-defined float and integer values.
+            risk['uf1'] = float(model.get_value(row, 47))
+            risk['uf2'] = float(model.get_value(row, 48))
+            risk['uf3'] = float(model.get_value(row, 49))
+            risk['ui1'] = float(model.get_value(row, 50))
+            risk['ui2'] = float(model.get_value(row, 51))
+            risk['ui3'] = float(model.get_value(row, 52))
 
-            keys = sia.keys()
-            values = sia.values()
+# Get the user-defined functions.
+            risk['equation1'] = model.get_value(row, 34)
+            risk['equation2'] = model.get_value(row, 35)
+            risk['equation3'] = model.get_value(row, 36)
+            risk['equation4'] = model.get_value(row, 37)
+            risk['equation5'] = model.get_value(row, 38)
+
+# Get the existing results.  This allows the use of the results fields to be
+# manually set to a float values by the user.  Essentially creating five more
+# user-defined float values.
+            risk['res1'] = model.get_value(row, 39)
+            risk['res2'] = model.get_value(row, 40)
+            risk['res3'] = model.get_value(row, 41)
+            risk['res4'] = model.get_value(row, 42)
+            risk['res5'] = model.get_value(row, 43)
+
+            keys = risk.keys()
+            values = risk.values()
 
             for i in range(len(keys)):
                 vars()[keys[i]] = values[i]
 
+# If the system failure intensity is greater than zero, perform the remaining
+# risk calculations.  If not, notify the user and exit this function.
+            if(risk['sys_hr'] <= 0.0):
+                _util.application_error(_(u"The System failure intensity is 0.  This will likely cause erroneous results if used in calculations.  You should specify or calculate the System failure intensity before executing risk analysis calculations."))
+                return True
+
             try:
-                results1 = eval(sia['equation1'])
+                results1 = eval(risk['equation1'])
             except SyntaxError:
                 results1 = model.get_value(row, 39)
 
             try:
-                results2 = eval(sia['equation2'])
+                results2 = eval(risk['equation2'])
             except SyntaxError:
                 results2 = model.get_value(row, 40)
 
             try:
-                results3 = eval(sia['equation3'])
+                results3 = eval(risk['equation3'])
             except SyntaxError:
                 results3 = model.get_value(row, 41)
 
             try:
-                results4 = eval(sia['equation4'])
+                results4 = eval(risk['equation4'])
             except SyntaxError:
                 results4 = model.get_value(row, 42)
 
             try:
-                results5 = eval(sia['equation5'])
+                results5 = eval(risk['equation5'])
             except SyntaxError:
                 results5 = model.get_value(row, 43)
 
@@ -3648,6 +3660,7 @@ class Assembly:
         y_pos = 10
 
         label = _widg.make_label(_(u"You can define up to five functions using the Risk Analysis or Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
+System hazard rate is hr_sys\n \
 Assembly hazard rate is hr\n \
 Risk category index is cat[1-8]\n \
 Change factor is pi[1-8]\n \
@@ -3662,6 +3675,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 1:"))
         txtFunction1 = _widg.make_entry()
         if(_index_ == 0):
+            print model.get_value(row, 34)
             txtFunction1.set_text(model.get_value(row, 34))
         elif(_index_ == 1):
             txtFunction1.set_text(model.get_value(row, 19))
@@ -3673,7 +3687,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 2:"))
         txtFunction2 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction1.set_text(model.get_value(row, 35))
+            txtFunction2.set_text(model.get_value(row, 35))
         elif(_index_ == 1):
             txtFunction2.set_text(model.get_value(row, 20))
         fixed.put(label, 5, y_pos)
@@ -3683,7 +3697,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 3:"))
         txtFunction3 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction1.set_text(model.get_value(row, 36))
+            txtFunction3.set_text(model.get_value(row, 36))
         elif(_index_ == 1):
             txtFunction3.set_text(model.get_value(row, 21))
         fixed.put(label, 5, y_pos)
@@ -3693,7 +3707,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 4:"))
         txtFunction4 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction1.set_text(model.get_value(row, 37))
+            txtFunction4.set_text(model.get_value(row, 37))
         elif(_index_ == 1):
             txtFunction4.set_text(model.get_value(row, 22))
         fixed.put(label, 5, y_pos)
@@ -3703,7 +3717,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 5:"))
         txtFunction5 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction1.set_text(model.get_value(row, 38))
+            txtFunction5.set_text(model.get_value(row, 38))
         elif(_index_ == 1):
             txtFunction5.set_text(model.get_value(row, 23))
         fixed.put(label, 5, y_pos)
