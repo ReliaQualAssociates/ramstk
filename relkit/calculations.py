@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 """ This file contains various calculations used by the RTK Project. """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-

@@ -88,7 +88,7 @@ class AssignMTBFResults:
 
 # Gather a list of existing assemblies and revision names from the open RelKit
 # project database.
-        query = "SELECT t1.fld_description, t2.fld_name, t1.fld_assembly_id \
+        query = "SELECT t1.fld_name, t2.fld_name, t1.fld_assembly_id \
                  FROM tbl_system AS t1 \
                  INNER JOIN tbl_revisions AS t2 \
                  WHERE t1.fld_revision_id=t2.fld_revision_id \

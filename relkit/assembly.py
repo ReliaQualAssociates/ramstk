@@ -4,7 +4,7 @@ This is the Class that is used to represent and hold information related to the
 hardware assemblies of the Program.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -1346,6 +1346,7 @@ class Assembly:
             values = (0, path_)
 
         query = "SELECT t1.fld_risk_id, t2.fld_name, \
+                        t2.fld_failure_rate_predicted, \
                         t1.fld_change_desc_1, t1.fld_change_category_1, \
                         t1.fld_change_effort_1, t1.fld_change_cost_1, \
                         t1.fld_change_desc_2, t1.fld_change_category_2, \
@@ -3348,54 +3349,54 @@ class Assembly:
 
 # Get the system failure intensity.
             system_row = self.system_model.get_iter_root()
-            risk['sys_hr'] = self.system_model.get_value(system_row, 32)
+            risk['hr_sys'] = self.system_model.get_value(system_row, 32)
 
 # Get the assembly failure intensity.
-            risk['hr'] = self.system_model.get_value(self.system_selected_row, 32)
+            risk['hr'] = model.get_value(row, 2)
 
 # Get the change category values.
-            risk['cat1'] = model.get_value(row, 53)
-            risk['cat2'] = model.get_value(row, 54)
-            risk['cat3'] = model.get_value(row, 55)
-            risk['cat4'] = model.get_value(row, 56)
-            risk['cat5'] = model.get_value(row, 57)
-            risk['cat6'] = model.get_value(row, 58)
-            risk['cat7'] = model.get_value(row, 59)
-            risk['cat8'] = model.get_value(row, 60)
+            risk['cat1'] = model.get_value(row, 54)
+            risk['cat2'] = model.get_value(row, 55)
+            risk['cat3'] = model.get_value(row, 56)
+            risk['cat4'] = model.get_value(row, 57)
+            risk['cat5'] = model.get_value(row, 58)
+            risk['cat6'] = model.get_value(row, 59)
+            risk['cat7'] = model.get_value(row, 60)
+            risk['cat8'] = model.get_value(row, 61)
 
 # Get the change cost values.
-            risk['cost1'] = float(model.get_value(row, 5))
-            risk['cost2'] = float(model.get_value(row, 9))
-            risk['cost3'] = float(model.get_value(row, 13))
-            risk['cost4'] = float(model.get_value(row, 17))
-            risk['cost5'] = float(model.get_value(row, 21))
-            risk['cost6'] = float(model.get_value(row, 25))
-            risk['cost7'] = float(model.get_value(row, 29))
-            risk['cost8'] = float(model.get_value(row, 33))
+            risk['cost1'] = float(model.get_value(row, 6))
+            risk['cost2'] = float(model.get_value(row, 10))
+            risk['cost3'] = float(model.get_value(row, 14))
+            risk['cost4'] = float(model.get_value(row, 18))
+            risk['cost5'] = float(model.get_value(row, 22))
+            risk['cost6'] = float(model.get_value(row, 26))
+            risk['cost7'] = float(model.get_value(row, 30))
+            risk['cost8'] = float(model.get_value(row, 34))
 
 # Get the user-defined float and integer values.
-            risk['uf1'] = float(model.get_value(row, 47))
-            risk['uf2'] = float(model.get_value(row, 48))
-            risk['uf3'] = float(model.get_value(row, 49))
-            risk['ui1'] = float(model.get_value(row, 50))
-            risk['ui2'] = float(model.get_value(row, 51))
-            risk['ui3'] = float(model.get_value(row, 52))
+            risk['uf1'] = float(model.get_value(row, 48))
+            risk['uf2'] = float(model.get_value(row, 49))
+            risk['uf3'] = float(model.get_value(row, 50))
+            risk['ui1'] = float(model.get_value(row, 51))
+            risk['ui2'] = float(model.get_value(row, 52))
+            risk['ui3'] = float(model.get_value(row, 53))
 
 # Get the user-defined functions.
-            risk['equation1'] = model.get_value(row, 34)
-            risk['equation2'] = model.get_value(row, 35)
-            risk['equation3'] = model.get_value(row, 36)
-            risk['equation4'] = model.get_value(row, 37)
-            risk['equation5'] = model.get_value(row, 38)
+            risk['equation1'] = model.get_value(row, 35)
+            risk['equation2'] = model.get_value(row, 36)
+            risk['equation3'] = model.get_value(row, 37)
+            risk['equation4'] = model.get_value(row, 38)
+            risk['equation5'] = model.get_value(row, 39)
 
 # Get the existing results.  This allows the use of the results fields to be
 # manually set to a float values by the user.  Essentially creating five more
 # user-defined float values.
-            risk['res1'] = model.get_value(row, 39)
-            risk['res2'] = model.get_value(row, 40)
-            risk['res3'] = model.get_value(row, 41)
-            risk['res4'] = model.get_value(row, 42)
-            risk['res5'] = model.get_value(row, 43)
+            risk['res1'] = model.get_value(row, 40)
+            risk['res2'] = model.get_value(row, 41)
+            risk['res3'] = model.get_value(row, 42)
+            risk['res4'] = model.get_value(row, 43)
+            risk['res5'] = model.get_value(row, 44)
 
             keys = risk.keys()
             values = risk.values()
@@ -3405,40 +3406,40 @@ class Assembly:
 
 # If the system failure intensity is greater than zero, perform the remaining
 # risk calculations.  If not, notify the user and exit this function.
-            if(risk['sys_hr'] <= 0.0):
+            if(risk['hr_sys'] <= 0.0):
                 _util.application_error(_(u"The System failure intensity is 0.  This will likely cause erroneous results if used in calculations.  You should specify or calculate the System failure intensity before executing risk analysis calculations."))
                 return True
 
             try:
                 results1 = eval(risk['equation1'])
             except SyntaxError:
-                results1 = model.get_value(row, 39)
+                results1 = risk['res1']
 
             try:
                 results2 = eval(risk['equation2'])
             except SyntaxError:
-                results2 = model.get_value(row, 40)
+                results2 = risk['res2']
 
             try:
                 results3 = eval(risk['equation3'])
             except SyntaxError:
-                results3 = model.get_value(row, 41)
+                results3 = risk['res3']
 
             try:
                 results4 = eval(risk['equation4'])
             except SyntaxError:
-                results4 = model.get_value(row, 42)
+                results4 = risk['res4']
 
             try:
                 results5 = eval(risk['equation5'])
             except SyntaxError:
-                results5 = model.get_value(row, 43)
+                results5 = risk['res5']
 
-            model.set_value(row, 39, results1)
-            model.set_value(row, 40, results2)
-            model.set_value(row, 41, results3)
-            model.set_value(row, 42, results4)
-            model.set_value(row, 43, results5)
+            model.set_value(row, 40, results1)
+            model.set_value(row, 41, results2)
+            model.set_value(row, 42, results3)
+            model.set_value(row, 43, results4)
+            model.set_value(row, 44, results5)
 
             row = model.iter_next(row)
 
@@ -3682,7 +3683,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 1:"))
         txtFunction1 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction1.set_text(model.get_value(row, 34))
+            txtFunction1.set_text(model.get_value(row, 35))
         elif(_index_ == 1):
             txtFunction1.set_text(model.get_value(row, 19))
 
@@ -3693,7 +3694,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 2:"))
         txtFunction2 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction2.set_text(model.get_value(row, 35))
+            txtFunction2.set_text(model.get_value(row, 36))
         elif(_index_ == 1):
             txtFunction2.set_text(model.get_value(row, 20))
         fixed.put(label, 5, y_pos)
@@ -3703,7 +3704,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 3:"))
         txtFunction3 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction3.set_text(model.get_value(row, 36))
+            txtFunction3.set_text(model.get_value(row, 37))
         elif(_index_ == 1):
             txtFunction3.set_text(model.get_value(row, 21))
         fixed.put(label, 5, y_pos)
@@ -3713,7 +3714,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 4:"))
         txtFunction4 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction4.set_text(model.get_value(row, 37))
+            txtFunction4.set_text(model.get_value(row, 38))
         elif(_index_ == 1):
             txtFunction4.set_text(model.get_value(row, 22))
         fixed.put(label, 5, y_pos)
@@ -3723,7 +3724,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         label = _widg.make_label(_(u"User function 5:"))
         txtFunction5 = _widg.make_entry()
         if(_index_ == 0):
-            txtFunction5.set_text(model.get_value(row, 38))
+            txtFunction5.set_text(model.get_value(row, 39))
         elif(_index_ == 1):
             txtFunction5.set_text(model.get_value(row, 23))
         fixed.put(label, 5, y_pos)
@@ -3746,7 +3747,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             _func4 = txtFunction4.get_text()
             _func5 = txtFunction5.get_text()
             if(_index_ == 0):
-                _cols = [34, 35, 36, 37, 38]
+                _cols = [35, 36, 37, 38, 39]
             elif(_index_ == 1):
                 _cols = [19, 20, 21, 22, 23]
 
@@ -3769,7 +3770,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
         return False
 
-    def _risk_rollup(self):
+    def _sia_rollup(self):
         """
         Rolls-up the lower level similar item analysis change descriptions to
         the selected Assembly Object.
@@ -3779,9 +3780,69 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         row = self._app.HARDWARE.selected_row
         _values = model.get_string_from_iter(row)
 
-        # Select all of the lower level element change descriptions for
-        # the selected assembly.
-        query = "SELECT t2.fld_description, t1.fld_change_desc_1, \
+# Select all of the lower level element change descriptions for the selected
+# assembly.
+        query = "SELECT t2.fld_name, t1.fld_change_desc_1, \
+                        t1.fld_change_desc_2, t1.fld_change_desc_3, \
+                        t1.fld_change_desc_4, t1.fld_change_desc_5, \
+                        t1.fld_change_desc_6, t1.fld_change_desc_7, \
+                        t1.fld_change_desc_8 \
+                 FROM tbl_similar_item AS t1 \
+                 INNER JOIN tbl_system AS t2 \
+                 ON t1.fld_assembly_id=t2.fld_assembly_id \
+                 WHERE t2.fld_parent_assembly='%s'" % _values
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx)
+
+# Combine the changes descriptions into a single change description for each
+# change category.
+        summary = ["", "", "", "", "", "", "", ""]
+        for i in range(len(results)):
+            system = results[i][0]
+            for j in range(8):
+                if(results[i][j+1] != '' and results[i][j+1] is not None):
+                    summary[j] = summary[j] + system + ":\n" + \
+                                 results[i][j+1] + "\n"
+
+# Update the selected assembly's change descriptions with the combined change
+# description.
+        if(_conf.RELIAFREE_MODULES[0] == 1):
+            _values = (summary[0], summary[1], summary[2], summary[3], \
+                       summary[4], summary[5], summary[6], summary[7], \
+                       self._app.REVISION.revision_id, self.assembly_id)
+        else:
+            _values = (summary[0], summary[1], summary[2], summary[3], \
+                       summary[4], summary[5], summary[6], summary[7], \
+                       0, self.assembly_id)
+
+# Update the database.
+        query = "UPDATE tbl_similar_item \
+                 SET fld_change_desc_1='%s', fld_change_desc_2='%s', \
+                     fld_change_desc_3='%s', fld_change_desc_4='%s', \
+                     fld_change_desc_5='%s', fld_change_desc_6='%s', \
+                     fld_change_desc_7='%s', fld_change_desc_8='%s' \
+                 WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values
+        self._app.DB.execute_query(query,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
+
+        return False
+
+    def _risk_rollup(self):
+        """
+        Rolls-up the lower level risk analysis change descriptions to the
+        selected Assembly Object.
+        """
+
+        model = self._app.HARDWARE.model
+        row = self._app.HARDWARE.selected_row
+        _values = model.get_string_from_iter(row)
+
+# Select all of the lower level element change descriptions for the selected
+# assembly.
+        query = "SELECT t2.fld_name, t1.fld_change_desc_1, \
                         t1.fld_change_desc_2, t1.fld_change_desc_3, \
                         t1.fld_change_desc_4, t1.fld_change_desc_5, \
                         t1.fld_change_desc_6, t1.fld_change_desc_7, \
@@ -3816,8 +3877,8 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                                           None,
                                           self._app.ProgCnx)
 
-        # Update the selected assembly's change descriptions with the combined
-        # change description.
+# Update the selected assembly's change descriptions with the combined change
+# description.
         if(_conf.RELIAFREE_MODULES[0] == 1):
             _values = (summary[0], summary[1], summary[2], summary[3], \
                        summary[4], summary[5], summary[6], summary[7], \
@@ -3872,21 +3933,19 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         if(_conf.BACKEND == 'mysql'):
-            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[34]))
-            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[35]))
-            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[36]))
-            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[37]))
-            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[38]))
-
+            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[35]))
+            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[36]))
+            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[37]))
+            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[38]))
+            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[39]))
         elif(_conf.BACKEND == 'sqlite3'):
-            equation1 = model.get_value(row, self._risk_col_order[34])
-            equation2 = model.get_value(row, self._risk_col_order[35])
-            equation3 = model.get_value(row, self._risk_col_order[36])
-            equation4 = model.get_value(row, self._risk_col_order[37])
-            equation5 = model.get_value(row, self._risk_col_order[38])
+            equation1 = model.get_value(row, self._risk_col_order[35])
+            equation2 = model.get_value(row, self._risk_col_order[36])
+            equation3 = model.get_value(row, self._risk_col_order[37])
+            equation4 = model.get_value(row, self._risk_col_order[38])
+            equation5 = model.get_value(row, self._risk_col_order[39])
 
-        _values = (model.get_value(row, self._risk_col_order[2]), \
-                   model.get_value(row, self._risk_col_order[3]), \
+        _values = (model.get_value(row, self._risk_col_order[3]), \
                    model.get_value(row, self._risk_col_order[4]), \
                    model.get_value(row, self._risk_col_order[5]), \
                    model.get_value(row, self._risk_col_order[6]), \
@@ -3917,12 +3976,12 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[31]), \
                    model.get_value(row, self._risk_col_order[32]), \
                    model.get_value(row, self._risk_col_order[33]), \
+                   model.get_value(row, self._risk_col_order[34]), \
                    equation1, \
                    equation2, \
                    equation3, \
                    equation4, \
                    equation5, \
-                   model.get_value(row, self._risk_col_order[39]), \
                    model.get_value(row, self._risk_col_order[40]), \
                    model.get_value(row, self._risk_col_order[41]), \
                    model.get_value(row, self._risk_col_order[42]), \
@@ -3936,7 +3995,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[50]), \
                    model.get_value(row, self._risk_col_order[51]), \
                    model.get_value(row, self._risk_col_order[52]), \
-                   model.get_value(row, 53), \
+                   model.get_value(row, self._risk_col_order[53]), \
                    model.get_value(row, 54), \
                    model.get_value(row, 55), \
                    model.get_value(row, 56), \
@@ -3944,6 +4003,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, 58), \
                    model.get_value(row, 59), \
                    model.get_value(row, 60), \
+                   model.get_value(row, 61), \
                    self._app.REVISION.revision_id, \
                    model.get_value(row, self._risk_col_order[0]))
 

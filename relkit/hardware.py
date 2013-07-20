@@ -4,7 +4,7 @@ This is the Class that is used to represent and hold information related to
 the hardware of the Program.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-

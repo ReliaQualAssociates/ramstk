@@ -6,43 +6,43 @@ BEGIN TRANSACTION;
 --
 CREATE TABLE "tbl_program_info" (
     "fld_program_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_revision_prefix" VARCHAR(16) NOT NULL DEFAULT ('REVISION'),
-    "fld_revision_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_function_prefix" VARCHAR(16) NOT NULL DEFAULT ('FUNCTION'),
-    "fld_function_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_assembly_prefix" VARCHAR(16) NOT NULL DEFAULT ('ASSEMBLY'),
-    "fld_assembly_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_part_prefix" VARCHAR(16) NOT NULL DEFAULT ('PART'),
-    "fld_part_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_fmeca_prefix" VARCHAR(16) NOT NULL DEFAULT ('FMEA'),
-    "fld_fmeca_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_mode_prefix" VARCHAR(16) NOT NULL DEFAULT ('MODE'),
-    "fld_mode_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_effect_prefix" VARCHAR(16) NOT NULL DEFAULT ('EFFECT'),
-    "fld_effect_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_cause_prefix" VARCHAR(16) NOT NULL DEFAULT ('CAUSE'),
-    "fld_cause_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_software_prefix" VARCHAR(16) NOT NULL DEFAULT ('MODULE'),
-    "fld_software_next_id" INTEGER NOT NULL DEFAULT (1),
-    "fld_revision_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_requirement_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_function_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_hardware_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_software_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_vandv_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_testing_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_rcm_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_fraca_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_fmeca_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_survival_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_rbd_active" TINYINT NOT NULL DEFAULT (1),
-    "fld_fta_active" TINYINT NOT NULL DEFAULT (1),
+    "fld_revision_prefix" VARCHAR(16) NOT NULL DEFAULT('REVISION'),
+    "fld_revision_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_function_prefix" VARCHAR(16) NOT NULL DEFAULT('FUNCTION'),
+    "fld_function_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_assembly_prefix" VARCHAR(16) NOT NULL DEFAULT('ASSEMBLY'),
+    "fld_assembly_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_part_prefix" VARCHAR(16) NOT NULL DEFAULT('PART'),
+    "fld_part_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_fmeca_prefix" VARCHAR(16) NOT NULL DEFAULT('FMEA'),
+    "fld_fmeca_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_mode_prefix" VARCHAR(16) NOT NULL DEFAULT('MODE'),
+    "fld_mode_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_effect_prefix" VARCHAR(16) NOT NULL DEFAULT('EFFECT'),
+    "fld_effect_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_cause_prefix" VARCHAR(16) NOT NULL DEFAULT('CAUSE'),
+    "fld_cause_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_software_prefix" VARCHAR(16) NOT NULL DEFAULT('MODULE'),
+    "fld_software_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_revision_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_requirement_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_function_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_hardware_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_software_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_vandv_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_testing_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_rcm_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_fraca_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_fmeca_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_survival_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_rbd_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_fta_active" TINYINT NOT NULL DEFAULT(1),
     "fld_created_on" datetime DEFAULT NULL,
-    "fld_created_by" VARCHAR(45) DEFAULT (''),
+    "fld_created_by" VARCHAR(45) DEFAULT(''),
     "fld_last_saved" datetime DEFAULT NULL,
-    "fld_last_saved_by" VARCHAR(45) DEFAULT ('')
+    "fld_last_saved_by" VARCHAR(45) DEFAULT('')
 );
-INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,0,0,1,1,1,1,1,'0000-00-00 00:00:00','',NULL,NULL);
+INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,0,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','');
 
 CREATE TABLE "tbl_mission_phase" (
     "fld_phase_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -70,16 +70,16 @@ CREATE TABLE "tbl_revisions" (
     "fld_mcmt" REAL NOT NULL DEFAULT(0),                -- Mean corrective maintenance time (MCMT) of the revision.
     "fld_mpmt" REAL NOT NULL DEFAULT(0),                -- Mean preventive maintenance time (MPMT) of the revision.
     "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),        -- Assessed mission MTBF of the revision.
-    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),      --
-    "fld_mttr" REAL NOT NULL DEFAULT(0),
-    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),
-    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),
-    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),
-    "fld_remarks" BLOB NOT NULL,
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),
-    "fld_revision_code" VARCHAR(8) DEFAULT('')
+    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),      -- Assessed MTBF of the revision.
+    "fld_mttr" REAL NOT NULL DEFAULT(0),                -- Assessed MTTR of the revision.
+    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),       -- Noun name of the revision.
+    "fld_reliability_mission" REAL NOT NULL DEFAULT(1), -- Assessed mission reliability of the revision.
+    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),   -- Assessed reliability of the revision.
+    "fld_remarks" BLOB NOT NULL,                        -- Remarks about the revision.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),  -- Total number of components comprising the revision.
+    "fld_revision_code" VARCHAR(8) DEFAULT('')          -- Alphnumeric code for the revision.
 );
-INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision the system.',0,'');
+INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'');
 
 CREATE TABLE "tbl_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
@@ -96,27 +96,27 @@ CREATE TABLE "tbl_units" (
 -- Create tables for storing system function information.
 --
 CREATE TABLE "tbl_functions" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_function_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_availability" FLOAT NOT NULL DEFAULT (1),
-    "fld_availability_mission" FLOAT NOT NULL DEFAULT (1),
-    "fld_code" VARCHAR(16) NOT NULL DEFAULT ('Function Code'),
-    "fld_cost" FLOAT NOT NULL DEFAULT (0),
-    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT (0),
-    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT (0),
-    "fld_mmt" FLOAT NOT NULL DEFAULT (0),
-    "fld_mcmt" FLOAT NOT NULL DEFAULT (0),
-    "fld_mpmt" FLOAT NOT NULL DEFAULT (0),
-    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT (0),
-    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT (0),
-    "fld_mttr" FLOAT NOT NULL DEFAULT (0),
-    "fld_name" VARCHAR(255) DEFAULT ('Function Name'),
-    "fld_remarks" BLOB,
-    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT (0),
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT (0),
-    "fld_type" INTEGER NOT NULL DEFAULT (0),
-    "fld_parent_id" VARCHAR(16) NOT NULL DEFAULT ('-'),
-    "fld_level" INTEGER NOT NULL DEFAULT (0)
+    "fld_availability" FLOAT NOT NULL DEFAULT(1),       -- Assessed availability of the function.
+    "fld_availability_mission" FLOAT NOT NULL DEFAULT(1),   -- Assessed mission availability of the function.
+    "fld_code" VARCHAR(16) NOT NULL DEFAULT('Function Code'),   -- Tracking code for the function.
+    "fld_cost" FLOAT NOT NULL DEFAULT(0),               -- Assessed cost of the function.
+    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),   -- Assessed mission failure intensity of the function.
+    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0), -- Assessed limiting failure intensity of the function.
+    "fld_mmt" FLOAT NOT NULL DEFAULT(0),                -- Assessed mean maintenance time of the function.
+    "fld_mcmt" FLOAT NOT NULL DEFAULT(0),               -- Assessed mean corrective maintenance time of the function.
+    "fld_mpmt" FLOAT NOT NULL DEFAULT(0),               -- Assessed mean preventive maintenance time of the function.
+    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT(0),       -- Assessed mission mean time between failures of the function.
+    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT(0),     -- Assessed limiting mean time between failures of the function.
+    "fld_mttr" FLOAT NOT NULL DEFAULT(0),               -- Assessed mean time to repair of the function.
+    "fld_name" VARCHAR(255) DEFAULT('Function Name'),   -- Noun name of the function.
+    "fld_remarks" BLOB,                                 -- Remarks associated with the function.
+    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT(0),  -- Total number of failure modes impacting the function.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(0),  -- Total number of components comprising the function.
+    "fld_type" INTEGER NOT NULL DEFAULT(0),             --
+    "fld_parent_id" VARCHAR(16) NOT NULL DEFAULT('-'),  --
+    "fld_level" INTEGER NOT NULL DEFAULT(0)             --
 );
 INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,'-',0);
 
@@ -132,22 +132,22 @@ INSERT INTO "tbl_functional_matrix" VALUES(0,0,0);
 -- Create tables for storing program requirements information.
 --
 CREATE TABLE "tbl_requirements" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_requirement_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_requirement_desc" BLOB,
-    "fld_requirement_type" INTEGER NOT NULL DEFAULT (0),
-    "fld_requirement_code" VARCHAR(16) DEFAULT NULL,
-    "fld_derived" TINYINT DEFAULT (0),
-    "fld_parent_requirement" VARCHAR(45) NOT NULL DEFAULT ('-'),
-    "fld_validated" TINYINT DEFAULT (0),
-    "fld_validated_date" VARCHAR(45) DEFAULT NULL,
-    "fld_owner" VARCHAR(64) DEFAULT NULL,
-    "fld_specification" VARCHAR(128) DEFAULT NULL,
-    "fld_page_number" VARCHAR(32) DEFAULT NULL,
-    "fld_figure_number" VARCHAR(32) DEFAULT NULL,
-    "fld_parent_id" INTEGER DEFAULT (0),
-    "fld_software_id" INTEGER DEFAULT (0)
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_requirement_desc" BLOB,                        -- Noun description of the requirement.
+    "fld_requirement_type" INTEGER NOT NULL DEFAULT(0), -- Type of requirement.
+    "fld_requirement_code" VARCHAR(16) DEFAULT NULL,    -- Alphanumeric code for the requirement.
+    "fld_derived" TINYINT DEFAULT(0),                   -- Indicates whether or not the requirement is derived.
+    "fld_parent_requirement" VARCHAR(45) NOT NULL DEFAULT('-'), --
+    "fld_validated" TINYINT DEFAULT(0),                 --
+    "fld_validated_date" VARCHAR(45) DEFAULT NULL,      --
+    "fld_owner" VARCHAR(64) DEFAULT NULL,               --
+    "fld_specification" VARCHAR(128) DEFAULT NULL,      --
+    "fld_page_number" VARCHAR(32) DEFAULT NULL,         --
+    "fld_figure_number" VARCHAR(32) DEFAULT NULL,       --
+    "fld_parent_id" INTEGER DEFAULT(0),                 --
+    "fld_software_id" INTEGER DEFAULT(0)                --
 );
 
 --
@@ -887,19 +887,19 @@ CREATE TABLE "tbl_tests" (
     "fld_test_name" VARCHAR(512),
     "fld_test_description" BLOB,
     "fld_test_type" INTEGER NOT NULL DEFAULT(0),
-    "fld_mi" REAL DEFAULT (0),
-    "fld_mg" REAL DEFAULT (0),
-    "fld_mgp" REAL DEFAULT (0),
-    "fld_tr" REAL DEFAULT (0),
-    "fld_consumer_risk" REAL DEFAULT (0),
-    "fld_producer_risk" REAL DEFAULT (0),
-    "fld_rg_plan_model" INTEGER DEFAULT (0),
-    "fld_rg_assess_model" INTEGER DEFAULT (0),
-    "fld_num_phases" INTEGER DEFAULT (1),
+    "fld_mi" REAL DEFAULT(0),
+    "fld_mg" REAL DEFAULT(0),
+    "fld_mgp" REAL DEFAULT(0),
+    "fld_tr" REAL DEFAULT(0),
+    "fld_consumer_risk" REAL DEFAULT(0),
+    "fld_producer_risk" REAL DEFAULT(0),
+    "fld_rg_plan_model" INTEGER DEFAULT(0),
+    "fld_rg_assess_model" INTEGER DEFAULT(0),
+    "fld_num_phases" INTEGER DEFAULT(1),
     "fld_attachment" VARCHAR(512),
-    "fld_ttt" REAL DEFAULT (0),
-    "fld_avg_growth" REAL DEFAULT (0.3),
-    "fld_avg_ms" REAL DEFAULT (0),
+    "fld_ttt" REAL DEFAULT(0),
+    "fld_avg_growth" REAL DEFAULT(0.3),
+    "fld_avg_ms" REAL DEFAULT(0),
     "fld_prob" REAL DEFAULT(0.75),
     "fld_ttff" REAL DEFAULT(0),
     "fld_avg_fef" REAL DEFAULT(0.7)
@@ -908,22 +908,22 @@ CREATE TABLE "tbl_tests" (
 CREATE TABLE "tbl_rel_growth" (
     "fld_test_id" INTEGER,
     "fld_phase_id" INTEGER,
-    "fld_growth_rate" REAL DEFAULT (0),
-    "fld_ms" REAL DEFAULT (0),
-    "fld_fef_avg" REAL DEFAULT (0),
-    "fld_mi" REAL DEFAULT (0),
-    "fld_mf" REAL DEFAULT (0),
-    "fld_ma" REAL DEFAULT (0),
-    "fld_ff_prob" REAL DEFAULT (0),
-    "fld_ti" REAL DEFAULT (0),
-    "fld_test_time" REAL DEFAULT (0),
-    "fld_num_fails" INTEGER DEFAULT (0),
-    "fld_start_date" INTEGER,
-    "fld_end_date" INTEGER,
-    "fld_weeks" REAL DEFAULT (0),
-    "fld_test_units" INTEGER DEFAULT (0),
-    "fld_tpu" REAL DEFAULT (0),
-    "fld_tpupw" REAL DEFAULT (0),
+    "fld_growth_rate" REAL DEFAULT(0),                  -- Average growth rate across entire reliability growth phase.
+    "fld_ms" REAL DEFAULT(0),                           --
+    "fld_fef_avg" REAL DEFAULT(0),                      -- Average fix effectiveness factor across entire reliability growth phase.
+    "fld_mi" REAL DEFAULT(0),                           --
+    "fld_mf" REAL DEFAULT(0),                           --
+    "fld_ma" REAL DEFAULT(0),                           --
+    "fld_ff_prob" REAL DEFAULT(0),                      --
+    "fld_ti" REAL DEFAULT(0),                           --
+    "fld_test_time" REAL DEFAULT(0),                    --
+    "fld_num_fails" INTEGER DEFAULT(0),                 --
+    "fld_start_date" INTEGER,                           --
+    "fld_end_date" INTEGER,                             --
+    "fld_weeks" REAL DEFAULT(0),                        --
+    "fld_test_units" INTEGER DEFAULT(0),                --
+    "fld_tpu" REAL DEFAULT(0),                          --
+    "fld_tpupw" REAL DEFAULT(0),                        --
     PRIMARY KEY ("fld_test_id", "fld_phase_id")
 );
 
@@ -1007,37 +1007,37 @@ CREATE TABLE "tbl_fmeca_actions" (
 -- Create tables for storing maintenance analyses information.
 --
 CREATE TABLE "tbl_significant_item" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_q1" INTEGER DEFAULT (1),
-    "fld_q2" INTEGER DEFAULT (1),
-    "fld_q3" INTEGER DEFAULT (0),
-    "fld_q4" INTEGER DEFAULT (0),
-    "fld_ssi" INTEGER DEFAULT (1),
-    "fld_fsi" INTEGER DEFAULT (1)
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_q1" INTEGER DEFAULT(1),
+    "fld_q2" INTEGER DEFAULT(1),
+    "fld_q3" INTEGER DEFAULT(0),
+    "fld_q4" INTEGER DEFAULT(0),
+    "fld_ssi" INTEGER DEFAULT(0),                       -- Assembly is or is not a structurally significant item.
+    "fld_fsi" INTEGER DEFAULT(1)                        -- Assembly is or is not a functionally significant item.
 );
 
 CREATE TABLE "tbl_failure_consequences" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_q1" INTEGER DEFAULT (0),
-    "fld_q1_justify" BLOB,
-    "fld_q2" INTEGER DEFAULT (1),
-    "fld_q2_justify" BLOB,
-    "fld_q3" INTEGER DEFAULT (1),
-    "fld_q3_justify" BLOB,
-    "fld_safety" INTEGER DEFAULT (0),
-    "fld_safety_hidden" INTEGER DEFAULT (1),
-    "fld_operation_hidden" INTEGER DEFAULT (0)
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_q1" INTEGER DEFAULT(0),
+    "fld_q1_justify" BLOB,                              -- Justification for the answer to question 1.
+    "fld_q2" INTEGER DEFAULT(1),
+    "fld_q2_justify" BLOB,                              -- Justification for the answer to question 2.
+    "fld_q3" INTEGER DEFAULT(1),
+    "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
+    "fld_safety" INTEGER DEFAULT(0),                    -- Failure mode has apparent safety consequences.
+    "fld_safety_hidden" INTEGER DEFAULT(1),             -- Failure mode has hidden safety consequences.
+    "fld_operation_hidden" INTEGER DEFAULT(0)           -- Failure mode has hidded operational consequences.
 );
 
 CREATE TABLE "tbl_on_condition" (
-    "tbl_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "tbl_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_q1" INTEGER DEFAULT (0),
+    "tbl_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "tbl_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_q1" INTEGER DEFAULT(0),
     "fld_q1_justify" BLOB,                              -- Justification for the answer to question 1.
-    "fld_q2" INTEGER DEFAULT (0),
+    "fld_q2" INTEGER DEFAULT(0),
     "fld_q2_justify" BLOB,                              -- Justification for the answer to question 2.
-    "fld_q3" INTEGER DEFAULT (0),
+    "fld_q3" INTEGER DEFAULT(0),
     "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
     "fld_pot_act_interval" REAL,                        -- Interval between potential failure and actual failure.
     "fld_dmmh_inspection" REAL,                         -- Direct maintenance man-hours for one inspection.
@@ -1056,45 +1056,68 @@ CREATE TABLE "tbl_on_condition" (
     "fld_correct_mat_cost" REAL,                        -- Material costs to correct one potential failure.
     "fld_pf" REAL,                                      -- Cost of correcting one potential failure (fld_dmmh_correct * fld_correct_labor + fld_correct_mat_cost).
     "fld_cpm" REAL,                                     -- Cost of one preventive maintenance task (fld_ci + fld_cpf).
-    "fld_num_insp" INTEGER DEFAULT (0)                  -- Number of inspections.
+    "fld_num_insp" INTEGER DEFAULT(0)                   -- Number of inspections.
 );
 
 CREATE TABLE "tbl_hard_time" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_q1" INTEGER DEFAULT (0),
-    "fld_q1_justify" BLOB,
-    "fld_wearout_age" REAL,
-    "fld_percent_survive" REAL,
-    "fld_life_limit" REAL,
-    "fld_cpm" REAL,
-    "fld_cnpm" REAL,
-    "fld_cbr" REAL
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_q1" INTEGER DEFAULT(0),
+    "fld_q1_justify" BLOB,                              -- Justification for the answer to question 1.
+    "fld_wearout_age" REAL,                             -- Age when wearout begins to dominate.
+    "fld_percent_survive" REAL,                         -- Percent of items that will survive to the wearout age.
+    "fld_life_limit" REAL,                              -- Safety or economic life limit imposed on the item.
+    "fld_cpm" REAL,                                     -- Cost of performing one preventive maintenance task.
+    "fld_cnpm" REAL,                                    -- Cost of not performing preventive maintenance.
+    "fld_cbr" REAL                                      -- Cost Benefit Ratio (fld_cpm / fld_cnpm).
 );
 
 CREATE TABLE "tbl_failure_finding" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_q1" INTEGER DEFAULT (0),
-    "fld_q1_justify" BLOB
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_q1" INTEGER DEFAULT(0),
+    "fld_q1_justify" BLOB                               -- Justification for the answer to question 1.
 );
 
 CREATE TABLE "tbl_tasks" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_mode_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_task_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_task_type" INTEGER DEFAULT (0),
-    "fld_task_description" BLOB,
-    "fld_engineer_interval" REAL,
-    "fld_mnt_level" INTEGER DEFAULT (0),
-    "fld_ac" INTEGER,
-    "fld_sci" INTEGER,
-    "fld_fm" INTEGER,
-    "fld_prob_acceptable" REAL,
-    "fld_prob_actual" REAL,
-    "fld_prob_mf" REAL,
-    "fld_applicable" INTEGER DEFAULT (0),
-    "fld_effective" INTEGER DEFAULT (0)
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_task_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_task_type" INTEGER DEFAULT(0),
+    "fld_task_description" BLOB,                        -- Description of the maintenance task.
+    "fld_engineer_interval" REAL,                       -- Recommended engineering interval of the maintenance task.
+    "fld_mnt_level" INTEGER DEFAULT(0),                 -- Level of maintenance that will perform the task.
+    "fld_ac" INTEGER,                                   --
+    "fld_sci" INTEGER,                                  --
+    "fld_fm" INTEGER,                                   -- Total number of high risk failure modes the item is susceptible to.
+    "fld_prob_acceptable" REAL,                         -- Acceptable probability of failure.
+    "fld_prob_actual" REAL,                             -- Actual probability of failure.
+    "fld_prob_mf" REAL,                                 -- Actual probability of multiple failures.
+    "fld_applicable" INTEGER DEFAULT(0),
+    "fld_effective" INTEGER DEFAULT(0),
+    "fld_approved" INTEGER DEFAULT(0)
+);
+
+CREATE TABLE "tbl_age_exploration" (
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_task_id" INTEGER NOT NULL AUTOINCREMENT,
+    "fld_required_info" BLOB,                           -- Information required to V&V the default decision.
+    "fld_prelim_task" BLOB,                             -- Description of the preliminary age exploration task.
+    "fld_sample_size" INTEGER,                          -- Required minimum sample size for the age exploration task.
+    "fld_mnt_level" INTEGER DEFAULT(0),                 -- Level of maintenance that will collect the age exploration data.
+    "fld_study_period" REAL,                            -- Length of the age exploration study period.
+    "fld_task_type" INTEGER DEFAULT(0),                 -- Type of age exploration task (SAET or DAET).
+    "fld_q1" INTEGER DEFAULT(0),
+    "fld_q2" INTEGER DEFAULT(0),
+    "fld_q2_justify" BLOB,                              -- Justification for the answer to question 2.
+    "fld_q3" INTEGER DEFAULT(0),
+    "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
+    "fld_q4" INTEGER DEFAULT(0),
+    "fld_q4_justify" BLOB,                              -- Justification for the answer to question 4.
+    "fld_applicable" INTEGER DEFAULT(0),
+    "fld_effective" INTEGER DEFAULT(0),
+    "fld_approved" INTEGER DEFAULT(0)
 );
 
 -- Test tables.  Currently not used by RTK.

@@ -1195,15 +1195,17 @@ class Incident:
 
         from datetime import datetime
 
+        self.model.clear()
+
         results = self._app.DB.execute_query(query,
                                              values,
                                              self._app.ProgCnx)
 
         if(results == '' or not results):
+            _util.application_error(_(u"There are no incidents matching the specified criteria."))
             return True
 
         self.n_incidents = len(results)
-        self.model.clear()
         for i in range(self.n_incidents):
             _data = [results[i][0], results[i][1] ,results[i][2],
                      results[i][3], results[i][4], results[i][5],
