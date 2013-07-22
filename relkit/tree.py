@@ -73,7 +73,12 @@ class TreeWindow(gtk.Window):
         width = gtk.gdk.screen_width() / n_screens
         height = gtk.gdk.screen_height()
 
-        self.set_default_size((2 * width / 3) - 10, (2 * height / 7))
+        if(_conf.OS == 'Linux'):
+            self.set_default_size((2 * width / 3) - 10, (2 * height / 7))
+        elif(_conf.OS == 'Windows'):
+            print 2*width / 3 - 10
+            print 2 * height / 7
+
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)
         self.move(0, 0)

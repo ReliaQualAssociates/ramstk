@@ -172,6 +172,8 @@ COM_BACKEND = ''
 # Variables to support native language support.
 LOCALE = 'en_US'
 
+OS = ''
+
 # Variables to control the display of numerical information.
 FRMULT = 1.0
 PLACES = 6
@@ -181,6 +183,7 @@ MTIME = 100.0
 TABPOS = ['top', 'bottom', 'bottom']
 
 # Variables to hold various control parameters.
+METHOD= 'STANDARD'                          # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
 class RelKitConf:

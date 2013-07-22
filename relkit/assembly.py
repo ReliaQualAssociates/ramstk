@@ -363,8 +363,8 @@ class Assembly:
                                                       bg_color,
                                                       fg_color)
 
-        # Add background color and editable attributes so failure mechanisms,
-        # controls, and actions will not be editable in the FMECA worksheet.
+# Add background color and editable attributes so failure mechanisms, controls,
+# and actions will not be editable in the FMECA worksheet.
         cols = len(self._FMECA_col_order)
         _column = self.tvwFMECA.get_columns()
         for i in range(len(_column)):
@@ -385,7 +385,7 @@ class Assembly:
 
         self.fraFMECADetails = _widg.make_frame(_label_=_(u"Failure Mechanism Details"))
 
-        # Create the widgets to display the failure mechanism/cause details.
+# Create the widgets to display the failure mechanism/cause details.
         self.fxdMechanism = gtk.Fixed()
         self.cmbOccurenceI = _widg.make_combo()
         self.cmbDetectionI = _widg.make_combo()
@@ -396,13 +396,13 @@ class Assembly:
         self.txtRPNI = _widg.make_entry(_width_=50, editable=False)
         self.txtRPNN = _widg.make_entry(_width_=50, editable=False)
 
-        # Create the widgets to display the current controls details.
+# Create the widgets to display the current controls details.
         self.fxdControl = gtk.Fixed()
         self.cmbControlType = _widg.make_combo()
         self.txtControlID = _widg.make_entry(_width_=50, editable=False)
         self.txtControlDescription = _widg.make_entry()
 
-        # Create the widgets to display the recommended action details.
+# Create the widgets to display the recommended action details.
         self.fxdAction = gtk.Fixed()
         self.cmbActionCategory = _widg.make_combo()
         self.cmbActionStatus = _widg.make_combo()
@@ -3124,12 +3124,14 @@ class Assembly:
 
         self._general_data_tab_load()
         self._allocation_tab_load()
-        self._risk_analysis_tab_load()
         self._similar_item_tab_load()
         self._assessment_inputs_tab_load()
         self.assessment_results_tab_load()
         self._fmeca_tab_load()
         #self._maintenance_planning_tab_load()
+
+        if(_conf.METHOD == 'LRM'):
+            self._risk_analysis_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())

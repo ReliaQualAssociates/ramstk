@@ -77,13 +77,17 @@ class RelKit:
 
         self.ProgCnx = None
 
-        # Read the configuration file.
+# Read the configuration file.
         _util.read_configuration()
 
-        # Create loggers for the application.  The first is to store log
-        # information for RelKit developers.  The second is to log errors
-        # for the user.  The user can use these errors to help find problems
-        # with their inputs and sich.
+        if(os.name == 'posix'):
+            _conf.OS = 'Linux'
+        elif(os.name == 'nt'):
+            _conf.OS = 'Windows'
+
+# Create loggers for the application.  The first is to store log information
+# for RTK developers.  The second is to log errors for the user.  The user can
+# use these errors to help find problems with their inputs and sich.
         __user_log = _conf.LOG_DIR + '/relkit_user.log'
         __error_log = _conf.LOG_DIR + '/relkit_error.log'
         __import_log = _conf.LOG_DIR + '/relkit_import.log'
@@ -108,12 +112,12 @@ class RelKit:
         self.LOADED = False
         self.partlist = {}
 
-        # Find out who is using RelKit and when.
+# Find out who is using RelKit and when.
         self._UID = getpass.getuser()
         self._TODAY = datetime.datetime.now()
         self.DATE = "1970-01-01"
 
-        # Get a connection to the common database.
+# Get a connection to the common database.
         if(_conf.COM_BACKEND == 'mysql'):
             self.COMDB = _mysql.MySQLInterface(self)
             self.ComCnx = self.COMDB.get_connection(_conf.RELIAFREE_COM_INFO)
@@ -123,14 +127,14 @@ class RelKit:
             _database = _conf.CONF_DIR + _conf.RELIAFREE_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
-        # Get a connection to the program database.
+# Get a connection to the program database.
         if(_conf.BACKEND == 'mysql'):
             self.DB = _mysql.MySQLInterface(self)
 
         elif(_conf.BACKEND == 'sqlite3'):
             self.DB = _sqlite.SQLite3Interface(self)
 
-        # Create the GUI and objects for each of the RelKit classes.
+# Create the GUI and objects for each of the RelKit classes.
         self.winWorkBook = _note.WorkBookWindow(self)
 
         self.REVISION = Revision(self)
@@ -167,8 +171,8 @@ class RelKit:
         self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
-        # Get a connection to the program database and then retrieve the
-        # program information.
+# Get a connection to the program database and then retrieve the program
+# information.
         query = "SELECT * FROM tbl_program_info"
         if(_conf.BACKEND == 'mysql'):
             self.ProgCnx = self.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
@@ -180,11 +184,13 @@ class RelKit:
         for i in range(19):
             _conf.RELIAFREE_PREFIX.append(results[0][i + 1])
 
-        # Find which modules are active in this project.
+# Find which modules are active in this project.
         for i in range(10):
             _conf.RELIAFREE_MODULES.append(results[0][i + 19])
             if results[0][i + 19] == 1:
                 _conf.RELKIT_PAGE_NUMBER.append(i)
+
+        _conf.METHOD = results[0][36]
 
         icon = _conf.ICON_DIR + '32x32/db-connected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
