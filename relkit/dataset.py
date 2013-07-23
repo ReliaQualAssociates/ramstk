@@ -165,8 +165,6 @@ class Dataset:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Analyses Input tab widgets.
-        self.chkAllocate = _widg.make_check_button(_label_=_(u"Allocate Results"))
-
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
         self.cmbConfMethod = _widg.make_combo()
@@ -463,8 +461,6 @@ class Dataset:
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
-        self.chkAllocate.set_tooltip_text(_(u"Allocate results to lower level assemblies."))
-
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_STRING)
@@ -610,8 +606,6 @@ class Dataset:
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtRelPoints, 205, y_pos)
         y_pos += 30
-
-        fixed.put(self.chkAllocate, 5, y_pos)
 
         fixed.show_all()
 
@@ -1974,44 +1968,6 @@ class Dataset:
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=scale),
                                 Rtimes, False)
-
-# If the user has selected to allocate the results to the next lower indenture
-# level, get the count of failures grouped by assembly id.  Then calculate the
-# failure rate and MTBF for each assembly and update tbl_system with the
-# results.
-            if(self.chkAllocate.get_active()):
-                query = "SELECT fld_assembly_id, COUNT(fld_assembly_id) \
-                         FROM tbl_survival_data \
-                         WHERE fld_dataset_id=%d \
-                         GROUP BY fld_assembly_id" % _dataset_
-                results = self._app.DB.execute_query(query,
-                                                     None,
-                                                     self._app.ProgCnx)
-
-                query = "UPDATE tbl_system \
-                         SET fld_mtbf_specified=%f, fld_mtbf_lcl=%f, \
-                             fld_mtbf_ucl=%f, fld_failure_rate_specified=%f, \
-                             fld_failure_rate_lcl=%f, \
-                             fld_failure_rate_ucl=%f, \
-                             fld_failure_rate_type=%d \
-                         WHERE fld_assembly_id=%d"
-
-                _n_assemblies = len(results)
-                _n_fails = sum([x[1] for x in results])
-                for i in range(_n_assemblies):
-                    _percent = float(results[i][1]) / float(_n_fails)
-                    _values = (1.0 / (scale * _percent),
-                               1.0 / (scaleul * _percent),
-                               1.0 / (scalell * _percent),
-                               scale * _percent, scalell * _percent,
-                               scaleul * _percent, 2, results[i][0])
-                    self._app.DB.execute_query(query % _values,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-                # Re-load the hardware tree with the new failure rate and MTBF.
-                self._app.HARDWARE.load_tree()
 
 # Display the widgets we need.
             self.txtScaleScale.show()

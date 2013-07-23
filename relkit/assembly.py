@@ -270,6 +270,7 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to create Allocation tab.")
 
 # Create the Risk Analysis tab widgets for the ASSEMBLY object.
+        self.fraRiskAnalysis = _widg.make_frame()
         self.tvwRisk = gtk.TreeView()
         if self._risk_analysis_widgets_create():
             self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
@@ -1311,9 +1312,8 @@ class Assembly:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwRisk)
 
-        frame = _widg.make_frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        self.fraRiskAnalysis.set_shadow_type(gtk.SHADOW_NONE)
+        self.fraRiskAnalysis.add(scrollwindow)
 
         label = gtk.Label()
         _heading = _(u"Risk\nAnalysis")
@@ -1323,7 +1323,7 @@ class Assembly:
         label.show_all()
         label.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
 
-        self.notebook.insert_page(frame,
+        self.notebook.insert_page(self.fraRiskAnalysis,
                                   tab_label=label,
                                   position=-1)
 
