@@ -790,6 +790,9 @@ class Dataset:
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwNonParResults.set_model(model)
 
@@ -873,9 +876,69 @@ class Dataset:
         column.set_attributes(cell, text=7)
         self.tvwNonParResults.append_column(column)
 
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Cumulative\nMTBF"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=8)
+        self.tvwNonParResults.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Upper\nBound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=9)
+        self.tvwNonParResults.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Upper\nBound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=10)
+        self.tvwNonParResults.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Instantaneous\nMTBF"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=11)
+        self.tvwNonParResults.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Upper\nBound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=12)
+        self.tvwNonParResults.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Upper\nBound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=13)
+        self.tvwNonParResults.append_column(column)
+
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwNonParResults)
+        scrollwindow.add(self.tvwNonParResults)
 
         self.fraNonParEst.add(scrollwindow)
 
@@ -1470,16 +1533,22 @@ class Dataset:
                                                  self._app.ProgCnx)
 
 # =========================================================================== #
-# 0 = Event Time ti. (string)
-# 1 = Delta array at time ti. (array of integers)
-# 2 = d array at time ti. (array of integers)
-# 3 = Sum of delta at time ti. (integer)
-# 4 = Sum of d at time ti. (integer)
-# 5 = d bar at time ti. (float)
-# 6 = Variance of d bar at time ti. (float)
-# 7 = Lower bound on mean cumulative function at time ti. (float)
-# 8 = Upper bound on mean cumulative fucntion at time ti. (float)
-# 9 = Mean cumulative function at time ti. (float)
+#  0 = Event Time ti. (string)
+#  1 = Delta array at time ti. (array of integers)
+#  2 = d array at time ti. (array of integers)
+#  3 = Sum of delta at time ti. (integer)
+#  4 = Sum of d at time ti. (integer)
+#  5 = d bar at time ti. (float)
+#  6 = Variance of d bar at time ti. (float)
+#  7 = Lower bound on mean cumulative function at time ti. (float)
+#  8 = Upper bound on mean cumulative fucntion at time ti. (float)
+#  9 = Mean cumulative function at time ti. (float)
+# 10 = Cumulative MTBF at time ti. (float)
+# 11 = Lower bound on cumulative MTBF at time ti. (float)
+# 12 = Upper bound on cumulative MTBF at time ti. (float)
+# 13 = Instantaneous MTBF at time ti. (float)
+# 14 = Lower bound on instantaneous MTBF at time ti. (float)
+# 15 = Upper bound on instantaneous MTBF at time ti. (float)
 # =========================================================================== #
             nonpar = _calc.mean_cumulative_function(_units_, _times_,
                                                     results, _conf_)
@@ -1553,13 +1622,22 @@ class Dataset:
 #     5         MCF point estimate
 #     6         MCF lower bound
 #     7         MCF upper bound
+#     8         Cumulative MTBF
+#     9         Cumulative MTBF lower bound
+#    10         Cumulative MTBF upper bound
+#    11         Instantaneous MTBF
+#    12         Instantaneous MTBF lower bound
+#    13         Instantaneous MTBF upper bound
             model = self.tvwNonParResults.get_model()
             model.clear()
             for i in range(n_failures):
                 _data_ = [str(nonpar[i][0]), int(nonpar[i][3]),
                           int(nonpar[i][4]), float(nonpar[i][5]),
                           float(nonpar[i][6]), float(nonpar[i][9]),
-                          float(nonpar[i][7]), float(nonpar[i][8])]
+                          float(nonpar[i][7]), float(nonpar[i][8]),
+                          float(nonpar[i][10]), float(nonpar[i][11]),
+                          float(nonpar[i][12]), float(nonpar[i][13]),
+                          float(nonpar[i][14]), float(nonpar[i][15])]
                 model.append(_data_)
 
             column = self.tvwNonParResults.get_column(1)
@@ -1595,6 +1673,36 @@ class Dataset:
             column = self.tvwNonParResults.get_column(7)
             label = column.get_widget()
             label.set_markup(_(u"<span weight='bold'>MCF Upper\nBound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(8)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(9)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nLower Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(10)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nUpper Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(11)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(12)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nLower Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(13)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nUpper Bound</span>"))
             column.set_widget(label)
 
 # Plot the mean cumulative function with confidence bounds.

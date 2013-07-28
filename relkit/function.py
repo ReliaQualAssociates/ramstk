@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#    function.py is part of The RelKit Project
+#    function.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,7 +34,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
@@ -73,7 +73,7 @@ class Function:
         Initializes the Function Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -156,7 +156,7 @@ class Function:
 
         # Save function button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        button.set_tooltip_text(_("Saves function changes to the RelKit Program Database."))
+        button.set_tooltip_text(_("Saves function changes to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -165,7 +165,7 @@ class Function:
 
         # Add sibling function button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new function at the same indenture level as the selected function to the RelKit Program database."))
+        button.set_tooltip_text(_("Adds a new function at the same indenture level as the selected function to the RTK Program database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
@@ -174,7 +174,7 @@ class Function:
 
         # Add child function button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new function one indenture level subordinate to the selected function to the RelKit Program database."))
+        button.set_tooltip_text(_("Adds a new function one indenture level subordinate to the selected function to the RTK Program database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
@@ -183,7 +183,7 @@ class Function:
 
         # Delete function button
         button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
-        button.set_tooltip_text(_("Removes the currently selected function from the RelKit Program Database."))
+        button.set_tooltip_text(_("Removes the currently selected function from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -612,7 +612,7 @@ class Function:
         """
         Creates the Function TreeView and connects it to callback functions to
         handle editting.  Background and foreground colors can be set using
-        the user-defined values in the RelKit configuration file.
+        the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1138,14 +1138,14 @@ class Function:
             self._general_data_tab_load()
             self._functional_matrix_tab_load()
             self._assessment_results_tab_load()
-            
+
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxFunction)
         self._app.winWorkBook.show_all()
 
-        self._app.winWorkBook.set_title(_("RelKit Work Bench: Function"))
-        
+        self._app.winWorkBook.set_title(_(u"RTK Work Bench: Function"))
+
         return False
 
     def _callback_entry(self, entry, event, convert, _index_):

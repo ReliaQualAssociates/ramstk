@@ -378,8 +378,8 @@ def calculate_hardware(treemodel, row, application):
                 treemodel.set_value(row, 95, icon)
 
             elif(treemodel.get_value(row, 63) == 1):    # Component
-                # Get the partlist full model and row associated with the selected
-                # system tree item.
+# Get the partlist full model and row associated with the selected system
+# tree item.
                 partmodel = application.winParts.full_model
                 path = application.winParts._treepaths[treemodel.get_value(row, 1)]
                 partrow = partmodel.get_iter(path)
@@ -2357,7 +2357,7 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
 
     from scipy.stats import norm
 
-    # Determine the confidence bound z-value.
+# Determine the confidence bound z-value.
     _z_norm_ = norm.ppf(_conf_)
 
     _m_ = len(units)
@@ -2397,17 +2397,42 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     _MCF_ = []
     _x_ = (_delta_.transpose() / _delta_dot).transpose()
     _y_ = (_d_.transpose() - _d_bar).transpose()
+    muhatp = 0.0
+    _llp_ = 0.0
+    _ulp_ = 0.0
     for i in range(len(times)):
         muhat = _d_bar[0:i+1].sum(axis=0)
 
-        # Estimate the variance.
+# Estimate the variance.
         _z_ = (_x_[0:i+1] * _y_[0:i+1])
         _var_ = ((_z_.sum(axis=0))**2).sum(axis=0)
 
+# Calculate the lower and upper bound on the MCF.
         _ll_ = muhat - _z_norm_ * sqrt(_var_)
         _ul_ = muhat + _z_norm_ * sqrt(_var_)
 
-        _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i], _d_bar[i], _var_, _ll_, _ul_, muhat])
+# Estimate the cumulative MTBF.
+        _mtbfc_ = times[i] / muhat
+        _mtbfcll_ = times[i] / _ul_
+        _mtbfcul_ = times[i] / _ll_
+
+# Estimate the instantaneous MTBF.
+        if(i > 0):
+            _mtbfi_ = (times[i] - times[i - 1]) / (muhat - muhatp)
+            _mtbfill_ = (times[i] - times[i - 1]) / (_ul_ - _ulp_)
+            _mtbfiul_ = (times[i] - times[i - 1]) / (_ll_ - _llp_)
+        else:
+            _mtbfi_ = times[i] / (muhat - muhatp)
+            _mtbfill_ = times[i] / (_ul_ - _ulp_)
+            _mtbfiul_ = times[i] / (_ll_ - _llp_)
+
+        muhatp = muhat
+        _llp_ = _ll_
+        _ulp_ = _ul_
+
+        _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i],
+                      _d_bar[i], _var_, _ll_, _ul_, muhat, _mtbfc_, _mtbfcll_,
+                      _mtbfcul_, _mtbfi_, _mtbfill_, _mtbfiul_])
 
     return(_MCF_)
 

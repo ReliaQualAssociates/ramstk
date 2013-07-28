@@ -74,10 +74,13 @@ class TreeWindow(gtk.Window):
         height = gtk.gdk.screen_height()
 
         if(_conf.OS == 'Linux'):
-            self.set_default_size((2 * width / 3) - 10, (2 * height / 7))
+            _width = (2 * width / 3) - 10
+            _height = 2 * height / 7
         elif(_conf.OS == 'Windows'):
-            print 2*width / 3 - 10
-            print 2 * height / 7
+            _width = (2 * width / 3) - 30
+            _height = 2 * height / 7
+
+        self.set_default_size(_width, _height)
 
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)
@@ -270,7 +273,7 @@ class TreeWindow(gtk.Window):
 
             _app.INCIDENT.load_tree(query, values)
 
-        # TODO: Add index to RELKIT_MODULES array for data sets.
+        # TODO: Add index to RTK_MODULES array for data sets.
         if(_conf.RELIAFREE_MODULES[8] == 1):
             label = gtk.Label()
             _heading = _("Survival\nAnalyses")
@@ -374,7 +377,7 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '16x16/exit.png')
         menu_item.set_label(_("Exit"))
         menu_item.set_image(image)
-        menu_item.connect('activate', self.quit_relkit)
+        menu_item.connect('activate', self.quit_RTK)
         menu.append(menu_item)
 
         mnuFile = gtk.MenuItem(label=_("_File"), use_underline=True)
@@ -646,7 +649,7 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
         button.show()
-        button.connect('clicked', self.save_quit_relkit)
+        button.connect('clicked', self.save_quit_RTK)
         toolbar.insert(button, _pos)
         _pos += 1
 
@@ -658,7 +661,7 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
         button.show()
-        button.connect('clicked', self.quit_relkit)
+        button.connect('clicked', self.quit_RTK)
         toolbar.insert(button, _pos)
 
         toolbar.show()
@@ -686,7 +689,7 @@ class TreeWindow(gtk.Window):
 
         button = self.toolbar.get_nth_item(4)
 
-        if(_conf.RELKIT_PAGE_NUMBER[page_num] == 0):
+        if(_conf.RTK_PAGE_NUMBER[page_num] == 0):
             try:
                 self._app.REVISION.treeview.grab_focus()
                 model = self._app.REVISION.model
@@ -696,7 +699,7 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new revision to the current RTK Program."))
             except TypeError:               # There are no revisions.
                 pass
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 1):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
             try:
                 self._app.FUNCTION.treeview.grab_focus()
                 model = self._app.FUNCTION.model
@@ -705,7 +708,7 @@ class TreeWindow(gtk.Window):
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
                 self._app.FUNCTION.load_notebook()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 2):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
                 model = self._app.REQUIREMENT.model
@@ -714,7 +717,7 @@ class TreeWindow(gtk.Window):
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
                 self._app.REQUIREMENT.load_notebook()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 3):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()
                 model = self._app.HARDWARE.model
@@ -723,7 +726,7 @@ class TreeWindow(gtk.Window):
                 self._app.HARDWARE.treeview.row_activated(path, column)
             except TypeError:               # There is no hardware.
                 pass
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 4):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 4):
             try:
                 self._app.SOFTWARE.treeview.grab_focus()
                 model = self._app.SOFTWARE.model
@@ -734,7 +737,7 @@ class TreeWindow(gtk.Window):
                 self._app.SOFTWARE.load_notebook()
             except:                         # There are no software modules.
                 pass
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 5):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 5):
             try:
                 self._app.VALIDATION.treeview.grab_focus()
                 model = self._app.VALIDATION.model
@@ -745,7 +748,7 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new verification and validation task to the current RTK Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 6):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 6):
             try:
                 self._app.TESTING.treeview.grab_focus()
                 model = self._app.TESTING.model
@@ -756,12 +759,12 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new test plan to the current RTK Program."))
             except:
                 self._app.TESTING.load_notebook()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 7):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 7):
             try:
                 print "You selected Maintenance Policy"
             except:
                 pass
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 8):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 8):
             try:
                 self._app.INCIDENT.treeview.grab_focus()
                 model = self._app.INCIDENT.model
@@ -772,7 +775,7 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(_conf.RELKIT_PAGE_NUMBER[page_num] == 9):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 9):
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model
@@ -819,7 +822,7 @@ class TreeWindow(gtk.Window):
 
         return False
 
-    def save_quit_relkit(self, button):
+    def save_quit_RTK(self, button):
         """
         Used to save, then quit the RTK application.
 
@@ -833,7 +836,7 @@ class TreeWindow(gtk.Window):
 
         return False
 
-    def quit_relkit(self, button):
+    def quit_RTK(self, button):
         """
         Used to quit the RTK application without saving the open
         database.

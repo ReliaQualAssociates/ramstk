@@ -437,7 +437,7 @@ class Assembly:
         toolbar = gtk.Toolbar()
 
         _pos = 0
-
+# TODO: Add 'SAVE' button for saving the currently selected Assembly.
 # Add sibling assembly button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RTK Program Database."))
@@ -481,7 +481,7 @@ class Assembly:
         toolbar.insert(self.btnAddItem, _pos)
         _pos += 1
 
-        self.btnFMECAAdd.set_tooltip_text(_(u"Perform various calculations on the system."))
+        self.btnFMECAAdd.set_tooltip_text(_(u"Add items to the active FMEA/FMECA."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnFMECAAdd.set_icon_widget(image)
@@ -1001,41 +1001,42 @@ class Assembly:
 
         hbox.pack_start(frame, expand=False)
 
+        _lbl_width = 200
         y_pos = 5
 
-        label = _widg.make_label(self._al_tab_labels[0], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[0], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.cmbRqmtType, 110, y_pos)
+        fixed.put(self.cmbRqmtType, _lbl_width + 5, y_pos)
         y_pos += 35
 
-        label = _widg.make_label(self._al_tab_labels[1], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[1], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtReliabilityGoal, 110, y_pos)
+        fixed.put(self.txtReliabilityGoal, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._al_tab_labels[2], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[2], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMTBFGoal, 110, y_pos)
+        fixed.put(self.txtMTBFGoal, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._al_tab_labels[3], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[3], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtFailureRateGoal, 110, y_pos)
+        fixed.put(self.txtFailureRateGoal, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._al_tab_labels[4], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[4], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.cmbAllocationType, 110, y_pos)
+        fixed.put(self.cmbAllocationType, _lbl_width + 5, y_pos)
         y_pos += 35
 
-        label = _widg.make_label(self._al_tab_labels[5], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[5], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtNumElements, 110, y_pos)
+        fixed.put(self.txtNumElements, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._al_tab_labels[6], 100, 25)
+        label = _widg.make_label(self._al_tab_labels[6], _lbl_width, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtOperTime, 110, y_pos)
+        fixed.put(self.txtOperTime, _lbl_width + 5, y_pos)
         y_pos += 30
 
         fixed.put(self.chkApplyResults, 5, y_pos)
@@ -1341,9 +1342,9 @@ class Assembly:
             path_ = model.get_string_from_iter(row)
 
         if(_conf.RELIAFREE_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id, path_)
+            _values = (self._app.REVISION.revision_id, path_)
         else:
-            values = (0, path_)
+            _values = (0, path_)
 
         query = "SELECT t1.fld_risk_id, t2.fld_name, \
                         t2.fld_failure_rate_predicted, \
@@ -1381,7 +1382,7 @@ class Assembly:
                  INNER JOIN tbl_system AS t2 \
                  ON t2.fld_assembly_id=t1.fld_assembly_id \
                  WHERE t1.fld_revision_id=%d \
-                 AND t2.fld_parent_assembly='%s'" % values
+                 AND t2.fld_parent_assembly='%s'" % _values
 
         results = self._app.DB.execute_query(query,
                                              None,
@@ -1613,7 +1614,7 @@ class Assembly:
 
         # Quadrant 1 (upper left) widgets.  These widgets are used to
         # display reliability assessment inputs.
-        self.cmbHRType.set_tooltip_text(_("Select the method of assessing the failure intensity for the selected assembly."))
+        self.cmbHRType.set_tooltip_text(_(u"Select the method of assessing the failure intensity for the selected assembly."))
 
         query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
         results = self._app.COMDB.execute_query(query,
@@ -1623,7 +1624,7 @@ class Assembly:
         _widg.load_combo(self.cmbHRType, results)
         self.cmbHRType.connect('changed', self._callback_combo, 35)
 
-        self.cmbCalcModel.set_tooltip_text(_("Select the reliability prediction model for the selected assembly."))
+        self.cmbCalcModel.set_tooltip_text(_(u"Select the reliability prediction model for the selected assembly."))
 
         query = "SELECT fld_model_noun FROM tbl_calculation_model"
         results = self._app.COMDB.execute_query(query,
@@ -1633,31 +1634,31 @@ class Assembly:
         _widg.load_combo(self.cmbCalcModel, results)
         self.cmbCalcModel.connect('changed', self._callback_combo, 10)
 
-        self.txtSpecifiedHt.set_tooltip_text(_("Enter the specified failure intensity for the selected assembly."))
+        self.txtSpecifiedHt.set_tooltip_text(_(u"Enter the specified failure intensity for the selected assembly."))
         self.txtSpecifiedHt.connect('focus-out-event',
                                     self._callback_entry, 'float', 34)
 
-        self.txtSpecifiedMTBF.set_tooltip_text(_("Enter the specified mean time between failure (MTBF) for the selected assembly."))
+        self.txtSpecifiedMTBF.set_tooltip_text(_(u"Enter the specified mean time between failure (MTBF) for the selected assembly."))
         self.txtSpecifiedMTBF.connect('focus-out-event',
                                       self._callback_entry, 'float', 51)
 
-        self.txtSoftwareHt.set_tooltip_text(_("Enter the software failure rate for the selected assembly."))
+        self.txtSoftwareHt.set_tooltip_text(_(u"Enter the software failure rate for the selected assembly."))
         self.txtSoftwareHt.connect('focus-out-event',
                                    self._callback_entry, 'float', 33)
 
-        self.txtAddAdj.set_tooltip_text(_("Enter any reliability assessment additive adjustment factor for the selected assembly."))
+        self.txtAddAdj.set_tooltip_text(_(u"Enter any reliability assessment additive adjustment factor for the selected assembly."))
         self.txtAddAdj.connect('focus-out-event',
                                self._callback_entry, 'float', 2)
 
-        self.txtMultAdj.set_tooltip_text(_("Enter any reliability assessment multiplicative adjustment factor for the selected assembly."))
+        self.txtMultAdj.set_tooltip_text(_(u"Enter any reliability assessment multiplicative adjustment factor for the selected assembly."))
         self.txtMultAdj.connect('focus-out-event',
                                 self._callback_entry, 'float', 57)
 
-        self.txtAllocationWF.set_tooltip_text(_("Enter the reliability allocation weighting factor for the selected assembly."))
+        self.txtAllocationWF.set_tooltip_text(_(u"Enter the reliability allocation weighting factor for the selected assembly."))
         self.txtAllocationWF.connect('focus-out-event',
                                      self._callback_entry, 'float', 3)
 
-        self.cmbFailDist.set_tooltip_text(_("Select the distribution of times to failure for the selected assembly."))
+        self.cmbFailDist.set_tooltip_text(_(u"Select the distribution of times to failure for the selected assembly."))
 
         query = "SELECT fld_distribution_noun \
                  FROM tbl_distributions"
@@ -1668,19 +1669,19 @@ class Assembly:
         _widg.load_combo(self.cmbFailDist, results)
         self.cmbFailDist.connect('changed', self._callback_combo, 24)
 
-        self.txtFailScale.set_tooltip_text(_("Enter the time to failure distribution scale factor."))
+        self.txtFailScale.set_tooltip_text(_(u"Enter the time to failure distribution scale factor."))
         self.txtFailScale.connect('focus-out-event',
                                   self._callback_entry, 'float', 25)
 
-        self.txtFailShape.set_tooltip_text(_("Enter the time to failure distribution shape factor."))
+        self.txtFailShape.set_tooltip_text(_(u"Enter the time to failure distribution shape factor."))
         self.txtFailShape.connect('focus-out-event',
                                   self._callback_entry, 'float', 26)
 
-        self.txtFailLoc.set_tooltip_text(_("Enter the time to failure distribution location factor."))
+        self.txtFailLoc.set_tooltip_text(_(u"Enter the time to failure distribution location factor."))
         self.txtFailLoc.connect('focus-out-event',
                                 self._callback_entry, 'float', 27)
 
-        self.cmbActEnviron.set_tooltip_text(_("Select the active operating environment for the selected assembly."))
+        self.cmbActEnviron.set_tooltip_text(_(u"Select the active operating environment for the selected assembly."))
         self.cmbActEnviron.connect('changed', self._callback_combo, 22)
 
         query = "SELECT fld_active_environ_code, fld_active_environ_noun \
@@ -1696,11 +1697,11 @@ class Assembly:
             self.cmbActEnviron.append_text(results[i][0] + ' - ' +
                                            results[i][1])
 
-        self.txtActTemp.set_tooltip_text(_("Enter the active environment operating temperature for the selected assembly."))
+        self.txtActTemp.set_tooltip_text(_(u"Enter the active environment operating temperature for the selected assembly."))
         self.txtActTemp.connect('focus-out-event',
                                 self._callback_entry, 'float', 80)
 
-        self.cmbDormantEnviron.set_tooltip_text(_("Select the dormant environment for the selected assembly."))
+        self.cmbDormantEnviron.set_tooltip_text(_(u"Select the dormant environment for the selected assembly."))
 
         query = "SELECT fld_dormant_environ_noun \
                  FROM tbl_dormant_environs"
@@ -1711,82 +1712,83 @@ class Assembly:
         _widg.load_combo(self.cmbDormantEnviron, results)
         self.cmbDormantEnviron.connect('changed', self._callback_combo, 23)
 
-        self.txtDormantTemp.set_tooltip_text(_("Enter the dormant environment temperature for the selected assembly."))
+        self.txtDormantTemp.set_tooltip_text(_(u"Enter the dormant environment temperature for the selected assembly."))
         self.txtDormantTemp.connect('focus-out-event',
                                     self._callback_entry, 'float', 81)
 
-        self.txtDutyCycle.set_tooltip_text(_("Enter the operating duty cycle for the selected assembly."))
+        self.txtDutyCycle.set_tooltip_text(_(u"Enter the operating duty cycle for the selected assembly."))
         self.txtDutyCycle.connect('focus-out-event',
                                   self._callback_entry, 'float', 20)
 
-        self.txtHumidity.set_tooltip_text(_("Enter the active environment operating humidity for the selected assembly."))
+        self.txtHumidity.set_tooltip_text(_(u"Enter the active environment operating humidity for the selected assembly."))
         self.txtHumidity.connect('focus-out-event',
                                  self._callback_entry, 'float', 37)
 
-        self.txtVibration.set_tooltip_text(_("Enter the active environment operating vibration level for the selected assembly."))
+        self.txtVibration.set_tooltip_text(_(u"Enter the active environment operating vibration level for the selected assembly."))
         self.txtVibration.connect('focus-out-event',
                                   self._callback_entry, 'float', 84)
 
-        self.txtRPM.set_tooltip_text(_("Enter the active environment operating RPM for the selected assembly."))
+        self.txtRPM.set_tooltip_text(_(u"Enter the active environment operating RPM for the selected assembly."))
         self.txtRPM.connect('focus-out-event',
                             self._callback_entry, 'float', 76)
 
-        self.txtWeibullFile.set_tooltip_text(_("Enter the URL to a survival analysis file for the selected assembly."))
+        self.txtWeibullFile.set_tooltip_text(_(u"Enter the URL to a survival analysis file for the selected assembly."))
         self.txtWeibullFile.connect('focus-out-event',
                                     self._callback_entry, 'text', 86)
 
+        _lbl_width = 200
         y_pos = 5
         for i in range(len(self._ai_tab_labels[0])):
             label = _widg.make_label(self._ai_tab_labels[0][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdRelInputQuad1.put(label, 5, (30 * i + y_pos))
 
-        self.fxdRelInputQuad1.put(self.cmbHRType, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.cmbHRType, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbCalcModel, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.cmbCalcModel, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSoftwareHt, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtSoftwareHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtAddAdj, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtAddAdj, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtMultAdj, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtMultAdj, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtAllocationWF, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtAllocationWF, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbFailDist, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.cmbFailDist, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailScale, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtFailScale, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailShape, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtFailShape, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailLoc, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtFailLoc, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbActEnviron, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.cmbActEnviron, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtActTemp, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtActTemp, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtDormantTemp, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtDormantTemp, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtDutyCycle, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtDutyCycle, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtHumidity, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtHumidity, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtVibration, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtVibration, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtRPM, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtRPM, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtWeibullFile, 155, y_pos)
+        self.fxdRelInputQuad1.put(self.txtWeibullFile, _lbl_width + 5, y_pos)
 
         self.fxdRelInputQuad1.show_all()
 
         # Create quadrant 2 (upper right) widgets.
-        self.cmbMTTRType.set_tooltip_text(_("Select the method of assessing the mean time to repair (MTTR) for the selected assembly."))
+        self.cmbMTTRType.set_tooltip_text(_(u"Select the method of assessing the mean time to repair (MTTR) for the selected assembly."))
 
         query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
         results = self._app.COMDB.execute_query(query,
@@ -1796,19 +1798,19 @@ class Assembly:
         _widg.load_combo(self.cmbMTTRType, results)
         self.cmbMTTRType.connect('changed', self._callback_combo, 56)
 
-        self.txtSpecifiedMTTR.set_tooltip_text(_("Enter the specified mean time to repair (MTTR) for the selected assembly."))
+        self.txtSpecifiedMTTR.set_tooltip_text(_(u"Enter the specified mean time to repair (MTTR) for the selected assembly."))
         self.txtSpecifiedMTTR.connect('focus-out-event',
                                       self._callback_entry, 'float', 55)
 
-        self.txtMTTRAddAdj.set_tooltip_text(_("Enter any mean time to repair (MTTR) assessment additive adjustment factor for the selected assembly."))
+        self.txtMTTRAddAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment additive adjustment factor for the selected assembly."))
         self.txtMTTRAddAdj.connect('focus-out-event',
                                    self._callback_entry, 'float', 53)
 
-        self.txtMTTRMultAdj.set_tooltip_text(_("Enter any mean time to repair (MTTR) assessment multaplicative adjustment factor for the selected assembly."))
+        self.txtMTTRMultAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment multaplicative adjustment factor for the selected assembly."))
         self.txtMTTRMultAdj.connect('focus-out-event',
                                     self._callback_entry, 'float', 54)
 
-        self.cmbRepairDist.set_tooltip_text(_("Select the time to repair distribution for the selected assembly."))
+        self.cmbRepairDist.set_tooltip_text(_(u"Select the time to repair distribution for the selected assembly."))
 
         query = "SELECT fld_distribution_noun FROM tbl_distributions"
         results = self._app.COMDB.execute_query(query,
@@ -1818,38 +1820,38 @@ class Assembly:
         _widg.load_combo(self.cmbRepairDist, results)
         self.cmbRepairDist.connect('changed', self._callback_combo, 72)
 
-        self.txtRepairScale.set_tooltip_text(_("Enter the time to repair distribution scale parameter."))
+        self.txtRepairScale.set_tooltip_text(_(u"Enter the time to repair distribution scale parameter."))
         self.txtRepairScale.connect('focus-out-event',
                                     self._callback_entry, 'float', 73)
 
-        self.txtRepairShape.set_tooltip_text(_("Entert the time to repair distribution shape parameter."))
+        self.txtRepairShape.set_tooltip_text(_(u"Enter the time to repair distribution shape parameter."))
         self.txtRepairShape.connect('focus-out-event',
                                     self._callback_entry, 'float', 74)
 
         y_pos = 5
         for i in range(len(self._ai_tab_labels[1])):
             label = _widg.make_label(self._ai_tab_labels[1][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdRelInputQuad2.put(label, 5, (30 * i + y_pos))
 
-        self.fxdRelInputQuad2.put(self.cmbMTTRType, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.cmbMTTRType, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.cmbRepairDist, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.cmbRepairDist, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtRepairScale, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.txtRepairScale, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtRepairShape, 155, y_pos)
+        self.fxdRelInputQuad2.put(self.txtRepairShape, _lbl_width + 5, y_pos)
 
         self.fxdRelInputQuad2.show_all()
 
         # Create quadrrant 4 (lower right) widgets.
-        self.cmbCostType.set_tooltip_text(_("Select the method for assessing the cost of the selected assembly."))
+        self.cmbCostType.set_tooltip_text(_(u"Select the method for assessing the cost of the selected assembly."))
 
         query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
         results = self._app.COMDB.execute_query(query,
@@ -1859,19 +1861,19 @@ class Assembly:
         _widg.load_combo(self.cmbCostType, results)
         self.cmbCostType.connect('changed', self._callback_combo, 16)
 
-        self.txtCost.set_tooltip_text(_("Enter the cost of the selected assembly."))
+        self.txtCost.set_tooltip_text(_(u"Enter the cost of the selected assembly."))
         self.txtCost.connect('focus-out-event',
                              self._callback_entry, 'float', 13)
 
         y_pos = 5
         for i in range(len(self._ai_tab_labels[3])):
             label = _widg.make_label(self._ai_tab_labels[3][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdRelInputQuad4.put(label, 5, (30 * i + y_pos))
 
-        self.fxdRelInputQuad4.put(self.cmbCostType, 155, y_pos)
+        self.fxdRelInputQuad4.put(self.cmbCostType, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdRelInputQuad4.put(self.txtCost, 155, y_pos)
+        self.fxdRelInputQuad4.put(self.txtCost, _lbl_width + 5, y_pos)
 
         self.fxdRelInputQuad4.show_all()
 
@@ -1995,87 +1997,88 @@ class Assembly:
         self.txtReliability.set_tooltip_text(_(u"Displays the limiting reliability for the selected assembly."))
         self.txtMissionRt.set_tooltip_text(_(u"Displays the mission reliability for the selected assembly."))
 
+        _lbl_width = 200
         y_pos = 5
         for i in range(len(self._ar_tab_labels[0])):
             label = _widg.make_label(self._ar_tab_labels[0][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdCalcResultsQuad1.put(label, 5, (30 * i + y_pos))
 
-        self.fxdCalcResultsQuad1.put(self.txtActiveHt, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtActiveHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtDormantHt, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtDormantHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtSoftwareHt2, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtSoftwareHt2, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtPredictedHt, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtPredictedHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionHt, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionHt, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtHtPerCent, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtHtPerCent, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMTBF, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMTBF, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionMTBF, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionMTBF, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtReliability, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtReliability, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionRt, 155, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionRt, _lbl_width + 5, y_pos)
 
         self.fxdCalcResultsQuad1.show_all()
 
-        # Create the quadrant 2 (upper right) widgets.
-        self.txtMPMT.set_tooltip_text(_("Displays the mean preventive maintenance time (MPMT) for the selected assembly."))
-        self.txtMCMT.set_tooltip_text(_("Displays the mean corrective maintenance time (MCMT) for the selected assembly."))
-        self.txtMTTR.set_tooltip_text(_("Displays the mean time to repair (MTTR) for the selected assembly."))
-        self.txtMMT.set_tooltip_text(_("Displays the mean maintenance time (MMT) for the selected assembly."))
-        self.txtAvailability.set_tooltip_text(_("Displays the limiting availability for the selected assembly."))
-        self.txtMissionAt.set_tooltip_text(_("Displays the mission availability for the selected assembly."))
+# Create the quadrant 2 (upper right) widgets.
+        self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive maintenance time (MPMT) for the selected assembly."))
+        self.txtMCMT.set_tooltip_text(_(u"Displays the mean corrective maintenance time (MCMT) for the selected assembly."))
+        self.txtMTTR.set_tooltip_text(_(u"Displays the mean time to repair (MTTR) for the selected assembly."))
+        self.txtMMT.set_tooltip_text(_(u"Displays the mean maintenance time (MMT) for the selected assembly."))
+        self.txtAvailability.set_tooltip_text(_(u"Displays the limiting availability for the selected assembly."))
+        self.txtMissionAt.set_tooltip_text(_(u"Displays the mission availability for the selected assembly."))
 
         y_pos = 5
         for i in range(len(self._ar_tab_labels[1])):
             label = _widg.make_label(self._ar_tab_labels[1][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdCalcResultsQuad2.put(label, 5, (30 * i + y_pos))
 
-        self.fxdCalcResultsQuad2.put(self.txtMPMT, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMPMT, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMCMT, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMCMT, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMTTR, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMTTR, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMMT, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMMT, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtAvailability, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtAvailability, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMissionAt, 155, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMissionAt, _lbl_width + 5, y_pos)
 
         self.fxdCalcResultsQuad2.show_all()
 
-        # Create the quadrant 4 (lower right) widgets.
-        self.txtTotalCost.set_tooltip_text(_("Displays the total cost of the selected assembly."))
-        self.txtCostFailure.set_tooltip_text(_("Displays the cost per failure of the selected assembly."))
-        self.txtCostHour.set_tooltip_text(_("Displays the cost per mission hour of the selected assembly."))
-        self.txtAssemblyCrit.set_tooltip_text(_("Displays the criticality of the selected assembly.  This is calculated by the FMEA."))
-        self.txtPartCount.set_tooltip_text(_("Displays the total number of components used to construct the selected assembly."))
-        self.txtTotalPwr.set_tooltip_text(_("Displays the total power of the selected assembly."))
+# Create the quadrant 4 (lower right) widgets.
+        self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of the selected assembly."))
+        self.txtCostFailure.set_tooltip_text(_(u"Displays the cost per failure of the selected assembly."))
+        self.txtCostHour.set_tooltip_text(_(u"Displays the cost per mission hour of the selected assembly."))
+        self.txtAssemblyCrit.set_tooltip_text(_(u"Displays the criticality of the selected assembly.  This is calculated by the FMEA."))
+        self.txtPartCount.set_tooltip_text(_(u"Displays the total number of components used to construct the selected assembly."))
+        self.txtTotalPwr.set_tooltip_text(_(u"Displays the total power of the selected assembly."))
 
         y_pos = 5
         for i in range(len(self._ar_tab_labels[3])):
             label = _widg.make_label(self._ar_tab_labels[3][i],
-                                     150, 25)
+                                     _lbl_width, 25)
             self.fxdCalcResultsQuad4.put(label, 5, (30 * i + y_pos))
 
-        self.fxdCalcResultsQuad4.put(self.txtTotalCost, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtTotalCost, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtCostFailure, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtCostFailure, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtCostHour, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtCostHour, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtAssemblyCrit, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtAssemblyCrit, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtPartCount, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtPartCount, _lbl_width + 5, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtTotalPwr, 155, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtTotalPwr, _lbl_width + 5, y_pos)
 
         self.fxdCalcResultsQuad4.show_all()
 
@@ -2089,36 +2092,36 @@ class Assembly:
 
         hbox = gtk.HBox()
 
-        # Create quadrant 1 (upper left).
+# Create quadrant 1 (upper left).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdCalcResultsQuad1)
 
-        frame = _widg.make_frame(_label_=_("Reliability Results"))
+        frame = _widg.make_frame(_label_=_(u"Reliability Results"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         hbox.pack_start(frame)
 
-        # Create quadrant 2 (upper right).
+# Create quadrant 2 (upper right).
         vbox = gtk.VBox()
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdCalcResultsQuad2)
 
-        frame = _widg.make_frame(_label_=_("Maintainability Results"))
+        frame = _widg.make_frame(_label_=_(u"Maintainability Results"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         vbox.pack_start(frame)
 
-        # Create quadrant 4 (lower right).
+# Create quadrant 4 (lower right).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdCalcResultsQuad4)
 
-        frame = _widg.make_frame(_label_=_("Miscellaneous Results"))
+        frame = _widg.make_frame(_label_=_(u"Miscellaneous Results"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -2127,12 +2130,12 @@ class Assembly:
         hbox.pack_start(vbox)
 
         label = gtk.Label()
-        _heading = _("Assessment\nResults")
+        _heading = _(u"Assessment\nResults")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays the results the reliability, maintainability, and other assessments for the selected assembly."))
+        label.set_tooltip_text(_(u"Displays the results the reliability, maintainability, and other assessments for the selected assembly."))
 
         self.notebook.insert_page(hbox,
                                   tab_label=label,
@@ -2373,84 +2376,86 @@ class Assembly:
                 self.cmbActionClosed.append_text(_user)
 
 # Create the detailed information gtk.Fixed widget for failure mechanisms.
+        _lbl_width = 200
         y_pos = 5
 
-        label = _widg.make_label(_(u"Mechanism ID:"), 150, 25)
+        label = _widg.make_label(_(u"Mechanism ID:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.txtMechanismID, 160, y_pos)
+        self.fxdMechanism.put(self.txtMechanismID, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_(u"Mechanism:"), 150, 25)
+        label = _widg.make_label(_(u"Mechanism:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.txtMechanismDescription, 160, y_pos)
+        self.fxdMechanism.put(self.txtMechanismDescription, _lbl_width + 5,
+                              y_pos)
         self.txtMechanismDescription.connect('focus-out-event',
                                              self._callback_entry, 'text',
                                              1000)
         y_pos += 55
 
-        label = _widg.make_label(_(u"Occurence:"), 150, 25)
+        label = _widg.make_label(_(u"Occurence:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.cmbOccurenceI, 160, y_pos)
+        self.fxdMechanism.put(self.cmbOccurenceI, _lbl_width + 5, y_pos)
         self.cmbOccurenceI.connect('changed', self._callback_combo, 1001)
         y_pos += 35
 
-        label = _widg.make_label(_(u"Detection:"), 150, 25)
+        label = _widg.make_label(_(u"Detection:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.cmbDetectionI, 160, y_pos)
+        self.fxdMechanism.put(self.cmbDetectionI, _lbl_width + 5, y_pos)
         self.cmbDetectionI.connect('changed', self._callback_combo, 1002)
         y_pos += 35
 
-        label = _widg.make_label(_(u"RPN:"), 150, 25)
+        label = _widg.make_label(_(u"RPN:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.txtRPNI, 160, y_pos)
+        self.fxdMechanism.put(self.txtRPNI, _lbl_width + 5, y_pos)
         y_pos += 55
 
-        label = _widg.make_label(_(u"New Occurence:"), 150, 25)
+        label = _widg.make_label(_(u"New Occurence:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.cmbOccurrenceN, 160, y_pos)
+        self.fxdMechanism.put(self.cmbOccurrenceN, _lbl_width + 5, y_pos)
         self.cmbOccurrenceN.connect('changed', self._callback_combo, 1004)
         y_pos += 35
 
-        label = _widg.make_label(_(u"New Detection:"), 150, 25)
+        label = _widg.make_label(_(u"New Detection:"), _lbl_width, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.cmbDetectionN, 160, y_pos)
+        self.fxdMechanism.put(self.cmbDetectionN, _lbl_width + 5, y_pos)
         self.cmbDetectionN.connect('changed', self._callback_combo, 1005)
         y_pos += 35
 
-        label = _widg.make_label(_(u"New RPN:"), 150, 25)
+        label = _widg.make_label(_(u"New RPN:"), _lbl_width + 5, 25)
         self.fxdMechanism.put(label, 5, y_pos)
-        self.fxdMechanism.put(self.txtRPNN, 160, y_pos)
+        self.fxdMechanism.put(self.txtRPNN, _lbl_width + 5, y_pos)
 
 # Create the detailed information gtk.Fixed widget for current controls.
         y_pos = 5
 
-        label = _widg.make_label(_(u"Control ID:"), 150, 25)
+        label = _widg.make_label(_(u"Control ID:"), _lbl_width, 25)
         self.fxdControl.put(label, 5, y_pos)
-        self.fxdControl.put(self.txtControlID, 155, y_pos)
+        self.fxdControl.put(self.txtControlID, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_(u"Control:"), 150, 25)
+        label = _widg.make_label(_(u"Control:"), _lbl_width, 25)
         self.fxdControl.put(label, 5, y_pos)
-        self.fxdControl.put(self.txtControlDescription, 155, y_pos)
+        self.fxdControl.put(self.txtControlDescription, _lbl_width + 55, y_pos)
         self.txtControlDescription.connect('focus-out-event',
                                            self._callback_entry, 'text',
                                            1000)
         y_pos += 30
 
-        label = _widg.make_label(_(u"Control Type:"), 150, 25)
+        label = _widg.make_label(_(u"Control Type:"), _lbl_width, 25)
         self.fxdControl.put(label, 5, y_pos)
-        self.fxdControl.put(self.cmbControlType, 155, y_pos)
+        self.fxdControl.put(self.cmbControlType, _lbl_width + 5, y_pos)
         self.cmbControlType.connect('changed', self._callback_combo, 1001)
 
 # Create the detailed information gtk.Fixed widget for recommended actions.
         y_pos = 5
 
-        label = _widg.make_label(_(u"Action ID:"), 150, 25)
+        label = _widg.make_label(_(u"Action ID:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.txtActionID, 160, y_pos)
+        self.fxdAction.put(self.txtActionID, _lbl_width + 5, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_(u"Recommended Action:"), 200, 25)
+        label = _widg.make_label(_(u"Recommended Action:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
         y_pos += 30
         self.fxdAction.put(self.txtActionRecommended, 5, y_pos)
@@ -2458,30 +2463,30 @@ class Assembly:
                                           self._callback_entry, 'text', 1000)
         y_pos += 80
 
-        label = _widg.make_label(_(u"Action Category:"), 150, 25)
+        label = _widg.make_label(_(u"Action Category:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionCategory, 160, y_pos)
+        self.fxdAction.put(self.cmbActionCategory, _lbl_width + 5, y_pos)
         self.cmbActionCategory.connect('changed', self._callback_combo, 1001)
         y_pos += 35
 
-        label = _widg.make_label(_(u"Action Owner:"), 150, 25)
+        label = _widg.make_label(_(u"Action Owner:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionResponsible, 160, y_pos)
+        self.fxdAction.put(self.cmbActionResponsible, _lbl_width + 5, y_pos)
         self.cmbActionResponsible.connect('changed', self._callback_combo, 1002)
-        label = _widg.make_label(_(u"Due Date:"), 150, 25)
-        self.fxdAction.put(label, 365, y_pos)
-        self.fxdAction.put(self.txtActionDueDate, 520, y_pos)
+        label = _widg.make_label(_(u"Due Date:"), _lbl_width, 25)
+        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
+        self.fxdAction.put(self.txtActionDueDate, 3 * (_lbl_width + 5), y_pos)
         self.txtActionDueDate.connect('focus-out-event',
                                       self._callback_entry, 'date', 1003)
         y_pos += 35
 
-        label = _widg.make_label(_(u"Status:"), 150, 25)
+        label = _widg.make_label(_(u"Status:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionStatus, 160, y_pos)
+        self.fxdAction.put(self.cmbActionStatus, _lbl_width + 5, y_pos)
         self.cmbActionStatus.connect('changed', self._callback_combo, 1004)
         y_pos += 60
 
-        label = _widg.make_label(_(u"Action Taken:"), 150, 25)
+        label = _widg.make_label(_(u"Action Taken:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
         y_pos += 30
 
@@ -2491,24 +2496,26 @@ class Assembly:
                                     1005)
         y_pos += 80
 
-        label = _widg.make_label(_(u"Approved By:"), 150, 25)
+        label = _widg.make_label(_(u"Approved By:"), _lbl_width, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionApproved, 160, y_pos)
+        self.fxdAction.put(self.cmbActionApproved, _lbl_width + 5, y_pos)
         self.cmbActionApproved.connect('changed', self._callback_combo, 1006)
-        label = _widg.make_label(_(u"Approval Date:"), 150, 25)
-        self.fxdAction.put(label, 365, y_pos)
-        self.fxdAction.put(self.txtActionApproveDate, 520, y_pos)
+        label = _widg.make_label(_(u"Approval Date:"), _lbl_width, 25)
+        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
+        self.fxdAction.put(self.txtActionApproveDate, 3 * (_lbl_width + 5),
+                           y_pos)
         self.txtActionApproveDate.connect('focus-out-event',
                                           self._callback_entry, 'date', 1007)
         y_pos += 60
 
-        label = _widg.make_label(_(u"Closed By:"), 150, 25)
+        label = _widg.make_label(_(u"Closed By:"), _lbl_width , 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionClosed, 160, y_pos)
+        self.fxdAction.put(self.cmbActionClosed, _lbl_width + 5, y_pos)
         self.cmbActionClosed.connect('changed', self._callback_combo, 1008)
-        label = _widg.make_label(_(u"Closure Date:"), 150, 25)
-        self.fxdAction.put(label, 365, y_pos)
-        self.fxdAction.put(self.txtActionCloseDate, 520, y_pos)
+        label = _widg.make_label(_(u"Closure Date:"), _lbl_width, 25)
+        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
+        self.fxdAction.put(self.txtActionCloseDate, 3 * (_lbl_width + 5),
+                           y_pos)
         self.txtActionCloseDate.connect('focus-out-event',
                                         self._callback_entry, 'date', 1009)
 
@@ -2815,13 +2822,13 @@ class Assembly:
         elif(_type == 3):                   # Action
             _id = model.get_value(row, 0)
             self.txtActionID.set_text(str(_id))
-            #self.txtActionRecommended.set_text(_util.none_to_string(self._fmeca_actions[_id][0]))
+            self.txtActionRecommended.set_text(_util.none_to_string(self._fmeca_actions[_id][0]))
             self.cmbActionCategory.set_active(int(self._fmeca_actions[_id][1]))
             self.cmbActionResponsible.set_active(int(self._fmeca_actions[_id][2]))
             _dte = str(datetime.fromordinal(int(self._fmeca_actions[_id][3])).strftime('%Y-%m-%d'))
             self.txtActionDueDate.set_text(_dte)
             self.cmbActionStatus.set_active(int(self._fmeca_actions[_id][4]))
-            #self.txtActionTaken.set_text(_util.none_to_string(self._fmeca_actions[_id][5]))
+            self.txtActionTaken.set_text(_util.none_to_string(self._fmeca_actions[_id][5]))
             self.cmbActionApproved.set_active(int(self._fmeca_actions[_id][6]))
             _dte = str(datetime.fromordinal(int(self._fmeca_actions[_id][7])).strftime('%Y-%m-%d'))
             self.txtActionApproveDate.set_text(_dte)
@@ -2851,12 +2858,12 @@ class Assembly:
         hbox = gtk.HBox()
 
         label = gtk.Label()
-        _heading = _("Maintenance\nPlanning")
+        _heading = _(u"Maintenance\nPlanning")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Maintenance planning analysis for the selected assembly."))
+        label.set_tooltip_text(_(u"Maintenance planning analysis for the selected assembly."))
 
         self.notebook.insert_page(hbox, tab_label=label, position=-1)
 
@@ -2878,10 +2885,10 @@ class Assembly:
             if(type_ == 0):
                 _iter = self._app.HARDWARE.model.iter_parent(self._app.HARDWARE.selected_row)
                 _parent = self._app.HARDWARE.model.get_string_from_iter(_iter)
-                n_new_assembly = _util.add_items(_("Sibling Assembly"))
+                n_new_assembly = _util.add_items(_(u"Sibling Assembly"))
             if(type_ == 1):
                 _parent = self._app.HARDWARE.model.get_string_from_iter(self._app.HARDWARE.selected_row)
-                n_new_assembly = _util.add_items(_("Child Assembly"))
+                n_new_assembly = _util.add_items(_(u"Child Assembly"))
 
         for i in range(n_new_assembly):
 
@@ -3118,7 +3125,7 @@ class Assembly:
             try:
                 self._hrmodel = dict(self.system_model.get_value(self.system_selected_row, 88))
             except:
-                self._app.user_log.error(_("No model dictionary for part %s") % \
+                self._app.user_log.error(_(u"No model dictionary for part %s") % \
                                          self.system_model.get_value(self.system_selected_row, 68))
                 self._hrmodel = {}
 
@@ -3165,7 +3172,7 @@ class Assembly:
         model = self.tvwAllocation.get_model()
         row = model.get_iter_root()
 
-        # Read the requirement inputs.
+# Read the requirement inputs.
         Ts = float(self.txtOperTime.get_text())
         Rs = float(self.txtReliabilityGoal.get_text())
         MTBFs = float(self.txtMTBFGoal.get_text())
@@ -3216,14 +3223,14 @@ class Assembly:
                 row = model.iter_next(row)
 
         elif(i == 3):                       # ARINC apportionment
-            # Calculate the current system failure rate.
+# Calculate the current system failure rate.
             FRs = 0.0
             row = model.get_iter_root()
             while row is not None:
                 FRs += float(model.get_value(row, 14))
                 row = model.iter_next(row)
 
-            # Now calculate the allocated values for each sub-system.
+# Now calculate the allocated values for each sub-system.
             row = model.get_iter_root()
             while row is not None:
                 if model.get_value(row, 3):
@@ -3246,8 +3253,8 @@ class Assembly:
                 row = model.iter_next(row)
 
         elif(i == 4):                       # Feasibility of Objectives
-            # First calculate the system falure rate and weighting factor
-            # for each sub-system.
+# First calculate the system falure rate and weighting factor for each
+# sub-system.
             Wght = 0.0
             row = model.get_iter_root()
             while row is not None:
@@ -3456,10 +3463,10 @@ class Assembly:
         while row is not None:
             sia = {}
 
-            # Get the assembly failure intensity.
+# Get the assembly failure intensity.
             sia['hr'] = float(model.get_value(row, 2))
 
-            # Get the change factor values.
+# Get the change factor values.
             sia['pi1'] = float(model.get_value(row, 4))
             sia['pi2'] = float(model.get_value(row, 6))
             sia['pi3'] = float(model.get_value(row, 8))
@@ -3469,7 +3476,7 @@ class Assembly:
             sia['pi7'] = float(model.get_value(row, 16))
             sia['pi8'] = float(model.get_value(row, 18))
 
-            # Get the user-defined float and integer values.
+# Get the user-defined float and integer values.
             sia['uf1'] = float(model.get_value(row, 32))
             sia['uf2'] = float(model.get_value(row, 33))
             sia['uf3'] = float(model.get_value(row, 34))
@@ -3477,17 +3484,16 @@ class Assembly:
             sia['ui2'] = float(model.get_value(row, 36))
             sia['ui3'] = float(model.get_value(row, 37))
 
-            # Get the user-defined functions.
+# Get the user-defined functions.
             sia['equation1'] = model.get_value(row, 19)
             sia['equation2'] = model.get_value(row, 20)
             sia['equation3'] = model.get_value(row, 21)
             sia['equation4'] = model.get_value(row, 22)
             sia['equation5'] = model.get_value(row, 23)
 
-            # Get the existing results.  This allows the use of the
-            # results fields to be manually set to a float values by
-            # the user.  Essentially creating five more user-defined
-            # float values.
+# Get the existing results.  This allows the use of the results fields to be
+# manually set to a float values by the user.  Essentially creating five more
+# user-defined float values.
             sia['res1'] = model.get_value(row, 24)
             sia['res2'] = model.get_value(row, 25)
             sia['res3'] = model.get_value(row, 26)
@@ -3541,7 +3547,7 @@ class Assembly:
         to the Program's MySQL or SQLite3 database.
         """
 
-        # Update the HARDWARE gtk.TreeView with the reliability goals.
+# Update the HARDWARE gtk.TreeView with the reliability goals.
         measure = self.cmbRqmtType.get_active()
         if(measure == 1):
             value = float(self.txtReliabilityGoal.get_text())
@@ -3552,7 +3558,7 @@ class Assembly:
         else:
             value = 1.0
 
-        # Update the allocation method.
+# Update the allocation method.
         i = self.cmbAllocationType.get_active()
         model = self._app.HARDWARE.model
         row = self._app.HARDWARE.selected_row
@@ -3560,10 +3566,10 @@ class Assembly:
         model.set_value(row, 89, measure)
         model.set_value(row, 90, value)
 
-        # SAve the results.
+# Save the results.
         self._app.HARDWARE.hardware_save()
 
-        # Save each of the lines in the allocation analysis table.
+# Save each of the lines in the allocation analysis table.
         model = self.tvwAllocation.get_model()
         model.foreach(self._allocation_save_line_item)
 

@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       validation.py is part of The RelKit Project
+#       validation.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,7 +34,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
@@ -58,13 +58,26 @@ class Validation:
 
     # TODO: Write code to update notebook widgets when editing the Validation treeview.
     # TODO: Add tooltips to all widgets.
-    _gd_tab_labels = [[_("Task ID:"), _("Task Effectiveness:"),
-                       _("Task Description:"), _("Task Type:"),
-                       _("Specification:"), _("Measurement Unit:"),
-                       _("Min. Acceptable:"), _("Max. Acceptable:"),
-                       _("Mean Acceptable:"), _("Variance:"),
-                       _("Start Date:"), _("End Date:"), _("% Complete:")],
+    _gd_tab_labels = [[_(u"Task ID:"), _(u"Task Effectiveness:"),
+                       _(u"Task Description:"), _(u"Task Type:"),
+                       _(u"Specification:"), _(u"Measurement Unit:"),
+                       _(u"Min. Acceptable:"), _(u"Max. Acceptable:"),
+                       _(u"Mean Acceptable:"), _(u"Variance:"),
+                       _(u"Start Date:"), _(u"End Date:"), _(u"% Complete:")],
                       [], [], []]
+
+    _ta_tab_labels = [_(u"Are the results of this activity reflected when the new content is introduced into the reliability growth test?"),
+                      _(u"Historically has this been an area of expertise using established tools and processes?"),
+                      _(u"Is this activity conducted with a cross-functional team?"),
+                      _(u"How much of the new content is included in this activity?"),
+                      _(u"Does this activity directly impact reliability?"),
+                      _(u"Does the analysis lead design with system level models defining requirements for subsystems and components?"),
+                      _(u"Is a 3-D system level model used in this activity?"),
+                      _(u"Are validated models with well understood loading conditions used in this activity?"),
+                      _(u"Are there corrective actions implemented on high risk items?"),
+                      _(u"Is this activity conducted at the concept stage and result in significant part reduction and simplification of the design?"),
+                      _(u"Is analysis of process variability, process capability, and design tolerances reflected in the design?"),
+                      _(u"Are the tests statistically designed with understanding of the defined load(s) and required sample size?")]
 
     n_attributes = 13
 
@@ -73,7 +86,7 @@ class Validation:
         Initializes the Validation Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -120,6 +133,54 @@ class Validation:
         if self._general_data_tab_create():
             self._app.debug_log.error("validation.py: Failed to create General Data tab.")
 
+# Create the Task Assessment tab for the VALIDATION Object.
+        self.optQ11 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ12 = gtk.RadioButton(group=self.optQ11, label=_(u"No"))
+        self.optQ13 = gtk.RadioButton(group=self.optQ11, label=_(u"Partially"))
+        self.optQ21 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ22 = gtk.RadioButton(group=self.optQ21, label=_(u"No"))
+        self.optQ23 = gtk.RadioButton(group=self.optQ21, label=_(u"Partially"))
+        self.optQ31 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ32 = gtk.RadioButton(group=self.optQ31, label=_(u"No"))
+        self.optQ33 = gtk.RadioButton(group=self.optQ31, label=_(u"Partially"))
+        self.optQ41 = gtk.RadioButton(label=_(u">75%"))
+        self.optQ42 = gtk.RadioButton(group=self.optQ41, label=_(u"25% - 75%"))
+        self.optQ43 = gtk.RadioButton(group=self.optQ41, label=_(u"<25%"))
+        self.optQ51 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ52 = gtk.RadioButton(group=self.optQ51, label=_(u"No"))
+        self.optQ53 = gtk.RadioButton(group=self.optQ51, label=_(u"Partially"))
+        self.optQ61 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ62 = gtk.RadioButton(group=self.optQ61, label=_(u"No"))
+        self.optQ63 = gtk.RadioButton(group=self.optQ61, label=_(u"Partially"))
+        self.optQ64 = gtk.RadioButton(group=self.optQ61, label=_(u"Not Applicable"))
+        self.optQ71 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ72 = gtk.RadioButton(group=self.optQ71, label=_(u"No"))
+        self.optQ73 = gtk.RadioButton(group=self.optQ71, label=_(u"Partially"))
+        self.optQ74 = gtk.RadioButton(group=self.optQ71, label=_(u"Not Applicable"))
+        self.optQ81 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ82 = gtk.RadioButton(group=self.optQ81, label=_(u"No"))
+        self.optQ83 = gtk.RadioButton(group=self.optQ81, label=_(u"Partially"))
+        self.optQ84 = gtk.RadioButton(group=self.optQ81, label=_(u"Not Applicable"))
+        self.optQ91 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ92 = gtk.RadioButton(group=self.optQ91, label=_(u"No"))
+        self.optQ93 = gtk.RadioButton(group=self.optQ91, label=_(u"Partially"))
+        self.optQ101 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ102 = gtk.RadioButton(group=self.optQ101, label=_(u"No"))
+        self.optQ103 = gtk.RadioButton(group=self.optQ101, label=_(u"Partially"))
+        self.optQ111 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ112 = gtk.RadioButton(group=self.optQ111, label=_(u"No"))
+        self.optQ113 = gtk.RadioButton(group=self.optQ111, label=_(u"Partially"))
+        self.optQ114 = gtk.RadioButton(group=self.optQ111, label=_(u"Not Applicable"))
+        self.optQ121 = gtk.RadioButton(label=_(u"Yes"))
+        self.optQ122 = gtk.RadioButton(group=self.optQ121, label=_(u"No"))
+        self.optQ123 = gtk.RadioButton(group=self.optQ121, label=_(u"Partially"))
+        self.optQ124 = gtk.RadioButton(group=self.optQ121, label=_(u"Not Applicable"))
+        if self._task_assessment_widgets_create():
+            self._app.debug_log.error("validation.py: Failed to create Task Assessment widgets.")
+        if self._task_assessment_tab_create():
+            self._app.debug_log.error("validation.py: Failed to create Task Assessment tab.")
+
+# Put it all together.
         self.vbxValidation = gtk.VBox()
         toolbar = self._toolbar_create()
 
@@ -377,6 +438,162 @@ class Validation:
 
         return False
 
+    def _task_assessment_widgets_create(self):
+        """ Method to create the Task Assessment widgets. """
+
+        self.optQ11.connect('toggled', self._callback_radio)
+        self.optQ12.connect('toggled', self._callback_radio)
+        self.optQ13.connect('toggled', self._callback_radio)
+        self.optQ21.connect('toggled', self._callback_radio)
+        self.optQ22.connect('toggled', self._callback_radio)
+        self.optQ23.connect('toggled', self._callback_radio)
+        self.optQ31.connect('toggled', self._callback_radio)
+        self.optQ32.connect('toggled', self._callback_radio)
+        self.optQ33.connect('toggled', self._callback_radio)
+        self.optQ41.connect('toggled', self._callback_radio)
+        self.optQ42.connect('toggled', self._callback_radio)
+        self.optQ43.connect('toggled', self._callback_radio)
+        self.optQ51.connect('toggled', self._callback_radio)
+        self.optQ52.connect('toggled', self._callback_radio)
+        self.optQ53.connect('toggled', self._callback_radio)
+        self.optQ61.connect('toggled', self._callback_radio)
+        self.optQ62.connect('toggled', self._callback_radio)
+        self.optQ63.connect('toggled', self._callback_radio)
+        self.optQ64.connect('toggled', self._callback_radio)
+        self.optQ71.connect('toggled', self._callback_radio)
+        self.optQ72.connect('toggled', self._callback_radio)
+        self.optQ73.connect('toggled', self._callback_radio)
+        self.optQ74.connect('toggled', self._callback_radio)
+        self.optQ81.connect('toggled', self._callback_radio)
+        self.optQ82.connect('toggled', self._callback_radio)
+        self.optQ83.connect('toggled', self._callback_radio)
+        self.optQ84.connect('toggled', self._callback_radio)
+        self.optQ91.connect('toggled', self._callback_radio)
+        self.optQ92.connect('toggled', self._callback_radio)
+        self.optQ93.connect('toggled', self._callback_radio)
+        self.optQ101.connect('toggled', self._callback_radio)
+        self.optQ102.connect('toggled', self._callback_radio)
+        self.optQ103.connect('toggled', self._callback_radio)
+        self.optQ111.connect('toggled', self._callback_radio)
+        self.optQ112.connect('toggled', self._callback_radio)
+        self.optQ113.connect('toggled', self._callback_radio)
+        self.optQ114.connect('toggled', self._callback_radio)
+        self.optQ121.connect('toggled', self._callback_radio)
+        self.optQ122.connect('toggled', self._callback_radio)
+        self.optQ123.connect('toggled', self._callback_radio)
+        self.optQ124.connect('toggled', self._callback_radio)
+
+        return False
+
+    def _task_assessment_tab_create(self):
+        """
+        Method to create the Task Assessment gtk.Notebook tab and populate it
+        with the appropriate widgets.
+        """
+
+        fixed = gtk.Fixed()
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(fixed)
+
+        frame = _widg.make_frame(_label_=_(u"Select the best answer to the following questions when assessing the selected V &amp; V task."))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        _lbl_width = 1200
+        y_pos = 5
+        for i in range(len(self._ta_tab_labels)):
+            label = _widg.make_label(self._ta_tab_labels[i], _lbl_width, 25)
+            fixed.put(label, 5, y_pos)
+            y_pos += 30
+
+        y_pos = 5
+
+        fixed.put(self.optQ11, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ12, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ13, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ21, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ22, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ23, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ31, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ32, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ33, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ41, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ42, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ43, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ51, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ52, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ53, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ61, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ62, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ63, _lbl_width + 205, y_pos)
+        fixed.put(self.optQ64, _lbl_width + 305, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ71, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ72, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ73, _lbl_width + 205, y_pos)
+        fixed.put(self.optQ74, _lbl_width + 305, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ81, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ82, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ83, _lbl_width + 205, y_pos)
+        fixed.put(self.optQ84, _lbl_width + 305, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ91, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ92, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ93, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ101, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ102, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ103, _lbl_width + 205, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ111, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ112, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ113, _lbl_width + 205, y_pos)
+        fixed.put(self.optQ114, _lbl_width + 305, y_pos)
+        y_pos += 30
+
+        fixed.put(self.optQ121, _lbl_width + 5, y_pos)
+        fixed.put(self.optQ122, _lbl_width + 105, y_pos)
+        fixed.put(self.optQ123, _lbl_width + 205, y_pos)
+        fixed.put(self.optQ124, _lbl_width + 305, y_pos)
+        y_pos += 30
+
+        fixed.show_all()
+
+# Clark's DMS password = p2Hg8q3B
+
+# Insert the tab.
+        label = gtk.Label()
+        label.set_markup("<span weight='bold'>" +
+                         _(u"Task\nAssessment") +
+                         "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_(u"Assesses the effectiveness of the selected V & V task."))
+        self.notebook.insert_page(frame,
+                                  tab_label=label,
+                                  position=-1)
+
+        return False
+
     def load_notebook(self):
         """
         Method to load the VALIDATION Object gtk.Notebook.
@@ -391,10 +608,10 @@ class Validation:
         self._app.winWorkBook.show_all()
 
         try:
-            _title_ = _(u"RelKit Work Bench: Analyzing %s") % \
+            _title_ = _(u"RTK Work Bench: Analyzing %s") % \
                       self.model.get_value(self.selected_row, 2)
         except TypeError:
-            _title_ = _(u"RelKit Work Bench")
+            _title_ = _(u"RTK Work Bench")
         self._app.winWorkBook.set_title(_title_)
 
         return False
@@ -403,7 +620,7 @@ class Validation:
         """
         Creates the Validation TreeView and connects it to callback functions
         to handle editting.  Background and foreground colors can be set using
-        the user-defined values in the RelKit configuration file.
+        the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -550,7 +767,7 @@ class Validation:
 
     def vandv_task_add(self, widget):
         """
-        Adds a new Verfication & Validation activity to the RelKit Program's
+        Adds a new Verfication & Validation activity to the RTK Program's
         MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -599,7 +816,7 @@ class Validation:
 
     def _vandv_task_delete(self, menuitem):
         """
-        Deletes the currently selected V&V activity from the RelKit Program's
+        Deletes the currently selected V&V activity from the RTK Program's
         MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -635,7 +852,7 @@ class Validation:
 
     def validation_save(self, widget=None):
         """
-        Saves the VALIDATAION Object treeview information to the RelKit
+        Saves the VALIDATAION Object treeview information to the RTK
         Program's MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -648,7 +865,7 @@ class Validation:
 
     def _save_line_item(self, model, path_, row):
         """
-        Saves each row in the VALIDATION Object treeview model to the RelKit
+        Saves each row in the VALIDATION Object treeview model to the RTK
         Program's MySQL or SQLite3 database.
 
         Keyword Arguments:
@@ -758,5 +975,17 @@ class Validation:
             self.model.set_value(self.selected_row, _index_, _text_)
         except TypeError:
             print _index_
+
+        return False
+
+    def _callback_radio(self, radio):
+        """
+        Callback function to retrieve and save radio button changes.
+
+        Keyword Arguments:
+        radio -- the gtk.RadioButton that called the function.
+        """
+
+        print radio
 
         return False

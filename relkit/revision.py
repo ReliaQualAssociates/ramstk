@@ -9,7 +9,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       revision.py is part of the RelKit Project
+#       revision.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -34,7 +34,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import widgets as _widg
@@ -51,7 +51,7 @@ _ = gettext.gettext
 
 
 class Revision:
-    """ This is the REVISION Class for the RelKit Project. """
+    """ This is the REVISION Class for the RTK Project. """
 
     _gd_tab_labels = [[_("Revision Code:"), _("Revision Name:"),
                        _("Total Cost:"), _("Cost/Failure:"), _("Cost/Hour:"),
@@ -70,7 +70,7 @@ class Revision:
         Initializes the REVISION Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._app = application
@@ -142,7 +142,7 @@ class Revision:
 # Save requirement button.
         button = gtk.ToolButton()
         button.set_label(_(u"Save Revision"))
-        button.set_tooltip_text(_("Saves revision changes to the RelKit Program Database."))
+        button.set_tooltip_text(_("Saves revision changes to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -152,7 +152,7 @@ class Revision:
 # Add requirement button.
         button = gtk.ToolButton()
         button.set_label(_(u"Add Revision"))
-        button.set_tooltip_text(_("Adds a new revision to the RelKit Program Database."))
+        button.set_tooltip_text(_("Adds a new revision to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
@@ -162,7 +162,7 @@ class Revision:
 # Delete requirement button
         button = gtk.ToolButton()
         button.set_label(_(u"Delete Revision"))
-        button.set_tooltip_text(_("Removes the currently selected revision from the RelKit Program Database."))
+        button.set_tooltip_text(_("Removes the currently selected revision from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -423,7 +423,7 @@ class Revision:
         """
         Creates the REVISION treeview and connects it to callback functions
         to handle editting.  Background and foreground colors can be set
-        using the user-defined values in the RelKit configuration file.
+        using the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -901,7 +901,7 @@ class Revision:
         self._app.winWorkBook.add(self.vbxRevision)
         self._app.winWorkBook.show_all()
 
-        _title = _("RelKit Work Bench: Revision (Analyzing Revision %d)") % \
+        _title = _("RTK Work Bench: Revision (Analyzing Revision %d)") % \
                  self.revision_id
         self._app.winWorkBook.set_title(_title)
 

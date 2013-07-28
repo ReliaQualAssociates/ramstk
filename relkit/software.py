@@ -33,7 +33,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
@@ -1669,7 +1669,7 @@ class Software:
     # System treeview.
 
     """ The Software class is simply the treeview that holds and displays
-        the system tree in the RelKit Treebook.
+        the system tree in the RTK Treebook.
     """
 
     _gd_tab_labels = [[_("Module Description:"), _("Application Level:"),
@@ -2068,7 +2068,7 @@ class Software:
         """ Initializes the Software Object.
 
             Keyword Arguments:
-            application -- the RelKit application.
+            application -- the RTK application.
         """
 
         self._ready = False
@@ -2283,7 +2283,7 @@ class Software:
 
         # Delete assembly button
         button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
-        button.set_tooltip_text(_("Removes the currently selected software module from the RelKit Program Database."))
+        button.set_tooltip_text(_("Removes the currently selected software module from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
         button.set_icon_widget(image)
@@ -5063,7 +5063,7 @@ class Software:
         """
         Creates the Software gtk.Treeview and connects it to callback functions
         to handle editting.  Background and foreground colors can be set using
-        the user-defined values in the RelKit configuration file.
+        the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -5256,7 +5256,7 @@ class Software:
 
         self.notebook.set_current_page(0)
 
-        _title_ = _("RelKit Work Bench: Analyzing %s") % \
+        _title_ = _("RTK Work Bench: Analyzing %s") % \
                   self.model.get_value(self._selected_row, 3)
         self._app.winWorkBook.set_title(_title_)
 
@@ -5624,7 +5624,7 @@ class Software:
 
     def software_save(self):
         """
-        Saves the SOFTWARE Object treeview information to the RelKit Program's
+        Saves the SOFTWARE Object treeview information to the RTK Program's
         MySQL or SQLit3 database.
         """
 

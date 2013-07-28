@@ -52,7 +52,7 @@ def read_configuration():
     """
 
     # Get a config instance for the site configuration file.
-    conf = _conf.RelKitConf('site')
+    conf = _conf.RTKConf('site')
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
 
@@ -63,7 +63,7 @@ def read_configuration():
     _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
     # Get a config instance for the user configuration file.
-    conf = _conf.RelKitConf('user')
+    conf = _conf.RTKConf('user')
     _conf.BACKEND = conf.read_configuration().get('Backend', 'type')
     _conf.FRMULT = float(conf.read_configuration().get('General', 'frmultiplier'))
     _conf.PLACES = conf.read_configuration().get('General', 'decimal')
@@ -468,7 +468,7 @@ def open_project(widget, app, dlg=1, filename=''):
             if(results[i][0] != 'information_schema' and \
                results[i][0] != 'test' and \
                results[i][0] != 'mysql' and \
-               results[i][0] != 'relkitcom' and
+               results[i][0] != 'RTKcom' and
                results[i][0] != '#mysql50#lost+found'):
                 iter_ = model.append(None, [results[i][0]])
 
@@ -536,7 +536,7 @@ def save_project(widget, _app):
     if not _app.LOADED:
         return True
 
-    _app.winTree.statusbar.push(2, "Saving")
+    _app.winTree.statusbar.push(2, _(u"Saving"))
 
     _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
     _app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
@@ -549,36 +549,27 @@ def save_project(widget, _app):
     _app.SOFTWARE.software_save()
     _app.winParts.save_component()
 
-    # Update the next ID for each type of object.
-    values = (_conf.RELIAFREE_PREFIX[1], _conf.RELIAFREE_PREFIX[3],
-              _conf.RELIAFREE_PREFIX[5], _conf.RELIAFREE_PREFIX[7],
-              _conf.RELIAFREE_PREFIX[9], _conf.RELIAFREE_PREFIX[11],
-              _conf.RELIAFREE_PREFIX[13], _conf.RELIAFREE_PREFIX[15],
-              _conf.RELIAFREE_PREFIX[17], 1)
+# Update the next ID for each type of object.
+    _values = (_conf.RELIAFREE_PREFIX[1], _conf.RELIAFREE_PREFIX[3],
+               _conf.RELIAFREE_PREFIX[5], _conf.RELIAFREE_PREFIX[7],
+               _conf.RELIAFREE_PREFIX[9], _conf.RELIAFREE_PREFIX[11],
+               _conf.RELIAFREE_PREFIX[13], _conf.RELIAFREE_PREFIX[15],
+               _conf.RELIAFREE_PREFIX[17], 1)
 
-    if(_conf.BACKEND == 'mysql'):
-        query = "UPDATE tbl_program_info \
-                 SET fld_revision_next_id=%d, fld_function_next_id=%d, \
-                     fld_assembly_next_id=%d, fld_part_next_id=%d, \
-                     fld_fmeca_next_id=%d, fld_mode_next_id=%d, \
-                     fld_effect_next_id=%d, fld_cause_next_id=%d, \
-                     fld_software_next_id=%d \
-                 WHERE fld_program_id=%d"
-    elif(_conf.BACKEND == 'sqlite3'):
-        query = "UPDATE tbl_program_info \
-                 SET fld_revision_next_id=?, fld_function_next_id=?, \
-                     fld_assembly_next_id=?, fld_part_next_id=?, \
-                     fld_fmeca_next_id=?, fld_mode_next_id=?, \
-                     fld_effect_next_id=?, fld_cause_next_id=?, \
-                     fld_software_next_id=? \
-                 WHERE fld_program_id=?"
 
+    query = "UPDATE tbl_program_info \
+             SET fld_revision_next_id=%d, fld_function_next_id=%d, \
+                 fld_assembly_next_id=%d, fld_part_next_id=%d, \
+                 fld_fmeca_next_id=%d, fld_mode_next_id=%d, \
+                 fld_effect_next_id=%d, fld_cause_next_id=%d, \
+                 fld_software_next_id=%d \
+             WHERE fld_program_id=%d" % _values
     results = _app.DB.execute_query(query,
-                                    values,
+                                    None,
                                     _app.ProgCnx,
                                     commit=True)
 
-    conf = _conf.RelKitConf('user')
+    conf = _conf.RTKConf('user')
     #conf.write_configuration()
 
     _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
@@ -599,7 +590,6 @@ def delete_project(widget, _app):
     """
 
     if(_conf.BACKEND == 'mysql'):
-
         query = "SHOW DATABASES"
         cnx = _app.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
         results = _app.DB.execute_query(query,
@@ -671,7 +661,7 @@ def delete_project(widget, _app):
         else:
             dialog.destroy()
 
-        if(confirm_action(_("Really delete %s?") % project), 'question'):
+        if(confirm_action(_(u"Really delete %s?") % project), 'question'):
             os.remove(project)
             dialog.destroy()
         else:
@@ -687,7 +677,7 @@ def import_project(widget, app):
     app    -- the RTK application object.
     """
 
-    # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
+# TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
     dialog = gtk.FileChooserDialog(_("Select Project to Import"), None,
                                    gtk.FILE_CHOOSER_ACTION_OPEN,
                                    (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -741,7 +731,7 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     _parent_ -- the parent window, if any, for the dialog.
     """
 
-    dialog = _widg.make_dialog(_("RTK Error"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = _widg.make_dialog(_(u"RTK Error"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
     hbox = gtk.HBox()
 
@@ -771,14 +761,14 @@ def add_items(_class_):
                component).
     """
 
-    _title_ = _("RTK - Add %s") % _class_
+    _title_ = _(u"RTK - Add %s") % _class_
 
     dialog = _widg.make_dialog(_title_)
 
     fixed = gtk.Fixed()
     fixed.set_size_request(400, 60)
 
-    label = _widg.make_label(_("Add how many %s?") % _class_, 150, 75)
+    label = _widg.make_label(_(u"Add how many %s?") % _class_, 150, 75)
     txtQuantity = _widg.make_entry()
     txtQuantity.set_text("1")
 

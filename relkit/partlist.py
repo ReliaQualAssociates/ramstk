@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-""" This is the Parts List window for RelKit. """
+""" This is the Parts List window for RTK. """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       partlist.py is part of the RelKit Project
+#       partlist.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -31,7 +31,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
@@ -47,7 +47,7 @@ import gettext
 _ = gettext.gettext
 
 
-class PartsListWindow(gtk.Window):
+class ListWindow(gtk.Window):
     """
     This class is the windows containing the lists associated with the
     selected Revision, Function, or Assembly in the upper window.
@@ -61,7 +61,7 @@ class PartsListWindow(gtk.Window):
         Initializes the List Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._app = application
@@ -847,7 +847,7 @@ class PartsListWindow(gtk.Window):
                                              commit=True)
 
         if not results:
-            self._app.debug_log.error("partlist.py: Failed to save part list information to RelKit Program database.")
+            self._app.debug_log.error("partlist.py: Failed to save part list information to RTK Program database.")
             return True
 
         return False
@@ -940,10 +940,10 @@ class PartsListWindow(gtk.Window):
         """
 
         if(page_num == 0):
-            self.set_title(_("RelKit Parts List"))
+            self.set_title(_("RTK Parts List"))
         elif(page_num == 1):
-            self.set_title(_("RelKit Reliability Tests List"))
+            self.set_title(_("RTK Reliability Tests List"))
         elif(page_num == 2):
-            self.set_title(_("RelKit Program Incidents List"))
+            self.set_title(_("RTK Program Incidents List"))
         else:
-            self.set_title(_("RelKit Lists"))
+            self.set_title(_("RTK Lists"))

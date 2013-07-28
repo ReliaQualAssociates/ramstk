@@ -34,21 +34,21 @@ grampus_times=[0.860, 1.258, 1.317, 1.442, 1.897, 2.011, 2.122, 2.439,
                16.0]
 
 # Path to the directory containing icon files used by RTK.  Defaults to
-# /usr/share/pixmaps/relkit/ on POSIX systems.
+# /usr/share/pixmaps/RTK/ on POSIX systems.
 ICON_DIR = ''
 
 # Path to the directory containing data files used by RTK.  Defaults to
-# /usr/share/relkit/ on POSIX systems.
+# /usr/share/RTK/ on POSIX systems.
 DATA_DIR = ''
 
 # Path to the directory containing configuration files used by RTK.
-# Defaults to $HOME/.config/relkit/ on POSIX systems.
-# Defaults to C:\\Users\<USER NAME>\config\relkit\ on NT systems.
+# Defaults to $HOME/.config/RTK/ on POSIX systems.
+# Defaults to C:\\Users\<USER NAME>\config\RTK\ on NT systems.
 CONF_DIR = ''
 
 # Path to the directory containing log files used by RTK.
-# Defaults to $HOME/.config/relkit/logs/ on POSIX systems.
-# Defaults to C:\\Users\<USER NAME>\config\relkit\logs\ on NT systems.
+# Defaults to $HOME/.config/RTK/logs/ on POSIX systems.
+# Defaults to C:\\Users\<USER NAME>\config\RTK\logs\ on NT systems.
 LOG_DIR = ''
 
 # Global list containing the path to the format files to use for various
@@ -142,7 +142,7 @@ RELIAFREE_PREFIX = []
 #    Position 11: RBD module status
 #    Position 12: FTA module status
 RELIAFREE_MODULES = []
-RELKIT_PAGE_NUMBER = []
+RTK_PAGE_NUMBER = []
 
 # Global list for MySQL or SQLite3 connection information to the common
 # database.
@@ -186,7 +186,7 @@ TABPOS = ['top', 'bottom', 'bottom']
 METHOD= 'STANDARD'                          # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
-class RelKitConf:
+class RTKConf:
     """ The RTK configuration class. """
 
     def __init__(self, level='site'):
@@ -200,62 +200,62 @@ class RelKitConf:
 
         if(name == 'posix'):
             self.OS = 'Linux'
-            _SITEDIR = '/etc/relkit/'
-            _DATADIR = '/usr/share/relkit/'
-            _ICONDIR = '/usr/share/pixmaps/relkit/'
-            _LOGDIR = '/var/log/relkit/'
+            _SITEDIR = '/etc/RTK/'
+            _DATADIR = '/usr/share/RTK/'
+            _ICONDIR = '/usr/share/pixmaps/RTK/'
+            _LOGDIR = '/var/log/RTK/'
             _HOMEDIR = environ['HOME']
 
         elif(name == 'nt'):
             self.OS = 'Windows'
             _HOMEDIR = environ['USERPROFILE']
-            _DATADIR = _HOMEDIR + '/.config/relkit/'
-            _SITEDIR = _HOMEDIR + '/.config/relkit/'
-            _ICONDIR = _HOMEDIR + '/.config/relkit/icons/'
-            _LOGDIR = _HOMEDIR + '/.config/relkit/logs/'
+            _DATADIR = _HOMEDIR + '/.config/RTK/'
+            _SITEDIR = _HOMEDIR + '/.config/RTK/'
+            _ICONDIR = _HOMEDIR + '/.config/RTK/icons/'
+            _LOGDIR = _HOMEDIR + '/.config/RTK/logs/'
 
         if(level == 'site'):
             if(_util.dir_exists(_SITEDIR)):
                 self.conf_dir = _SITEDIR
             else:
-                self.conf_dir = _HOMEDIR + '/.config/relkit/'
+                self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
             if(_util.dir_exists(_DATADIR)):
                 self.data_dir = _DATADIR
             else:
-                self.data_dir = _HOMEDIR + '/.config/relkit/data/'
+                self.data_dir = _HOMEDIR + '/.config/RTK/data/'
 
             if(_util.dir_exists(_ICONDIR)):
                 self.icon_dir = _ICONDIR
             else:
-                self.icon_dir = _HOMEDIR + '/.config/relkit/icons'
+                self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
 
             if(_util.dir_exists(_LOGDIR)):
                 self.log_dir = _LOGDIR
             else:
-                self.log_dir = _HOMEDIR + '/.config/relkit/logs/'
+                self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
 
             self._conf_file = self.conf_dir + '/site.conf'
 
         elif(level == 'user'):
-            self.conf_dir = _HOMEDIR + '/.config/relkit/'
+            self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
             if(_util.dir_exists(_DATADIR)):
                 self.data_dir = _DATADIR
             else:
-                self.data_dir = _HOMEDIR + '/.config/relkit/data/'
+                self.data_dir = _HOMEDIR + '/.config/RTK/data/'
 
             if(_util.dir_exists(_ICONDIR)):
                 self.icon_dir = _ICONDIR
             else:
-                self.icon_dir = _HOMEDIR + '/.config/relkit/icons'
+                self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
 
             if(_util.dir_exists(_LOGDIR)):
                 self.log_dir = _LOGDIR
             else:
-                self.log_dir = _HOMEDIR + '/.config/relkit/logs/'
+                self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
 
-            self._conf_file = self.conf_dir + 'relkit.conf'
+            self._conf_file = self.conf_dir + 'RTK.conf'
 
         if not _util.file_exists(self._conf_file):
             self.create_default_configuration()
@@ -295,7 +295,7 @@ class RelKitConf:
                 label = _widg.make_label("RTK common database name:",
                                          width=340)
                 txtDBName = _widg.make_entry()
-                txtDBName.set_text("relkitcom")
+                txtDBName.set_text("RTKcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBName, 345, y_pos)
                 y_pos += 30
@@ -303,7 +303,7 @@ class RelKitConf:
                 label = _widg.make_label("RTK common database user name:",
                                          width=340)
                 txtDBUser = _widg.make_entry()
-                txtDBUser.set_text("relkitcom")
+                txtDBUser.set_text("RTKcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBUser, 345, y_pos)
                 y_pos += 30
@@ -313,7 +313,7 @@ class RelKitConf:
                 txtDBPassword = _widg.make_entry()
                 txtDBPassword.set_invisible_char("*")
                 txtDBPassword.set_visibility(False)
-                txtDBPassword.set_text("relkitcom")
+                txtDBPassword.set_text("RTKcom")
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBPassword, 345, y_pos)
                 y_pos += 30
@@ -331,16 +331,16 @@ class RelKitConf:
                 response = dialog.run()
 
                 if(response == -3):
-                    relkitcomlist = []
-                    relkitcomlist.append(txtDBHost.get_text())
+                    RTKcomlist = []
+                    RTKcomlist.append(txtDBHost.get_text())
                     try:
-                        relkitcomlist.append(int(txtDBSocket.get_text()))
+                        RTKcomlist.append(int(txtDBSocket.get_text()))
                     except ValueError:
-                        relkitcomlist.append(txtDBSocket.get_text())
-                    relkitcomlist.append(txtDBName.get_text())
-                    relkitcomlist.append(txtDBUser.get_text())
-                    relkitcomlist.append(txtDBPassword.get_text())
-                    relkitcomlist.append(cmbDBType.get_active_text())
+                        RTKcomlist.append(txtDBSocket.get_text())
+                    RTKcomlist.append(txtDBName.get_text())
+                    RTKcomlist.append(txtDBUser.get_text())
+                    RTKcomlist.append(txtDBPassword.get_text())
+                    RTKcomlist.append(cmbDBType.get_active_text())
 
                 dialog.destroy()
 
@@ -351,14 +351,14 @@ class RelKitConf:
                 config.set('Modules', 'maintenance', 'True')
                 config.set('Modules', 'fraca', 'True')
                 config.add_section('Backend')
-                config.set('Backend', 'host', relkitcomlist[0])
-                config.set('Backend', 'socket', relkitcomlist[1])
-                config.set('Backend', 'database', relkitcomlist[2])
-                config.set('Backend', 'user', relkitcomlist[3])
-                config.set('Backend', 'password', relkitcomlist[4])
-                config.set('Backend', 'type', relkitcomlist[5])
+                config.set('Backend', 'host', RTKcomlist[0])
+                config.set('Backend', 'socket', RTKcomlist[1])
+                config.set('Backend', 'database', RTKcomlist[2])
+                config.set('Backend', 'user', RTKcomlist[3])
+                config.set('Backend', 'password', RTKcomlist[4])
+                config.set('Backend', 'type', RTKcomlist[5])
 
-            elif(basename(self._conf_file) == 'relkit.conf'):
+            elif(basename(self._conf_file) == 'RTK.conf'):
                 config.add_section('General')
                 config.set('General', 'reportsize', 'letter')
                 config.set('General', 'repairtimeunit', 'hours')

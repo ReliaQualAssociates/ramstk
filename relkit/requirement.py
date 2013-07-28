@@ -70,7 +70,7 @@ class Requirement:
         Initializes the Requirements Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._ready = False
@@ -141,7 +141,7 @@ class Requirement:
 
         # Save requirement button.
         button = gtk.ToolButton()
-        button.set_tooltip_text(_("Saves requirement changes to the RelKit Program Database."))
+        button.set_tooltip_text(_("Saves requirement changes to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -168,7 +168,7 @@ class Requirement:
 
         # Delete requirement button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_("Removes the currently selected requirement from the RelKit Program Database."))
+        button.set_tooltip_text(_("Removes the currently selected requirement from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
@@ -536,7 +536,7 @@ class Requirement:
         """
         Creates the Requirements TreeView and connects it to callback
         functions to handle editting.  Background and foreground colors can be
-        set using the user-defined values in the RelKit configuration file.
+        set using the user-defined values in the RTK configuration file.
         """
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1066,7 +1066,7 @@ class Requirement:
         self._app.winWorkBook.add(self.vbxRequirement)
         self._app.winWorkBook.show_all()
 
-        self._app.winWorkBook.set_title(_("RelKit Work Bench: Requirement"))
+        self._app.winWorkBook.set_title(_("RTK Work Bench: Requirement"))
 
         return False
 

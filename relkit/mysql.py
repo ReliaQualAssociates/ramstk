@@ -1,28 +1,15 @@
 #!/usr/bin/env python
-""" Provides the class and methods for interfacing with a MySQL
-    database backend.
+"""
+Provides the class and methods for interfacing with a MySQL database backend.
 """
 
 # -*- coding: utf-8 -*-
 #
-#       mysql.py is part of The RelKit Project
+#       mysql.py is part of The RTK Project
 #
 #       Copyright 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 #
 # All rights reserved.
-#
-# RelKit is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# RelKit is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with RelKit.  If not, see <http://www.gnu.org/licenses/>.
 
 try:
     import MySQLdb
@@ -30,7 +17,7 @@ try:
 except ImportError:
     has_mysqldb = False
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 

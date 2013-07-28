@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-""" This is the Workbook window for RelKit. """
+""" This is the Workbook window for RTK. """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       notebook.py is part of The RelKit Project
+#       notebook.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,6 +35,9 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
+# Import other RTK modules.
+import configuration as _conf
+
 
 class WorkBookWindow(gtk.Window):
     """
@@ -49,28 +52,33 @@ class WorkBookWindow(gtk.Window):
         Initializes the WorkBook Class.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._app = application
 
         self.VISIBLE_PAGE = 0
 
-        # Create a new window and set its properties.
+# Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
-        self.set_title(_(u"RelKit Work Bench"))
+        self.set_title(_(u"RTK Work Bench"))
 
         n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         width = gtk.gdk.screen_width() / n_screens
         height = gtk.gdk.screen_height()
 
-        # On a 1268x1024 screen, the size will be 845x640.
-        self.width = width - 20
-        self.height = (5 * height / 8)
+# On a 1268x1024 screen, the size will be 845x640.
+        if(_conf.OS == 'Linux'):
+            self.width = width - 20
+            self.height = (5 * height / 8)
+        elif(_conf.OS == 'Windows'):
+            self.width = width - 20
+            self.height = (5 * height / 8) - 40
+
         self.set_default_size(self.width, self.height)
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)

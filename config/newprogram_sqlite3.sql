@@ -695,26 +695,42 @@ CREATE TABLE "tbl_software_traceability" (
 -- Create tables for storing validation plan information.
 --
 CREATE TABLE "tbl_validation" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_validation_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_task_desc" BLOB,
-    "fld_task_type" INTEGER DEFAULT (0),
-    "fld_task_specification" VARCHAR(128) NOT NULL DEFAULT (''),
-    "fld_measurement_unit" INTEGER DEFAULT (0),
-    "fld_min_acceptable" REAL DEFAULT (0),
-    "fld_mean_acceptable" REAL DEFAULT (0),
-    "fld_max_acceptable" REAL DEFAULT (0),
-    "fld_variance_acceptable" REAL DEFAULT (0),
-    "fld_start_date" VARCHAR(45) DEFAULT (''),
-    "fld_end_date" VARCHAR(45) DEFAULT (''),
-    "fld_status" REAL DEFAULT (0),
-    "fld_effectiveness" REAL DEFAULT (0)
+    "fld_task_type" INTEGER DEFAULT(0),
+    "fld_task_specification" VARCHAR(128) NOT NULL DEFAULT(''),
+    "fld_measurement_unit" INTEGER DEFAULT(0),
+    "fld_min_acceptable" REAL DEFAULT(0),
+    "fld_mean_acceptable" REAL DEFAULT(0),
+    "fld_max_acceptable" REAL DEFAULT(0),
+    "fld_variance_acceptable" REAL DEFAULT(0),
+    "fld_start_date" VARCHAR(45) DEFAULT(''),
+    "fld_end_date" VARCHAR(45) DEFAULT(''),
+    "fld_status" REAL DEFAULT(0),
+    "fld_effectiveness" REAL DEFAULT(0)
+);
+
+CREATE TABLE "tbl_validation_effectiveness" (
+    "fld_validation_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q1" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q2" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q3" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q4" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q5" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q6" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q7" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q8" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q9" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q10" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q11" INTEGER NOT NULL DEFAULT(0),
+    "fld_Q12" INTEGER NOT NULL DEFAULT(0)
 );
 
 CREATE TABLE "tbl_validation_matrix" (
     "fld_validation_id" INTEGER NOT NULL,
     "fld_requirement_id" INTEGER NOT NULL,
-    "fld_revision_id" INTEGER DEFAULT (1),
+    "fld_revision_id" INTEGER DEFAULT(1),
     PRIMARY KEY ("fld_validation_id","fld_requirement_id")
 );
 
@@ -722,7 +738,7 @@ CREATE TABLE "tbl_validation_matrix" (
 -- Create tables for storing program incident information.
 --
 CREATE TABLE "tbl_incident" (
-    "fld_revision_id" INTEGER DEFAULT (0),
+    "fld_revision_id" INTEGER DEFAULT(0),
     "fld_incident_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_incident_category" INTEGER NOT NULL DEFAULT(0),
     "fld_incident_type" INTEGER NOT NULL DEFAULT(0),

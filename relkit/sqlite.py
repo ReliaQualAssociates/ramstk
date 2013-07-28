@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       sqlite3.py is part of The RelKit Project
+#       sqlite3.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -32,7 +32,7 @@ class SQLite3Interface:
         Initializes the SQLite3 interface class.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self._version = None

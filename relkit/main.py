@@ -37,7 +37,7 @@ if(os.name == 'nt'):
 import gettext
 _ = gettext.gettext
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import mysql as _mysql
 import notebook as _note
@@ -46,7 +46,7 @@ import sqlite as _sqlite
 import tree as _tree
 import utilities as _util
 
-# Import all of the RelKit Classes.
+# Import all of the RTK Classes.
 from revision import Revision
 from function import Function
 from requirement import Requirement
@@ -63,14 +63,14 @@ from testing import Testing
 def main():
     """ This is the main function for the RTK application. """
 
-    RelKit()
+    RTK()
 
     gtk.main()
 
     return 0
 
 
-class RelKit:
+class RTK:
     """ This is the RTK class. """
 
     def __init__(self):
@@ -88,9 +88,9 @@ class RelKit:
 # Create loggers for the application.  The first is to store log information
 # for RTK developers.  The second is to log errors for the user.  The user can
 # use these errors to help find problems with their inputs and sich.
-        __user_log = _conf.LOG_DIR + '/relkit_user.log'
-        __error_log = _conf.LOG_DIR + '/relkit_error.log'
-        __import_log = _conf.LOG_DIR + '/relkit_import.log'
+        __user_log = _conf.LOG_DIR + '/RTK_user.log'
+        __error_log = _conf.LOG_DIR + '/RTK_error.log'
+        __import_log = _conf.LOG_DIR + '/RTK_import.log'
 
         if(not _util.dir_exists(_conf.LOG_DIR)):
             os.makedirs(_conf.LOG_DIR)
@@ -102,17 +102,17 @@ class RelKit:
         if(_util.file_exists(__import_log)):
             os.remove(__import_log)
 
-        self.debug_log = _util.create_logger("RelKit.debug", logging.DEBUG,
+        self.debug_log = _util.create_logger("RTK.debug", logging.DEBUG,
                                              __error_log)
-        self.user_log = _util.create_logger("RelKit.user", logging.WARNING,
+        self.user_log = _util.create_logger("RTK.user", logging.WARNING,
                                             __user_log)
-        self.import_log = _util.create_logger("RelKit.import", logging.WARNING,
+        self.import_log = _util.create_logger("RTK.import", logging.WARNING,
                                               __import_log)
 
         self.LOADED = False
         self.partlist = {}
 
-# Find out who is using RelKit and when.
+# Find out who is using RTK and when.
         self._UID = getpass.getuser()
         self._TODAY = datetime.datetime.now()
         self.DATE = "1970-01-01"
@@ -134,7 +134,7 @@ class RelKit:
         elif(_conf.BACKEND == 'sqlite3'):
             self.DB = _sqlite.SQLite3Interface(self)
 
-# Create the GUI and objects for each of the RelKit classes.
+# Create the GUI and objects for each of the RTK classes.
         self.winWorkBook = _note.WorkBookWindow(self)
 
         self.REVISION = Revision(self)
@@ -150,7 +150,7 @@ class RelKit:
         self.TESTING = Testing(self)
 
         self.winTree = _tree.TreeWindow(self)
-        self.winParts = _parts.PartsListWindow(self)
+        self.winParts = _parts.ListWindow(self)
 
         self.icoStatus = gtk.StatusIcon()
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
@@ -162,7 +162,7 @@ class RelKit:
 
     def load_system(self):
         """
-        This method loads the RelKit development program database the
+        This method loads the RTK development program database the
         user opens.
         """
 
@@ -188,7 +188,7 @@ class RelKit:
         for i in range(10):
             _conf.RELIAFREE_MODULES.append(results[0][i + 19])
             if results[0][i + 19] == 1:
-                _conf.RELKIT_PAGE_NUMBER.append(i)
+                _conf.RTK_PAGE_NUMBER.append(i)
 
         _conf.METHOD = results[0][36]
 

@@ -40,7 +40,7 @@ matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
@@ -117,7 +117,7 @@ class Component():
         Initializes the Component Object.
 
         Keyword Arguments:
-        application -- the RelKit application.
+        application -- the RTK application.
         """
 
         self.fmt = _conf.PLACES
@@ -2167,19 +2167,19 @@ class Component():
 
         if(page_num == 0):                  # General data tab
             self.btnAddItem.set_tooltip_text(_("Add a new component to the currently selected assembly."))
-            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RelKit Program Database."))
-            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RelKit Program Database."))
-            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RelKit Program Database."))
+            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RTK Program Database."))
+            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
+            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RTK Program Database."))
         elif(page_num == 1):                # Assessment inputs tab
             self.btnAddItem.set_tooltip_text(_("Add a new component to the currently selected assembly."))
-            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RelKit Program Database."))
-            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RelKit Program Database."))
-            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RelKit Program Database."))
+            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RTK Program Database."))
+            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
+            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RTK Program Database."))
         elif(page_num == 2):                # Assessment results tab
             self.btnAddItem.set_tooltip_text(_("Add a new component to the currently selected assembly."))
-            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RelKit Program Database."))
-            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RelKit Program Database."))
-            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RelKit Program Database."))
+            self.btnRemoveItem.set_tooltip_text(_("Delete the currently selected component from the open RTK Program Database."))
+            self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
+            self.btnSaveResults.set_tooltip_text(_("Saves changes to the open RTK Program Database."))
         elif(page_num == 3):                # FMEA/FMECA tab
             self.btnAddItem.set_tooltip_text(_("Add a new failure mode, mechanism, or cause to the selected component."))
             self.btnRemoveItem.set_tooltip_text(_("Deletes the selected failure mode, mechanism, or cause."))

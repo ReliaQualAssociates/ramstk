@@ -7,7 +7,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       login.py is part of The RelKit Project
+#       login.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -32,7 +32,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import widgets as _widg
 import configuration as _conf
 
