@@ -51,7 +51,7 @@ def read_configuration():
     settings for The RTK application.
     """
 
-    # Get a config instance for the site configuration file.
+# Get a config instance for the site configuration file.
     conf = _conf.RTKConf('site')
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
@@ -62,7 +62,7 @@ def read_configuration():
     _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
     _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
-    # Get a config instance for the user configuration file.
+# Get a config instance for the user configuration file.
     conf = _conf.RTKConf('user')
     _conf.BACKEND = conf.read_configuration().get('Backend', 'type')
     _conf.FRMULT = float(conf.read_configuration().get('General', 'frmultiplier'))
@@ -77,7 +77,7 @@ def read_configuration():
     _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'user'))
     _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
-    # Get directory and file information.
+# Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')
     datadir = conf.read_configuration().get('Directories', 'datadir')
     logdir = conf.read_configuration().get('Directories', 'logdir')
@@ -98,7 +98,7 @@ def read_configuration():
     if(not dir_exists(_conf.LOG_DIR)):
         _conf.LOG_DIR = conf.log_dir
 
-    # Get list of format files.
+# Get list of format files.
     formatfile = conf.read_configuration().get('Files', 'revisionformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'functionformat')
@@ -136,7 +136,7 @@ def read_configuration():
     formatfile = conf.read_configuration().get('Files', 'riskformat')
     _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
-    # Get color information.
+# Get color information.
     _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
     _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'revisionfg'))
     _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'functionbg'))

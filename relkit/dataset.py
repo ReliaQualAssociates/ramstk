@@ -1983,7 +1983,7 @@ class Dataset:
                             _ylab_=_(u"Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Create the legend.
+# Create the legend.
             leg = self.axAxis3.legend((u"Hazard Rate [h(t)]",
                                        u"Lower CB", u"Upper CB"),
                                       'upper right',
@@ -2008,7 +2008,7 @@ class Dataset:
                             _ylab_=_("Cumulative Hazard Function [H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Create the legend.
+# Create the legend.
             leg = self.axAxis2.legend(('Cum. Hazard Function [H(t)]',
                                        'Lower CB', 'Upper CB'), 'upper left',
                                        shadow=True)
@@ -2026,7 +2026,7 @@ class Dataset:
                             _ylab_=_("Log Cum. Hazard Function [log H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
 
-            # Create the legend.
+# Create the legend.
             leg = self.axAxis4.legend(('Log Cum. Hazard Function [log H(t)]',
                                        'Lower CB', 'Upper CB'), 'upper left',
                                        shadow=True)

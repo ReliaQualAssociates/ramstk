@@ -127,6 +127,27 @@ class RTK:
             _database = _conf.CONF_DIR + _conf.RELIAFREE_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
+# Read the license file and compare to the product key in the site database.
+# If they are not equal, quit the application.
+        _license_file = _conf.DATA_DIR + '/license.key'
+        _license_file = open(_license_file, 'r')
+        _license_key = _license_file.readline().rstrip('\n')
+        _license_file.close()
+
+        _query = "SELECT fld_product_key, fld_expire_date \
+                  FROM tbl_site_info"
+        _results = self.COMDB.execute_query(_query,
+                                            None,
+                                            self.ComCnx)
+        if(_license_key != _results[0][0]):
+            _util.application_error(_(u"Cannot find license key file or license key is incorrect.  Closing RTK application."))
+            quit()
+
+        if(datetime.datetime.today().toordinal() > _results[0][1]):
+            _expire_date = str(datetime.datetime.fromordinal(int(_results[0][1])).strftime('%Y-%m-%d'))
+            _util.application_error(_(u"Your license expired on %s.  Closing RTK application." % _expire_date))
+            quit()
+
 # Get a connection to the program database.
         if(_conf.BACKEND == 'mysql'):
             self.DB = _mysql.MySQLInterface(self)

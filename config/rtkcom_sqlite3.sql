@@ -2,6 +2,15 @@ PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
 --
+-- Create tables for site-wdie information.
+--
+DROP TABLE IF EXISTS "tbl_site_info";
+CREATE TABLE "tbl_site_info" (
+    "fld_product_key" VARCHAR(64) NOT NULL,
+    "fld_expire_date" INTEGER NOT NULL DEFAULT(719163)
+);
+
+--
 -- Create tables for general program information.
 --
 DROP TABLE IF EXISTS "tbl_distributions";

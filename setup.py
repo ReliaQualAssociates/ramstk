@@ -3,13 +3,13 @@
 #
 #       setup.py is part of the RTK Project
 #
-#       Copyright (C) 2007-2011 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+#       Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
-""" Setup script for RTK.
+"""
+Setup script for RTK.
 
-    Run 'python setup.py develop' to set up a development environment,
-    including dependencies.
-
+Run 'python setup.py develop' to set up a development environment, including
+dependencies.
 """
 
 try:
@@ -37,27 +37,28 @@ if version < "2.2.3":
 
 python_version = platform.python_version()[0:3]
 
-_version = "0.3.0"
+_version = "1.0.0-alpha"
 
 if(os.name == "posix"):
     _icondir = "/usr/share/pixmaps"
+    _confdir = "/etc/RTK"
 elif(os.name == "nt"):
     _icondir = "icons"
 
 class install_dev_docs(Command):
 
-    description = "builds the developer documents in HTML or PDF format"
+    description = "Builds the developer documents in HTML or PDF format"
 
     user_options = [
         ('doc-type=', None,
          "whether to install html (default) or pdf documentation."),
         ('doc-path=', None,
-         "path to install documentation (defaults to /usr/share/doc/relkit-" + _version + "/developer")
+         "path to install documentation (defaults to /usr/share/doc/RTK-" + _version + "/developer")
         ]
 
     def initialize_options(self):
         self.doc_type = "html"
-        self.doc_path = "/usr/share/doc/relkit-" + _version + "/developer"
+        self.doc_path = "/usr/share/doc/RTK-" + _version + "/developer"
 
     def finalize_options(self):
         if(self.doc_type == "pdf"):
@@ -90,24 +91,24 @@ class install_dev_docs(Command):
 
 class install_user_docs(Command):
 
-    description = "installs the user documents in HTML or PDF format"
+    description = "Installs the user documents in HTML or PDF format"
 
     user_options = [
         ('doc-type=', None,
          "whether to install html (default) or pdf documentation."),
         ('doc-path=', None,
-         "path to install documentation (defaults to /usr/share/doc/relkit-" + _version + "/user"),
+         "path to install documentation (defaults to /usr/share/doc/RTK-" + _version + "/user"),
         ('models', 'm',
-         "install documentation related to hazard rate models supported by RelKit."),
+         "install documentation related to hazard rate models supported by RTK."),
         ('specs', 's',
-         "install MIL-SPECS for components supported by RelKit.")
+         "install MIL-SPECS for components supported by RTK.")
         ]
 
     boolean_options = ['models', 'specs']
 
     def initialize_options(self):
         self.doc_type = "html"
-        self.doc_path = "/usr/share/doc/relkit-" + _version + "/user"
+        self.doc_path = "/usr/share/doc/RTK-" + _version + "/user"
 
         self.models = False
         self.specs = False
@@ -173,47 +174,47 @@ _package_data={"relkit": [""],
                "relkit": ["config/icons/16x16/*.png"],
                "relkit": ["config/icons/32x32/*.png"]}
 
-_data_files=[("%s/relkit/32x32" % _icondir, ["config/icons/32x32/add.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/calculate.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/charts.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/copy.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/cut.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/db-connected.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/db-disconnected.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/delete.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/edit.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/exit.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/import.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/new.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/open.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/overstress.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/part.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/paste.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/redo.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/remove.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/reports.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/save.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/save-exit.png"]),
-             ("%s/relkit/32x32" % _icondir, ["config/icons/32x32/undo.png"]),
-             (_icondir, ["config/icons/RelKit.png"]),
-             ("/etc/relkit", ["config/site.conf"]),
-             ("/etc/relkit", ["config/relkit.conf"]),
-             ("/etc/relkit", ["config/fmeca_format.xml"]),
-             ("/etc/relkit", ["config/fraca_format.xml"]),
-             ("/etc/relkit", ["config/function_format.xml"]),
-             ("/etc/relkit", ["config/hardware_format.xml"]),
-             ("/etc/relkit", ["config/part_format.xml"]),
-             ("/etc/relkit", ["config/requirement_format.xml"]),
-             ("/etc/relkit", ["config/revision_format.xml"]),
-             ("/etc/relkit", ["config/sia_format.xml"]),
-             ("/etc/relkit", ["config/validation_format.xml"]),
-             ("share/relkit/examples", ["config/example1.sql"]),
-             ("share/relkit", ["config/newprogram_mysql.sql"]),
-             ("share/relkit", ["config/newprogram_sqlite3.sql"]),
-             ("share/relkit", ["config/relkitcom.sql"]),
-             ("share/doc/relkit-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
-             ("share/applications", ["RelKit.desktop"]),
+_data_files=[("%s/RTK/32x32" % _icondir, ["config/icons/32x32/add.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/calculate.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/charts.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/copy.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/cut.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/db-connected.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/db-disconnected.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/delete.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/edit.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/exit.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/import.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/new.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/open.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/overstress.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/part.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/paste.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/redo.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/remove.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/reports.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/save.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/save-exit.png"]),
+             ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/undo.png"]),
+             (_icondir, ["config/icons/RTK.png"]),
+             ("%s" % _confdir, ["config/site.conf"]),
+             ("%s" % _confdir, ["config/RTK.conf"]),
+             ("%s" % _confdir, ["config/fmeca_format.xml"]),
+             ("%s" % _confdir, ["config/fraca_format.xml"]),
+             ("%s" % _confdir, ["config/function_format.xml"]),
+             ("%s" % _confdir, ["config/hardware_format.xml"]),
+             ("%s" % _confdir, ["config/part_format.xml"]),
+             ("%s" % _confdir, ["config/requirement_format.xml"]),
+             ("%s" % _confdir, ["config/revision_format.xml"]),
+             ("%s" % _confdir, ["config/sia_format.xml"]),
+             ("%s" % _confdir, ["config/validation_format.xml"]),
+             ("share/RTK/examples", ["config/example1.sql"]),
+             ("share/RTK", ["config/newprogram_mysql.sql"]),
+             ("share/RTK", ["config/newprogram_sqlite3.sql"]),
+             ("share/RTK", ["config/rtkcom.sql"]),
+             ("share/doc/RTK-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
+             ("share/applications", ["RTK.desktop"]),
              ]
 
 _cmdclass = {'install_dev_docs': install_dev_docs,
@@ -238,7 +239,7 @@ _classifiers=["Development Status :: 3 - Alpha",
 
 entry_points={
               "gui": [
-              "relkit = relkit.main:main"
+              "RTK = relkit.main:main"
               ]
 }
 
@@ -255,22 +256,22 @@ def osx_check():
     return platform.system() == "Darwin"
 
 setup(
-    name = "RelKit",
+    name = "RTK",
     version = _version,
     author = "Andrew Rowland",
-    author_email = "darowland@ieee.org",
+    author_email = "andrew.rowland@reliaqual.com",
     maintainer = "Andrew Rowland",
-    maintainer_email = "darowland@ieee.org",
-    url = "http://sourceforge.net/apps/mediawiki/relkit/index.php?title=Main_Page",
+    maintainer_email = "andrew.rowland@reliaqual.com",
+    url = "http://rtk.reliaqual.com",
     description = "RAM Analyses Tools",
-    long_description = """RelKit is a Python and PyGTK based suite of tools to
+    long_description = """RTK is a Python and PyGTK based suite of tools to
                           assist in Reliability, Availability, Maintainability,
                           and Safety (RAMS) analyses. RelKit is intended to be
                           an Open Source alternative to proprietary RAMS analyses
                           solutions.""",
-    download_url = "http://sourceforge.net/projects/relkit/",
+    download_url = "",
     platforms = "Linux",
-    license = "GPL3",
+    license = "Proprietary",
     cmdclass = _cmdclass,
     install_requires = _requires,
     packages = find_packages(exclude=['ez_setup']),
