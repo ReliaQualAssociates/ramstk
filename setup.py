@@ -40,8 +40,9 @@ python_version = platform.python_version()[0:3]
 _version = "1.0.0-alpha"
 
 if(os.name == "posix"):
-    _icondir = "/usr/share/pixmaps"
-    _confdir = "/etc/RTK"
+    _confdir = "etc/RTK"
+    _datadir = "share/RTK"
+    _icondir = "share/pixmaps"
 elif(os.name == "nt"):
     _icondir = "icons"
 
@@ -84,6 +85,8 @@ class install_dev_docs(Command):
         for root, dirs, files in os.walk("%s/docs/developer/%s/" % (cwd, self.doc_type)):
             if '.svn' in dirs:
                 dirs.remove('.svn')
+            if '.git' in dirs:
+                dirs.remove('.git')
             if(self.doc_type == "pdf"):
                 files = filter(lambda x: 'pdf' in x, files)
             for f in files:
@@ -209,10 +212,10 @@ _data_files=[("%s/RTK/32x32" % _icondir, ["config/icons/32x32/add.png"]),
              ("%s" % _confdir, ["config/revision_format.xml"]),
              ("%s" % _confdir, ["config/sia_format.xml"]),
              ("%s" % _confdir, ["config/validation_format.xml"]),
-             ("share/RTK/examples", ["config/example1.sql"]),
-             ("share/RTK", ["config/newprogram_mysql.sql"]),
-             ("share/RTK", ["config/newprogram_sqlite3.sql"]),
-             ("share/RTK", ["config/rtkcom.sql"]),
+             ("%s/examples" % _datadir, ["config/example1.sql"]),
+             ("%s/data" % _datadir, ["config/newprogram_mysql.sql"]),
+             ("%s/data" % _datadir, ["config/newprogram_sqlite3.sql"]),
+             ("%s/data" % _datadir, ["config/rtkcom.sql"]),
              ("share/doc/RTK-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
              ("share/applications", ["RTK.desktop"]),
              ]
@@ -221,25 +224,25 @@ _cmdclass = {'install_dev_docs': install_dev_docs,
              'install_user_docs': install_user_docs,
             }
 
-# Packages needed to install and run RelKit
+# Packages needed to install and run RTK.
 _requires = ["lxml >= 2.3",
              # "PyGTK > 2.12.0", - Exclude, it doesn't seem to work.
              "mysql-python >= 1.2.3"]
 
 # Classifiers for PyPi
-_classifiers=["Development Status :: 3 - Alpha",
-              "Environment :: X11 Applications :: GTK",
-              "Intended Audience :: End Users/Desktop",
-              "Intended Audience :: Science/Research",
-              "License :: OSI Approved :: GNU General Public License (GPL)",
-              "Operating System :: POSIX :: Linux",
-              "Programming Language :: Python :: 2.7",
-              "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
-             ]
+#_classifiers=["Development Status :: 3 - Alpha",
+#              "Environment :: X11 Applications :: GTK",
+#              "Intended Audience :: End Users/Desktop",
+#              "Intended Audience :: Science/Research",
+#              "License :: Proprietary",
+#              "Operating System :: POSIX :: Linux",
+#              "Programming Language :: Python :: 2.7",
+#              "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+#             ]
 
 entry_points={
               "gui": [
-              "RTK = relkit.main:main"
+              "RTK = rtk.main:main"
               ]
 }
 
@@ -264,11 +267,7 @@ setup(
     maintainer_email = "andrew.rowland@reliaqual.com",
     url = "http://rtk.reliaqual.com",
     description = "RAM Analyses Tools",
-    long_description = """RTK is a Python and PyGTK based suite of tools to
-                          assist in Reliability, Availability, Maintainability,
-                          and Safety (RAMS) analyses. RelKit is intended to be
-                          an Open Source alternative to proprietary RAMS analyses
-                          solutions.""",
+    long_description = """RTK is a Python and PyGTK based suite of tools to assist in Reliability, Availability, Maintainability, and Safety (RAMS) analyses.""",
     download_url = "",
     platforms = "Linux",
     license = "Proprietary",
@@ -279,7 +278,7 @@ setup(
     package_data = _package_data,
     data_files = _data_files,
     entry_points = """[console_scripts]
-                      relkit = relkit.main:main
+                      RTK = rtk.main:main
                    """,
-    classifiers = _classifiers
+    #classifiers = _classifiers
     )
