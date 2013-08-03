@@ -427,8 +427,8 @@ class Revision:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[0]
-        fg_color = _conf.RELIAFREE_COLORS[1]
+        bg_color = _conf.RTK_COLORS[0]
+        fg_color = _conf.RTK_COLORS[1]
         (self.treeview, self._col_order) = _widg.make_treeview('Revision', 0,
                                                                self._app,
                                                                None,
@@ -586,10 +586,10 @@ class Revision:
         """
 
 # Create the revision code.
-        _code = str(_conf.RELIAFREE_PREFIX[0]) + ' ' + str(_conf.RELIAFREE_PREFIX[1])
+        _code = str(_conf.RTK_PREFIX[0]) + ' ' + str(_conf.RTK_PREFIX[1])
 
 # Increment the revision index.
-        _conf.RELIAFREE_PREFIX[1] = _conf.RELIAFREE_PREFIX[1] + 1
+        _conf.RTK_PREFIX[1] = _conf.RTK_PREFIX[1] + 1
 
 # First we add the new revision.  Second we retrieve thew new revision id.
 # Third, we create a new, top-level system entry for this revision.
@@ -624,11 +624,11 @@ class Revision:
 
 
 # Create the default description of the assembly.
-        _descrip = str(_conf.RELIAFREE_PREFIX[4]) + ' ' + \
-                   str(_conf.RELIAFREE_PREFIX[5])
+        _descrip = str(_conf.RTK_PREFIX[4]) + ' ' + \
+                   str(_conf.RTK_PREFIX[5])
 
 # Increment the assembly index.
-        _conf.RELIAFREE_PREFIX[5] = _conf.RELIAFREE_PREFIX[5] + 1
+        _conf.RTK_PREFIX[5] = _conf.RTK_PREFIX[5] + 1
 
         query="SELECT fld_parent_assembly, fld_description \
                FROM tbl_system WHERE fld_revision_id=0"
@@ -638,7 +638,7 @@ class Revision:
 
         for i in range(len(systems)):
             if(_conf.BACKEND == 'mysql'):
-                values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
+                values = (revision_id[0][0], str(_conf.RTK_PROG_INFO[3]),
                           systems[i][0], systems[i][1])
                 query = "INSERT INTO tbl_system \
                          (fld_revision_id, fld_entered_by, \
@@ -651,7 +651,7 @@ class Revision:
                                                      None,
                                                      self._app.ProgCnx)
                 assembly_id = int(results[0][0]) + 1
-                values = (revision_id[0][0], str(_conf.RELIAFREE_PROG_INFO[3]),
+                values = (revision_id[0][0], str(_conf.RTK_PROG_INFO[3]),
                           systems[i][0], systems[i][1], assembly_id)
 
                 query = "INSERT INTO tbl_system \

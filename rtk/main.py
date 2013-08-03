@@ -120,11 +120,11 @@ class RTK:
 # Get a connection to the common database.
         if(_conf.COM_BACKEND == 'mysql'):
             self.COMDB = _mysql.MySQLInterface(self)
-            self.ComCnx = self.COMDB.get_connection(_conf.RELIAFREE_COM_INFO)
+            self.ComCnx = self.COMDB.get_connection(_conf.RTK_COM_INFO)
 
         elif(_conf.COM_BACKEND == 'sqlite3'):
             self.COMDB = _sqlite.SQLite3Interface(self)
-            _database = _conf.CONF_DIR + _conf.RELIAFREE_COM_INFO[2] + '.rfb'
+            _database = _conf.CONF_DIR + _conf.RTK_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
 # Read the license file and compare to the product key in the site database.
@@ -145,12 +145,12 @@ class RTK:
                                             None,
                                             self.ComCnx)
         if(_license_key != _results[0][0]):
-            _util.application_error(_(u"Cannot find license key file or license key is incorrect.  Closing RTK application."))
+            _util.application_error(_(u"Invalid license (Invalid key).  Your license key is incorrect.  Closing RTK application."))
             quit()
 
         if(datetime.datetime.today().toordinal() > _results[0][1]):
             _expire_date = str(datetime.datetime.fromordinal(int(_results[0][1])).strftime('%Y-%m-%d'))
-            _util.application_error(_(u"Your license expired on %s.  Closing RTK application." % _expire_date))
+            _util.application_error(_(u"Invlaid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
             quit()
 
 # Get a connection to the program database.
@@ -201,18 +201,18 @@ class RTK:
 # information.
         query = "SELECT * FROM tbl_program_info"
         if(_conf.BACKEND == 'mysql'):
-            self.ProgCnx = self.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
+            self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO)
         elif(_conf.BACKEND == 'sqlite3'):
-            self.ProgCnx = self.DB.get_connection(_conf.RELIAFREE_PROG_INFO[2])
+            self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO[2])
 
         results = self.DB.execute_query(query, None, self.ProgCnx)
 
         for i in range(19):
-            _conf.RELIAFREE_PREFIX.append(results[0][i + 1])
+            _conf.RTK_PREFIX.append(results[0][i + 1])
 
 # Find which modules are active in this project.
         for i in range(10):
-            _conf.RELIAFREE_MODULES.append(results[0][i + 19])
+            _conf.RTK_MODULES.append(results[0][i + 19])
             if results[0][i + 19] == 1:
                 _conf.RTK_PAGE_NUMBER.append(i)
 
@@ -222,29 +222,29 @@ class RTK:
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
         self.icoStatus.set_tooltip(_(u"RTK is connected to program database %s." %
-                                   _conf.RELIAFREE_PROG_INFO[2]))
+                                   _conf.RTK_PROG_INFO[2]))
         self.winTree.set_title(_(u"RTK - Analyzing %s" %
-                               _conf.RELIAFREE_PROG_INFO[2]))
+                               _conf.RTK_PROG_INFO[2]))
 
         self.winTree.load_trees(self)
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):    # Revisions
+        if(_conf.RTK_MODULES[0] == 1):    # Revisions
             self.REVISION.treeview.grab_focus()
-        elif(_conf.RELIAFREE_MODULES[1] == 1):  # Requirements
+        elif(_conf.RTK_MODULES[1] == 1):  # Requirements
             self.REQUIREMENT.treeview.grab_focus()
-        elif(_conf.RELIAFREE_MODULES[2] == 1):  # Functions
+        elif(_conf.RTK_MODULES[2] == 1):  # Functions
             self.FUNCTION.treeview.grab_focus()
-        elif(_conf.RELIAFREE_MODULES[3] == 1):  # Hardware
+        elif(_conf.RTK_MODULES[3] == 1):  # Hardware
             self.HARDWARE.load_tree()
-        elif(_conf.RELIAFREE_MODULES[4] == 1):  # Software
+        elif(_conf.RTK_MODULES[4] == 1):  # Software
             self.SOFTWARE.load_tree()
-        elif(_conf.RELIAFREE_MODULES[5] == 1):  # V&V Tracking
+        elif(_conf.RTK_MODULES[5] == 1):  # V&V Tracking
             self.VALIDATION.treeview.grab_focus()
-        elif(_conf.RELIAFREE_MODULES[6] == 1):  # Reliability Testing
+        elif(_conf.RTK_MODULES[6] == 1):  # Reliability Testing
             self.TESTING.treeview.grab_focus()
-        #elif(_conf.RELIAFREE_MODULES[7] == 1):  # Maintenance Policy
+        #elif(_conf.RTK_MODULES[7] == 1):  # Maintenance Policy
         #    self.MAINTENANCE.treeview.grab_focus()
-        elif(_conf.RELIAFREE_MODULES[8] == 1):  # Field incident tracking
+        elif(_conf.RTK_MODULES[8] == 1):  # Field incident tracking
             self.INCIDENT.treeview.grab_focus()
 
         self.LOADED = True

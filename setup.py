@@ -39,12 +39,9 @@ python_version = platform.python_version()[0:3]
 
 _version = "1.0.0-alpha"
 
-if(os.name == "posix"):
-    _confdir = "etc/RTK"
-    _datadir = "share/RTK"
-    _icondir = "share/pixmaps"
-elif(os.name == "nt"):
-    _icondir = "icons"
+_confdir = "/etc/RTK"
+_datadir = "/usr/share/RTK"
+_icondir = "/usr/share/pixmaps"
 
 class install_dev_docs(Command):
 
@@ -203,21 +200,25 @@ _data_files=[("%s/RTK/32x32" % _icondir, ["config/icons/32x32/add.png"]),
              (_icondir, ["config/icons/RTK.png"]),
              ("%s" % _confdir, ["config/site.conf"]),
              ("%s" % _confdir, ["config/RTK.conf"]),
+             ("%s" % _confdir, ["config/dataset_format.xml"]),
              ("%s" % _confdir, ["config/fmeca_format.xml"]),
-             ("%s" % _confdir, ["config/fraca_format.xml"]),
              ("%s" % _confdir, ["config/function_format.xml"]),
              ("%s" % _confdir, ["config/hardware_format.xml"]),
+             ("%s" % _confdir, ["config/incident_format.xml"]),
              ("%s" % _confdir, ["config/part_format.xml"]),
              ("%s" % _confdir, ["config/requirement_format.xml"]),
              ("%s" % _confdir, ["config/revision_format.xml"]),
+             ("%s" % _confdir, ["config/risk_format.xml"]),
              ("%s" % _confdir, ["config/sia_format.xml"]),
+             ("%s" % _confdir, ["config/software_format.xml"]),
+             ("%s" % _confdir, ["config/testing_format.xml"]),
              ("%s" % _confdir, ["config/validation_format.xml"]),
              ("%s/examples" % _datadir, ["config/example1.sql"]),
              ("%s/data" % _datadir, ["config/newprogram_mysql.sql"]),
              ("%s/data" % _datadir, ["config/newprogram_sqlite3.sql"]),
              ("%s/data" % _datadir, ["config/rtkcom.sql"]),
-             ("share/doc/RTK-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
-             ("share/applications", ["RTK.desktop"]),
+             ("/usr/share/doc/RTK-" + _version, ["AUTHORS","ChangeLog","COPYING"]),
+             ("/usr/share/applications", ["RTK.desktop"]),
              ]
 
 _cmdclass = {'install_dev_docs': install_dev_docs,
@@ -227,24 +228,11 @@ _cmdclass = {'install_dev_docs': install_dev_docs,
 # Packages needed to install and run RTK.
 _requires = ["lxml >= 2.3",
              # "PyGTK > 2.12.0", - Exclude, it doesn't seem to work.
-             "mysql-python >= 1.2.3"]
+             "matplotlib >= 1.1.1",
+             "mysql-python >= 1.2.3",
+             "xlrd >= 0.9.0"]
 
-# Classifiers for PyPi
-#_classifiers=["Development Status :: 3 - Alpha",
-#              "Environment :: X11 Applications :: GTK",
-#              "Intended Audience :: End Users/Desktop",
-#              "Intended Audience :: Science/Research",
-#              "License :: Proprietary",
-#              "Operating System :: POSIX :: Linux",
-#              "Programming Language :: Python :: 2.7",
-#              "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
-#             ]
-
-entry_points={
-              "gui": [
-              "RTK = rtk.main:main"
-              ]
-}
+_entry_points = {"gui": ["RTK = rtk.main:main"]}
 
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
@@ -277,8 +265,5 @@ setup(
     include_package_data = True,
     package_data = _package_data,
     data_files = _data_files,
-    entry_points = """[console_scripts]
-                      RTK = rtk.main:main
-                   """,
-    #classifiers = _classifiers
+    entry_points = _entry_points
     )

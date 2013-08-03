@@ -306,7 +306,7 @@ class ImportAssistant:
 
         from datetime import datetime
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _revision = self._app.REVISION.revision_id
         else:
             _revision = 0
@@ -678,7 +678,7 @@ class ImportAssistant:
         from datetime import datetime
 
         # Find the revision ID.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _revision_id = self._app.REVISION.revision_id
         else:
             _revision_id  = 0

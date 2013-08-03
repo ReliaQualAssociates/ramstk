@@ -540,8 +540,8 @@ class Requirement:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[4]
-        fg_color = _conf.RELIAFREE_COLORS[5]
+        bg_color = _conf.RTK_COLORS[4]
+        fg_color = _conf.RTK_COLORS[5]
         (self.treeview, self._col_order) = _widg.make_treeview('Requirement',
                                                                2,
                                                                self._app,
@@ -565,7 +565,7 @@ class Requirement:
         This information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)
@@ -723,7 +723,7 @@ class Requirement:
                 _revision = self.model.get_value(self.selected_row, 0)
                 _assembly = self.model.get_value(self.selected_row, 2)
             else:
-                if(_conf.RELIAFREE_MODULES[0] == 1):
+                if(_conf.RTK_MODULES[0] == 1):
                     _revision = self._app.REVISION.revision_id
                 else:
                     _revision = 0
@@ -784,7 +784,7 @@ class Requirement:
             self._app.user_log.error("requirement.py: Failed to delete derived requirement.")
             return True
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id, \
                       model.get_value(row, 1))
         else:
@@ -900,7 +900,7 @@ class Requirement:
         if(type_ == 0):
             task_name = _("New V & V Task")
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id, task_name)
             else:
                 values = (0, task_name)
@@ -933,7 +933,7 @@ class Requirement:
                                                  None,
                                                  self._app.ProgCnx)
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id, task_id[0][0],
                           self.model.get_value(self.selected_row, 1))
             else:
@@ -965,7 +965,7 @@ class Requirement:
             row = self.cmbVandVTasks.get_active_iter()
             task_id = int(model.get_value(row, 1))
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id, task_id,
                           self.model.get_value(self.selected_row, 1))
             else:

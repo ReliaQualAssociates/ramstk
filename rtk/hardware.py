@@ -97,8 +97,8 @@ class Hardware:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
         (self.treeview, self._col_order) = _widg.make_treeview('Hardware', 3,
                                                                self._app,
                                                                None,
@@ -125,7 +125,7 @@ class Hardware:
         information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self._app.REVISION.revision_id,)
         else:
             _values = (0,)
@@ -272,7 +272,7 @@ class Hardware:
 
 # Find the current revision if using the revision module, otherwise set this
 # to the default value.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values1 = (self._app.REVISION.revision_id, _path_)
             _values2 = (self._app.REVISION.revision_id, self._assembly_id)
         else:

@@ -2104,8 +2104,8 @@ class Testing:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[10]
-        fg_color = _conf.RELIAFREE_COLORS[11]
+        bg_color = _conf.RTK_COLORS[10]
+        fg_color = _conf.RTK_COLORS[11]
         (self.treeview, self._col_order) = _widg.make_treeview('Testing', 11,
                                                                self._app,
                                                                None,

@@ -1357,27 +1357,27 @@ class Component():
 
         # Retrieve the column heading text from the format file.
         path = "/root/tree[@name='FMECA']/column/usertitle"
-        heading = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        heading = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Retrieve the column datatype from the format file.
         path = "/root/tree[@name='FMECA']/column/datatype"
-        datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        datatype = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Retrieve the cellrenderer type from the format file.
         path = "/root/tree[@name='FMECA']/column/widget"
-        widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        widget = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Retrieve the column position from the format file.
         path = "/root/tree[@name='FMECA']/column/position"
-        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        position = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='FMECA']/column/editable"
-        editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        editable = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='FMECA']/column/visible"
-        visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[9]).xpath(path)
+        visible = etree.parse(_conf.RTK_FORMAT_FILE[9]).xpath(path)
 
         # Create a list of GObject datatypes to pass to the model.
         types = []
@@ -1395,8 +1395,8 @@ class Component():
                                                       None,
                                                       self._app.ComCnx)
 
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
 
         # Create the model and treeview.
         model = gtk.ListStore(*gobject_types)
@@ -1513,7 +1513,7 @@ class Component():
         """
 
 # Find the revision ID.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self._app.REVISION.revision_id,
                        self._app.ASSEMBLY.assembly_id)
         else:
@@ -1614,11 +1614,11 @@ class Component():
                 _parent = '0'
 
             # Create a description from the part prefix and part index.
-            _descrip = str(_conf.RELIAFREE_PREFIX[6]) + ' ' + \
-                       str(_conf.RELIAFREE_PREFIX[7])
+            _descrip = str(_conf.RTK_PREFIX[6]) + ' ' + \
+                       str(_conf.RTK_PREFIX[7])
 
             # Increment the part index.
-            _conf.RELIAFREE_PREFIX[7] = _conf.RELIAFREE_PREFIX[7] + 1
+            _conf.RTK_PREFIX[7] = _conf.RTK_PREFIX[7] + 1
 
             # First we insert the part into the System table.  Next we
             # find the id of the newly added part.  Thirdly, we add the new
@@ -1626,7 +1626,7 @@ class Component():
             # part to the prediction table.  Finally, we add the new part to
             # the FMECA table.
             values = (self._app.REVISION.revision_id,
-                      str(_conf.RELIAFREE_PROG_INFO[3]),
+                      str(_conf.RTK_PROG_INFO[3]),
                       _parent, _descrip, 1)
 
             if(_conf.BACKEND == 'mysql'):
@@ -2093,7 +2093,7 @@ class Component():
         """
 
 # Find the revision ID.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self._app.REVISION.revision_id,
                        self._app.ASSEMBLY.assembly_id)
         else:

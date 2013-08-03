@@ -945,7 +945,7 @@ class Incident:
         if(n_tasks < 1):
             return True
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _revision_id = self._app.REVISION.revision_id
         else:
             _revision_id = 0
@@ -1159,8 +1159,8 @@ class Incident:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[12]
-        fg_color = _conf.RELIAFREE_COLORS[13]
+        bg_color = _conf.RTK_COLORS[12]
+        fg_color = _conf.RTK_COLORS[13]
         (self.treeview, self._col_order) = _widg.make_treeview('Incidents', 14,
                                                                self._app,
                                                                None,

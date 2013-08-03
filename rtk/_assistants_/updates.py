@@ -197,7 +197,7 @@ class AssignMTBFResults:
 
 # Load the hardware gtk.TreeView with the new information.
         self._app.HARDWARE.load_tree()
-        _page = sum(_conf.RELIAFREE_MODULES[:4])
+        _page = sum(_conf.RTK_MODULES[:4])
         self._app.winTree.notebook.set_current_page(_page - 1)
 
         return False

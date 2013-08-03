@@ -117,11 +117,11 @@ class ExportHardware:
 
         # Retrieve the column heading text from the format file.
         path = "/root/tree[@name='Hardware']/column/usertitle"
-        heading = etree.parse(_conf.RELIAFREE_FORMAT_FILE[3]).xpath(path)
+        heading = etree.parse(_conf.RTK_FORMAT_FILE[3]).xpath(path)
 
         # Retrieve the column position from the format file.
         path = "/root/tree[@name='Hardware']/column/position"
-        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[3]).xpath(path)
+        position = etree.parse(_conf.RTK_FORMAT_FILE[3]).xpath(path)
 
         for i in range(int(len(heading))):
             data = [heading[i].text, int(position[i].text), 0]

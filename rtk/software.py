@@ -4939,14 +4939,14 @@ class Software:
         for i in range(n_new_module):
 
             # Create the default description of the assembly.
-            _descrip = str(_conf.RELIAFREE_PREFIX[16]) + ' ' + \
-                       str(_conf.RELIAFREE_PREFIX[17])
+            _descrip = str(_conf.RTK_PREFIX[16]) + ' ' + \
+                       str(_conf.RTK_PREFIX[17])
 
             # Increment the assembly index.
-            _conf.RELIAFREE_PREFIX[17] = _conf.RELIAFREE_PREFIX[17] + 1
+            _conf.RTK_PREFIX[17] = _conf.RTK_PREFIX[17] + 1
 
             # Find the revision ID.
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id,
                           _parent, _descrip)
             else:
@@ -5067,8 +5067,8 @@ class Software:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
         (self.treeview, self._col_order) = _widg.make_treeview('Software', 15,
                                                                self._app,
                                                                None,
@@ -5095,7 +5095,7 @@ class Software:
         information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)

@@ -68,19 +68,19 @@ class Login(gtk.Dialog):
 
         label = _widg.make_label('Host: ', 75, 25)
         self.txtHost = _widg.make_entry(150, 25)
-        self.txtHost.set_text(_conf.RELIAFREE_PROG_INFO[0])
+        self.txtHost.set_text(_conf.RTK_PROG_INFO[0])
         fixed.put(label, 10, 10)
         fixed.put(self.txtHost, 90, 10)
 
         label = _widg.make_label('Port: ', 75, 25)
         self.txtPort = _widg.make_entry(150, 25)
-        self.txtPort.set_text(str(_conf.RELIAFREE_PROG_INFO[1]))
+        self.txtPort.set_text(str(_conf.RTK_PROG_INFO[1]))
         fixed.put(label, 10, 40)
         fixed.put(self.txtPort, 90, 40)
 
         label = _widg.make_label('User: ', 75, 25)
         self.txtUser = _widg.make_entry(150, 25)
-        self.txtUser.set_text(str(_conf.RELIAFREE_PROG_INFO[3]))
+        self.txtUser.set_text(str(_conf.RTK_PROG_INFO[3]))
         fixed.put(label, 10, 75)
         fixed.put(self.txtUser, 90, 75)
 
@@ -89,7 +89,7 @@ class Login(gtk.Dialog):
         self.txtPassword.set_visibility(False)
         self.txtPassword.set_invisible_char("*")
         self.txtPassword.set_activates_default(True)
-        self.txtPassword.set_text(str(_conf.RELIAFREE_PROG_INFO[4]))
+        self.txtPassword.set_text(str(_conf.RTK_PROG_INFO[4]))
         fixed.put(label, 10, 110)
         fixed.put(self.txtPassword, 90, 110)
 
@@ -105,10 +105,10 @@ class Login(gtk.Dialog):
             self._cancel(dialog)
             return response
 
-        _conf.RELIAFREE_PROG_INFO[0] = self.txtHost.get_text()
-        _conf.RELIAFREE_PROG_INFO[1] = int(self.txtPort.get_text())
-        _conf.RELIAFREE_PROG_INFO[3] = self.txtUser.get_text()
-        _conf.RELIAFREE_PROG_INFO[4] = self.txtPassword.get_text()
+        _conf.RTK_PROG_INFO[0] = self.txtHost.get_text()
+        _conf.RTK_PROG_INFO[1] = int(self.txtPort.get_text())
+        _conf.RTK_PROG_INFO[3] = self.txtUser.get_text()
+        _conf.RTK_PROG_INFO[4] = self.txtPassword.get_text()
 
         self.destroy()
 

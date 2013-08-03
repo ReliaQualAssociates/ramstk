@@ -352,7 +352,7 @@ class Function:
 
             row = self.model.iter_next(row)
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)
@@ -616,8 +616,8 @@ class Function:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[2]
-        fg_color = _conf.RELIAFREE_COLORS[3]
+        bg_color = _conf.RTK_COLORS[2]
+        fg_color = _conf.RTK_COLORS[3]
         (self.treeview, self._col_order) = _widg.make_treeview('Function', 1,
                                                                self._app,
                                                                None,
@@ -641,7 +641,7 @@ class Function:
         information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)
@@ -783,14 +783,14 @@ class Function:
             n_functions = _util.add_items(_("Child Function"))
 
         for i in range(n_functions):
-            _code = str(_conf.RELIAFREE_PREFIX[2]) + ' ' + \
-                    str(_conf.RELIAFREE_PREFIX[3])
+            _code = str(_conf.RTK_PREFIX[2]) + ' ' + \
+                    str(_conf.RTK_PREFIX[3])
 
-            _conf.RELIAFREE_PREFIX[3] = _conf.RELIAFREE_PREFIX[3] + 1
+            _conf.RTK_PREFIX[3] = _conf.RTK_PREFIX[3] + 1
 
             function_name = "New Function_" + str(i)
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id,
                           function_name, '', _code, _parent)
             else:
@@ -1003,7 +1003,7 @@ class Function:
         selection = self._FunctionMatrix.get_selection()
         (model, row) = selection.get_selected()
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (assemblies[model.get_value(row, 0)],
                       functions[column - 1],
                       self._app.REVISION.revision_id)
@@ -1076,7 +1076,7 @@ class Function:
                 self._app.debug_log.error("function.py: Failed to save Functional Matrix changes.")
                 return True
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (assemblies[model.get_value(row, 0)], 0,
                           self._app.REVISION.revision_id)
             else:
@@ -1101,7 +1101,7 @@ class Function:
                 return True
 
             # Update the prediction table.
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (functions[column - 1],
                           self._app.REVISION.revision_id)
             else:

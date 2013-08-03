@@ -56,11 +56,11 @@ def read_configuration():
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
 
-    _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
-    _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'socket'))
-    _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'database'))
-    _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
-    _conf.RELIAFREE_COM_INFO.append(conf.read_configuration().get('Backend', 'password'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'socket'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'database'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
 # Get a config instance for the user configuration file.
     conf = _conf.RTKConf('user')
@@ -71,11 +71,11 @@ def read_configuration():
     _conf.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
     _conf.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
 
-    _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'host'))
-    _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'socket'))
-    _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'database'))
-    _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'user'))
-    _conf.RELIAFREE_PROG_INFO.append(conf.read_configuration().get('Backend', 'password'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'host'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'socket'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'database'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'user'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
 # Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')
@@ -100,64 +100,64 @@ def read_configuration():
 
 # Get list of format files.
     formatfile = conf.read_configuration().get('Files', 'revisionformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'functionformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'requirementformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'hardwareformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'validationformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'rgformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'fracaformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'partformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'siaformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'fmecaformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'modeformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'testformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'mechanismformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'rgincidentformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'incidentformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'softwareformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'datasetformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'riskformat')
-    _conf.RELIAFREE_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
 # Get color information.
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'revisionfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'functionbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'functionfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'requirementbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'requirementfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'assemblybg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'assemblyfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'validationbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'validationfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'rgbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'rgfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'fracabg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'fracafg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'partbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'partfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'overstressbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'overstressfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'taggedbg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'taggedfg'))
-    _conf.RELIAFREE_COLORS.append(conf.read_configuration().get('Colors', 'nofrmodelfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'functionbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'functionfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'requirementbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'requirementfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'assemblybg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'assemblyfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'validationbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'validationfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracabg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracafg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'overstressbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'overstressfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'nofrmodelfg'))
 
     return(icondir, datadir, logdir)
 
@@ -345,9 +345,9 @@ def create_project(widget, app):
 
         dialog.destroy()
 
-        _conf.RELIAFREE_PROG_INFO[2] = None
+        _conf.RTK_PROG_INFO[2] = None
         query = "CREATE DATABASE IF NOT EXISTS %s"
-        cnx = app.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
+        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
         results = app.DB.execute_query(query,
                                        new_program,
                                        cnx,
@@ -356,8 +356,8 @@ def create_project(widget, app):
         if not results:
             return True
 
-        _conf.RELIAFREE_PROG_INFO[2] = new_program
-        cnx = app.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
+        _conf.RTK_PROG_INFO[2] = new_program
+        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
 
         sqlfile = open(_conf.DATA_DIR + 'newprogram_mysql.sql', 'r')
 
@@ -399,8 +399,8 @@ def create_project(widget, app):
             new_program = dialog.get_filename()
             new_program = new_program + '.rfb'
 
-            _conf.RELIAFREE_PROG_INFO[2] = new_program
-            cnx = app.DB.get_connection(_conf.RELIAFREE_PROG_INFO[2])
+            _conf.RTK_PROG_INFO[2] = new_program
+            cnx = app.DB.get_connection(_conf.RTK_PROG_INFO[2])
 
             sqlfile = open(_conf.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
             queries = sqlfile.read().split(';')
@@ -440,7 +440,7 @@ def open_project(widget, app, dlg=1, filename=''):
             return True
 
         query = "SHOW DATABASES"
-        cnx = app.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
+        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
         results = app.DB.execute_query(query,
                                        None,
                                        cnx)
@@ -482,7 +482,7 @@ def open_project(widget, app, dlg=1, filename=''):
             (model, treerow) = selection.get_selected()
             path = model.get_path(treerow)
             row = model.get_iter(path)
-            _conf.RELIAFREE_PROG_INFO[2] = model.get_value(row, 0)
+            _conf.RTK_PROG_INFO[2] = model.get_value(row, 0)
             dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
             app.load_system()
 
@@ -512,14 +512,14 @@ def open_project(widget, app, dlg=1, filename=''):
             response = dialog.run()
 
             if(response == gtk.RESPONSE_ACCEPT):
-                _conf.RELIAFREE_PROG_INFO[2] = dialog.get_filename()
+                _conf.RTK_PROG_INFO[2] = dialog.get_filename()
                 dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
                 app.load_system()
 
             dialog.destroy()
 
         else:
-            _conf.RELIAFREE_PROG_INFO[2] = filename
+            _conf.RTK_PROG_INFO[2] = filename
             app.load_system()
 
     return False
@@ -550,11 +550,11 @@ def save_project(widget, _app):
     _app.winParts.save_component()
 
 # Update the next ID for each type of object.
-    _values = (_conf.RELIAFREE_PREFIX[1], _conf.RELIAFREE_PREFIX[3],
-               _conf.RELIAFREE_PREFIX[5], _conf.RELIAFREE_PREFIX[7],
-               _conf.RELIAFREE_PREFIX[9], _conf.RELIAFREE_PREFIX[11],
-               _conf.RELIAFREE_PREFIX[13], _conf.RELIAFREE_PREFIX[15],
-               _conf.RELIAFREE_PREFIX[17], 1)
+    _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
+               _conf.RTK_PREFIX[5], _conf.RTK_PREFIX[7],
+               _conf.RTK_PREFIX[9], _conf.RTK_PREFIX[11],
+               _conf.RTK_PREFIX[13], _conf.RTK_PREFIX[15],
+               _conf.RTK_PREFIX[17], 1)
 
 
     query = "UPDATE tbl_program_info \
@@ -591,7 +591,7 @@ def delete_project(widget, _app):
 
     if(_conf.BACKEND == 'mysql'):
         query = "SHOW DATABASES"
-        cnx = _app.DB.get_connection(_conf.RELIAFREE_PROG_INFO)
+        cnx = _app.DB.get_connection(_conf.RTK_PROG_INFO)
         results = _app.DB.execute_query(query,
                                         None,
                                         cnx)
@@ -1306,7 +1306,7 @@ class Options:
         notebook = gtk.Notebook()
 
         # ----- ----- ----- -- RTK module options - ----- ----- ----- #
-        if(_conf.RELIAFREE_PROG_INFO[2] != ''):
+        if(_conf.RTK_PROG_INFO[2] != ''):
             fixed = gtk.Fixed()
 
             self.chkRevisions = _widg.make_check_button(_("Revisions"))
@@ -1516,31 +1516,31 @@ class Options:
 
 # Retrieve the default heading text from the format file.
         path = "/root/tree[@name='%s']/column/defaulttitle" % _name
-        default = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        default = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve the default heading text from the format file.
         path = "/root/tree[@name='%s']/column/usertitle" % _name
-        user = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        user = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve the column position from the format file.
         path = "/root/tree[@name='%s']/column/position" % _name
-        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        position = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='%s']/column/editable" % _name
-        editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        editable = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='%s']/column/visible" % _name
-        visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        visible = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve datatypes from the format file.
         path = "/root/tree[@name='%s']/column/datatype" % _name
-        datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        datatype = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
 # Retrieve widget types from the format file.
         path = "/root/tree[@name='%s']/column/widget" % _name
-        widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[_fmt_idx]).xpath(path)
+        widget = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
         model = self.tvwEditTree.get_model()
         model.clear()
@@ -1611,7 +1611,7 @@ class Options:
         (_name, _fmt_idx) = self._get_format_info()
 
 # Get the format file for the gtk.TreeView to be edited.
-        _format_file = _conf.RELIAFREE_FORMAT_FILE[_fmt_idx]
+        _format_file = _conf.RTK_FORMAT_FILE[_fmt_idx]
         _basename = os.path.basename(_format_file)
 
 # Make a copy of the original format file.

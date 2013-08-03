@@ -112,8 +112,8 @@ class ListWindow(gtk.Window):
         self.notebook.connect('switch-page', self.notebook_page_switched)
 
 # Create the parts list tab for the LIST Object.
-        bg_color = _conf.RELIAFREE_COLORS[14]
-        fg_color = _conf.RELIAFREE_COLORS[15]
+        bg_color = _conf.RTK_COLORS[14]
+        fg_color = _conf.RTK_COLORS[15]
         (self.tvwPartsList, self._col_order) = _widg.make_treeview('Parts', 7,
                                                                    self._app,
                                                                    None,
@@ -123,8 +123,8 @@ class ListWindow(gtk.Window):
             self._app.debug_log.error("partlist.py: Failed to create Parts List tab.")
 
 # Create the reliability testing tab for the LIST Object.
-        bg_color = _conf.RELIAFREE_COLORS[14]
-        fg_color = _conf.RELIAFREE_COLORS[15]
+        bg_color = _conf.RTK_COLORS[14]
+        fg_color = _conf.RTK_COLORS[15]
         (self.tvwRG, self._rg_col_order) = _widg.make_treeview('RGIncidents',
                                                                13,
                                                                self._app,
@@ -135,8 +135,8 @@ class ListWindow(gtk.Window):
             self._app.debug_log.error("partlist.py: Failed to create Reliability Test tab.")
 
 # Create the program incidents tab for the LIST object.
-        bg_color = _conf.RELIAFREE_COLORS[12]
-        fg_color = _conf.RELIAFREE_COLORS[13]
+        bg_color = _conf.RTK_COLORS[12]
+        fg_color = _conf.RTK_COLORS[13]
         (self.tvwIncidents,
          self._incident_col_order) = _widg.make_treeview('Incidents',
                                                          14,
@@ -153,8 +153,8 @@ class ListWindow(gtk.Window):
             self._app.debug_log.error("partlist.py: Failed to create Program Incidents tab.")
 
 # Create the dataset tab for the LIST object.
-        bg_color = _conf.RELIAFREE_COLORS[12]
-        fg_color = _conf.RELIAFREE_COLORS[13]
+        bg_color = _conf.RTK_COLORS[12]
+        fg_color = _conf.RTK_COLORS[13]
         (self.tvwDatasets,
          self._dataset_col_order) = _widg.make_treeview('Dataset', 16,
                                                         self._app,

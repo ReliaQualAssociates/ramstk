@@ -319,27 +319,27 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
 
     # Retrieve the column heading text from the format file.
     path = "/root/tree[@name='%s']/column/usertitle" % name
-    heading = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    heading = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the column datatype from the format file.
     path = "/root/tree[@name='%s']/column/datatype" % name
-    datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    datatype = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the column position from the format file.
     path = "/root/tree[@name='%s']/column/position" % name
-    position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    position = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the cell renderer type from the format file.
     path = "/root/tree[@name='%s']/column/widget" % name
-    widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    widget = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve whether or not the column is editable from the format file.
     path = "/root/tree[@name='%s']/column/editable" % name
-    editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    editable = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve whether or not the column is visible from the format file.
     path = "/root/tree[@name='%s']/column/visible" % name
-    visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[fmt_idx]).xpath(path)
+    visible = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Create a list of GObject datatypes to pass to the model.
     types = []

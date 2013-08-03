@@ -355,8 +355,8 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to create Assessment Results tab.")
 
 # Create the FMEA/FMECA tab widgets for the ASSEMBLY object.
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
         (self.tvwFMECA,
          self._FMECA_col_order) = _widg.make_treeview('FMECA', 9,
                                                       self._app,
@@ -1068,7 +1068,7 @@ class Assembly:
         model = self._app.HARDWARE.model
         row = self._app.HARDWARE.selected_row
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (model.get_string_from_iter(row),
                       self._app.REVISION.revision_id)
         else:
@@ -1105,7 +1105,7 @@ class Assembly:
                                              None,
                                              self._app.ProgCnx)
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self.assembly_id, self._app.REVISION.revision_id)
         else:
             _values = (self.assembly_id, 0)
@@ -1175,27 +1175,27 @@ class Assembly:
         # Create the gtk.TreeView.
         # Retrieve the column heading text from the format file.
         path = "/root/tree[@name='Risk']/column/usertitle"
-        heading = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        heading = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Retrieve the column datatype from the format file.
         path = "/root/tree[@name='Risk']/column/datatype"
-        datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        datatype = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Retrieve the cellrenderer type from the format file.
         path = "/root/tree[@name='Risk']/column/widget"
-        widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        widget = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Retrieve the column position from the format file.
         path = "/root/tree[@name='Risk']/column/position"
-        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        position = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='Risk']/column/editable"
-        editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        editable = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='Risk']/column/visible"
-        visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[17]).xpath(path)
+        visible = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
         # Create a list of GObject datatypes to pass to the model.
         types = []
@@ -1216,8 +1216,8 @@ class Assembly:
                                                       None,
                                                       self._app.ComCnx)
 
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
 
 # Create the model and treeview.
         model = gtk.TreeStore(*gobject_types)
@@ -1341,7 +1341,7 @@ class Assembly:
             row = self._app.HARDWARE.selected_row
             path_ = model.get_string_from_iter(row)
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self._app.REVISION.revision_id, path_)
         else:
             _values = (0, path_)
@@ -1413,27 +1413,27 @@ class Assembly:
         # Create the gtk.TreeView.
         # Retrieve the column heading text from the format file.
         path = "/root/tree[@name='SIA']/column/usertitle"
-        heading = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        heading = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Retrieve the column datatype from the format file.
         path = "/root/tree[@name='SIA']/column/datatype"
-        datatype = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        datatype = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Retrieve the cellrenderer type from the format file.
         path = "/root/tree[@name='SIA']/column/widget"
-        widget = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        widget = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Retrieve the column position from the format file.
         path = "/root/tree[@name='SIA']/column/position"
-        position = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        position = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='SIA']/column/editable"
-        editable = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        editable = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='SIA']/column/visible"
-        visible = etree.parse(_conf.RELIAFREE_FORMAT_FILE[8]).xpath(path)
+        visible = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(path)
 
         # Create a list of GObject datatypes to pass to the model.
         types = []
@@ -1444,8 +1444,8 @@ class Assembly:
         gobject_types = [gobject.type_from_name(types[ix])
             for ix in range(len(types))]
 
-        bg_color = _conf.RELIAFREE_COLORS[6]
-        fg_color = _conf.RELIAFREE_COLORS[7]
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
 
         # Create the model and treeview.
         model = gtk.TreeStore(*gobject_types)
@@ -1559,7 +1559,7 @@ class Assembly:
             row = self._app.HARDWARE.selected_row
             path_ = model.get_string_from_iter(row)
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id, path_)
         else:
             values = (0, path_)
@@ -2893,19 +2893,19 @@ class Assembly:
         for i in range(n_new_assembly):
 
 # Create the default description of the assembly.
-            _descrip = str(_conf.RELIAFREE_PREFIX[4]) + ' ' + \
-                       str(_conf.RELIAFREE_PREFIX[5])
+            _descrip = str(_conf.RTK_PREFIX[4]) + ' ' + \
+                       str(_conf.RTK_PREFIX[5])
 
 # Increment the assembly index.
-            _conf.RELIAFREE_PREFIX[5] = _conf.RELIAFREE_PREFIX[5] + 1
+            _conf.RTK_PREFIX[5] = _conf.RTK_PREFIX[5] + 1
 
 # Find the revision ID.
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 _values = (self._app.REVISION.revision_id,
-                           str(_conf.RELIAFREE_PROG_INFO[3]),
+                           str(_conf.RTK_PROG_INFO[3]),
                            _parent, _descrip)
             else:
-                _values = (0, str(_conf.RELIAFREE_PROG_INFO[3]),
+                _values = (0, str(_conf.RTK_PROG_INFO[3]),
                            _parent, _descrip)
 
 # First we add the assembly to the system table.  Next we find the the ID of
@@ -2951,7 +2951,7 @@ class Assembly:
                 self._app.debug_log.error("assembly.py: Failed to retrieve new assembly ID.")
                 return True
 
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 _values = (self._app.REVISION.revision_id,
                            assembly_id)
             else:
@@ -3040,7 +3040,7 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to delete assembly from system table.")
             return True
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (self._app.REVISION.revision_id, model.get_value(row, 1))
         else:
             _values = (0, model.get_value(row, 1))
@@ -3815,7 +3815,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
 # Update the selected assembly's change descriptions with the combined change
 # description.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (summary[0], summary[1], summary[2], summary[3], \
                        summary[4], summary[5], summary[6], summary[7], \
                        self._app.REVISION.revision_id, self.assembly_id)
@@ -3887,7 +3887,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
 # Update the selected assembly's change descriptions with the combined change
 # description.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             _values = (summary[0], summary[1], summary[2], summary[3], \
                        summary[4], summary[5], summary[6], summary[7], \
                        sums[0][0], sums[0][1], sums[0][2], sums[0][3], \

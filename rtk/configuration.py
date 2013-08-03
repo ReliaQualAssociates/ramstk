@@ -60,19 +60,19 @@ LOG_DIR = ''
 #    Position 03: Hardware Tree formatting.
 #    Position 04: Validation Tree formatting.
 #    Position 05: Reliability Growth Tree formatting.
-#    Position 06: Field Incidents Tree formatting.
+#    Position 06: Field Incidents List formatting.
 #    Position 07: Parts List formatting.
 #    Position 08: Similar Item Analysis formatting.
 #    Position 09: FMECA worksheet formatting.
-#    Position 10: Failure Modes List formatting.
+#    Position 10:  formatting.
 #    Position 11: Test Planning List formatting.
-#    Position 12: Failure Mechanisms List formatting.
-#    Position 13: Reliability Growth Incident List formatting.
-#    Position 14: Field Incident List formatting.
+#    Position 12:  formatting.
+#    Position 13:  formatting.
+#    Position 14:  formatting.
 #    Position 15: Software Tree formatting.
 #    Position 16: Dataset Tree formatting.
 #    Position 17: Risk Analysis formatting.
-RELIAFREE_FORMAT_FILE = []
+RTK_FORMAT_FILE = []
 
 # Global list containing the colors to use for various widgets.
 #
@@ -99,7 +99,7 @@ RELIAFREE_FORMAT_FILE = []
 #    Position 18: Tagged Part row background color
 #    Position 19: Tagged Part row foreground color
 #    Position 20: Part with no failure rate model row foreground color
-RELIAFREE_COLORS = []
+RTK_COLORS = []
 
 # Global variable list to house information about the prefix and next index
 # to use when adding new revisions, functions, assemblies, parts,
@@ -123,7 +123,7 @@ RELIAFREE_COLORS = []
 #    Position 15: Next FMECA cause index
 #    Position 16: Software prefix
 #    Position 17: Next Software prefix
-RELIAFREE_PREFIX = []
+RTK_PREFIX = []
 
 # Global list to house information about the active modules.
 #    1 = active, 0 = inactive.
@@ -141,7 +141,7 @@ RELIAFREE_PREFIX = []
 #    Position 10: Survival Analysis module status
 #    Position 11: RBD module status
 #    Position 12: FTA module status
-RELIAFREE_MODULES = []
+RTK_MODULES = []
 RTK_PAGE_NUMBER = []
 
 # Global list for MySQL or SQLite3 connection information to the common
@@ -152,7 +152,7 @@ RTK_PAGE_NUMBER = []
 #    Position 02: Database name
 #    Position 03: User name
 #    Position 04: User password
-RELIAFREE_COM_INFO = []
+RTK_COM_INFO = []
 
 # Global list for MySQL or SQLite3 connection information to the Program
 # database.
@@ -162,7 +162,7 @@ RELIAFREE_COM_INFO = []
 #    Position 02: Database name
 #    Position 03: User name
 #    Position 04: User password
-RELIAFREE_PROG_INFO = []
+RTK_PROG_INFO = []
 
 # Variables to hold the backend database type for the program and common
 # database.
@@ -272,19 +272,19 @@ class RTKConf:
             config = ConfigParser.ConfigParser()
 
             if(basename(self._conf_file) == 'site.conf'):
-                dialog = _widg.make_dialog("RTK common database information...")
+                dialog = _widg.make_dialog(_(u"RTK common database information..."))
 
                 fixed = _widg.make_fixed()
 
                 y_pos = 10
-                label = _widg.make_label("RTK common database host name:",
+                label = _widg.make_label(_(u"RTK common database host name:"),
                                          width=340)
                 txtDBHost = _widg.make_entry()
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBHost, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RTK common database socket:",
+                label = _widg.make_label(_(u"RTK common database socket:"),
                                          width=340)
                 txtDBSocket = _widg.make_entry()
                 txtDBSocket.set_text("3306")
@@ -292,7 +292,7 @@ class RTKConf:
                 fixed.put(txtDBSocket, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RTK common database name:",
+                label = _widg.make_label(_(u"RTK common database name:"),
                                          width=340)
                 txtDBName = _widg.make_entry()
                 txtDBName.set_text("RTKcom")
@@ -300,7 +300,7 @@ class RTKConf:
                 fixed.put(txtDBName, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RTK common database user name:",
+                label = _widg.make_label(_(u"RTK common database user name:"),
                                          width=340)
                 txtDBUser = _widg.make_entry()
                 txtDBUser.set_text("RTKcom")
@@ -308,7 +308,7 @@ class RTKConf:
                 fixed.put(txtDBUser, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RTK common database password:",
+                label = _widg.make_label(_(u"RTK common database password:"),
                                          width=340)
                 txtDBPassword = _widg.make_entry()
                 txtDBPassword.set_invisible_char("*")
@@ -318,7 +318,7 @@ class RTKConf:
                 fixed.put(txtDBPassword, 345, y_pos)
                 y_pos += 30
 
-                label = _widg.make_label("RTK common database type:",
+                label = _widg.make_label(_(u"RTK common database type:"),
                                          width=340)
                 cmbDBType = _widg.make_combo()
                 _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
@@ -350,6 +350,7 @@ class RTKConf:
                 config.set('Modules', 'maintainability', 'True')
                 config.set('Modules', 'maintenance', 'True')
                 config.set('Modules', 'fraca', 'True')
+
                 config.add_section('Backend')
                 config.set('Backend', 'host', RTKcomlist[0])
                 config.set('Backend', 'socket', RTKcomlist[1])
@@ -386,24 +387,19 @@ class RTKConf:
                 config.set('Directories', 'logdir', 'log')
 
                 config.add_section('Files')
-                config.set('Files', 'revisionformat', 'revision_format.xml')
-                config.set('Files', 'functionformat', 'function_format.xml')
-                config.set('Files', 'requirementformat', 'requirement_format.xml')
-                config.set('Files', 'hardwareformat', 'hardware_format.xml')
-                config.set('Files', 'validationformat', 'validation_format.xml')
-                config.set('Files', 'rgformat', 'rg_format.xml')
-                config.set('Files', 'fracaformat', 'fraca_format.xml')
-                config.set('Files', 'partformat', 'part_format.xml')
-                config.set('Files', 'rgincidentformat', 'rgincident_format.xml')
-                config.set('Files', 'incidentformat', 'incident_format.xml')
-                config.set('Files', 'siaformat', 'sia_format.xml')
-                config.set('Files', 'fmecaformat', 'fmeca_format.xml')
-                config.set('Files', 'modeformat', 'mode_format.xml')
-                config.set('Files', 'testformat', 'testing_format.xml')
-                config.set('Files', 'mechanismformat', 'mechanism_format.xml')
-                config.set('Files', 'softwareformat', 'software_format.xml')
                 config.set('Files', 'datasetformat', 'dataset_format.xml')
+                config.set('Files', 'fmecaformat', 'fmeca_format.xml')
+                config.set('Files', 'functionformat', 'function_format.xml')
+                config.set('Files', 'hardwareformat', 'hardware_format.xml')
+                config.set('Files', 'incidentformat', 'incident_format.xml')
+                config.set('Files', 'partformat', 'part_format.xml')
+                config.set('Files', 'requirementformat', 'requirement_format.xml')
+                config.set('Files', 'revisionformat', 'revision_format.xml')
                 config.set('Files', 'riskformat', 'risk_format.xml')
+                config.set('Files', 'siaformat', 'sia_format.xml')
+                config.set('Files', 'softwareformat', 'software_format.xml')
+                config.set('Files', 'testformat', 'testing_format.xml')
+                config.set('Files', 'validationformat', 'validation_format.xml')
 
                 config.add_section('Colors')
                 config.set('Colors', 'revisionbg', '#FFFFFF')
@@ -477,11 +473,11 @@ class RTKConf:
 
             config.add_section('Backend')
             config.set('Backend', 'type', BACKEND)
-            config.set('Backend', 'host', RELIAFREE_PROG_INFO[0])
-            config.set('Backend', 'socket', RELIAFREE_PROG_INFO[1])
+            config.set('Backend', 'host', RTK_PROG_INFO[0])
+            config.set('Backend', 'socket', RTK_PROG_INFO[1])
             config.set('Backend', 'database', '')
-            config.set('Backend', 'user', RELIAFREE_PROG_INFO[3])
-            config.set('Backend', 'password', RELIAFREE_PROG_INFO[4])
+            config.set('Backend', 'user', RTK_PROG_INFO[3])
+            config.set('Backend', 'password', RTK_PROG_INFO[4])
 
             config.add_section('Directories')
             config.set('Directories', 'datadir', 'data')
@@ -509,24 +505,24 @@ class RTKConf:
 #          12           Failure Mechanisms List
 # =========================================================================== #
             config.add_section('Files')
-            config.set('Files', 'revisionformat', path.basename(RELIAFREE_FORMAT_FILE[0]))
-            config.set('Files', 'functionformat', path.basename(RELIAFREE_FORMAT_FILE[1]))
-            config.set('Files', 'requirementformat', path.basename(RELIAFREE_FORMAT_FILE[2]))
-            config.set('Files', 'hardwareformat', path.basename(RELIAFREE_FORMAT_FILE[3]))
-            config.set('Files', 'validationformat', path.basename(RELIAFREE_FORMAT_FILE[4]))
-            config.set('Files', 'rgformat', path.basename(RELIAFREE_FORMAT_FILE[5]))
-            config.set('Files', 'fracaformat', path.basename(RELIAFREE_FORMAT_FILE[6]))
-            config.set('Files', 'partformat', path.basename(RELIAFREE_FORMAT_FILE[7]))
-            config.set('Files', 'siaformat', path.basename(RELIAFREE_FORMAT_FILE[8]))
-            config.set('Files', 'fmecaformat', path.basename(RELIAFREE_FORMAT_FILE[9]))
-            config.set('Files', 'modeformat', path.basename(RELIAFREE_FORMAT_FILE[10]))
-            config.set('Files', 'testformat', path.basename(RELIAFREE_FORMAT_FILE[11]))
-            config.set('Files', 'mechanismformat', path.basename(RELIAFREE_FORMAT_FILE[12]))
-            config.set('Files', 'rgincidentformat', path.basename(RELIAFREE_FORMAT_FILE[13]))
-            config.set('Files', 'incidentformat', path.basename(RELIAFREE_FORMAT_FILE[14]))
-            config.set('Files', 'softwareformat', path.basename(RELIAFREE_FORMAT_FILE[15]))
-            config.set('Files', 'datasetformat', path.basename(RELIAFREE_FORMAT_FILE[16]))
-            config.set('Files', 'riskformat', path.basename(RELIAFREE_FORMAT_FILE[17]))
+            config.set('Files', 'revisionformat', path.basename(RTK_FORMAT_FILE[0]))
+            config.set('Files', 'functionformat', path.basename(RTK_FORMAT_FILE[1]))
+            config.set('Files', 'requirementformat', path.basename(RTK_FORMAT_FILE[2]))
+            config.set('Files', 'hardwareformat', path.basename(RTK_FORMAT_FILE[3]))
+            config.set('Files', 'validationformat', path.basename(RTK_FORMAT_FILE[4]))
+            config.set('Files', 'rgformat', path.basename(RTK_FORMAT_FILE[5]))
+            config.set('Files', 'fracaformat', path.basename(RTK_FORMAT_FILE[6]))
+            config.set('Files', 'partformat', path.basename(RTK_FORMAT_FILE[7]))
+            config.set('Files', 'siaformat', path.basename(RTK_FORMAT_FILE[8]))
+            config.set('Files', 'fmecaformat', path.basename(RTK_FORMAT_FILE[9]))
+            config.set('Files', 'modeformat', path.basename(RTK_FORMAT_FILE[10]))
+            config.set('Files', 'testformat', path.basename(RTK_FORMAT_FILE[11]))
+            config.set('Files', 'mechanismformat', path.basename(RTK_FORMAT_FILE[12]))
+            config.set('Files', 'rgincidentformat', path.basename(RTK_FORMAT_FILE[13]))
+            config.set('Files', 'incidentformat', path.basename(RTK_FORMAT_FILE[14]))
+            config.set('Files', 'softwareformat', path.basename(RTK_FORMAT_FILE[15]))
+            config.set('Files', 'datasetformat', path.basename(RTK_FORMAT_FILE[16]))
+            config.set('Files', 'riskformat', path.basename(RTK_FORMAT_FILE[17]))
 
 # =========================================================================== #
 # The following write to the Colors section.  This is the section containing
@@ -557,27 +553,27 @@ class RTKConf:
 #          20           Part with no failure rate model row foreground color
 # =========================================================================== #
             config.add_section('Colors')
-            config.set('Colors', 'revisionbg', RELIAFREE_COLORS[0])
-            config.set('Colors', 'revisionfg', RELIAFREE_COLORS[1])
-            config.set('Colors', 'functionbg', RELIAFREE_COLORS[2])
-            config.set('Colors', 'functionfg', RELIAFREE_COLORS[3])
-            config.set('Colors', 'requirementbg', RELIAFREE_COLORS[4])
-            config.set('Colors', 'requirementfg', RELIAFREE_COLORS[5])
-            config.set('Colors', 'assemblybg', RELIAFREE_COLORS[6])
-            config.set('Colors', 'assemblyfg', RELIAFREE_COLORS[7])
-            config.set('Colors', 'validationbg', RELIAFREE_COLORS[8])
-            config.set('Colors', 'validationfg', RELIAFREE_COLORS[9])
-            config.set('Colors', 'rgbg', RELIAFREE_COLORS[10])
-            config.set('Colors', 'rgfg', RELIAFREE_COLORS[11])
-            config.set('Colors', 'fracabg', RELIAFREE_COLORS[12])
-            config.set('Colors', 'fracafg', RELIAFREE_COLORS[13])
-            config.set('Colors', 'partbg', RELIAFREE_COLORS[14])
-            config.set('Colors', 'partfg', RELIAFREE_COLORS[15])
-            config.set('Colors', 'overstressbg', RELIAFREE_COLORS[16])
-            config.set('Colors', 'overstressfg', RELIAFREE_COLORS[17])
-            config.set('Colors', 'taggedbg', RELIAFREE_COLORS[18])
-            config.set('Colors', 'taggedfg', RELIAFREE_COLORS[19])
-            config.set('Colors', 'nofrmodelfg', RELIAFREE_COLORS[20])
+            config.set('Colors', 'revisionbg', RTK_COLORS[0])
+            config.set('Colors', 'revisionfg', RTK_COLORS[1])
+            config.set('Colors', 'functionbg', RTK_COLORS[2])
+            config.set('Colors', 'functionfg', RTK_COLORS[3])
+            config.set('Colors', 'requirementbg', RTK_COLORS[4])
+            config.set('Colors', 'requirementfg', RTK_COLORS[5])
+            config.set('Colors', 'assemblybg', RTK_COLORS[6])
+            config.set('Colors', 'assemblyfg', RTK_COLORS[7])
+            config.set('Colors', 'validationbg', RTK_COLORS[8])
+            config.set('Colors', 'validationfg', RTK_COLORS[9])
+            config.set('Colors', 'rgbg', RTK_COLORS[10])
+            config.set('Colors', 'rgfg', RTK_COLORS[11])
+            config.set('Colors', 'fracabg', RTK_COLORS[12])
+            config.set('Colors', 'fracafg', RTK_COLORS[13])
+            config.set('Colors', 'partbg', RTK_COLORS[14])
+            config.set('Colors', 'partfg', RTK_COLORS[15])
+            config.set('Colors', 'overstressbg', RTK_COLORS[16])
+            config.set('Colors', 'overstressfg', RTK_COLORS[17])
+            config.set('Colors', 'taggedbg', RTK_COLORS[18])
+            config.set('Colors', 'taggedfg', RTK_COLORS[19])
+            config.set('Colors', 'nofrmodelfg', RTK_COLORS[20])
 
             try:
                 parser = open(self._conf_file,'w')

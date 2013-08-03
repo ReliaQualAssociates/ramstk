@@ -1750,6 +1750,11 @@ class Dataset:
             self.vbxPlot2.pack_start(self.pltPlot2)
             #self.vbxPlot2.pack_start(self.pltPlot4)
 
+# Assign the cumulative MTBF for display.
+            MTBF = nonpar[n_failures - 1][10]
+            MTBFLL = nonpar[n_failures - 1][11]
+            MTBFUL = nonpar[n_failures - 1][12]
+
             self.txtChiSq.set_text(str(fmt.format(_chisq_)))
             self.txtZLPNorm.set_text(str(fmt.format(_z_norm_)))
             self.txtZLRNorm.set_text(str(fmt.format(_z_norm_)))
@@ -2722,8 +2727,8 @@ class Dataset:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[12]
-        fg_color = _conf.RELIAFREE_COLORS[13]
+        bg_color = _conf.RTK_COLORS[12]
+        fg_color = _conf.RTK_COLORS[13]
         (self.treeview, self._col_order) = _widg.make_treeview('Dataset', 16,
                                                                self._app,
                                                                None,
@@ -2748,7 +2753,7 @@ class Dataset:
         information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)

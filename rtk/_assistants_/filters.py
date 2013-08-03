@@ -609,7 +609,7 @@ class FilterIncident:
         _compound.append(self.cmbCompound23.get_active_text())
 
 # Build the query from the user-provided inputs.
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             query = "SELECT * FROM tbl_incident \
                      WHERE fld_revision_id=%d AND " % \
             self._app.REVISION.revision_id

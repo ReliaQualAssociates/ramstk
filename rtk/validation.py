@@ -624,8 +624,8 @@ class Validation:
         """
 
         scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RELIAFREE_COLORS[8]
-        fg_color = _conf.RELIAFREE_COLORS[9]
+        bg_color = _conf.RTK_COLORS[8]
+        fg_color = _conf.RTK_COLORS[9]
         (self.treeview, self._col_order) = _widg.make_treeview('Validation', 4,
                                                                self._app,
                                                                None,
@@ -648,7 +648,7 @@ class Validation:
         information can be stored either in a MySQL or SQLite3 database.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             values = (self._app.REVISION.revision_id,)
         else:
             values = (0,)
@@ -779,7 +779,7 @@ class Validation:
             _revision = self.model.get_value(self.selected_row, 0)
             _assembly = self.model.get_value(self.selected_row, 2)
         else:
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 _revision = self._app.REVISION.revision_id
             else:
                 _revision = 0

@@ -148,7 +148,7 @@ class TreeWindow(gtk.Window):
         active for the project being opened.
         """
 
-        if(_conf.RELIAFREE_MODULES[0] == 1):
+        if(_conf.RTK_MODULES[0] == 1):
             label = gtk.Label()
             _heading = _("Revisions")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -161,7 +161,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.REVISION.load_tree()
 
-        if(_conf.RELIAFREE_MODULES[2] == 1):
+        if(_conf.RTK_MODULES[2] == 1):
             label = gtk.Label()
             _heading = _(u"Functions")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -174,7 +174,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.FUNCTION.load_tree()
 
-        if(_conf.RELIAFREE_MODULES[1] == 1):
+        if(_conf.RTK_MODULES[1] == 1):
             label = gtk.Label()
             _heading = _(u"Requirements")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -187,7 +187,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.REQUIREMENT.load_tree()
 
-        if(_conf.RELIAFREE_MODULES[3] == 1):
+        if(_conf.RTK_MODULES[3] == 1):
             label = gtk.Label()
             _heading = _(u"Hardware")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -200,7 +200,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.HARDWARE.load_tree()
 
-        if(_conf.RELIAFREE_MODULES[4] == 1):
+        if(_conf.RTK_MODULES[4] == 1):
             label = gtk.Label()
             _heading = _(u"Software")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -213,7 +213,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.SOFTWARE.load_tree()
 
-        if(_conf.RELIAFREE_MODULES[5] == 1):
+        if(_conf.RTK_MODULES[5] == 1):
             label = gtk.Label()
             _heading = _(u"V &amp; V Tasks")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -225,7 +225,7 @@ class TreeWindow(gtk.Window):
                                       tab_label=label,
                                       position=-1)
 
-        if(_conf.RELIAFREE_MODULES[6] == 1):
+        if(_conf.RTK_MODULES[6] == 1):
             label = gtk.Label()
             _heading = _(u"Reliability\nTesting")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -238,12 +238,12 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.TESTING.load_tree()
 
-        #if(_conf.RELIAFREE_MODULES[7] == 1):
+        #if(_conf.RTK_MODULES[7] == 1):
             #label = gtk.Label(_("Maintenance Analysis"))
             #label.set_tooltip_text(_("Displays the system maintenance packages."))
             #self.notebook.insert_page(scrollwindow, tab_label=label, position=-1)
 
-        if(_conf.RELIAFREE_MODULES[8] == 1):
+        if(_conf.RTK_MODULES[8] == 1):
             label = gtk.Label()
             _heading = _(u"Program\nIncidents")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -255,7 +255,7 @@ class TreeWindow(gtk.Window):
 
             # Find the current revision if using the revision module, otherwise
             # set this to the default value.
-            if(_conf.RELIAFREE_MODULES[0] == 1):
+            if(_conf.RTK_MODULES[0] == 1):
                 values = (self._app.REVISION.revision_id,)
             else:
                 values = (0, )
@@ -274,7 +274,7 @@ class TreeWindow(gtk.Window):
             _app.INCIDENT.load_tree(query, values)
 
         # TODO: Add index to RTK_MODULES array for data sets.
-        if(_conf.RELIAFREE_MODULES[8] == 1):
+        if(_conf.RTK_MODULES[8] == 1):
             label = gtk.Label()
             _heading = _("Survival\nAnalyses")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
@@ -286,18 +286,18 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.DATASET.load_tree()
 
-        #if(_conf.RELIAFREE_MODULES[9] == 1):
+        #if(_conf.RTK_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
             # and hardware.
 
-        #if(_conf.RELIAFREE_MODULES[10] == 1):
+        #if(_conf.RTK_MODULES[10] == 1):
             # This determines whether the Maintainability analysis will be
             # available for hardware.
 
-        #if(_conf.RELIAFREE_MODULES[11] == 1):
+        #if(_conf.RTK_MODULES[11] == 1):
             # This determines whether RBDs are active.
 
-        #if(_conf.RELIAFREE_MODULES[12] == 1):
+        #if(_conf.RTK_MODULES[12] == 1):
             # This determines whether FTAs are active.
 
 
@@ -797,7 +797,7 @@ class TreeWindow(gtk.Window):
         button -- the toolbar button that called this function.
         """
 
-        if(_conf.RELIAFREE_PROG_INFO[2] == ''):
+        if(_conf.RTK_PROG_INFO[2] == ''):
             _util.application_error(_("There is no active RTK Project.  You must open a Project before importing data."),
                                     _image_='warning')
             return True

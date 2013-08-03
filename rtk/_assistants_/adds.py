@@ -1239,7 +1239,7 @@ class CreateDataSet:
 
 # Load the dataset gtk.TreeView with the newly created dataset.
         self._app.DATASET.load_tree()
-        _page = sum(_conf.RELIAFREE_MODULES[:11])
+        _page = sum(_conf.RTK_MODULES[:11])
         self._app.winTree.notebook.set_current_page(_page - 1)
 
         return False
