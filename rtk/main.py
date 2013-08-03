@@ -130,7 +130,12 @@ class RTK:
 # Read the license file and compare to the product key in the site database.
 # If they are not equal, quit the application.
         _license_file = _conf.DATA_DIR + '/license.key'
-        _license_file = open(_license_file, 'r')
+        try:
+            _license_file = open(_license_file, 'r')
+        except IOError:
+            _util.application_error(_(u"Cannot find your license file in %s.  If your license file is elsewhere, please place it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
+            quit()
+
         _license_key = _license_file.readline().rstrip('\n')
         _license_file.close()
 

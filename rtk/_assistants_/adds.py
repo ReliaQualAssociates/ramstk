@@ -36,8 +36,12 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import rtk.configuration as _conf
-import rtk.widgets as _widg
+try:
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
+except ImportError:
+    import configuration as _conf
+    import widgets as _widg
 
 # Add localization support.
 import locale
