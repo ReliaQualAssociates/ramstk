@@ -12,6 +12,9 @@
 # RTK specific files to ignore
 Notes
 workbook_mockup.glade
+code.counts
+html
+pylintout
 *.xls*
 *.log
 *.txt

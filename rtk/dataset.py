@@ -343,6 +343,8 @@ class Dataset:
 
         toolbar = gtk.Toolbar()
 
+        _pos = 0
+
 # Add record button.
         button = gtk.ToolButton()
         image = gtk.Image()
@@ -351,7 +353,8 @@ class Dataset:
         button.set_name('Add')
         button.connect('clicked', self._record_add)
         button.set_tooltip_text(_(u"Adds a record to the selected data set."))
-        toolbar.insert(button, 0)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Remove record button.
         button = gtk.ToolButton()
@@ -361,7 +364,8 @@ class Dataset:
         button.set_name('Remove')
         button.connect('clicked', self._record_remove)
         button.set_tooltip_text(_(u"Removes the selected record from the data set."))
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Calculate button.
         button = gtk.ToolButton()
@@ -371,17 +375,8 @@ class Dataset:
         button.set_name('Calculate')
         button.connect('clicked', self._calculate)
         button.set_tooltip_text(_(u"Analyzes the selected data set."))
-        toolbar.insert(button, 2)
-
-# Bathtub search button.
-        button = gtk.ToolButton()
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/eyes.png')
-        button.set_icon_widget(image)
-        button.set_name('Bathtub Search')
-        button.connect('clicked', self._calculate)
-        button.set_tooltip_text(_(u"Searches the selected data set for transition points."))
-        toolbar.insert(button, 3)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Save button.
         button = gtk.ToolButton()
@@ -391,7 +386,8 @@ class Dataset:
         button.set_name('Save')
         button.connect('clicked', self.dataset_save)
         button.set_tooltip_text(_(u"Saves the selected data set."))
-        toolbar.insert(button, 4)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Assign results to affected assembly.
         button = gtk.ToolButton()
@@ -401,7 +397,8 @@ class Dataset:
         button.set_name('Assign')
         button.connect('clicked', AssignMTBFResults, self._app)
         button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
-        toolbar.insert(button, 5)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
         toolbar.show()
 
@@ -1435,53 +1432,6 @@ class Dataset:
         _text = [u"", u"", u""]
 
 # =========================================================================== #
-# Perform the 'bathtub search.'  This is a search for the minimum and/or
-# maximum times at which the values of the Weibull scale and shape parameters
-# begin to differ by a given amount.
-# =========================================================================== #
-        if(button.get_name() == 'Bathtub Search'):
-            (scale, deltascale,
-             shape, deltashape,
-             times) = _calc.bathtub_filter(results, _starttime_,
-                                           _reltime_, _step_)
-
-# Plot the estimated eta value versus starting time.
-            __title__ = _(u"Percent Change in Eta")
-            self._load_plot(self.axAxis1, self.pltPlot1,
-                            x=times, y1=deltascale,
-                            _title_=__title__,
-                            _xlab_=_(u"Start Time (t0)"),
-                            _ylab_=_(u"% Change in Eta"),
-                            _type_=[2],
-                            _marker_=['g-'])
-
-# Plot the estimated beta value versus starting time.
-            __title__ = _(u"Percent Change in Beta")
-            self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=times, y1=deltashape,
-                            _title_=__title__,
-                            _xlab_=_(u"Start Time (t0)"),
-                            _ylab_=_(u"% Change in Beta "),
-                            _type_=[2],
-                            _marker_=['g-'])
-
-# Plot the change in the Weibull scale parameter (eta) as a function of
-# minimum and/or maximum operating times.
-            for plot in self.vbxPlot1.get_children():
-                self.vbxPlot1.remove(plot)
-
-            self.vbxPlot1.pack_start(self.pltPlot1)
-
-# Plot the change in the Weibull shape parameter (beta) as a function of
-# minimum and/or maximum operating times.
-            for plot in self.vbxPlot2.get_children():
-                self.vbxPlot2.remove(plot)
-
-            self.vbxPlot2.pack_start(self.pltPlot2)
-
-            return False
-
-# =========================================================================== #
 # Perform Nelson's mean cumulative function analysis.
 # =========================================================================== #
         if(_analysis_ == 1):                # MCF
@@ -1960,6 +1910,36 @@ class Dataset:
             label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
             column.set_widget(label)
 
+            column = self.tvwNonParResults.get_column(8)
+            o
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(9)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nLower Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(10)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nUpper Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(11)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(12)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nLower Bound</span>"))
+            column.set_widget(label)
+
+            column = self.tvwNonParResults.get_column(13)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nUpper Bound</span>"))
+            column.set_widget(label)
 # Plot the survival curve with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=Shat,
