@@ -55,6 +55,7 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
+from _assistants_.adds import AddDatasetRecord
 from _assistants_.updates import AssignMTBFResults
 
 # Add localization support.
@@ -384,8 +385,8 @@ class Dataset:
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
         button.set_name('Save')
-        button.connect('clicked', self.dataset_save)
-        button.set_tooltip_text(_(u"Saves the selected data set."))
+        button.connect('clicked', self._survival_data_save)
+        button.set_tooltip_text(_(u"Saves the selected data set records."))
         toolbar.insert(button, _pos)
         _pos += 1
 
@@ -465,18 +466,20 @@ class Dataset:
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('visible', 0)
+        cell.set_property('visible', 1)
+        cell.set_property('background', 'gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Record\nID"))
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
-        column.set_visible(0)
+        column.set_visible(1)
         self.tvwDataset.append_column(column)
 
         cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
+        cell.set_property('editable', 1)
         cell.set_property('background', 'white')
+        cell.connect('edited', self._callback_entry_cell, 1, 'text')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Affected\nUnit"))
         column.set_widget(label)
@@ -488,6 +491,7 @@ class Dataset:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 1)
         cell.set_property('background', 'white')
+        cell.connect('edited', self._callback_entry_cell, 2, 'float')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Left"))
         column.set_widget(label)
@@ -499,6 +503,7 @@ class Dataset:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 1)
         cell.set_property('background', 'white')
+        cell.connect('edited', self._callback_entry_cell, 3, 'float')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Right"))
         column.set_widget(label)
@@ -538,7 +543,7 @@ class Dataset:
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwDataset)
+        scrollwindow.add(self.tvwDataset)
 
         hbox.pack_start(scrollwindow, True, True)
 
@@ -1286,7 +1291,37 @@ class Dataset:
 
         return False
 
-    def _record_add(self):
+    def _record_add(self, button):
+        """
+        Method to add a record to the selected survival analysis dataset.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this method.
+        """
+
+        model = self.tvwDataset.get_model()
+        model.append()
+
+# Find the assembly the dataset is associated with.
+        _assembly_id = self.model.get_value(self.selected_row, 1)
+
+# Find the maximum record ID for the selected dataset.
+        _query = "SELECT MAX(fld_record_id) \
+                  FROM tbl_survival_data \
+                  WHERE fld_dataset_id=%d" % self.dataset_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx,
+                                              False)
+
+        _values = (_results[0][0] + 1, self.dataset_id, _assembly_id)
+        _query = "INSERT INTO tbl_survival_data \
+                  (fld_record_id, fld_dataset_id, fld_assembly_id) \
+                  VALUES (%d, %d, %d)" % _values
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx,
+                                              True)
 
         return False
 
@@ -1655,6 +1690,11 @@ class Dataset:
             label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nUpper Bound</span>"))
             column.set_widget(label)
 
+# Show the extra columns used for the MCF results.
+            for i in range(8,14):
+                column = self.tvwNonParResults.get_column(i)
+                column.set_visible(True)
+
 # Plot the mean cumulative function with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
                             y2=muhatll, y3=muhatul,
@@ -1872,7 +1912,8 @@ class Dataset:
                 _data_ = [str(nonpar[1][i]), int(nonpar[2][i]),
                           int(nonpar[3][i]), float(nonpar[5][i]),
                           float(nonpar[7][i]), float(nonpar[5][i]),
-                          float(nonpar[8][i]), float(nonpar[9][i])]
+                          float(nonpar[8][i]), float(nonpar[9][i]),
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
                 model.append(_data_)
 
             column = self.tvwNonParResults.get_column(1)
@@ -1910,36 +1951,11 @@ class Dataset:
             label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
             column.set_widget(label)
 
-            column = self.tvwNonParResults.get_column(8)
-            o
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF</span>"))
-            column.set_widget(label)
+# Hide the unused columns.
+            for i in range(8,14):
+                column = self.tvwNonParResults.get_column(i)
+                column.set_visible(False)
 
-            column = self.tvwNonParResults.get_column(9)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nLower Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(10)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nUpper Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(11)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(12)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nLower Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(13)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nUpper Bound</span>"))
-            column.set_widget(label)
 # Plot the survival curve with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1,
                             x=times, y1=Shat,
@@ -2398,36 +2414,17 @@ class Dataset:
 
         return False
 
-    def _save_survival_record(self, model, path, row):
+    def _survival_data_save(self, button):
         """
-        Saves each of the survival data records that comprise the selected
-        DATASET to the RTK Program MySQL or SQLite3 database.
+        Method to save the Dataset records gtk.TreeView information to the
+        Program's MySQL or SQLite3 database.
 
         Keyword Arguments:
-        model -- the DATASET tvwDataset gtk.ListStore.
-        path_ -- the path of the active row in the DATASET gtk.ListStore.
-        row   -- the selected row in the DATASET gtk.TreeView.
+        button -- the gtk.Button widget that called this function.
         """
 
-        values = (model.get_value(row, 1), model.get_value(row, 2),
-                  model.get_value(row, 3), model.get_value(row, 4),
-                  model.get_value(row, 0))
-
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_survival_data \
-                     SET fld_unit='%s', fld_left_interval=%f, \
-                         fld_right_interval=%f, fld_status=%d \
-                     WHERE fld_record_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_survival_data \
-                     SET fld_unit=?, fld_left_interval=?, \
-                         fld_right_interval=?, fld_status=? \
-                     WHERE fld_record_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        model = self.tvwDataset.get_model()
+        model.foreach(self._save_survival_record)
 
         return False
 
@@ -2442,87 +2439,94 @@ class Dataset:
         row   -- the selected row in the DATASET gtk.TreeView.
         """
 
-        values = (self.model.get_value(self.selected_row, 1), \
-                  self.model.get_value(self.selected_row, 2), \
-                  self.model.get_value(self.selected_row, 3), \
-                  self.model.get_value(self.selected_row, 4), \
-                  self.model.get_value(self.selected_row, 5), \
-                  self.model.get_value(self.selected_row, 6), \
-                  self.model.get_value(self.selected_row, 7), \
-                  self.model.get_value(self.selected_row, 8), \
-                  self.model.get_value(self.selected_row, 9), \
-                  self.model.get_value(self.selected_row, 10), \
-                  self.model.get_value(self.selected_row, 11), \
-                  self.model.get_value(self.selected_row, 12), \
-                  self.model.get_value(self.selected_row, 13), \
-                  self.model.get_value(self.selected_row, 14), \
-                  self.model.get_value(self.selected_row, 15), \
-                  self.model.get_value(self.selected_row, 16), \
-                  self.model.get_value(self.selected_row, 17), \
-                  self.model.get_value(self.selected_row, 18), \
-                  self.model.get_value(self.selected_row, 19), \
-                  self.model.get_value(self.selected_row, 20), \
-                  self.model.get_value(self.selected_row, 21), \
-                  self.model.get_value(self.selected_row, 22), \
-                  self.model.get_value(self.selected_row, 23), \
-                  self.model.get_value(self.selected_row, 24), \
-                  self.model.get_value(self.selected_row, 25), \
-                  self.model.get_value(self.selected_row, 26), \
-                  self.model.get_value(self.selected_row, 27), \
-                  self.model.get_value(self.selected_row, 28), \
-                  self.model.get_value(self.selected_row, 29), \
-                  self.model.get_value(self.selected_row, 30), \
-                  self.model.get_value(self.selected_row, 31), \
-                  self.model.get_value(self.selected_row, 32), \
-                  self.model.get_value(self.selected_row, 33), \
-                  self.model.get_value(self.selected_row, 34), \
-                  self.model.get_value(self.selected_row, 0))
+        _values = (self.model.get_value(self.selected_row, 1), \
+                   self.model.get_value(self.selected_row, 2), \
+                   self.model.get_value(self.selected_row, 3), \
+                   self.model.get_value(self.selected_row, 4), \
+                   self.model.get_value(self.selected_row, 5), \
+                   self.model.get_value(self.selected_row, 6), \
+                   self.model.get_value(self.selected_row, 7), \
+                   self.model.get_value(self.selected_row, 8), \
+                   self.model.get_value(self.selected_row, 9), \
+                   self.model.get_value(self.selected_row, 10), \
+                   self.model.get_value(self.selected_row, 11), \
+                   self.model.get_value(self.selected_row, 12), \
+                   self.model.get_value(self.selected_row, 13), \
+                   self.model.get_value(self.selected_row, 14), \
+                   self.model.get_value(self.selected_row, 15), \
+                   self.model.get_value(self.selected_row, 16), \
+                   self.model.get_value(self.selected_row, 17), \
+                   self.model.get_value(self.selected_row, 18), \
+                   self.model.get_value(self.selected_row, 19), \
+                   self.model.get_value(self.selected_row, 20), \
+                   self.model.get_value(self.selected_row, 21), \
+                   self.model.get_value(self.selected_row, 22), \
+                   self.model.get_value(self.selected_row, 23), \
+                   self.model.get_value(self.selected_row, 24), \
+                   self.model.get_value(self.selected_row, 25), \
+                   self.model.get_value(self.selected_row, 26), \
+                   self.model.get_value(self.selected_row, 27), \
+                   self.model.get_value(self.selected_row, 28), \
+                   self.model.get_value(self.selected_row, 29), \
+                   self.model.get_value(self.selected_row, 30), \
+                   self.model.get_value(self.selected_row, 31), \
+                   self.model.get_value(self.selected_row, 32), \
+                   self.model.get_value(self.selected_row, 33), \
+                   self.model.get_value(self.selected_row, 34), \
+                   self.model.get_value(self.selected_row, 0))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_dataset \
-                     SET fld_assembly_id=%d, fld_description='%s', \
-                         fld_source=%d, fld_distribution_id=%d, \
-                         fld_confidence=%f, fld_confidence_type=%d, \
-                         fld_confidence_method=%d, fld_fit_method=%d, \
-                         fld_rel_time=%f, fld_num_rel_points=%d, \
-                         fld_num_suspension=%d, fld_num_failures=%d, \
-                         fld_scale=%f, fld_scale_ll=%f, fld_scale_ul=%f, \
-                         fld_shape=%f, fld_shape_ll=%f, fld_shape_ul=%f, \
-                         fld_location=%f, fld_location_ll=%f, \
-                         fld_location_ul=%f, fld_variance_1=%f, \
-                         fld_variance_2=%f, fld_variance_3=%f, \
-                         fld_covariance_1=%f, fld_covariance_2=%f, \
-                         fld_covariance_3=%f, fld_mhb=%f, fld_lp=%f, \
-                         fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f, \
-                         fld_start_time=%d \
-                     WHERE fld_dataset_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_dataset \
-                     SET fld_assembly_id=?, fld_description=?, \
-                         fld_source=?, fld_distribution_id=?, \
-                         fld_confidence=?, fld_confidence_type=?, \
-                         fld_confidence_method=?, fld_fit_method=?, \
-                         fld_rel_time=?, fld_num_rel_points=?, \
-                         fld_num_suspension=?, fld_num_failures=?, \
-                         fld_scale=?, fld_scale_ll=?, fld_scale_ul=?, \
-                         fld_shape=?, fld_shape_ll=?, fld_shape_ul=?, \
-                         fld_location=?, fld_location_ll=?, \
-                         fld_location_ul=?, fld_variance_1=?, \
-                         fld_variance_2=?, fld_variance_3=?, \
-                         fld_covariance_1=?, fld_covariance_2=?, \
-                         fld_covariance_3=?, fld_mhb=?, fld_lp=?, \
-                         fld_lr=?, fld_aic=?, fld_bic=?, fld_mle=?, \
-                         fld_start_time=? \
-                     WHERE fld_dataset_id=?"
+        _query = "UPDATE tbl_dataset \
+                  SET fld_assembly_id=%d, fld_description='%s', \
+                      fld_source=%d, fld_distribution_id=%d, \
+                      fld_confidence=%f, fld_confidence_type=%d, \
+                      fld_confidence_method=%d, fld_fit_method=%d, \
+                      fld_rel_time=%f, fld_num_rel_points=%d, \
+                      fld_num_suspension=%d, fld_num_failures=%d, \
+                      fld_scale=%f, fld_scale_ll=%f, fld_scale_ul=%f, \
+                      fld_shape=%f, fld_shape_ll=%f, fld_shape_ul=%f, \
+                      fld_location=%f, fld_location_ll=%f, \
+                      fld_location_ul=%f, fld_variance_1=%f, \
+                      fld_variance_2=%f, fld_variance_3=%f, \
+                      fld_covariance_1=%f, fld_covariance_2=%f, \
+                      fld_covariance_3=%f, fld_mhb=%f, fld_lp=%f, \
+                      fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f, \
+                      fld_start_time=%d \
+                  WHERE fld_dataset_id=%d" % _values
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx,
+                                              commit=True)
 
-        if not results:
+        if not _results:
             self._app.debug_log.error("dataset.py: Failed to save dataset.")
             return True
+
+        return False
+
+    def _save_survival_record(self, model, path, row):
+        """
+        Saves each of the survival data records that comprise the selected
+        DATASET to the RTK Program MySQL or SQLite3 database.
+
+        Keyword Arguments:
+        model -- the DATASET tvwDataset gtk.ListStore.
+        path  -- the path of the active row in the DATASET gtk.ListStore.
+        row   -- the selected row in the DATASET gtk.TreeView.
+        """
+
+        _values = (model.get_value(row, 1), model.get_value(row, 2),
+                   model.get_value(row, 3), model.get_value(row, 4),
+                   model.get_value(row, 0))
+
+        _query = "UPDATE tbl_survival_data \
+                  SET fld_unit='%s', fld_left_interval=%f, \
+                      fld_right_interval=%f, fld_status='%s' \
+                  WHERE fld_record_id=%d" % _values
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx,
+                                              commit=True)
 
         return False
 
@@ -2636,6 +2640,36 @@ class Dataset:
 
         row = treemodel.get_iter(path)
         treemodel.set_value(row, col, val)
+
+        return False
+
+    def _callback_entry_cell(self, cell, path, new_text, _index_, _convert_):
+        """
+        Called whenever a TreeView CellRendererCombo changes.
+
+        Keyword Arguments:
+        cell      -- the gtk.CellRendererCombo that called this function
+        path      -- the path in the gtk.TreeView containing the
+                     gtk.CellRendererCombo that called this function.
+        new_text  -- the new text in the gtk.CellRendererText that called this
+                     method.
+        _index_   -- the index (column) in the gtk.TreeView containing the
+                     gtk.CellRendererText that is being edited.
+        _convert_ -- the data type to convert new_text to for the
+                     gtk.CellRendererText.
+        """
+
+        model = self.tvwDataset.get_model()
+        row = model.get_iter(path)
+
+        if(_convert_ == 'int'):
+            new_text = int(new_text)
+        elif(_convert_ == 'float'):
+            new_text = float(new_text)
+        elif(_convert_ == 'date'):
+            new_text = datetime.strptime(new_text, '%Y-%m-%d').toordinal()
+
+        model.set_value(row, _index_, new_text)
 
         return False
 
