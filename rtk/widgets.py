@@ -189,7 +189,7 @@ def make_entry(_width_=200, _height_=25,
                 Defaults to True.
     bold     -- boolean indicating whether text should be bold.  Defaults
                 to False.
-    _color_  -- the hexidecimal color to set the foreground.  Defaults to
+    _color_  -- the hexidecimal color to set the background.  Defaults to
                 #FFF (light grey).
     """
 

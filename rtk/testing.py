@@ -207,16 +207,20 @@ class Testing:
         width = (self._app.winWorkBook.width * 0.01) / 2.0
 
         self.chkMIMGP = _widg.make_check_button(_label_=_(u"Acceptable MTBF<sub>I</sub> / MTBF<sub>GP</sub>."))
-        self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the initial MTBF to mature MTBF ratio is within historical limits."))
+        self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the initial MTBF to mature MTBF ratio is within reasonable limits."))
+        self.lblMIMGP = _widg.make_label("", width=150)
 
         self.chkFEF = _widg.make_check_button(_label_=_(u"Acceptable average fix effectiveness factor (FEF)."))
-        self.chkFEF.set_tooltip_text(_(u"Indicates whether or not the average fix effectiveness factor (FEF) is within historical limits."))
+        self.chkFEF.set_tooltip_text(_(u"Indicates whether or not the average fix effectiveness factor (FEF) is within reasonable limits."))
+        self.lblFEF = _widg.make_label("", width=150)
 
         self.chkMGMGP = _widg.make_check_button(_label_=_(u"Acceptable MTBF<sub>G</sub> / MTBF<sub>GP</sub>."))
-        self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the goal MTBF to mature MTBF ratio is within historical limits."))
+        self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the goal MTBF to mature MTBF ratio is within reasonable limits."))
+        self.lblMGMGP = _widg.make_label("", width=150)
 
-        self.chkTRMG = _widg.make_check_button(_label_=_(u"Acceptable MTBF<sub>G</sub> / MTBF<sub>TR</sub>."))
-        self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the technical requirement MTBF to goal MTBF ratio is within historical limits."))
+        self.chkTRMG = _widg.make_check_button(_label_=_(u"Acceptable MTBF<sub>G</sub> / MTBF<sub>I</sub>."))
+        self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the goal MTBF to initial MTBF ratio is within reasonable limits."))
+        self.lblMGMI = _widg.make_label("", width=150)
 
         self.figFigureOC = Figure(figsize=(width, height))
 
@@ -879,6 +883,7 @@ class Testing:
                                  width=200, bold=False)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtMIMGP, 205, y_pos)
+        fixed.put(self.lblMIMGP, 290, y_pos)
         y_pos += 30
 
         fixed.put(self.chkMIMGP, 5, y_pos)
@@ -894,12 +899,13 @@ class Testing:
                                  width=200, bold=False)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtMGMGP, 205, y_pos)
+        fixed.put(self.lblMGMGP, 290, y_pos)
         y_pos += 30
 
         fixed.put(self.chkMGMGP, 5, y_pos)
         y_pos += 40
 
-        label = _widg.make_label(_(u"MTBF<sub>G</sub> / MTBF<sub>TR</sub> should fall in the range of 2 - 3."),
+        label = _widg.make_label(_(u"MTBF<sub>G</sub> / MTBF<sub>I</sub> should fall in the range of 2 - 3."),
                                  width=400, height=40, bold=False)
         label.set_justify(gtk.JUSTIFY_LEFT)
         fixed.put(label, 5, y_pos)
@@ -909,6 +915,7 @@ class Testing:
                                  width=200, bold=False)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtTRMG, 205, y_pos)
+        fixed.put(self.lblMGMI, 290, y_pos)
         y_pos += 30
 
         fixed.put(self.chkTRMG, 5, y_pos)
@@ -924,10 +931,10 @@ class Testing:
                                  width=200, bold=False)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtFEF, 205, y_pos)
+        fixed.put(self.lblFEF, 290, y_pos)
         y_pos += 30
 
         fixed.put(self.chkFEF, 5, y_pos)
-        y_pos += 30
 
         fixed.show_all()
 
@@ -1573,7 +1580,8 @@ class Testing:
         _test_type_ = self.cmbTestType.get_active()
 
 # =========================================================================== #
-# Reliability growth planning feasibility for entire program.
+# Reliability growth planning feasibility assessment.
+# The assessment criteria come from MIL-HDBK-189C.
 # =========================================================================== #
         if(_test_type_ == 5):
             MTBFI = float(self.txtMTBFI.get_text())
@@ -1584,12 +1592,21 @@ class Testing:
             FEF = float(self.txtAverageFEF.get_text())
             MS = float(self.txtProgramMS.get_text())
 
-            # The assessment criteria come from MIL-HDBK-189C.
+# Initial MTBF to growth potential MTBF ratio is high enough.  Too low means
+# growth testing is being started too early.
             self.txtMIMGP.set_text(str(fmt.format(MTBFI/MTBFGP)))
             if(MTBFI/MTBFGP >= 0.15 and MTBFI/MTBFGP <= 0.47):
                 self.chkMIMGP.set_active(True)
             else:
                 self.chkMIMGP.set_active(False)
+
+            if(MTBFI/MTBFGP >= 0.35):
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
+            elif(MTBFI/MTBFGP < 0.35 and MTBFI/MTBFGP >= 0.2):
+                _text = "<span foreground='yellow'>Medium Risk</span>"
+            else:
+                _text = "<span foreground='red'>High Risk</span>"
+            self.lblMIMGP.set_markup(_text)
 
             self.txtMGMGP.set_text(str(fmt.format(MTBFG/MTBFGP)))
             if(MTBFG/MTBFGP >= 0.6 and MTBFG/MTBFGP <= 0.8):
@@ -1597,11 +1614,27 @@ class Testing:
             else:
                 self.chkMGMGP.set_active(False)
 
-            self.txtTRMG.set_text(str(fmt.format(TR/MTBFG)))
-            if(TR/MTBFG >= 2.0 and TR/MTBFG <= 3.0):
+            if(MTBFG/MTBFGP <= 0.7):
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
+            elif(MTBFG/MTBFGP > 0.7 and MTBFG/MTBFGP <= 0.8):
+                _text = "<span foreground='yellow'>Medium Risk</span>"
+            else:
+                _text = "<span foreground='red'>High Risk</span>"
+            self.lblMGMGP.set_markup(_text)
+
+            self.txtTRMG.set_text(str(fmt.format(MTBFG/MTBFI)))
+            if(MTBFG/MTBFI >= 2.0 and MTBFG/MTBFI <= 3.0):
                 self.chkTRMG.set_active(True)
             else:
                 self.chkTRMG.set_active(False)
+
+            if(MTBFG/MTBFI <= 2.0):
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
+            elif(MTBFG/MTBFI > 2.0 and MTBFG/MTBFI <= 3.0):
+                _text = "<span foreground='yellow'>Medium Risk</span>"
+            else:
+                _text = "<span foreground='red'>High Risk</span>"
+            self.lblMGMI.set_markup(_text)
 
             self.txtFEF.set_text(str(fmt.format(FEF)))
             if(FEF >= 0.55 and FEF <= 0.85):
@@ -1609,27 +1642,40 @@ class Testing:
             else:
                 self.chkFEF.set_active(False)
 
-# =========================================================================== #
+            if(FEF <= 0.7):
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
+            elif(FEF > 0.7 and FEF <= 0.8):
+                _text = "<span foreground='yellow'>Medium Risk</span>"
+            else:
+                _text = "<span foreground='red'>High Risk</span>"
+            self.lblFEF.set_markup(_text)
+
 # Reliability growth planning feasibility per phase.
-# =========================================================================== #
-        i = 0
-        model = self.tvwTestFeasibility.get_model()
-        row = model.get_iter_root()
-        while row is not None:
-            _articles = model.get_value(row, 1)
+            i = 0
+            model = self.tvwTestFeasibility.get_model()
+            row = model.get_iter_root()
+            while row is not None:
+                _articles = model.get_value(row, 1)
 
-            _tpu = TTT[i] / _articles
-            _dt_start = datetime.strptime(model.get_value(row, 2),"%Y-%m-%d").toordinal()
-            _dt_end = datetime.strptime(model.get_value(row, 3),"%Y-%m-%d").toordinal()
-            _weeks = (_dt_end - _dt_start) / 7.0
-            _tpupw = _tpu / _weeks
+                _tpu = TTT[i] / _articles
+                _dt_start = datetime.strptime(model.get_value(row, 2),"%Y-%m-%d").toordinal()
+                _dt_end = datetime.strptime(model.get_value(row, 3),"%Y-%m-%d").toordinal()
+                _weeks = (_dt_end - _dt_start) / 7.0
+                _tpupw = _tpu / _weeks
 
-            model.set_value(row, 4, ceil(N[i + 1] - N[i]))
-            model.set_value(row, 7, _tpu)
-            model.set_value(row, 8, _tpupw)
+                model.set_value(row, 4, ceil(N[i + 1] - N[i]))
+                model.set_value(row, 7, _tpu)
+                model.set_value(row, 8, _tpupw)
 
-            i += 1
-            row = model.iter_next(row)
+                i += 1
+                row = model.iter_next(row)
+
+            if(i >= 6):
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
+            elif(i < 6 and i >= 4):
+                _text = "<span foreground='yellow'>Medium Risk</span>"
+            else:
+                _text = "<span foreground='red'>High Risk</span>"
 
         return False
 
