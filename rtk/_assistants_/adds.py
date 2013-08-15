@@ -1254,3 +1254,97 @@ class CreateDataSet:
         """
 
         self.assistant.destroy()
+
+
+class AddDatasetRecord:
+    """
+    This is the gtk.Assistant that walks the user through the process of
+    adding a record to the currently selected survival dataset in the open
+    RTK Program database.
+    """
+
+    _labels = [_(u"Left:"), _(u"Right:"), _(u"Status:"), _(u"Quantity:"),
+               _(u"Affected Unit:"), _(u"Part Number:"), _(u"Market:"),
+               _(u"Model:"), _(u"Assembly:")]
+
+    def __init__(self, app):
+        """
+        Method to initialize the Reliability Growth Record Add Assistant.
+
+        Keyword Arguments:
+        button -- the gtk.ToolButton that called this assistant.
+        app    -- the RTK application.
+        """
+
+        gtk.Assistant.__init__(self)
+        self.set_title(_(u"RTK Survival Analysis Record Assistant"))
+        #self.connect('apply', self._test_record_add)
+        #self.connect('cancel', self._cancel)
+        #self.connect('close', self._cancel)
+
+        self._app = app
+
+# --------------------------------------------------------------------------- #
+# Create the introduction page.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+        _text_ = _(u"This is the RTK survival analysis record assistant.  It will help you add a record to the currently selected survival dataset.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.append_page(fixed)
+        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_title(fixed, _(u"Introduction"))
+        self.set_page_complete(fixed, True)
+
+# --------------------------------------------------------------------------- #
+# Create the page to gather the necessary failure time inputs.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+# Create the gtk.Combo that allow one of multiple selections.
+        self.txtLeft = _widg.make_entry()
+        self.txtLeft.set_tooltip_text(_(u"Left of the interval.  If failure time is exact, set this equal to the failure time."))
+        self.txtRight = _widg.make_entry()
+        self.txtRight.set_tooltip_text(_(u"Left of the interval.  If failure time is exact, set this equal to the failure time."))
+        self.txtQuantity = _widg.make_entry()
+        self.txtQuantity.set_tooltip_text(_(u"Number of failures observed during interval or at failure time."))
+        self.txtQuantity.set_text("1")
+
+        label = _widg.make_label(self._labels[0], 150, 25)
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtLeft, 160, 5)
+
+        label = _widg.make_label(self._labels[1], 150, 25)
+        fixed.put(label, 5, 40)
+        fixed.put(self.txtRight, 160, 40)
+
+        label = _widg.make_label(self._labels[2], 150, 25)
+        fixed.put(label, 5, 75)
+        fixed.put(self.txtQuantity, 160, 75)
+
+        self.append_page(frame)
+        self.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(frame, _(u"Enter Failure Time Data"))
+        self.set_page_complete(frame, True)
+
+# --------------------------------------------------------------------------- #
+# Create the page to gather details regarding the failed item(s).
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+# Create the page to apply the import criteria.
+# --------------------------------------------------------------------------- #
+        fixed = gtk.Fixed()
+        _text_ = _(u"Press 'Apply' to add the record to the selected survival data set or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=150)
+        fixed.put(label, 5, 5)
+        self.append_page(fixed)
+        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_title(fixed, _(u"Add Survival Data Record"))
+        self.set_page_complete(fixed, True)
+
+        self.show_all()

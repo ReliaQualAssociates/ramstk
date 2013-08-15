@@ -518,72 +518,6 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-# Cut button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Cut"))
-        button.set_tooltip_text(_("Cut the currently selected item."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/cut.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _util.cut_copy_paste, 0)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Copy button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Copy"))
-        button.set_tooltip_text(_("Copy the currently selected item."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/copy.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _util.cut_copy_paste, 1)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Paste button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Paste"))
-        button.set_tooltip_text(_("Paste the clipboard contents."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/paste.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _util.cut_copy_paste, 2)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
-# Undo button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Undo"))
-        button.set_tooltip_text(_("Undo the last change."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/undo.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _util.undo, self)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Redo button
-        button = gtk.ToolButton()
-        button.set_label(_(u"Redo"))
-        button.set_tooltip_text(_("Redo the last change."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/redo.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _util.redo, self)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
 # Calculate button
         button = gtk.MenuToolButton(None, label = "")
         button.set_tooltip_text(_("Perform various calculations on the system."))
@@ -610,30 +544,6 @@ class TreeWindow(gtk.Window):
         menu.add(menu_item)
         button.set_menu(menu)
         menu.show_all()
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Graphs button
-# TODO: Functions to create charts and graphs.
-        button = gtk.ToolButton()
-        button.set_label(_(u"Graphs"))
-        button.set_tooltip_text(_("Create charts and graphs"))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/charts.png')
-        button.set_icon_widget(image)
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-# Reports button
-# TODO: Functions to create reports.
-        button = gtk.ToolButton()
-        button.set_label(_(u"Reports"))
-        button.set_tooltip_text(_("Create text reports"))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
-        button.set_icon_widget(image)
         button.show()
         toolbar.insert(button, _pos)
         _pos += 1

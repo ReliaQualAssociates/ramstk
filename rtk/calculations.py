@@ -169,12 +169,13 @@ def calculate_revision(widget=None, application=None):
         lambdas = float(results[0][3])
         partcnt = int(results[0][4])
 
-    lambdap = lambdaa + lambdad + lambdas   # Predicted h(t)
+# Predicted h(t).
+    lambdap = lambdaa + lambdad + lambdas
 
-    # Calculate the MTBF
+# Calculate the MTBF.
     mtbf = 1.0 / lambdap
 
-    # Calculate reliabilities.
+# Calculate reliabilities.
     rm = exp(-1.0 * lambdap * _conf.MTIME / _conf.FRMULT)
 
     _model_ = application.REVISION.model
@@ -2453,8 +2454,8 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
                      the exponential distribution.
     """
 
-    # Eliminate zero time failures and failures occurring after any
-    # user-supplied upper limit.
+# Eliminate zero time failures and failures occurring after any user-supplied
+# upper limit.
     _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
     _dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
 
@@ -2542,18 +2543,18 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
     Function to explore early life to useful life and useful life to wearout
     transition times.
 
-    Keyword aAguments:
+    Keyword Arguments:
     _dataset_    -- the dataset to perform the search on.
     _starttime_ -- the time to start the search.
     _endtime_   -- the time to end the search.
     _step_      -- how large the time increment should be.
     """
 
-    # Initialize scalar variables.
+# Initialize scalar variables.
     start = int(_starttime_)
     end = int(_reltime_)
 
-    # Initialize list variables.
+# Initialize list variables.
     times = []
     scale = [0]
     shape = [0]
