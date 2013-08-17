@@ -139,15 +139,7 @@ class Revision:
 
         toolbar = gtk.Toolbar()
 
-# Save requirement button.
-        button = gtk.ToolButton()
-        button.set_label(_(u"Save Revision"))
-        button.set_tooltip_text(_("Saves revision changes to the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.revision_save)
-        toolbar.insert(button, 0)
+        _pos = 0
 
 # Add requirement button.
         button = gtk.ToolButton()
@@ -157,7 +149,8 @@ class Revision:
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.revision_add)
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
 # Delete requirement button
         button = gtk.ToolButton()
@@ -167,7 +160,11 @@ class Revision:
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.revision_delete)
-        toolbar.insert(button, 2)
+        toolbar.insert(button, _pos)
+        _pos += 1
+
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
 
 # Calculate requirement button
         button = gtk.ToolButton()
@@ -177,7 +174,22 @@ class Revision:
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
         button.connect('clicked', _calc.calculate_revision, self._app)
-        toolbar.insert(button, 3)
+        toolbar.insert(button, _pos)
+        _pos += 1
+
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+# Save requirement button.
+        button = gtk.ToolButton()
+        button.set_label(_(u"Save Revision"))
+        button.set_tooltip_text(_("Saves revision changes to the RTK Program Database."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        button.set_icon_widget(image)
+        button.connect('clicked', self.revision_save)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
         toolbar.show()
 

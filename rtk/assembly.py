@@ -1787,7 +1787,7 @@ class Assembly:
 
         self.fxdRelInputQuad1.show_all()
 
-        # Create quadrant 2 (upper right) widgets.
+# Create quadrant 2 (upper right) widgets.
         self.cmbMTTRType.set_tooltip_text(_(u"Select the method of assessing the mean time to repair (MTTR) for the selected assembly."))
 
         query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
@@ -1850,7 +1850,7 @@ class Assembly:
 
         self.fxdRelInputQuad2.show_all()
 
-        # Create quadrrant 4 (lower right) widgets.
+# Create quadrant 4 (lower right) widgets.
         self.cmbCostType.set_tooltip_text(_(u"Select the method for assessing the cost of the selected assembly."))
 
         query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
@@ -2436,7 +2436,7 @@ class Assembly:
 
         label = _widg.make_label(_(u"Control:"), _lbl_width, 25)
         self.fxdControl.put(label, 5, y_pos)
-        self.fxdControl.put(self.txtControlDescription, _lbl_width + 55, y_pos)
+        self.fxdControl.put(self.txtControlDescription, _lbl_width + 5, y_pos)
         self.txtControlDescription.connect('focus-out-event',
                                            self._callback_entry, 'text',
                                            1000)
@@ -5063,14 +5063,14 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                     _next_id = _next_id[0][0] + 1
 
 # Insert the new control.
-                    query = "INSERT INTO tbl_fmeca_controls \
-                             (fld_assembly_id, fld_mode_id, \
-                              fld_mechanism_id, fld_control_id, fld_parent) \
-                             VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
-                                                               _mode_id,
-                                                               _mechanism_id,
-                                                               _next_id,
-                                                               _parent)
+                query = "INSERT INTO tbl_fmeca_controls \
+                         (fld_assembly_id, fld_mode_id, \
+                          fld_mechanism_id, fld_control_id, fld_parent) \
+                         VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                           _mode_id,
+                                                           _mechanism_id,
+                                                           _next_id,
+                                                           _parent)
                 self._app.DB.execute_query(query,
                                            None,
                                            self._app.ProgCnx,
@@ -5209,8 +5209,8 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
 # Update the RTK program database with the MIL-STD-1629A results.
                 _query = "UPDATE tbl_fmeca \
-                          SET fld_mode_criticality=%f, \
-                              fld_mode_failure_rate=%f \
+                          SET fld_mode_criticality=%g, \
+                              fld_mode_failure_rate=%g \
                           WHERE fld_mode_id=%d"
 
                 _keys = self._CA.keys()
@@ -5218,6 +5218,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                     _values = (self._CA[_keys[i]][4], self._CA[_keys[i]][5],
                                _keys[i])
                     query = _query % _values
+
                     _results = self._app.DB.execute_query(query,
                                                           None,
                                                           self._app.ProgCnx,

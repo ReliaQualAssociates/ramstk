@@ -312,8 +312,8 @@ class Component():
         self.txtDescription.connect('focus-out-event',
                                     self._callback_entry, 'text', 517)
 
-        # Quadrant 2 (upper right) widgets.  These widgets are used to
-        # display logistics information about the selected assembly.
+# Quadrant 2 (upper right) widgets.  These widgets are used to display
+# logistics information about the selected assembly.
         self.cmbManufacturer.set_tooltip_text(_("Select the manufacturer of the selected assembly or component."))
         self.cmbManufacturer.connect('changed',
                                      self._callback_combo, 543)
@@ -343,8 +343,8 @@ class Component():
         self.txtYearMade.connect('focus-out-event',
                                  self._callback_entry, 'int', 587)
 
-        # Quadrant 3 (lower left) widgets.  These widget are used to
-        # display requirements information about the selected assembly.
+# Quadrant 3 (lower left) widgets.  These widget are used to display
+# requirements information about the selected assembly.
         self.txtSpecification.set_tooltip_text(_("Enter the governing specification for the selected component, if any."))
         self.txtSpecification.connect('focus-out-event',
                                       self._callback_entry, 'text', 577)
@@ -1601,8 +1601,8 @@ class Component():
 
         for i in range(n_new_components):
 
-            # If no assembly is selected or the selected assembly is the top
-            # of the tree, set parent to the top assembly.
+# If no assembly is selected or the selected assembly is the top of the tree,
+# set parent to the top assembly.
             treemodel = self._app.HARDWARE.model
             row = self._app.HARDWARE.selected_row
             if(self._app.HARDWARE.ispart):
@@ -1613,43 +1613,33 @@ class Component():
             if(_parent == '-' or _parent is None):
                 _parent = '0'
 
-            # Create a description from the part prefix and part index.
+# Create a description from the part prefix and part index.
             _descrip = str(_conf.RTK_PREFIX[6]) + ' ' + \
                        str(_conf.RTK_PREFIX[7])
 
-            # Increment the part index.
+# Increment the part index.
             _conf.RTK_PREFIX[7] = _conf.RTK_PREFIX[7] + 1
 
-            # First we insert the part into the System table.  Next we
-            # find the id of the newly added part.  Thirdly, we add the new
-            # part to the functional matrix.  Fourthly, we add the new
-            # part to the prediction table.  Finally, we add the new part to
-            # the FMECA table.
-            values = (self._app.REVISION.revision_id,
-                      str(_conf.RTK_PROG_INFO[3]),
-                      _parent, _descrip, 1)
+# First we insert the part into the System table.  Next we find the id of the
+# newly added part.  Thirdly, we add the new part to the functional matrix.
+# Fourthly, we add the new part to the prediction table.  Finally, we add the
+# new part to the FMECA table.
+            _values = (self._app.REVISION.revision_id,
+                       str(_conf.RTK_PROG_INFO[3]),
+                       _parent, _descrip, 1)
 
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_system \
-                        (fld_revision_id, fld_entered_by, \
-                         fld_parent_assembly, \
-                         fld_description, fld_part) \
-                        VALUES (%d, '%s', '%s', '%s', '%s')"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_system \
-                        (fld_revision_id, fld_entered_by, \
-                         fld_parent_assembly, \
-                         fld_description, fld_part) \
-                        VALUES (?, ?, ?, ?, ?)"
-
+            query = "INSERT INTO tbl_system \
+                     (fld_revision_id, fld_entered_by, \
+                      fld_parent_assembly, \
+                      fld_description, fld_part) \
+                     VALUES (%d, '%s', '%s', '%s', '%s')" % _values
             results = self._app.DB.execute_query(query,
-                                                 values,
+                                                 None,
                                                  self._app.ProgCnx,
                                                  commit=True)
 
             if not results:
                 self._app.debug_log.error("component.py: Failed to add new component to system table.")
-                return True
 
             if(_conf.BACKEND == 'mysql'):
                 query = "SELECT LAST_INSERT_ID()"
@@ -1664,57 +1654,41 @@ class Component():
 
             if(assembly_id[0][0] == ''):
                 self._app.debug_log.error("component.py: Failed to retrieve ID of new component.")
-                return True
 
-            values = (self._app.REVISION.revision_id, assembly_id[0][0])
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_prediction \
-                        (fld_revision_id, fld_assembly_id) \
-                        VALUES (%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_prediction \
-                        (fld_revision_id, fld_assembly_id) \
-                        VALUES (?, ?)"
-
+            _values = (self._app.REVISION.revision_id, assembly_id[0][0])
+            query = "INSERT INTO tbl_prediction \
+                     (fld_revision_id, fld_assembly_id) \
+                     VALUES (%d, %d)" % _values
             results = self._app.DB.execute_query(query,
-                                                 values,
+                                                 None,
                                                  self._app.ProgCnx,
                                                  commit=True)
 
             if not results:
                 self._app.debug_log.error("component.py: Failed to add new component to prediction table.")
-                return True
 
-            values = (self._app.REVISION.revision_id, assembly_id[0][0], 0)
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_functional_matrix \
-                         (fld_revision_id, fld_assembly_id, fld_function_id) \
-                         VALUES (%d, %d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_functional_matrix \
-                         (fld_revision_id, fld_assembly_id, fld_function_id) \
-                         VALUES (?, ?, ?)"
-
+            _values = (self._app.REVISION.revision_id, assembly_id[0][0], 0)
+            query = "INSERT INTO tbl_functional_matrix \
+                     (fld_revision_id, fld_assembly_id, fld_function_id) \
+                     VALUES (%d, %d, %d)" % _values
             results = self._app.DB.execute_query(query,
-                                                 values,
+                                                 None,
                                                  self._app.ProgCnx,
                                                  commit=True)
 
             if not results:
                 self._app.debug_log.error("component.py: Failed to add new component to functional matrix table.")
-                return True
 
             query = "INSERT INTO tbl_fmeca_items \
                      (fld_assembly_id) \
                      VALUES (%d)" % self._app.ASSEMBLY.assembly_id
-            #results = self._app.DB.execute_query(query,
-            #                                     None,
-            #                                     self._app.ProgCnx,
-            #                                     commit=True)
+            results = self._app.DB.execute_query(query,
+                                                 None,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
 
-            #if not results:
-            #    self._app.debug_log.error("component.py: Failed to add new component to FMECA table.")
-            #    return True
+            if not results:
+                self._app.debug_log.error("component.py: Failed to add new component to FMECA table.")
 
         self._app.REVISION.load_tree()
         #TODO: Need to find and select the previously selected revision before loading the hardware tree.
@@ -1731,7 +1705,7 @@ class Component():
         menuitem -- the gtk.MenuItem that called this function.
         """
 
-        # If the selected item isn't a part, then don't delete it.
+# If the selected item isn't a part, then don't delete it.
         if not self._app.HARDWARE.ispart:
             return True
 
@@ -1749,7 +1723,6 @@ class Component():
 
         if not results:
             self._app.debug_log.error("component.py: Failed to delete component from system table.")
-            return True
 
 # Then delete the part information from the Functional Matrix table.
         query = "DELETE FROM tbl_functional_matrix \
@@ -1762,7 +1735,6 @@ class Component():
 
         if not results:
             self._app.debug_log.error("component.py: Failed to delete component from functional matrix table.")
-            return True
 
 # Then delete the part information from the Prediction table.
         query = "DELETE FROM tbl_prediction \
@@ -1775,19 +1747,17 @@ class Component():
 
         if not results:
             self._app.debug_log.error("component.py: Failed to delete component from prediction table.")
-            return True
 
 # Then delete the part information from the FMECA table.
         query = "DELETE FROM tbl_fmeca \
                  WHERE fld_assembly_id=%d" % self._app.ASSEMBLY.assembly_id
-        #results = self._app.DB.execute_query(query,
-        #                                     None,
-        #                                     self._app.ProgCnx,
-        #                                     commit=True)
+        results = self._app.DB.execute_query(query,
+                                             None,
+                                             self._app.ProgCnx,
+                                             commit=True)
 
-        #if not results:
-        #    self._app.debug_log.error("component.py: Failed to delete component from FMECA table.")
-        #    return True
+        if not results:
+            self._app.debug_log.error("component.py: Failed to delete component from FMECA table.")
 
         self._app.REVISION.load_tree()
         #TODO: Need to find and select the previously selected revision before loading the hardware tree.
@@ -1847,8 +1817,8 @@ class Component():
         combo -- the Component Object category combobox.
         """
 
-        # Get the model and iter from the parts category combo box then read
-        # the value of the category ID.
+# Get the model and iter from the parts category combo box then read the value
+# of the category ID.
         model = combo.get_model()
         row = combo.get_active_iter()
         values = (int(model.get_value(row, 1)),)

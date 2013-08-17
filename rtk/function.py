@@ -108,6 +108,7 @@ class Function:
         self.vbxFunction.pack_start(self.notebook)
 
 # Create the General Data tab.
+        self.chkSafetyCritical = _widg.make_check_button(_label_=_(u"Function is safety critical."))
         self.txtCode = _widg.make_entry()
         self.txtTotalCost = _widg.make_entry(editable=False, bold=True)
         self.txtName = _widg.make_text_view(width=400)
@@ -154,50 +155,63 @@ class Function:
 
         toolbar = gtk.Toolbar()
 
-        # Save function button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        button.set_tooltip_text(_("Saves function changes to the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.function_save)
-        toolbar.insert(button, 0)
+        _pos = 0
 
-        # Add sibling function button.
+# Add sibling function button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
         button.set_tooltip_text(_("Adds a new function at the same indenture level as the selected function to the RTK Program database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.function_add, 0)
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        # Add child function button.
+# Add child function button.
         button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
         button.set_tooltip_text(_("Adds a new function one indenture level subordinate to the selected function to the RTK Program database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.function_add, 1)
-        toolbar.insert(button, 2)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        # Delete function button
+# Delete function button
         button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
         button.set_tooltip_text(_("Removes the currently selected function from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.function_delete)
-        toolbar.insert(button, 3)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        # Calculate function button
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+# Calculate function button
         button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
         button.set_tooltip_text(_("Calculate the functions."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
         button.connect('clicked', _calc.calculate_project, self._app, 2)
-        toolbar.insert(button, 4)
+        toolbar.insert(button, _pos)
+        _pos += 1
+
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+# Save function button.
+        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+        button.set_tooltip_text(_("Saves function changes to the RTK Program Database."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        button.set_icon_widget(image)
+        button.connect('clicked', self.function_save)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
         toolbar.show()
 
@@ -205,6 +219,8 @@ class Function:
 
     def _general_data_widgets_create(self):
         """ Method to create the General Data widgets. """
+
+        self.chkSafetyCritical.set_tooltip_text(_("Indicates whether or not the selected function is safety critical."))
 
         self.txtName.set_tooltip_text(_("Enter the name of the selected function."))
         self.txtName.get_child().get_child().connect('focus-out-event',
@@ -274,10 +290,13 @@ class Function:
         label = _widg.make_label(self._gd_tab_labels[0][5], 150, 25)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtRemarks, 155, y_pos)
+        y_pos += 110
+
+        fixed.put(self.chkSafetyCritical, 5, y_pos)
 
         fixed.show_all()
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
                          _("General\nData") +
@@ -353,29 +372,28 @@ class Function:
             row = self.model.iter_next(row)
 
         if(_conf.RTK_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,)
+            _values = (self._app.REVISION.revision_id,)
         else:
-            values = (0,)
-
-        if(_conf.BACKEND == 'mysql'):
+            _values = (0,)
+        _assemblies = True
+        if(_assemblies):
+            query = "SELECT t1.fld_assembly_id, t1.fld_function_id, \
+                            t2.fld_ref_des \
+                     FROM tbl_functional_matrix AS t1 \
+                     INNER JOIN tbl_system AS t2 \
+                     ON t2.fld_assembly_id = t1.fld_assembly_id \
+                     WHERE t2.fld_revision_id=%d" % _values
+        else:
             query = "SELECT t1.fld_assembly_id, t1.fld_function_id, \
                             t2.fld_ref_des \
                      FROM tbl_functional_matrix AS t1 \
                      INNER JOIN tbl_system AS t2 \
                      ON t2.fld_assembly_id = t1.fld_assembly_id \
                      WHERE t2.fld_revision_id=%d \
-                     AND t2.fld_part=1"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t1.fld_assembly_id, t1.fld_function_id, \
-                            t2.fld_ref_des \
-                     FROM tbl_functional_matrix AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t2.fld_assembly_id = t1.fld_assembly_id \
-                     WHERE t2.fld_revision_id=? \
-                     AND t2.fld_part=1"
+                     AND t2.fld_part=1" % _values
 
         _assemblies = self._app.DB.execute_query(query,
-                                                 values,
+                                                 None,
                                                  self._app.ProgCnx)
 
         if(_assemblies == ''):
@@ -411,7 +429,7 @@ class Function:
 
         _datamap = sorted(_datamap, key=lambda _datamap: _datamap[0])
 
-        # Make the treeview to display the functional matrix.
+# Make the treeview to display the functional matrix.
         n_functions = len(functions)
         types = ['gchararray'] * (n_functions + 1)
         types = [gobject.type_from_name(types[i]) for i in range(len(types))]
@@ -439,7 +457,7 @@ class Function:
         column.set_widget(label)
         self._FunctionMatrix.append_column(column)
 
-        # List store for cell renderer.
+# List store for cell renderer.
         cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         cellmodel.append([""])
         cellmodel.append(["X"])
@@ -485,13 +503,13 @@ class Function:
     def _assessment_results_widgets_create(self):
         """ Method to create Assessment Results widgets. """
 
-        # Create quadrant 1 (upper left) widgets.
+# Create quadrant 1 (upper left) widgets.
         self.txtPredictedHt.set_tooltip_text(_("Displays the predicted failure intensity for the selected function."))
         self.txtMissionHt.set_tooltip_text(_("Displays the mission failure intensity for the selected function."))
         self.txtMTBF.set_tooltip_text(_("Displays the limiting mean time between failure (MTBF) for the selected function."))
         self.txtMissionMTBF.set_tooltip_text(_("Displays the mission mean time between failure (MTBF) for the selected function."))
 
-        # Create quadrant 2 (upper right) widgets.
+# Create quadrant 2 (upper right) widgets.
         self.txtMPMT.set_tooltip_text(_("Displays the mean preventive maintenance time (MPMT) for the selected function."))
         self.txtMCMT.set_tooltip_text(_("Displays the mean corrective maintenance time (MCMT) for the selected function."))
         self.txtMTTR.set_tooltip_text(_("Displays the mean time to repair (MTTR) for the selected function."))
@@ -509,7 +527,7 @@ class Function:
 
         hbox = gtk.HBox()
 
-        # Construct the left half of the page.
+# Construct the left half of the page.
         fixed = gtk.Fixed()
 
         scrollwindow = gtk.ScrolledWindow()
@@ -538,7 +556,7 @@ class Function:
 
         fixed.show_all()
 
-        # Construct the right half of the page.
+# Construct the right half of the page.
         fixed = gtk.Fixed()
 
         scrollwindow = gtk.ScrolledWindow()
@@ -571,7 +589,7 @@ class Function:
 
         fixed.show_all()
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
                          _("Assessment\nResults") +
@@ -642,25 +660,18 @@ class Function:
         """
 
         if(_conf.RTK_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,)
+            _values = (self._app.REVISION.revision_id,)
         else:
-            values = (0,)
+            _values = (0,)
 
-        # Select everything from the function table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT * FROM tbl_functions \
+# Select everything from the function table.
+        query = "SELECT * FROM tbl_functions \
                  WHERE fld_revision_id=%d \
-                 ORDER BY fld_parent_id"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT * FROM tbl_functions \
-                     WHERE fld_revision_id=? \
-                     ORDER BY fld_parent_id"
-
+                 ORDER BY fld_parent_id" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx)
 
-        results = results[1:]
         if(results == ''):
             return True
 

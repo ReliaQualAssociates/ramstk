@@ -203,5 +203,14 @@ experience. -->
             <editable>0</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Safety Critical</defaulttitle>
+            <usertitle>Safety Critical</usertitle>
+            <datatype>gint</datatype>
+            <position>21</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

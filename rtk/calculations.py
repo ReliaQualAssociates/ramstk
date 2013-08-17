@@ -2581,7 +2581,6 @@ def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
                 _deltascale = 0.0
                 _deltashape = 0.0
         except IndexError:
-            print i, j
             _deltascale = 0.0
             _deltashape = 0.0
         deltascale.append(_deltascale * 100.0)

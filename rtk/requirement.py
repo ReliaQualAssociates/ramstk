@@ -139,74 +139,88 @@ class Requirement:
 
         toolbar = gtk.Toolbar()
 
-        # Save requirement button.
-        button = gtk.ToolButton()
-        button.set_tooltip_text(_("Saves requirement changes to the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.requirement_save)
-        toolbar.insert(button, 0)
+        _pos = 0
 
-        # Add sibling requirement button.
+# Add sibling requirement button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new requirement at the same indenture level as the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.requirement_add, 0)
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        # Add child (derived) requirement button.
+# Add child (derived) requirement button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new requirement one indenture level subordinate to the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.requirement_add, 1)
-        toolbar.insert(button, 2)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        # Delete requirement button
+# Delete requirement button
         button = gtk.ToolButton()
         button.set_tooltip_text(_("Removes the currently selected requirement from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.requirement_delete)
-        toolbar.insert(button, 3)
+        toolbar.insert(button, _pos)
+        _pos += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), 4)
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
 
-        # Save V&V tasks button
+# Save requirement button.
+        self.btnSaveRequirement = gtk.ToolButton()
+        self.btnSaveRequirement.set_tooltip_text(_("Saves requirement changes to the RTK Program Database."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSaveRequirement.set_icon_widget(image)
+        self.btnSaveRequirement.connect('clicked', self.requirement_save)
+        toolbar.insert(self.btnSaveRequirement, _pos)
+        _pos += 1
+
+# Save V&V tasks button
         self.btnSaveVandVTask.set_tooltip_text(_("Saves all the Verification and Validation (V&V) tasks for the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         self.btnSaveVandVTask.set_icon_widget(image)
         self.btnSaveVandVTask.connect('clicked', self._vandv_tasks_save)
-        toolbar.insert(self.btnSaveVandVTask, 5)
+        toolbar.insert(self.btnSaveVandVTask, _pos)
+        _pos += 1
 
-        # Add new V&V task button
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+# Add new V&V task button
         self.btnAddVandVTask.set_tooltip_text(_("Adds a new Verification and Validation (V&V) task for the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnAddVandVTask.set_icon_widget(image)
         self.btnAddVandVTask.connect('clicked', self._vandv_task_add, 0)
-        toolbar.insert(self.btnAddVandVTask, 6)
+        toolbar.insert(self.btnAddVandVTask, _pos)
+        _pos += 1
 
-        # Assign existing V&V task button
+# Assign existing V&V task button
         self.btnAssignVandVTask.set_tooltip_text(_("Assigns an exisiting Verification and Validation (V&V) task to the selected requirement."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
         self.btnAssignVandVTask.set_icon_widget(image)
         self.btnAssignVandVTask.connect('clicked', self._vandv_task_add, 1)
-        toolbar.insert(self.btnAssignVandVTask, 7)
+        toolbar.insert(self.btnAssignVandVTask, _pos)
+        _pos += 1
 
         self.cmbVandVTasks.set_tooltip_text(_("List of existing V&V activities available to assign to selected requirement."))
         alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
         alignment.add(self.cmbVandVTasks)
         toolitem = gtk.ToolItem()
         toolitem.add(alignment)
-        toolbar.insert(toolitem, 8)
+        toolbar.insert(toolitem, _pos)
+        _pos += 1
 
         toolbar.show()
 
@@ -1068,6 +1082,11 @@ class Requirement:
 
         self._app.winWorkBook.set_title(_("RTK Work Bench: Requirement"))
 
+        self.btnAddVandVTask.hide()
+        self.btnAssignVandVTask.hide()
+        self.btnSaveVandVTask.hide()
+        self.cmbVandVTasks.hide()
+
         return False
 
     def _callback_check(self, check, index_):
@@ -1178,6 +1197,7 @@ class Requirement:
 
         if(page_num == 0):
             try:
+                self.btnSaveRequirement.show()
                 self.btnAddVandVTask.hide()
                 self.btnAssignVandVTask.hide()
                 self.btnSaveVandVTask.hide()
@@ -1186,6 +1206,7 @@ class Requirement:
                 pass
         elif(page_num == 1):
             try:
+                self.btnSaveRequirement.hide()
                 self.btnAddVandVTask.show()
                 self.btnAssignVandVTask.show()
                 self.btnSaveVandVTask.show()
