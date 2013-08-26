@@ -5256,7 +5256,7 @@ class Software:
 
         self.notebook.set_current_page(0)
 
-        _title_ = _("RTK Work Bench: Analyzing %s") % \
+        _title_ = _("RTK Work Book: Analyzing %s") % \
                   self.model.get_value(self._selected_row, 3)
         self._app.winWorkBook.set_title(_title_)
 

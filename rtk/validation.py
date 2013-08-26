@@ -608,10 +608,10 @@ class Validation:
         self._app.winWorkBook.show_all()
 
         try:
-            _title_ = _(u"RTK Work Bench: Analyzing %s") % \
+            _title_ = _(u"RTK Work Book: Analyzing %s") % \
                       self.model.get_value(self.selected_row, 2)
         except TypeError:
-            _title_ = _(u"RTK Work Bench")
+            _title_ = _(u"RTK Work Book")
         self._app.winWorkBook.set_title(_title_)
 
         return False

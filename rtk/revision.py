@@ -913,7 +913,7 @@ class Revision:
         self._app.winWorkBook.add(self.vbxRevision)
         self._app.winWorkBook.show_all()
 
-        _title = _("RTK Work Bench: Revision (Analyzing Revision %d)") % \
+        _title = _("RTK Work Book: Revision (Analyzing Revision %d)") % \
                  self.revision_id
         self._app.winWorkBook.set_title(_title)
 

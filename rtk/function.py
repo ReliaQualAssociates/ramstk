@@ -1155,7 +1155,7 @@ class Function:
         self._app.winWorkBook.add(self.vbxFunction)
         self._app.winWorkBook.show_all()
 
-        self._app.winWorkBook.set_title(_(u"RTK Work Bench: Function"))
+        self._app.winWorkBook.set_title(_(u"RTK Work Book: Function"))
 
         return False
 

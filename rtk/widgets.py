@@ -92,6 +92,13 @@ def make_check_button(_label_=None):
     return(checkbutton)
 
 
+def make_option_button(_group_=None, _label_=_(u"")):
+
+    optbutton = gtk.RadioButton(group=_group_, label=_label_)
+
+    return(optbutton)
+
+
 def make_combo(_width_=200, _height_=30, simple=True):
 
     """ Utility function to create ComboBox widgets.
@@ -246,15 +253,13 @@ def make_label(text, width=190, height=25, bold=True):
 
 
 def make_text_view(buffer_=None, width=200, height=100):
+    """
+    Utility function to create TextView widgets.
 
-    """ Utility function to create TextView widgets.
-
-        Keyword Arguments:
-        buffer_ -- the TextBuffer to associate with the TextView.  Default is
-                   None.
-        width   -- width of the TextView widget.  Default is 200.
-        height  -- height of the TextView widget.  Default is 100.
-
+    Keyword Arguments:
+    buffer_ -- the TextBuffer to associate with the TextView.  Default is None.
+    width   -- width of the TextView widget.  Default is 200.
+    height  -- height of the TextView widget.  Default is 100.
     """
 
     view = gtk.TextView(buffer=buffer_)

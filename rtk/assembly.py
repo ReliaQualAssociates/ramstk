@@ -155,7 +155,17 @@ class Assembly:
                        _("Approved"), _("Approved By:"), _("Approved Date:"),
                        _("Closed"), _("Closed By:"), _("Closure Date:")]]
 
-    n_attributes = 88
+    _mp_tab_labels = [[_(u"This item is a major load carrying element."),
+                       _(u"The loss of this item's function results in an adverse effect on operating safety or aborts the mission."),
+                       _(u"The actual or predicted failure rate and consumption of resources is high."),
+                       _(u"The item, or a like item on similar equipment, has existing scheduled maintenance requirements."),
+                       _(u"This item is Structurally Significant"),
+                       _(u"This item is Functionally Significant")],
+                      [_(u"This failure mode is evident to the operating crew\nwhile performing normal duties."),
+                       _(u"This failure mode causes a functional loss or secondary\ndamage that could have a direct, adverse effect\non operating safety."),
+                       _(u"This hidden failure mode by itself or in combination\nwith another failure has an adverse effect on\noperating safety."),
+                       _(u"Safety Hidden"), _(u"Safety Evident"),
+                       _(u"Non-Safety Hidden"), _(u"Economic/Operational")]]
 
     def __init__(self, application):
         """
@@ -185,6 +195,7 @@ class Assembly:
         self._mission = {}
         self._mission_phase = {}
         self._hrmodel = {}
+        self._fmeca = {}
         self._mechanisms = {}
         self._fmeca_controls = {}
         self._fmeca_actions = {}
@@ -364,8 +375,8 @@ class Assembly:
                                                       bg_color,
                                                       fg_color)
 
-# Add background color and editable attributes so failure mechanisms, controls,
-# and actions will not be editable in the FMECA worksheet.
+        # Add background color and editable attributes so failure mechanisms,
+        # controls, and actions will not be editable in the FMECA worksheet.
         cols = len(self._FMECA_col_order)
         _column = self.tvwFMECA.get_columns()
         for i in range(len(_column)):
@@ -386,7 +397,31 @@ class Assembly:
 
         self.fraFMECADetails = _widg.make_frame(_label_=_(u"Failure Mechanism Details"))
 
-# Create the widgets to display the failure mechanism/cause details.
+        # Create the widgets to display the failure mode details.
+        self.fxdMode = gtk.Fixed()
+        self.chkFCQ1 = _widg.make_check_button(_label_=self._mp_tab_labels[1][0])
+        self.chkFCQ1.connect('toggled', self._callback_check, 90)
+        self.chkFCQ2 = _widg.make_check_button(_label_=self._mp_tab_labels[1][1])
+        self.chkFCQ2.connect('toggled', self._callback_check, 90)
+        self.chkFCQ3 = _widg.make_check_button(_label_=self._mp_tab_labels[1][2])
+        self.chkFCQ3.connect('toggled', self._callback_check, 90)
+
+        buffer = gtk.TextBuffer()
+        self.txtFCQ1 = _widg.make_text_view(buffer_=buffer, width=400, height=75)
+        buffer = gtk.TextBuffer()
+        self.txtFCQ2 = _widg.make_text_view(buffer_=buffer, width=400, height=75)
+        buffer = gtk.TextBuffer()
+        self.txtFCQ3 = _widg.make_text_view(buffer_=buffer, width=400, height=75)
+
+        self.optHS = _widg.make_option_button(_label_=self._mp_tab_labels[1][3])
+        self.optES = _widg.make_option_button(_group_=self.optHS,
+                                              _label_=self._mp_tab_labels[1][4])
+        self.optNSH = _widg.make_option_button(_group_=self.optHS,
+                                               _label_=self._mp_tab_labels[1][5])
+        self.optEO = _widg.make_option_button(_group_=self.optHS,
+                                              _label_=self._mp_tab_labels[1][6])
+
+        # Create the widgets to display the failure mechanism/cause details.
         self.fxdMechanism = gtk.Fixed()
         self.cmbOccurenceI = _widg.make_combo()
         self.cmbDetectionI = _widg.make_combo()
@@ -397,13 +432,13 @@ class Assembly:
         self.txtRPNI = _widg.make_entry(_width_=50, editable=False)
         self.txtRPNN = _widg.make_entry(_width_=50, editable=False)
 
-# Create the widgets to display the current controls details.
+        # Create the widgets to display the current controls details.
         self.fxdControl = gtk.Fixed()
         self.cmbControlType = _widg.make_combo()
         self.txtControlID = _widg.make_entry(_width_=50, editable=False)
         self.txtControlDescription = _widg.make_entry()
 
-# Create the widgets to display the recommended action details.
+        # Create the widgets to display the recommended action details.
         self.fxdAction = gtk.Fixed()
         self.cmbActionCategory = _widg.make_combo()
         self.cmbActionStatus = _widg.make_combo()
@@ -411,17 +446,42 @@ class Assembly:
         self.cmbActionApproved = _widg.make_combo()
         self.cmbActionClosed = _widg.make_combo()
         self.txtActionID = _widg.make_entry(_width_=50, editable=False)
-        self.txtActionDueDate = _widg.make_entry()
-        self.txtActionApproveDate = _widg.make_entry()
-        self.txtActionCloseDate = _widg.make_entry()
-        self.txtActionRecommended = _widg.make_text_view(width=355, height=75)
-        self.txtActionTaken = _widg.make_text_view(width=355, height=75)
+        self.txtActionDueDate = _widg.make_entry(_width_=100)
+        self.txtActionApproveDate = _widg.make_entry(_width_=100)
+        self.txtActionCloseDate = _widg.make_entry(_width_=100)
+        self.txtActionRecommended = _widg.make_text_view(width=375, height=75)
+        self.txtActionTaken = _widg.make_text_view(width=375, height=75)
 
         if self._fmeca_tab_create():
             self._app.debug_log.error("assembly.py: Failed to create FMECA tab.")
 
 # Create the Maintenance Planning tab widgets for the ASSEMBLY object.
-        # TODO: Implement Maintenance Planning for ASSEMBLY.
+        # Create the widgets for determing SSI and FSI status.
+        self.chkFSIQ1 = _widg.make_check_button(_label_=self._mp_tab_labels[0][0])
+        self.chkFSIQ2 = _widg.make_check_button(_label_=self._mp_tab_labels[0][1])
+        self.chkFSIQ3 = _widg.make_check_button(_label_=self._mp_tab_labels[0][2])
+        self.chkFSIQ4 = _widg.make_check_button(_label_=self._mp_tab_labels[0][3])
+
+        buffer = gtk.TextBuffer()
+        self.txtFSIQ1 = _widg.make_text_view(buffer_=buffer, width=800,
+                                             height=75)
+        buffer = gtk.TextBuffer()
+        self.txtFSIQ2 = _widg.make_text_view(buffer_=buffer, width=800,
+                                             height=75)
+        buffer = gtk.TextBuffer()
+        self.txtFSIQ3 = _widg.make_text_view(buffer_=buffer, width=800,
+                                             height=75)
+        buffer = gtk.TextBuffer()
+        self.txtFSIQ4 = _widg.make_text_view(buffer_=buffer, width=800,
+                                             height=75)
+
+        self.chkSSI = _widg.make_check_button(_label_=self._mp_tab_labels[0][4])
+        self.chkFSI = _widg.make_check_button(_label_=self._mp_tab_labels[0][5])
+
+        self._safety_significance_widgets_create()
+        self._safety_significance_tab_create()
+
+        self._maintenance_planning_tab_create()
 
         self.vbxAssembly = gtk.VBox()
         toolbar = self._toolbar_create()
@@ -2375,6 +2435,38 @@ class Assembly:
                 self.cmbActionApproved.append_text(_user)
                 self.cmbActionClosed.append_text(_user)
 
+# Create the detailed information gtk.Fixed widget for failure mode.
+        self.chkFCQ2.set_sensitive(False)
+        self.chkFCQ3.set_sensitive(True)
+        self.optHS.set_active(True)
+
+        y_pos = 5
+
+        self.fxdMode.put(self.chkFCQ1, 5, y_pos)
+        y_pos += 60
+
+        self.fxdMode.put(self.txtFCQ1, 5, y_pos)
+        y_pos += 80
+
+        self.fxdMode.put(self.chkFCQ2, 5, y_pos)
+        y_pos += 60
+
+        self.fxdMode.put(self.txtFCQ2, 5, y_pos)
+        y_pos += 80
+
+        self.fxdMode.put(self.chkFCQ3, 5, y_pos)
+        y_pos += 60
+
+        self.fxdMode.put(self.txtFCQ3, 5, y_pos)
+        y_pos += 80
+
+        self.fxdMode.put(self.optHS, 5, y_pos)
+        self.fxdMode.put(self.optES, 205, y_pos)
+        y_pos += 30
+
+        self.fxdMode.put(self.optNSH, 5, y_pos)
+        self.fxdMode.put(self.optEO, 205, y_pos)
+
 # Create the detailed information gtk.Fixed widget for failure mechanisms.
         _lbl_width = 200
         y_pos = 5
@@ -2450,12 +2542,12 @@ class Assembly:
 # Create the detailed information gtk.Fixed widget for recommended actions.
         y_pos = 5
 
-        label = _widg.make_label(_(u"Action ID:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Action ID:"), 200, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.txtActionID, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.txtActionID, 205, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(_(u"Recommended Action:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Recommended Action:"), 200, 25)
         self.fxdAction.put(label, 5, y_pos)
         y_pos += 30
         self.fxdAction.put(self.txtActionRecommended, 5, y_pos)
@@ -2463,30 +2555,30 @@ class Assembly:
                                           self._callback_entry, 'text', 1000)
         y_pos += 80
 
-        label = _widg.make_label(_(u"Action Category:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Action Category:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionCategory, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.cmbActionCategory, 180, y_pos)
         self.cmbActionCategory.connect('changed', self._callback_combo, 1001)
         y_pos += 35
 
-        label = _widg.make_label(_(u"Action Owner:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Action Owner:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionResponsible, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.cmbActionResponsible, 180, y_pos)
         self.cmbActionResponsible.connect('changed', self._callback_combo, 1002)
-        label = _widg.make_label(_(u"Due Date:"), _lbl_width, 25)
-        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
-        self.fxdAction.put(self.txtActionDueDate, 3 * (_lbl_width + 5), y_pos)
+        label = _widg.make_label(_(u"Due Date:"), 125, 25)
+        self.fxdAction.put(label, 385, y_pos)
+        self.fxdAction.put(self.txtActionDueDate, 515, y_pos)
         self.txtActionDueDate.connect('focus-out-event',
                                       self._callback_entry, 'date', 1003)
         y_pos += 35
 
-        label = _widg.make_label(_(u"Status:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Status:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionStatus, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.cmbActionStatus, 180, y_pos)
         self.cmbActionStatus.connect('changed', self._callback_combo, 1004)
         y_pos += 60
 
-        label = _widg.make_label(_(u"Action Taken:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Action Taken:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
         y_pos += 30
 
@@ -2496,26 +2588,24 @@ class Assembly:
                                     1005)
         y_pos += 80
 
-        label = _widg.make_label(_(u"Approved By:"), _lbl_width, 25)
+        label = _widg.make_label(_(u"Approved By:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionApproved, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.cmbActionApproved, 180, y_pos)
         self.cmbActionApproved.connect('changed', self._callback_combo, 1006)
-        label = _widg.make_label(_(u"Approval Date:"), _lbl_width, 25)
-        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
-        self.fxdAction.put(self.txtActionApproveDate, 3 * (_lbl_width + 5),
-                           y_pos)
+        label = _widg.make_label(_(u"Approval Date:"), 125, 25)
+        self.fxdAction.put(label, 385, y_pos)
+        self.fxdAction.put(self.txtActionApproveDate, 515, y_pos)
         self.txtActionApproveDate.connect('focus-out-event',
                                           self._callback_entry, 'date', 1007)
-        y_pos += 60
+        y_pos += 35
 
-        label = _widg.make_label(_(u"Closed By:"), _lbl_width , 25)
+        label = _widg.make_label(_(u"Closed By:"), 150, 25)
         self.fxdAction.put(label, 5, y_pos)
-        self.fxdAction.put(self.cmbActionClosed, _lbl_width + 5, y_pos)
+        self.fxdAction.put(self.cmbActionClosed, 180, y_pos)
         self.cmbActionClosed.connect('changed', self._callback_combo, 1008)
-        label = _widg.make_label(_(u"Closure Date:"), _lbl_width, 25)
-        self.fxdAction.put(label, 2 * (_lbl_width + 5), y_pos)
-        self.fxdAction.put(self.txtActionCloseDate, 3 * (_lbl_width + 5),
-                           y_pos)
+        label = _widg.make_label(_(u"Closure Date:"), 125, 25)
+        self.fxdAction.put(label, 385, y_pos)
+        self.fxdAction.put(self.txtActionCloseDate, 515,y_pos)
         self.txtActionCloseDate.connect('focus-out-event',
                                         self._callback_entry, 'date', 1009)
 
@@ -2635,11 +2725,33 @@ class Assembly:
                     _util.none_to_string(_results[i][self._FMECA_col_order[23]]),
                     0, '#FFFFFF', True, icon]
 
+            # Load the FMECA gtk.TreeView with the data.
             try:
                 model.append(None, data)
             except TypeError:
                 _util.application_error(_(u"Failed to load FMEA/FMECA failure mode %d" % _results[i][2]))
                 pass
+
+            # Load the FMECA dictionary with the data.
+            self._fmeca[_results[i][self._FMECA_col_order[0]]] = data[1:25]
+
+# Load the failure consequences to the FMECA disctionary.
+        query = "SELECT * FROM tbl_failure_consequences"
+        _results = self._app.DB.execute_query(query,
+                                              None,
+                                              self._app.ProgCnx)
+
+        _n_modes = len(_results)
+        for i in range(_n_modes):
+            self._fmeca[_results[i][1]].append(_results[i][2])
+            self._fmeca[_results[i][1]].append(_results[i][3])
+            self._fmeca[_results[i][1]].append(_results[i][4])
+            self._fmeca[_results[i][1]].append(_results[i][5])
+            self._fmeca[_results[i][1]].append(_results[i][6])
+            self._fmeca[_results[i][1]].append(_results[i][7])
+            self._fmeca[_results[i][1]].append(_results[i][8])
+            self._fmeca[_results[i][1]].append(_results[i][9])
+            self._fmeca[_results[i][1]].append(_results[i][10])
 
 # Load the failure mechanisms to the gtk.TreeView.
         query = "SELECT t1.fld_assembly_id, t1.fld_mode_id, \
@@ -2652,7 +2764,6 @@ class Assembly:
                  FROM tbl_fmeca_mechanisms AS t1 \
                  INNER JOIN tbl_fmeca AS t2 ON t2.fld_mode_id=t1.fld_mode_id \
                  WHERE t1.fld_assembly_id=%d" % self.assembly_id
-
         _results = self._app.DB.execute_query(query,
                                               None,
                                               self._app.ProgCnx)
@@ -2765,7 +2876,7 @@ class Assembly:
             col = self.tvwFMECA.get_column(1)
             self.tvwFMECA.set_cursor(path, col, False)
             self.tvwFMECA.row_activated(path, col)
-
+        print self._fmeca
         return False
 
     def _fmeca_treeview_row_changed(self, treeview, path, column):
@@ -2790,8 +2901,10 @@ class Assembly:
         _type = model.get_value(row, _fmeca_len)
 
         if(_type == 0):                     # Failure mode.
+            self.fraFMECADetails.add(self.fxdMode)
+
             _label = self.fraFMECADetails.get_label_widget()
-            _label.set_markup("")
+            _label.set_markup("<span weight='bold'>Failure Mode Consequence</span>")
 
         elif(_type == 1):                   # Failure mechanism.
             _id = model.get_value(row, 0)
@@ -2806,29 +2919,31 @@ class Assembly:
 
             self.fraFMECADetails.add(self.fxdMechanism)
             _label = self.fraFMECADetails.get_label_widget()
-            _label.set_markup("<span weight='bold'>Failure Mechanism Details</span>")
+            _label.set_markup("<span weight='bold'>Failure Mechanism/Cause</span>")
 
         elif(_type == 2):                   # Control
             _id = model.get_value(row, 0)
             self.txtControlID.set_text(str(_id))
             self.txtControlDescription.set_text(
-                _util.none_to_string(self._fmeca_controls[_id][0]))
+            _util.none_to_string(self._fmeca_controls[_id][0]))
             self.cmbControlType.set_active(self._fmeca_controls[_id][1])
 
             self.fraFMECADetails.add(self.fxdControl)
             _label = self.fraFMECADetails.get_label_widget()
-            _label.set_markup("<span weight='bold'>FMECA Control Details</span>")
+            _label.set_markup("<span weight='bold'>Failure Mechanism/Cause Control</span>")
 
         elif(_type == 3):                   # Action
             _id = model.get_value(row, 0)
             self.txtActionID.set_text(str(_id))
-            self.txtActionRecommended.set_text(_util.none_to_string(self._fmeca_actions[_id][0]))
+            _buffer = self.txtActionRecommended.get_children()[0].get_children()[0].get_buffer()
+            _buffer.set_text(_util.none_to_string(self._fmeca_actions[_id][0]))
             self.cmbActionCategory.set_active(int(self._fmeca_actions[_id][1]))
             self.cmbActionResponsible.set_active(int(self._fmeca_actions[_id][2]))
             _dte = str(datetime.fromordinal(int(self._fmeca_actions[_id][3])).strftime('%Y-%m-%d'))
             self.txtActionDueDate.set_text(_dte)
             self.cmbActionStatus.set_active(int(self._fmeca_actions[_id][4]))
-            self.txtActionTaken.set_text(_util.none_to_string(self._fmeca_actions[_id][5]))
+            _buffer = self.txtActionTaken.get_children()[0].get_children()[0].get_buffer()
+            _buffer.set_text(_util.none_to_string(self._fmeca_actions[_id][5]))
             self.cmbActionApproved.set_active(int(self._fmeca_actions[_id][6]))
             _dte = str(datetime.fromordinal(int(self._fmeca_actions[_id][7])).strftime('%Y-%m-%d'))
             self.txtActionApproveDate.set_text(_dte)
@@ -2838,9 +2953,89 @@ class Assembly:
 
             self.fraFMECADetails.add(self.fxdAction)
             _label = self.fraFMECADetails.get_label_widget()
-            _label.set_markup("<span weight='bold'>FMECA Action Details</span>")
+            _label.set_markup("<span weight='bold'>Failure Mechanism/Cause Action Details</span>")
 
         self.fraFMECADetails.show_all()
+
+        return False
+
+    def _safety_significance_widgets_create(self):
+        """
+        Method to create Safety Significance and Failure Consequence widgets.
+        """
+
+        self.chkFSIQ1.set_tooltip_text(_(u""))
+        self.chkFSIQ2.set_tooltip_text(_(u""))
+        self.chkFSIQ3.set_tooltip_text(_(u""))
+        self.chkFSIQ4.set_tooltip_text(_(u""))
+
+        self.txtFSIQ1.set_tooltip_text(_(u"Justification for the answer to safety significance question 1."))
+        self.txtFSIQ2.set_tooltip_text(_(u"Justification for the answer to safety significance question 2."))
+        self.txtFSIQ3.set_tooltip_text(_(u"Justification for the answer to safety significance question 3."))
+        self.txtFSIQ4.set_tooltip_text(_(u"Justification for the answer to safety significance question 4."))
+
+        self.chkFCQ1.set_tooltip_text(_(u""))
+        self.chkFCQ2.set_tooltip_text(_(u""))
+        self.chkFCQ3.set_tooltip_text(_(u""))
+
+        self.txtFCQ1.set_tooltip_text(_(u"To help determine if the failure is evident, refer to the item description, failure detection method, and compensating provisions on the FMECA worksheet.  The FMECA identifies design features, instruments, or warning lights which make a failure evident to the operator."))
+        self.txtFCQ2.set_tooltip_text(_(u"Direct means the failure mode must achieve its effect by itself and not in combination with other failure modes.  Adverse effect means the direct consequences of the failure mode are extremely serious or possibly catastrophic.  The failure mode must impact a function that is not protected by redundancy or protective devices."))
+        self.txtFCQ3.set_tooltip_text(_(u"First, analyze the failure mode by itself to determine if it has an adverse effect on operating safety.  Second, if the hidden failure by itself does not have an advese effect on safety, look for a combination of failures that will.  If a combination of failures is identified, list the additional failure in the justification."))
+
+        return False
+
+    def _safety_significance_tab_create(self):
+        """
+        Method to create the Safety Significance and Failure Consequnce
+        gtk.Notebook tab and populate it with the appropriate widgets.
+        """
+
+        fixed = gtk.Fixed()
+
+        y_pos = 5
+
+        fixed.put(self.chkFSIQ1, 5, y_pos)
+        y_pos += 25
+
+        fixed.put(self.txtFSIQ1, 5, y_pos)
+        y_pos += 80
+
+        fixed.put(self.chkSSI, 5, y_pos)
+
+        y_pos = 5
+
+        fixed.put(self.chkFSIQ2, 1015, y_pos)
+        y_pos += 25
+
+        fixed.put(self.txtFSIQ2, 1015, y_pos)
+        y_pos += 80
+
+        fixed.put(self.chkFSIQ3, 1015, y_pos)
+        y_pos += 25
+
+        fixed.put(self.txtFSIQ3, 1015, y_pos)
+        y_pos += 80
+
+        fixed.put(self.chkFSIQ4, 1015, y_pos)
+        y_pos += 25
+
+        fixed.put(self.txtFSIQ4, 1015, y_pos)
+        y_pos += 90
+
+        fixed.put(self.chkFSI, 1015, y_pos)
+
+        frame = _widg.make_frame(_label_=_(u"Safety Significance Determination"))
+        frame.add(fixed)
+
+        label = gtk.Label()
+        _heading = _(u"Assembly\nSignificance")
+        label.set_markup("<span weight='bold'>" + _heading + "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_(u"Significance determination for the selected assembly."))
+
+        self.notebook.insert_page(frame, tab_label=label, position=-1)
 
         return False
 
@@ -2858,12 +3053,12 @@ class Assembly:
         hbox = gtk.HBox()
 
         label = gtk.Label()
-        _heading = _(u"Maintenance\nPlanning")
+        _heading = _(u"Maintenance\nTask Analysis")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_(u"Maintenance planning analysis for the selected assembly."))
+        label.set_tooltip_text(_(u"Maintenance task analysis for the selected assembly."))
 
         self.notebook.insert_page(hbox, tab_label=label, position=-1)
 
@@ -3145,8 +3340,8 @@ class Assembly:
         self._app.winWorkBook.add(self.vbxAssembly)
         self._app.winWorkBook.show_all()
 
-        _title_ = _(u"RTK Work Bench: Analyzing %s") % \
-                  self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 17)
+        _title_ = _(u"RTK Work Book: Analyzing %s") % \
+                  self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 58)
         self._app.winWorkBook.set_title(_title_)
 
         self.notebook.set_current_page(0)
@@ -4194,6 +4389,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         _type = model.get_value(row, len(self._FMECA_col_order))
 
         if(_type == 0):                     # Failure mode.
+# Update the FMECA table.
             _values = (model.get_value(row, self._FMECA_col_order[1]), \
                        model.get_value(row, self._FMECA_col_order[2]), \
                        model.get_value(row, self._FMECA_col_order[3]), \
@@ -4747,12 +4943,32 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                   associated with the data from the calling checkbutton.
         """
 
-        # Get the Hardware Tree model and selected row.
-        model = self._app.HARDWARE.model
-        row = self._app.HARDWARE.selected_row
+        if(index_ > 87):
+# Determine the failure consequences.
+            if(self.chkFCQ1.get_active() and not self.chkFCQ2.get_active()):
+                self.optEO.set_active(True)
+            elif(not self.chkFCQ1.get_active() and not self.chkFCQ3.get_active()):
+                self.optNSH.set_active(True)
+            elif(self.chkFCQ1.get_active() and self.chkFCQ2.get_active()):
+                self.optES.set_active(True)
+            else:
+                self.optHS.set_active(True)
 
-        # Update the Hardware Tree.
-        model.set_value(row, index_, check.get_active())
+# Make the correct question available depending on the answer to question 1.
+            if(self.chkFCQ1.get_active()):
+                self.chkFCQ2.set_sensitive(True)
+                self.chkFCQ3.set_sensitive(False)
+            else:
+                self.chkFCQ2.set_sensitive(False)
+                self.chkFCQ3.set_sensitive(True)
+
+        else:
+# Get the Hardware Tree model and selected row.
+            model = self._app.HARDWARE.model
+            row = self._app.HARDWARE.selected_row
+
+# Update the Hardware Tree.
+            model.set_value(row, index_, check.get_active())
 
         return False
 
@@ -4997,6 +5213,16 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                                            None,
                                            self._app.ProgCnx,
                                            True)
+
+                # Insert a new line in the failure consequence table.
+                query = "INSERT INTO tbl_failure_consequences \
+                         (fld_assembly_id, fld_mode_id) \
+                         VALUES (%d, %d)" % (self.assembly_id, _last_id)
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           True)
+
                 self._fmeca_tab_load()
 
             elif(widget.get_label() == 'Mechanism'):

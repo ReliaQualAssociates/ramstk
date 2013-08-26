@@ -2348,7 +2348,7 @@ class Testing:
         self._app.winWorkBook.add(self.vbxTesting)
         self._app.winWorkBook.show_all()
 
-        _title = _(u"RTK Work Bench: Program Reliability Testing (%d Tests)") % \
+        _title = _(u"RTK Work Book: Program Reliability Testing (%d Tests)") % \
                    self.n_tests
         self._app.winWorkBook.set_title(_title)
 

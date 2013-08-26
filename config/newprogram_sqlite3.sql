@@ -1022,7 +1022,7 @@ CREATE TABLE "tbl_fmeca_actions" (
 
 
 --
--- Create tables for storing maintenance analyses information.
+-- Create tables for storing maintenance planning analyses information.
 --
 CREATE TABLE "tbl_significant_item" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
@@ -1045,7 +1045,7 @@ CREATE TABLE "tbl_failure_consequences" (
     "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
     "fld_safety" INTEGER DEFAULT(0),                    -- Failure mode has apparent safety consequences.
     "fld_safety_hidden" INTEGER DEFAULT(1),             -- Failure mode has hidden safety consequences.
-    "fld_operation_hidden" INTEGER DEFAULT(0)           -- Failure mode has hidded operational consequences.
+    "fld_operation_hidden" INTEGER DEFAULT(0)           -- Failure mode has hidden operational consequences.
 );
 
 CREATE TABLE "tbl_on_condition" (

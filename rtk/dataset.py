@@ -2819,7 +2819,7 @@ class Dataset:
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
 
-        _title = _(u"RTK Work Bench: Program Survival Analyses (%d Datasets)") % \
+        _title = _(u"RTK Work Book: Program Survival Analyses (%d Datasets)") % \
                    self.n_datasets
         self._app.winWorkBook.set_title(_title)
 

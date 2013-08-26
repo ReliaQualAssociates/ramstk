@@ -1290,7 +1290,7 @@ class Incident:
         self._app.winWorkBook.add(self.vbxIncident)
         self._app.winWorkBook.show_all()
 
-        _title = _("RTK Work Bench: Program Incident (%d Incidents)") % \
+        _title = _("RTK Work Book: Program Incident (%d Incidents)") % \
                    self.n_incidents
         self._app.winWorkBook.set_title(_title)
 

@@ -1801,7 +1801,7 @@ class Component():
         self._app.winWorkBook.add(self.vbxComponent)
         self._app.winWorkBook.show_all()
 
-        _title_ = _(u"RTK Work Bench: Analyzing %s") % \
+        _title_ = _(u"RTK Work Book: Analyzing %s") % \
                   self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 17)
         self._app.winWorkBook.set_title(_title_)
         self.notebook.set_current_page(0)
