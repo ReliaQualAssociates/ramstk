@@ -309,7 +309,9 @@ class Requirement:
         fixed.put(label, 5, y_pos)
         textview = _widg.make_text_view(buffer_=self.txtRequirement, width=400)
         textview.set_tooltip_text(_(u"Detailed description of the requirement."))
-        textview.connect('focus-out-event', self._callback_entry, 'text', 3)
+        _widget = textview.get_children()[0].get_children()[0]
+        print _widget
+        _widget.connect('focus-out-event', self._callback_entry, 'text', 3)
         fixed.put(textview, 155, y_pos)
         y_pos += 105
 
@@ -851,47 +853,34 @@ class Requirement:
         row   -- the selected row in the Requirement Object treeview.
         """
 
-        values = (model.get_value(row, self._col_order[2]), \
-                  model.get_value(row, self._col_order[3]), \
-                  model.get_value(row, self._col_order[4]), \
-                  model.get_value(row, self._col_order[5]), \
-                  model.get_value(row, self._col_order[6]), \
-                  model.get_value(row, self._col_order[7]), \
-                  model.get_value(row, self._col_order[8]), \
-                  model.get_value(row, self._col_order[9]), \
-                  model.get_value(row, self._col_order[10]), \
-                  model.get_value(row, self._col_order[11]), \
-                  model.get_value(row, self._col_order[12]), \
-                  model.get_value(row, self._col_order[13]), \
-                  model.get_value(row, self._col_order[14]), \
-                  model.get_value(row, self._col_order[0]), \
-                  model.get_value(row, self._col_order[1]))
+        _values = (model.get_value(row, self._col_order[2]), \
+                   model.get_value(row, self._col_order[3]), \
+                   model.get_value(row, self._col_order[4]), \
+                   model.get_value(row, self._col_order[5]), \
+                   model.get_value(row, self._col_order[6]), \
+                   model.get_value(row, self._col_order[7]), \
+                   model.get_value(row, self._col_order[8]), \
+                   model.get_value(row, self._col_order[9]), \
+                   model.get_value(row, self._col_order[10]), \
+                   model.get_value(row, self._col_order[11]), \
+                   model.get_value(row, self._col_order[12]), \
+                   model.get_value(row, self._col_order[13]), \
+                   model.get_value(row, self._col_order[14]), \
+                   model.get_value(row, self._col_order[0]), \
+                   model.get_value(row, self._col_order[1]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_requirements \
-                     SET fld_assembly_id=%d, fld_requirement_desc='%s', \
-                         fld_requirement_type=%d, fld_requirement_code='%s', \
-                         fld_derived=%d, fld_parent_requirement='%s', \
-                         fld_validated=%d, fld_validated_date='%s', \
-                         fld_owner='%s', fld_specification='%s', \
-                         fld_page_number='%s', fld_figure_number='%s', \
-                         fld_parent_id=%d \
-                     WHERE fld_revision_id=%d \
-                     AND fld_requirement_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_requirements \
-                     SET fld_assembly_id=?, fld_requirement_desc=?, \
-                         fld_requirement_type=?, fld_requirement_code=?, \
-                         fld_derived=?, fld_parent_requirement=?, \
-                         fld_validated=?, fld_validated_date=?, \
-                         fld_owner=?, fld_specification=?, \
-                         fld_page_number=?, fld_figure_number=?, \
-                         fld_parent_id=? \
-                     WHERE fld_revision_id=? \
-                     AND fld_requirement_id=?"
-
+        query = "UPDATE tbl_requirements \
+                 SET fld_assembly_id=%d, fld_requirement_desc='%s', \
+                     fld_requirement_type=%d, fld_requirement_code='%s', \
+                     fld_derived=%d, fld_parent_requirement='%s', \
+                     fld_validated=%d, fld_validated_date='%s', \
+                     fld_owner='%s', fld_specification='%s', \
+                     fld_page_number='%s', fld_figure_number='%s', \
+                     fld_parent_id=%d \
+                 WHERE fld_revision_id=%d \
+                 AND fld_requirement_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
@@ -1147,11 +1136,11 @@ class Requirement:
         elif(convert == 'float'):
             text_ = float(entry.get_text().replace('$', ''))
 
-        # Update the Requirement Tree.
+# Update the Requirement Tree.
         try:
             self.model.set_value(self.selected_row, _index_, text_)
         except TypeError:                   # There are no requirements.
-            pass
+            return True
 
         return False
 

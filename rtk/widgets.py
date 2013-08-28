@@ -76,13 +76,12 @@ def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
 
 
 def make_check_button(_label_=None):
+    """
+    Utility function to create CheckButton widgets.
 
-    """ Utility function to create CheckButton widgets.
-
-        Keyword Arguments:
-        _label_ -- the text to display with the CheckButton widget.
-                   Default is None.
-
+    Keyword Arguments:
+    _label_ -- the text to display with the CheckButton widget.
+               Default is None.
     """
 
     checkbutton = gtk.CheckButton(_label_, True)
@@ -100,14 +99,14 @@ def make_option_button(_group_=None, _label_=_(u"")):
 
 
 def make_combo(_width_=200, _height_=30, simple=True):
+    """
+    Utility function to create gtk.ComboBox widgets.
 
-    """ Utility function to create ComboBox widgets.
-
-        Keyword Arguments:
-        width  -- width of the ComboBox widget.  Default is 200.
-        height -- height of the ComboBOx widget.  Default is 30.
-        simple -- boolean indicating whether to create a simple text ComboBox.
-                  Defaults to True.
+    Keyword Arguments:
+    _width_  -- width of the gtk.ComboBox widget.  Default is 200.
+    _height_ -- height of the gtk.ComboBox widget.  Default is 30.
+    simple   -- boolean indicating whether to create a simple text
+                gtk.ComboBox.  Defaults to True.
     """
 
     if simple:
@@ -128,16 +127,16 @@ def make_combo(_width_=200, _height_=30, simple=True):
 
 
 def load_combo(combo, _list_, simple=True, _index_=0):
+    """
+    Utility function to load gtk.ComboBox widgets.
 
-    """ Utility function to load gtk.ComboBox widgets.
-
-        Keyword Arguments:
-        combo   -- the gtk.ComboBox to load.
-        _list_  -- the information to load into the gtk.ComboBox.
-        simple  -- indicates whether the load is simple (single column) or
-                   complex (multiple columns).
-        _index_ -- the index in the list to display.  Only used when doing a
-                   simple load.
+    Keyword Arguments:
+    combo   -- the gtk.ComboBox to load.
+    _list_  -- the information to load into the gtk.ComboBox.
+    simple  -- indicates whether the load is simple (single column) or
+               complex (multiple columns).
+    _index_ -- the index in the list to display.  Only used when doing a
+               simple load.
     """
 
     model = combo.get_model()
@@ -160,14 +159,15 @@ def make_dialog(_title_, _parent_=None,
                 _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                            gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
     """
-    Utility function to create Dialog widgets.
+    Utility function to create gtk.Dialog widgets.
 
     Keyword Arguments:
-    _title_   -- the title text for the Dialog.
-    _parent_  -- the parent window to associate the Dialog with.  Defaults to
-                 None.
-    _flags_   -- the flags that control the operation of the Dialog.  Defaults
-                 to gtk.DIALOG_MODAL and gtk.DIALOG_DESTROY_WITH_PARENT.
+    _title_   -- the title text for the gtk.Dialog.
+    _parent_  -- the parent window to associate the gtk.Dialog with.  Defaults
+                 to None.
+    _flags_   -- the flags that control the operation of the gtk.Dialog.
+                 Defaults to gtk.DIALOG_MODAL and
+                 gtk.DIALOG_DESTROY_WITH_PARENT.
     _buttons_ -- the buttons to display and their response values.  Defaults to
                  gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT and
                  gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT.
@@ -187,12 +187,12 @@ def make_entry(_width_=200, _height_=25,
                editable=True, bold=False,
                _color_='#BBDDFF'):
     """
-    Utility function to create Entry widgets.
+    Utility function to create gtk.Entry widgets.
 
     Keyword Arguments:
-    width    -- width of the Entry widget.  Default is 200.
-    eight    -- height of the Entry widget.  Default is 25.
-    editable -- boolean indicating whether Entry should be editable.
+    width    -- width of the gtk.Entry widget.  Default is 200.
+    eight    -- height of the gtk.Entry widget.  Default is 25.
+    editable -- boolean indicating whether gtk.Entry should be editable.
                 Defaults to True.
     bold     -- boolean indicating whether text should be bold.  Defaults
                 to False.
@@ -223,15 +223,15 @@ def make_entry(_width_=200, _height_=25,
 
 
 def make_label(text, width=190, height=25, bold=True):
+    """
+    Utility function to create gtk.Label widgets.
 
-    """ Utility function to create Label widgets.
-
-        Keyword Arguments:
-        text   -- the text to display in the Label widget.
-        width  -- width of the Label widget.  Default is 190.
-        height -- height of the Label widget.  Default is 25.
-        bold   -- boolean indicating whether text should be bold.  Defaults
-                  to True.
+    Keyword Arguments:
+    text   -- the text to display in the gtk.Label widget.
+    width  -- width of the gtk.Label widget.  Default is 190.
+    height -- height of the gtk.Label widget.  Default is 25.
+    bold   -- boolean indicating whether text should be bold.  Defaults
+              to True.
     """
 
     label = gtk.Label()
@@ -254,12 +254,13 @@ def make_label(text, width=190, height=25, bold=True):
 
 def make_text_view(buffer_=None, width=200, height=100):
     """
-    Utility function to create TextView widgets.
+    Utility function to create gtk.TextView widgets.
 
     Keyword Arguments:
-    buffer_ -- the TextBuffer to associate with the TextView.  Default is None.
-    width   -- width of the TextView widget.  Default is 200.
-    height  -- height of the TextView widget.  Default is 100.
+    buffer_ -- the TextBuffer to associate with the gtk.TextView.  Default is
+               None.
+    width   -- width of the gtk.TextView widget.  Default is 200.
+    height  -- height of the gtk.TextView widget.  Default is 100.
     """
 
     view = gtk.TextView(buffer=buffer_)
@@ -275,12 +276,11 @@ def make_text_view(buffer_=None, width=200, height=100):
 
 
 def make_frame(_label_=""):
-
     """
-    Utility function to create gtk.Frame() widgets.
+    Utility function to create gtk.Frame widgets.
 
     Keyword Arguments:
-    _label_ -- the text to display in the frame's label.
+    _label_ -- the text to display in the gtk.Frame label.
     '"""
 
     label = gtk.Label()
@@ -307,12 +307,12 @@ def make_fixed():
 
 def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     """
-    Utility function to create TreeView widgets.
+    Utility function to create gtk.TreeView widgets.
 
     Keyword Arguments:
-    name    -- the name of the TreeView to read formatting information for.
+    name    -- the name of the gtk.TreeView to read formatting information for.
     fmt_idx -- the index of the format file to use when creating the
-               TreeView.
+               gtk.TreeView.
     _app    -- the RTK application.
     _list   -- the list of items to load into the gtk.CellRendererCombo.
     bg_col  -- the background color to use for each row.  Defaults to white.
