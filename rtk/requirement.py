@@ -310,7 +310,6 @@ class Requirement:
         textview = _widg.make_text_view(buffer_=self.txtRequirement, width=400)
         textview.set_tooltip_text(_(u"Detailed description of the requirement."))
         _widget = textview.get_children()[0].get_children()[0]
-        print _widget
         _widget.connect('focus-out-event', self._callback_entry, 'text', 3)
         fixed.put(textview, 155, y_pos)
         y_pos += 105

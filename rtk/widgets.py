@@ -481,17 +481,16 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
 
 
 def format_cell(column, cell, model, iter, data_):
+    """
+    Function to set the formatting of the gtk.Treeview gtk.CellRenderers.
 
-    """ Function to set the formatting of the gtk.Treeview gtk.CellRenderers.
-
-        Keyword Arguments:
-        column -- the gtk.TreeViewColumn containing the gtk.CellRenderer to
-                  format.
-        cell   -- the gtk.CellRenderer to format.
-        model  -- the gtk.TreeModel containing the gtk.TreeViewColumn.
-        iter   -- the gtk.TreeIter pointing to the row containing the
-                  gtk.CellRenderer to format.
-        data_  -- a tuple containing the position and the data type.
+    Keyword Arguments:
+    column -- the gtk.TreeViewColumn containing the gtk.CellRenderer to format.
+    cell   -- the gtk.CellRenderer to format.
+    model  -- the gtk.TreeModel containing the gtk.TreeViewColumn.
+    iter   -- the gtk.TreeIter pointing to the row containing the
+              gtk.CellRenderer to format.
+    data_  -- a tuple containing the position and the data type.
     """
 
     if(data_[1] == 'gfloat'):
@@ -561,7 +560,7 @@ def resize_wrap(column, param, cell):
     cell   -- the cell that needs to be resized.
     """
 
-    # TODO: Adjust the height of the row when the width is adjusted.
+# TODO: Adjust the height of the row when the width is adjusted.
     width = column.get_width()
     tree=column.get_tree_view().get_name()
 
@@ -596,7 +595,6 @@ def make_column_heading(_heading_=""):
     label.show_all()
 
     return(label)
-
 
 
 def load_plot(axis, plot, x, y1=None, y2=None, y3=None,

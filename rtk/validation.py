@@ -365,13 +365,13 @@ class Validation:
         label = _widg.make_label(self._gd_tab_labels[0][8],
                                  150, 25)
         fixed.put(label, 300, y_pos)
-        fixed.put(self.txtMaxAcceptable, 455, y_pos)
+        fixed.put(self.txtMeanAcceptable, 455, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._gd_tab_labels[0][7],
                                  150, 25)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMeanAcceptable, 155, y_pos)
+        fixed.put(self.txtMaxAcceptable, 155, y_pos)
 
         label = _widg.make_label(self._gd_tab_labels[0][9],
                                  150, 25)
@@ -577,8 +577,6 @@ class Validation:
 
         fixed.show_all()
 
-# Clark's DMS password = p2Hg8q3B
-
 # Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
@@ -597,7 +595,7 @@ class Validation:
     def load_notebook(self):
         """
         Method to load the VALIDATION Object gtk.Notebook.
-         """
+        """
 
         if self.selected_row is not None:
             self._general_data_tab_load()
@@ -875,44 +873,32 @@ class Validation:
         row   -- the selected row in the Validation Object treeview.
         """
 
-        values = (model.get_value(row, self._col_order[2]), \
-                  model.get_value(row, self._col_order[3]), \
-                  model.get_value(row, self._col_order[4]), \
-                  model.get_value(row, self._col_order[5]), \
-                  model.get_value(row, self._col_order[6]), \
-                  model.get_value(row, self._col_order[7]), \
-                  model.get_value(row, self._col_order[8]), \
-                  model.get_value(row, self._col_order[9]), \
-                  model.get_value(row, self._col_order[10]), \
-                  model.get_value(row, self._col_order[11]), \
-                  model.get_value(row, self._col_order[12]), \
-                  model.get_value(row, self._col_order[13]), \
-                  self._app.REVISION.revision_id, \
-                  model.get_value(row, self._col_order[1]))
+        _values = (model.get_value(row, self._col_order[2]), \
+                   model.get_value(row, self._col_order[3]), \
+                   model.get_value(row, self._col_order[4]), \
+                   model.get_value(row, self._col_order[5]), \
+                   model.get_value(row, self._col_order[6]), \
+                   model.get_value(row, self._col_order[7]), \
+                   model.get_value(row, self._col_order[8]), \
+                   model.get_value(row, self._col_order[9]), \
+                   model.get_value(row, self._col_order[10]), \
+                   model.get_value(row, self._col_order[11]), \
+                   model.get_value(row, self._col_order[12]), \
+                   model.get_value(row, self._col_order[13]), \
+                   self._app.REVISION.revision_id, \
+                   model.get_value(row, self._col_order[1]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_validation \
-                     SET fld_task_desc='%s', fld_task_type=%d, \
-                         fld_task_specification='%s', fld_measurement_unit=%d, \
-                         fld_min_acceptable=%f, fld_mean_acceptable=%f, \
-                         fld_max_acceptable=%f, fld_variance_acceptable=%f, \
-                         fld_start_date='%s', fld_end_date='%s', fld_status=%f, \
-                         fld_effectiveness=%f \
-                     WHERE fld_revision_id=%d \
-                     AND fld_validation_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_validation \
-                     SET fld_task_desc=?, fld_task_type=?, \
-                         fld_task_specification=?, fld_measurement_unit=?, \
-                         fld_min_acceptable=?, fld_mean_acceptable=?, \
-                         fld_max_acceptable=?, fld_variance_acceptable=?, \
-                         fld_start_date=?, fld_end_date=?, fld_status=?, \
-                         fld_effectiveness=? \
-                     WHERE fld_revision_id=? \
-                     AND fld_validation_id=?"
-
+        query = "UPDATE tbl_validation \
+                 SET fld_task_desc='%s', fld_task_type=%d, \
+                     fld_task_specification='%s', fld_measurement_unit=%d, \
+                     fld_min_acceptable=%f, fld_mean_acceptable=%f, \
+                     fld_max_acceptable=%f, fld_variance_acceptable=%f, \
+                     fld_start_date='%s', fld_end_date='%s', fld_status=%f, \
+                     fld_effectiveness=%f \
+                 WHERE fld_revision_id=%d \
+                 AND fld_validation_id=%d" % _values
         results = self._app.DB.execute_query(query,
-                                             values,
+                                             None,
                                              self._app.ProgCnx,
                                              commit=True)
 
