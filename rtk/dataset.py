@@ -166,6 +166,8 @@ class Dataset:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Analyses Input tab widgets.
+        self.chkGroup = _widg.make_check_button(_label_=_(u"Allocate to sub-assemblies"))
+
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
         self.cmbConfMethod = _widg.make_combo()
@@ -609,9 +611,13 @@ class Dataset:
         fixed.put(self.txtRelPoints, 205, y_pos)
         y_pos += 30
 
+        fixed.put(self.chkGroup, 5, y_pos)
+
         fixed.show_all()
 
         hbox.pack_start(frame, True, True)
+
+        self.chkGroup.hide()
 
 # Insert the tab.
         label = gtk.Label()
@@ -2296,6 +2302,33 @@ class Dataset:
 
         #elif(_analysis_ == 7):              # Fit to a WeiBayes.
 
+# Find the percent of records belonging to each sub-assembly and then allocate
+# this percent of the overall failure rate to each sub-assembly.
+        if(self.chkGroup.get_active()):
+            query = "SELECT fld_hardware_id, COUNT(fld_hardware_id) \
+                     FROM tbl_incident \
+                     WHERE fld_revision_id=%d \
+                     GROUP BY fld_hardware_id" % self._app.REVISION.revision_id
+            _results = self._app.DB.execute_query(query,
+                                                  None,
+                                                  self._app.ProgCnx)
+
+            _query = "UPDATE tbl_system \
+                      SET fld_failure_rate_specified=%f, \
+                      fld_mtbf_specified=%f \
+                      WHERE fld_assembly_id=%d"
+
+            _total = float(sum(x[1] for x in _results))
+            for i in range(len(_results)):
+                _values = (float(_results[i][1]) / (MTBF * _total),
+                           (MTBF * _total) / float(_results[i][1]),
+                           _results[i][0])
+                query = _query % _values
+                self._app.DB.execute_query(query,
+                                           None,
+                                           self._app.ProgCnx,
+                                           commit=True)
+
 # =========================================================================== #
 # Create and display parametric plots.
 # =========================================================================== #
@@ -2559,15 +2592,17 @@ class Dataset:
 
         if(_index_ == 4):
             if(_text_ == 1 or _text_ == 2): # MCF or Kaplan-Meier
-                self.lblFitMethod.hide()
-                self.lblConfMethod.hide()
+                self.chkGroup.show()
                 self.cmbFitMethod.hide()
                 self.cmbConfMethod.hide()
+                self.lblFitMethod.hide()
+                self.lblConfMethod.hide()
             else:
-                self.lblFitMethod.show()
-                self.lblConfMethod.show()
+                self.chkGroup.hide()
                 self.cmbFitMethod.show()
                 self.cmbConfMethod.show()
+                self.lblFitMethod.show()
+                self.lblConfMethod.show()
 
             if(_text_ == 7):                # WeiBayes
                 dialog = _widg.make_dialog(_(u"RTK Information"),
