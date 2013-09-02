@@ -4,6 +4,7 @@ BEGIN TRANSACTION;
 --
 -- Create tables for storing program information.
 --
+DROP TABLE IF EXISTS "tbl_program_info";
 CREATE TABLE "tbl_program_info" (
     "fld_program_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_revision_prefix" VARCHAR(16) NOT NULL DEFAULT('REVISION'),
@@ -120,7 +121,7 @@ CREATE TABLE "tbl_functions" (
     "fld_level" INTEGER NOT NULL DEFAULT(0),                --
     "fld_safety_critical" INTEGER NOT NULL DEFAULT(0)       -- Indicates whether or not the function is safety critical.
 );
-INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,'-',0);
+INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,'-',0,0);
 
 CREATE TABLE "tbl_functional_matrix" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),

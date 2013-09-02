@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-""" utilities contains utility functions for interacting with the RTK
-    application.  Import this module as _util in other modules that need to
-    interact with the RTK application.
+"""
+utilities contains utility functions for interacting with the RTK
+application.  Import this module as _util in other modules that need to
+interact with the RTK application.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
@@ -45,7 +46,6 @@ import widgets as _widg
 
 
 def read_configuration():
-
     """
     This method reads the site and user configuration files to establish
     settings for The RTK application.
@@ -161,17 +161,18 @@ def read_configuration():
 
     return(icondir, datadir, logdir)
 
+
 def create_logger(log_name, log_level, log_file, to_tty=False):
+    """
+    This function creates a logger instance.
 
-    """ This function creates a logger instance.
-
-        Keyword Arguments:
-        log_name  -- the name of the log used in the application.
-        log_level -- the level of messages to log.
-        log_file  -- the full path of the log file for this logger instance
-                     to write to.
-        to_tty    -- boolean indicating whether this logger will also dump
-                     messages to the terminal.
+    Keyword Arguments:
+    log_name  -- the name of the log used in the application.
+    log_level -- the level of messages to log.
+    log_file  -- the full path of the log file for this logger instance
+                 to write to.
+    to_tty    -- boolean indicating whether this logger will also dump
+                 messages to the terminal.
     """
 
     import logging
@@ -194,13 +195,13 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
 
     return(logger)
 
+
 def parse_config(configfile):
+    """
+    This function parses the XML configuration file passed as a parameter.
 
-    """ This function parses the XML configuration file passed as a parameter.
-
-        Keyword Arguments:
-        configfile -- the configuration file that needs to be parsed.
-
+    Keyword Arguments:
+    configfile -- the configuration file that needs to be parsed.
     """
 
     from lxml import etree
@@ -209,6 +210,7 @@ def parse_config(configfile):
 
     return(tree)
 
+
 def split_string(string):
     """
     Splits a colon-delimited string into its constituent parts.
@@ -216,7 +218,6 @@ def split_string(string):
     Keyword Arguments:
     string -- the colon delimited string that needs to be split into a
               list.
-
     """
 
     strlist = string.rsplit(':')
@@ -234,11 +235,12 @@ def none_to_string(string):
 
 
 def string_to_boolean(string):
-    """ Converts string representations of TRUE/FALSE to an integer value for
-        use in the database.
+    """
+    Converts string representations of TRUE/FALSE to an integer value for use
+    in the database.
 
-        Keyword Arguments:
-        string -- the string to convert.
+    Keyword Arguments:
+    string -- the string to convert.
     """
 
     result = 0
@@ -253,10 +255,11 @@ def string_to_boolean(string):
 
 
 def date_to_ordinal(date):
-    """ Converts date strings to oridinal dates for use in the database.
+    """
+    Converts date strings to oridinal dates for use in the database.
 
-        Keyword Arguments:
-        date -- the date string to convert.
+    Keyword Arguments:
+    date -- the date string to convert.
     """
 
     from datetime import datetime
@@ -267,6 +270,7 @@ def date_to_ordinal(date):
         results = datetime.strptime('01/01/70', '%m/%d/%y').toordinal()
 
     return(results)
+
 
 def dir_exists(_directory_):
     """
@@ -283,13 +287,13 @@ def dir_exists(_directory_):
     else:
         return False
 
+
 def file_exists(_file_):
+    """
+    Checks if a file exists.
 
-    """ Checks if a file exists.
-
-        Keyword Arguments:
-        file -- a string representing the filepath to check for.
-
+    Keyword Arguments:
+    file -- a string representing the filepath to check for.
     """
 
     from os import path
@@ -299,12 +303,14 @@ def file_exists(_file_):
     else:
         return False
 
-def create_project(widget, app):
-    """ Creates a new RTK Project.
 
-        Keyword Arguments:
-        widget -- the widget that called this function.
-        app    -- the RTK application.
+def create_project(widget, app):
+    """
+    Creates a new RTK Project.
+
+    Keyword Arguments:
+    widget -- the widget that called this function.
+    app    -- the RTK application.
     """
 
     if(_conf.BACKEND == 'mysql'):
@@ -419,6 +425,7 @@ def create_project(widget, app):
 
     return False
 
+
 def open_project(widget, app, dlg=1, filename=''):
     """
     Shows the RTK databases available on the selected server and allows the
@@ -524,6 +531,7 @@ def open_project(widget, app, dlg=1, filename=''):
 
     return False
 
+
 def save_project(widget, _app):
     """
     Saves the RTK information to the project's MySQL database.
@@ -579,6 +587,7 @@ def save_project(widget, _app):
     _app.winTree.statusbar.pop(2)
 
     return False
+
 
 def delete_project(widget, _app):
     """
@@ -667,6 +676,7 @@ def delete_project(widget, _app):
         else:
             dialog.destroy()
 
+
 def import_project(widget, app):
     """
     Imports project information from external files such as Excel, CVS, other
@@ -688,6 +698,7 @@ def import_project(widget, app):
         print "Importing project."
 
     dialog.destroy()
+
 
 def confirm_action(_prompt_, _image_='default', _parent_=None):
     """
@@ -720,6 +731,7 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
     else:
         dialog.destroy()
         return False
+
 
 def application_error(_prompt_, _image_='important', _parent_=None):
     """

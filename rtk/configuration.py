@@ -262,8 +262,8 @@ class RTKConf:
 
     def create_default_configuration(self):
         """
-        Creates a default configuration file in the user's
-        configuration directory.
+        Creates a default configuration file in the user's configuration
+        directory.
         """
         from os.path import basename
 
@@ -280,6 +280,7 @@ class RTKConf:
                 label = _widg.make_label(_(u"RTK common database host name:"),
                                          width=340)
                 txtDBHost = _widg.make_entry()
+                txtDBHost.set_text(_(u"localhost"))
                 fixed.put(label, 5, y_pos)
                 fixed.put(txtDBHost, 345, y_pos)
                 y_pos += 30
@@ -362,19 +363,19 @@ class RTKConf:
             elif(basename(self._conf_file) == 'RTK.conf'):
                 config.add_section('General')
                 config.set('General', 'reportsize', 'letter')
-                config.set('General', 'repairtimeunit', 'hours')
-                config.set('General', 'parallelcalcs', 'False')
-                config.set('General', 'frmultiplier', 1000000.0)
                 config.set('General', 'failtimeunit', 'hours')
+                config.set('General', 'repairtimeunit', 'hours')
+                config.set('General', 'frmultiplier', 1000000.0)
                 config.set('General', 'calcreltime', 100.0)
                 config.set('General', 'autoaddlistitems', 'False')
                 config.set('General', 'decimal', 6)
+                config.set('General', 'parallelcalcs', 'False')
                 config.set('General', 'treetabpos', 'top')
                 config.set('General', 'listtabpos', 'bottom')
                 config.set('General', 'booktabpos', 'bottom')
 
                 config.add_section('Backend')
-                config.set('Backend', 'type', 'mysql')
+                config.set('Backend', 'type', 'sqlite3')
                 config.set('Backend', 'host', 'localhost')
                 config.set('Backend', 'socket', 3306)
                 config.set('Backend', 'database', '')
@@ -392,6 +393,7 @@ class RTKConf:
                 config.set('Files', 'functionformat', 'function_format.xml')
                 config.set('Files', 'hardwareformat', 'hardware_format.xml')
                 config.set('Files', 'incidentformat', 'incident_format.xml')
+                config.set('Files', 'rgincidentformat', 'rgincident_format.xml')
                 config.set('Files', 'partformat', 'part_format.xml')
                 config.set('Files', 'requirementformat', 'requirement_format.xml')
                 config.set('Files', 'revisionformat', 'revision_format.xml')
@@ -400,6 +402,11 @@ class RTKConf:
                 config.set('Files', 'softwareformat', 'software_format.xml')
                 config.set('Files', 'testformat', 'testing_format.xml')
                 config.set('Files', 'validationformat', 'validation_format.xml')
+# TODO: Remove the following format files from RTK.
+                config.set('Files', 'rgformat', 'rgincident_format.xml')
+                config.set('Files', 'fracaformat', 'incident_format.xml')
+                config.set('Files', 'modeformat', 'incident_format.xml')
+                config.set('Files', 'mechanismformat', 'incident_format.xml')
 
                 config.add_section('Colors')
                 config.set('Colors', 'revisionbg', '#FFFFFF')
@@ -495,9 +502,7 @@ class RTKConf:
 #           2           Requirements Tree
 #           3           Hardware Tree
 #           4           Validation Tree
-#           5           Reliability Testing Tree
-#           6           Field Incidents Tree
-#           7           Parts List
+#           5           Parts List
 #           8           Similar Item Analysis
 #           9           FMECA worksheet
 #          10           Failure Modes List

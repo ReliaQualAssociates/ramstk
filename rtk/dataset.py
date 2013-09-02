@@ -166,7 +166,7 @@ class Dataset:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Analyses Input tab widgets.
-        self.chkGroup = _widg.make_check_button(_label_=_(u"Allocate to sub-assemblies"))
+        self.chkGroup = _widg.make_check_button(_label_=_(u"Distribute to children assemblies"))
 
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
@@ -201,24 +201,39 @@ class Dataset:
         self.fraVarCov = _widg.make_frame(_label_=_(u"Covariance Matrix"))
         self.fraParGOF = _widg.make_frame(_label_=_(u"Parametric GOF Statistics"))
 
-        self.hbxAnalysisResults = gtk.HBox()
+        self.hpnAnalysisResults = gtk.HPaned()
         self.vbxAnalysisResults1 = gtk.VBox()
         self.vbxAnalysisResults2 = gtk.VBox()
-        self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-        self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
-        self.txtMHB = _widg.make_entry(_width_=150)
-        self.txtChiSq = _widg.make_entry(_width_=150)
-        self.txtMHBPValue = _widg.make_entry(_width_=150)
-        self.lblMHBResult = _widg.make_label(_(u""), width=150)
-        self.txtLP = _widg.make_entry(_width_=150)
-        self.txtZLPNorm = _widg.make_entry(_width_=150)
-        self.txtZLPPValue = _widg.make_entry(_width_=150)
-        self.lblZLPResult = _widg.make_label(_(u""), width=150)
-        self.txtLR = _widg.make_entry(_width_=150)
-        self.txtZLRNorm = _widg.make_entry(_width_=150)
-        self.txtZLRPValue = _widg.make_entry(_width_=150)
-        self.lblZLRResult = _widg.make_label(_(u""), width=150)
+        self.hpnAnalysisResults = gtk.HPaned()
+
+        self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
+
+# Upper left quadrant widgets.
+        self.txtNumSuspensions = _widg.make_entry(_width_=100)
+        self.txtNumFailures = _widg.make_entry(_width_=100)
+        self.txtMTBF = _widg.make_entry(_width_=100)
+        self.txtMTBFLL = _widg.make_entry(_width_=100)
+        self.txtMTBFUL = _widg.make_entry(_width_=100)
+        self.txtHazardRate = _widg.make_entry(_width_=100)
+        self.txtHazardRateLL = _widg.make_entry(_width_=100)
+        self.txtHazardRateUL = _widg.make_entry(_width_=100)
+
+# Lower left quadrant non-parametric widgets.
+        self.txtMHB = _widg.make_entry(_width_=100)
+        self.txtChiSq = _widg.make_entry(_width_=100)
+        self.txtMHBPValue = _widg.make_entry(_width_=100)
+        self.lblMHBResult = _widg.make_label(_(u""), width=100)
+        self.txtLP = _widg.make_entry(_width_=100)
+        self.txtZLPNorm = _widg.make_entry(_width_=100)
+        self.txtZLPPValue = _widg.make_entry(_width_=100)
+        self.lblZLPResult = _widg.make_label(_(u""), width=100)
+        self.txtLR = _widg.make_entry(_width_=100)
+        self.txtZLRNorm = _widg.make_entry(_width_=100)
+        self.txtZLRPValue = _widg.make_entry(_width_=100)
+        self.lblZLRResult = _widg.make_label(_(u""), width=100)
+
+# Lower left quadrant parametric widgets.
         self.txtScale = _widg.make_entry(_width_=150)
         self.txtScaleLL = _widg.make_entry(_width_=150)
         self.txtScaleUL = _widg.make_entry(_width_=150)
@@ -246,11 +261,6 @@ class Dataset:
         self.txtAIC = _widg.make_entry(_width_=150)
         self.txtBIC = _widg.make_entry(_width_=150)
         self.txtMLE = _widg.make_entry(_width_=150)
-        self.txtNumSuspensions = _widg.make_entry(_width_=100)
-        self.txtNumFailures = _widg.make_entry(_width_=100)
-        self.txtMTBF = _widg.make_entry(_width_=150)
-        self.txtMTBFLL = _widg.make_entry(_width_=150)
-        self.txtMTBFUL = _widg.make_entry(_width_=150)
 
         self.tvwNonParResults = gtk.TreeView()
 
@@ -283,6 +293,18 @@ class Dataset:
 
         if self._plot_tab_create():
             self._app.debug_log.error("dataset.py: Failed to create Plot tab.")
+
+# Create the analysis results breakdown widgets.
+        self.fraResultsByChildAssembly = _widg.make_frame(_label_=_(u"Summary of Results By Child Assembly"))
+        self.fraResultsByPart = _widg.make_frame(_label_=_(u"Summary of Results By Part"))
+
+        self.hpnResultsBreakdown = gtk.HPaned()
+
+        self.tvwResultsByChildAssembly = gtk.TreeView()
+        self.tvwResultsByPart = gtk.TreeView()
+
+        if self._results_breakdown_tab_create():
+            self._app.debug_log.error("dataset.py: Failed to create Results Breakdown tab.")
 
         self.btnAssign = _widg.make_button(_width_=100, _label_="Assign",
                                            _image_=None)
@@ -757,6 +779,9 @@ class Dataset:
         self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate of the MTBF."))
         self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the MTBF."))
         self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the MTBF."))
+        self.txtHazardRate.set_tooltip_markup(_(u"Displays the point estimate of the hazard rate."))
+        self.txtHazardRateLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the hazard rate."))
+        self.txtHazardRateUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the hazard rate."))
 
         return False
 
@@ -774,24 +799,37 @@ class Dataset:
         label = _widg.make_label(_(u"Number of Suspensions:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumSuspensions, 210, y_pos)
-        label = _widg.make_label(_(u"Estimated MTBF"), width=200)
-        fixed.put(label, 415, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Number of Failures:"), width=200)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtNumFailures, 210, y_pos)
-        label = _widg.make_label(_(u"Lower Bound"), width=150)
-        fixed.put(label, 415, y_pos)
-        label = _widg.make_label(_(u"Point Estimate"), width=150)
-        fixed.put(label, 565, y_pos)
-        label = _widg.make_label(_(u"Upper Bound"), width=150)
-        fixed.put(label, 715, y_pos)
+        y_pos += 40
+
+        label = _widg.make_label(_(u"Estimates:"), width=200)
+        fixed.put(label, 5, y_pos)
+        label = _widg.make_label(_(u"MTBF"), width=100)
+        fixed.put(label, 210, y_pos)
+        label = _widg.make_label(_(u"Hazard Rate"), width=100)
+        fixed.put(label, 315, y_pos)
         y_pos += 30
 
-        fixed.put(self.txtMTBFLL, 415, y_pos)
-        fixed.put(self.txtMTBF, 565, y_pos)
-        fixed.put(self.txtMTBFUL, 715, y_pos)
+        label = _widg.make_label(_(u"Lower Bound"), width=150)
+        fixed.put(label, 10, y_pos)
+        fixed.put(self.txtMTBFLL, 210, y_pos)
+        fixed.put(self.txtHazardRateLL, 315, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Point Estimate"), width=150)
+        fixed.put(label, 10, y_pos)
+        fixed.put(self.txtMTBF, 210, y_pos)
+        fixed.put(self.txtHazardRate, 315, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Upper Bound"), width=150)
+        fixed.put(label, 10, y_pos)
+        fixed.put(self.txtMTBFUL, 210, y_pos)
+        fixed.put(self.txtHazardRateUL, 315, y_pos)
         y_pos += 30
 
 # Non-parametric table of results.
@@ -955,40 +993,40 @@ class Dataset:
         self.fraNonParStats.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_(u"MIL Handbook"), width=150)
+        label = _widg.make_label(_(u"MIL\nHandbook"), height=50, width=100)
         fixed.put(label, 155, y_pos)
 
-        label = _widg.make_label(_(u"Laplace"), width=150)
-        fixed.put(label, 305, y_pos)
+        label = _widg.make_label(_(u"Laplace"), height=50, width=100)
+        fixed.put(label, 260, y_pos)
 
-        label = _widg.make_label(_(u"Lewis-Robinson"), width=150)
-        fixed.put(label, 455, y_pos)
-        y_pos += 30
+        label = _widg.make_label(_(u"Lewis\nRobinson"), height=50, width=100)
+        fixed.put(label, 365, y_pos)
+        y_pos += 55
 
         label = _widg.make_label(_(u"Test Statistic"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtMHB, 155, y_pos)
-        fixed.put(self.txtLP, 305, y_pos)
-        fixed.put(self.txtLR, 455, y_pos)
+        fixed.put(self.txtLP, 260, y_pos)
+        fixed.put(self.txtLR, 365, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Critical Value"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtChiSq, 155, y_pos)
-        fixed.put(self.txtZLPNorm, 305, y_pos)
-        fixed.put(self.txtZLRNorm, 455, y_pos)
+        fixed.put(self.txtZLPNorm, 260, y_pos)
+        fixed.put(self.txtZLRNorm, 365, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"p-Value"), width=150)
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtMHBPValue, 155, y_pos)
-        fixed.put(self.txtZLPPValue, 305, y_pos)
-        fixed.put(self.txtZLRPValue, 455, y_pos)
+        fixed.put(self.txtZLPPValue, 260, y_pos)
+        fixed.put(self.txtZLRPValue, 365, y_pos)
         y_pos += 30
 
         fixed.put(self.lblMHBResult, 155, y_pos)
-        fixed.put(self.lblZLPResult, 305, y_pos)
-        fixed.put(self.lblZLRResult, 455, y_pos)
+        fixed.put(self.lblZLPResult, 260, y_pos)
+        fixed.put(self.lblZLRResult, 365, y_pos)
 
 # Parametric estimates.
         fixed = gtk.Fixed()
@@ -1077,7 +1115,7 @@ class Dataset:
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
         label.set_tooltip_text(_(u"Displays analysis results for the selected dataset."))
-        self.notebook.insert_page(self.hbxAnalysisResults,
+        self.notebook.insert_page(self.hpnAnalysisResults,
                                   tab_label=label,
                                   position=-1)
 
@@ -1094,12 +1132,15 @@ class Dataset:
         _analysis_ = self.cmbDistribution.get_active()
 
 # Clear the tab.
+        for child in self.hpnAnalysisResults.get_children():
+            self.hpnAnalysisResults.remove(child)
         for child in self.vbxAnalysisResults1.get_children():
             self.vbxAnalysisResults1.remove(child)
         for child in self.vbxAnalysisResults2.get_children():
             self.vbxAnalysisResults2.remove(child)
 
-# Update summary information.
+# Update summary information.  This is always shown regardless of the type of
+# analysis performed.
         self.vbxAnalysisResults1.pack_start(self.fraSummary, True, True)
         self.txtNumSuspensions.set_text(
             str(self.model.get_value(self.selected_row, 11)))
@@ -1108,10 +1149,9 @@ class Dataset:
 
 # Update mean cumulative function information.
         if(_analysis_ == 1):
+            self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
+            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
             self.vbxAnalysisResults1.pack_start(self.fraNonParStats, True, True)
-            self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
             self.txtMHB.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 28))))
             self.txtLP.set_text(
@@ -1121,17 +1161,21 @@ class Dataset:
 
 # Update Kaplan-Meier analysis information.
         elif(_analysis_ == 2):
-            self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
+            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
+            #self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
+            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
 # Update parametric analysis information.
         else:
+            self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
+            self.hpnAnalysisResults.pack1(self.vbxAnalysisResults2, True, True)
             self.vbxAnalysisResults1.pack_start(self.fraParEst, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraVarCov, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraParGOF, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            #self.hbxAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
+            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
             self.txtScale.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 13))))
@@ -1294,6 +1338,164 @@ class Dataset:
         axis.set_ylabel(_ylab_)
 
         plot.draw()
+
+        return False
+
+    def _results_breakdown_tab_create(self):
+        """
+        Method to create gtk.Notebook() tab for displaying results broken
+        down by child assembly and/or components.
+        """
+
+# Table of results allocated to each assembly.
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+        self.tvwResultsByChildAssembly.set_model(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Hardware\nItem"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Number of\nFailures"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"MTBF\nLower Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"MTBF"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=3)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"MTBF\nUpper Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=4)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Failure Intensity\nLower Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=5)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Failure\nIntensity"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=6)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Failure Intensity\nUpper Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=7)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add(self.tvwResultsByChildAssembly)
+
+        self.fraResultsByChildAssembly.add(scrollwindow)
+
+        self.hpnResultsBreakdown.pack1(self.fraResultsByChildAssembly, True, True)
+
+# Table of results allocated to each part.
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                              gobject.TYPE_FLOAT)
+        self.tvwResultsByPart.set_model(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Part\nNumber"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Number of\nFailures"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('background', 'light gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"% of\nTotal"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2)
+        self.tvwResultsByPart.append_column(column)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add(self.tvwResultsByPart)
+
+        self.fraResultsByPart.add(scrollwindow)
+
+        self.hpnResultsBreakdown.pack2(self.fraResultsByPart, True, True)
+
+# Insert the tab.
+        label = gtk.Label()
+        _heading = _(u"Results\nBreakdowns")
+        label.set_markup("<span weight='bold'>" + _heading + "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_(u"Displays analysis results for the selected dataset broken down by child assembly and part number."))
+        self.notebook.insert_page(self.hpnResultsBreakdown,
+                                  tab_label=label,
+                                  position=-1)
 
         return False
 
@@ -2305,29 +2507,49 @@ class Dataset:
 # Find the percent of records belonging to each sub-assembly and then allocate
 # this percent of the overall failure rate to each sub-assembly.
         if(self.chkGroup.get_active()):
-            query = "SELECT fld_hardware_id, COUNT(fld_hardware_id) \
-                     FROM tbl_incident \
-                     WHERE fld_revision_id=%d \
-                     GROUP BY fld_hardware_id" % self._app.REVISION.revision_id
+            query = "SELECT t2.fld_name, COUNT(t1.fld_hardware_id) \
+                     FROM tbl_incident AS t1 \
+                     INNER JOIN tbl_system AS t2 \
+                     ON t1.fld_hardware_id=t2.fld_assembly_id \
+                     WHERE t1.fld_revision_id=%d \
+                     GROUP BY t2.fld_name" % self._app.REVISION.revision_id
             _results = self._app.DB.execute_query(query,
                                                   None,
                                                   self._app.ProgCnx)
 
-            _query = "UPDATE tbl_system \
-                      SET fld_failure_rate_specified=%f, \
-                      fld_mtbf_specified=%f \
-                      WHERE fld_assembly_id=%d"
-
+            model = self.tvwResultsByChildAssembly.get_model()
+            model.clear()
+            row = model.get_iter_root()
             _total = float(sum(x[1] for x in _results))
             for i in range(len(_results)):
-                _values = (float(_results[i][1]) / (MTBF * _total),
+                _values = (_results[i][0], _results[i][1],
+                           (MTBFLL * _total) / float(_results[i][1]),
                            (MTBF * _total) / float(_results[i][1]),
-                           _results[i][0])
-                query = _query % _values
-                self._app.DB.execute_query(query,
-                                           None,
-                                           self._app.ProgCnx,
-                                           commit=True)
+                           (MTBFUL * _total) / float(_results[i][1]),
+                           float(_results[i][1]) / (MTBFUL * _total),
+                           float(_results[i][1]) / (MTBF * _total),
+                           float(_results[i][1]) / (MTBFLL * _total))
+                model.append(_values)
+
+            query = "SELECT t1.fld_part_num, COUNT(t1.fld_part_num) \
+                     FROM tbl_incident_detail AS t1 \
+                     INNER JOIN tbl_incident AS t2 ON \
+                                t1.fld_incident_id=t2.fld_incident_id \
+                     WHERE t2.fld_revision_id=%d \
+                     GROUP BY t1.fld_part_num \
+                     ORDER BY COUNT(t1.fld_part_num) DESC" % self._app.REVISION.revision_id
+            _results = self._app.DB.execute_query(query,
+                                                  None,
+                                                  self._app.ProgCnx)
+
+            model = self.tvwResultsByPart.get_model()
+            model.clear()
+            row = model.get_iter_root()
+            _total = float(sum(x[1] for x in _results))
+            for i in range(len(_results)):
+                _values = (_results[i][0], _results[i][1],
+                           float(_results[i][1]) / _total)
+                model.append(_values)
 
 # =========================================================================== #
 # Create and display parametric plots.
@@ -2423,6 +2645,21 @@ class Dataset:
         self.txtMTBF.set_text(str(fmt.format(MTBF)))
         self.txtMTBFLL.set_text(str(fmt.format(MTBFLL)))
         self.txtMTBFUL.set_text(str(fmt.format(MTBFUL)))
+
+        try:
+            self.txtHazardRate.set_text(str(fmt.format(1.0 / MTBF)))
+        except ZeroDivisionError:
+            self.txtHazardRate.set_text("0.0")
+
+        try:
+            self.txtHazardRateLL.set_text(str(fmt.format(1.0 / MTBFUL)))
+        except ZeroDivisionError:
+            self.txtHazardRateLL.set_text("0.0")
+
+        try:
+            self.txtHazardRateUL.set_text(str(fmt.format(1.0 / MTBFLL)))
+        except ZeroDivisionError:
+            self.txtHazardRateUL.set_text("0.0")
 
         self.txtMHBPValue.set_text(str(fmt.format(p_value[0])))
         self.txtZLPPValue.set_text(str(fmt.format(p_value[1])))
