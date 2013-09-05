@@ -46,7 +46,7 @@
 \centering
 {\Large \bf Developer Information} \\
 {\Large \bf for} \\
-{\Large \bf The RelKit Project} \\
+{\Large \bf The RTK Project} \\
 \bigskip
 {\large \bf Andrew "Weibullguy" Rowland} \\
 {\Large \bf date}
@@ -56,29 +56,29 @@
 \tableofcontents
 \newpage
 
-\section{\bf \Large The RelKit Project Overview}
+\section{\bf \Large The RTK Project Overview}
 
-\noindent The RelKit Project aims to provide a FOSS alternative to proprietary reliability, availability, maintainability, and safety (RAMS) analysis applications.  As a FOSS alternative, proprietary models such as PRISM or 217Plus can not be incorporated in the distributed package because The RelKit Project does not have the authority or the rights to distribute them.  As such, only models that can be found in the public domain can be incorporated. \\
+\noindent The RTK Project aims to provide a FOSS alternative to proprietary reliability, availability, maintainability, and safety (RAMS) analysis applications.  As a FOSS alternative, proprietary models such as PRISM or 217Plus can not be incorporated in the distributed package because The RTK Project does not have the authority or the rights to distribute them.  As such, only models that can be found in the public domain can be incorporated. \\
 
-\noindent At this time, The RelKit Project is working towards implementing MIL-HDBK-217F, Notice 2 reliability prediction models.  It is expected that future development will include the structure to accomodate such models as PRISM and 217Plus.  However, it will be up to an individual user to populate the structure with the pertinent data to actually implement these models. \\
+\noindent At this time, The RTK Project is working towards implementing MIL-HDBK-217F, Notice 2 reliability prediction models.  It is expected that future development will include the structure to accomodate such models as PRISM and 217Plus.  However, it will be up to an individual user to populate the structure with the pertinent data to actually implement these models. \\
 
-\noindent The RelKit Project is also working towards implementing MIL-STD-1629A Failure Mode and Effects Analysis (FMEA) and Criticality Analysis (CA or FMECA when combined with the FMEA).  Risk Priority Number (RPN) methods will also be implemented by The RelKit Project. \\
+\noindent The RTK Project is also working towards implementing MIL-STD-1629A Failure Mode and Effects Analysis (FMEA) and Criticality Analysis (CA or FMECA when combined with the FMEA).  Risk Priority Number (RPN) methods will also be implemented by The RTK Project. \\
 
 \subsection{\bf \large Definitions}
 
-\noindent There are some terms used by The RelKit Project that may be ambiguous to a software developer or others not familiar with RAMS.  These are defined below.
+\noindent There are some terms used by The RTK Project that may be ambiguous to a software developer or others not familiar with RAMS.  These are defined below.
 
 \begin{enumerate}
-	\item \textbf{Hazard Rate} - this is the mathematically correct terminology for the layman's term failure rate.
-	\item \textbf{Program} - this is a contractual program, not a "computer program."  The RelKit Project refers to a program when discussing a system under analysis.
-	\item \textbf{Reliability} - the probability of failure free operation for a specified period of time in a specified environment.
+    \item \textbf{Hazard Rate} - this is the mathematically correct terminology for the layman's term failure rate.
+    \item \textbf{Program} - this is a contractual program, not a "computer program."  The RTK Project refers to a program when discussing a system under analysis.
+    \item \textbf{Reliability} - the probability of failure free operation for a specified period of time in a specified environment.
 \end{enumerate}
 
-\section{\bf \Large RelKit Program Databases}
+\section{\bf \Large RTK Program Databases}
 
-\noindent The RelKit Project currently uses MySQL databases to store information.  This includes program-specific information as well as information common to all programs.  There will be one MySQL database per program.  Additionally, there will be one common database for a given installation of The RelKit Project.  It is recommended that a dedicated MySQL server be used for The RelKit Project.  This isn't strictly necessary and, as a developer, you may not have the resources to dedicate a machine for this purpose.  Bear in mind, however, that the recommendation is to dedicate a MySQL server to The RelKit Project, NOT an entire machine.  Therefore, the machine with the dedicate MySQL server can be used for other purposes simultaneously. \\
+\noindent The RTK Project currently uses MySQL databases to store information.  This includes program-specific information as well as information common to all programs.  There will be one MySQL database per program.  Additionally, there will be one common database for a given installation of The RTK Project.  It is recommended that a dedicated MySQL server be used for The RTK Project.  This isn't strictly necessary and, as a developer, you may not have the resources to dedicate a machine for this purpose.  Bear in mind, however, that the recommendation is to dedicate a MySQL server to The RTK Project, NOT an entire machine.  Therefore, the machine with the dedicate MySQL server can be used for other purposes simultaneously. \\
 
-\noindent It is also possible to have multiple MySQL servers that The RelKit Project is capable of using.  There may be very good reasons for configuring things this way.  For example, individuals working on Program A may not be authorized to view information related to Program B.  In this case, Program A can be created in one server and Program B created on another.  Program A individuals will not be granted access to the Program B server. \\
+\noindent It is also possible to have multiple MySQL servers that The RTK Project is capable of using.  There may be very good reasons for configuring things this way.  For example, individuals working on Program A may not be authorized to view information related to Program B.  In this case, Program A can be created in one server and Program B created on another.  Program A individuals will not be granted access to the Program B server. \\
 
 \noindent Unless stated otherwise for specific fields, default values for each data type shall be:
 
@@ -91,9 +91,9 @@ varchar & Null \\
 \end{tabular}
 \bigskip
 
-\noindent As discussed above, there is some information that will be common to all programs.  This includes such things as types of prediction models available, model input data, and lists of supported probability distributions.  All this common information is stored in a common database (reliafreecom) to prevent duplication of data that would then need to be kept synchronized.  This common database can be kept on all MySQL servers providing The RelKit Project program databases or it can be kept on a central server.  The RelKit Project recommends a central server to ensure updates to the common database are seen by all program databases. \\
+\noindent As discussed above, there is some information that will be common to all programs.  This includes such things as types of prediction models available, model input data, and lists of supported probability distributions.  All this common information is stored in a common database (reliafreecom) to prevent duplication of data that would then need to be kept synchronized.  This common database can be kept on all MySQL servers providing The RTK Project program databases or it can be kept on a central server.  The RTK Project recommends a central server to ensure updates to the common database are seen by all program databases. \\
 
-\noindent Common information is just that, common.  It is not changeable by the user and login information, including password, is hard-coded in the site-wide configuration file.  This does reduce security, but not as much as providing this login information to every person using The RelKit Project at a given site.  Since this information is stored in the site-wide configuration file, the user and password can be customized for a site. \\
+\noindent Common information is just that, common.  It is not changeable by the user and login information, including password, is hard-coded in the site-wide configuration file.  This does reduce security, but not as much as providing this login information to every person using The RTK Project at a given site.  Since this information is stored in the site-wide configuration file, the user and password can be customized for a site. \\
 
 \noindent As a developer, you can find two *.sql files in the configuration (config) directory.  One of these is named reliafreecom.sql and the other is example1.sql.  Execute the following to create a common database on the selected MySQL server: \\
 
@@ -112,7 +112,7 @@ varchar & Null \\
     \textbf{TABLE} & \textbf{APPLICABLE PREDICTION MODEL} & \textbf{ASSOCIATED ``PI'' FACTOR} & \textbf{NOTES} \\
     \hline
     tbl\_active\_environs & MIL-HDBK-217 & pi\_E & This table shall be indexed such that the selection of a component category, subcategory, and failure rate model return a unique list of environment codes, descriptions, and "pi" values. \\ \hline
-    tbl\_application & MIL-HDBK-217 & pi\_A & For GaAs Digital, GaAs MMIC, High Frequency Diode, Low Frequency Bipolar Transistor, Low Frequency Si FET, and High Frequency GaAs FET components. \\ 
+    tbl\_application & MIL-HDBK-217 & pi\_A & For GaAs Digital, GaAs MMIC, High Frequency Diode, Low Frequency Bipolar Transistor, Low Frequency Si FET, and High Frequency GaAs FET components. \\
     & MIL-HDBK-217 & pi\_M & For High Power, High Frequency Bipolar Transistor and High Frequency GaAs FET components. \\
     & MIL-HDBK-217 & pi\_U & For Circuit Breaker components. \\
     & MIL-HDBK-217 & lambda\_b & For Low Frequency Diode and Detector/Emitter/Isolator Optoelectronic components. \\
@@ -148,11 +148,11 @@ varchar & Null \\
     \begin{longtable}{ll}
     TABLE & DESCRIPTION \\
     \hline
-    tbl\_calculation\_model & This table shall store an indexed list of reliability prediction (calculation) models available to RelKit. \\
-    tbl\_cost\_type & This table shall store an indexed list of cost types available to RelKit. \\
-    tbl\_distributions & This table shall store an indexed list of probability distributions available to RelKit. \\
-    tbl\_hr\_type & This table shall store an indexed list of hazard rate types available to RelKit. \\
-    tbl\_mttr\_type & This table shall store an indexed list of mean time to repair types available to RelKit. \\
+    tbl\_calculation\_model & This table shall store an indexed list of reliability prediction (calculation) models available to RTK. \\
+    tbl\_cost\_type & This table shall store an indexed list of cost types available to RTK. \\
+    tbl\_distributions & This table shall store an indexed list of probability distributions available to RTK. \\
+    tbl\_hr\_type & This table shall store an indexed list of hazard rate types available to RTK. \\
+    tbl\_mttr\_type & This table shall store an indexed list of mean time to repair types available to RTK. \\
     tbl\_part\_classification & This table shall store an indexed list of classification of parts. \\
     \hline
     \end{longtable}
@@ -257,20 +257,20 @@ varchar & Null \\
 
 \noindent Mission information data is program specific.  Therefore, these tables reside in each of the program databases.
 
-\section{\bf \Large RelKit Coding Standards}
+\section{\bf \Large RTK Coding Standards}
 
-\noindent General Python coding standards for The RelKit Project shall follow the guidelines found in \href{http://www.python.org/dev/peps/pep-0008/ PEP-0008}.  Where PEP-0008 provides options, the following guidance applies.
+\noindent General Python coding standards for The RTK Project shall follow the guidelines found in \href{http://www.python.org/dev/peps/pep-0008/ PEP-0008}.  Where PEP-0008 provides options, the following guidance applies.
 
 \begin{enumerate}
-	\item Indent with spaces only.
-	\item Indent with 4 spaces.
-	\item Maximum line length is 79 characters.
-	\item Maximum line length for long blocks of text is 72 characters.
-	\item Module names use lowercase convention (i.e., modules should have one, short name)
-	\item Class names use CapWords convention
-	\item Function names use lower\_case\_with\_underscores convention
-	\item Global, module level variables use \_leading\_underscore convention
-	\item Module level constants use UPPER\_CASE\_WITH\_UNDERSCORE convention
+    \item Indent with spaces only.
+    \item Indent with 4 spaces.
+    \item Maximum line length is 79 characters.
+    \item Maximum line length for long blocks of text is 72 characters.
+    \item Module names use lowercase convention (i.e., modules should have one, short name)
+    \item Class names use CapWords convention
+    \item Function names use lower\_case\_with\_underscores convention
+    \item Global, module level variables use \_leading\_underscore convention
+    \item Module level constants use UPPER\_CASE\_WITH\_UNDERSCORE convention
 \end{enumerate}
 
 \subsection{\bf \large Component Classes}
@@ -305,7 +305,7 @@ varchar & Null \\
 
 \noindent
 
-\subsection{\bf \large RelKit PyGTK Widget Conventions}
+\subsection{\bf \large RTK PyGTK Widget Conventions}
 
 \noindent When naming a PyGTK widget, it will depend on whether the widget is local to the function or is expected to be used module-wide.  Minimize the use of module-wide widgets.  It is preferred to create a high level module-wide widget and use that widget's functions to retrieve lower level widgets.  For example, a treeview may be module-wide and the get\_model() function should be used to retrieve the underlying gtk.TreeModel when it is needed. \\
 
@@ -363,7 +363,7 @@ Table XXX, provides PyGTK widget naming conventions for widgets used locally and
 
 \noindent When loading gtk.Combo, gtk.ComboBox, and gtk.ComboBoxEntry, a blank entry shall be included as index 0. \\
 
-\noindent Generic functions for creating, deleting, or interfacing with PyGTK widgets shall be maintained in the file named widgets.py.  This file shall be imported by any other RelKit module needing to create, delete, or interface with PyGTK widgets.  These generic functions will connect the created widget's default signal to a callback function.  Other signal/callbacks will be connected in the module calling the generic function. \\
+\noindent Generic functions for creating, deleting, or interfacing with PyGTK widgets shall be maintained in the file named widgets.py.  This file shall be imported by any other RTK module needing to create, delete, or interface with PyGTK widgets.  These generic functions will connect the created widget's default signal to a callback function.  Other signal/callbacks will be connected in the module calling the generic function. \\
 
 \noindent Example generic function for the gtk.Entry widget: \\
 
@@ -376,13 +376,13 @@ Table XXX, provides PyGTK widget naming conventions for widgets used locally and
 
             return(entry)
 
-\section{\bf \Large RelKit GUI Layout}
+\section{\bf \Large RTK GUI Layout}
 
-\noindent The layout of the RelKit GUI shall follow the guidance in the subsequent sections.
+\noindent The layout of the RTK GUI shall follow the guidance in the subsequent sections.
 
 \subsection{\bf \large Tree Book}
 
-\noindent There are four trees in the Tree Book.  These four trees are referred to as the Revision Tree, the Function Tree, the Hardware Tree and the FRACA Tree.  They are created programatically using a general function in widgets.py.  Which columns are editable, which columns are visible, and the order the columns are displayed is set on a per user basis using the RelKit format configuration file (default is format.conf). \\
+\noindent There are four trees in the Tree Book.  These four trees are referred to as the Revision Tree, the Function Tree, the Hardware Tree and the FRACA Tree.  They are created programatically using a general function in widgets.py.  Which columns are editable, which columns are visible, and the order the columns are displayed is set on a per user basis using the RTK format configuration file (default is format.conf). \\
 
 \noindent The Revision Tree shall be the first tree in the Tree Book.  The Revision Tree shall be used to locally store tbl\_revisions data. \\
 
@@ -468,7 +468,7 @@ The widgets needed to display information shall be dynamically created when an i
 
 \noindent The FRACA Incident tab shall be the seventh tab listed in the Work Book. \\
 
-\section{\bf \Large RelKit Calculations}
+\section{\bf \Large RTK Calculations}
 
 \subsection{\bf \large Reliability Predictions}
 

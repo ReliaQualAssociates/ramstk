@@ -970,66 +970,71 @@ class Component():
 
     def _assessment_inputs_tab_load(self):
         """
-        Loads the widgets with calculation input information for the Component
+        Loads the widgets with calculation input information for the COMPONENT
         Object.
         """
 
-        _model = self._app.HARDWARE.model
-        _row = self._app.HARDWARE.selected_row
-
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        # Let the user know if the selected part does not have a part
-        # category selected.
+# Let the user know if the selected part does not have a part category
+# selected.
         if(self._category < 1):
             self.lblNoCategory.show()
         else:
             self.lblNoCategory.hide()
 
-        # Let the user know if the selected part does not have a part
-        # subcategory selected.
+# Let the user know if the selected part does not have a part subcategory
+# selected.
         if(self._subcategory < 1):
             self.lblNoSubCategory.show()
         else:
             self.lblNoSubCategory.hide()
 
-        self.cmbHRType.set_active(int(_model.get_value(_row, 35)))
-        self.cmbCalcModel.set_active(int(_model.get_value(_row, 10)))
-        self.txtSpecifiedHt.set_text(str(fmt.format(_model.get_value(_row, 34))))
-        self.txtSpecifiedMTBF.set_text(str(_model.get_value(_row, 51)))
-        self.txtSoftwareHt.set_text(str(fmt.format(_model.get_value(_row, 33))))
-        self.txtAddAdj.set_text(str(_model.get_value(_row, 2)))
-        self.txtMultAdj.set_text(str(_model.get_value(_row, 57)))
-        self.txtAllocationWF.set_text(str(_model.get_value(_row, 3)))
-        self.cmbFailDist.set_active(int(_model.get_value(_row, 24)))
-        self.txtFailScale.set_text(str(_model.get_value(_row, 25)))
-        self.txtFailShape.set_text(str(_model.get_value(_row, 26)))
-        self.txtFailLoc.set_text(str(_model.get_value(_row, 27)))
-        #self.txtWeibullFile.set_text(str(_model.get_value(_row, 86)))
-        self.txtMissionTime.set_text(str('{0:0.2f}'.format(_model.get_value(_row, 45))))
+# Load the ASSEMBLY level information.
+        _model_ = self._app.HARDWARE.model
+        _row_ = self._app.HARDWARE.selected_row
 
-        _string_ = _util.none_to_string(self.model.get_value(self.selected_row, 6))
+        self.cmbHRType.set_active(int(_model_.get_value(_row_, 35)))
+        self.cmbCalcModel.set_active(int(_model_.get_value(_row_, 10)))
+        self.txtSpecifiedHt.set_text(str(fmt.format(_model_.get_value(_row_, 34))))
+        self.txtSpecifiedMTBF.set_text(str(_model_.get_value(_row_, 51)))
+        self.txtSoftwareHt.set_text(str(fmt.format(_model_.get_value(_row_, 33))))
+        self.txtAddAdj.set_text(str(_model_.get_value(_row_, 2)))
+        self.txtMultAdj.set_text(str(_model_.get_value(_row_, 57)))
+        self.txtAllocationWF.set_text(str(_model_.get_value(_row_, 3)))
+        self.cmbFailDist.set_active(int(_model_.get_value(_row_, 24)))
+        self.txtFailScale.set_text(str(_model_.get_value(_row_, 25)))
+        self.txtFailShape.set_text(str(_model_.get_value(_row_, 26)))
+        self.txtFailLoc.set_text(str(_model_.get_value(_row_, 27)))
+        #self.txtWeibullFile.set_text(str(_model_.get_value(_row_, 86)))
+        self.txtMissionTime.set_text(str('{0:0.2f}'.format(_model_.get_value(_row_, 45))))
+
+# Load the COMPONENT level information.
+        _selection = self._app.winParts.tvwPartsList.get_selection()
+        (_model_, _row_) = _selection.get_selected()
+
+        _string_ = _util.none_to_string(_model_.get_value(_row_, 6))
         self.txtBurnInTemp.set_text(str('{0:0.2g}'.format(_string_)))
-        self.txtBurnInTime.set_text(str('{0:0.2g}'.format(self.model.get_value(self.selected_row, 7))))
-        self.txtLabDevices.set_text(str('{0:0.0g}'.format(self.model.get_value(self.selected_row, 20))))
-        self.txtLabTime.set_text(str('{0:0.2g}'.format(self.model.get_value(self.selected_row, 108))))
-        self.txtLabTemp.set_text(str('{0:0.2g}'.format(self.model.get_value(self.selected_row, 106))))
-        self.txtLabFailures.set_text(str('{0:0.0g}'.format(self.model.get_value(self.selected_row, 27))))
-        self.txtFieldTime.set_text(str('{0:0.2g}'.format(self.model.get_value(self.selected_row, 65))))
-        self.txtFieldFailures.set_text(str('{0:0.0g}'.format(self.model.get_value(self.selected_row, 26))))
+        self.txtBurnInTime.set_text(str('{0:0.2g}'.format(_model_.get_value(_row_, 7))))
+        self.txtLabDevices.set_text(str('{0:0.0g}'.format(_model_.get_value(_row_, 20))))
+        self.txtLabTime.set_text(str('{0:0.2g}'.format(_model_.get_value(_row_, 108))))
+        self.txtLabTemp.set_text(str('{0:0.2g}'.format(_model_.get_value(_row_, 106))))
+        self.txtLabFailures.set_text(str('{0:0.0g}'.format(_model_.get_value(_row_, 27))))
+        self.txtFieldTime.set_text(str('{0:0.2g}'.format(_model_.get_value(_row_, 65))))
+        self.txtFieldFailures.set_text(str('{0:0.0g}'.format(_model_.get_value(_row_, 26))))
 
-        self.txtMinTemp.set_text(str('{0:0.2f}'.format(self.model.get_value(self.selected_row, 56))))
-        self.txtKneeTemp.set_text(str('{0:0.2f}'.format(self.model.get_value(self.selected_row, 43))))
-        self.txtMaxTemp.set_text(str('{0:0.2f}'.format(self.model.get_value(self.selected_row, 55))))
-        self.txtRatedVoltage.set_text(str(fmt.format(self.model.get_value(self.selected_row, 94))))
-        self.txtOpVoltage.set_text(str(fmt.format(self.model.get_value(self.selected_row, 66))))
-        self.txtRatedCurrent.set_text(str(fmt.format(self.model.get_value(self.selected_row, 92))))
-        self.txtOpCurrent.set_text(str(fmt.format(self.model.get_value(self.selected_row, 62))))
-        self.txtRatedPower.set_text(str(fmt.format(self.model.get_value(self.selected_row, 93))))
-        self.txtOpPower.set_text(str(fmt.format(self.model.get_value(self.selected_row, 64))))
-        self.txtThetaJC.set_text(str(self.model.get_value(self.selected_row, 109)))
-        self.txtTempRise.set_text(str(fmt.format(self.model.get_value(self.selected_row, 107))))
-        self.txtCaseTemp.set_text(str(fmt.format(self.model.get_value(self.selected_row, 105))))
+        self.txtMinTemp.set_text(str('{0:0.2f}'.format(_model_.get_value(_row_, 56))))
+        self.txtKneeTemp.set_text(str('{0:0.2f}'.format(_model_.get_value(_row_, 43))))
+        self.txtMaxTemp.set_text(str('{0:0.2f}'.format(_model_.get_value(_row_, 55))))
+        self.txtRatedVoltage.set_text(str(fmt.format(_model_.get_value(_row_, 94))))
+        self.txtOpVoltage.set_text(str(fmt.format(_model_.get_value(_row_, 66))))
+        self.txtRatedCurrent.set_text(str(fmt.format(_model_.get_value(_row_, 92))))
+        self.txtOpCurrent.set_text(str(fmt.format(_model_.get_value(_row_, 62))))
+        self.txtRatedPower.set_text(str(fmt.format(_model_.get_value(_row_, 93))))
+        self.txtOpPower.set_text(str(fmt.format(_model_.get_value(_row_, 64))))
+        self.txtThetaJC.set_text(str(_model_.get_value(_row_, 109)))
+        self.txtTempRise.set_text(str(fmt.format(_model_.get_value(_row_, 107))))
+        self.txtCaseTemp.set_text(str(fmt.format(_model_.get_value(_row_, 105))))
 
         self.part = _util.set_part_model(self._category, self._subcategory)
         if(self.part is not None):
@@ -1768,12 +1773,8 @@ class Component():
     def load_notebook(self):
         """ Function to load the gtk.Notebook for the COMPONENT object. """
 
-        if(self._app.winParts.model != self._app.winParts.full_model):
-            self.model = self._app.winParts.model.get_model()
-            self.selected_row = self._app.winParts.model.convert_iter_to_child_iter(self._app.winParts.selected_row)
-        else:
-            self.model = self._app.winParts.full_model
-            self.selected_row = self._app.winParts.selected_row
+        self.model = self._app.winParts.tvwPartsList.get_model()
+        self.selected_row = self._app.winParts.selected_row
 
 # Remove existing gtk.Notebook pages except the General Data page.
         while(self.notebook.get_n_pages() > 1):

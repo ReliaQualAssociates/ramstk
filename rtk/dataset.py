@@ -166,7 +166,8 @@ class Dataset:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Analyses Input tab widgets.
-        self.chkGroup = _widg.make_check_button(_label_=_(u"Distribute to children assemblies"))
+        self.chkGroup = _widg.make_check_button(_label_=_(u"Decompose results to children assemblies"))
+        self.chkParts = _widg.make_check_button(_label_=_(u"Decompose results to parts"))
 
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
@@ -483,6 +484,10 @@ class Dataset:
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
+        self.chkGroup.set_tooltip_text(_(u"When checked, the MTBF and failure intensity results will be distributed to all next-level child assemblies according to the percentage of records each assembly contributes.  This assumes failure times are exponentially distributed."))
+
+        self.chkParts.set_tooltip_text(_(u"When checked, the MTBF and failure intensity results will be distributed to all components according to the percentage of records each component contributes.  This assumes failure times are exponentially distributed."))
+
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_STRING)
@@ -634,6 +639,9 @@ class Dataset:
         y_pos += 30
 
         fixed.put(self.chkGroup, 5, y_pos)
+        y_pos += 30
+
+        fixed.put(self.chkParts, 5, y_pos)
 
         fixed.show_all()
 
@@ -994,39 +1002,39 @@ class Dataset:
 
         y_pos = 5
         label = _widg.make_label(_(u"MIL\nHandbook"), height=50, width=100)
-        fixed.put(label, 155, y_pos)
+        fixed.put(label, 210, y_pos)
 
         label = _widg.make_label(_(u"Laplace"), height=50, width=100)
-        fixed.put(label, 260, y_pos)
+        fixed.put(label, 315, y_pos)
 
         label = _widg.make_label(_(u"Lewis\nRobinson"), height=50, width=100)
-        fixed.put(label, 365, y_pos)
+        fixed.put(label, 420, y_pos)
         y_pos += 55
 
         label = _widg.make_label(_(u"Test Statistic"), width=150)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMHB, 155, y_pos)
-        fixed.put(self.txtLP, 260, y_pos)
-        fixed.put(self.txtLR, 365, y_pos)
+        fixed.put(self.txtMHB, 210, y_pos)
+        fixed.put(self.txtLP, 315, y_pos)
+        fixed.put(self.txtLR, 420, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Critical Value"), width=150)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtChiSq, 155, y_pos)
-        fixed.put(self.txtZLPNorm, 260, y_pos)
-        fixed.put(self.txtZLRNorm, 365, y_pos)
+        fixed.put(self.txtChiSq, 210, y_pos)
+        fixed.put(self.txtZLPNorm, 315, y_pos)
+        fixed.put(self.txtZLRNorm, 420, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"p-Value"), width=150)
         fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMHBPValue, 155, y_pos)
-        fixed.put(self.txtZLPPValue, 260, y_pos)
-        fixed.put(self.txtZLRPValue, 365, y_pos)
+        fixed.put(self.txtMHBPValue, 210, y_pos)
+        fixed.put(self.txtZLPPValue, 315, y_pos)
+        fixed.put(self.txtZLRPValue, 420, y_pos)
         y_pos += 30
 
-        fixed.put(self.lblMHBResult, 155, y_pos)
-        fixed.put(self.lblZLPResult, 260, y_pos)
-        fixed.put(self.lblZLRResult, 365, y_pos)
+        fixed.put(self.lblMHBResult, 210, y_pos)
+        fixed.put(self.lblZLPResult, 315, y_pos)
+        fixed.put(self.lblZLRResult, 420, y_pos)
 
 # Parametric estimates.
         fixed = gtk.Fixed()
@@ -1351,87 +1359,80 @@ class Dataset:
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_STRING)
         self.tvwResultsByChildAssembly.set_model(model)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Hardware\nItem"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
+        column.set_attributes(cell, text=0, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Number of\nFailures"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
+        column.set_attributes(cell, text=1, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"MTBF\nLower Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
+        column.set_attributes(cell, text=2, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"MTBF"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=3)
+        column.set_attributes(cell, text=3, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"MTBF\nUpper Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=4)
+        column.set_attributes(cell, text=4, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Failure Intensity\nLower Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=5)
+        column.set_attributes(cell, text=5, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Failure\nIntensity"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=6)
+        column.set_attributes(cell, text=6, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Failure Intensity\nUpper Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=7)
+        column.set_attributes(cell, text=7, background=8)
         self.tvwResultsByChildAssembly.append_column(column)
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1444,37 +1445,86 @@ class Dataset:
 
 # Table of results allocated to each part.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
-                              gobject.TYPE_FLOAT)
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                              gobject.TYPE_STRING)
         self.tvwResultsByPart.set_model(model)
+
+        self.tvwResultsByPart.columns_autosize()
+        self.tvwResultsByPart.set_headers_clickable(True)
+        self.tvwResultsByPart.set_reorderable(True)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Part\nNumber"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
+        column.set_attributes(cell, text=0, background=8)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Number of\nFailures"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
+        column.set_attributes(cell, text=1, background=8)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
         column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"% of\nTotal"))
+        label = _widg.make_column_heading(_(u"MTBF\nLower Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
+        column.set_attributes(cell, text=2, background=8)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"MTBF"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=3, background=8)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"MTBF\nUpper Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=4, background=8)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Hazard Rate\nLower Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=5, background=8)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Hazard\nRate"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=6, background=8)
+        self.tvwResultsByPart.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Hazard Rate\nUpper Bound"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=7, background=8)
         self.tvwResultsByPart.append_column(column)
 
         scrollwindow = gtk.ScrolledWindow()
@@ -2507,49 +2557,80 @@ class Dataset:
 # Find the percent of records belonging to each sub-assembly and then allocate
 # this percent of the overall failure rate to each sub-assembly.
         if(self.chkGroup.get_active()):
-            query = "SELECT t2.fld_name, COUNT(t1.fld_hardware_id) \
-                     FROM tbl_incident AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_hardware_id=t2.fld_assembly_id \
-                     WHERE t1.fld_revision_id=%d \
-                     GROUP BY t2.fld_name" % self._app.REVISION.revision_id
-            _results = self._app.DB.execute_query(query,
+            _query_ = "SELECT t2.fld_name, COUNT(t1.fld_hardware_id) \
+                       FROM tbl_incident AS t1 \
+                       INNER JOIN tbl_system AS t2 \
+                       ON t1.fld_hardware_id=t2.fld_assembly_id \
+                       WHERE t1.fld_revision_id=%d \
+                       GROUP BY t2.fld_name" % self._app.REVISION.revision_id
+            _results_ = self._app.DB.execute_query(_query_,
                                                   None,
                                                   self._app.ProgCnx)
 
-            model = self.tvwResultsByChildAssembly.get_model()
-            model.clear()
-            row = model.get_iter_root()
-            _total = float(sum(x[1] for x in _results))
-            for i in range(len(_results)):
-                _values = (_results[i][0], _results[i][1],
-                           (MTBFLL * _total) / float(_results[i][1]),
-                           (MTBF * _total) / float(_results[i][1]),
-                           (MTBFUL * _total) / float(_results[i][1]),
-                           float(_results[i][1]) / (MTBFUL * _total),
-                           float(_results[i][1]) / (MTBF * _total),
-                           float(_results[i][1]) / (MTBFLL * _total))
-                model.append(_values)
+            _model_ = self.tvwResultsByChildAssembly.get_model()
+            _model_.clear()
+            _total_ = float(sum(x[1] for x in _results_))
+            for i in range(len(_results_)):
+                if(_results_[i][1] / _total_ >= 0.1):
+                    _color_ = 'red'
+                elif(_results_[i][1] / _total_ < 0.1 and
+                     _results_[i][1] / _total_ >= 0.05):
+                    _color_ = 'yellow'
+                elif(_results_[i][1] / _total_ < 0.05 and
+                     _results_[i][1] / _total_ >= 0.01):
+                    _color_ = 'white'
+                else:
+                    _color_ = 'light gray'
 
-            query = "SELECT t1.fld_part_num, COUNT(t1.fld_part_num) \
-                     FROM tbl_incident_detail AS t1 \
-                     INNER JOIN tbl_incident AS t2 ON \
-                                t1.fld_incident_id=t2.fld_incident_id \
-                     WHERE t2.fld_revision_id=%d \
-                     GROUP BY t1.fld_part_num \
-                     ORDER BY COUNT(t1.fld_part_num) DESC" % self._app.REVISION.revision_id
-            _results = self._app.DB.execute_query(query,
+                _values_ = (_results_[i][0], _results_[i][1],
+                           (MTBFLL * _total_) / float(_results_[i][1]),
+                           (MTBF * _total_) / float(_results_[i][1]),
+                           (MTBFUL * _total_) / float(_results_[i][1]),
+                           float(_results_[i][1]) / (MTBFUL * _total_),
+                           float(_results_[i][1]) / (MTBF * _total_),
+                           float(_results_[i][1]) / (MTBFLL * _total_),
+                           _color_)
+                _model_.append(_values_)
+
+# Find the percent of records belonging to each component and then allocate
+# this percent of the overall failure rate to each component.
+        if(self.chkParts.get_active()):
+            _query_ = "SELECT t1.fld_part_num, COUNT(t1.fld_part_num) \
+                       FROM tbl_incident_detail AS t1 \
+                       INNER JOIN tbl_incident AS t2 ON \
+                                  t1.fld_incident_id=t2.fld_incident_id \
+                       WHERE t2.fld_revision_id=%d \
+                       GROUP BY t1.fld_part_num \
+                       ORDER BY COUNT(t1.fld_part_num) DESC" % \
+                       self._app.REVISION.revision_id
+            _results_ = self._app.DB.execute_query(_query_,
                                                   None,
                                                   self._app.ProgCnx)
 
-            model = self.tvwResultsByPart.get_model()
-            model.clear()
-            row = model.get_iter_root()
-            _total = float(sum(x[1] for x in _results))
-            for i in range(len(_results)):
-                _values = (_results[i][0], _results[i][1],
-                           float(_results[i][1]) / _total)
-                model.append(_values)
+            _model_ = self.tvwResultsByPart.get_model()
+            _model_.clear()
+            _total_ = float(sum(x[1] for x in _results_))
+            for i in range(len(_results_)):
+                if(_results_[i][1] / _total_ >= 0.01):
+                    _color_ = 'red'
+                elif(_results_[i][1] / _total_ < 0.01 and
+                     _results_[i][1] / _total_ >= 0.005):
+                    _color_ = 'yellow'
+                elif(_results_[i][1] / _total_ < 0.005 and
+                     _results_[i][1] / _total_ >= 0.001):
+                    _color_ = 'white'
+                else:
+                    _color_ = 'light gray'
+
+                _values_ = (_results_[i][0], _results_[i][1],
+                            (MTBFLL * _total_) / float(_results_[i][1]),
+                            (MTBF * _total_) / float(_results_[i][1]),
+                            (MTBFUL * _total_) / float(_results_[i][1]),
+                            float(_results_[i][1]) / (MTBFUL * _total_),
+                            float(_results_[i][1]) / (MTBF * _total_),
+                            float(_results_[i][1]) / (MTBFLL * _total_),
+                            _color_)
+                _model_.append(_values_)
 
 # =========================================================================== #
 # Create and display parametric plots.

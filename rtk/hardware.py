@@ -72,20 +72,27 @@ class Hardware:
 
         self._app = application
 
+# Define local dictionary variables.
+        self._treepaths = {}
+
+# Define global dictionary variables.
+        self.dicHARDWARE = {}
+
+# Define local list variables.
+        self._col_order = []
+
+# Define global object variables.
         self.treeview = None
         self.model = None
         self.selected_row = None
+
+# Define global scalar variables.
         self.ispart = False
         self.assembly = None
-        self._assembly_id = 0
         self.system_ht = 0.0
 
-        self._col_order = []
-
-        # Create an empty dictionary to hold the Assembly ID/Hardware Tree
-        # treemodel paths.  This is used to keep the Hardware Tree and the
-        # Parts List in sync.
-        self._treepaths = {}
+# Define local scalar variables.
+        self._assembly_id = 0
 
         self._ready = True
 
@@ -138,7 +145,7 @@ class Hardware:
         if(results == '' or not results):
             return True
 
-        n_assemblies = len(results)
+        _n_assemblies = len(results)
 
         _pixbuf = False
         cols = self.treeview.get_columns()
@@ -155,7 +162,7 @@ class Hardware:
         self._treepaths = {}
 
 # Load the model with the returned results.
-        for i in range(n_assemblies):
+        for i in range(_n_assemblies):
 
             if(results[i][62] == '-'):          # Its the top level element.
                 piter = None
@@ -178,6 +185,7 @@ class Hardware:
 
             row = self.model.append(piter, data_)
 
+            self.dicHARDWARE[results[i][1]] = data_ + (self.model.get_string_from_iter(row),)
             self._treepaths[results[i][68]] = self.model.get_path(row)
 
         self.treeview.expand_all()
@@ -230,6 +238,7 @@ class Hardware:
 
         return False
 
+
     def _treeview_row_changed(self, treeview, path, column):
         """
         Callback function to handle events for the HARDWARE Object
@@ -246,19 +255,19 @@ class Hardware:
         column   -- the actived gtk.TreeViewColumn.
         """
 
-        # Save the previously selected row in the Hardware tree.
+# Save the previously selected row in the Hardware tree.
         if self.selected_row is not None:
-            path_ = self.model.get_path(self.selected_row)
-            self._save_line_item(self.model, path_, self.selected_row)
+            _path_ = self.model.get_path(self.selected_row)
+            self._save_line_item(self.model, _path_, self.selected_row)
 
-        # Save the previously selected row in the Parts List.
-        if self._app.winParts.selected_row is not None and \
+# Save the previously selected row in the Parts List.
+        _selection_ = self._app.winParts.tvwPartsList.get_selection()
+        (_model_, _row_) = _selection_.get_selected()
+        if _row_ is not None and \
            self.selected_row is not None and \
            self.model.get_value(self.selected_row, 63) == 1:
-            path_ = self._app.winParts.model.get_path(self._app.winParts.selected_row)
-            self._app.winParts.save_line_item(self._app.winParts.model,
-                                              path_,
-                                              self._app.winParts.selected_row)
+            _path_ = _model_.get_path(_row_)
+            self._app.winParts.save_line_item(_model_, _path_, _row_)
 
         selection = self.treeview.get_selection()
         (self.model, self.selected_row) = selection.get_selected()
@@ -273,11 +282,11 @@ class Hardware:
 # Find the current revision if using the revision module, otherwise set this
 # to the default value.
         if(_conf.RTK_MODULES[0] == 1):
-            _values1 = (self._app.REVISION.revision_id, _path_)
-            _values2 = (self._app.REVISION.revision_id, self._assembly_id)
+            _values1_ = (self._app.REVISION.revision_id, _path_)
+            _values2_ = (self._app.REVISION.revision_id, self._assembly_id)
         else:
-            _values1 = (0, _path_)
-            _values2 = (0, self._assembly_id)
+            _values1_ = (0, _path_)
+            _values2_ = (0, self._assembly_id)
 
 # Build the queries to select the reliability tests and program incidents
 # associated with the selected HARDWARE.
@@ -286,11 +295,11 @@ class Hardware:
                     INNER JOIN tbl_system AS t2 \
                     ON t1.fld_assembly_id=t2.fld_assembly_id \
                     WHERE t2.fld_revision_id=%d \
-                    AND t2.fld_parent_assembly='%s'" % _values1
+                    AND t2.fld_parent_assembly='%s'" % _values1_
         qryIncidents = "SELECT * FROM tbl_incident\
                         WHERE fld_revision_id=%d \
                         AND fld_hardware_id=%d \
-                        ORDER BY fld_incident_id" % _values2
+                        ORDER BY fld_incident_id" % _values2_
         qryDatasets = "SELECT * FROM tbl_dataset \
                        WHERE fld_assembly_id=%d" % (self._assembly_id)
 
@@ -307,30 +316,31 @@ class Hardware:
             elif(self.model.get_value(self.selected_row, 63) == 1):
                 self.ispart = True
                 self.assembly = self.model.get_value(self.selected_row, 62)
-                self._find_parts_list_row()
+                self._set_parts_list_row()
                 self._app.COMPONENT.load_notebook()
 
             return False
         else:
             return True
 
-    def _find_parts_list_row(self):
+    def _set_parts_list_row(self):
         """
-        Finds the corresponding row in the Parts List when a selected row in
+        Sets the corresponding row in the Parts List when a selected row in
         the HARDWARE Object gtk.TreeView is a COMPONENT Object.
         """
 
-        model = self._app.winParts.tvwPartsList.get_model()
-        row = model.get_iter_first()
-        while(model.get_value(row, 1) != self._assembly_id):
-            row = model.iter_next(row)
+        _model_ = self._app.winParts.tvwPartsList.get_model()
+        _row_ = _model_.get_iter_first()
+        while(_model_.get_value(_row_, 1) != self._assembly_id):
+            _row_ = _model_.iter_next(_row_)
 
-        if(row is not None):
-            self._app.winParts.selected_row = row
-            _path_ = self._app.winParts.full_model.get_path(row)
+        if(_row_ is not None):
+            self._app.winParts.selected_row = _row_
+            _path_ = _model_.get_path(_row_)
             self._app.winParts.tvwPartsList.set_cursor(_path_)
 
         return False
+
 
     def hardware_save(self):
         """

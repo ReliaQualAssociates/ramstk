@@ -198,7 +198,7 @@ class Revision:
     def _general_data_widgets_create(self):
         """ Method to create General Data widgets for the REVISION object. """
 
-        # Quadrant 1 (upper left) widgets.
+# Quadrant 1 (upper left) widgets.
         self.txtCode.set_tooltip_text(_("A unique code for the selected revision."))
         self.txtCode.connect('focus-out-event',
                              self._callback_entry, 'text', 22)
@@ -220,7 +220,7 @@ class Revision:
         with the appropriate widgets for the REVISION object.
         """
 
-        # Place the input/output widgets.
+# Place the input/output widgets.
         fixed = gtk.Fixed()
 
         scrollwindow = gtk.ScrolledWindow()
@@ -253,17 +253,23 @@ class Revision:
 
         textview = _widg.make_text_view(buffer_=self.txtRemarks, width=400)
         textview.set_tooltip_text(_("Enter any remarks associated with the selected revision."))
-        textview.connect('focus-out-event', self._callback_entry, 'text', 20)
+        _view_ = textview.get_children()[0].get_children()[0]
+        _view_.connect('focus-out-event', self._callback_entry, 'text', 20)
         fixed.put(textview, 155, y_pos)
         y_pos += 130
 
         fixed.show_all()
 
-        # Insert the tab.
-        label = gtk.Label(_("General\nData"))
-        label.set_tooltip_text(_("Displays general information for the selected revision."))
+# Insert the tab.
+        _label_ = gtk.Label()
+        _heading_ = _("General\nData")
+        _label_.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+        _label_.set_alignment(xalign=0.5, yalign=0.5)
+        _label_.set_justify(gtk.JUSTIFY_CENTER)
+        _label_.show_all()
+        _label_.set_tooltip_text(_(u"Displays general information for the selected revision."))
         self.notebook.insert_page(frame,
-                                  tab_label=label,
+                                  tab_label=_label_,
                                   position=-1)
 
         return False
@@ -392,11 +398,16 @@ class Revision:
 
         fixed.show_all()
 
-        # Insert the tab.
-        label = gtk.Label(_("Assessment\nResults"))
-        label.set_tooltip_text(_("Displays reliability, maintainability, and availability assessment results for the selected revision."))
+# Insert the tab.
+        _label_ = gtk.Label()
+        _heading_ = _("Assessment\nResults")
+        _label_.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+        _label_.set_alignment(xalign=0.5, yalign=0.5)
+        _label_.set_justify(gtk.JUSTIFY_CENTER)
+        _label_.show_all()
+        _label_.set_tooltip_text(_(u"Displays reliability, maintainability, and availability assessment results for the selected revision."))
         self.notebook.insert_page(hbox,
-                                  tab_label=label,
+                                  tab_label=_label_,
                                   position=-1)
 
         return False
@@ -844,62 +855,50 @@ class Revision:
         row   -- the selected row in the REVISION Object gtk.TreeModel.
         """
 
-        values = (model.get_value(row, self._col_order[1]), \
-                  model.get_value(row, self._col_order[2]), \
-                  model.get_value(row, self._col_order[3]), \
-                  model.get_value(row, self._col_order[4]), \
-                  model.get_value(row, self._col_order[5]), \
-                  model.get_value(row, self._col_order[6]), \
-                  model.get_value(row, self._col_order[7]), \
-                  model.get_value(row, self._col_order[8]), \
-                  model.get_value(row, self._col_order[9]), \
-                  model.get_value(row, self._col_order[10]), \
-                  model.get_value(row, self._col_order[11]), \
-                  model.get_value(row, self._col_order[12]), \
-                  model.get_value(row, self._col_order[13]), \
-                  model.get_value(row, self._col_order[14]), \
-                  model.get_value(row, self._col_order[15]), \
-                  model.get_value(row, self._col_order[16]), \
-                  model.get_value(row, self._col_order[17]), \
-                  model.get_value(row, self._col_order[18]), \
-                  model.get_value(row, self._col_order[19]), \
-                  model.get_value(row, self._col_order[20]), \
-                  model.get_value(row, self._col_order[21]), \
-                  model.get_value(row, self._col_order[22]), \
-                  model.get_value(row, self._col_order[0]))
+        _values_ = (model.get_value(row, self._col_order[1]), \
+                    model.get_value(row, self._col_order[2]), \
+                    model.get_value(row, self._col_order[3]), \
+                    model.get_value(row, self._col_order[4]), \
+                    model.get_value(row, self._col_order[5]), \
+                    model.get_value(row, self._col_order[6]), \
+                    model.get_value(row, self._col_order[7]), \
+                    model.get_value(row, self._col_order[8]), \
+                    model.get_value(row, self._col_order[9]), \
+                    model.get_value(row, self._col_order[10]), \
+                    model.get_value(row, self._col_order[11]), \
+                    model.get_value(row, self._col_order[12]), \
+                    model.get_value(row, self._col_order[13]), \
+                    model.get_value(row, self._col_order[14]), \
+                    model.get_value(row, self._col_order[15]), \
+                    model.get_value(row, self._col_order[16]), \
+                    model.get_value(row, self._col_order[17]), \
+                    model.get_value(row, self._col_order[18]), \
+                    model.get_value(row, self._col_order[19]), \
+                    model.get_value(row, self._col_order[20]), \
+                    model.get_value(row, self._col_order[21]), \
+                    model.get_value(row, self._col_order[22]), \
+                    model.get_value(row, self._col_order[0]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_revisions \
-                     SET fld_availability=%f, fld_availability_mission=%f, \
-                         fld_cost=%f, fld_cost_failure=%f, fld_cost_hour=%f, \
-                         fld_failure_rate_active=%f, fld_failure_rate_dormant=%f, \
-                         fld_failure_rate_mission=%f, fld_failure_rate_predicted=%f, \
-                         fld_failure_rate_software=%f, fld_mmt=%f, fld_mcmt=%f, \
-                         fld_mpmt=%f, fld_mtbf_mission=%f, fld_mtbf_predicted=%f, \
-                         fld_mttr=%f, fld_name='%s', fld_reliability_mission=%f, \
-                         fld_reliability_predicted=%f, fld_remarks='%s', \
-                         fld_total_part_quantity=%d, fld_revision_code='%s' \
-                     WHERE fld_revision_id=%d"
+        _query_ = "UPDATE tbl_revisions \
+                   SET fld_availability=%f, fld_availability_mission=%f, \
+                       fld_cost=%f, fld_cost_failure=%f, fld_cost_hour=%f, \
+                       fld_failure_rate_active=%f, \
+                       fld_failure_rate_dormant=%f, \
+                       fld_failure_rate_mission=%f, \
+                       fld_failure_rate_predicted=%f, \
+                       fld_failure_rate_software=%f, fld_mmt=%f, \
+                       fld_mcmt=%f, fld_mpmt=%f, fld_mtbf_mission=%f, \
+                       fld_mtbf_predicted=%f, fld_mttr=%f, fld_name='%s', \
+                       fld_reliability_mission=%f, \
+                       fld_reliability_predicted=%f, fld_remarks='%s', \
+                       fld_total_part_quantity=%d, fld_revision_code='%s' \
+                   WHERE fld_revision_id=%d" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
 
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_revisions \
-                     SET fld_availability=?, fld_availability_mission=?, \
-                         fld_cost=?, fld_cost_failure=?, fld_cost_hour=?, \
-                         fld_failure_rate_active=?, fld_failure_rate_dormant=?, \
-                         fld_failure_rate_mission=?, fld_failure_rate_predicted=?, \
-                         fld_failure_rate_software=?, fld_mmt=?, fld_mcmt=?, \
-                         fld_mpmt=?, fld_mtbf_mission=?, fld_mtbf_predicted=?, \
-                         fld_mttr=?, fld_name=?, fld_reliability_mission=?, \
-                         fld_reliability_predicted=?, fld_remarks=?, \
-                         fld_total_part_quantity=?, fld_revision_code=? \
-                     WHERE fld_revision_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
+        if not _results_:
             self._app.debug_log.error("revision.py: Failed to save revision to tbl_revisions.")
 
     def load_notebook(self):
@@ -919,7 +918,7 @@ class Revision:
 
         return False
 
-    def _callback_entry(self, entry, event, convert, index_):
+    def _callback_entry(self, entry, event, convert, _index_):
         """
         Callback function to retrieve and save entry changes.
 
@@ -930,20 +929,20 @@ class Revision:
         index_  -- the position in the REVISION Object gtk.TreeModel
                    associated with the data from the calling entry.
         """
-
+        print _index_
         if(convert == 'text'):
-            if(index_ == 20):
-                text_ = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
+            if(_index_ == 20):
+                _text_ = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
             else:
-                text_ = entry.get_text()
+                _text_ = entry.get_text()
 
         elif(convert == 'int'):
-            text_ = int(entry.get_text())
+            _text_ = int(entry.get_text())
 
         elif(convert == 'float'):
-            text_ = float(entry.get_text().replace('$', ''))
+            _text_ = float(entry.get_text().replace('$', ''))
 
-        # Update the Revision tree.
-        self.model.set_value(self.selected_row, index_, text_)
+# Update the Revision tree.
+        self.model.set_value(self.selected_row, _index_, _text_)
 
         return False

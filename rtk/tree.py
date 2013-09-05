@@ -318,7 +318,7 @@ class TreeWindow(gtk.Window):
         menu_item.connect('activate', self._app.REVISION.revision_add, self)
         menu2.append(menu_item)
 
-        # Add assembly entry.
+# Add assembly entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -328,7 +328,7 @@ class TreeWindow(gtk.Window):
         menu_item.connect('activate', self._app.ASSEMBLY.assembly_add)
         menu2.append(menu_item)
 
-        # Add component entry.
+# Add component entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -338,7 +338,7 @@ class TreeWindow(gtk.Window):
         menu_item.connect('activate', self._app.COMPONENT.component_add, None)
         menu2.append(menu_item)
 
-        # Add New menu.
+# Add New menu.
         mnuNew = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -455,11 +455,17 @@ class TreeWindow(gtk.Window):
         menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
         menu_item.connect('activate', _util.options, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Composite Ref Des"), use_underline=True)
+        menu_item = gtk.MenuItem(label=_("_Composite Ref Des"),
+                                 use_underline=True)
         menu_item.connect('activate', _util.create_comp_ref_des, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Import Project"), use_underline=True)
+        menu_item = gtk.MenuItem(label=_("_Import Project"),
+                                 use_underline=True)
         menu_item.connect('activate', _util.import_project, self._app)
+        menu.append(menu_item)
+        menu_item = gtk.MenuItem(label=_("_Build System Hierarchy"),
+                                 use_underline=True)
+        menu_item.connect('activate', _util.build_system_hierarchy, self._app)
         menu.append(menu_item)
 
         mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)

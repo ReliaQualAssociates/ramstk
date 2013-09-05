@@ -182,16 +182,7 @@ class Assembly:
         self.system_model = self._app.HARDWARE.model
         self.system_selected_row = self._app.HARDWARE.selected_row
 
-        self.assembly_id = 0
-        self._category = 0
-        self._subcategory = 0
-        self._mode_id = 0
-
-# Define lists.
-        self._risk_col_order = []
-        self._sia_col_order = []
-
-# Define dictionaries.
+# Define local dictionary variables.
         self._mission = {}
         self._mission_phase = {}
         self._hrmodel = {}
@@ -203,6 +194,18 @@ class Assembly:
         self._ItemCA = {}                   # Carries MIL-STD-1629A values.
         self._rpnsev = {}                   # Carries RPN severity values.
         self._RPN = {}                      # Carries RPN and new RPN values.
+
+# Define local list variables.
+        self._risk_col_order = []
+        self._sia_col_order = []
+
+# Define global scalar variables.
+        self.assembly_id = 0
+
+# Define local scalar variables.
+        self._category = 0
+        self._subcategory = 0
+        self._mode_id = 0
 
 # Create the Notebook for the ASSEMBLY object.
         self.notebook = gtk.Notebook()
@@ -937,6 +940,7 @@ class Assembly:
 
         return False
 
+
     def _allocation_widgets_create(self):
         """ Method to create the Allocation widgets. """
 
@@ -1104,7 +1108,7 @@ class Assembly:
 
         fixed.show_all()
 
-        # Load the tab.
+# Insert the tab.
         label = gtk.Label()
         _heading = _("Allocation")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")

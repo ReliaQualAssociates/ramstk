@@ -741,7 +741,7 @@ class Function:
         (self.model, self.selected_row) = selection.get_selected()
 
         if self.selected_row is not None:
-            self._app.winParts.filter_parts_list(1)
+            #self._app.winParts.filter_parts_list(1)
             self.function_id = self.model.get_value(self.selected_row, 1)
             self.load_notebook()
 

@@ -131,64 +131,70 @@ def calculate_revision(widget=None, application=None):
     application -- the RTK application object.
     """
 
-    _parent = application.HARDWARE.model.get_string_from_iter(application.HARDWARE.selected_row)
-    if _parent is None:
-        _parent = '0'
+    _parent_ = application.HARDWARE.model.get_string_from_iter(application.HARDWARE.selected_row)
+    if _parent_ is None:
+        _parent_ = '0'
 
-    values = (application.REVISION.revision_id,)
-    if(_conf.BACKEND == 'mysql'):
-        query = "SELECT SUM(fld_cost), \
-                 SUM(fld_failure_rate_active), \
-                 SUM(fld_failure_rate_dormant), \
-                 SUM(fld_failure_rate_software), \
-                 COUNT(fld_assembly_id) \
-                 FROM tbl_system \
-                 WHERE fld_revision_id=%d \
-                 AND fld_part=1"
-    elif(_conf.BACKEND == 'sqlite3'):
-        query = "SELECT SUM(fld_cost), \
-                 SUM(fld_failure_rate_active), \
-                 SUM(fld_failure_rate_dormant), \
-                 SUM(fld_failure_rate_software), \
-                 COUNT(fld_assembly_id) \
-                 FROM tbl_system \
-                 WHERE fld_revision_id=? \
-                 AND fld_part=1"
+# First attempt to calculate results based on components associated with the
+# selected revision.
+    _values_ = (application.REVISION.revision_id,)
+    _query_ = "SELECT SUM(fld_cost), \
+               SUM(fld_failure_rate_active), \
+               SUM(fld_failure_rate_dormant), \
+               SUM(fld_failure_rate_software), \
+               COUNT(fld_assembly_id) \
+               FROM tbl_system \
+               WHERE fld_revision_id=%d \
+               AND fld_part=1" % _values_
+    _results_ = application.DB.execute_query(_query_,
+                                             None,
+                                             application.ProgCnx,
+                                             commit=False)
 
-    results = application.DB.execute_query(query,
-                                           values,
-                                           application.ProgCnx,
-                                           commit=False)
+# If that doesn't work, attempt to calculate results based on the first level
+# of assemblies associated with the seletected revision.
+    if _results_[0][0] is None:
+        _query_ = "SELECT SUM(fld_cost), \
+                   SUM(fld_failure_rate_active), \
+                   SUM(fld_failure_rate_dormant), \
+                   SUM(fld_failure_rate_software), \
+                   COUNT(fld_assembly_id) \
+                   FROM tbl_system \
+                   WHERE fld_revision_id=%d \
+                   AND fld_level=1 AND fld_part=0" % _values_
+        _results_ = application.DB.execute_query(_query_,
+                                                 None,
+                                                 application.ProgCnx,
+                                                 commit=False)
+        if _results_[0][0] is None:
+            return True
 
-    if results[0][0] is None:
-        return True
-    else:
-        cost = float(results[0][0])
-        lambdaa = float(results[0][1])
-        lambdad = float(results[0][2])
-        lambdas = float(results[0][3])
-        partcnt = int(results[0][4])
+    _cost_ = float(_results_[0][0])
+    _lambdaa_ = float(_results_[0][1])
+    _lambdad_ = float(_results_[0][2])
+    _lambdas_ = float(_results_[0][3])
+    _part_count_ = int(_results_[0][4])
 
 # Predicted h(t).
-    lambdap = lambdaa + lambdad + lambdas
+    _lambdap_ = _lambdaa_ + _lambdad_ + _lambdas_
 
 # Calculate the MTBF.
-    mtbf = 1.0 / lambdap
+    _mtbf_ = 1.0 / _lambdap_
 
 # Calculate reliabilities.
-    rm = exp(-1.0 * lambdap * _conf.MTIME / _conf.FRMULT)
+    _rm_ = exp(-1.0 * _lambdap_ * _conf.MTIME / _conf.FRMULT)
 
     _model_ = application.REVISION.model
     _row_ = application.REVISION.selected_row
 
-    _model_.set_value(_row_, 3, cost)
-    _model_.set_value(_row_, 6, lambdaa)
-    _model_.set_value(_row_, 7, lambdad)
-    _model_.set_value(_row_, 9, lambdap)
-    _model_.set_value(_row_, 10, lambdas)
-    _model_.set_value(_row_, 15, mtbf)
-    _model_.set_value(_row_, 18, rm)
-    _model_.set_value(_row_, 21, partcnt)
+    _model_.set_value(_row_, 3, _cost_)
+    _model_.set_value(_row_, 6, _lambdaa_)
+    _model_.set_value(_row_, 7, _lambdad_)
+    _model_.set_value(_row_, 9, _lambdap_)
+    _model_.set_value(_row_, 10, _lambdas_)
+    _model_.set_value(_row_, 15, _mtbf_)
+    _model_.set_value(_row_, 18, _rm_)
+    _model_.set_value(_row_, 21, _part_count_)
 
     application.REVISION.load_notebook()
 
@@ -381,7 +387,7 @@ def calculate_hardware(treemodel, row, application):
             elif(treemodel.get_value(row, 63) == 1):    # Component
 # Get the partlist full model and row associated with the selected system
 # tree item.
-                partmodel = application.winParts.full_model
+                partmodel = application.winParts.tvwPartsList.get_model()
                 path = application.winParts._treepaths[treemodel.get_value(row, 1)]
                 partrow = partmodel.get_iter(path)
 

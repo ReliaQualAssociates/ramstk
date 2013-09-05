@@ -764,6 +764,7 @@ def application_error(_prompt_, _image_='important', _parent_=None):
 
     return False
 
+
 def add_items(_class_):
     """
     Adds one or more items to a treeview hierarchy.
@@ -801,6 +802,7 @@ def add_items(_class_):
 
     return(numitems)
 
+
 def cut_copy_paste(widget, action):
     """
     Cuts, copies, and pastes.
@@ -824,6 +826,7 @@ def cut_copy_paste(widget, action):
 
     return False
 
+
 def paste(clipboard, contents, user_data):
     """
     Callback function to paste text from the clipboard.
@@ -836,6 +839,7 @@ def paste(clipboard, contents, user_data):
 
     print contents
 
+
 def select_all(widget):
     """
     Selects all the rows in a treeview.
@@ -846,6 +850,7 @@ def select_all(widget):
 
     # TODO: Write code to select all items in treeviews.
     return False
+
 
 def find(widget, action):
     """
@@ -859,6 +864,7 @@ def find(widget, action):
 
     # TODO: Write code to find, find next, find previous, and replace search terms.
     return False
+
 
 def find_all_in_list(list, value, start=0):
     """
@@ -879,21 +885,22 @@ def find_all_in_list(list, value, start=0):
     except ValueError:
         pass
 
-def undo():
 
+def undo():
     """ Undoes the last chamge. """
 
     # TODO: Write code to undo changes.
 
     return False
 
-def redo():
 
+def redo():
     """ Redoes the last change. """
 
     # TODO: Write code to redo changes.
 
     return False
+
 
 def create_comp_ref_des(widget, app):
     """
@@ -908,6 +915,7 @@ def create_comp_ref_des(widget, app):
     row = treemodel.get_iter_root()
 
     build_comp_ref_des(treemodel, row)
+
 
 def build_comp_ref_des(treemodel, row):
     """
@@ -940,6 +948,129 @@ def build_comp_ref_des(treemodel, row):
     treemodel.set_value(row, 12, comp_ref_des)
 
     return False
+
+
+def build_system_hierarchy(widget, app):
+    """
+    This function builds a system hierachy from incident reports.  The higher
+    level structure (e.g., sub-systesm, assemblies, etc.) must already exist.
+    This function will populate the hierarchy with the components in the
+    incident data.
+
+    Keyword Arguments:
+    widget -- the GTK widget that called the function.
+    app    -- the RTK application object.
+    """
+
+# Find the revision id.
+    if(_conf.RTK_MODULES[0] == 1):
+        _revision_id_ = app.REVISION.revision_id
+    else:
+        _revision_id_ = 0
+
+# Find the last assembly id being used and increment it by one as the starting
+# assembly id.
+    _query_ = "SELECT MAX(fld_assembly_id) FROM tbl_system"
+    _assembly_id_ = app.DB.execute_query(_query_,
+                                         None,
+                                         app.ProgCnx)
+    _assembly_id_ = _assembly_id_[0][0] + 1
+
+# Get the list of part numbers to add to the system hierarchy and their
+# associated hardware id's from the incident reports.
+    _query_ = "SELECT DISTINCT(t1.fld_part_num), t2.fld_hardware_id \
+               FROM tbl_incident_detail AS t1 \
+               INNER JOIN tbl_incident AS t2 \
+               ON t1.fld_incident_id=t2.fld_incident_id \
+               WHERE t2.fld_revision_id=%d \
+               ORDER BY t2.fld_hardware_id" % _revision_id_
+    _results_ = app.DB.execute_query(_query_,
+                                     None,
+                                     app.ProgCnx)
+
+    _n_added_ = 0
+    for i in range(len(_results_)):
+        _tmp_ = app.HARDWARE.dicHARDWARE[_results_[i][1]]
+
+# Create a description from the part prefix and part index.
+        _part_name_ = str(_conf.RTK_PREFIX[6]) + ' ' + \
+                      str(_conf.RTK_PREFIX[7])
+
+# Create a tuple of values to pass to the component_add queries.
+        _values_ = (_revision_id_, _assembly_id_, _part_name_, 1,
+                   _tmp_[len(_tmp_) - 1], _results_[i][0])
+
+# Add the new component to each table needing a new entry and increment the
+# count of components added.
+        _added_ = component_add(app, _values_)
+
+        if not _added_:
+            _n_added_ += 1
+
+# Increment the part index and assembly id.
+        _conf.RTK_PREFIX[7] = _conf.RTK_PREFIX[7] + 1
+        _assembly_id_ += 1
+
+    if _n_added_ != len(_results_):
+        application_error(_(u"There was an error adding one or more components to the database.  Check the RTK error log for more details."))
+
+    app.REVISION.load_tree()
+#TODO: Need to find and select the previously selected revision before loading the hardware tree.
+    app.HARDWARE.load_tree()
+
+    return False
+
+
+def component_add(app, _values):
+    """
+    Function to add a component to the RTK Program database.
+
+    Keyword Arguments:
+    app     -- the running instances of the RTK application.
+    _values -- tuple containing the values to pass to the queries.
+    """
+
+# Insert the new part into tbl_system.
+    _query = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
+                                      fld_name, fld_part, \
+                                      fld_parent_assembly, \
+                                      fld_part_number) \
+              VALUES (%d, %d, '%s', %d, '%s', '%s')" % _values
+    _inserted = app.DB.execute_query(_query,
+                                     None,
+                                     app.ProgCnx,
+                                     commit=True)
+
+    if not _inserted:
+        app.debug_log.error("utilities.py:component_add - Failed to add new component to system table.")
+        pass
+
+# Insert the new component into tbl_prediction.
+    _query = "INSERT INTO tbl_prediction \
+              (fld_revision_id, fld_assembly_id) \
+              VALUES (%d, %d)" % (_values[0], _values[1])
+    _inserted = app.DB.execute_query(_query,
+                                     None,
+                                     app.ProgCnx,
+                                     commit=True)
+    if not _inserted:
+        app.debug_log.error("utilities.py:component_add - Failed to add new component to prediction table.")
+        pass
+
+# Insert the new component into tbl_fmeca.
+    _query = "INSERT INTO tbl_fmeca \
+              (fld_assembly_id) \
+              VALUES (%d)" % _values[1]
+    _inserted = app.DB.execute_query(_query,
+                                     None,
+                                     app.ProgCnx,
+                                     commit=True)
+    if not _inserted:
+        app.debug_log.error("utilities.py:component_add - Failed to add new component to FMECA table.")
+        pass
+
+    return False
+
 
 def set_part_model(category, subcategory):
     """
@@ -1215,6 +1346,7 @@ def set_part_model(category, subcategory):
 
     return(part)
 
+
 def calculate_max_text_width(text, font):
     """
     Function to calculate the maximum width of the text string that is using a
@@ -1231,6 +1363,7 @@ def calculate_max_text_width(text, font):
         max_ = max(max_, font.width(line))
 
     return max_ + 50
+
 
 def trickledown(model, row, index_, value_):
     """
@@ -1256,6 +1389,7 @@ def trickledown(model, row, index_, value_):
 
     return False
 
+
 def options(widget, _app):
     """
     Function to launch the user options configuration assistant.
@@ -1266,6 +1400,7 @@ def options(widget, _app):
     """
 
     opts = Options(_app)
+
 
 def date_select(widget, entry):
     """
