@@ -525,7 +525,7 @@ class Assembly:
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Removes the currently selected assembly from the RTK Program Database."))
         image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
+        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.connect('clicked', self.assembly_delete)
         toolbar.insert(button, _pos)
@@ -3083,7 +3083,11 @@ class Assembly:
         else:
             if(type_ == 0):
                 _iter = self._app.HARDWARE.model.iter_parent(self._app.HARDWARE.selected_row)
-                _parent = self._app.HARDWARE.model.get_string_from_iter(_iter)
+                try:
+                    _parent = self._app.HARDWARE.model.get_string_from_iter(_iter)
+                except TypeError:
+                    _util.application_error(_(u"An sibling assembly can not be added to the top-level assembly."))
+                    return True
                 n_new_assembly = _util.add_items(_(u"Sibling Assembly"))
             if(type_ == 1):
                 _parent = self._app.HARDWARE.model.get_string_from_iter(self._app.HARDWARE.selected_row)

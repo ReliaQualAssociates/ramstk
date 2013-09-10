@@ -394,7 +394,6 @@ def create_project(widget, app):
         cnx.close()
 
     elif(_conf.BACKEND == 'sqlite3'):
-
         dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program Database"),
                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
                                        buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT,
@@ -688,16 +687,16 @@ def import_project(widget, app):
     """
 
 # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
-    dialog = gtk.FileChooserDialog(_("Select Project to Import"), None,
-                                   gtk.FILE_CHOOSER_ACTION_OPEN,
-                                   (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                                    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    _dialog_ = gtk.FileChooserDialog(_("Select Project to Import"), None,
+                                     gtk.FILE_CHOOSER_ACTION_OPEN,
+                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                                      gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
+    _response_ = _dialog_.run()
+    if(_response_ == gtk.RESPONSE_ACCEPT):
         print "Importing project."
 
-    dialog.destroy()
+    _dialog_.destroy()
 
 
 def confirm_action(_prompt_, _image_='default', _parent_=None):
@@ -776,31 +775,31 @@ def add_items(_class_):
 
     _title_ = _(u"RTK - Add %s") % _class_
 
-    dialog = _widg.make_dialog(_title_)
+    _dialog_ = _widg.make_dialog(_title_)
 
-    fixed = gtk.Fixed()
-    fixed.set_size_request(400, 60)
+    _fixed_ = gtk.Fixed()
+    _fixed_.set_size_request(400, 80)
 
-    label = _widg.make_label(_(u"Add how many %s?") % _class_, 150, 75)
-    txtQuantity = _widg.make_entry()
+    _label_ = _widg.make_label(_(u"Add how many %s?") % _class_, 150, 80)
+    txtQuantity = _widg.make_entry(_width_=100)
     txtQuantity.set_text("1")
 
-    fixed.put(label, 5, 10)
-    fixed.put(txtQuantity, 160, 10)
-    fixed.show_all()
+    _fixed_.put(_label_, 5, 10)
+    _fixed_.put(txtQuantity, 160, 38)
+    _fixed_.show_all()
 
-    dialog.vbox.pack_start(fixed)
+    _dialog_.vbox.pack_start(_fixed_)
 
-    response = dialog.run()
+    _response_ = _dialog_.run()
 
-    if(response == gtk.RESPONSE_ACCEPT):
-        numitems = int(txtQuantity.get_text())
+    if(_response_ == gtk.RESPONSE_ACCEPT):
+        _numitems_ = int(txtQuantity.get_text())
     else:
-        numitems = 0
+        _numitems_ = 0
 
-    dialog.destroy()
+    _dialog_.destroy()
 
-    return(numitems)
+    return(_numitems_)
 
 
 def cut_copy_paste(widget, action):

@@ -54,10 +54,466 @@ import gettext
 _ = gettext.gettext
 
 
+class AddRevision:
+    """
+    This is the gtkAssistant that walks the user through the process of adding
+    a new revision to the open RTK Program database.
+    """
+
+    def __init__(self, button, app):
+        """
+        Initialize on instance of the Add Revision Assistant.
+
+        Keyword Arguments:
+        button -- the gtk.Button widget that calling this Assistant.
+        app    -- the instance of the RTK application calling the Assistant.
+        """
+
+        self._app = app
+
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_(u"RTK Revision Addition Assistant"))
+        self.assistant.connect('apply', self._add_revision)
+        self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
+
+# Create the introduction page.
+        fixed = gtk.Fixed()
+        _text_ = _(u"This is the RTK Revision Addition Assistant.  It will help you add a new revision to the database.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=600, height=150)
+        fixed.put(label, 5, 5)
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(fixed, _(u"Introduction"))
+        self.assistant.set_page_complete(fixed, True)
+
+# Create the pages to select other information to add.
+        y_pos = 5
+        self.fxdPageOtherInfo = gtk.Fixed()
+        _text_ = _(u"Select additional information to add...")
+        label = _widg.make_label(_text_, width=300)
+        self.fxdPageOtherInfo.put(label, 5, y_pos)
+        y_pos += 30
+
+        self.chkFunction = gtk.CheckButton(_(u"_Functions"))
+        self.fxdPageOtherInfo.put(self.chkFunction, 5, y_pos)
+        y_pos += 30
+
+        self.chkFunctionMatrix = gtk.CheckButton(_(u"Functional _Matrix"))
+        self.fxdPageOtherInfo.put(self.chkFunctionMatrix, 5, y_pos)
+        y_pos += 30
+
+        self.chkRequirements = gtk.CheckButton(_(u"_Requirements"))
+        self.fxdPageOtherInfo.put(self.chkRequirements, 5, y_pos)
+        y_pos += 30
+
+        self.chkHardware = gtk.CheckButton(_(u"_Hardware"))
+        self.fxdPageOtherInfo.put(self.chkHardware, 5, y_pos)
+        y_pos += 30
+
+        self.chkFailureInfo = gtk.CheckButton(_(u"Include reliability information"))
+        self.fxdPageOtherInfo.put(self.chkFailureInfo, 5, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Select existing Revision to duplicate."),
+                                 width=300)
+        self.cmbBaseRevision = _widg.make_combo(simple=False)
+        self.fxdPageOtherInfo.put(label, 5, y_pos)
+        self.fxdPageOtherInfo.put(self.cmbBaseRevision, 305, y_pos)
+
+        _query_ = "SELECT fld_revision_code, fld_name, fld_revision_id \
+                   FROM tbl_revisions"
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        _list_ = []
+        for i in range(len(_results_)):
+            _list_.append([_results_[i][0] + '-' + _results_[i][1], '',
+                          _results_[i][2]])
+        _widg.load_combo(self.cmbBaseRevision, _list_, simple=False)
+
+        self.assistant.append_page(self.fxdPageOtherInfo)
+        self.assistant.set_page_type(self.fxdPageOtherInfo,
+                                     gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(self.fxdPageOtherInfo,
+                                      _(u"Select Additional Information to Add"))
+        self.assistant.set_page_complete(self.fxdPageOtherInfo, True)
+
+# Create the software incident general information page.
+        y_pos = 5
+        self.fxdPageSetValues = gtk.Fixed()
+        _text_ = _(u"Revision Code:")
+        label = _widg.make_label(_text_)
+        self.txtRevisionCode = _widg.make_entry(_width_=100)
+        self.txtRevisionCode.set_tooltip_text(_(u"Enter a code for the new revision.  Leave blank to use the default revision code."))
+        self.fxdPageSetValues.put(label, 5, y_pos)
+        self.fxdPageSetValues.put(self.txtRevisionCode, 200, y_pos)
+        y_pos += 30
+
+        _text_ = _(u"Revision Name:")
+        label = _widg.make_label(_text_)
+        self.txtRevisionName = _widg.make_entry()
+        self.txtRevisionName.set_tooltip_text(_(u"Enter a name for the new revision.  Leave blank to use the default revision name."))
+        self.fxdPageSetValues.put(label, 5, y_pos)
+        self.fxdPageSetValues.put(self.txtRevisionName, 200, y_pos)
+        y_pos += 30
+
+        _text_ = _(u"Remarks:")
+        label = _widg.make_label(_text_)
+        self.txtRemarks = gtk.TextBuffer()
+        self.fxdPageSetValues.put(label, 5, y_pos)
+        _textview_ = _widg.make_text_view(buffer_=self.txtRemarks,
+                                          width=300, height=100)
+        self.fxdPageSetValues.put(_textview_, 200, y_pos)
+        y_pos += 35
+
+        self.assistant.append_page(self.fxdPageSetValues)
+        self.assistant.set_page_type(self.fxdPageSetValues,
+                                     gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(self.fxdPageSetValues, _(u"Set Values for New Revision"))
+        self.assistant.set_page_complete(self.fxdPageSetValues, True)
+
+        fixed = gtk.Fixed()
+        self.assistant.append_page(fixed)
+        self.assistant.set_page_type(fixed,
+                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(fixed, _(u"Revision: Confirm Addition"))
+        self.assistant.set_page_complete(fixed, True)
+
+        self.assistant.show_all()
+
+    def _forward_page_select(self, current_page):
+
+        if(current_page == 0):
+            self.assistant.set_current_page(1)
+
+        elif(current_page == 1):
+            self.assistant.set_current_page(2)
+
+        elif(current_page == 2):
+            self.assistant.set_current_page(3)
+
+    def _add_revision(self, _assistant_):
+        """
+        Method to add the new revision to the RTK Program database.
+
+        Keyword Arguments:
+        assistant -- the gtk.Assistant that represents the wizard.
+        """
+
+# Find out who is logged in and adding this revision.
+        if(name == 'posix'):
+            _who_ = environ['USER']
+        elif(name == 'nt'):
+            _who_ = environ['USERNAME']
+
+# Find the current maximum Revision ID and increment it by one for the new
+# Revision ID.
+        _query_ = "SELECT MAX(fld_revision_id) FROM tbl_revisions"
+        _revision_id_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
+        _revision_id_ = _revision_id_[0][0] + 1
+
+# Create the revision code.
+        _revision_code_ = self.txtRevisionCode.get_text()
+        if(_revision_code_ == '' or _revision_code_ is None):
+            _revision_code_ = str(_conf.RTK_PREFIX[0]) + ' ' + str(_conf.RTK_PREFIX[1])
+
+            # Increment the revision index.
+            _conf.RTK_PREFIX[1] = _conf.RTK_PREFIX[1] + 1
+
+        _revision_name_ = self.txtRevisionName.get_text()
+        if(_revision_name_ == '' or _revision_name_ is None):
+            _revision_name_ = 'New Revision'
+
+        _revision_remarks_ = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
+
+# First we add the new revision.  Second we retrieve thew new revision id.
+# Third, we create a new, top-level system entry for this revision.
+        _values_ = (_revision_id_, _revision_name_, _revision_remarks_,
+                    _revision_code_)
+
+        _query_ = "INSERT INTO tbl_revisions (fld_revision_id, fld_name, \
+                                              fld_remarks, fld_revision_code) \
+                   VALUES (%d, '%s', '%s', '%s')" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+
+        _model_ = self.cmbBaseRevision.get_model()
+        _row_ = self.cmbBaseRevision.get_active_iter()
+        _base_revision_ = int(_model_.get_value(_row_, 2))
+
+        if(self.chkFunction.get_active()):
+            _query_ = "SELECT MAX(fld_function_id) FROM tbl_functions"
+            _function_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
+
+            if(_function_id_[0][0] is not None):
+                _function_id_ = _function_id_[0][0] + 1
+
+                # Retrieve the information needed to copy the function hierarchy
+                # from the base revision to the new revision.
+                _query_ = "SELECT fld_code, fld_level, fld_name, fld_parent_id, \
+                                  fld_remarks \
+                           FROM tbl_functions \
+                           WHERE fld_revision_id=%d" % _base_revision_
+                _function_ = self._app.DB.execute_query(_query_,
+                                                        None,
+                                                        self._app.ProgCnx)
+
+                # Copy the function hierarchy for the new revision.
+                for i in range(len(_function_)):
+                    _function_name_ = "New Function_" + str(i)
+
+                    _values_ = (_revision_id_, _function_id_, _function_[i][0],
+                                _function_[i][1], _function_[i][2],
+                                _function_[i][3], _function_[i][4])
+                    _query_ = "INSERT INTO tbl_functions \
+                               (fld_revision_id, fld_function_id, fld_code, \
+                                fld_level, fld_name, fld_parent_id, \
+                                fld_remarks) \
+                               VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    if(self.chkFunctionMatrix.get_active()):
+                        _values_ = (_revision_id_, _function_id_)
+                        _query_ = "INSERT INTO tbl_functional_matrix \
+                                   (fld_revision_id, fld_function_id) \
+                                   VALUES (%d, %d)" % _values_
+                        _results_ = self._app.DB.execute_query(_query_,
+                                                               None,
+                                                               self._app.ProgCnx,
+                                                               commit=True)
+
+                    _function_id_ += 1
+
+        if(self.chkRequirements.get_active()):
+            _query_ = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
+            _requirement_id_ = self._app.DB.execute_query(_query_,
+                                                          None,
+                                                          self._app.ProgCnx)
+
+            if(_requirement_id_[0][0] is not None):
+                _requirement_id_ = _requirement_id_[0][0] + 1
+
+                # Retrieve the information needed to copy the requirement
+                # hierarchy from the base revision to the new revision.
+                _query_ = "SELECT fld_requirement_desc, fld_requirement_code, \
+                                  fld_derived, fld_parent_requirement, \
+                                  fld_owner, fld_specification, \
+                                  fld_page_number, fld_figure_number \
+                           FROM tbl_requirements \
+                           WHERE fld_revision_id=%d" % _base_revision_
+                _requirement_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx)
+
+                # Copy the requirement hierarchy for the new revision.
+                for i in range(len(_requirements_)):
+                    _values_ = (_revision_id_, _requirement_id_,
+                                _requirement_[i][0], _requirement_[i][1],
+                                _requirement_[i][2], _requirement_[i][3],
+                                _requirement_[i][4], _requirement_[i][5],
+                                _requirement_[i][6], _requirement_[i][7])
+                    _query_ = "INSERT INTO tbl_requirements \
+                               (fld_revision_id, fld_requirement_id, \
+                                fld_requirement_desc, fld_requirement_code, \
+                                fld_derived, fld_parent_requirement, \
+                                fld_owner, fld_specification, \
+                                fld_page_number, fld_figure_number) \
+                               VALUES (%d, %d, '%s', '%s', %d, '%s', '%s', \
+                                       '%s', '%s', '%s')" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _requirement_id_ += 1
+
+        if(self.chkHardware.get_active()):
+            _query_ = "SELECT MAX(fld_assembly_id) FROM tbl_system"
+            _assembly_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
+
+            if(_assembly_id_[0][0] is not None):
+                _assembly_id_ = _assembly_id_[0][0] + 1
+
+                # Retrieve the information needed to copy the hardware
+                # hierarchy from the base revision to the new revision.
+                if(self.chkFailureInfo.get_active()):
+                    _query_ = "SELECT fld_cage_code, fld_category_id, \
+                                      fld_description, \
+                                      fld_failure_rate_active, \
+                                      fld_failure_rate_dormant, \
+                                      fld_failure_rate_software, \
+                                      fld_failure_rate_specified, \
+                                      fld_failure_rate_type, \
+                                      fld_figure_number, \
+                                      fld_lcn, fld_level, fld_manufacturer, \
+                                      fld_mission_time, fld_name, fld_nsn, \
+                                      fld_page_number, fld_parent_assembly, \
+                                      fld_part, fld_part_number, \
+                                      fld_quantity, \
+                                      fld_ref_des, fld_remarks, \
+                                      fld_specification_number, \
+                                      fld_subcategory_id \
+                               FROM tbl_system \
+                               WHERE fld_revision_id=%d" % _base_revision_
+                else:
+                    _query_ = "SELECT fld_cage_code, fld_category_id, \
+                                      fld_description, fld_figure_number, \
+                                      fld_lcn, fld_level, fld_manufacturer, \
+                                      fld_mission_time, fld_name, fld_nsn, \
+                                      fld_page_number, fld_parent_assembly, \
+                                      fld_part, fld_part_number, \
+                                      fld_quantity, fld_ref_des, fld_remarks, \
+                                      fld_specification_number, \
+                                      fld_subcategory_id \
+                               FROM tbl_system \
+                               WHERE fld_revision_id=%d" % _base_revision_
+                _system_ = self._app.DB.execute_query(_query_,
+                                                      None,
+                                                      self._app.ProgCnx)
+
+                # Copy the hardware hierarchy for the new revision.
+                for i in range(len(_system_)):
+                    if(self.chkFailureInfo.get_active()):
+                        _values_ = (_revision_id_, _assembly_id_,
+                                    _system_[i][0], _system_[i][1],
+                                    _system_[i][2], _system_[i][3],
+                                    _system_[i][4], _system_[i][5],
+                                    _system_[i][6], _system_[i][7],
+                                    _system_[i][8], _system_[i][9],
+                                    _system_[i][10], _system_[i][11],
+                                    _system_[i][12], _system_[i][13],
+                                    _system_[i][14], _system_[i][15],
+                                    _system_[i][16], _system_[i][17],
+                                    _system_[i][18], _system_[i][19],
+                                    _system_[i][20], _system_[i][21],
+                                    _system_[i][22], _system_[i][23], _who_)
+                        _query_ = "INSERT INTO tbl_system \
+                                   (fld_revision_id, fld_assembly_id, \
+                                    fld_cage_code, fld_category_id, \
+                                    fld_description, fld_failure_rate_active, \
+                                    fld_failure_rate_dormant, \
+                                    fld_failure_rate_software, \
+                                    fld_failure_rate_specified, \
+                                    fld_failure_rate_type, fld_figure_number, \
+                                    fld_lcn, fld_level, fld_manufacturer, \
+                                    fld_mission_time, fld_name, fld_nsn, \
+                                    fld_page_number, fld_parent_assembly, \
+                                    fld_part, fld_part_number, fld_quantity, \
+                                    fld_ref_des, fld_remarks, \
+                                    fld_specification_number, \
+                                    fld_subcategory_id, fld_entered_by) \
+                                   VALUES (%d, %d, '%s', %d, '%s', %f, %f, \
+                                           %f, %f, %d, '%s', '%s', %d, %d, \
+                                           %f, '%s', '%s', '%s', '%s', %d, \
+                                           '%s', %d, '%s', '%s', '%s', %d, \
+                                           '%s')" % _values_
+                    else:
+                        _values_ = (_revision_id_, _assembly_id_,
+                                    _system_[i][0], _system_[i][1],
+                                    _system_[i][2], _system_[i][3],
+                                    _system_[i][4], _system_[i][5],
+                                    _system_[i][6], _system_[i][7],
+                                    _system_[i][8], _system_[i][9],
+                                    _system_[i][10], _system_[i][11],
+                                    _system_[i][12], _system_[i][13],
+                                    _system_[i][14], _system_[i][15],
+                                    _system_[i][16], _system_[i][17],
+                                    _system_[i][18], _who_)
+                        _query_ = "INSERT INTO tbl_system \
+                                   (fld_revision_id, fld_assembly_id, \
+                                    fld_cage_code, fld_category_id, \
+                                    fld_description, fld_figure_number, \
+                                    fld_lcn, fld_level, fld_manufacturer, \
+                                    fld_mission_time, fld_name, fld_nsn, \
+                                    fld_page_number, fld_parent_assembly, \
+                                    fld_part, fld_part_number, fld_quantity, \
+                                    fld_ref_des, fld_remarks, \
+                                    fld_specification_number, \
+                                    fld_subcategory_id, fld_entered_by) \
+                                   VALUES (%d, %d, '%s', %d, '%s', '%s', \
+                                           '%s', %d, %d, %f, '%s', '%s', \
+                                           '%s', '%s', %d, '%s', %d, '%s', \
+                                           '%s', '%s', %d, '%s')" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _values_ = (_revision_id_, _assembly_id_)
+                    _query_ = "INSERT INTO tbl_allocation \
+                               (fld_revision_id, fld_assembly_id) \
+                               VALUES (%d, %d)" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _query_ = "INSERT INTO tbl_risk_analysis \
+                               (fld_revision_id, fld_assembly_id) \
+                               VALUES (%d, %d)" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _query_ = "INSERT INTO tbl_similar_item \
+                               (fld_revision_id, fld_assembly_id) \
+                               VALUES (%d, %d)" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _query_ = "INSERT INTO tbl_functional_matrix \
+                               (fld_revision_id, fld_assembly_id) \
+                               VALUES(%d, %d)" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _query_ = "INSERT INTO tbl_fmeca \
+                               (fld_revision_id, fld_assembly_id) \
+                               VALUES(%d, %d)" % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
+
+                    _assembly_id_ += 1
+
+# Reload the revision tree.
+        self._app.REVISION.load_tree()
+
+    def _cancel(self, button):
+        """
+        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        pressed.
+
+        Keyword Arguments:
+        button -- the gtk.Button that called this method.
+        """
+
+        self.assistant.destroy()
+
+
 class AddIncident:
     """
     This is the gtkAssistant that walks the user through the process of adding
-    a Field Incident records to the open RTK Program database.
+    Field Incident records to the open RTK Program database.
     """
 
     def __init__(self, button, app):
