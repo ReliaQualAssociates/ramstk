@@ -105,25 +105,25 @@ def make_combo(_width_=200, _height_=30, simple=True):
     Keyword Arguments:
     _width_  -- width of the gtk.ComboBox widget.  Default is 200.
     _height_ -- height of the gtk.ComboBox widget.  Default is 30.
-    simple   -- boolean indicating whether to create a simple text
+    _simple_ -- boolean indicating whether to create a simple text
                 gtk.ComboBox.  Defaults to True.
     """
 
     if simple:
-        combo = gtk.combo_box_new_text()
+        _combo_ = gtk.combo_box_new_text()
     else:
-        list_ = gtk.TreeStore(gobject.TYPE_STRING,
-                              gobject.TYPE_STRING,
-                              gobject.TYPE_STRING)
-        combo = gtk.ComboBox(list_)
-        cell = gtk.CellRendererText()
-        combo.pack_start(cell, True)
-        combo.set_attributes(cell, text=0)
+        _list_ = gtk.TreeStore(gobject.TYPE_STRING,
+                               gobject.TYPE_STRING,
+                               gobject.TYPE_STRING)
+        _combo_ = gtk.ComboBox(_list_)
+        _cell_ = gtk.CellRendererText()
+        _combo_.pack_start(_cell_, True)
+        _combo_.set_attributes(_cell_, text=0)
 
-    combo.props.width_request = _width_
-    combo.props.height_request = _height_
+    _combo_.props.width_request = _width_
+    _combo_.props.height_request = _height_
 
-    return(combo)
+    return(_combo_)
 
 
 def load_combo(combo, _list_, simple=True, _index_=0):

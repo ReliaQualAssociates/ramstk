@@ -67,7 +67,7 @@ class TreeWindow(gtk.Window):
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
-        self.set_title(_(u"RTK"))
+        self.set_title(_(u"RTK Module Book"))
 
         n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         width = gtk.gdk.screen_width() / n_screens
@@ -313,9 +313,6 @@ class TreeWindow(gtk.Window):
         menu2 = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("_Project"), use_underline=True)
         menu_item.connect('activate', _util.create_project, self)
-        menu2.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Revision"), use_underline=True)
-        menu_item.connect('activate', self._app.REVISION.revision_add, self)
         menu2.append(menu_item)
 
 # Add assembly entry.

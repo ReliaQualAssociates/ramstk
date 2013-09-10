@@ -39,6 +39,8 @@ import calculations as _calc
 import configuration as _conf
 import widgets as _widg
 
+from _assistants_.adds import AddRevision
+
 # Add localization support.
 import locale
 try:
@@ -148,7 +150,7 @@ class Revision:
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
-        button.connect('clicked', self.revision_add)
+        button.connect('clicked', AddRevision, self._app)
         toolbar.insert(button, _pos)
         _pos += 1
 
@@ -597,186 +599,6 @@ class Revision:
 
         for i in columns:
             self.model.set_value(self.selected_row, i, values[i])
-
-        return False
-
-    def revision_add(self, widget=None):
-        """
-        Adds a new REVISION to the Program's database.
-
-        Keyword Arguments:
-        widget -- the widget that called this method.
-        """
-
-# Create the revision code.
-        _code = str(_conf.RTK_PREFIX[0]) + ' ' + str(_conf.RTK_PREFIX[1])
-
-# Increment the revision index.
-        _conf.RTK_PREFIX[1] = _conf.RTK_PREFIX[1] + 1
-
-# First we add the new revision.  Second we retrieve thew new revision id.
-# Third, we create a new, top-level system entry for this revision.
-        values = ('New Revision', '', _code)
-
-        if(_conf.BACKEND == 'mysql'):
-            query = "INSERT INTO tbl_revisions (fld_name, fld_remarks, \
-                     fld_revision_code) VALUES ('%s', '%s', '%s')"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "INSERT INTO tbl_revisions (fld_name, fld_remarks, \
-                     fld_revision_code) VALUES (?, ?, ?)"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
-            self._app.debug_log.error("revision.py: Failed to add new revision.")
-            return True
-
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT LAST_INSERT_ID()"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT seq \
-                     FROM sqlite_sequence \
-                     WHERE name='tbl_revisions'"
-
-        revision_id = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
-
-
-# Create the default description of the assembly.
-        _descrip = str(_conf.RTK_PREFIX[4]) + ' ' + \
-                   str(_conf.RTK_PREFIX[5])
-
-# Increment the assembly index.
-        _conf.RTK_PREFIX[5] = _conf.RTK_PREFIX[5] + 1
-
-        query="SELECT fld_parent_assembly, fld_description \
-               FROM tbl_system WHERE fld_revision_id=0"
-        systems = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
-
-        for i in range(len(systems)):
-            if(_conf.BACKEND == 'mysql'):
-                values = (revision_id[0][0], str(_conf.RTK_PROG_INFO[3]),
-                          systems[i][0], systems[i][1])
-                query = "INSERT INTO tbl_system \
-                         (fld_revision_id, fld_entered_by, \
-                          fld_parent_assembly, fld_description) \
-                         VALUES (%d, '%s', '%s', '%s')"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT MAX(fld_assembly_id) \
-                         FROM tbl_system"
-                results = self._app.DB.execute_query(query,
-                                                     None,
-                                                     self._app.ProgCnx)
-                assembly_id = int(results[0][0]) + 1
-                values = (revision_id[0][0], str(_conf.RTK_PROG_INFO[3]),
-                          systems[i][0], systems[i][1], assembly_id)
-
-                query = "INSERT INTO tbl_system \
-                         (fld_revision_id, fld_entered_by, \
-                          fld_parent_assembly, fld_description, \
-                          fld_assembly_id) \
-                         VALUES (?, ?, ?, ?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to add new assembly to system table.")
-                return True
-
-            if(_conf.BACKEND == 'mysql'):
-                query = "SELECT LAST_INSERT_ID()"
-            #elif(_conf.BACKEND == 'sqlite3'):
-            #    query = "SELECT seq \
-            #             FROM sqlite_sequence \
-            #             WHERE name='tbl_system'"
-
-                assembly_id = self._app.DB.execute_query(query,
-                                                         None,
-                                                         self._app.ProgCnx)
-                assembly_id = assembly_id[0][0]
-
-                if not results:
-                    self._app.debug_log.error("revision.py: Failed to retrieve new assembly ID.")
-
-            values = (revision_id[0][0], assembly_id)
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_allocation \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_allocation \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to add new assembly to allocation table.")
-
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_risk_analysis \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_risk_analysis \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to add new assembly to risk analysis table.")
-
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_similar_item \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_similar_item \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES (?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to add new assembly to similar items table.")
-
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_functional_matrix \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES(%d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_functional_matrix \
-                         (fld_revision_id, fld_assembly_id) \
-                         VALUES(?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
-                self._app.debug_log.error("revision.py: Failed to add new assembly to functional matrix table.")
-
-        self.load_tree()
 
         return False
 

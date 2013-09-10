@@ -950,9 +950,11 @@ CREATE TABLE "tbl_rel_growth" (
 -- Create tables for storing Failure Mode, Effects, and Criticality Analysis
 -- (FMECA) information.
 --
+DROP TABLE IF EXISTS "tbl_fmeca";
 CREATE TABLE "tbl_fmeca" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_function_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system revision.
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system assembly.
+    "fld_function_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system function.
     "fld_mode_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_mode_description" VARCHAR(512),                -- Noun description of the failure mode.
     "fld_mission_phase" VARCHAR(64),                    -- Mission phase failure mode is of concern.

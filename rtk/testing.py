@@ -1629,11 +1629,11 @@ class Testing:
                 self.chkTRMG.set_active(False)
 
             if(MTBFG/MTBFI <= 2.0):
-                _text = "<span foreground='#00CC00'>Low Risk</span>"
+                _text = "<span foreground='red'>High Risk</span>"
             elif(MTBFG/MTBFI > 2.0 and MTBFG/MTBFI <= 3.0):
                 _text = "<span foreground='yellow'>Medium Risk</span>"
             else:
-                _text = "<span foreground='red'>High Risk</span>"
+                _text = "<span foreground='#00CC00'>Low Risk</span>"
             self.lblMGMI.set_markup(_text)
 
             self.txtFEF.set_text(str(fmt.format(FEF)))

@@ -819,4 +819,4 @@ class ListWindow(gtk.Window):
         elif(page_num == 3):
             self.set_title(_(u"RTK Survival Analyses Lists"))
         else:
-            self.set_title(_(u"RTK Lists"))
+            self.set_title(_(u"RTK List Book"))
