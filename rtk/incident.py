@@ -122,9 +122,6 @@ class Incident:
         self.cmbCriticality = _widg.make_combo()
         self.cmbLifeCycle = _widg.make_combo()
         self.cmbRequestBy = _widg.make_combo()
-        self.cmbReviewBy = _widg.make_combo()
-        self.cmbApproveBy = _widg.make_combo()
-        self.cmbCloseBy = _widg.make_combo()
 
         self.tvwComponentList = gtk.TreeView()
 
@@ -135,16 +132,22 @@ class Incident:
         self.txtShortDescription = _widg.make_entry(_width_=550)
         self.txtLongDescription = gtk.TextBuffer()
         self.txtRemarks = gtk.TextBuffer()
-        self.txtAnalysis = gtk.TextBuffer()
+
         self.txtTest = _widg.make_entry(_width_=100)
         self.txtTestCase = _widg.make_entry(_width_=100)
-        self.txtReviewDate = _widg.make_entry(_width_=100)
-        self.txtApproveDate = _widg.make_entry(_width_=100)
-        self.txtCloseDate = _widg.make_entry(_width_=100)
         if self._field_incident_widgets_create():
             self.debug_app._log.error("incident.py: Failed to create Incident widgets.")
         if self._field_incident_tab_create():
             self.debug_app._log.error("incident.py: Failed to create Incident tab.")
+
+        self.cmbReviewBy = _widg.make_combo()
+        self.cmbApproveBy = _widg.make_combo()
+        self.cmbCloseBy = _widg.make_combo()
+
+        self.txtAnalysis = gtk.TextBuffer()
+        self.txtReviewDate = _widg.make_entry(_width_=100)
+        self.txtApproveDate = _widg.make_entry(_width_=100)
+        self.txtCloseDate = _widg.make_entry(_width_=100)
         if self._incident_analysis_widgets_create():
             self.debug_app._log.error("incident.py: Failed to create Incident Analysis widgets.")
         if self._incident_analysis_tab_create():

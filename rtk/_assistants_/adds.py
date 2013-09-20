@@ -1365,7 +1365,7 @@ class CreateDataSet:
 # Create the introduction page.
         fixed = gtk.Fixed()
         _text_ = _("This is the RTK survival data set assistant.  It will help you create a data set for survival (Weibull) analysis from the Program Incidents.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        label = _widg.make_label(_text_, width=600, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1388,19 +1388,22 @@ class CreateDataSet:
         fixed.put(self.optFile, 5, 35)
 
 # Create the radio buttons that allow choice of MTTF or MTBF estimates.
-        self.optMTTF = gtk.RadioButton(label=_(u"Only include first failure time for each unit."))
+        self.optMTTF = gtk.RadioButton(label=_(u"Include only the first failure time for each unit."))
+        self.optMTBBD = gtk.RadioButton(group=self.optMTTF,
+                                        label=_(u"Include only distinct failure times for each unit."))
         self.optMTBF = gtk.RadioButton(group=self.optMTTF,
                                        label=_(u"Include all failure times for each unit."))
 
         fixed.put(self.optMTTF, 5, 75)
-        fixed.put(self.optMTBF, 5, 105)
+        fixed.put(self.optMTBBD, 5, 105)
+        fixed.put(self.optMTBF, 5, 135)
 
 # Create the checkbutton to include or exclude zero hour failures.
         self.chkIncludeZeroHour = _widg.make_check_button(
         _label_=_(u"Include zero hour failures."))
         self.chkIncludeZeroHour.set_active(True)
 
-        fixed.put(self.chkIncludeZeroHour, 5, 145)
+        fixed.put(self.chkIncludeZeroHour, 5, 175)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
@@ -1435,7 +1438,7 @@ class CreateDataSet:
 # Create the page to apply the import criteria.
         fixed = gtk.Fixed()
         _text_ = _("Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        label = _widg.make_label(_text_, width=600, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
@@ -1453,250 +1456,213 @@ class CreateDataSet:
         button -- the gtk.Button that called this method.
         """
 
-        window = self.assistant.get_root_window()
-        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        _window_ = self.assistant.get_root_window()
+        _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
-        _parts = dict()
-        _data_set = []
+        _records_ = {}
+        _data_set_ = []
+
+        _assembly_id_ = 0
+        _confidence_ = float(self.txtConfidence.get_text())
+        _description_ = self.txtDescription.get_text()
+
+# First create a new dataset in the RTK Program database or create a new file
+# to output the results to.
+        if(self.optDatabase.get_active()):
+            _query_ = "INSERT INTO tbl_dataset (fld_assembly_id, \
+                                                fld_description, \
+                                                fld_confidence) \
+                       VALUES (%d, '%s', %f)" % \
+                       (_assembly_id_, _description_, _confidence_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx,
+                                                   commit=True)
+
+# Find the ID of the last dataset to be created.  This is the value that will
+# be written to the fld_dtaset_id field in the tbl_survival_data table.
+            if(_conf.BACKEND == 'mysql'):
+                _query_ = "SELECT LAST_INSERT_ID()"
+            elif(_conf.BACKEND == 'sqlite3'):
+                _query_ = "SELECT seq \
+                           FROM sqlite_sequence \
+                           WHERE name='tbl_dataset'"
+
+            _dataset_id_ = self._app.DB.execute_query(_query_,
+                                                      None,
+                                                      self._app.ProgCnx)
+            _dataset_id_ = _dataset_id_[0][0]
+        else:
+            _dialog_ = gtk.FileChooserDialog(_("RTK: Save Data Set to File ..."),
+                                             None,
+                                             gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                             (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                              gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+            _dialog_.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+            _response_ = _dialog_.run()
+            if(_response_ == gtk.RESPONSE_ACCEPT):
+                _filename_ = _dialog_.get_filename()
+
+            _dialog_.destroy()
+
+            _dataset_id_ = 0
+
+            _file_ = open(_filename_, 'w')
+            _file_.write("Data Set Description: " + self.txtDescription.get_text() + "\n")
+            _file_.write("\n")
+            _file_.write("Record_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\n")
 
         _starttime_ = 0.01
         if(self.chkIncludeZeroHour.get_active()):
             _starttime_ = 0.0
 
-# TODO: Revise the following query to include the hardware id from tbl_incident.
 # Select everything from the incident detail table in the Program database.
 #   Index       Field
-#     0      Incident ID
-#     1      Part Number
-#     2      Age at Incident
-#     3      Failure
-#     4      Suspension
-#     5      CND/NFF
-#     6      OCC
-#     7      Initial Installation
-#     8      Interval Censored
-#     9      Assembly ID
-        query = "SELECT t1.fld_incident_id, t1.fld_part_num, \
-                        t1.fld_age_at_incident, t1.fld_failure, \
-                        t1.fld_suspension, t1.fld_cnd_nff, t1.fld_occ_fault, \
-                        t1.fld_initial_installation, \
-                        t1.fld_interval_censored, t2.fld_hardware_id \
-                 FROM tbl_incident_detail AS t1 \
-                 INNER JOIN tbl_incident AS t2 \
-                 ON t2.fld_incident_id=t1.fld_incident_id \
-                 WHERE t1.fld_age_at_incident >= %f \
-                 ORDER BY t1.fld_incident_id ASC" % _starttime_
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+#     0      Unit
+#     1      Incident ID
+#     2      Part Number
+#     3      Age at Incident
+#     4      Failure
+#     5      Suspension
+#     6      CND/NFF
+#     7      OCC
+#     8      Initial Installation
+#     9      Interval Censored
+        if(self.optMTTF.get_active()):
+            _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
+                              t1.fld_part_num, t1.fld_age_at_incident, \
+                              t1.fld_failure, t1.fld_suspension, \
+                              t1.fld_cnd_nff, t1.fld_occ_fault, \
+                              t1.fld_initial_installation, \
+                              t1.fld_interval_censored \
+                       FROM tbl_incident_detail AS t1 \
+                       INNER JOIN \
+                       ( \
+                           SELECT DISTINCT MIN(fld_unit, fld_request_date), \
+                                           fld_incident_id, fld_request_date, \
+                                           fld_unit \
+                           FROM tbl_incident \
+                           GROUP BY fld_unit \
+                       ) AS t2 \
+                       ON t2.fld_incident_id=t1.fld_incident_id \
+                       WHERE t1.fld_age_at_incident >= %f \
+                       ORDER BY t2.fld_unit, t1.fld_age_at_incident ASC" % \
+                       _starttime_
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
-# Create a dictionary using the incident id as the key and the remaining
-# columns in a list as the value.
-        n_parts = len(results)
-        for i in range(n_parts):
-            _parts[results[i][0]] = results[i][1:]
+        elif(self.optMTBBD.get_active()):
+            _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
+                              t1.fld_part_num, t1.fld_age_at_incident, \
+                              t1.fld_failure, t1.fld_suspension, \
+                              t1.fld_cnd_nff, t1.fld_occ_fault, \
+                              t1.fld_initial_installation, \
+                              t1.fld_interval_censored \
+                       FROM tbl_incident_detail AS t1 \
+                       INNER JOIN \
+                       ( \
+                          SELECT fld_incident_id, fld_request_date, fld_unit \
+                          FROM tbl_incident \
+                          GROUP BY fld_unit, fld_request_date \
+                       ) AS t2 \
+                       ON t2.fld_incident_id=t1.fld_incident_id \
+                       WHERE t1.fld_age_at_incident >= %f \
+                       GROUP BY t2.fld_unit,t1.fld_age_at_incident \
+                       ORDER BY t2.fld_unit, t1.fld_age_at_incident ASC" % \
+                       _starttime_
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
-# Create a list of lists.
-#    0.0 Unit
-#    0.1.0 Part Number
-#    0.1.1 Failure Time
-#    0.1.2 Failure
-#    0.1.3 Suspension
-#    0.1.4 CND/NFF
-#    0.1.5 OCC
-#    0.1.6 Initial Installation
-#    0.1.7 Interval Censored
-#    0.1.8 Assembly ID
-# ['HTC8128', (u'50468', 465.0, 0, 0, 0, 0, 0, 1, 4)]
-        model = self._app.INCIDENT.model
-        row = model.get_iter_root()
+        elif(self.optMTBF.get_active()):
+            _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
+                              t1.fld_part_num, t1.fld_age_at_incident, \
+                              t1.fld_failure, t1.fld_suspension, \
+                              t1.fld_cnd_nff, t1.fld_occ_fault, \
+                              t1.fld_initial_installation, \
+                              t1.fld_interval_censored \
+                       FROM tbl_incident_detail AS t1 \
+                       INNER JOIN tbl_incident AS t2 \
+                       ON t2.fld_incident_id=t1.fld_incident_id \
+                       WHERE t1.fld_age_at_incident >= %f \
+                       ORDER BY t2.fld_unit, t1.fld_age_at_incident ASC" % \
+                       _starttime_
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
-        while row is not None:
-            _temp = []
-# Append the "Affected Unit" from the INCIDENT Object's gtk.TreeView.  Then
-# append the failure information from the _parts dictionary created above.
-            try:
-                _temp.append(model.get_value(row, 13))
-                _temp.append(_parts[str(model.get_value(row, 1))][0:])
-            except KeyError:
-                # TODO: Add error log message here.
-                pass
+        _n_records_ = len(_results_)
 
-# Add the temporary record if it has all the information needed.
-            if(len(_temp) == 2):
-                _data_set.append(_temp)
-
-            row = model.iter_next(row)
-
-# Sort the data set by unit first, then age at time of failure.
-        try:
-            _data_set.sort(key=lambda x:(str(x[0]), float(x[1][1])))
-        except IndexError:
-            pass
-
-# Add a new dataset.
-        _confidence = float(self.txtConfidence.get_text())
+# Load the results into the survival data table in the RTK Program database
+# or write the results to the open file.
         if(self.optDatabase.get_active()):
-            query = "INSERT INTO tbl_dataset (fld_assembly_id, \
-                                              fld_description, \
-                                              fld_confidence) \
-                     VALUES (%d, '%s', %f)" % \
-                     (self._app.ASSEMBLY.assembly_id,
-                      self.txtDescription.get_text(), _confidence)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-# Find the ID of the last dataset to be created.  This is the value that will
-# be written to the fld_dtaset_id field in the tbl_survival_data table.
-            if(_conf.BACKEND == 'mysql'):
-                query = "SELECT LAST_INSERT_ID()"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT seq \
-                         FROM sqlite_sequence \
-                         WHERE name='tbl_dataset'"
-
-            dataset_id = self._app.DB.execute_query(query,
-                                                    None,
-                                                    self._app.ProgCnx)
-            dataset_id = dataset_id[0][0]
+            # Add the first record to the survival data table in the open
+            # RTK Program database.
+            _base_query_ = "INSERT INTO tbl_survival_data \
+                            (fld_record_id, fld_dataset_id, \
+                             fld_left_interval, fld_right_interval, \
+                             fld_status, fld_quantity, fld_unit, fld_tbf, \
+                             fld_assembly_id) \
+                            VALUES (%d, %d, %f, %f, '%s', %d, '%s', %f, %d)"
+            _values_ = (0, _dataset_id_, 0.0, float(_results_[0][3]),
+                        "Interval Censored", 1, _results_[0][0],
+                        float(_results_[0][3]), _assembly_id_)
+            # Add the remaining records to the survival data table in the
+            # open RTK Program database.
+            for i in range(1, _n_records_):
+                _query_ = _base_query_ % _values_
+                _inserts_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx,
+                                                       commit=True)
+                # Create the next set of values to insert to the RTK
+                # Program database.
+                if(_results_[i][0] == _results_[i - 1][0]): # Same unit.
+                    if(_results_[i][3] == _results_[i - 1][3]):
+                        _left_ = float(_values_[2])
+                    else:
+                        _left_ = float(_results_[i - 1][3])
+                    _tbf_ = float(_results_[i][3]) - _left_
+                    _values_ = (i, _dataset_id_, _left_,
+                                float(_results_[i][3]), "Interval Censored", 1,
+                                _results_[i][0], _tbf_, _assembly_id_)
+                else:                                       # Different unit.
+                    _tbf_ = float(_results_[i][3])
+                    _values_ = (i, _dataset_id_, 0.0, float(_results_[i][3]),
+                                "Interval Censored", 1, _results_[i][0], _tbf_,
+                                _assembly_id_)
         else:
-            dialog = gtk.FileChooserDialog(_("RTK: Save Data Set to File ..."),
-                                           None,
-                                           gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                           (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                            gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-            dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-            response = dialog.run()
-            if(response == gtk.RESPONSE_ACCEPT):
-                _filename = dialog.get_filename()
+            # Write the first record to the open file.
+            _file_.write('0\t0\t' + str(_results_[0][3]) + '\t' +
+                         'Interval Censored\t1\t' + str(_results_[i][0]) +
+                         '\t' + str(_results_[0][3]) + '\t' +
+                         str(_assembly_id_))
 
-            dialog.destroy()
+            # Write the remaining records to the open file.
+            for i in range(1, _n_records_):
+                if(_results_[i][0] == _results_[i - 1][0]): # Same unit.
+                    _tbf_ = float(_results_[i][3]) - float(_results_[i - 1][3])
+                    _file_.write(str(i) + '\t' + str(_results_[i - 1][3]) +
+                                 '\t' + str(_results_[i][3]) +
+                                 '\tInterval Censored\t1\t' +
+                                 str(_results_[i][0]) + '\t' +
+                                 str(_tbf_) + '\t' + str(_assembly_id_))
+                else:                                       # Different unit.
+                    _tbf_ = float(_results_[i][3])
+                    _file_.write(str(i) + '\t0.0\t' +
+                                 str(_results_[i][3]) +
+                                 '\tInterval Censored\t1\t' +
+                                 str(_results_[i][0]) + '\t' +
+                                 str(_tbf_) + '\t' + str(_assembly_id_))
 
-            dataset_id = 0
 
-            f = open(_filename, 'w')
-            f.write("Data Set Description: " + self.txtDescription.get_text() + "\n")
-            f.write("\n")
-            f.write("Dataset_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tPart_Number\t \t \tTBF\tMode Type\n")
-
-        try:
-            _event = _data_set[0][1][2]
-            _right = _data_set[0][1][3]
-            _interval = _data_set[0][1][7]
-        except IndexError:
-            _event = 0
-            _right = 0
-            _interval = 1
-
-        if(_event):
-            _status = "Event"
-        elif(_right):
-            _status = "Right Censored"
-        elif(_interval):
-            _status = "Interval Censored"
-        else:
-            _status = "Interval Censored"
-
-        _tbf = float(_data_set[0][1][1])
-        values = (dataset_id, 0.0, float(_data_set[0][1][1]),
-                  _status, 1, str(_data_set[0][0]),
-                  str(_data_set[0][1][0]), '', '', float(_tbf), 0,
-                  int(_data_set[0][1][8]))
-
-# Insert the first data set record.
-        _record_id = 1
-        if(self.optDatabase.get_active()):
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_survival_data \
-                         (fld_record_id, fld_dataset_id, fld_left_interval, \
-                          fld_right_interval, fld_status, fld_quantity, \
-                          fld_unit, fld_part_num, fld_market, fld_model, \
-                          fld_tbf, fld_mode_type, fld_assembly_id) \
-                         VALUES (%d, %d, %f, %f, '%s', %d, '%s', '%s', '%s', \
-                                 '%s', %f, %d, %d)"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_survival_data \
-                         (fld_record_id, fld_dataset_id, fld_left_interval, \
-                          fld_right_interval, fld_status, fld_quantity, \
-                          fld_unit, fld_part_num, fld_market, fld_model, \
-                          fld_tbf, fld_mode_type, fld_assembly_id) \
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-        else:
-            f.write(str(_record_id) + '\t' + str(dataset_id) + '\t0.0' + '\t' +
-                    str(_data_set[0][1][1]) + '\t' + _status + '\t1\t' +
-                    str(_data_set[0][0]) + '\t' + str(_data_set[0][1][0]) +
-                    '\t ' + '\t ' + '\t' + str(_tbf) + '0\t' +
-                    str(_data_set[0][1][0]) + '\n')
-
-        _unit = _data_set[0][0]             # Get the first unit.
-        _record_id += 1
-        for i in range(1, len(_data_set)):
-            try:
-                _event = _data_set[0][1][2]
-                _right = _data_set[0][1][3]
-                _interval = _data_set[0][1][7]
-            except IndexError:
-                _event = 0
-                _right = 0
-                _interval = 1
-
-            if(_event):
-                _status = "Event"
-            elif(_right):
-                _status = "Right Censored"
-            elif(_interval):
-                _status = "Interval Censored"
-            else:
-                _status = "Interval Censored"
-
-            if(_data_set[i][0] == _unit):
-                if(_data_set[i][1][1] != _data_set[i - 1][1][1]):
-                    _left = _data_set[i - 1][1][1]
-                else:
-                    _left = 0.0
-            else:
-                _left = 0.0
-
-            _tbf = float(_data_set[i][1][1]) - float(_left)
-
-            if(self.optDatabase.get_active()):
-                values = (_record_id, dataset_id, float(_left),
-                          float(_data_set[i][1][1]), _status, 1,
-                          str(_data_set[i][0]), str(_data_set[i][1][0]),
-                          '', '', float(_tbf), 0, int(_data_set[i][1][8]))
-                results = self._app.DB.execute_query(query,
-                                                     values,
-                                                     self._app.ProgCnx,
-                                                     commit=True)
-            else:
-                f.write(str(_record_id)  + '\t' + str(dataset_id) + '\t' +
-                        str(_left) + '\t' + str(_data_set[i][1][1]) + '\t' +
-                        str(_status) + '\t1\t' + str(_data_set[i][0]) + '\t' +
-                        str(_data_set[i][1][0]) + '\t ' + '\t ' + '\t' +
-                        str(_tbf) + '0\t' + '\t ' +
-                        str(_data_set[i][1][8]) + '\n')
-
-            _unit = _data_set[i][0]
-            _record_id += 1
-
-        try:
-            f.close()
-        except UnboundLocalError:
-            pass
-
-        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
 # Load the dataset gtk.TreeView with the newly created dataset.
         self._app.DATASET.load_tree()
-        _page = sum(_conf.RTK_MODULES[:11])
-        self._app.winTree.notebook.set_current_page(_page - 1)
+        _page_ = sum(_conf.RTK_MODULES[:11])
+        self._app.winTree.notebook.set_current_page(_page_ - 1)
 
         return False
 

@@ -460,9 +460,9 @@ class TreeWindow(gtk.Window):
                                  use_underline=True)
         menu_item.connect('activate', _util.import_project, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Build System Hierarchy"),
+        menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
                                  use_underline=True)
-        menu_item.connect('activate', _util.build_system_hierarchy, self._app)
+        menu_item.connect('activate', _util.add_parts_system_hierarchy, self._app)
         menu.append(menu_item)
 
         mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)

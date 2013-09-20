@@ -1394,75 +1394,36 @@ class Testing:
         MTBFI = self.model.get_value(self.selected_row, 5)
         MTBFF = self.model.get_value(self.selected_row, 6)
         TTT = self.model.get_value(self.selected_row, 15)
-        AvgGR = self.model.get_value(self.selected_row, 16)
-        AvgMS = self.model.get_value(self.selected_row, 17)
-        Prob = self.model.get_value(self.selected_row, 18)
         t1 = self.model.get_value(self.selected_row, 19)
+        AvgMS = self.model.get_value(self.selected_row, 17)
+        AvgGR = self.model.get_value(self.selected_row, 16)
+        Prob = self.model.get_value(self.selected_row, 18)
         AvgFEF = self.model.get_value(self.selected_row, 20)
 
-        MTBFGP = MTBFI / (1.0 - AvgMS * AvgFEF)
+        if(self.chkFixProgramProb.get_active()):
+            FixProb = True
 
-# Calculate the probability of seeing at least one failure.
-        if(not self.chkFixProgramProb.get_active()):
-            try:
-                Prob = 1.0 - exp(-1.0 * (t1 * AvgMS / MTBFI))
-            except(ValueError, ZeroDivisionError):
-                Prob = 0.0
-                print "You must provide three of the four inputs: ti, MI, MS, Prob"
+        if(self.chkFixProgramMS.get_active()):
+            FixMS = True
 
-# Calculate the management strategy.
-        if(not self.chkFixProgramMS.get_active()):
-            try:
-                AvgMS = log(1.0 - Prob) * MTBFI / (-1.0 * t1)
-            except(ValueError, ZeroDivisionError):
-                AvgMS = 0.0
-                print "You must provide three of the four inputs: ti, MI, MS, Prob"
+        if(self.chkFixTTFF.get_active()):
+            FixTTFF = True
 
-# Calculate the minimum length of the first test phase.
-        if(not self.chkFixTTFF.get_active()):
-            try:
-                t1 = log(1.0 - Prob) * MTBFI / (-1.0 * AvgMS)
-            except(ValueError, ZeroDivisionError):
-                t1 = 0.0
-                print "You must provide three of the four inputs: ti, MI, MS, Prob"
+        if(self.chkFixTTT.get_active()):
+            FixTTT = True
 
-# Calculate total test time.
-        if(not self.chkFixTTT.get_active()):
-            try:
-                TTT = exp(log(t1) + 1.0 / AvgGR * (log(MTBFF /MTBFI) + log(1.0 - AvgGR)))
-            except(ValueError, ZeroDivisionError):
-                TTT = 0.0
-                print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+        if(self.chkFixMTBFI.get_active()):
+            FixMTBFI = True
 
-# Calculate initial MTBF.
-        if(not self.chkFixMTBFI.get_active()):
-            try:
-                MTBFI = (-1.0 * t1 * AvgMS) / log(1.0 - Prob)
-            except (ValueError, ZeroDivisionError):
-                try:
-                    MTBFI = MTBFF / exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
-                except (ValueError, ZeroDivisionError):
-                    MTBFI = 0.0
-                    #try:
-                    #    MTBFI = (t1 * (TTT / t1)**(1.0 - AvgGR)) / N
-                    #except (ValueError, ZeroDivisionError):
-                    #    MTBFI = 0.0
+        if(self.chkFixMTBFG.get_active()):
+            FixMTBFG = True
 
-# Calculate final MTBF.
-        if(not self.chkFixMTBFG.get_active()):
-            try:
-                MTBFF = MTBFI * exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
-            except(ValueError, ZeroDivisionError):
-                MTBFF = 0.0
-                print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+        if(self.chkFixAverageGR.get_active()):
+            FixGR = True
 
-# Calculate the growth rate.
-        if(not self.chkFixAverageGR.get_active()):
-            try:
-                AvgGR = -log(TTT / t1) - 1.0 + sqrt((1.0 + log(TTT / t1))**2.0 + 2.0 * log(MTBFF / MTBFI))
-            except(ValueError, ZeroDivisionError):
-                AvgGR = 0.0
-                print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+        idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR,
+                               Prob, AvgFEF, FixProb, FixMS, FixTTFF, FixTTT,
+                               FixMTBFI, FixMTBFG, FixGR)
 
         self.model.set_value(self.selected_row, 5, MTBFI)
         self.model.set_value(self.selected_row, 6, MTBFF)

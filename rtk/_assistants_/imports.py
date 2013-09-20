@@ -37,6 +37,7 @@ except ImportError:
 
 # Import other RelKit modules.
 import configuration as _conf
+import utilities as _util
 import widgets as _widg
 
 # Add localization support.
@@ -473,8 +474,19 @@ class ImportHardware:
         return False
 
     def _add_children(self, _root, _iter_, contents):
+        """
+        Method to add all children assemblies to the RTK Program database.
+
+        Keyword Arguments:
+        _root    -- the list of children assemblies to add.
+        _iter_   -- a dictionary with assembly id as the key and the string
+                    representation of the gtk.Iter() as the value.
+        contents -- the contents of the file which is being imported.
+        """
 
         for i in range(len(_root)):
+
+            # Build the string representation of the assembly's iter.
             _parent_id_ = int(_root[i][62])
             if(str(_iter_[_parent_id_]) == '-'):
                 _iter_[int(_root[i][1])] = '0:' + str(i)
@@ -482,7 +494,6 @@ class ImportHardware:
             else:
                 _iter_[int(_root[i][1])] = str(_iter_[_parent_id_]) + ':' + str(i)
                 _root[i][62] = str(_iter_[_parent_id_])
-
 
             try:
                 _values_ = (int(_root[i][0]), int(_root[i][1]),
@@ -635,7 +646,7 @@ class ImportHardware:
 class ImportIncident:
     """
     This is the gtk.Assistant that walks the user through the process of
-    importing program incident records to the open RelKit Program database.
+    importing program incident records to the open RTK Program database.
     """
 
     def __init__(self, button, app):
@@ -841,7 +852,7 @@ class ImportIncident:
         _file = open(_filename, 'r')
 
         for _line in _file:
-            _contents.append([_line])
+            _contents.append([_line.rstrip('\n')])
 
         _headers = str(_contents[0][0]).rsplit('\t')
         for i in range(len(_contents) - 1):

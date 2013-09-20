@@ -949,12 +949,12 @@ def build_comp_ref_des(treemodel, row):
     return False
 
 
-def build_system_hierarchy(widget, app):
+def add_parts_system_hierarchy(widget, app):
     """
-    This function builds a system hierachy from incident reports.  The higher
-    level structure (e.g., sub-systesm, assemblies, etc.) must already exist.
-    This function will populate the hierarchy with the components in the
-    incident data.
+    This function adds parts from the incident reports to the system hierarchy.
+    The higher level structure (e.g., sub-systesm, assemblies, etc.) must
+    already exist.  This function will populate the hierarchy with the parts
+    in the program incident data.
 
     Keyword Arguments:
     widget -- the GTK widget that called the function.
@@ -995,9 +995,16 @@ def build_system_hierarchy(widget, app):
         _part_name_ = str(_conf.RTK_PREFIX[6]) + ' ' + \
                       str(_conf.RTK_PREFIX[7])
 
-# Create a tuple of values to pass to the component_add queries.
+# Create a tuple of values to pass to the component_add queries.  The values
+# are:
+#   Revision ID
+#   Assembly ID
+#   Name
+#   Part?
+#   Parent Assembly
+#   Part Number
         _values_ = (_revision_id_, _assembly_id_, _part_name_, 1,
-                   _tmp_[len(_tmp_) - 1], _results_[i][0])
+                    _tmp_[len(_tmp_) - 1], _results_[i][0])
 
 # Add the new component to each table needing a new entry and increment the
 # count of components added.
@@ -1020,7 +1027,7 @@ def build_system_hierarchy(widget, app):
     return False
 
 
-def component_add(app, _values):
+def component_add(app, _values_):
     """
     Function to add a component to the RTK Program database.
 
@@ -1030,17 +1037,17 @@ def component_add(app, _values):
     """
 
 # Insert the new part into tbl_system.
-    _query = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
-                                      fld_name, fld_part, \
-                                      fld_parent_assembly, \
-                                      fld_part_number) \
-              VALUES (%d, %d, '%s', %d, '%s', '%s')" % _values
-    _inserted = app.DB.execute_query(_query,
-                                     None,
-                                     app.ProgCnx,
-                                     commit=True)
+    _query_ = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
+                                       fld_name, fld_part, \
+                                       fld_parent_assembly, \
+                                       fld_part_number) \
+               VALUES (%d, %d, '%s', %d, '%s', '%s')" % _values_
+    _inserted_ = app.DB.execute_query(_query_,
+                                      None,
+                                      app.ProgCnx,
+                                      commit=True)
 
-    if not _inserted:
+    if not _inserted_:
         app.debug_log.error("utilities.py:component_add - Failed to add new component to system table.")
         pass
 

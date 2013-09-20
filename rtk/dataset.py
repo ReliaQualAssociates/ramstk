@@ -55,8 +55,12 @@ import imports as _impt
 import utilities as _util
 import widgets as _widg
 
+# Import other RTK classes.
 from _assistants_.adds import AddDatasetRecord
 from _assistants_.updates import AssignMTBFResults
+
+# Import other RTK calculation functions.
+from _calculations_.growth import power_law, crow_amsaa_continuous
 
 # Add localization support.
 import locale
@@ -410,7 +414,7 @@ class Dataset:
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
         button.set_name('Save')
-        button.connect('clicked', self._survival_data_save)
+        button.connect('clicked', self._dataset_save)
         button.set_tooltip_text(_(u"Saves the selected data set records."))
         toolbar.insert(button, _pos)
         _pos += 1
@@ -438,14 +442,15 @@ class Dataset:
         self.cmbAssembly.connect('changed', self._callback_combo, 1)
 
         self.cmbSource.set_tooltip_text(_(u"Selects and displays the source of the selected data set."))
-        results = [["ALT"], ["Reliability Growth"],
-                   ["Reliability Demonstration"], ["Field"]]
+        results = [["ALT"], [_(u"Reliability Growth")],
+                   [_(u"Reliability Demonstration")], [_(u"Field")]]
         _widg.load_combo(self.cmbSource, results)
         self.cmbSource.connect('changed', self._callback_combo, 3)
 
         self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the statistical distribution used to fit the data."))
-        results = [["MCF"], ["Kaplan-Meier"], ["Exponential"], ["Lognormal"],
-                   ["Normal"], ["Weibull"], ["WeiBayes"]]
+        results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")], [u"Crow-AMSAA"],
+                   [_(u"Exponential")], [_(u"Lognormal")], [_(u"Normal")],
+                   [u"Weibull"], ["WeiBayes"]]
         _widg.load_combo(self.cmbDistribution, results)
         self.cmbDistribution.connect('changed', self._callback_combo, 4)
 
@@ -648,6 +653,7 @@ class Dataset:
         hbox.pack_start(frame, True, True)
 
         self.chkGroup.hide()
+        self.chkParts.hide()
 
 # Insert the tab.
         label = gtk.Label()
@@ -681,6 +687,12 @@ class Dataset:
                 _index_ += 1
 
         self.cmbAssembly.set_active(_index_)
+        if(_index_ == 1 or _index_ == 2):
+            self.chkGroup.show()
+            self.chkParts.show()
+        else:
+            self.chkGroup.hide()
+            self.chkParts.hide()
 
         self.cmbSource.set_active(self.model.get_value(self.selected_row, 3))
         self.cmbDistribution.set_active(
@@ -1370,6 +1382,9 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0, background=8)
+        column.set_clickable(True)
+        column.set_resizable(True)
+        column.set_sort_column_id(0)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1379,6 +1394,9 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=1, background=8)
+        column.set_clickable(True)
+        column.set_resizable(True)
+        column.set_sort_column_id(1)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1388,6 +1406,7 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=2, background=8)
+        column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1397,6 +1416,9 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=3, background=8)
+        column.set_clickable(True)
+        column.set_resizable(True)
+        column.set_sort_column_id(3)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1406,6 +1428,7 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=4, background=8)
+        column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1415,6 +1438,7 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=5, background=8)
+        column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1424,6 +1448,9 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=6, background=8)
+        column.set_clickable(True)
+        column.set_resizable(True)
+        column.set_sort_column_id(6)
         self.tvwResultsByChildAssembly.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1433,6 +1460,7 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=7, background=8)
+        column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1462,6 +1490,8 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0, background=8)
+        column.set_clickable(True)
+        column.set_sort_column_id(0)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1471,6 +1501,8 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=1, background=8)
+        column.set_clickable(True)
+        column.set_sort_column_id(1)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1489,6 +1521,8 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=3, background=8)
+        column.set_clickable(True)
+        column.set_sort_column_id(3)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1516,6 +1550,8 @@ class Dataset:
         column.set_widget(label)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=6, background=8)
+        column.set_clickable(True)
+        column.set_sort_column_id(6)
         self.tvwResultsByPart.append_column(column)
 
         cell = gtk.CellRendererText()
@@ -1674,22 +1710,22 @@ class Dataset:
         _z_norm_ = norm.ppf(_conf_)
 
 # Get the entire dataset.
-        query = "SELECT fld_unit, fld_left_interval, \
-                        fld_right_interval, fld_tbf, \
-                        fld_status \
-                 FROM tbl_survival_data \
-                 WHERE fld_dataset_id=%d \
-                 AND fld_right_interval <= %f \
-                 AND fld_right_interval > 0.0 \
-                 ORDER BY fld_unit ASC, \
-                          fld_left_interval ASC" % (_dataset_, _reltime_)
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+        _query_ = "SELECT fld_unit, fld_left_interval, \
+                          fld_right_interval, fld_tbf, \
+                          fld_status \
+                   FROM tbl_survival_data \
+                   WHERE fld_dataset_id=%d \
+                   AND fld_right_interval <= %f \
+                   AND fld_right_interval > 0.0 \
+                   ORDER BY fld_unit ASC, \
+                            fld_left_interval ASC" % (_dataset_, _reltime_)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
         censdata = []
-        for i in range(len(results)):
-            censdata.append([results[i][1], results[i][2]])
+        for i in range(len(_results_)):
+            censdata.append([_results_[i][1], _results_[i][2]])
 
 # Initialize variables.
         n_suspensions = 0
@@ -2301,9 +2337,27 @@ class Dataset:
             self.vbxPlot2.pack_start(self.pltPlot4)
 
 # =========================================================================== #
+# Fit the data to a power law (Duane) model and estimate it's parameters.
+# =========================================================================== #
+        elif(_analysis_ == 3):              # Duane
+
+# Create lists of the failure times and number of failures.
+            F = []
+            X = []
+            for i in range(len(_results_)):
+                X.append(_results_[i][2])
+                F.append(1)
+
+            (_beta_hat_,
+             _lambda_hat_,
+             _mu_hat_) = power_law(F, X, _reltime_)
+
+            print (_beta_hat_, _lambda_hat_, _mu_hat_)
+
+# =========================================================================== #
 # Fit the data to an exponential distribution and estimate it's parameters.
 # =========================================================================== #
-        elif(_analysis_ == 3):
+        elif(_analysis_ == 5):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'exponential')
 
@@ -2356,7 +2410,7 @@ class Dataset:
 # =========================================================================== #
 # Fit the data to a lognormal and estimate it's parameters.
 # =========================================================================== #
-        elif(_analysis_ == 4):
+        elif(_analysis_ == 6):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'lognormal')
 
@@ -2422,7 +2476,7 @@ class Dataset:
 # =========================================================================== #
 # Fit the data to a normal distibution and estimate it's parameters.
 # =========================================================================== #
-        elif(_analysis_ == 5):
+        elif(_analysis_ == 7):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'normal')
 
@@ -2485,7 +2539,7 @@ class Dataset:
 # =========================================================================== #
 # Fit the data to a Weibull distribution and estimate it's parameters.
 # =========================================================================== #
-        elif(_analysis_ == 6):
+        elif(_analysis_ == 8):
             fit = _calc.parametric_fit(results, _starttime_, _reltime_,
                                        _fitmeth_, 'weibull')
 
@@ -2552,7 +2606,7 @@ class Dataset:
             self.txtLocationScale.hide()
             self.txtLocationLocation.hide()
 
-        #elif(_analysis_ == 7):              # Fit to a WeiBayes.
+        #elif(_analysis_ == 9):              # Fit to a WeiBayes.
 
 # Find the percent of records belonging to each sub-assembly and then allocate
 # this percent of the overall failure rate to each sub-assembly.
@@ -2752,7 +2806,7 @@ class Dataset:
 
         return False
 
-    def dataset_save(self, button):
+    def _dataset_save(self, button):
         """
         Saves the DATASET Object gtk.TreeView information to the Program's
         MySQL or SQLite3 database.
@@ -2911,12 +2965,14 @@ class Dataset:
         if(_index_ == 4):
             if(_text_ == 1 or _text_ == 2): # MCF or Kaplan-Meier
                 self.chkGroup.show()
+                self.chkParts.show()
                 self.cmbFitMethod.hide()
                 self.cmbConfMethod.hide()
                 self.lblFitMethod.hide()
                 self.lblConfMethod.hide()
             else:
                 self.chkGroup.hide()
+                self.chkParts.hide()
                 self.cmbFitMethod.show()
                 self.cmbConfMethod.show()
                 self.lblFitMethod.show()
@@ -3150,7 +3206,7 @@ class Dataset:
             self.treeview.row_activated(path, col)
 
 # Load the Assembly combo.
-        query = "SELECT fld_description, fld_assembly_id, fld_name \
+        query = "SELECT fld_name, fld_assembly_id, fld_description \
                  FROM tbl_system"
         results = self._app.DB.execute_query(query,
                                              None,

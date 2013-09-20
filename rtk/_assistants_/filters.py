@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       filters.py is part of The RelKit Project
+#       filters.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,7 +35,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import widgets as _widg
 
@@ -53,7 +53,7 @@ _ = gettext.gettext
 class FilterIncident:
     """
     This is the gtk.Assistant that walks the user through the process of
-    filtering program incident records in the open RelKit Program database.
+    filtering program incident records in the open RTK Program database.
     """
 
 # Lists of search criteria to use for the various gtk.Combo widgets.
@@ -83,21 +83,21 @@ class FilterIncident:
 
         Keyword Arguments:
         button -- the gtk.Button widget that called this method.
-        app    -- the RelKit application.
+        app    -- the RTK application.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Filter Incidents Assistant"))
+        self.assistant.set_title(_("RTK Filter Incidents Assistant"))
         self.assistant.connect('apply', self._filter)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit incident filter assistant.\n\nIt will help you filter program incidents in the database so you can view only those you're interested in seeing.\n\nPress 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text_ = _("This is the RTK incident filter assistant.\n\nIt will help you filter program incidents in the database so you can view only those you're interested in seeing.\n\nPress 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=600, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -220,8 +220,9 @@ class FilterIncident:
         _widg.load_combo(self.cmbCriteriaAssembly, self._criteria3)
         self.cmbAssembly = _widg.make_combo(_width_=100, simple=False)
         self.cmbAssembly.set_tooltip_text(_("Sets the affected assembly filter criterion."))
-        query = "SELECT fld_description, fld_assembly_id, fld_name \
-                 FROM tbl_system"
+        query = "SELECT fld_name, fld_assembly_id, fld_description \
+                 FROM tbl_system \
+                 WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -483,7 +484,7 @@ class FilterIncident:
 # Create the page to apply the filter criteria.
         fixed = gtk.Fixed()
         _text_ = _("Press 'Apply' to apply the filter criteria or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        label = _widg.make_label(_text_, width=600, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
