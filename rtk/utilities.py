@@ -267,10 +267,30 @@ def date_to_ordinal(date):
     try:
         results = datetime.strptime(str(date), '%m/%d/%y').toordinal()
     except ValueError:
-        results = datetime.strptime('01/01/70', '%m/%d/%y').toordinal()
+        try:
+            results = datetime.strptime(str(date), '%Y-%m-%d').toordinal()
+        except ValueError:
+            results = datetime.strptime('01/01/70', '%m/%d/%y').toordinal()
 
     return(results)
 
+
+def ordinal_to_date(ordinal):
+    """
+    Converts ordinal dates to date strings in ISO 8601 format.
+
+    Keyword Arguments:
+    ordinal -- the ordinal date to convert.
+    """
+
+    from datetime import datetime
+
+    try:
+        results = str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+    except ValueError:
+        results = str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
+
+    return(results)
 
 def dir_exists(_directory_):
     """

@@ -49,7 +49,6 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import other RTK modules.
-import calculations as _calc
 import configuration as _conf
 import imports as _impt
 import utilities as _util
@@ -60,6 +59,7 @@ from _assistants_.adds import AddDatasetRecord
 from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
+from _calculations_.survival import *
 from _calculations_.growth import power_law, crow_amsaa_continuous
 
 # Add localization support.
@@ -88,56 +88,8 @@ class Dataset:
     _ai_tab_labels = [_("Assembly:"), _("Description:"), _("Data Source:"),
                       _("Distribution:"), _("Fit Method:"), _("Confidence:"),
                       _("Confidence Type:"), _("Confidence Method:"),
-                      _("Start Time:"), _("End Time"), _("Step Interval:")]
-
-    _km = [(3.0, 3.0, u'Interval Censored'), (4.0, 4.0, u'Right Censored'), (5.7, 5.7, u'Right Censored'), (6.5, 6.5, u'Interval Censored'), (6.5, 6.5, u'Interval Censored'), (8.4, 8.4, u'Right Censored'), (10.0, 10.0, u'Interval Censored'), (10.0, 10.0, u'Right Censored'), (12.0, 12.0, u'Interval Censored'), (15.0, 15.0, u'Interval Censored')]
-
-    _exp100 = [(u'', 48.146859, 48.146859, 0.0, 1), (u'', 20.564406, 20.564406, 0.0, 1), (u'', 94.072781, 94.072781, 0.0, 1), (u'', 177.992321, 177.992321, 0.0, 1),
-               (u'', 89.103398, 89.103398, 0.0, 1), (u'', 350.577920, 350.577920, 0.0, 1), (u'', 82.223220, 82.223220, 0.0, 1),  (u'', 40.360083, 40.360083, 0.0, 1),
-               (u'', 39.576065, 39.576065, 0.0, 1), (u'', 53.127178, 53.127178, 0.0, 1), (u'', 159.732430, 159.732430, 0.0, 1), (u'', 48.398973, 48.398973, 0.0, 1),
-               (u'', 46.984010, 46.984010, 0.0, 1), (u'', 36.169584, 36.169584, 0.0, 1), (u'', 351.347799, 351.347799, 0.0, 1), (u'', 18.917324, 18.917324, 0.0, 1),
-               (u'', 101.977027, 101.977027, 0.0, 1), (u'', 141.988267, 141.988267, 0.0, 1), (u'', 241.044591, 241.044591, 0.0, 1), (u'', 61.993888, 61.993888, 0.0, 1),
-               (u'', 171.813927, 171.813927, 0.0, 1), (u'', 78.747517, 78.747517, 0.0, 1), (u'', 54.070510, 54.070510, 0.0, 1), (u'', 87.229221, 87.229221, 0.0, 1),
-               (u'', 158.980289, 158.980289, 0.0, 1), (u'', 185.254974, 185.254974, 0.0, 1), (u'', 16.452673, 16.452673, 0.0, 1), (u'', 120.144229, 120.144229, 0.0, 1),
-               (u'', 294.418608, 294.418608, 0.0, 1), (u'', 13.640705, 13.640705, 0.0, 1), (u'', 115.532861, 115.532861, 0.0, 1), (u'', 58.595331, 58.595331, 0.0, 1),
-               (u'', 7.876539, 7.876539, 0.0, 1), (u'', 10.790563, 10.790563, 0.0, 1), (u'', 67.342074, 67.342074, 0.0, 1), (u'', 14.848170, 14.848170, 0.0, 1),
-               (u'', 82.160622, 82.160622, 0.0, 1), (u'', 14.558010, 14.558010, 0.0, 1), (u'', 18.793071, 18.793071, 0.0, 1), (u'', 69.776958, 69.776958, 0.0, 1),
-               (u'', 65.542418, 65.542418, 0.0, 1), (u'', 194.039565, 194.039565, 0.0, 1), (u'', 41.559590, 41.559590, 0.0, 1), (u'', 75.549698, 75.549698, 0.0, 1),
-               (u'', 14.808375, 14.808375, 0.0, 1), (u'', 184.263190, 184.263190, 0.0, 1), (u'', 2.810047, 2.810047, 0.0, 1), (u'', 13.095068, 13.095068, 0.0, 1),
-               (u'', 52.885757, 52.885757, 0.0, 1), (u'', 49.855286, 49.855286, 0.0, 1), (u'', 263.548942, 263.548942, 0.0, 1), (u'', 4.248489, 4.248489, 0.0, 1),
-               (u'', 66.864953, 66.864953, 0.0, 1), (u'', 172.663015, 172.663015, 0.0, 1), (u'', 226.918685, 226.918685, 0.0, 1), (u'', 169.175428, 169.175428, 0.0, 1),
-               (u'', 148.070217, 148.070217, 0.0, 1), (u'', 3.679958, 3.679958, 0.0, 1), (u'', 28.693005, 28.693005, 0.0, 1), (u'', 34.931869, 34.931869, 0.0, 1),
-               (u'', 297.467901, 297.467901, 0.0, 1), (u'', 137.072180, 137.072180, 0.0, 1), (u'', 53.180089, 53.180089, 0.0, 1), (u'', 49.760206, 49.760206, 0.0, 1),
-               (u'', 19.664276, 19.664276, 0.0, 1),  (u'', 96.415132, 96.415132, 0.0, 1), (u'', 14.003862, 14.003862, 0.0, 1), (u'', 17.743755, 17.743755, 0.0, 1),
-               (u'', 212.279301, 212.279301, 0.0, 1), (u'', 38.951314, 38.951314, 0.0, 1), (u'', 74.057822, 74.057822, 0.0, 1), (u'', 86.769323, 86.769323, 0.0, 1),
-               (u'', 37.765341, 37.765341, 0.0, 1), (u'', 5.566417, 5.566417, 0.0, 1), (u'', 71.048013, 71.048013, 0.0, 1), (u'', 5.137094, 5.137094, 0.0, 1),
-               (u'', 35.461923, 35.461923, 0.0, 1), (u'', 121.963923, 121.963923, 0.0, 1), (u'', 42.486536, 42.486536, 0.0, 1), (u'', 52.315419, 52.315419, 0.0, 1),
-               (u'', 77.095150, 77.095150, 0.0, 1), (u'', 14.259343, 14.259343, 0.0, 1), (u'', 111.147273, 111.147273, 0.0, 1), (u'', 49.364508, 49.364508, 0.0, 1),
-               (u'', 1.978637, 1.978637, 0.0, 1), (u'', 163.827122, 163.827122, 0.0, 1), (u'', 66.690012, 66.690012, 0.0, 1), (u'', 80.172196, 80.172196, 0.0, 1),
-               (u'', 323.763002, 323.763002, 0.0, 1), (u'', 275.491419, 275.491419, 0.0, 1), (u'', 49.315958, 49.315958, 0.0, 1), (u'', 1.585178, 1.585178, 0.0, 1),
-               (u'', 317.922638, 317.922638, 0.0, 1), (u'', 12.398458, 12.398458, 0.0, 1), (u'', 222.930804, 222.930804, 0.0, 1), (u'', 6.328506, 6.328506, 0.0, 1),
-               (u'', 143.687402, 143.687402, 0.0, 1), (u'', 134.763300, 134.763300, 0.0, 1), (u'', 88.862705, 88.862705, 0.0, 1), (u'', 143.918067, 143.918067, 0.0, 1)]
-
-    _norm100 = [(u'', 95.37050, 95.37050, 0.0, 1), (u'', 0.0, 114.01126, 0.0, 1), (u'', 0.0, 113.24685, 0.0, 1), (u'', 0.0, 109.16715, 0.0, 1), (u'', 0.0, 104.22744, 0.0, 1),
-                (u'', 107.10937, 107.10937, 0.0, 1), (u'', 0.0, 117.43215, 0.0, 1), (u'', 0.0, 94.78554, 0.0, 1), (u'', 0.0, 83.56718, 0.0, 1), (u'', 0.0, 103.50167, 0.0, 1),
-                (u'', 89.93169, 89.93169, 0.0, 1), (u'', 0.0, 120.45587, 0.0, 1), (u'', 0.0, 97.08137, 0.0, 1), (u'', 0.0, 96.81358, 0.0, 1), (u'', 0.0, 97.57112, 0.0, 1),
-                (u'', 106.75722, 106.75722, 0.0, 1), (u'', 0.0, 99.33548, 0.0, 1), (u'', 0.0, 104.53866, 0.0, 1), (u'', 0.0, 102.02819, 0.0, 1), (u'', 0.0, 90.03242, 0.0, 1),
-                (u'', 77.54299, 77.54299, 0.0, 1), (u'', 0.0, 102.76149, 0.0, 1), (u'', 0.0, 82.48589, 0.0, 1), (u'', 0.0, 77.74356, 0.0, 1), (u'', 0.0, 109.97453, 0.0, 1),
-                (u'', 94.85149, 94.85149, 0.0, 1), (u'', 0.0, 89.77114, 0.0, 1), (u'', 0.0, 98.19346, 0.0, 1), (u'', 0.0, 102.16592, 0.0, 1), (u'', 0.0, 96.78387, 0.0, 1),
-                (u'', 108.86581, 108.86581, 0.0, 1), (u'', 0.0, 120.46225, 0.0, 1), (u'', 0.0, 111.59290, 0.0, 1), (u'', 0.0, 106.14877, 0.0, 1), (u'', 0.0, 102.94616, 0.0, 1),
-                (u'', 111.29011, 111.29011, 0.0, 1), (u'', 0.0, 106.00202, 0.0, 1), (u'', 0.0, 114.61717, 0.0, 1), (u'', 0.0, 88.22994, 0.0, 1), (u'', 0.0, 131.36413, 0.0, 1),
-                (u'', 86.85545, 86.85545, 0.0, 1), (u'', 0.0, 109.92748, 0.0, 1), (u'', 0.0, 75.11669, 0.0, 1), (u'', 0.0, 100.46514, 0.0, 1), (u'', 0.0, 97.78360, 0.0, 1),
-                (u'', 108.16912, 108.16912, 0.0, 1), (u'', 0.0, 98.85145, 0.0, 1), (u'', 0.0, 99.31015, 0.0, 1), (u'', 0.0, 94.58853, 0.0, 1), (u'', 0.0, 98.12350, 0.0, 1),
-                (u'', 115.66660, 115.66660, 0.0, 1), (u'', 0.0, 104.49188, 0.0, 1), (u'', 0.0, 93.49034, 0.0, 1), (u'', 0.0, 111.79487, 0.0, 1), (u'', 0.0, 114.32069, 0.0, 1),
-                (u'', 106.93861, 106.93861, 0.0, 1), (u'', 0.0, 106.45058, 0.0, 1), (u'', 0.0, 103.10528, 0.0, 1), (u'', 0.0, 107.78179, 0.0, 1), (u'', 0.0, 120.84600, 0.0, 1),
-                (u'', 100.10230, 100.10230, 0.0, 1), (u'', 0.0, 92.93094, 0.0, 1), (u'', 0.0, 101.24658, 0.0, 1), (u'', 0.0, 69.51782, 0.0, 1), (u'', 0.0, 106.27645, 0.0, 1),
-                (u'', 99.04622, 99.04622, 0.0, 1), (u'', 0.0, 101.30087, 0.0, 1), (u'', 0.0, 98.58876, 0.0, 1), (u'', 0.0, 110.02258, 0.0, 1), (u'', 0.0, 91.25592, 0.0, 1),
-                (u'', 106.68794, 106.68794, 0.0, 1), (u'', 0.0, 102.44362, 0.0, 1), (u'', 0.0, 100.34289, 0.0, 1), (u'', 0.0, 96.63522, 0.0, 1), (u'', 0.0, 80.90978, 0.0, 1),
-                (u'', 111.08013, 111.08013, 0.0, 1), (u'', 0.0, 107.00581, 0.0, 1), (u'', 0.0, 103.04357, 0.0, 1), (u'', 0.0, 92.66092, 0.0, 1), (u'', 0.0, 81.52659, 0.0, 1),
-                (u'', 94.49750, 94.49750, 0.0, 1), (u'', 0.0, 88.79105, 0.0, 1), (u'', 0.0, 97.91323, 0.0, 1), (u'', 0.0, 96.12042, 0.0, 1), (u'', 0.0, 101.23497, 0.0, 1),
-                (u'', 95.13220, 95.13220, 0.0, 1), (u'', 0.0, 93.93901, 0.0, 1), (u'', 0.0, 92.30268, 0.0, 1), (u'', 0.0, 96.53697, 0.0, 1), (u'', 0.0, 110.74783, 0.0, 1),
-                (u'', 99.88812, 99.88812, 0.0, 1), (u'', 0.0, 92.78015, 0.0, 1), (u'', 0.0, 107.67842, 0.0, 1), (u'', 0.0, 96.18725, 0.0, 1), (u'', 0.0, 87.93806, 0.0, 1),
-                (u'', 91.66445, 91.66445, 0.0, 1), (u'', 0.0, 106.14925, 0.0, 1), (u'', 0.0, 104.32056, 0.0, 1), (u'', 0.0, 115.68135, 0.0, 1), (u'', 0.0, 95.92033, 0.0, 1)]
+                      _("Start Time:"), _("End Time"), _("Step Interval:"),
+                      _(u"Start Date:"), _(u"End Date:")]
 
     def __init__(self, application):
         """
@@ -193,6 +145,14 @@ class Dataset:
         self.txtEndTime = _widg.make_entry(_width_=100)
         self.txtRelPoints = _widg.make_entry(_width_=100)
 
+        self.txtStartDate = _widg.make_entry(_width_=100)
+        self.txtEndDate = _widg.make_entry(_width_=100)
+
+        self.btnStartDate = _widg.make_button(_height_=25, _width_=25,
+                                              _label_="...", _image_=None)
+        self.btnEndDate = _widg.make_button(_height_=25, _width_=25,
+                                            _label_="...", _image_=None)
+
         if self._analyses_input_widgets_create():
             self._app.debug_log.error("dataset.py: Failed to create Analysis Input widgets.")
         if self._analyses_input_tab_create():
@@ -214,31 +174,62 @@ class Dataset:
 
         self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
 
-# Upper left quadrant widgets.
+        # Upper left quadrant widgets.
+        self.lblCumMTBF = _widg.make_label(_(u"Cumulative\nMTBF"), width=125,
+                                           height=50)
+        self.lblCumFI = _widg.make_label(_(u"Cumulative\nHazard\nRate"),
+                                         width=125, height=50)
+        self.lblMTBFi = _widg.make_label("", width=125, height=50)
+        self.lblFIi = _widg.make_label("", width=125, height=50)
+
         self.txtNumSuspensions = _widg.make_entry(_width_=100)
         self.txtNumFailures = _widg.make_entry(_width_=100)
-        self.txtMTBF = _widg.make_entry(_width_=100)
-        self.txtMTBFLL = _widg.make_entry(_width_=100)
-        self.txtMTBFUL = _widg.make_entry(_width_=100)
-        self.txtHazardRate = _widg.make_entry(_width_=100)
-        self.txtHazardRateLL = _widg.make_entry(_width_=100)
-        self.txtHazardRateUL = _widg.make_entry(_width_=100)
 
-# Lower left quadrant non-parametric widgets.
+        self.txtMTBF = _widg.make_entry(_width_=125)
+        self.txtMTBFLL = _widg.make_entry(_width_=125)
+        self.txtMTBFUL = _widg.make_entry(_width_=125)
+        self.txtHazardRate = _widg.make_entry(_width_=125)
+        self.txtHazardRateLL = _widg.make_entry(_width_=125)
+        self.txtHazardRateUL = _widg.make_entry(_width_=125)
+        self.txtMTBFi = _widg.make_entry(_width_=125)
+        self.txtMTBFiLL = _widg.make_entry(_width_=125)
+        self.txtMTBFiUL = _widg.make_entry(_width_=125)
+        self.txtHazardRatei = _widg.make_entry(_width_=125)
+        self.txtHazardRateiLL = _widg.make_entry(_width_=125)
+        self.txtHazardRateiUL = _widg.make_entry(_width_=125)
+
+        # Lower left quadrant non-parametric widgets.
+        self.lblMHBResult = _widg.make_label(_(u""), width=100)
+        self.lblZLPResult = _widg.make_label(_(u""), width=100)
+        self.lblZLRResult = _widg.make_label(_(u""), width=100)
+        self.lblRhoResult = _widg.make_label(_(u""), width=100)
+
         self.txtMHB = _widg.make_entry(_width_=100)
         self.txtChiSq = _widg.make_entry(_width_=100)
         self.txtMHBPValue = _widg.make_entry(_width_=100)
-        self.lblMHBResult = _widg.make_label(_(u""), width=100)
         self.txtLP = _widg.make_entry(_width_=100)
         self.txtZLPNorm = _widg.make_entry(_width_=100)
         self.txtZLPPValue = _widg.make_entry(_width_=100)
-        self.lblZLPResult = _widg.make_label(_(u""), width=100)
         self.txtLR = _widg.make_entry(_width_=100)
         self.txtZLRNorm = _widg.make_entry(_width_=100)
         self.txtZLRPValue = _widg.make_entry(_width_=100)
-        self.lblZLRResult = _widg.make_label(_(u""), width=100)
+        self.txtRho = _widg.make_entry(_width_=100)
+        self.txtRhoNorm = _widg.make_entry(_width_=100)
+        self.txtRhoPValue = _widg.make_entry(_width_=100)
 
-# Lower left quadrant parametric widgets.
+
+        # Lower left quadrant parametric widgets.
+        self.lblScale = _widg.make_label(_(u"Scale"), width=150)
+        self.lblShape = _widg.make_label(_(u"Shape"), width=150)
+        self.lblLocation = _widg.make_label(_(u"Location"), width=150)
+        self.lblRowScale = _widg.make_label(_(u"Scale"), width=150)
+        self.lblRowShape = _widg.make_label(_(u"Shape"), width=150)
+        self.lblRowLocation = _widg.make_label(_(u"Location"), width=150)
+        self.lblColScale = _widg.make_label(_(u"Scale"), width=150)
+        self.lblColShape = _widg.make_label(_(u"Shape"), width=150)
+        self.lblColLocation = _widg.make_label(_(u"Location"), width=150)
+        self.lblModel = _widg.make_label("", width=350)
+
         self.txtScale = _widg.make_entry(_width_=150)
         self.txtScaleLL = _widg.make_entry(_width_=150)
         self.txtScaleUL = _widg.make_entry(_width_=150)
@@ -248,12 +239,7 @@ class Dataset:
         self.txtLocation = _widg.make_entry(_width_=150)
         self.txtLocationLL = _widg.make_entry(_width_=150)
         self.txtLocationUL = _widg.make_entry(_width_=150)
-        self.lblRowScale = _widg.make_label(_(u"Scale"), width=150)
-        self.lblRowShape = _widg.make_label(_(u"Shape"), width=150)
-        self.lblRowLocation = _widg.make_label(_(u"Location"), width=150)
-        self.lblColScale = _widg.make_label(_(u"Scale"), width=150)
-        self.lblColShape = _widg.make_label(_(u"Shape"), width=150)
-        self.lblColLocation = _widg.make_label(_(u"Location"), width=150)
+
         self.txtShapeShape = _widg.make_entry(_width_=150)
         self.txtShapeScale = _widg.make_entry(_width_=150)
         self.txtShapeLocation = _widg.make_entry(_width_=150)
@@ -397,6 +383,17 @@ class Dataset:
         toolbar.insert(button, _pos)
         _pos += 1
 
+# Consolidate results.
+        button = gtk.ToolButton()
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/insert-assembly.png')
+        button.set_icon_widget(image)
+        button.set_name('Assign')
+        button.connect('clicked', self._consolidate_dataset)
+        button.set_tooltip_text(_(u"Consolidates the records in the selected data set."))
+        toolbar.insert(button, _pos)
+        _pos += 1
+
 # Calculate button.
         button = gtk.ToolButton()
         image = gtk.Image()
@@ -489,13 +486,33 @@ class Dataset:
         self.txtRelPoints.connect('focus-out-event',
                                   self._callback_entry, 'int', 10)
 
+        self.txtStartDate.set_tooltip_text(_(u"Earliest date to use for calculating reliability metrics."))
+        self.txtStartDate.connect('focus-out-event',
+                                  self._callback_entry, 'date', 35)
+        self.txtStartDate.connect('changed', self._callback_entry, None,
+                                  'date', 35)
+
+        self.txtEndDate.set_tooltip_text(_(u"Latest date to use for calculating reliability metrics."))
+        self.txtEndDate.connect('focus-out-event',
+                                self._callback_entry, 'date', 36)
+        self.txtEndDate.connect('changed', self._callback_entry, None,
+                                'date', 36)
+
+        self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to select the start date."))
+        self.btnStartDate.connect('released', _util.date_select,
+                                  self.txtStartDate)
+
+        self.btnEndDate.set_tooltip_text(_(u"Launches the calendar to select the end date."))
+        self.btnEndDate.connect('released', _util.date_select,
+                                self.txtEndDate)
+
         self.chkGroup.set_tooltip_text(_(u"When checked, the MTBF and failure intensity results will be distributed to all next-level child assemblies according to the percentage of records each assembly contributes.  This assumes failure times are exponentially distributed."))
 
         self.chkParts.set_tooltip_text(_(u"When checked, the MTBF and failure intensity results will be distributed to all components according to the percentage of records each component contributes.  This assumes failure times are exponentially distributed."))
 
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_STRING)
+                              gobject.TYPE_INT, gobject.TYPE_STRING)
         self.tvwDataset.set_model(model)
 
         cell = gtk.CellRendererText()
@@ -546,6 +563,18 @@ class Dataset:
         column.set_sort_column_id(3)
         self.tvwDataset.append_column(column)
 
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 1)
+        cell.set_property('background', 'white')
+        cell.connect('edited', self._callback_entry_cell, 4, 'int')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Quantity"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=4)
+        column.set_sort_column_id(4)
+        self.tvwDataset.append_column(column)
+
         cell = gtk.CellRendererCombo()
         cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         cellmodel.append([_(u"Event")])
@@ -556,12 +585,12 @@ class Dataset:
         cell.set_property('has-entry', False)
         cell.set_property('model', cellmodel)
         cell.set_property('text-column', 0)
-        cell.connect('changed', self._callback_combo_cell, 4, model)
+        cell.connect('changed', self._callback_combo_cell, 5, model)
         column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"Status"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=4)
+        column.set_attributes(cell, text=5)
         column.set_visible(1)
         self.tvwDataset.append_column(column)
 
@@ -643,6 +672,18 @@ class Dataset:
         fixed.put(self.txtRelPoints, 205, y_pos)
         y_pos += 30
 
+        label = _widg.make_label(self._ai_tab_labels[11], 200, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtStartDate, 205, y_pos)
+        fixed.put(self.btnStartDate, 310, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(self._ai_tab_labels[12], 200, 25)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.txtEndDate, 205, y_pos)
+        fixed.put(self.btnEndDate, 310, y_pos)
+        y_pos += 30
+
         fixed.put(self.chkGroup, 5, y_pos)
         y_pos += 30
 
@@ -687,7 +728,7 @@ class Dataset:
                 _index_ += 1
 
         self.cmbAssembly.set_active(_index_)
-        if(_index_ == 1 or _index_ == 2):
+        if(_index_ == 1 or _index_ == 2 or _index_ == 3):
             self.chkGroup.show()
             self.chkParts.show()
         else:
@@ -714,6 +755,11 @@ class Dataset:
         self.txtStartTime.set_text(
             str(self.model.get_value(self.selected_row, 34)))
 
+        _start_date_ = _util.ordinal_to_date(self.model.get_value(self.selected_row, 35))
+        _end_date_ = _util.ordinal_to_date(self.model.get_value(self.selected_row, 36))
+        self.txtStartDate.set_text(str(_start_date_))
+        self.txtEndDate.set_text(str(_end_date_))
+
         self._load_dataset_tree()
 
         return False
@@ -723,7 +769,7 @@ class Dataset:
 
 # Load the gtk.TreeView containing the list of failure/censoring times.
         query = "SELECT fld_record_id, fld_unit, fld_left_interval, \
-                        fld_right_interval, fld_status \
+                        fld_right_interval, fld_quantity, fld_status \
                  FROM tbl_survival_data \
                  WHERE fld_dataset_id=%s \
                  ORDER BY fld_unit ASC, \
@@ -741,9 +787,41 @@ class Dataset:
         model.clear()
 
         for i in range(n_events):
-            _data = [results[i][0], results[i][1], results[i][2],
-                     results[i][3], results[i][4]]
-            model.append(_data)
+            _data_ = [results[i][0], results[i][1], results[i][2],
+                      results[i][3], results[i][4], results[i][5]]
+            model.append(_data_)
+
+        return False
+
+    def _load_nonparametric_tree(self, _model_, _data_, _index_, _col_headings_):
+        """"
+        Method to load the gtk.TreeView with the results of non-parametric
+        analyses.  This includes the MCF, Kaplan-Meier, and NHPP - Power Law
+        analyses.
+
+        Keyword Arguments:
+        _model_
+        _data_
+        _index_
+        _col_headings_
+        """
+
+        for i in range(len(_data_)):
+            _model_.append((_data_[i][_index_[0]], _data_[i][_index_[1]],
+                            _data_[i][_index_[2]], _data_[i][_index_[3]],
+                            _data_[i][_index_[4]], _data_[i][_index_[5]],
+                            _data_[i][_index_[6]], _data_[i][_index_[7]],
+                            _data_[i][_index_[8]], _data_[i][_index_[9]],
+                            _data_[i][_index_[10]], _data_[i][_index_[11]],
+                            _data_[i][_index_[12]], _data_[i][_index_[13]]))
+
+        for i in range(len(_col_headings_)):
+            column = self.tvwNonParResults.get_column(i)
+            label = column.get_widget()
+            label.set_markup(_(u"<span weight='bold'>%s</span>" % _col_headings_[i]))
+            column.set_widget(label)
+
+        self.tvwNonParResults.set_model(_model_)
 
         return False
 
@@ -761,18 +839,26 @@ class Dataset:
         selection = self.tvwDataset.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
 
+        self.lblScale.set_use_markup(True)
+        self.lblShape.set_use_markup(True)
+        self.lblLocation.set_use_markup(True)
+        self.lblMHBResult.set_use_markup(True)
+        self.lblZLPResult.set_use_markup(True)
+        self.lblZLRResult.set_use_markup(True)
+        self.lblRhoResult.set_use_markup(True)
+
         self.txtMHB.set_tooltip_markup(_(u"Displays the value of the MIL-HDBK test for trend."))
         self.txtChiSq.set_tooltip_markup(_(u"Displays the chi square critical value for the MIL-HDBK test for trend."))
         self.txtMHBPValue.set_tooltip_markup(_(u"Displays the p-value for the MIL-HDBK test for trend."))
-        self.lblMHBResult.set_use_markup(True)
         self.txtLP.set_tooltip_markup(_(u"Displays the value of the LaPlace test for trend."))
         self.txtZLPNorm.set_tooltip_markup(_(u"Displays the standard normal critical value for the LaPlace test for trend."))
         self.txtZLPPValue.set_tooltip_markup(_(u"Displays the p-value for the Laplace test for trend."))
-        self.lblZLPResult.set_use_markup(True)
         self.txtLR.set_tooltip_markup(_(u"Displays the value of the Lewis-Robinson test for trend."))
         self.txtZLRNorm.set_tooltip_markup(_(u"Displays the standard normal critical value for the Lewis-Robinson test for trend."))
         self.txtZLRPValue.set_tooltip_markup(_(u"Displays the p-value for the Lewis-Robinson test for trend."))
-        self.lblZLRResult.set_use_markup(True)
+        self.txtRho.set_tooltip_markup(_(u"Displays the value of the lag 1 sample serial correlation coefficient."))
+        self.txtRhoNorm.set_tooltip_markup(_(u"Displays the standard normal critical value for the lag 1 sample serial correlation coefficient."))
+        self.txtRhoPValue.set_tooltip_markup(_(u"Displays the p-value for the lag 1 sample serial correlation coefficient."))
         self.txtScale.set_tooltip_markup(_(u"Displays the point estimate of the scale parameter."))
         self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the scale parameter."))
         self.txtScaleUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the scale parameter."))
@@ -803,6 +889,13 @@ class Dataset:
         self.txtHazardRateLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the hazard rate."))
         self.txtHazardRateUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the hazard rate."))
 
+        self.txtMTBFi.set_tooltip_markup(_(u"Displays the point estimate of the instantaneous MTBF."))
+        self.txtMTBFiLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the instantaneous MTBF."))
+        self.txtMTBFiUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the instantaneous MTBF."))
+        self.txtHazardRatei.set_tooltip_markup(_(u"Displays the point estimate the instantaneous failure intensity."))
+        self.txtHazardRateiLL.set_tooltip_markup(_(u"Displays the lower <span>\u03B1</span>% bound on the instantaneous failure intensity."))
+        self.txtHazardRateiUL.set_tooltip_markup(_(u"Displays the upper <span>\u03B1</span>% bound on the instantaneous failure intensity."))
+
         return False
 
     def _analyses_results_tab_create(self):
@@ -826,31 +919,42 @@ class Dataset:
         fixed.put(self.txtNumFailures, 210, y_pos)
         y_pos += 40
 
-        label = _widg.make_label(_(u"Estimates:"), width=200)
-        fixed.put(label, 5, y_pos)
-        label = _widg.make_label(_(u"MTBF"), width=100)
-        fixed.put(label, 210, y_pos)
-        label = _widg.make_label(_(u"Hazard Rate"), width=100)
-        fixed.put(label, 315, y_pos)
-        y_pos += 30
+        fixed.put(self.lblCumMTBF, 210, y_pos)
+        fixed.put(self.lblCumFI, 340, y_pos)
+        fixed.put(self.lblMTBFi, 470, y_pos)
+        fixed.put(self.lblFIi, 600, y_pos)
+        y_pos += 55
 
         label = _widg.make_label(_(u"Lower Bound"), width=150)
         fixed.put(label, 10, y_pos)
         fixed.put(self.txtMTBFLL, 210, y_pos)
-        fixed.put(self.txtHazardRateLL, 315, y_pos)
+        fixed.put(self.txtHazardRateLL, 340, y_pos)
+        fixed.put(self.txtMTBFiLL, 470, y_pos)
+        fixed.put(self.txtHazardRateiLL, 600, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Point Estimate"), width=150)
         fixed.put(label, 10, y_pos)
         fixed.put(self.txtMTBF, 210, y_pos)
-        fixed.put(self.txtHazardRate, 315, y_pos)
+        fixed.put(self.txtHazardRate, 340, y_pos)
+        fixed.put(self.txtMTBFi, 470, y_pos)
+        fixed.put(self.txtHazardRatei, 600, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Upper Bound"), width=150)
         fixed.put(label, 10, y_pos)
         fixed.put(self.txtMTBFUL, 210, y_pos)
-        fixed.put(self.txtHazardRateUL, 315, y_pos)
+        fixed.put(self.txtHazardRateUL, 340, y_pos)
+        fixed.put(self.txtMTBFiUL, 470, y_pos)
+        fixed.put(self.txtHazardRateiUL, 600, y_pos)
         y_pos += 30
+
+        self.txtMTBFiLL.hide()
+        self.txtHazardRateiLL.hide()
+        self.txtMTBFi.hide()
+        self.txtHazardRatei.hide()
+        self.txtMTBFiUL.hide()
+        self.txtHazardRateiUL.hide()
 
 # Non-parametric table of results.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
@@ -1021,6 +1125,9 @@ class Dataset:
 
         label = _widg.make_label(_(u"Lewis\nRobinson"), height=50, width=100)
         fixed.put(label, 420, y_pos)
+
+        label = _widg.make_label(_(u"Serial\nCorrelation\nCoefficient"), height=50, width=100)
+        fixed.put(label, 525, y_pos)
         y_pos += 55
 
         label = _widg.make_label(_(u"Test Statistic"), width=150)
@@ -1028,6 +1135,7 @@ class Dataset:
         fixed.put(self.txtMHB, 210, y_pos)
         fixed.put(self.txtLP, 315, y_pos)
         fixed.put(self.txtLR, 420, y_pos)
+        fixed.put(self.txtRho, 525, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Critical Value"), width=150)
@@ -1035,6 +1143,7 @@ class Dataset:
         fixed.put(self.txtChiSq, 210, y_pos)
         fixed.put(self.txtZLPNorm, 315, y_pos)
         fixed.put(self.txtZLRNorm, 420, y_pos)
+        fixed.put(self.txtRhoNorm, 525, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"p-Value"), width=150)
@@ -1042,25 +1151,22 @@ class Dataset:
         fixed.put(self.txtMHBPValue, 210, y_pos)
         fixed.put(self.txtZLPPValue, 315, y_pos)
         fixed.put(self.txtZLRPValue, 420, y_pos)
+        fixed.put(self.txtRhoPValue, 525, y_pos)
         y_pos += 30
 
         fixed.put(self.lblMHBResult, 210, y_pos)
         fixed.put(self.lblZLPResult, 315, y_pos)
         fixed.put(self.lblZLRResult, 420, y_pos)
+        fixed.put(self.lblRhoResult, 525, y_pos)
 
 # Parametric estimates.
         fixed = gtk.Fixed()
         self.fraParEst.add(fixed)
 
         y_pos = 5
-        label = _widg.make_label(_(u"Scale"), width=150)
-        fixed.put(label, 155, y_pos)
-
-        label = _widg.make_label(_(u"Shape"), width=150)
-        fixed.put(label, 305, y_pos)
-
-        label = _widg.make_label(_(u"Location"), width=150)
-        fixed.put(label, 455, y_pos)
+        fixed.put(self.lblScale, 155, y_pos)
+        fixed.put(self.lblShape, 305, y_pos)
+        fixed.put(self.lblLocation, 455, y_pos)
         y_pos += 30
 
         label = _widg.make_label(_(u"Lower Bound"), width=150)
@@ -1075,6 +1181,7 @@ class Dataset:
         fixed.put(self.txtScale, 155, y_pos)
         fixed.put(self.txtShape, 305, y_pos)
         fixed.put(self.txtLocation, 455, y_pos)
+        fixed.put(self.lblModel, 605, y_pos)
         y_pos += 25
 
         label = _widg.make_label(_(u"Upper Bound"), width=150)
@@ -1159,6 +1266,19 @@ class Dataset:
         for child in self.vbxAnalysisResults2.get_children():
             self.vbxAnalysisResults2.remove(child)
 
+        self.lblMTBFi.hide()
+        self.lblFIi.hide()
+        self.lblRhoResult.hide()
+        self.txtMTBFiLL.hide()
+        self.txtHazardRateiLL.hide()
+        self.txtMTBFi.hide()
+        self.txtHazardRatei.hide()
+        self.txtMTBFiUL.hide()
+        self.txtHazardRateiUL.hide()
+        self.txtRho.hide()
+        self.txtRhoNorm.hide()
+        self.txtRhoPValue.hide()
+
 # Update summary information.  This is always shown regardless of the type of
 # analysis performed.
         self.vbxAnalysisResults1.pack_start(self.fraSummary, True, True)
@@ -1179,13 +1299,65 @@ class Dataset:
             self.txtLR.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 30))))
 
+            self.lblCumMTBF.set_markup(_(u"<span>MTBF</span>"))
+            self.lblCumFI.set_markup(_(u"<span>Failure\nIntensity</span>"))
+
+            self.lblRhoResult.show()
+            self.txtRho.show()
+            self.txtRhoNorm.show()
+            self.txtRhoPValue.show()
+
 # Update Kaplan-Meier analysis information.
         elif(_analysis_ == 2):
             self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
-            #self.vbxAnalysisResults2.pack_start(self.fraNonParEst, True, True)
-            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
+
+            self.lblCumMTBF.set_markup(_(u"<span>MTBF</span>"))
+            self.lblCumFI.set_markup(_(u"<span>Failure\nIntensity</span>"))
+
+# update NHPP Power Law analysis information.
+        elif(_analysis_ == 3):
+            self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
+            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
+            self.vbxAnalysisResults1.pack_start(self.fraParEst, True, True)
+
+            _b_hat_ = str(fmt.format(self.model.get_value(self.selected_row, 13)))
+            _alpha_hat_ = str(fmt.format(self.model.get_value(self.selected_row, 16)))
+            self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = %s T<sup>%s</sup></span>") % (_b_hat_, _alpha_hat_))
+
+            self.txtScale.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 13))))
+            self.txtScaleLL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 14))))
+            self.txtScaleUL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 15))))
+            self.txtShape.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 16))))
+            self.txtShapeLL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 17))))
+            self.txtShapeUL.set_text(
+                str(fmt.format(self.model.get_value(self.selected_row, 18))))
+
+            self.lblCumMTBF.set_markup(_(u"<span>Cumulative\nMTBF</span>"))
+            self.lblCumFI.set_markup(_(u"<span>Cumulative\nFailure\nIntensity</span>"))
+            self.lblMTBFi.set_markup(_(u"<span>Instantaneous\nMTBF</span>"))
+            self.lblFIi.set_markup(_(u"<span>Instantaneous\nFailure\nIntensity</span>"))
+            self.lblScale.set_markup(_(u"b"))
+            self.lblShape.set_markup(_(u"\u03B1"))
+            self.lblMTBFi.show()
+            self.lblFIi.show()
+            self.lblLocation.hide()
+
+            self.txtMTBFiLL.show()
+            self.txtHazardRateiLL.show()
+            self.txtMTBFi.show()
+            self.txtHazardRatei.show()
+            self.txtMTBFiUL.show()
+            self.txtHazardRateiUL.show()
+
+            self.txtLocation.hide()
+            self.txtLocationLL.hide()
+            self.txtLocationUL.hide()
 
 # Update parametric analysis information.
         else:
@@ -1194,8 +1366,6 @@ class Dataset:
             self.vbxAnalysisResults1.pack_start(self.fraParEst, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraVarCov, True, True)
             self.vbxAnalysisResults2.pack_start(self.fraParGOF, True, True)
-            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults1, True, True)
-            #self.hpnAnalysisResults.pack_start(self.vbxAnalysisResults2, True, True)
 
             self.txtScale.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 13))))
@@ -1248,6 +1418,10 @@ class Dataset:
                 str(fmt.format(self.model.get_value(self.selected_row, 32))))
             self.txtMLE.set_text(
                 str(fmt.format(self.model.get_value(self.selected_row, 33))))
+
+            self.lblScale.set_markup(_(u"<span>Scale</span>"))
+            self.lblShape.set_markup(_(u"<span>Shape</span>"))
+            self.lblLocation.show()
 
         return False
 
@@ -1306,6 +1480,8 @@ class Dataset:
             _marker_ -- the marker to use on the plot.
         """
 
+        from scipy.interpolate import spline
+
         n_points = len(x)
 
         axis.cla()
@@ -1324,6 +1500,9 @@ class Dataset:
             elif(_type_[0] == 3):
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y1, color=_marker_[0])
+            elif(_type_[0] == 4):
+                line, = axis.plot_date(x, y1, _marker_[0],
+                                       xdate=True, linewidth=2)
 
         if(y2 is not None):
             if(_type_[1] == 1):
@@ -1338,6 +1517,9 @@ class Dataset:
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
                 line2, = axis.plot(bins, y2)
+            elif(_type_[1] == 4):
+                line2, = axis.plot_date(x, y2, _marker_[1],
+                                        xdate=True, linewidth=2)
 
         if(y3 is not None):
             if(_type_[2] == 1):
@@ -1352,6 +1534,9 @@ class Dataset:
                 axis.grid(False, which='both')
                 n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
                 line3, = axis.plot(bins, y3)
+            elif(_type_[2] == 4):
+                line3, = axis.plot_date(x, y3, _marker_[2],
+                                        xdate=True, linewidth=2)
 
         axis.set_title(_title_)
         axis.set_xlabel(_xlab_)
@@ -1369,10 +1554,10 @@ class Dataset:
 
 # Table of results allocated to each assembly.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                              gobject.TYPE_INT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_STRING)
+                              gobject.TYPE_FLOAT, gobject.TYPE_STRING)
         self.tvwResultsByChildAssembly.set_model(model)
 
         cell = gtk.CellRendererText()
@@ -1381,7 +1566,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Hardware\nItem"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=0, background=8)
+        column.set_attributes(cell, text=0, background=9)
         column.set_clickable(True)
         column.set_resizable(True)
         column.set_sort_column_id(0)
@@ -1393,7 +1578,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Number of\nFailures"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=1, background=8)
+        column.set_attributes(cell, text=1, background=9)
         column.set_clickable(True)
         column.set_resizable(True)
         column.set_sort_column_id(1)
@@ -1402,10 +1587,21 @@ class Dataset:
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
         column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u""))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=2, background=9)
+        column.set_resizable(True)
+        column.set_visible(False)
+        self.tvwResultsByChildAssembly.append_column(column)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        column = gtk.TreeViewColumn()
         label = _widg.make_column_heading(_(u"MTBF\nLower Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=2, background=8)
+        column.set_attributes(cell, text=3, background=9)
         column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
@@ -1415,7 +1611,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"MTBF"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=3, background=8)
+        column.set_attributes(cell, text=4, background=9)
         column.set_clickable(True)
         column.set_resizable(True)
         column.set_sort_column_id(3)
@@ -1427,7 +1623,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"MTBF\nUpper Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=4, background=8)
+        column.set_attributes(cell, text=5, background=9)
         column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
@@ -1437,7 +1633,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Failure Intensity\nLower Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=5, background=8)
+        column.set_attributes(cell, text=6, background=9)
         column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
@@ -1447,7 +1643,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Failure\nIntensity"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=6, background=8)
+        column.set_attributes(cell, text=7, background=9)
         column.set_clickable(True)
         column.set_resizable(True)
         column.set_sort_column_id(6)
@@ -1459,7 +1655,7 @@ class Dataset:
         label = _widg.make_column_heading(_(u"Failure Intensity\nUpper Bound"))
         column.set_widget(label)
         column.pack_start(cell, True)
-        column.set_attributes(cell, text=7, background=8)
+        column.set_attributes(cell, text=8, background=9)
         column.set_resizable(True)
         self.tvwResultsByChildAssembly.append_column(column)
 
@@ -1690,6 +1886,8 @@ class Dataset:
         _starttime_ = float(self.txtStartTime.get_text())       # Minimum time.
         _reltime_ = float(self.txtEndTime.get_text())           # Maximum time.
         _step_ = int(self.txtRelPoints.get_text())
+        _startdate_ = _util.date_to_ordinal(self.txtStartDate.get_text())
+        _enddate_ = _util.date_to_ordinal(self.txtEndDate.get_text())
 
         if(_type_ == 3):                    # Two-sided bounds.
             _conf_ = (100.0 + _conf_) / 200.0
@@ -1710,15 +1908,17 @@ class Dataset:
         _z_norm_ = norm.ppf(_conf_)
 
 # Get the entire dataset.
-        _query_ = "SELECT fld_unit, fld_left_interval, \
-                          fld_right_interval, fld_tbf, \
-                          fld_status \
+        _query_ = "SELECT fld_unit, fld_left_interval, fld_right_interval, \
+                          fld_tbf, fld_status, fld_quantity, fld_request_date \
                    FROM tbl_survival_data \
                    WHERE fld_dataset_id=%d \
-                   AND fld_right_interval <= %f \
-                   AND fld_right_interval > 0.0 \
-                   ORDER BY fld_unit ASC, \
-                            fld_left_interval ASC" % (_dataset_, _reltime_)
+                   AND fld_right_interval <= %f AND fld_right_interval > %f \
+                   AND fld_request_date >= %d AND fld_request_date < %d \
+                   ORDER BY fld_request_date ASC, \
+                            fld_unit ASC, \
+                            fld_left_interval ASC" % (_dataset_, _reltime_,
+                                                      _starttime_, _startdate_,
+                                                      _enddate_)
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
@@ -1757,7 +1957,7 @@ class Dataset:
         bic = 0.0
 
 # Initialize some lists.
-        p_value = [1.0, 1.0, 1.0]
+        p_value = [1.0, 1.0, 1.0, 1.0]
         _text = [u"", u"", u""]
 
 # =========================================================================== #
@@ -1765,51 +1965,51 @@ class Dataset:
 # =========================================================================== #
         if(_analysis_ == 1):                # MCF
 # Create a list of unique units.
-            query = "SELECT DISTINCT(fld_unit) \
-                     FROM tbl_survival_data \
-                     WHERE fld_dataset_id=%d \
-                     AND fld_right_interval <= %f \
-                     AND fld_right_interval > %f" % \
-                     (_dataset_, _reltime_, _starttime_)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            _query_ = "SELECT DISTINCT(fld_unit) \
+                       FROM tbl_survival_data \
+                       WHERE fld_dataset_id=%d \
+                       AND fld_right_interval <= %f \
+                       AND fld_right_interval > %f" % \
+                       (_dataset_, _reltime_, _starttime_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
             _units_ = []
-            for i in range(len(results)):
-                _units_.append(results[i][0])
+            for i in range(len(_results_)):
+                _units_.append(_results_[i][0])
 
 # Create a list of unique failure times.
-            query = "SELECT DISTINCT(fld_right_interval) \
-                     FROM tbl_survival_data \
-                     WHERE fld_dataset_id=%d \
-                     AND fld_right_interval >= %f \
-                     AND fld_right_interval <= %f \
-                     ORDER BY fld_right_interval ASC" % \
-                     (_dataset_, _starttime_, _reltime_)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            _query_ = "SELECT DISTINCT(fld_right_interval) \
+                       FROM tbl_survival_data \
+                       WHERE fld_dataset_id=%d \
+                       AND fld_right_interval >= %f \
+                       AND fld_right_interval <= %f \
+                       ORDER BY fld_right_interval ASC" % \
+                       (_dataset_, _starttime_, _reltime_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
             _times_ = []
-            for i in range(len(results)):
-                _times_.append(results[i][0])
+            for i in range(len(_results_)):
+                _times_.append(_results_[i][0])
 
 # Get the entire dataset.
 # Example of a record returned from the following query:
 #     (u'HT36103', 0.0, 12.0, 12.0)
-            query = "SELECT fld_unit, fld_left_interval, \
-                            fld_right_interval, fld_tbf \
-                     FROM tbl_survival_data \
-                     WHERE fld_dataset_id=%d \
-                     AND fld_right_interval >= %f \
-                     AND fld_right_interval <= %f \
-                     ORDER BY fld_unit ASC, \
-                              fld_left_interval ASC" % \
-                     (_dataset_, _starttime_, _reltime_)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            _query_ = "SELECT fld_unit, fld_left_interval, \
+                              fld_right_interval, fld_tbf, fld_quantity \
+                       FROM tbl_survival_data \
+                       WHERE fld_dataset_id=%d \
+                       AND fld_right_interval >= %f \
+                       AND fld_right_interval <= %f \
+                       ORDER BY fld_unit ASC, \
+                                fld_left_interval ASC" % \
+                       (_dataset_, _starttime_, _reltime_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
 # =========================================================================== #
 #  0 = Event Time ti. (string)
@@ -1818,7 +2018,7 @@ class Dataset:
 #  3 = Sum of delta at time ti. (integer)
 #  4 = Sum of d at time ti. (integer)
 #  5 = d bar at time ti. (float)
-#  6 = Variance of d bar at time ti. (float)
+#  6 = Variance of MCF at time ti. (float)
 #  7 = Lower bound on mean cumulative function at time ti. (float)
 #  8 = Upper bound on mean cumulative fucntion at time ti. (float)
 #  9 = Mean cumulative function at time ti. (float)
@@ -1829,9 +2029,31 @@ class Dataset:
 # 14 = Lower bound on instantaneous MTBF at time ti. (float)
 # 15 = Upper bound on instantaneous MTBF at time ti. (float)
 # =========================================================================== #
-            nonpar = _calc.mean_cumulative_function(_units_, _times_,
-                                                    results, _conf_)
+            _nonpar_ = mean_cumulative_function(_units_, _times_,
+                                                _results_, _conf_)
 
+# Load the non-parametric results gtk.TreeView
+            _model_ = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+            _index_ = [0, 3, 4, 5, 6, 7, 9, 8, 11, 10, 12, 14, 13, 15]
+            _col_headings_ = [_(u"Event\nTime"),
+                              _(u"\u03B4."), _(u"d."), _(u"d bar"),
+                              _(u"\u03C3<sup>2</sup><sub>MCF</sub>"),
+                              _(u"MCF Lower\nBound"), _(u"MCF"),
+                              _(u"MCF Upper\nBound"),
+                              _(u"Cumulative MTBF\nLower Bound"),
+                              _(u"Cumulative\nMTBF"),
+                              _(u"Cumulative\nMTBF\nUpper Bound"),
+                              _(u"Instantaneous\nMTBF\nLower Bound"),
+                              _(u"Instantaneous\nMTBF"),
+                              _(u"Instantaneous\nMTBF\nUpper Bound")]
+            self._load_nonparametric_tree(_model_, _nonpar_,
+                                          _index_, _col_headings_)
 # Get:
 #   Total number of failures.
 #   List of unique failures times.
@@ -1839,163 +2061,84 @@ class Dataset:
 #   List of MCF lower bound at each unique failure time.
 #   List of MCF upper bound at each unique failure time.
 #   Maximum observed time.
-            n_failures = len(nonpar)
-            times = [x[0] for x in nonpar]
-            muhat = [x[9] for x in nonpar]
-            muhatll = [x[7] for x in nonpar]
-            muhatul = [x[8] for x in nonpar]
+            _n_records_ = len(_nonpar_)
+            _failures_ = [x[4] for x in _nonpar_]
+            n_failures = int(sum(_failures_))
+            times = [x[0] for x in _nonpar_]
+            muhat = [x[9] for x in _nonpar_]
+            muhatll = [x[7] for x in _nonpar_]
+            muhatul = [x[8] for x in _nonpar_]
             ta = max(times)
 
 # Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test statistics.
 # Find the chi-square critical value.  These statistics are used to test for
 # HPP vs. NHPP in the data.
-            query = "SELECT t1.fld_unit, t2.fld_tbf \
-                     FROM tbl_incident AS t1 \
-                     INNER JOIN tbl_survival_data AS t2 \
-                     WHERE t2.fld_record_id=t1.fld_incident_id \
-                     AND fld_dataset_id=%d \
-                     AND fld_right_interval >= %f \
-                     AND fld_right_interval <= %f \
-                     ORDER BY t1.fld_request_date ASC" % \
-                     (_dataset_, _starttime_, _reltime_)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            _query_ = "SELECT t1.fld_unit, t2.fld_tbf, t1.fld_request_date \
+                       FROM tbl_incident AS t1 \
+                       INNER JOIN tbl_survival_data AS t2 \
+                       WHERE t2.fld_record_id=t1.fld_incident_id \
+                       AND t2.fld_dataset_id=%d \
+                       AND t2.fld_right_interval >= %f \
+                       AND t2.fld_right_interval <= %f \
+                       AND t1.fld_request_date >= %d \
+                       AND t1.fld_request_date < %d \
+                       ORDER BY t1.fld_request_date ASC" % \
+                       (_dataset_, _starttime_, _reltime_, _startdate_,
+                        _enddate_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
-            tbf = []
-            failnum = []
+            _tbf_ = []
+            _failnum_ = []
+            _dates_ = []
             _denominator_ = 0.0
-            for i in range(n_failures):
+            for i in range(_n_records_):
                 mhb += log(times[i] / ta)
                 _denominator_ += log(ta / times[i])
                 zlp += times[i] / ta
-                tbf.append(results[i][1])
-                failnum.append(i)
+                _tbf_.append(_results_[i][1])
+                _failnum_.append(i)
+                _dates_.append(_results_[i][2])
 
             mhb = -2.0 * mhb
             zlp = (zlp - (n_failures / 2.0)) / sqrt(n_failures / 12.0)
-            tau = numpy.mean(tbf)
-            S = numpy.std(tbf)
+            tau = numpy.mean(_tbf_)
+            S = numpy.std(_tbf_)
             zlr = zlp * tau / S
 
             _chisq_ = chi2.ppf(1.0 - _conf_, 2 * n_failures)
-            p_value[0] = chi2.cdf(mhb, 2 * n_failures)
-            p_value[1] = norm.cdf(abs(zlp))
-            p_value[2] = norm.cdf(abs(zlr))
 
             _beta_ = n_failures / _denominator_
             _eta_ = ta / n_failures**(1.0 / _beta_)
 
-# Find the covariance and variance of the interarrival times.  Use these to
-# calculate the sample serial correlation coefficient.
-            cov = numpy.cov(tbf[0:n_failures-1], tbf[1:n_failures])
-            var = numpy.var(tbf)
-            rho = sqrt(n_failures - 1) * cov[0][1] / var
+# Calculate the sample serial correlation coefficient.
+            _cov_ = 0.0
+            _var1_ = 0.0
+            _var2_ = 0.0
+            _tau_bar_ = numpy.mean(_tbf_)
+            for i in range(len(_tbf_) - 1):
+                _cov_ += (_tbf_[i] - _tau_bar_) * (_tbf_[i + 1] - _tau_bar_)
+                _var1_ += (_tbf_[i] - _tau_bar_)**2.0
+                _var2_ += (_tbf_[i + 1] - _tau_bar_)**2.0
+            _rho_ = sqrt(n_failures - 1) * (_cov_ / sqrt(_var1_ * _var2_))
 
-# Load the table with the MCF results.
-#   Column      Information
-#     1         Time (t_j)
-#     2         Delta dot
-#     3         d bar
-#     4         MCF standard error
-#     5         MCF point estimate
-#     6         MCF lower bound
-#     7         MCF upper bound
-#     8         Cumulative MTBF
-#     9         Cumulative MTBF lower bound
-#    10         Cumulative MTBF upper bound
-#    11         Instantaneous MTBF
-#    12         Instantaneous MTBF lower bound
-#    13         Instantaneous MTBF upper bound
-            model = self.tvwNonParResults.get_model()
-            model.clear()
-            for i in range(n_failures):
-                _data_ = [str(nonpar[i][0]), int(nonpar[i][3]),
-                          int(nonpar[i][4]), float(nonpar[i][5]),
-                          float(nonpar[i][6]), float(nonpar[i][9]),
-                          float(nonpar[i][7]), float(nonpar[i][8]),
-                          float(nonpar[i][10]), float(nonpar[i][11]),
-                          float(nonpar[i][12]), float(nonpar[i][13]),
-                          float(nonpar[i][14]), float(nonpar[i][15])]
-                model.append(_data_)
-
-            column = self.tvwNonParResults.get_column(1)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>\u03B4.</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(2)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>d.</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(3)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>d bar</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(4)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>se<sub>MCF</sub></span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(5)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>MCF</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(6)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>MCF Lower\nBound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(7)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>MCF Upper\nBound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(8)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(9)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nLower Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(10)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Cumulative\nMTBF\nUpper Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(11)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(12)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nLower Bound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(13)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Instantaneous\nMTBF\nUpper Bound</span>"))
-            column.set_widget(label)
-
-# Show the extra columns used for the MCF results.
-            for i in range(8,14):
-                column = self.tvwNonParResults.get_column(i)
-                column.set_visible(True)
+            p_value[0] = chi2.cdf(mhb, 2 * n_failures)
+            p_value[1] = norm.cdf(abs(zlp))
+            p_value[2] = norm.cdf(abs(zlr))
+            p_value[3] = norm.cdf(_rho_)
 
 # Plot the mean cumulative function with confidence bounds.
-            self._load_plot(self.axAxis1, self.pltPlot1, x=times, y1=muhat,
-                            y2=muhatll, y3=muhatul,
+            _widg.load_plot(self.axAxis1, self.pltPlot1, x=times,
+                            y1=muhat, y2=muhatll, y3=muhatul,
                             _title_=_(u"MCF Plot of %s") % _name,
                             _xlab_=_(u"Time"),
                             _ylab_=_(u"Mean Cumulative Function [mu(t)]"),
                             _marker_=['g-', 'r-', 'b-'])
+            _text_ = (u"MCF", u"MCF LCL", u"MCF UCL")
+            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='lower right',
+                                _shadow_=True)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
@@ -2003,30 +2146,25 @@ class Dataset:
             self.vbxPlot1.pack_start(self.pltPlot1)
 
 # Plot the run sequence plot.
-            self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=failnum, y1=tbf, y2=None, y3=None,
+            _widg.load_plot(self.axAxis2, self.pltPlot2,
+                            x=_dates_, y1=_tbf_,
                             _title_=_(u"Run Sequence Plot of %s") % _name,
-                            _xlab_=_(u"Failure Number"),
+                            _xlab_=_(u"Date"),
                             _ylab_=_(u"Time Between Failure"),
-                            _type_=[2], _marker_=['g-'])
+                            _type_=[4], _marker_=['g-'])
 
-# Create an event plot.
-            #query = "SELECT DISTINCT t1.fld_unit, t2.fld_age_at_incident \
-            #         FROM tbl_incident AS t1 \
-            #         INNER JOIN tbl_incident_detail AS t2 \
-            #         WHERE t2.fld_incident_id=t1.fld_incident_id \
-            #         ORDER BY t1.fld_unit ASC, \
-            #                  t2.fld_age_at_incident ASC"
-            #results = self._app.DB.execute_query(query,
-            #                                     None,
-            #                                     self._app.ProgCnx)
-            #self._load_plot(self.axAxis4, self.pltPlot4,
-            #                x=tbf[0:n_failures - 1], y1=tbf[1:n_failures],
-            #                y2=None, y3=None,
-            #                _title_=_(u"Lag 1 Plot of %s") % _name,
+# Create a lag plot.
+            #_widg.load_plot(self.axAxis4, self.pltPlot4,
+            #                x=_tbf_[0:n_failures - 1],
+            #                y1=_tbf_[1:n_failures],
+            #                _title_=_(u"Lag Plot of %s") % _name,
             #                _xlab_=_(u"Lagged Time Between Failure"),
             #                _ylab_=_(u"Time Between Failure"),
             #                _type_=[2], _marker_=['go'])
+            #_text_ = (u"Lag 1")
+            #_widg.create_legend(self.axAxis4, _text_, _fontsize_='medium',
+            #                    _frameon_=True, _location_='lower right',
+            #                    _shadow_=True)
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
@@ -2035,13 +2173,15 @@ class Dataset:
             #self.vbxPlot2.pack_start(self.pltPlot4)
 
 # Assign the cumulative MTBF for display.
-            MTBF = nonpar[n_failures - 1][10]
-            MTBFLL = nonpar[n_failures - 1][11]
-            MTBFUL = nonpar[n_failures - 1][12]
+            MTBF = _nonpar_[_n_records_ - 1][10]
+            MTBFLL = _nonpar_[_n_records_ - 1][11]
+            MTBFUL = _nonpar_[_n_records_ - 1][12]
 
             self.txtChiSq.set_text(str(fmt.format(_chisq_)))
+            self.txtRho.set_text(str(fmt.format(_rho_)))
             self.txtZLPNorm.set_text(str(fmt.format(_z_norm_)))
             self.txtZLRNorm.set_text(str(fmt.format(_z_norm_)))
+            self.txtRhoNorm.set_text(str(fmt.format(_z_norm_)))
 
             if(mhb > _chisq_):
                 _text[0] = _(u"<span foreground='red'>Nonconstant</span>")
@@ -2101,7 +2241,7 @@ class Dataset:
 #   12 = the returned value from the na.action function, if any.
 #        It will be used in the printout of the curve, e.g., the
 #        number of observations deleted due to missing values.
-            nonpar = _calc.kaplan_meier(results, _reltime_, _conf_)
+            nonpar = kaplan_meier(results, _reltime_, _conf_)
 
             n_points = nonpar[0][0]
             times = nonpar[1]
@@ -2246,7 +2386,7 @@ class Dataset:
             column.set_widget(label)
 
 # Hide the unused columns.
-            for i in range(8,14):
+            for i in range(8, 14):
                 column = self.tvwNonParResults.get_column(i)
                 column.set_visible(False)
 
@@ -2339,27 +2479,206 @@ class Dataset:
 # =========================================================================== #
 # Fit the data to a power law (Duane) model and estimate it's parameters.
 # =========================================================================== #
-        elif(_analysis_ == 3):              # Duane
+        elif(_analysis_ == 3):              # NHPP - Power Law
+
+            _F_ = []
+            _X_ = []
+            _dates_ = []
+            _times_ = []
+            _mtbf_model_ = []
+            _fi_model_ = []
+            _mtbf_c_plot_ll_ = []
+            _mtbf_c_plot_ = []
+            _mtbf_c_plot_ul_ = []
+            _fi_c_plot_ll_ = []
+            _fi_c_plot_ = []
+            _fi_c_plot_ul_ = []
 
 # Create lists of the failure times and number of failures.
-            F = []
-            X = []
             for i in range(len(_results_)):
-                X.append(_results_[i][2])
-                F.append(1)
+                _F_.append(_results_[i][5])
+                _X_.append(_results_[i][3])
+                _dates_.append(_results_[i][6])
 
-            (_beta_hat_,
-             _lambda_hat_,
-             _mu_hat_) = power_law(F, X, _reltime_)
+            _T_ = float(self.txtEndTime.get_text())
 
-            print (_beta_hat_, _lambda_hat_, _mu_hat_)
+# The power_law function will return a list of lists where each list contains:
+#   Index       Value
+#    0          Cumulative test time
+#    1          Cumulative number of failures
+#    2          Calculated cumulative MTBF
+#    3          Lower bound on alpha
+#    4          Point estimate of alpha
+#    5          Upper bounf on alpha
+#    6          Lower bound on b
+#    7          Point estimate of b
+#    8          Upper bound on b
+#    9          Lower bound on model estimate of cumulative MTBF
+#   10          Model point estimate of cumulative MTBF
+#   11          Upper bound on model estimate of cumulative MTBF
+#   12          Lower bound on model estimate of instantaneous MTBF
+#   13          Model point estimate of instantaneous MTBF
+#   14          Upper bound on model estimate of instantaneous MTBF
+#   15          Lower bound on model estimate of cumulative failure intensity
+#   16          Model point estimate of cumulative failure intensity
+#   17          Upper bound on model estimate of cumulative failure intensity
+#   18          Lower bound on model estimate of instantaneous failure intensity
+#   19          Model point estimate of instantaneous failure intensity
+#   20          Upper bound on model estimate of instantaneous failure intensity
+            _power_law_ = power_law(_F_, _X_, _fitmeth_, _type_, _conf_, _T_)
+
+# Load the non-parametric results gtk.TreeView
+            _model_ = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+            _index_ = [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17]
+            _col_headings_ = [_(u"Cumulative\nTime"),
+                              _(u"Cumulative\nNumber\nof Failures"),
+                              _(u"\u03B1\nLower Bound"), _(u"\u03B1"),
+                              _(u"\u03B1\nLower Bound"), _(u"b\nLower Bound"),
+                              _(u"b"), _(u"b\nUpper Bound"),
+                              _(u"Cumulative MTBF\nLower Bound"),
+                              _(u"Cumulative\nMTBF"),
+                              _(u"Cumulative\nMTBF\nUpper Bound"),
+                              _(u"Cumulative\nFailure Intensity\nUpper Bound"),
+                              _(u"Cumulative\nFailure\nIntensity"),
+                              _(u"Cumulative\nFailure Intensity\nUpper Bound")]
+            self._load_nonparametric_tree(_model_, _power_law_,
+                                          _index_, _col_headings_)
+
+            shapell = _power_law_[len(_power_law_) - 1][3]
+            shape = _power_law_[len(_power_law_) - 1][4]
+            shapeul = _power_law_[len(_power_law_) - 1][5]
+
+            scalell = _power_law_[len(_power_law_) - 1][6]
+            scale = _power_law_[len(_power_law_) - 1][7]
+            scaleul = _power_law_[len(_power_law_) - 1][8]
+
+            MTBFLL = _power_law_[len(_power_law_) - 1][9]
+            MTBF = _power_law_[len(_power_law_) - 1][10]
+            MTBFUL = _power_law_[len(_power_law_) - 1][11]
+
+            MTBFiLL = _power_law_[len(_power_law_) - 1][12]
+            MTBFi = _power_law_[len(_power_law_) - 1][13]
+            MTBFiUL = _power_law_[len(_power_law_) - 1][14]
+
+            for i in range(len(_power_law_)):
+                _times_.append(_power_law_[i][0])
+                _mtbf_model_.append(scale * _power_law_[i][0]**shape)
+                _fi_model_.append((1.0 / scale) * _power_law_[i][0]**-shape)
+                _mtbf_c_plot_ll_.append(_power_law_[i][9])
+                _mtbf_c_plot_.append(_power_law_[i][10])
+                _mtbf_c_plot_ul_.append(_power_law_[i][11])
+                _fi_c_plot_ll_.append(_power_law_[i][15])
+                _fi_c_plot_.append(_power_law_[i][16])
+                _fi_c_plot_ul_.append(_power_law_[i][17])
+
+# Display the NHPP Power Law specific results.
+            self.txtMTBFi.set_text(str(fmt.format(MTBFi)))
+            self.txtMTBFiLL.set_text(str(fmt.format(MTBFiLL)))
+            self.txtMTBFiUL.set_text(str(fmt.format(MTBFiUL)))
+
+            try:
+                self.txtHazardRatei.set_text(str(fmt.format(1.0 / MTBFi)))
+            except ZeroDivisionError:
+                self.txtHazardRatei.set_text("0.0")
+
+            try:
+                self.txtHazardRateiLL.set_text(str(fmt.format(1.0 / MTBFiUL)))
+            except ZeroDivisionError:
+                self.txtHazardRateiLL.set_text("0.0")
+
+            try:
+                self.txtHazardRateiUL.set_text(str(fmt.format(1.0 / MTBFiLL)))
+            except ZeroDivisionError:
+                self.txtHazardRateiUL.set_text("0.0")
+
+# Plot the MTBF curve with confidence bounds.
+            _widg.load_plot(self.axAxis1, self.pltPlot1, x=_times_,
+                            y1=_mtbf_c_plot_, y2=_mtbf_c_plot_ll_,
+                            y3=_mtbf_c_plot_ul_, y4=_mtbf_model_,
+                            _title_=_(u"Duane Plot of %s Cumulative MTBF") % _name,
+                            _xlab_=_(u"Cumulative Time [hours]"),
+                            _ylab_=_(u"Cumulative MTBF [m(t)] "),
+                            _marker_=['go', 'r-', 'b-', 'k--'],
+                            _type_=[2, 2, 2, 2])
+            _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
+                      _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
+            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='lower right',
+                                _shadow_=True)
+
+            self.axAxis1.set_xscale('log')
+            self.axAxis1.set_yscale('log')
+
+            _widg.load_plot(self.axAxis2, self.pltPlot2, x=_dates_,
+                            y1=_mtbf_c_plot_, y2=_mtbf_c_plot_ll_,
+                            y3=_mtbf_c_plot_ul_, y4=_mtbf_model_,
+                            _title_=_(u"Duane Plot of %s Cumulative MTBF Over Calendar Time") % _name,
+                            _xlab_=_(u"Calendar Time"),
+                            _ylab_=_(u"Cumulative MTBF [m(t)] "),
+                            _marker_=['go', 'r-', 'b-', 'k--'],
+                            _type_=[4, 4, 4, 4])
+            _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
+                      _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
+            _widg.create_legend(self.axAxis2, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='lower right',
+                                _shadow_=True)
+
+            _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times_,
+                            y1=_fi_c_plot_, y2=_fi_c_plot_ll_,
+                            y3=_fi_c_plot_ul_, y4=_fi_model_,
+                            _title_=_(u"Duane Plot of %s Cumulative Failure Intesity") % _name,
+                            _xlab_=_(u"Cumulative Time [hours]"),
+                            _ylab_=_(u"Cumulative Failure Intensity "),
+                            _marker_=['go', 'r-', 'b-', 'k--'],
+                            _type_=[2, 2, 2, 2])
+            _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
+                      _(u"Cum. FI UCL"), _(u"Fitted Model"))
+            _widg.create_legend(self.axAxis3, _text_,  _fontsize_='medium',
+                                _frameon_=True, _location_='upper right',
+                                _shadow_=True)
+
+            self.axAxis3.set_xscale('log')
+            self.axAxis3.set_yscale('log')
+
+            _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates_[3:],
+                            y1=_fi_c_plot_[3:], y2=_fi_c_plot_ll_[3:],
+                            y3=_fi_c_plot_ul_[3:], y4=_fi_model_[3:],
+                            _title_=_(u"Duane Plot of %s Cumulative Failure Intesity Over Calendar Time") % _name,
+                            _xlab_=_(u"Calendar Time"),
+                            _ylab_=_(u"Cumulative Failure Intensity "),
+                            _marker_=['go', 'r-', 'b-', 'k--'],
+                            _type_=[4, 4, 4, 4])
+            _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
+                      _(u"Cum. FI UCL"), _(u"Fitted Model"))
+            _widg.create_legend(self.axAxis4, _text_,  _fontsize_='medium',
+                                _frameon_=True, _location_='upper right',
+                                _shadow_=True)
+
+            for plot in self.vbxPlot1.get_children():
+                self.vbxPlot1.remove(plot)
+
+            self.vbxPlot1.pack_start(self.pltPlot1)
+            self.vbxPlot1.pack_start(self.pltPlot3)
+
+
+            for plot in self.vbxPlot2.get_children():
+                self.vbxPlot2.remove(plot)
+
+            self.vbxPlot2.pack_start(self.pltPlot2)
+            self.vbxPlot2.pack_start(self.pltPlot4)
 
 # =========================================================================== #
 # Fit the data to an exponential distribution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 5):
-            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                       _fitmeth_, 'exponential')
+            fit = parametric_fit(results, _starttime_, _reltime_,
+                                 _fitmeth_, 'exponential')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][0]
@@ -2382,7 +2701,7 @@ class Dataset:
             MTBFUL = 1.0 / scalell
 
             para = R.list(rate=scale)
-            _theop_ = _calc.theoretical_distribution(censdata, 'exp', para)
+            _theop_ = theoretical_distribution(censdata, 'exp', para)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
@@ -2411,8 +2730,8 @@ class Dataset:
 # Fit the data to a lognormal and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 6):
-            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                       _fitmeth_, 'lognormal')
+            fit = parametric_fit(results, _starttime_, _reltime_,
+                                 _fitmeth_, 'lognormal')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][0]
@@ -2446,7 +2765,7 @@ class Dataset:
             MTBFUL = exp(scaleul + 0.5 * shapeul**2.0)
 
             para = R.list(sdlog=shape, meanlog=scale)
-            _theop_ = _calc.theoretical_distribution(censdata, 'lnorm', para)
+            _theop_ = theoretical_distribution(censdata, 'lnorm', para)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
@@ -2477,8 +2796,8 @@ class Dataset:
 # Fit the data to a normal distibution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 7):
-            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                       _fitmeth_, 'normal')
+            fit = parametric_fit(results, _starttime_, _reltime_,
+                                 _fitmeth_, 'normal')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][0]
@@ -2509,7 +2828,7 @@ class Dataset:
             MTBFUL = scaleul
 
             para = R.list(sd=shape, mean=scale)
-            _theop_ = _calc.theoretical_distribution(censdata, 'norm', para)
+            _theop_ = theoretical_distribution(censdata, 'norm', para)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
@@ -2540,8 +2859,8 @@ class Dataset:
 # Fit the data to a Weibull distribution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 8):
-            fit = _calc.parametric_fit(results, _starttime_, _reltime_,
-                                       _fitmeth_, 'weibull')
+            fit = parametric_fit(results, _starttime_, _reltime_,
+                                 _fitmeth_, 'weibull')
 
             if(_fitmeth_ == 1):             # MLE
                 scale = fit[0][1]
@@ -2579,7 +2898,7 @@ class Dataset:
                     MTBFUL = scaleul * R.gamma(1.0 + (1.0 / shapell))[0]
 
             para = R.list(shape=shape, scale=scale)
-            _theop_ = _calc.theoretical_distribution(censdata, 'weibull', para)
+            _theop_ = theoretical_distribution(censdata, 'weibull', para)
 
             times = [float(i[3]) for i in results if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
@@ -2611,12 +2930,19 @@ class Dataset:
 # Find the percent of records belonging to each sub-assembly and then allocate
 # this percent of the overall failure rate to each sub-assembly.
         if(self.chkGroup.get_active()):
-            _query_ = "SELECT t2.fld_name, COUNT(t1.fld_hardware_id) \
-                       FROM tbl_incident AS t1 \
+            _query_ = "SELECT t2.fld_name, SUM(t1.fld_quantity), \
+                              t2.fld_assembly_id \
+                       FROM tbl_survival_data AS t1 \
                        INNER JOIN tbl_system AS t2 \
-                       ON t1.fld_hardware_id=t2.fld_assembly_id \
-                       WHERE t1.fld_revision_id=%d \
-                       GROUP BY t2.fld_name" % self._app.REVISION.revision_id
+                       ON t1.fld_assembly_id=t2.fld_assembly_id \
+                       WHERE t1.fld_dataset_id=%d \
+                       AND t1.fld_right_interval <= %f \
+                       AND t1.fld_right_interval > %f \
+                       AND t1.fld_request_date >= %d \
+                       AND t1.fld_request_date < %d \
+                       GROUP BY t2.fld_name" % (_dataset_, _reltime_,
+                                                _starttime_, _startdate_,
+                                                _enddate_)
             _results_ = self._app.DB.execute_query(_query_,
                                                   None,
                                                   self._app.ProgCnx)
@@ -2636,7 +2962,7 @@ class Dataset:
                 else:
                     _color_ = 'light gray'
 
-                _values_ = (_results_[i][0], _results_[i][1],
+                _values_ = (_results_[i][0], _results_[i][1], _results_[i][2],
                            (MTBFLL * _total_) / float(_results_[i][1]),
                            (MTBF * _total_) / float(_results_[i][1]),
                            (MTBFUL * _total_) / float(_results_[i][1]),
@@ -2689,7 +3015,7 @@ class Dataset:
 # =========================================================================== #
 # Create and display parametric plots.
 # =========================================================================== #
-        if(_analysis_ > 2):
+        if(_analysis_ > 3):
 # Plot a histogram of interarrival times.
             hist = R.hist(Rtimes, plot='False')
             bins = list(hist[0])
@@ -2799,10 +3125,83 @@ class Dataset:
         self.txtMHBPValue.set_text(str(fmt.format(p_value[0])))
         self.txtZLPPValue.set_text(str(fmt.format(p_value[1])))
         self.txtZLRPValue.set_text(str(fmt.format(p_value[2])))
+        self.txtRhoPValue.set_text(str(fmt.format(p_value[3])))
 
         self.lblMHBResult.set_markup(_text[0])
         self.lblZLPResult.set_markup(_text[1])
         self.lblZLRResult.set_markup(_text[2])
+
+        return False
+
+    def _consolidate_dataset(self, _button_):
+        """
+        Consolidates the dataset so there are only unique failure times,
+        suspension times, and intervals with a quantity value rather than a
+        single record for each failure.
+
+        Keyword Arguments:
+        _button_ -- the gtk.Button that called this function.
+        """
+
+        _query_ = "SELECT fld_record_id, fld_unit, fld_left_interval, \
+                          fld_right_interval, fld_status, fld_quantity \
+                   FROM tbl_survival_data \
+                   WHERE fld_dataset_id=%d \
+                   ORDER BY fld_unit ASC, \
+                            fld_left_interval ASC, \
+                            fld_right_interval ASC, \
+                            fld_status ASC" % self.dataset_id
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        _n_records_ = len(_results_)
+
+        _del_id_ = []
+        _keep_id_ = []
+        _quantity_ = _results_[0][5]
+        for i in range(1, _n_records_):
+# If the units are the same, the left intervals are the same, the right
+# intervals are the same, and the type are the same, increment the count of
+# records with the same failure times and add the previous record id to the
+# list of records to delete.
+            if(_results_[i][1] == _results_[i - 1][1] and
+               _results_[i][2] == _results_[i - 1][2] and
+               _results_[i][3] == _results_[i - 1][3] and
+               _results_[i][4] == _results_[i - 1][4]):
+                _quantity_ += _results_[i][5]
+                _del_id_.append(_results_[i - 1][0])
+            else:
+                _keep_id_.append([_results_[i - 1][0], _quantity_])
+                _quantity_ = _results_[i][5]
+
+# Keep the last record.
+        _keep_id_.append([_results_[-1][0], _quantity_])
+
+# Update the quantity of the records to be kept.
+        _n_keep_ = len(_keep_id_)
+        for i in range(_n_keep_):
+            _query_ = "UPDATE tbl_survival_data \
+                       SET fld_quantity=%d \
+                       WHERE fld_record_id=%d" % (_keep_id_[i][1],
+                                                  _keep_id_[i][0])
+            self._app.DB.execute_query(_query_,
+                                       None,
+                                       self._app.ProgCnx,
+                                       commit=True)
+
+# Delete the records that are "duplicates."
+        _n_del_ = len(_del_id_)
+        for i in range(_n_del_):
+            _query_ = "DELETE FROM tbl_survival_data \
+                       WHERE fld_record_id=%d" % _del_id_[i]
+            self._app.DB.execute_query(_query_,
+                                       None,
+                                       self._app.ProgCnx,
+                                       commit=True)
+
+# Reload the dataset tree.
+        self.load_tree()
 
         return False
 
@@ -2844,66 +3243,68 @@ class Dataset:
         row   -- the selected row in the DATASET gtk.TreeView.
         """
 
-        _values = (self.model.get_value(self.selected_row, 1), \
-                   self.model.get_value(self.selected_row, 2), \
-                   self.model.get_value(self.selected_row, 3), \
-                   self.model.get_value(self.selected_row, 4), \
-                   self.model.get_value(self.selected_row, 5), \
-                   self.model.get_value(self.selected_row, 6), \
-                   self.model.get_value(self.selected_row, 7), \
-                   self.model.get_value(self.selected_row, 8), \
-                   self.model.get_value(self.selected_row, 9), \
-                   self.model.get_value(self.selected_row, 10), \
-                   self.model.get_value(self.selected_row, 11), \
-                   self.model.get_value(self.selected_row, 12), \
-                   self.model.get_value(self.selected_row, 13), \
-                   self.model.get_value(self.selected_row, 14), \
-                   self.model.get_value(self.selected_row, 15), \
-                   self.model.get_value(self.selected_row, 16), \
-                   self.model.get_value(self.selected_row, 17), \
-                   self.model.get_value(self.selected_row, 18), \
-                   self.model.get_value(self.selected_row, 19), \
-                   self.model.get_value(self.selected_row, 20), \
-                   self.model.get_value(self.selected_row, 21), \
-                   self.model.get_value(self.selected_row, 22), \
-                   self.model.get_value(self.selected_row, 23), \
-                   self.model.get_value(self.selected_row, 24), \
-                   self.model.get_value(self.selected_row, 25), \
-                   self.model.get_value(self.selected_row, 26), \
-                   self.model.get_value(self.selected_row, 27), \
-                   self.model.get_value(self.selected_row, 28), \
-                   self.model.get_value(self.selected_row, 29), \
-                   self.model.get_value(self.selected_row, 30), \
-                   self.model.get_value(self.selected_row, 31), \
-                   self.model.get_value(self.selected_row, 32), \
-                   self.model.get_value(self.selected_row, 33), \
-                   self.model.get_value(self.selected_row, 34), \
-                   self.model.get_value(self.selected_row, 0))
+        _values_ = (self.model.get_value(self.selected_row, 1), \
+                    self.model.get_value(self.selected_row, 2), \
+                    self.model.get_value(self.selected_row, 3), \
+                    self.model.get_value(self.selected_row, 4), \
+                    self.model.get_value(self.selected_row, 5), \
+                    self.model.get_value(self.selected_row, 6), \
+                    self.model.get_value(self.selected_row, 7), \
+                    self.model.get_value(self.selected_row, 8), \
+                    self.model.get_value(self.selected_row, 9), \
+                    self.model.get_value(self.selected_row, 10), \
+                    self.model.get_value(self.selected_row, 11), \
+                    self.model.get_value(self.selected_row, 12), \
+                    self.model.get_value(self.selected_row, 13), \
+                    self.model.get_value(self.selected_row, 14), \
+                    self.model.get_value(self.selected_row, 15), \
+                    self.model.get_value(self.selected_row, 16), \
+                    self.model.get_value(self.selected_row, 17), \
+                    self.model.get_value(self.selected_row, 18), \
+                    self.model.get_value(self.selected_row, 19), \
+                    self.model.get_value(self.selected_row, 20), \
+                    self.model.get_value(self.selected_row, 21), \
+                    self.model.get_value(self.selected_row, 22), \
+                    self.model.get_value(self.selected_row, 23), \
+                    self.model.get_value(self.selected_row, 24), \
+                    self.model.get_value(self.selected_row, 25), \
+                    self.model.get_value(self.selected_row, 26), \
+                    self.model.get_value(self.selected_row, 27), \
+                    self.model.get_value(self.selected_row, 28), \
+                    self.model.get_value(self.selected_row, 29), \
+                    self.model.get_value(self.selected_row, 30), \
+                    self.model.get_value(self.selected_row, 31), \
+                    self.model.get_value(self.selected_row, 32), \
+                    self.model.get_value(self.selected_row, 33), \
+                    self.model.get_value(self.selected_row, 34), \
+                    self.model.get_value(self.selected_row, 35), \
+                    self.model.get_value(self.selected_row, 36), \
+                    self.model.get_value(self.selected_row, 0))
 
-        _query = "UPDATE tbl_dataset \
-                  SET fld_assembly_id=%d, fld_description='%s', \
-                      fld_source=%d, fld_distribution_id=%d, \
-                      fld_confidence=%f, fld_confidence_type=%d, \
-                      fld_confidence_method=%d, fld_fit_method=%d, \
-                      fld_rel_time=%f, fld_num_rel_points=%d, \
-                      fld_num_suspension=%d, fld_num_failures=%d, \
-                      fld_scale=%f, fld_scale_ll=%f, fld_scale_ul=%f, \
-                      fld_shape=%f, fld_shape_ll=%f, fld_shape_ul=%f, \
-                      fld_location=%f, fld_location_ll=%f, \
-                      fld_location_ul=%f, fld_variance_1=%f, \
-                      fld_variance_2=%f, fld_variance_3=%f, \
-                      fld_covariance_1=%f, fld_covariance_2=%f, \
-                      fld_covariance_3=%f, fld_mhb=%f, fld_lp=%f, \
-                      fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f, \
-                      fld_start_time=%d \
-                  WHERE fld_dataset_id=%d" % _values
+        _query_ = "UPDATE tbl_dataset \
+                   SET fld_assembly_id=%d, fld_description='%s', \
+                       fld_source=%d, fld_distribution_id=%d, \
+                       fld_confidence=%f, fld_confidence_type=%d, \
+                       fld_confidence_method=%d, fld_fit_method=%d, \
+                       fld_rel_time=%f, fld_num_rel_points=%d, \
+                       fld_num_suspension=%d, fld_num_failures=%d, \
+                       fld_scale=%f, fld_scale_ll=%f, fld_scale_ul=%f, \
+                       fld_shape=%f, fld_shape_ll=%f, fld_shape_ul=%f, \
+                       fld_location=%f, fld_location_ll=%f, \
+                       fld_location_ul=%f, fld_variance_1=%f, \
+                       fld_variance_2=%f, fld_variance_3=%f, \
+                       fld_covariance_1=%f, fld_covariance_2=%f, \
+                       fld_covariance_3=%f, fld_mhb=%f, fld_lp=%f, \
+                       fld_lr=%f, fld_aic=%f, fld_bic=%f, fld_mle=%f, \
+                       fld_start_time=%d, fld_start_date=%d, fld_end_date=%d \
+                   WHERE fld_dataset_id=%d" % _values_
 
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx,
-                                              commit=True)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
 
-        if not _results:
+        if not _results_:
             self._app.debug_log.error("dataset.py: Failed to save dataset.")
             return True
 
@@ -2920,18 +3321,18 @@ class Dataset:
         row   -- the selected row in the DATASET gtk.TreeView.
         """
 
-        _values = (model.get_value(row, 1), model.get_value(row, 2),
-                   model.get_value(row, 3), model.get_value(row, 4),
-                   model.get_value(row, 0))
+        _values_ = (model.get_value(row, 1), model.get_value(row, 2),
+                    model.get_value(row, 3), model.get_value(row, 4),
+                    model.get_value(row, 0))
 
-        _query = "UPDATE tbl_survival_data \
-                  SET fld_unit='%s', fld_left_interval=%f, \
-                      fld_right_interval=%f, fld_status='%s' \
-                  WHERE fld_record_id=%d" % _values
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx,
-                                              commit=True)
+        _query_ = "UPDATE tbl_survival_data \
+                   SET fld_unit='%s', fld_left_interval=%f, \
+                       fld_right_interval=%f, fld_status='%s' \
+                   WHERE fld_record_id=%d" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
 
         return False
 
@@ -2963,7 +3364,7 @@ class Dataset:
             _text_ = combo.get_active()
 
         if(_index_ == 4):
-            if(_text_ == 1 or _text_ == 2): # MCF or Kaplan-Meier
+            if(_text_ == 1 or _text_ == 2 or _index_ == 3): # MCF, Kaplan-Meier, or NHPP - Power Law
                 self.chkGroup.show()
                 self.chkParts.show()
                 self.cmbFitMethod.hide()

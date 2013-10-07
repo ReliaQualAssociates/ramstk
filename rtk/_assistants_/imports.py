@@ -759,12 +759,12 @@ class ImportIncident:
         self.assistant.append_page(scrollwindow)
         self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
         self.assistant.set_page_title(scrollwindow,
-                                      _("Select Fields to Import"))
+                                      _(u"Select Fields to Import"))
         self.assistant.set_page_complete(scrollwindow, True)
 
 # Create the page to apply the import criteria.
         fixed = gtk.Fixed()
-        _text_ = _("Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
+        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -817,7 +817,7 @@ class ImportIncident:
         import os
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_("RelKit: Import Incidents from File ..."),
+        dialog = gtk.FileChooserDialog(_(u"RelKit: Import Incidents from File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
@@ -876,7 +876,7 @@ class ImportIncident:
         model = self.tvwFileFields.get_model()
         row = model.get_iter_root()
 
-        # Find the number of 6existing incidents.
+        # Find the number of existing incidents.
         if(_conf.BACKEND == 'mysql'):
             query = "SELECT COUNT(*) FROM tbl_incident"
         elif(_conf.BACKEND == 'sqlite3'):
@@ -943,33 +943,26 @@ class ImportIncident:
                 contents[1] = num_incidents[0][0] + i + 1
 
             try:
-                values = (int(contents[0]), int(contents[1]), int(contents[2]),
-                          int(contents[3]), contents[4], contents[5],
-                          int(contents[6]), contents[7], contents[8],
-                          int(contents[9]), contents[10], contents[11],
-                          float(contents[12]), contents[13],
-                          float(contents[14]), int(contents[15]),
-                          int(contents[16]), int(contents[17]), contents[18],
-                          int(contents[19]), int(contents[20]),
-                          contents[21], int(contents[22]), int(contents[23]),
-                          contents[24], int(contents[25]), int(contents[26]),
-                          contents[27], int(contents[28]), int(contents[29]),
-                          contents[30], int(contents[31]))
+                _values_ = (int(contents[0]), int(contents[1]),
+                            int(contents[2]), int(contents[3]), contents[4],
+                            contents[5], int(contents[6]), contents[7],
+                            contents[8], int(contents[9]), contents[10],
+                            contents[11], float(contents[12]), contents[13],
+                            float(contents[14]), int(contents[15]),
+                            int(contents[16]), int(contents[17]), contents[18],
+                            int(contents[19]), int(contents[20]),
+                            contents[21], int(contents[22]), int(contents[23]),
+                            contents[24], int(contents[25]), int(contents[26]),
+                            contents[27], int(contents[28]), int(contents[29]),
+                            contents[30], int(contents[31]))
 
-                if(_conf.BACKEND == 'mysql'):
-                    query = "INSERT INTO tbl_incident \
-                             VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
-                                     %d, '%s', '%s', %f, '%s', %f, %d, %d, %d, \
-                                     %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
-                                     %d, '%s', %d, '%s', %d)"
-                elif(_conf.BACKEND == 'sqlite3'):
-                    query = "INSERT INTO tbl_incident \
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?)"
-
-                results = self._app.DB.execute_query(query,
-                                                     values,
+                _query_ = "INSERT INTO tbl_incident \
+                           VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
+                                   %d, '%s', '%s', %f, '%s', %f, %d, %d, %d, \
+                                   %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
+                                   %d, '%s', %d, '%s', %d)" % _values_
+                results = self._app.DB.execute_query(_query_,
+                                                     None,
                                                      self._app.ProgCnx,
                                                      commit=True)
 
@@ -978,31 +971,23 @@ class ImportIncident:
                 #self._app.import_log.error(contents)
 
             try:
-                values = (str(contents[1]), str(contents[32]),
-                          float(contents[33]), int(contents[34]),
-                          int(contents[35]), int(contents[36]),
-                          int(contents[37]), int(contents[38]),
-                          int(contents[39]), int(contents[40]),
-                          int(contents[41]), float(contents[42]), 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                _values_ = (str(contents[1]), str(contents[32]),
+                            float(contents[33]), int(contents[34]),
+                            int(contents[35]), int(contents[36]),
+                            int(contents[37]), int(contents[38]),
+                            int(contents[39]), int(contents[40]),
+                            int(contents[41]), float(contents[42]), 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-                if(_conf.BACKEND == 'mysql'):
-                    query = "INSERT INTO tbl_incident_detail \
-                             VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
-                                     %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
-                                     %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
-                                     %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
-                                     %d, %d, %d, %d, %d, %d)"
-                elif(_conf.BACKEND == 'sqlite3'):
-                    query = "INSERT INTO tbl_incident_detail \
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
-                                     ?, ?, ?, ?, ?, ?)"
-
-                results = self._app.DB.execute_query(query,
-                                                     values,
+                _query_ = "INSERT INTO tbl_incident_detail \
+                           VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
+                                   %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
+                                   %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                                   %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                                   %d, %d, %d, %d, %d, %d)" % _values_
+                results = self._app.DB.execute_query(_query_,
+                                                     None,
                                                      self._app.ProgCnx,
                                                      commit=True)
 

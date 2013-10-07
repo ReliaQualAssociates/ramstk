@@ -217,73 +217,181 @@ def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):
     return(GRi, TTTi)
 
 
-def power_law(_F_, _X_, _T_=0.0):
+def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
     """
     Function to estimate the parameters (beta and alpha) of the NHPP power law
     model.
 
     Keyword Arguments:
-    F -- list of failure counts.
-    X -- list of individual failures times.
-    T -- the end of the observation period.
+    _F_       -- list of failure counts.
+    _X_       -- list of individual failures times.
+    _fitmeth_ -- method used to fit the data (1=MLE, 2=regression).
+    _type_    -- the confidence level type
+                 (1=lower one-sided, 2=upper one-sided, 3=two-sided).
+    _conf_    -- the confidence level.
+    _T_star_  -- the end of the observation period for time terminated, or
+                 Type I, tests.
     """
+
+    from scipy.stats import chi2, norm, t
+
+# Initialize variables.
+    _n_ = 0.0
+    _T_ = 0.0
+    _M_ = 0.0
+    _logT_ = 0.0
+    _logT2_ = 0.0
+    _logM_ = 0.0
+    _logTlogM_ = 0.0
+    _SSE_ = 0.0
 
     _typeii_ = False
 
-# Sort the failure times ascending.
-    _X_.sort()
+    _power_law_ = []
 
-# If no observation time was passed, use the maximum failure time.
-    if(_T_ == 0.0):
-        _T_ = max(_X_)
+    _z_norm_ = norm.ppf(_conf_)
+
+# If no observation time was passed, use the maximum failure time and set the
+# _typeii_ variable True to indicate this is a failure truncated dataset.
+    if(_T_star_ == 0.0):
+        _T_star_ = sum(_X_)
         _typeii_ = True
 
     if(not _typeii_):
         _N_ = len(_X_) - 1
     else:
-        _N_ = len(_X_)
+        _N_ = len(_X_) - 2
 
-    _log_t_ = 0.0
-    _mu_ = [_X_[0] / _F_[0]]
-    for i in range(1, _N_):
-# Find the total number of failures to date.
-        _r_ = sum(_F_[0:i])
+    for i in range(len(_X_)):
 
-# Estimate the reliability growth slope.
-        _log_t_ += log(_T_ / _X_[i])
-        _beta_hat_ = 1 - ((_r_ - 1) / _log_t_)
+# Increment the total number of failures and the total time on test then
+# calculate the cumulative MTBF.
+        _n_ += float(_F_[i])
+        _T_ += float(_X_[i])
+        _M_ = _T_ / _n_
 
-# Estimate the scale parameter.
+# Calculate interim values.
+        _logT_ += log(_T_)
+        _logT2_ += log(_T_)**2.0
+        _logM_ += log(_M_)
+        _logTlogM_ += log(_T_) * log(_M_)
+
+# Calculate the Duane parameters.
+        if(_fitmeth_ == 1):             # MLE
+            try:
+                _beta_hat_ = _n_ / (_n_ * log(_T_star_) - _logT_)
+            except ZeroDivisionError:
+                _beta_hat_ = 1.0
+            _alpha_hat_ = 1.0 - _beta_hat_
+            _lambda_hat_ = _n_ / _T_**_beta_hat_
+            _b_hat_ = 1.0 / _lambda_hat_
+
+        elif(_fitmeth_ == 2):           # Regression
+            try:
+                _alpha_hat_ = (_n_ * _logTlogM_ - _logT_ * _logM_) / (_n_ * _logT2_ - _logT_**2.0)
+            except ZeroDivisionError:
+                _alpha_hat_ = 0.0
+            _b_hat_ = exp((1.0 / _n_) * (_logM_ - _alpha_hat_ * _logT_))
+
+# Calculate the cumulative and instantaneous MTBF from the model.
+        _mc_hat_ = _b_hat_ * _T_**_alpha_hat_
+        _mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
+
+# Calculate the cumulative and instantaneous failure intensity.
+        _lc_hat_ = (1.0 / _b_hat_) * _T_**-_alpha_hat_
+        _li_hat_ = (1.0 - _alpha_hat_) * _lc_hat_
+
+# Calculate bounds on the Duane parameters.
+        if(_n_ >= 2):
+            _critical_value_t_ = t.ppf(_conf_, _n_ - 2)
+        else:
+            _critical_value_t_ = 0.0
+
+        _SSE_ += (log(_mc_hat_) - log(_M_))**2.0
         try:
-            _alpha_hat_ = _r_ / _T_**(1 - _beta_hat_)
-        except OverflowError:
-            print _r_, _T_, _beta_hat_
-
-# Estimate the MTBF at the end of the test or observation period.
-        try:
-            _mu_.append(sum(_X_[0:i]) / _r_)
+            _sigma2_ = _SSE_ / (_n_ - 2.0)
+            _Sxx_ = _logT2_ - (_logT_**2.0 / _n_)
+            _se_alpha_ = sqrt(_sigma2_) / sqrt(_Sxx_)
+            _se_b_ = sqrt(_sigma2_) * sqrt(_logT2_ / (_n_ * _Sxx_))
         except ZeroDivisionError:
-            print i, _T_, _r_, _beta_hat_
+            _sigma2_ = 1.0
+            _Sxx_ = 1.0
+            _se_alpha_ = 1.0
+            _se_b_ = 1.0
 
-    _mu_.append(_T_ / _r_ * (1 - _beta_hat_))
+        _alpha_lower_ = _alpha_hat_ - _critical_value_t_ * _se_alpha_
+        _alpha_upper_ = _alpha_hat_ + _critical_value_t_ * _se_alpha_
 
-    return(_beta_hat_, _alpha_hat_, _mu_)
+        _b_lower_ = _b_hat_ * exp(-_critical_value_t_ * _se_b_)
+        _b_upper_ = _b_hat_ * exp(_critical_value_t_ * _se_b_)
+
+# Calculate bounds on the MTBF.
+        _mc_lower_ = _mc_hat_ * exp(-_z_norm_ * sqrt(_sigma2_))
+        _mc_upper_ = _mc_hat_ * exp(_z_norm_ * sqrt(_sigma2_))
+
+        _mi_lower_ = _mc_lower_ / (1.0 - _alpha_hat_)
+        _mi_upper_ = _mc_upper_ / (1.0 - _alpha_hat_)
+
+# Calculate bounds on the failure intensity.
+        _lc_lower_ = 1.0 / _mc_upper_
+        _lc_upper_ = 1.0 / _mc_lower_
+        _li_lower_ = 1.0 / _mi_upper_
+        _li_upper_ = 1.0 / _mi_lower_
+
+        _power_law_.append([_T_, _n_, _M_,
+                            _alpha_lower_, _alpha_hat_, _alpha_upper_,
+                            _b_lower_, _b_hat_, _b_upper_,
+                            _mc_lower_, _mc_hat_, _mc_upper_,
+                            _mi_lower_, _mi_hat_, _mi_upper_,
+                            _lc_lower_, _lc_hat_, _lc_upper_,
+                            _li_lower_, _li_hat_, _li_upper_])
+
+    return(_power_law_)
 
 
-def crow_amsaa_continuous(F, X, I, _grouped=False):
+def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
     """
     Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
     continous model using either the Option for Individual Failure Data
     (default) or the Option for Grouped Failure Data.
 
     Keyword Arguments:
-    F        -- list of failure counts.
-    X        -- list of individual failures times.
-    I        -- the grouping interval width.
-    _grouped -- whether or not to use grouped data.
+    _F_        -- list of failure counts.
+    _X_        -- list of individual failures times.
+    _I_        -- the grouping interval width.
+    _grouped_ -- whether or not to use grouped data.
     """
 
+    from scipy.stats import chi2, norm, t
     from scipy.optimize import fsolve
+
+# Initialize variables.
+    _n_ = 0.0
+    _T_ = 0.0
+    _M_ = 0.0
+    _logT_ = 0.0
+    _logT2_ = 0.0
+    _logM_ = 0.0
+    _logTlogM_ = 0.0
+    _SSE_ = 0.0
+
+    _typeii_ = False
+
+    _power_law_ = []
+
+    _t_norm_ = t.ppf(_conf_, _n_ - 2)
+    _z_norm_ = norm.ppf(_conf_)
+
+# If no observation time was passed, use the maximum failure time and set the
+# _typeii_ variable True to indicate this is a failure truncated dataset.
+    if(_T_star_ == 0.0):
+        _T_star_ = sum(_X_)
+        _typeii_ = True
+
+    if(not _typeii_):
+        _N_ = len(_X_) - 1
+    else:
+        _N_ = len(_X_) - 2
 
 # Define the function that will be set equal to zero and solved for beta.
     def _beta(b, f, t, logt):
@@ -298,54 +406,44 @@ def crow_amsaa_continuous(F, X, I, _grouped=False):
     _rho = []
     _mu = []
 
-    if(not _grouped):
-        for i in range(len(X)):
-            try:
-                _iters = int(X[i] - X[i - 1])
-            except IndexError:
-                _iters = int(X[i])
+    if(not _grouped_):
 
-# Estimate the failure rate of this interval.
-            for j in range(_iters - 1):
-                _rho.append(np.nan)
+        for i in range(len(_X_)):
+# Increment the total number of failures and the total time on test then
+# calculate the cumulative MTBF.
+            _n_ += float(_F_[i])
+            _T_ += float(_X_[i])
 
+# Calculate interim values.
+            _logT_ += log(_T_)
+
+# Calculate the Duane parameters.
             try:
-                _rho_ = F[i] / (X[i] - X[i - 1])
-            except IndexError:
-                _rho_ = F[i] / X[i]
+                _beta_hat_ = _n_ / (_n_ * log(_T_star_) - _logT_)
             except ZeroDivisionError:
-                _rho_ = _rho[i - 1]
+                _beta_hat_ = 1.0
+            _lambda_hat_ = _n_ / _T_**_beta_hat_
 
-            if(_rho_ < 0):
-                _rho_ = 0.0
-            _rho.append(_rho_)
+# Calculate the cumulative MTBF from the model.
+            _mc_hat_ = (1.0 / _lambda_hat_) * _T_**(1.0 - _beta_hat_)
+            _mi_hat_ = _beta_hat_ * _mc_hat_
 
-# Estimate the MTBF of this interval.
-            for j in range(_iters - 1):
-                _mu.append(np.nan)
+# Calculate the cumulative failure intensity from teh model.
+            _lc_hat_ = _lambda_hat_ * _T_**(_beta_hat_ - 1.0)
+            _li_hat_ = _beta_hat_ * _lc_hat_
 
-            try:
-                _mu_ = (X[i] - X[i - 1]) / F[i]
-            except IndexError:
-                _mu_ = X[i] / F[i]
-            except ZeroDivisionError:
-                _mu_ = _mu[i - 1]
+            _power_law_.append([_T_, _alpha_lower_, _alpha_hat_, _alpha_upper_,
+                                _b_lower_, _b_hat_, _b_upper_,
+                                _mc_lower_, _mc_hat_, _mc_upper_,
+                                _mi_lower_, _mi_hat_, _mi_upper_,
+                                _lc_lower_, _lc_hat_, _lc_upper_,
+                                _li_lower_, _li_hat_, _li_upper_])
 
-            if(_mu_ < 0):
-                _mu_ = 0.0
-
-            _mu.append(_mu_)
-
-        logX = [log(x) for x in X]
-
-        _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
-        _lambda_hat = FFF / TTT**_beta_hat
-
-    elif(_grouped):
+    elif(_grouped_):
 # Calculate the number of intervals we need, then create a list of zeros the
 # same length as the number of intervals.
-        _num_intervals = int(ceil(TTT / I))
-        _cum_fails = [0] * _num_intervals
+        _num_intervals_ = int(ceil(TTT / I))
+        _cum_fails_ = [0] * _num_intervals_
 
 # Iterate through the data and count the nuber of failures in each interval.
         for i in range(len(X)):

@@ -329,5 +329,23 @@ experience. -->
             <editable>1</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Start Date</defaulttitle>
+            <usertitle>Start Date</usertitle>
+            <datatype>gint</datatype>
+            <position>35</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>End Date</defaulttitle>
+            <usertitle>End Date</usertitle>
+            <datatype>gint</datatype>
+            <position>36</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

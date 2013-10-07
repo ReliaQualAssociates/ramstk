@@ -2,7 +2,7 @@
 
 OUTDIR="pylintout"
 OUTFILE="code.counts"
-INFILES=`find relkit/ -name '*.py'`
+INFILES=`find rtk/ -name '*.py'`
 SLOCTOT=0
 
 rm -f $OUTDIR/*
@@ -15,19 +15,19 @@ do
 	echo "$f has $SLOC lines of code for a total of $SLOCTOT lines of code." >> $OUTFILE
 	
 	`pylint --rcfile=devtools/pylintrc --files-output=yes --output-format=html $f`
-	X=`ls pylint_relkit* | cut -d '.' -f2- | sed 's/.html//'`
-	mv pylint_global.html pylint_relkit.${X}_global.html
+	X=`ls pylint_rtk* | cut -d '.' -f2- | sed 's/.html//'`
+	mv pylint_global.html pylint_rtk.${X}_global.html
 	mv -f *.html $OUTDIR
 
 done
 
-X=`ls $OUTDIR/ | sort | sed 's/.html//' | sed 's/pylint_relkit.//'`
+X=`ls $OUTDIR/ | sort | sed 's/.html//' | sed 's/pylint_rtk.//'`
 
 for HTML in $X;
 do
 	if [ "${HTML}" != "index" ];
 	then
-		mv $OUTDIR/pylint_relkit.${HTML}.html $OUTDIR/${HTML}.html
+		mv $OUTDIR/pylint_rtk.${HTML}.html $OUTDIR/${HTML}.html
 		echo "<a href=\"${HTML}.html\">${HTML}</a><br/>" >> $OUTDIR/index.html
 	fi
 done

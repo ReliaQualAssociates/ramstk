@@ -77,6 +77,10 @@ class RTK:
 
         self.ProgCnx = None
 
+# Import the test data file if we are executing in developer mode.
+        if(len(sys.argv) > 1 and sys.argv[1] == 'devmode'):
+            import testdata as _data
+
 # Read the configuration file.
         _util.read_configuration()
 

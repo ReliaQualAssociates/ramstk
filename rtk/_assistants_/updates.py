@@ -69,7 +69,7 @@ class AssignMTBFResults:
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Survival Analysis Results Assignment Assistant"))
+        self.assistant.set_title(_(u"RelKit Survival Analysis Results Assignment Assistant"))
         self.assistant.connect('apply', self._assign)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
@@ -78,7 +78,7 @@ class AssignMTBFResults:
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit survival analysis result assignment assistant.  It will help you assign the results of the currently selected dataset to the revision and assembly of your selection.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RelKit survival analysis result assignment assistant.  It will help you assign the results of the currently selected dataset to the revision and assembly of your selection.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -103,7 +103,7 @@ class AssignMTBFResults:
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                               gobject.TYPE_INT)
 
-# Load a gtk.ListStore with the results of the query.
+        # Load a gtk.ListStore with the results of the query.
         if(results != '' and n_assemblies > 0):
             for i in range(n_assemblies):
                 model.append(results[i])
@@ -152,6 +152,22 @@ class AssignMTBFResults:
                                       _(u"Select Assembly to Assign Results"))
         self.assistant.set_page_complete(frame, True)
 
+# Create a page to select whether or not to
+        fixed = gtk.Fixed()
+
+        self.optSubAssembly = _widg.make_check_button(_(u"Assign decomposed results to subassemblies"))
+        fixed.put(self.optSubAssembly, 5, 5)
+
+        frame = _widg.make_frame(_label_=_(""))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(fixed)
+
+        self.assistant.append_page(frame)
+        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(frame,
+                                      _(u"Assign SubAssembly Results"))
+        self.assistant.set_page_complete(frame, True)
+
 # Create the page to assign the results.
         fixed = gtk.Fixed()
         _text_ = _(u"Press 'Apply' to assign the results to the selected assembly or 'Cancel' to quit the assistant.")
@@ -183,17 +199,74 @@ class AssignMTBFResults:
         _frll_ = 1.0 / _mtbfll_
         _frul_ = 1.0 / _mtbful_
 
-        query = "UPDATE tbl_system \
-                 SET fld_mtbf_specified=%f, fld_mtbf_lcl=%f, fld_mtbf_ucl=%f, \
-                     fld_failure_rate_specified=%f, fld_failure_rate_lcl=%f, \
-                     fld_failure_rate_ucl=%f, fld_failure_rate_type=3 \
-                 WHERE fld_assembly_id=%d" % \
-                 (_mtbf_, _mtbfll_, _mtbful_, _fr_, _frll_, _frul_,
-                  model.get_value(row, 2))
+        _base_query_ = "UPDATE tbl_system \
+                        SET fld_mtbf_specified=%f, fld_mtbf_lcl=%f, \
+                            fld_mtbf_ucl=%f, fld_failure_rate_specified=%f, \
+                            fld_failure_rate_lcl=%f, fld_failure_rate_ucl=%f, \
+                            fld_failure_rate_type=3, \
+                            fld_mtbf_predicted=%f, \
+                            fld_failure_rate_active=%f, \
+                            fld_failure_rate_predicted=%f \
+                        WHERE fld_assembly_id=%d"
+        _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_, _frll_,
+                                  _frul_, model.get_value(row, 2), _mtbf_,
+                                  _fr_, _fr_)
+        self._app.DB.execute_query(_query_,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+# Create a dictionary to hold the assembly ID of the assemblies for the
+# revision selected to recieve the results.  The key is the noun name of the
+# assembly.
+        _assembly_id_ = {}
+        if(self.optSubAssembly.get_active()):
+            # Find the revision ID of the assembly selected to receive the
+            # results.
+            _query_ = "SELECT fld_revision_id \
+                       FROM tbl_system \
+                       WHERE fld_assembly_id=%d" % model.get_value(row, 2)
+            _revision_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
+            _revision_id_ = _revision_id_[0][0]
+
+            # Retrieve the assembly names and assembly IDs for the selected
+            # revision and load the dictionary.
+            _query_ = "SELECT fld_name, fld_assembly_id \
+                       FROM tbl_system \
+                       WHERE fld_revision_id=%d" % _revision_id_
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
+            for i in range(len(_results_)):
+                _assembly_id_[_results_[i][0]] = _results_[i][1]
+
+            # Loop through the assemblies in the gtk.TreeView holding the
+            # decomposition by assembly results and write the MTBF and
+            # failure intensity results to the database.
+            _model_ = self._app.DATASET.tvwResultsByChildAssembly.get_model()
+            _row_ = _model_.get_iter_root()
+            while _row_ is not None:
+                # Read the assembly ID for the new revision from the dictionary
+                # populated above.
+                _id_ = _assembly_id_[_model_.get_value(_row_, 0)]
+                # Read the remainder of the results.
+                _mtbf_ = _model_.get_value(_row_, 4)
+                _mtbfll_ = _model_.get_value(_row_, 3)
+                _mtbful_ = _model_.get_value(_row_, 5)
+                _fr_ = _model_.get_value(_row_, 7)
+                _frll_ = _model_.get_value(_row_, 6)
+                _frul_ = _model_.get_value(_row_, 8)
+
+                _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_,
+                                          _frll_, _frul_, _id_)
+                self._app.DB.execute_query(_query_,
+                                           None,
+                                           self._app.ProgCnx,
+                                           commit=True)
+
+                _row_ = _model_.iter_next(_row_)
 
 # Load the hardware gtk.TreeView with the new information.
         self._app.HARDWARE.load_tree()

@@ -48,9 +48,9 @@ INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'
 
 CREATE TABLE "tbl_mission_phase" (
     "fld_phase_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_phase_name" VARCHAR(64),
-    "fld_phase_description" BLOB,
-    "fld_phase_time" REAL
+    "fld_phase_name" VARCHAR(64),                       -- Noun name of the mission phase.
+    "fld_phase_description" BLOB,                       -- Description of the mission phase.
+    "fld_phase_time" REAL                               -- Length of mission phase.
 );
 INSERT INTO "tbl_mission_phase" VALUES(0, 'Phase I', 'This is the first phase of a default mission created for all systems.', 0.5);
 INSERT INTO "tbl_mission_phase" VALUES(1, 'Phase II', 'This is the second phase of a default mission created for all systems.', 90.0);
@@ -852,7 +852,7 @@ CREATE TABLE "tbl_dataset" (
     "fld_confidence_type" INTEGER DEFAULT(0),
     "fld_confidence_method" INTEGER DEFAULT(0),
     "fld_fit_method" INTEGER DEFAULT(0),
-    "fld_rel_time" FLOAT DEFAULT(0),
+    "fld_rel_time" FLOAT DEFAULT(0),            -- Maximum failure time for filtering survival data records.
     "fld_num_rel_points" INTEGER DEFAULT(0),
     "fld_num_suspension" INTEGER DEFAULT(0),
     "fld_num_failures" INTEGER DEFAULT(0),
@@ -877,7 +877,9 @@ CREATE TABLE "tbl_dataset" (
     "fld_aic" FLOAT DEFAULT(0),
     "fld_bic" FLOAT DEFAULT(0),
     "fld_mle" FLOAT DEFAULT(0),
-    "fld_start_time" FLOAT DEFAULT(0)
+    "fld_start_time" FLOAT DEFAULT(0),          -- Minimum failure time for filtering survival data records.
+    "fld_start_date" INTEGER DEFAULT(719163),   -- Start date for filtering survival data records.
+    "fld_end_date" INTEGER DEFAULT(719163)      -- End date for filtering survival data records.
 );
 
 CREATE TABLE "tbl_survival_data" (
