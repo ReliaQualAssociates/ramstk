@@ -145,7 +145,6 @@ class Revision:
 
 # Add requirement button.
         button = gtk.ToolButton()
-        button.set_label(_(u"Add Revision"))
         button.set_tooltip_text(_("Adds a new revision to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -156,7 +155,6 @@ class Revision:
 
 # Delete requirement button
         button = gtk.ToolButton()
-        button.set_label(_(u"Delete Revision"))
         button.set_tooltip_text(_("Removes the currently selected revision from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -170,7 +168,6 @@ class Revision:
 
 # Calculate requirement button
         button = gtk.ToolButton()
-        button.set_label(_(u"Calculate Revision"))
         button.set_tooltip_text(_("Calculate the currently selected revision."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
@@ -184,8 +181,7 @@ class Revision:
 
 # Save requirement button.
         button = gtk.ToolButton()
-        button.set_label(_(u"Save Revision"))
-        button.set_tooltip_text(_("Saves revision changes to the RTK Program Database."))
+        button.set_tooltip_text(_("Saves the currently selected revision to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)

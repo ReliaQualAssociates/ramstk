@@ -209,8 +209,8 @@ class AssignMTBFResults:
                             fld_failure_rate_predicted=%f \
                         WHERE fld_assembly_id=%d"
         _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_, _frll_,
-                                  _frul_, model.get_value(row, 2), _mtbf_,
-                                  _fr_, _fr_)
+                                  _frul_, _mtbf_, _fr_, _fr_,
+                                  model.get_value(row, 2))
         self._app.DB.execute_query(_query_,
                                    None,
                                    self._app.ProgCnx,
@@ -260,7 +260,8 @@ class AssignMTBFResults:
                 _frul_ = _model_.get_value(_row_, 8)
 
                 _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_,
-                                          _frll_, _frul_, _id_)
+                                          _frll_, _frul_, _mtbf_, _fr_, _fr_,
+                                          _id_)
                 self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,

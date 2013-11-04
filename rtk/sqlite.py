@@ -83,7 +83,6 @@ class SQLite3Interface:
                 try:
                     results = cur.fetchall()
                 except sqlite3.Error, e:
-                    self._app.debug_log.error("sqlite.py: An error occurred:")
                     self._app.debug_log.error(e)
                     results = False
             else:
@@ -91,12 +90,10 @@ class SQLite3Interface:
                     cnx.commit()
                     results = True
                 except sqlite3.Error, e:
-                    self._app.debug_log.error("sqlite.py: An error occurred:")
                     self._app.debug_log.error(e)
                     results = False
 
         except sqlite3.Error, e:
-            self._app.debug_log.error("sqlite.py: An error occurred:")
             self._app.debug_log.error(e)
             results = False
 

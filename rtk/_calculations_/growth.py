@@ -53,6 +53,8 @@ except ImportError:
 # Import mathematical functions.
 import numpy as np
 from math import ceil, exp, floor, log, sqrt
+from scipy.stats import chi2, norm, t
+from scipy.optimize import fsolve
 
 # Import other RTK modules.
 import configuration as _conf
@@ -276,14 +278,17 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         _logM_ += log(_M_)
         _logTlogM_ += log(_T_) * log(_M_)
 
-# Calculate the Duane parameters.
+# Calculate the Power Law parameters.
         if(_fitmeth_ == 1):             # MLE
             try:
                 _beta_hat_ = _n_ / (_n_ * log(_T_star_) - _logT_)
             except ZeroDivisionError:
                 _beta_hat_ = 1.0
             _alpha_hat_ = 1.0 - _beta_hat_
-            _lambda_hat_ = _n_ / _T_**_beta_hat_
+            try:
+                _lambda_hat_ = _n_ / _T_**_beta_hat_
+            except OverflowError:
+                _lambda_hat_ = _n_ / _T_
             _b_hat_ = 1.0 / _lambda_hat_
 
         elif(_fitmeth_ == 2):           # Regression
@@ -298,7 +303,10 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         _mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
 
 # Calculate the cumulative and instantaneous failure intensity.
-        _lc_hat_ = (1.0 / _b_hat_) * _T_**-_alpha_hat_
+        try:
+            _lc_hat_ = (1.0 / _b_hat_) * _T_**-_alpha_hat_
+        except OverflowError:
+            _lc_hat_ = (1.0 / _b_hat_) * _T_
         _li_hat_ = (1.0 - _alpha_hat_) * _lc_hat_
 
 # Calculate bounds on the Duane parameters.
@@ -307,17 +315,30 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         else:
             _critical_value_t_ = 0.0
 
-        _SSE_ += (log(_mc_hat_) - log(_M_))**2.0
+        try:
+            _SSE_ += (log(_mc_hat_) - log(_M_))**2.0
+        except ValueError:
+            _SSE_ += (log(_M_))**2.0
+
         try:
             _sigma2_ = _SSE_ / (_n_ - 2.0)
-            _Sxx_ = _logT2_ - (_logT_**2.0 / _n_)
-            _se_alpha_ = sqrt(_sigma2_) / sqrt(_Sxx_)
-            _se_b_ = sqrt(_sigma2_) * sqrt(_logT2_ / (_n_ * _Sxx_))
         except ZeroDivisionError:
             _sigma2_ = 1.0
+
+        try:
+            _Sxx_ = _logT2_ - (_logT_**2.0 / _n_)
+        except ZeroDivisionError:
             _Sxx_ = 1.0
-            _se_alpha_ = 1.0
-            _se_b_ = 1.0
+
+        try:
+            _se_alpha_ = sqrt(_sigma2_) / sqrt(_Sxx_)
+        except ZeroDivisionError:
+            _se_alpha_ = 0.0
+
+        try:
+            _se_b_ = sqrt(_sigma2_) * sqrt(_logT2_ / (_n_ * _Sxx_))
+        except ZeroDivisionError:
+            _se_b_ = 0.0
 
         _alpha_lower_ = _alpha_hat_ - _critical_value_t_ * _se_alpha_
         _alpha_upper_ = _alpha_hat_ + _critical_value_t_ * _se_alpha_
@@ -333,10 +354,25 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         _mi_upper_ = _mc_upper_ / (1.0 - _alpha_hat_)
 
 # Calculate bounds on the failure intensity.
-        _lc_lower_ = 1.0 / _mc_upper_
-        _lc_upper_ = 1.0 / _mc_lower_
-        _li_lower_ = 1.0 / _mi_upper_
-        _li_upper_ = 1.0 / _mi_lower_
+        try:
+            _lc_lower_ = 1.0 / _mc_upper_
+        except ZeroDivisionError:
+            _lc_lower_ = _lc_hat_
+
+        try:
+            _lc_upper_ = 1.0 / _mc_lower_
+        except ZeroDivisionError:
+            _lc_upper_ = _lc_hat_
+
+        try:
+            _li_lower_ = 1.0 / _mi_upper_
+        except ZeroDivisionError:
+            _li_lower_ = _li_hat_
+
+        try:
+            _li_upper_ = 1.0 / _mi_lower_
+        except ZeroDivisionError:
+            _li_upper_ = _li_hat_
 
         _power_law_.append([_T_, _n_, _M_,
                             _alpha_lower_, _alpha_hat_, _alpha_upper_,
@@ -347,6 +383,86 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
                             _li_lower_, _li_hat_, _li_upper_])
 
     return(_power_law_)
+
+
+def loglinear(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
+    """
+    Function to estimate the parameters (gamma0 and gamma1) of the NHPP
+    loglinear model.
+
+    Keyword Arguments:
+    _F_       -- list of failure counts.
+    _X_       -- list of individual failures times.
+    _fitmeth_ -- method used to fit the data (1=MLE, 2=regression).
+    _type_    -- the confidence level type
+                 (1=lower one-sided, 2=upper one-sided, 3=two-sided).
+    _conf_    -- the confidence level.
+    _T_star_  -- the end of the observation period for time terminated, or
+                 Type I, tests.
+    """
+
+# Initialize variables.
+    _n_ = 0.0
+    _T_ = 0.0
+    _M_ = 0.0
+    _SSE_ = 0.0
+
+    _typeii_ = False
+
+    _loglinear_ = []
+
+    _z_norm_ = norm.ppf(_conf_)
+
+# Define the function that will be set equal to zero and solved for gamma1.
+    def _gamma1(_g1_, _Tj_, _r_, _Ta_):
+        """ Function for estimating the gamma1 value. """
+
+        # Calculate interim values.
+        a = _r_ / _g1_
+        b = _r_ * _Ta_ * exp(_g1_ * _Ta_)
+        c = exp(_g1_ * _Ta_) - 1.0
+
+        return(_Tj_ + a - (b / c))
+
+# If no observation time was passed, use the maximum failure time and set the
+# _typeii_ variable True to indicate this is a failure truncated dataset.
+    if(_T_star_ == 0.0):
+        _T_star_ = sum(_X_)
+        _typeii_ = True
+
+    if(not _typeii_):
+        _N_ = len(_X_) - 1
+    else:
+        _N_ = len(_X_) - 2
+
+    for i in range(len(_X_)):
+
+# Increment the total number of failures and the total time on test then
+# calculate the cumulative MTBF.
+        _n_ += float(_F_[i])
+        _T_ += float(_X_[i])
+        _M_ = _T_ / _n_
+
+# Calculate the Loglinear parameters.  There is no regression function for
+# for this model.
+        g1 = fsolve(_gamma1, 0.000001, args=(_T_, _n_, _T_star_))[0]
+        g0 = log((_n_ * g1) / (exp(g1 * _T_star_) - 1.0))
+
+# Calculate the cumulative and instantaneous failure intensity.
+        _lc_hat_ = exp(g0 + g1 * _T_)
+        #_li_hat_ = (1.0 - _alpha_hat_) * _lc_hat_
+
+# Calculate the cumulative and instantaneous MTBF from the model.
+        try:
+            _mc_hat_ = 1.0 / _lc_hat_
+        except ZeroDivisionError:
+            print g0, g1, _T_
+        #_mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
+
+        _loglinear_.append([_T_, _n_, _M_, g0, g1, _mc_hat_, _lc_hat_])
+
+    #print _loglinear_
+    return False
 
 
 def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):

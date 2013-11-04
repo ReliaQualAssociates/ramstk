@@ -109,17 +109,17 @@ class Assembly:
 
     _al_header_labels = [_("Revision ID"), _("Assembly ID"),
                          _("Description"), _("Included?"),
-                         _("Number of Sub-Systems"),
-                         _("Number of Sub-Elements"),
-                         _("Operating Time"), _("Duty Cycle"),
-                         _("Intricacy (1-10)"), _("State of the Art (1-10)"),
-                         _("Operating Time (1-10)"), _("Environment (1-10)"),
-                         _("Weighting Factor"), _("Percent Weighting Factor"),
-                         _("Current Failure Rate"),
-                         _("Allocated Failure Rate"),
-                         _("Current MTBF"), _("Allocated MTBF"),
-                         _("Current Reliability"), _("Allocated Reliability"),
-                         _("Current Availability"), _("Allocated Availability")]
+                         _("Number of\nSub-Systems"),
+                         _("Number of\nSub-Elements"),
+                         _("Operating\nTime"), _("Duty Cycle"),
+                         _("Intricacy\n(1-10)"), _("State of\nthe Art\n(1-10)"),
+                         _("Operating\nTime (1-10)"), _("Environment\n(1-10)"),
+                         _("Weighting\nFactor"), _("Percent\nWeighting\nFactor"),
+                         _("Current\nFailure\nRate"),
+                         _("Allocated\nFailure\nRate"),
+                         _("Current\nMTBF"), _("Allocated\nMTBF"),
+                         _("Current\nReliability"), _("Allocated\nReliability"),
+                         _("Current\nAvailability"), _("Allocated\nAvailability")]
 
     _ft_tab_labels = [[_("Incident ID:"), _("Incident Date:"),
                        _("Reported By:"), _("Category:"),
@@ -185,6 +185,8 @@ class Assembly:
 # Define local dictionary variables.
         self._mission = {}
         self._mission_phase = {}
+        self._assembly_risks_ = {}          # Carries risk matrix values for the assembly.
+        self._system_risks_ = {}          # Carries risk matrix values for the system.
         self._hrmodel = {}
         self._fmeca = {}
         self._mechanisms = {}
@@ -286,6 +288,7 @@ class Assembly:
 # Create the Risk Analysis tab widgets for the ASSEMBLY object.
         self.fraRiskAnalysis = _widg.make_frame()
         self.tvwRisk = gtk.TreeView()
+        self.tvwRiskMap = gtk.TreeView()
         if self._risk_analysis_widgets_create():
             self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
         if self._risk_analysis_tab_create():
@@ -548,7 +551,6 @@ class Assembly:
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnFMECAAdd.set_icon_widget(image)
-        self.btnFMECAAdd.set_label(_(u"Add"))
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_(u"Mode"))
         menu_item.set_tooltip_text(_("Add a new failure mode to the currently selected assembly."))
@@ -988,9 +990,9 @@ class Assembly:
 
             label = gtk.Label(column.get_title())
             label.set_line_wrap(True)
-            label.set_alignment(xalign=0.5, yalign=0.5)
             text = "<span weight='bold'>%s</span>" % self._al_header_labels[i]
             label.set_markup(text)
+            label.set_alignment(xalign=0.5, yalign=0.5)
             label.show_all()
             column.set_widget(label)
 
@@ -998,7 +1000,7 @@ class Assembly:
 
         self.tvwAllocation.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
-        # Widgets to display allocation inputs and methods.
+# Widgets to display allocation inputs and methods.
         types = [[_("Reliability"), 0], [_("MTTF/MTBF"), 1],
                  [_("Failure Intensity"), 2]]
         _widg.load_combo(self.cmbRqmtType, types)
@@ -1270,13 +1272,23 @@ class Assembly:
         gobject_types = [gobject.type_from_name(types[ix])
             for ix in range(len(types))]
 
-        for i in range(8):
-            gobject_types.append(gobject.type_from_name('gint'))
+        query = "SELECT fld_category, \
+                        fld_subcategory \
+                 FROM tbl_hazards"
+        _hazard_ = self._app.COMDB.execute_query(query,
+                                                 None,
+                                                 self._app.ComCnx)
 
-        query = "SELECT fld_category_noun, \
-                        fld_category_value \
-                 FROM tbl_risk_category"
-        risk_category = self._app.COMDB.execute_query(query,
+        _query_ = "SELECT fld_criticality_name, fld_criticality_value \
+                   FROM tbl_criticality \
+                   ORDER BY fld_criticality_value DESC"
+        _severity_ = self._app.COMDB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ComCnx)
+
+        _query_ = "SELECT fld_probability_name, fld_probability_value \
+                   FROM tbl_failure_probability"
+        _probability_ = self._app.COMDB.execute_query(_query_,
                                                       None,
                                                       self._app.ComCnx)
 
@@ -1294,12 +1306,18 @@ class Assembly:
 
             if(widget[i].text == 'combo'):
                 cell = gtk.CellRendererCombo()
-                cellmodel = gtk.ListStore(gobject.TYPE_STRING,
-                                          gobject.TYPE_INT)
+                cellmodel = gtk.ListStore(gobject.TYPE_STRING)
 
-                cellmodel.append([_(u"None"), 0])
-                for j in range(len(risk_category)):
-                    cellmodel.append(risk_category[j])
+                cellmodel.append([_(u"None")])
+                if(i == 3):
+                    for j in range(len(_hazard_)):
+                        cellmodel.append([_hazard_[j][0] + ", " + _hazard_[j][1]])
+                elif(i == 6 or i == 9):
+                    for j in range(len(_severity_)):
+                        cellmodel.append([_severity_[j][0]])
+                elif(i == 7 or i == 10):
+                    for j in range(len(_probability_)):
+                        cellmodel.append([_probability_[j][0]])
 
                 cell.set_property('has-entry', False)
                 cell.set_property('model', cellmodel)
@@ -1352,18 +1370,115 @@ class Assembly:
 
             self.tvwRisk.append_column(column)
 
-# Add eight more invisible columns at the end to hold the integer values of
-# the risk categories.
-        for i in range(7):
-            cell = gtk.CellRendererText()
-            column = gtk.TreeViewColumn()
-            column.set_visible(0)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=cols + i)
-            self.tvwRisk.append_column(column)
-
         self.tvwRisk.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
         self.tvwRisk.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+# Create the Risk Matrix gtk.TreeView.
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_STRING)
+        self.tvwRiskMap.set_model(model)
+
+        label = gtk.Label()
+        label.set_line_wrap(True)
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        _text_ = u"\t\tProbability\nSeverity"
+        label.set_markup("<span weight='bold'>" + _text_ + "</span>")
+        label.set_use_markup(True)
+        label.show_all()
+
+        column = gtk.TreeViewColumn()
+        column.set_widget(label)
+        column.set_visible(True)
+        cell = gtk.CellRendererText()       # Severity noun name.
+        cell.set_property('visible', True)
+        cell.set_property('editable', False)
+        cell.set_property('background', 'gray')
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        cell = gtk.CellRendererText()       # Severity multiplier.
+        cell.set_property('visible', False)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=1)
+        self.tvwRiskMap.append_column(column)
+
+        _width_ = int(column.get_property('width'))
+
+        j = 2
+        _prob_ = []
+        for i in range(len(_probability_)):
+            label = gtk.Label()
+            label.set_line_wrap(True)
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            _text_ = _probability_[i][0]
+            _text_ = _text_.replace(" ", "\n")
+            label.set_markup("<span weight='bold'>" + _text_ + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+
+            column = gtk.TreeViewColumn()
+            column.set_widget(label)
+            column.set_visible(True)
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            cell = gtk.CellRendererText()       # Quantity of hazards in cell.
+            cell.set_property('visible', True)
+            cell.set_property('xalign', 0.5)
+            cell.set_property('yalign', 0.5)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=j, background=j+2)
+            cell = gtk.CellRendererText()       # Frequency multiplier.
+            cell.set_property('visible', False)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=j+1)
+            cell = gtk.CellRendererText()       # Cell background color.
+            cell.set_property('visible', False)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=j+2)
+            self.tvwRiskMap.append_column(column)
+
+            j += 3
+
+        column = gtk.TreeViewColumn()
+        column.set_visible(True)
+        self.tvwRiskMap.append_column(column)
+
+        for i in range(len(_severity_)):
+            self._assembly_risks_[_severity_[i][0]] = [_severity_[i][1]]
+            self._system_risks_[_severity_[i][0]] = [_severity_[i][1]]
+            _data_ = [_severity_[i][0], self._assembly_risks_[_severity_[i][0]][0]]
+            _prob_ = {}
+            for j in range(len(_probability_)):
+                _risk_ = _severity_[i][1] * _probability_[j][1]
+                if(_risk_ <= _conf.RTK_RISK_POINTS[0]):
+                    _color_ = '#90EE90' # Green
+                elif(_risk_ > _conf.RTK_RISK_POINTS[0] and
+                     _risk_ <= _conf.RTK_RISK_POINTS[1]):
+                    _color_ = '#FFFF79' # Yellow
+                else:
+                    _color_ = '#FFC0CB' # Red
+
+                _prob_[_probability_[j][0]] = [0, _probability_[j][1], _color_]
+                _data_.append(0)
+                _data_.append(_probability_[j][1])
+                _data_.append(_color_)
+
+            self._assembly_risks_[_severity_[i][0]].append(_prob_)
+            self._system_risks_[_severity_[i][0]].append(_prob_)
+            model.append(_data_)
+
+        self.tvwRiskMap.set_size_request(575, -1)
+        self.tvwRiskMap.set_tooltip_text(_(u"Displays the risk matrix for the selected Assembly."))
+        self.tvwRiskMap.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         return False
 
@@ -1373,22 +1488,37 @@ class Assembly:
         populate it with the appropriate widgets.
         """
 
+        hpaned = gtk.HPaned()
+
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwRisk)
 
-        self.fraRiskAnalysis.set_shadow_type(gtk.SHADOW_NONE)
-        self.fraRiskAnalysis.add(scrollwindow)
+        frame = _widg.make_frame()
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        hpaned.pack1(frame, resize=True, shrink=False)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add(self.tvwRiskMap)
+
+        frame = _widg.make_frame()
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        hpaned.pack2(frame, resize=False, shrink=True)
 
         label = gtk.Label()
-        _heading = _(u"Risk\nAnalysis")
+        _heading = _(u"Hazard\nAnalysis")
         label.set_markup("<span weight='bold'>" + _heading + "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
+        label.set_tooltip_text(_(u"Displays the hazards analysis for the selected Assembly."))
 
-        self.notebook.insert_page(self.fraRiskAnalysis,
+        self.notebook.insert_page(hpaned,
                                   tab_label=label,
                                   position=-1)
 
@@ -1403,68 +1533,101 @@ class Assembly:
         if self._app.HARDWARE.selected_row is not None:
             model = self._app.HARDWARE.model
             row = self._app.HARDWARE.selected_row
-            path_ = model.get_string_from_iter(row)
+            _path_ = model.get_string_from_iter(row)
 
         if(_conf.RTK_MODULES[0] == 1):
-            _values = (self._app.REVISION.revision_id, path_)
+            _values_ = (self._app.REVISION.revision_id, _path_)
         else:
-            _values = (0, path_)
+            _values_ = (0, _path_)
 
-        query = "SELECT t1.fld_risk_id, t2.fld_name, \
-                        t2.fld_failure_rate_predicted, \
-                        t1.fld_change_desc_1, t1.fld_change_category_1, \
-                        t1.fld_change_effort_1, t1.fld_change_cost_1, \
-                        t1.fld_change_desc_2, t1.fld_change_category_2, \
-                        t1.fld_change_effort_2, t1.fld_change_cost_2, \
-                        t1.fld_change_desc_3, t1.fld_change_category_3, \
-                        t1.fld_change_effort_3, t1.fld_change_cost_3, \
-                        t1.fld_change_desc_4, t1.fld_change_category_4, \
-                        t1.fld_change_effort_4, t1.fld_change_cost_4, \
-                        t1.fld_change_desc_5, t1.fld_change_category_5, \
-                        t1.fld_change_effort_5, t1.fld_change_cost_5, \
-                        t1.fld_change_desc_6, t1.fld_change_category_6, \
-                        t1.fld_change_effort_6, t1.fld_change_cost_6, \
-                        t1.fld_change_desc_7, t1.fld_change_category_7, \
-                        t1.fld_change_effort_7, t1.fld_change_cost_7, \
-                        t1.fld_change_desc_8, t1.fld_change_category_8, \
-                        t1.fld_change_effort_8, t1.fld_change_cost_8, \
-                        t1.fld_function_1, t1.fld_function_2, \
-                        t1.fld_function_3, t1.fld_function_4, \
-                        t1.fld_function_5, \
-                        t1.fld_result_1, t1.fld_result_2, t1.fld_result_3, \
-                        t1.fld_result_4, t1.fld_result_5, \
-                        t1.fld_user_blob_1, t1.fld_user_blob_2, \
-                        t1.fld_user_blob_3, t1.fld_user_float_1, \
-                        t1.fld_user_float_2, t1.fld_user_float_3, \
-                        t1.fld_user_int_1, t1.fld_user_int_2, \
-                        t1.fld_user_int_3, \
-                        t1.fld_category_value_1, t1.fld_category_value_2, \
-                        t1.fld_category_value_3, t1.fld_category_value_4, \
-                        t1.fld_category_value_5, t1.fld_category_value_6, \
-                        t1.fld_category_value_7, t1.fld_category_value_8 \
-                 FROM tbl_risk_analysis AS t1 \
-                 INNER JOIN tbl_system AS t2 \
-                 ON t2.fld_assembly_id=t1.fld_assembly_id \
-                 WHERE t1.fld_revision_id=%d \
-                 AND t2.fld_parent_assembly='%s'" % _values
+        _query_ = "SELECT t1.fld_risk_id, t2.fld_name, \
+                          t2.fld_failure_rate_predicted, \
+                          t1.fld_potential_hazard, t1.fld_potential_cause, \
+                          t1.fld_assembly_effect, t1.fld_assembly_severity, \
+                          t1.fld_assembly_probability, t1.fld_system_effect, \
+                          t1.fld_system_severity, t1.fld_system_probability, \
+                          t1.fld_mitigation_strategy, t1.fld_remarks, \
+                          t1.fld_assembly_init_hri, \
+                          t1.fld_assembly_current_hri, t1.fld_system_init_hri, \
+                          t1.fld_system_current_hri, \
+                          t1.fld_function_1, t1.fld_function_2, \
+                          t1.fld_function_3, t1.fld_function_4, \
+                          t1.fld_function_5, \
+                          t1.fld_result_1, t1.fld_result_2, t1.fld_result_3, \
+                          t1.fld_result_4, t1.fld_result_5, \
+                          t1.fld_user_blob_1, t1.fld_user_blob_2, \
+                          t1.fld_user_blob_3, t1.fld_user_float_1, \
+                          t1.fld_user_float_2, t1.fld_user_float_3, \
+                          t1.fld_user_int_1, t1.fld_user_int_2, \
+                          t1.fld_user_int_3 \
+                   FROM tbl_risk_analysis AS t1 \
+                   INNER JOIN tbl_system AS t2 \
+                   ON t2.fld_assembly_id=t1.fld_assembly_id \
+                   WHERE t1.fld_revision_id=%d \
+                   AND t2.fld_parent_assembly='%s'" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+        if(not _results_ or len(_results_) == 0):
+            _query_ = "SELECT t1.fld_risk_id, t2.fld_name, \
+                              t2.fld_failure_rate_predicted, \
+                              t1.fld_potential_hazard, t1.fld_potential_cause, \
+                              t1.fld_assembly_effect, t1.fld_assembly_severity, \
+                              t1.fld_assembly_probability, t1.fld_system_effect, \
+                              t1.fld_system_severity, t1.fld_system_probability, \
+                              t1.fld_mitigation_strategy, t1.fld_remarks, \
+                              t1.fld_assembly_init_hri, \
+                              t1.fld_assembly_current_hri, t1.fld_system_init_hri, \
+                              t1.fld_system_current_hri, \
+                              t1.fld_function_1, t1.fld_function_2, \
+                              t1.fld_function_3, t1.fld_function_4, \
+                              t1.fld_function_5, \
+                              t1.fld_result_1, t1.fld_result_2, \
+                              t1.fld_result_3, t1.fld_result_4, \
+                              t1.fld_result_5, t1.fld_user_blob_1, \
+                              t1.fld_user_blob_2, t1.fld_user_blob_3, \
+                              t1.fld_user_float_1, t1.fld_user_float_2, \
+                              t1.fld_user_float_3, t1.fld_user_int_1, \
+                              t1.fld_user_int_2, t1.fld_user_int_3 \
+                       FROM tbl_risk_analysis AS t1 \
+                       INNER JOIN tbl_system AS t2 \
+                       ON t2.fld_assembly_id=t1.fld_assembly_id \
+                       WHERE t1.fld_revision_id=%d \
+                       AND t1.fld_assembly_id=%d" % \
+                       (self._app.REVISION.revision_id, self.assembly_id)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
+
+        if(not _results_ or len(_results_) == 0):
+            return True
 
         model = self.tvwRisk.get_model()
         model.clear()
 
-        if not results:
-            return True
-
-        n_assemblies = len(results)
-
+        n_assemblies = len(_results_)
         for i in range(n_assemblies):
             try:
-                row = model.append(None, results[i])
+                row = model.append(None, _results_[i])
             except TypeError:
                 pass
+
+# Load the risk matrix.
+        _query_ = "SELECT fld_severity_id, fld_probability_id, \
+                          fld_hazard_count \
+                   FROM tbl_risk_matrix \
+                   WHERE fld_revision_id=%d \
+                   AND fld_assembly_id=%d" % \
+                   (self._app.REVISION.revision_id, self.assembly_id)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+        #print _results_
+        model = self.tvwRiskMap.get_model()
+
+        #for i in range(len(_results_)):
+         #   model.set(row, _results_[i][2])
 
         return False
 
@@ -2739,8 +2902,9 @@ class Assembly:
             # Load the FMECA dictionary with the data.
             self._fmeca[_results[i][self._FMECA_col_order[0]]] = data[1:25]
 
-# Load the failure consequences to the FMECA disctionary.
-        query = "SELECT * FROM tbl_failure_consequences"
+# Load the failure consequences to the FMECA dictionary.
+        query = "SELECT * FROM tbl_failure_consequences \
+                 WHERE fld_assembly_id=%d" % self.assembly_id
         _results = self._app.DB.execute_query(query,
                                               None,
                                               self._app.ProgCnx)
@@ -3184,6 +3348,18 @@ class Assembly:
                 self._app.debug_log.error("assembly.py: Failed to add new assembly to risk analysis table.")
                 return True
 
+            _query_ = "INSERT INTO tbl_risk_matrix \
+                       (fld_revision_id, fld_assembly_id) \
+                       VALUES(%d, %d)" % _values
+            results = self._app.DB.execute_query(_query_,
+                                                 None,
+                                                 self._app.ProgCnx,
+                                                 commit=True)
+
+            if not results:
+                self._app.debug_log.error("assembly.py: Failed to add new assembly to risk matrix table.")
+                return True
+
             query = "INSERT INTO tbl_similar_item \
                      (fld_revision_id, fld_assembly_id) \
                      VALUES (%d, %d)" % _values
@@ -3286,6 +3462,18 @@ class Assembly:
             self._app.debug_log.error("assembly.py: Failed to delete assembly from risk analysis table.")
             return True
 
+        _query_ = "DELETE FROM tbl_risk_matrix \
+                   WHERE fld_revision_id=%d \
+                   AND fld_assembly_id=%d" % _values
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+
+        if not _results_:
+            self._app.debug_log.error("assembly.py: Failed to delete assembly from risk matrix table.")
+            return True
+
         query = "DELETE FROM tbl_similar_item \
                  WHERE fld_revision_id=%d \
                  AND fld_assembly_id=%d" % _values
@@ -3334,6 +3522,7 @@ class Assembly:
 
         self._general_data_tab_load()
         self._allocation_tab_load()
+        self._risk_analysis_tab_load()
         self._similar_item_tab_load()
         self._assessment_inputs_tab_load()
         self.assessment_results_tab_load()
@@ -3553,105 +3742,140 @@ class Assembly:
     def _calculate_risk(self):
         """ Calculates the Assembly Object risk analysis. """
 
+# Get the list of failure probability names.
+        _columns_ = self.tvwRiskMap.get_columns()
+        _probs_ = []
+        for i in range(len(_columns_)):
+            try:
+                _text_ = _columns_[i].get_widget().get_text()
+                _text_ = _text_.replace('\t', '')
+                _text_ = _text_.replace('\n', ' ')
+                _probs_.append([_text_, 0])
+            except AttributeError:
+                pass
+
+# Get the count of hazard criticality and hazard probability combinations for
+# assembly level effects and system level effects.
         model = self.tvwRisk.get_model()
         row = model.get_iter_first()
-
         while row is not None:
-            risk = {}
+            _assembly_crit_ = model.get_value(row, 6)
+            _assembly_prob_ = model.get_value(row, 7)
+            _system_crit_ = model.get_value(row, 9)
+            _system_prob_ = model.get_value(row, 10)
 
-# Get the system failure intensity.
-            system_row = self.system_model.get_iter_root()
-            risk['hr_sys'] = self.system_model.get_value(system_row, 32)
+            _probs_[_assembly_prob_] += 1
+
+#{'Severity Name': [Severity Value, {'Probability Name': [Count, P Value, Cell Color]}
+            self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][0] += 1
+            self._system_risks_[_system_crit_][1][_system_prob_][0] += 1
+
+# Calculate the hazard risk index (HRI) for the assembly and the system.
+            _c_ = self._assembly_risks_[_assembly_crit_][0]
+            _p_ = self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][1]
+            _assembly_hri_ = _c_ * _p_
+
+            _c_ = self._system_risks_[_system_crit_][0]
+            _p_ = self._system_risks_[_system_crit_][1][_system_prob_][1]
+            _system_hri_ = _c_ * _p_
+
+            model.set_value(row, 13, _assembly_hri_)
+            model.set_value(row, 15, _system_hri_)
+
+            row = model.iter_next(row)
+
+# Update the counts in the risk matrix gtk.TreeView().
+        model = self.tvwRiskMap.get_model()
+        row = model.get_iter_first()
+        while row is not None:
+            _crit_ = model.get_value(row, 0)
+            j = 2
+            for i in range(len(_probs_)):
+                try:
+                    _count_ = self._assembly_risks_[_crit_][1][_probs_[i]][0]
+                    model.set_value(row, j, _count_)
+                    j += 3
+                except KeyError:
+                    pass
+
+            row = model.iter_next(row)
+
+# Perform user-defined calculations.
+        model = self.tvwRisk.get_model()
+        row = model.get_iter_first()
+        _calculations_ = {}
+        while row is not None:
+            #_calculations_['hr_sys'] = model.get_value(row, 2)
 
 # Get the assembly failure intensity.
-            risk['hr'] = model.get_value(row, 2)
-
-# Get the change category values.
-            risk['cat1'] = model.get_value(row, 54)
-            risk['cat2'] = model.get_value(row, 55)
-            risk['cat3'] = model.get_value(row, 56)
-            risk['cat4'] = model.get_value(row, 57)
-            risk['cat5'] = model.get_value(row, 58)
-            risk['cat6'] = model.get_value(row, 59)
-            risk['cat7'] = model.get_value(row, 60)
-            risk['cat8'] = model.get_value(row, 61)
-
-# Get the change cost values.
-            risk['cost1'] = float(model.get_value(row, 6))
-            risk['cost2'] = float(model.get_value(row, 10))
-            risk['cost3'] = float(model.get_value(row, 14))
-            risk['cost4'] = float(model.get_value(row, 18))
-            risk['cost5'] = float(model.get_value(row, 22))
-            risk['cost6'] = float(model.get_value(row, 26))
-            risk['cost7'] = float(model.get_value(row, 30))
-            risk['cost8'] = float(model.get_value(row, 34))
+            _calculations_['hr'] = model.get_value(row, 2)
 
 # Get the user-defined float and integer values.
-            risk['uf1'] = float(model.get_value(row, 48))
-            risk['uf2'] = float(model.get_value(row, 49))
-            risk['uf3'] = float(model.get_value(row, 50))
-            risk['ui1'] = float(model.get_value(row, 51))
-            risk['ui2'] = float(model.get_value(row, 52))
-            risk['ui3'] = float(model.get_value(row, 53))
+            _calculations_['uf1'] = float(model.get_value(row, 30))
+            _calculations_['uf2'] = float(model.get_value(row, 31))
+            _calculations_['uf3'] = float(model.get_value(row, 32))
+            _calculations_['ui1'] = float(model.get_value(row, 33))
+            _calculations_['ui2'] = float(model.get_value(row, 34))
+            _calculations_['ui3'] = float(model.get_value(row, 35))
 
 # Get the user-defined functions.
-            risk['equation1'] = model.get_value(row, 35)
-            risk['equation2'] = model.get_value(row, 36)
-            risk['equation3'] = model.get_value(row, 37)
-            risk['equation4'] = model.get_value(row, 38)
-            risk['equation5'] = model.get_value(row, 39)
+            _calculations_['equation1'] = model.get_value(row, 17)
+            _calculations_['equation2'] = model.get_value(row, 18)
+            _calculations_['equation3'] = model.get_value(row, 19)
+            _calculations_['equation4'] = model.get_value(row, 20)
+            _calculations_['equation5'] = model.get_value(row, 21)
 
 # Get the existing results.  This allows the use of the results fields to be
 # manually set to a float values by the user.  Essentially creating five more
 # user-defined float values.
-            risk['res1'] = model.get_value(row, 40)
-            risk['res2'] = model.get_value(row, 41)
-            risk['res3'] = model.get_value(row, 42)
-            risk['res4'] = model.get_value(row, 43)
-            risk['res5'] = model.get_value(row, 44)
+            _calculations_['res1'] = model.get_value(row, 22)
+            _calculations_['res2'] = model.get_value(row, 23)
+            _calculations_['res3'] = model.get_value(row, 24)
+            _calculations_['res4'] = model.get_value(row, 25)
+            _calculations_['res5'] = model.get_value(row, 26)
 
-            keys = risk.keys()
-            values = risk.values()
+            keys = _calculations_.keys()
+            values = _calculations_.values()
 
             for i in range(len(keys)):
                 vars()[keys[i]] = values[i]
 
 # If the system failure intensity is greater than zero, perform the remaining
 # risk calculations.  If not, notify the user and exit this function.
-            if(risk['hr_sys'] <= 0.0):
-                _util.application_error(_(u"The System failure intensity is 0.  This will likely cause erroneous results if used in calculations.  You should specify or calculate the System failure intensity before executing risk analysis calculations."))
-                return True
+            #if(_calculations_['hr_sys'] <= 0.0):
+            #    _util.application_error(_(u"The System failure intensity is 0.  This will likely cause erroneous results if used in calculations.  You should specify or calculate the System failure intensity before executing risk analysis calculations."))
+            #    return True
 
             try:
-                results1 = eval(risk['equation1'])
+                results1 = eval(_calculations_['equation1'])
             except SyntaxError:
-                results1 = risk['res1']
+                results1 = _calculations_['res1']
 
             try:
-                results2 = eval(risk['equation2'])
+                results2 = eval(_calculations_['equation2'])
             except SyntaxError:
-                results2 = risk['res2']
+                results2 = _calculations_['res2']
 
             try:
-                results3 = eval(risk['equation3'])
+                results3 = eval(_calculations_['equation3'])
             except SyntaxError:
-                results3 = risk['res3']
+                results3 = _calculations_['res3']
 
             try:
-                results4 = eval(risk['equation4'])
+                results4 = eval(_calculations_['equation4'])
             except SyntaxError:
-                results4 = risk['res4']
+                results4 = _calculations_['res4']
 
             try:
-                results5 = eval(risk['equation5'])
+                results5 = eval(_calculations_['equation5'])
             except SyntaxError:
-                results5 = risk['res5']
+                results5 = _calculations_['res5']
 
-            model.set_value(row, 40, results1)
-            model.set_value(row, 41, results2)
-            model.set_value(row, 42, results3)
-            model.set_value(row, 43, results4)
-            model.set_value(row, 44, results5)
+            model.set_value(row, 22, results1)
+            model.set_value(row, 23, results2)
+            model.set_value(row, 24, results3)
+            model.set_value(row, 25, results4)
+            model.set_value(row, 26, results5)
 
             row = model.iter_next(row)
 
@@ -4144,17 +4368,17 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         if(_conf.BACKEND == 'mysql'):
-            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[35]))
-            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[36]))
-            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[37]))
-            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[38]))
-            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[39]))
+            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[17]))
+            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[18]))
+            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[19]))
+            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[20]))
+            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[21]))
         elif(_conf.BACKEND == 'sqlite3'):
-            equation1 = model.get_value(row, self._risk_col_order[35])
-            equation2 = model.get_value(row, self._risk_col_order[36])
-            equation3 = model.get_value(row, self._risk_col_order[37])
-            equation4 = model.get_value(row, self._risk_col_order[38])
-            equation5 = model.get_value(row, self._risk_col_order[39])
+            equation1 = model.get_value(row, self._risk_col_order[17])
+            equation2 = model.get_value(row, self._risk_col_order[18])
+            equation3 = model.get_value(row, self._risk_col_order[19])
+            equation4 = model.get_value(row, self._risk_col_order[20])
+            equation5 = model.get_value(row, self._risk_col_order[21])
 
         _values = (model.get_value(row, self._risk_col_order[3]), \
                    model.get_value(row, self._risk_col_order[4]), \
@@ -4170,11 +4394,11 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[14]), \
                    model.get_value(row, self._risk_col_order[15]), \
                    model.get_value(row, self._risk_col_order[16]), \
-                   model.get_value(row, self._risk_col_order[17]), \
-                   model.get_value(row, self._risk_col_order[18]), \
-                   model.get_value(row, self._risk_col_order[19]), \
-                   model.get_value(row, self._risk_col_order[20]), \
-                   model.get_value(row, self._risk_col_order[21]), \
+                   equation1, \
+                   equation2, \
+                   equation3, \
+                   equation4, \
+                   equation5, \
                    model.get_value(row, self._risk_col_order[22]), \
                    model.get_value(row, self._risk_col_order[23]), \
                    model.get_value(row, self._risk_col_order[24]), \
@@ -4188,53 +4412,18 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[32]), \
                    model.get_value(row, self._risk_col_order[33]), \
                    model.get_value(row, self._risk_col_order[34]), \
-                   equation1, \
-                   equation2, \
-                   equation3, \
-                   equation4, \
-                   equation5, \
-                   model.get_value(row, self._risk_col_order[40]), \
-                   model.get_value(row, self._risk_col_order[41]), \
-                   model.get_value(row, self._risk_col_order[42]), \
-                   model.get_value(row, self._risk_col_order[43]), \
-                   model.get_value(row, self._risk_col_order[44]), \
-                   model.get_value(row, self._risk_col_order[45]), \
-                   model.get_value(row, self._risk_col_order[46]), \
-                   model.get_value(row, self._risk_col_order[47]), \
-                   model.get_value(row, self._risk_col_order[48]), \
-                   model.get_value(row, self._risk_col_order[49]), \
-                   model.get_value(row, self._risk_col_order[50]), \
-                   model.get_value(row, self._risk_col_order[51]), \
-                   model.get_value(row, self._risk_col_order[52]), \
-                   model.get_value(row, self._risk_col_order[53]), \
-                   model.get_value(row, 54), \
-                   model.get_value(row, 55), \
-                   model.get_value(row, 56), \
-                   model.get_value(row, 57), \
-                   model.get_value(row, 58), \
-                   model.get_value(row, 59), \
-                   model.get_value(row, 60), \
-                   model.get_value(row, 61), \
+                   model.get_value(row, self._risk_col_order[35]), \
                    self._app.REVISION.revision_id, \
                    model.get_value(row, self._risk_col_order[0]))
 
         query = "UPDATE tbl_risk_analysis \
-                 SET fld_change_desc_1='%s', fld_change_category_1='%s', \
-                     fld_change_effort_1=%f, fld_change_cost_1=%f, \
-                     fld_change_desc_2='%s', fld_change_category_2='%s', \
-                     fld_change_effort_2=%f, fld_change_cost_2=%f, \
-                     fld_change_desc_3='%s', fld_change_category_3='%s', \
-                     fld_change_effort_3=%f, fld_change_cost_3=%f, \
-                     fld_change_desc_4='%s', fld_change_category_4='%s', \
-                     fld_change_effort_4=%f, fld_change_cost_4=%f, \
-                     fld_change_desc_5='%s', fld_change_category_5='%s', \
-                     fld_change_effort_5=%f, fld_change_cost_5=%f, \
-                     fld_change_desc_6='%s', fld_change_category_6='%s', \
-                     fld_change_effort_6=%f, fld_change_cost_6=%f, \
-                     fld_change_desc_7='%s', fld_change_category_7='%s', \
-                     fld_change_effort_7=%f, fld_change_cost_7=%f, \
-                     fld_change_desc_8='%s', fld_change_category_8='%s', \
-                     fld_change_effort_8=%f, fld_change_cost_8=%f, \
+                 SET fld_potential_hazard='%s', fld_potential_cause='%s', \
+                     fld_assembly_effect='%s', fld_assembly_severity='%s', \
+                     fld_assembly_probability='%s', fld_system_effect='%s', \
+                     fld_system_severity='%s', fld_system_probability='%s', \
+                     fld_mitigation_strategy='%s', fld_remarks='%s', \
+                     fld_assembly_init_hri=%d, fld_assembly_current_hri=%d, \
+                     fld_system_init_hri=%d, fld_system_current_hri=%d, \
                      fld_function_1='%s', fld_function_2='%s', \
                      fld_function_3='%s', fld_function_4='%s', \
                      fld_function_5='%s', \
@@ -4244,11 +4433,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                      fld_user_blob_3='%s', fld_user_float_1=%f, \
                      fld_user_float_2=%f, fld_user_float_3=%f, \
                      fld_user_int_1=%d, fld_user_int_2=%d, \
-                     fld_user_int_3=%d, \
-                     fld_category_value_1=%d, fld_category_value_2=%d, \
-                     fld_category_value_3=%d, fld_category_value_4=%d, \
-                     fld_category_value_5=%d, fld_category_value_6=%d, \
-                     fld_category_value_7=%d, fld_category_value_8=%d \
+                     fld_user_int_3=%d \
                  WHERE fld_revision_id=%d \
                  AND fld_risk_id=%d" % _values
         results = self._app.DB.execute_query(query,
@@ -4287,11 +4472,16 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         if(_conf.BACKEND == 'mysql'):
-            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[19]))
-            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[20]))
-            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[21]))
-            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[22]))
-            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._sia_col_order[23]))
+            equation1 = self._app.ProgCnx.escape_string(
+                                model.get_value(row, self._sia_col_order[19]))
+            equation2 = self._app.ProgCnx.escape_string(
+                                model.get_value(row, self._sia_col_order[20]))
+            equation3 = self._app.ProgCnx.escape_string(
+                                model.get_value(row, self._sia_col_order[21]))
+            equation4 = self._app.ProgCnx.escape_string(
+                                model.get_value(row, self._sia_col_order[22]))
+            equation5 = self._app.ProgCnx.escape_string(
+                                model.get_value(row, self._sia_col_order[23]))
 
         elif(_conf.BACKEND == 'sqlite3'):
             equation1 = model.get_value(row, self._sia_col_order[19])
@@ -4300,71 +4490,71 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             equation4 = model.get_value(row, self._sia_col_order[22])
             equation5 = model.get_value(row, self._sia_col_order[23])
 
-        _values = (model.get_value(row, self._sia_col_order[3]), \
-                   model.get_value(row, self._sia_col_order[4]), \
-                   model.get_value(row, self._sia_col_order[5]), \
-                   model.get_value(row, self._sia_col_order[6]), \
-                   model.get_value(row, self._sia_col_order[7]), \
-                   model.get_value(row, self._sia_col_order[8]), \
-                   model.get_value(row, self._sia_col_order[9]), \
-                   model.get_value(row, self._sia_col_order[10]), \
-                   model.get_value(row, self._sia_col_order[11]), \
-                   model.get_value(row, self._sia_col_order[12]), \
-                   model.get_value(row, self._sia_col_order[13]), \
-                   model.get_value(row, self._sia_col_order[14]), \
-                   model.get_value(row, self._sia_col_order[15]), \
-                   model.get_value(row, self._sia_col_order[16]), \
-                   model.get_value(row, self._sia_col_order[17]), \
-                   model.get_value(row, self._sia_col_order[18]), \
-                   equation1, \
-                   equation2, \
-                   equation3, \
-                   equation4, \
-                   equation5, \
-                   model.get_value(row, self._sia_col_order[24]), \
-                   model.get_value(row, self._sia_col_order[25]), \
-                   model.get_value(row, self._sia_col_order[26]), \
-                   model.get_value(row, self._sia_col_order[27]), \
-                   model.get_value(row, self._sia_col_order[28]), \
-                   model.get_value(row, self._sia_col_order[29]), \
-                   model.get_value(row, self._sia_col_order[30]), \
-                   model.get_value(row, self._sia_col_order[31]), \
-                   model.get_value(row, self._sia_col_order[32]), \
-                   model.get_value(row, self._sia_col_order[33]), \
-                   model.get_value(row, self._sia_col_order[34]), \
-                   model.get_value(row, self._sia_col_order[35]), \
-                   model.get_value(row, self._sia_col_order[36]), \
-                   model.get_value(row, self._sia_col_order[37]), \
-                   self._app.REVISION.revision_id, \
-                   model.get_value(row, self._sia_col_order[0]))
+        _values_ = (model.get_value(row, self._sia_col_order[3]), \
+                    model.get_value(row, self._sia_col_order[4]), \
+                    model.get_value(row, self._sia_col_order[5]), \
+                    model.get_value(row, self._sia_col_order[6]), \
+                    model.get_value(row, self._sia_col_order[7]), \
+                    model.get_value(row, self._sia_col_order[8]), \
+                    model.get_value(row, self._sia_col_order[9]), \
+                    model.get_value(row, self._sia_col_order[10]), \
+                    model.get_value(row, self._sia_col_order[11]), \
+                    model.get_value(row, self._sia_col_order[12]), \
+                    model.get_value(row, self._sia_col_order[13]), \
+                    model.get_value(row, self._sia_col_order[14]), \
+                    model.get_value(row, self._sia_col_order[15]), \
+                    model.get_value(row, self._sia_col_order[16]), \
+                    model.get_value(row, self._sia_col_order[17]), \
+                    model.get_value(row, self._sia_col_order[18]), \
+                    equation1, \
+                    equation2, \
+                    equation3, \
+                    equation4, \
+                    equation5, \
+                    model.get_value(row, self._sia_col_order[24]), \
+                    model.get_value(row, self._sia_col_order[25]), \
+                    model.get_value(row, self._sia_col_order[26]), \
+                    model.get_value(row, self._sia_col_order[27]), \
+                    model.get_value(row, self._sia_col_order[28]), \
+                    model.get_value(row, self._sia_col_order[29]), \
+                    model.get_value(row, self._sia_col_order[30]), \
+                    model.get_value(row, self._sia_col_order[31]), \
+                    model.get_value(row, self._sia_col_order[32]), \
+                    model.get_value(row, self._sia_col_order[33]), \
+                    model.get_value(row, self._sia_col_order[34]), \
+                    model.get_value(row, self._sia_col_order[35]), \
+                    model.get_value(row, self._sia_col_order[36]), \
+                    model.get_value(row, self._sia_col_order[37]), \
+                    self._app.REVISION.revision_id, \
+                    model.get_value(row, self._sia_col_order[0]))
 
-        query = "UPDATE tbl_similar_item \
-                 SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
-                     fld_change_desc_2='%s', fld_change_factor_2=%f, \
-                     fld_change_desc_3='%s', fld_change_factor_3=%f, \
-                     fld_change_desc_4='%s', fld_change_factor_4=%f, \
-                     fld_change_desc_5='%s', fld_change_factor_5=%f, \
-                     fld_change_desc_6='%s', fld_change_factor_6=%f, \
-                     fld_change_desc_7='%s', fld_change_factor_7=%f, \
-                     fld_change_desc_8='%s', fld_change_factor_8=%f, \
-                     fld_function_1='%s', fld_function_2='%s', \
-                     fld_function_3='%s', fld_function_4='%s', \
-                     fld_function_5='%s', \
-                     fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
-                     fld_result_4=%f, fld_result_5=%f, \
-                     fld_user_blob_1='%s', fld_user_blob_2='%s', \
-                     fld_user_blob_3='%s', fld_user_float_1=%f, \
-                     fld_user_float_2=%f, fld_user_float_3=%f, \
-                     fld_user_int_1=%d, fld_user_int_2=%d, \
-                     fld_user_int_3=%d \
-                 WHERE fld_revision_id=%d \
-                 AND fld_sia_id=%d" % _values
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        _query_ = "UPDATE tbl_similar_item \
+                   SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
+                       fld_change_desc_2='%s', fld_change_factor_2=%f, \
+                       fld_change_desc_3='%s', fld_change_factor_3=%f, \
+                       fld_change_desc_4='%s', fld_change_factor_4=%f, \
+                       fld_change_desc_5='%s', fld_change_factor_5=%f, \
+                       fld_change_desc_6='%s', fld_change_factor_6=%f, \
+                       fld_change_desc_7='%s', fld_change_factor_7=%f, \
+                       fld_change_desc_8='%s', fld_change_factor_8=%f, \
+                       fld_function_1='%s', fld_function_2='%s', \
+                       fld_function_3='%s', fld_function_4='%s', \
+                       fld_function_5='%s', \
+                       fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
+                       fld_result_4=%f, fld_result_5=%f, \
+                       fld_user_blob_1='%s', fld_user_blob_2='%s', \
+                       fld_user_blob_3='%s', fld_user_float_1=%f, \
+                       fld_user_float_2=%f, fld_user_float_3=%f, \
+                       fld_user_int_1=%d, fld_user_int_2=%d, \
+                       fld_user_int_3=%d \
+                   WHERE fld_revision_id=%d \
+                   AND fld_sia_id=%d" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
 
-        if not results:
+        if not _results_:
             self._app.debug_log.error("assembly.py: Failed to save assembly to similar item table.")
             return True
 
@@ -4383,122 +4573,127 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
 
     def _fmeca_save_line_item(self, model, path, row):
         """
-        Saves each row in the Assembly Object similar item analysis treeview
-        model to the database.
+        Saves each row in the Assembly Object FMEA/FMECA treeview model to the
+        open RTK database.
 
         Keyword Arguments:
         model -- the Assembly Object similar item analysis gtk.TreeModel.
-        path_ -- the path of the active row in the Assembly Object
+        path  -- the path of the active row in the Assembly Object
                  similar item analysis gtk.TreeModel.
         row   -- the selected row in the Assembly Object similar item
                  analysis gtk.TreeView.
         """
 
-        _type = model.get_value(row, len(self._FMECA_col_order))
+# Find the type of information in the row.
+#   0 = failure mode
+#   1 = failure mechanism
+#   2 = design control
+#   3 = action
+        _type_ = model.get_value(row, len(self._FMECA_col_order))
 
-        if(_type == 0):                     # Failure mode.
+        if(_type_ == 0):                     # Failure mode.
 # Update the FMECA table.
-            _values = (model.get_value(row, self._FMECA_col_order[1]), \
-                       model.get_value(row, self._FMECA_col_order[2]), \
-                       model.get_value(row, self._FMECA_col_order[3]), \
-                       model.get_value(row, self._FMECA_col_order[4]), \
-                       model.get_value(row, self._FMECA_col_order[5]), \
-                       model.get_value(row, self._FMECA_col_order[6]), \
-                       model.get_value(row, self._FMECA_col_order[7]), \
-                       model.get_value(row, self._FMECA_col_order[8]), \
-                       model.get_value(row, self._FMECA_col_order[9]), \
-                       model.get_value(row, self._FMECA_col_order[10]), \
-                       model.get_value(row, self._FMECA_col_order[11]), \
-                       model.get_value(row, self._FMECA_col_order[12]), \
-                       model.get_value(row, self._FMECA_col_order[13]), \
-                       float(model.get_value(row, self._FMECA_col_order[14])), \
-                       float(model.get_value(row, self._FMECA_col_order[15])), \
-                       float(model.get_value(row, self._FMECA_col_order[16])), \
-                       float(model.get_value(row, self._FMECA_col_order[17])), \
-                       float(model.get_value(row, self._FMECA_col_order[18])), \
-                       model.get_value(row, self._FMECA_col_order[20]), \
-                       model.get_value(row, self._FMECA_col_order[21]),
-                       int(model.get_value(row, self._FMECA_col_order[22])), \
-                       int(model.get_value(row, self._FMECA_col_order[23])), \
-                       model.get_value(row, self._FMECA_col_order[24]), \
-                       int(model.get_value(row, self._FMECA_col_order[0])))
+            _values_ = (model.get_value(row, self._FMECA_col_order[1]), \
+                        model.get_value(row, self._FMECA_col_order[2]), \
+                        model.get_value(row, self._FMECA_col_order[3]), \
+                        model.get_value(row, self._FMECA_col_order[4]), \
+                        model.get_value(row, self._FMECA_col_order[5]), \
+                        model.get_value(row, self._FMECA_col_order[6]), \
+                        model.get_value(row, self._FMECA_col_order[7]), \
+                        model.get_value(row, self._FMECA_col_order[8]), \
+                        model.get_value(row, self._FMECA_col_order[9]), \
+                        model.get_value(row, self._FMECA_col_order[10]), \
+                        model.get_value(row, self._FMECA_col_order[11]), \
+                        model.get_value(row, self._FMECA_col_order[12]), \
+                        model.get_value(row, self._FMECA_col_order[13]), \
+                        float(model.get_value(row, self._FMECA_col_order[14])), \
+                        float(model.get_value(row, self._FMECA_col_order[15])), \
+                        float(model.get_value(row, self._FMECA_col_order[16])), \
+                        float(model.get_value(row, self._FMECA_col_order[17])), \
+                        float(model.get_value(row, self._FMECA_col_order[18])), \
+                        model.get_value(row, self._FMECA_col_order[20]), \
+                        model.get_value(row, self._FMECA_col_order[21]),
+                        int(model.get_value(row, self._FMECA_col_order[22])), \
+                        int(model.get_value(row, self._FMECA_col_order[23])), \
+                        model.get_value(row, self._FMECA_col_order[24]), \
+                        int(model.get_value(row, self._FMECA_col_order[0])))
 
-            query = "UPDATE tbl_fmeca \
-                     SET fld_mode_description='%s', fld_mission_phase='%s', \
-                         fld_local_effect='%s', fld_next_effect='%s', \
-                         fld_end_effect='%s', fld_detection_method='%s', \
-                         fld_other_indications='%s', \
-                         fld_isolation_method='%s', \
-                         fld_design_provisions='%s', \
-                         fld_operator_actions='%s', \
-                         fld_severity_class='%s', \
-                         fld_hazard_rate_source='%s', \
-                         fld_failure_probability='%s', \
-                         fld_effect_probability=%f, \
-                         fld_mode_ratio=%f, fld_mode_failure_rate=%f, \
-                         fld_mode_op_time=%f, fld_mode_criticality=%f, \
-                         fld_rpn_severity='%s', fld_rpn_severity_new='%s', \
-                         fld_critical_item=%d, fld_single_point=%d, \
-                         fld_remarks='%s' \
-                     WHERE fld_mode_id=%d" % _values
+            _query_ = "UPDATE tbl_fmeca \
+                       SET fld_mode_description='%s', fld_mission_phase='%s', \
+                           fld_local_effect='%s', fld_next_effect='%s', \
+                           fld_end_effect='%s', fld_detection_method='%s', \
+                           fld_other_indications='%s', \
+                           fld_isolation_method='%s', \
+                           fld_design_provisions='%s', \
+                           fld_operator_actions='%s', \
+                           fld_severity_class='%s', \
+                           fld_hazard_rate_source='%s', \
+                           fld_failure_probability='%s', \
+                           fld_effect_probability=%f, \
+                           fld_mode_ratio=%f, fld_mode_failure_rate=%f, \
+                           fld_mode_op_time=%f, fld_mode_criticality=%f, \
+                           fld_rpn_severity='%s', fld_rpn_severity_new='%s', \
+                           fld_critical_item=%d, fld_single_point=%d, \
+                           fld_remarks='%s' \
+                       WHERE fld_mode_id=%d" % _values_
 
-        elif(_type == 1):                   # Failure mechanism.
-            _parent = model.get_string_from_iter(model.iter_parent(row))
-            _values = (model.get_value(row, 1), \
-                       self._mechanisms[model.get_value(row, 0)][1], \
-                       self._mechanisms[model.get_value(row, 0)][2], \
-                       self._mechanisms[model.get_value(row, 0)][3], \
-                       self._mechanisms[model.get_value(row, 0)][4], \
-                       self._mechanisms[model.get_value(row, 0)][5], \
-                       self._mechanisms[model.get_value(row, 0)][6], \
-                       _parent, model.get_value(row, 0))
+        elif(_type_ == 1):                  # Failure mechanism.
+            _parent_ = model.get_string_from_iter(model.iter_parent(row))
+            _values_ = (model.get_value(row, 1), \
+                        self._mechanisms[model.get_value(row, 0)][1], \
+                        self._mechanisms[model.get_value(row, 0)][2], \
+                        self._mechanisms[model.get_value(row, 0)][3], \
+                        self._mechanisms[model.get_value(row, 0)][4], \
+                        self._mechanisms[model.get_value(row, 0)][5], \
+                        self._mechanisms[model.get_value(row, 0)][6], \
+                        _parent_, model.get_value(row, 0))
 
-            query = "UPDATE tbl_fmeca_mechanisms \
-                     SET fld_mechanism_description='%s', \
-                         fld_rpn_occurrence=%d, fld_rpn_detection=%d, \
-                         fld_rpn=%d, fld_rpn_occurrence_new=%d, \
-                         fld_rpn_detection_new=%d, fld_rpn_new=%d, \
-                         fld_parent='%s' \
-                     WHERE fld_mechanism_id=%d" % _values
+            _query_ = "UPDATE tbl_fmeca_mechanisms \
+                       SET fld_mechanism_description='%s', \
+                           fld_rpn_occurrence=%d, fld_rpn_detection=%d, \
+                           fld_rpn=%d, fld_rpn_occurrence_new=%d, \
+                           fld_rpn_detection_new=%d, fld_rpn_new=%d, \
+                           fld_parent='%s' \
+                       WHERE fld_mechanism_id=%d" % _values_
 
-        elif(_type == 2):                   # Control.
-            _parent = model.get_string_from_iter(model.iter_parent(row))
-            _values = (model.get_value(row, 1), \
-                       self._fmeca_controls[model.get_value(row, 0)][1], \
-                       _parent, model.get_value(row, 0))
+        elif(_type_ == 2):                  # Control.
+            _parent_ = model.get_string_from_iter(model.iter_parent(row))
+            _values_ = (model.get_value(row, 1), \
+                        self._fmeca_controls[model.get_value(row, 0)][1], \
+                        _parent_, model.get_value(row, 0))
 
-            query = "UPDATE tbl_fmeca_controls \
-                     SET fld_control_description='%s', \
-                         fld_control_type=%d, fld_parent='%s' \
-                     WHERE fld_control_id=%d" % _values
+            _query_ = "UPDATE tbl_fmeca_controls \
+                       SET fld_control_description='%s', \
+                           fld_control_type=%d, fld_parent='%s' \
+                       WHERE fld_control_id=%d" % _values_
 
-        elif(_type == 3):                   # Action.
-            _parent = model.get_string_from_iter(model.iter_parent(row))
-            _values = (model.get_value(row, 1), \
-                       self._fmeca_actions[model.get_value(row, 0)][1], \
-                       self._fmeca_actions[model.get_value(row, 0)][2], \
-                       self._fmeca_actions[model.get_value(row, 0)][3], \
-                       self._fmeca_actions[model.get_value(row, 0)][4], \
-                       self._fmeca_actions[model.get_value(row, 0)][5], \
-                       self._fmeca_actions[model.get_value(row, 0)][6], \
-                       self._fmeca_actions[model.get_value(row, 0)][7], \
-                       self._fmeca_actions[model.get_value(row, 0)][8], \
-                       self._fmeca_actions[model.get_value(row, 0)][9], \
-                       _parent, model.get_value(row, 0))
+        elif(_type_ == 3):                  # Action.
+            _parent_ = model.get_string_from_iter(model.iter_parent(row))
+            _values_ = (model.get_value(row, 1), \
+                        self._fmeca_actions[model.get_value(row, 0)][1], \
+                        self._fmeca_actions[model.get_value(row, 0)][2], \
+                        self._fmeca_actions[model.get_value(row, 0)][3], \
+                        self._fmeca_actions[model.get_value(row, 0)][4], \
+                        self._fmeca_actions[model.get_value(row, 0)][5], \
+                        self._fmeca_actions[model.get_value(row, 0)][6], \
+                        self._fmeca_actions[model.get_value(row, 0)][7], \
+                        self._fmeca_actions[model.get_value(row, 0)][8], \
+                        self._fmeca_actions[model.get_value(row, 0)][9], \
+                        _parent_, model.get_value(row, 0))
 
-            query = "UPDATE tbl_fmeca_actions \
-                     SET fld_action_recommended='%s', \
-                         fld_action_category='%s', fld_action_owner='%s', \
-                         fld_action_due_date=%d, fld_action_status='%s', \
-                         fld_action_taken='%s', fld_action_approved='%s', \
-                         fld_action_approve_date=%d, fld_action_closed='%s', \
-                         fld_action_close_date=%d, fld_parent='%s' \
-                     WHERE fld_action_id=%d" % _values
+            _query_ = "UPDATE tbl_fmeca_actions \
+                       SET fld_action_recommended='%s', \
+                           fld_action_category='%s', fld_action_owner='%s', \
+                           fld_action_due_date=%d, fld_action_status='%s', \
+                           fld_action_taken='%s', fld_action_approved='%s', \
+                           fld_action_approve_date=%d, fld_action_closed='%s', \
+                           fld_action_close_date=%d, fld_parent='%s' \
+                       WHERE fld_action_id=%d" % _values_
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        self._app.DB.execute_query(_query_,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
 
         return False
 
@@ -4546,12 +4741,10 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         model = cell.get_property('model')
-        val = model.get_value(row, 1)
+        val = model.get_value(row, 0)
 
         treerow = treemodel.get_iter(path)
-        treecol = int(position / 5) + lastcol
-
-        treemodel.set_value(treerow, treecol, val)
+        treemodel.set_value(treerow, position, val)
 
         return False
 
@@ -5045,13 +5238,14 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnAnalyze.set_tooltip_text(_(u"Allocates the reliability to the child assemblies/parts."))
             self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation results for the selected assembly."))
         elif(page_num == 2):                # Risk analysis tab
-            self.btnAddItem.hide()
+            self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
             self.btnRollup.show()
             self.btnEdit.show()
+            self.btnAddItem.set_tooltip_text(_(u"Adds a hazard to the selected assembly."))
             self.btnAnalyze.set_tooltip_text(_(u"Performs a risk analysis of changes to the selected assembly."))
             self.btnSaveResults.set_tooltip_text(_(u"Saves the risk analysis results for the selected assembly."))
             self.btnRollup.set_tooltip_text(_(u"Summarizes the lower level risk analyses."))
@@ -5172,7 +5366,17 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             elif(_button_ == 'Save'):
                 self._allocation_save()
         elif(_page_ == 2):                  # Risk analysis tab.
-            if(_button_ == 'Analyze'):
+            if(_button_ == 'Add'):
+                _query_ = "INSERT INTO tbl_risk_analysis \
+                           (fld_revision_id, fld_assembly_id) \
+                           VALUES (%d, %d)" % \
+                           (self._app.REVISION.revision_id, self.assembly_id)
+                _results_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx,
+                                                       commit=True)
+                self._risk_analysis_tab_load()
+            elif(_button_ == 'Analyze'):
                 self._calculate_risk()
             elif(_button_ == 'Save'):
                 self._risk_save()

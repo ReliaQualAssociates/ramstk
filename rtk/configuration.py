@@ -145,6 +145,9 @@ RTK_PAGE_NUMBER = []
 #    Position 04: User password
 RTK_COM_INFO = []
 
+# Global list for
+RTK_RISK_POINTS = [3, 9]
+
 # Global list for MySQL or SQLite3 connection information to the Program
 # database.
 #

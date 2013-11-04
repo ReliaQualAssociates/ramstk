@@ -301,8 +301,7 @@ def calculate_hardware(treemodel, row, application):
     refdes = treemodel.get_value(row, 68)
     hr_type = treemodel.get_value(row, 35)
 
-    # Assemblies will first have their children calculated,
-    # then sum the results.
+# Assemblies will first have their children calculated, then sum the results.
     if(treemodel.iter_has_child(row)):
         cost = 0.0
         lambdaa = 0.0
@@ -364,8 +363,8 @@ def calculate_hardware(treemodel, row, application):
             lambdap = lambdaa + lambdad + lambdas
 
     else:
-        # Read the additive adjustment factor, cost, duty cycle,
-        # multiplicative adjustment factor, and power dissipation.
+# Read the additive adjustment factor, cost, duty cycle, multiplicative
+# adjustment factor, and power dissipation.
         aaf = treemodel.get_value(row, 2)
         cost = treemodel.get_value(row, 13)
         dutycycle = treemodel.get_value(row, 20)
@@ -507,8 +506,8 @@ def calculate_hardware(treemodel, row, application):
             lambdaa = 1.0 / mtbf
             lambdad = 0.0
 
-        # Determine overall percentage of system hazard rate represented by
-        # this particular component.
+# Determine overall percentage of system hazard rate represented by this
+# particular component.
         try:
             hr_percent = lambdaa / application.HARDWARE.system_ht
             treemodel.set_value(row, 31, hr_percent)
@@ -518,31 +517,30 @@ def calculate_hardware(treemodel, row, application):
                          refdes %s: Component lambda = %f and System lambda = %f") % (refdes, lambdaa, application.HARDWARE.system_ht)
             application.user_log.error(_prompt_)
 
-        # Adjust the active hazard rate for additive adjustment factor,
-        # quantity of items, multiplicative adjustment factor, and
-        # duty cycle.
+# Adjust the active hazard rate for additive adjustment factor, quantity of
+# items, multiplicative adjustment factor, and duty cycle.
         lambdaa = (lambdaa + aaf) * num * maf * (dutycycle / 100.0)
 
-        # Adjust the dormant hazard rate by the quantity of items.
+# Adjust the dormant hazard rate by the quantity of items.
         lambdad = lambdad * num
 
-        # Calculate the software hazard rate.
+# Calculate the software hazard rate.
         lambdas = treemodel.get_value(row, 33)
         lambdas = lambdas * num
 
-        # Adjust the active, dormant, and software hazard rates by the hazard
-        # rate multiplier.
+# Adjust the active, dormant, and software hazard rates by the hazard rate
+# multiplier.
         lambdaa = lambdaa / _conf.FRMULT
         lambdad = lambdad / _conf.FRMULT
         lambdas = lambdas / _conf.FRMULT
 
-        # Calculate the predicted (total) hazard rate.
+# Calculate the predicted (total) hazard rate.
         lambdap = lambdaa + lambdad + lambdas
 
-        # Set partcount.
+# Set partcount.
         partcount = num
 
-    # Calculate the mission MTBF and limiting MTBF
+# Calculate the mission MTBF and limiting MTBF
     try:
         MTBFM = 1.0 / (lambdaa + lambdas)
     except ZeroDivisionError:
@@ -557,11 +555,11 @@ def calculate_hardware(treemodel, row, application):
                                       refdes %s: lambdaa = %f") % (refdes, lambdap))
         MTBF = 0.0
 
-    # Calculate the mission reliability and limiting reliability.
+# Calculate the mission reliability and limiting reliability.
     Rmission = exp(-1.0 * (lambdaa + lambdas) * missiontime)
     Rlimit = exp(-1.0 * lambdap * missiontime)
 
-    # Calculate cost per failure, cost per hour, and total cost.
+# Calculate cost per failure, cost per hour, and total cost.
     try:
         cpf = cost / (lambdap * missiontime)
     except ZeroDivisionError:
@@ -571,7 +569,7 @@ def calculate_hardware(treemodel, row, application):
 
     cph = cost * lambdap
 
-    # TODO: Add database field for total cost results.
+# TODO: Add database field for total cost results.
     #totalcost = cost * num
 
     treemodel.set_value(row, 13, cost)

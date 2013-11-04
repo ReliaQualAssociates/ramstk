@@ -613,7 +613,9 @@ class ListWindow(gtk.Window):
         """
 
         model = self.tvwPartsList.get_model()
-        model.foreach(self.save_line_item)
+
+        if(model is not None):
+            model.foreach(self.save_line_item)
 
         return False
 

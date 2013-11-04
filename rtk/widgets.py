@@ -617,15 +617,10 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
         _marker_ -- the marker to use on the plot.
         """
 
-        import numpy
-        from scipy.interpolate import spline
+        #import numpy
+        #from scipy.interpolate import spline
 
         n_points = len(x)
-
-        #X = numpy.array(x)
-        #Y2 = numpy.array(y2)
-        #xnew = numpy.linspace(X.min(), X.max(), num=n_points)
-        #y2_smooth = spline(X, Y2, xnew)
 
         axis.cla()
 

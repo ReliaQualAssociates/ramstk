@@ -52,6 +52,7 @@ except ImportError:
 
 # Import mathematical functions.
 import numpy as np
+from scipy.stats import chi2, norm
 from math import ceil, exp, floor, log, sqrt
 
 # Import other RTK modules.
@@ -180,8 +181,8 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
     from scipy.stats import norm
 
-    # Eliminate zero time failures and failures occurring after any
-    # user-supplied upper limit.
+# Eliminate zero time failures and failures occurring after any user-supplied
+# upper limit.
     _dataset_ = [i for i in _dataset_ if i[0] >= 0.0]
     if(_reltime_ != 0.0):
         _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
@@ -208,7 +209,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
             status[i] = 1
 
     for i in range(len(_quant_)):
-        for j in range(len(_quant_[i])):
+        for j in range(_quant_[i] - 1):
             times.append(times[i])
             times2.append(times2[i])
             status.append(status[i])
@@ -317,30 +318,97 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         return(_KM_)
 
 
-def turnbull_tau(_dataset_):
+def kaplan_meier_mean(_dataset_, _conf_=0.75):
     """
-    This function creates a list of lists where each inner list is a unique
-    pair of left and right interval values.
+    Function to calculate the MTBF from a Kaplan-Meier dataset.
 
     Keyword Arguments:
-    _dataset_ -- a list of the left times and right times of the interval
-                 censored data.
+    _dataset_ -- the
+                    0 = the time points at which the curve has a step.
+                    1 = the number of subjects at risk at t.
+                    2 = the number of events that occur at time t.
+                    3 = the standard error of the cumulative hazard or
+                        -log(survival).
+                    4 = lower confidence limit for the survival curve.
+                    5 = the estimate of survival at time t+0. This may be a
+                        vector or a matrix.
+                    6 = upper confidence limit for the survival curve.
     """
 
-    import operator
+    from operator import itemgetter
 
-    _tau_ = []
-    for i in range(len(_dataset_)):
-        _tau_.append([_dataset_[i][1], _dataset_[i][2], 3])
+# Sort the dataset by event time asscending and only keep those records with
+# at least one failure.
+    _dataset_ = sorted(_dataset_, key=itemgetter(0))
+    _dataset_ = [i for i in _dataset_ if i[2] > 0]
 
-# Sort the list of left, right pairs.
-    _tau_ = list(set(map(tuple, _tau_)))
-    _tau_.sort(key=operator.itemgetter(0, 1))
+    _n_ = len(_dataset_)
+    _M_ = _dataset_[0][0]
+    _Var_ = 0.0
 
-# Convert each tuple to a list.
-    _tau_ = [list(_row_) for _row_ in _tau_]
+    _MTBF_ = []
 
-    return(_tau_)
+# Determine the confidence bound z-value.
+    _z_norm_ = norm.ppf(_conf_)
+
+    for i in range(1,len(_dataset_)):
+        _a_ = _dataset_[i][5] * (_dataset_[i][0] - _dataset_[i - 1][0])
+        _M_ += _a_
+        _Var_ += (_a_**2.0) / ((_n_ - i) * (_n_ - i + 1))
+        _MLL_ = _M_ - sqrt(_Var_) * _z_norm_
+        _MUL_ = _M_ + sqrt(_Var_) * _z_norm_
+
+        _MTBF_.append([_M_, _MLL_, _MUL_, _Var_])
+
+    return(_MTBF_)
+
+
+def kaplan_meier_hazard(_dataset_):
+    """
+    Function to calculate the Kaplan-Meier cumulative hazard rate, hazard rate,
+    and log hazard rate.
+
+    Keyword Arguments:
+    _dataset_ --
+    """
+
+# Initialize some list variables.
+    zShat = []
+    _h_ = []
+    _hll_ = []
+    _hul_ = []
+
+    _times_ = [i[0] for i in _dataset_]
+
+# Cumulative hazard rate.
+    _H_ = [-log(i[5]) for i in _dataset_ if i[5] > 0]
+    _Hll_ = [-log(i[4]) for i in _dataset_ if i[4] > 0]
+    _Hul_ = [-log(i[6]) for i in _dataset_ if i[6] > 0]
+
+# Log hazard rate.
+    _logH_ = [log(i) for i in _H_]
+    _logHll_ = [log(i) for i in _Hll_]
+    _logHul_ = [log(i) for i in _Hul_]
+
+# If the last data point was a failure, the survival function will be 0.0.
+# This adds one 0.0 data point for the cumulative and log cumulative hazard
+# rates because the above code will produce a list one item too short.
+    if(len(_H_) < len(_times_)):
+        _H_.append(0.0)
+        _Hll_.append(0.0)
+        _Hul_.append(0.0)
+        _logH_.append(0.0)
+        _logHll_.append(0.0)
+        _logHul_.append(0.0)
+
+# Calculate the hazard rate.
+    for i in range(len(_times_)):
+        #zShat.append(norm.ppf(Shat[i]))
+        _h_.append(_H_[i] / _times_[i])
+        _hll_.append(_Hll_[i] / _times_[i])
+        _hul_.append(_Hul_[i] / _times_[i])
+
+    return(_h_, _hll_, _hul_, _H_, _Hll_, _Hul_, _logH_, _logHll_, _logHul_)
 
 
 def turnbull_s(_tau_):
@@ -371,49 +439,118 @@ def turnbull_s(_tau_):
         _ekm_ = survival.survfit(_fmla_)
 
     _So_ = []
-    for i in range(len(_ekm_)):
-        _So_.append(_ekm_[i][5])
+    for i in range(len(_ekm_[5])):
+        _So_.append(_ekm_[5][i])
 
     _p_ = []
     for i in range(len(_So_) - 1):
-        _p_.append(_So_[i + 1] - _So_[i])
+        _p_.append([_So_[i] - _So_[i + 1]])
 
     return(_p_)
 
 
-#def interv(x, inf, sup):
+def interv(x, inf, sup):
 
-#    if(x[0] >= inf and x[1] <= sup):
-#        _interv_ = 1
-#    else:
-#        _interv_ = 0
+    if(x[0] >= inf and x[1] <= sup):
+        _interv_ = 1
+    else:
+        _interv_ = 0
 
-#    return(_interv_)
-
-
-#def turnbull_A(_dataset_, _tau_):
-
-#    tau12 <- cbind(tau[-length(tau)], tau[-1])
-#    A <- apply(tau12, 1, interv, inf=as.numeric(data[, 2]), sup=as.numeric(data[, 3]))
-#    id.lin.zero <- which(apply(A==0, 1, all))
-
-#    if(length(id.lin.zero)>0) A <- A[-id.lin.zero, ]
-
-#    return(A)
+    return(_interv_)
 
 
-#def turnbull(p, A, _dataset_, eps=1E-13, iter_max=200, _conf_=0.75):
+def turnbull_A(_dataset_, _tau_):
+
+    _tau2_ = []
+    _A_ = []
+
+    _n_records_ = len(_dataset_)
+
+    _left_ = _tau_[:-1]
+    _right_ = _tau_[1:]
+    for i in range(_n_records_):
+        _idx_start_ = _tau_.index(_dataset_[i][0])
+        _idx_stop_ = _tau_.index(_dataset_[i][1]) - 1
+
+        _a_ = [0]*(len(_left_) - 1)
+        for j in range(_idx_start_, _idx_stop_):
+            _a_[j] = 1
+
+        if((_idx_stop_ - _idx_start_) == 0):
+            _a_[_idx_start_] = 1
+
+        _A_.append(_a_)
+
+    return(_A_)
+
+
+def turnbull(_dataset_, _reltime_, _conf_=0.75, eps=1E-13, iter_max=200):
     """
     Keyword Arguments:
     _dataset_ --
     _conf_    -- the confidence level of the estimates.
     """
 
-#    _tau_ = turnbull_tau(_dataset_)
-#    _p_ = turnbull_s(_tau_)
+    from numpy import amax, array, matrix
+
+    _l_ = [i[0] for i in _dataset_]
+    _r_ = [i[1] for i in _dataset_]
+    _tau_ = list(set(_l_+_r_))
+    _p_ = matrix(turnbull_s(_tau_))
+    _A_ = matrix(turnbull_A(_dataset_, _tau_))
+
+    _n_ = len(_dataset_)
+    _m_ = len(_tau_) - 1
+    _Q_ = matrix([1]*_m_)
+
+    i = 0
+    _maxdiff_ = 1
+    while(_maxdiff_ >= eps and i < iter_max):
+
+        i += 1
+        _diff_ = _Q_ - _p_
+        _maxdiff_ = amax(_diff_)
+
+        _Q_ = _p_
+        _C_ = _A_ * _p_
+        _invC_ = matrix([1.0 / i for i in array(_C_)])
+        x = (_A_.T * _invC_) / _n_
+        _p_ = _p_ * x
+
+    #surv = round(c(1, 1-cumsum(_p_)), digits=5)
+    #right = data$right
+
+    #if(any(!(is.finite(right))))
+    #    t <- max(right[is.finite(right)])
+    #    return(list(time=tau[tau<t],surv=surv[tau<t]))
+    #else
+    #    return(list(time=tau,surv=surv))
+
+    return
 
 
-#    return
+def matrix_multiply(matrix1, matrix2):
+    """
+    Function to multiply two matrices.
+
+    Keyword Arguments:
+    matrix1 --
+    matrix2 --
+    """
+
+# Check matrix dimensions
+    if len(matrix1[0]) != len(matrix2):
+        print 'Matrices must be m*n and n*p to multiply!'
+
+    else:
+# Multiply if correct dimensions
+        _new_matrix_ = [[0 for row in range(len(matrix1))] for col in range(len(matrix2[0]))]
+        for i in range(len(matrix1)):
+            for j in range(len(matrix2[0])):
+                for k in range(len(matrix2)):
+                    _new_matrix_[i][j] += matrix1[i][k] * matrix2[k][j]
+
+        return(_new_matrix_)
 
 
 def parametric_fit(_dataset_, _starttime_, _reltime_,

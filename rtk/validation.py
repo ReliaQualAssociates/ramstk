@@ -66,18 +66,18 @@ class Validation:
                        _(u"Start Date:"), _(u"End Date:"), _(u"% Complete:")],
                       [], [], []]
 
-    _ta_tab_labels = [_(u"Are the results of this activity reflected when the new content is introduced into the reliability growth test?"),
-                      _(u"Historically has this been an area of expertise using established tools and processes?"),
-                      _(u"Is this activity conducted with a cross-functional team?"),
-                      _(u"How much of the new content is included in this activity?"),
-                      _(u"Does this activity directly impact reliability?"),
-                      _(u"Does the analysis lead design with system level models defining requirements for subsystems and components?"),
-                      _(u"Is a 3-D system level model used in this activity?"),
-                      _(u"Are validated models with well understood loading conditions used in this activity?"),
-                      _(u"Are there corrective actions implemented on high risk items?"),
-                      _(u"Is this activity conducted at the concept stage and result in significant part reduction and simplification of the design?"),
-                      _(u"Is analysis of process variability, process capability, and design tolerances reflected in the design?"),
-                      _(u"Are the tests statistically designed with understanding of the defined load(s) and required sample size?")]
+    _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
+                      _(u"Does this activity provide quantitative strength information as an output?"),
+                      _(u"Does this activity provide operating environment information as an output?"),
+                      _(u"Hardware item configuration/architecture"),
+                      _(u"Hardware item failure modes"),
+                      _(u"Hardware item failure mechanisms"),
+                      _(u"Hardware item failure causes"),
+                      _(u"Hardware item failure times"),
+                      _(u"Hardware item Part quality"),
+                      _(u"Hardware item aging/degradation information"),
+                      _(u"Hardware item design requirements and/or goals"),
+                      _(u"")]
 
     n_attributes = 13
 

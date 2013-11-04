@@ -60,7 +60,7 @@ from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
 from _calculations_.survival import *
-from _calculations_.growth import power_law, crow_amsaa_continuous
+from _calculations_.growth import power_law, loglinear, crow_amsaa_continuous
 
 # Add localization support.
 import locale
@@ -216,7 +216,6 @@ class Dataset:
         self.txtRho = _widg.make_entry(_width_=100)
         self.txtRhoNorm = _widg.make_entry(_width_=100)
         self.txtRhoPValue = _widg.make_entry(_width_=100)
-
 
         # Lower left quadrant parametric widgets.
         self.lblScale = _widg.make_label(_(u"Scale"), width=150)
@@ -445,7 +444,7 @@ class Dataset:
         self.cmbSource.connect('changed', self._callback_combo, 3)
 
         self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the statistical distribution used to fit the data."))
-        results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")], [u"Crow-AMSAA"],
+        results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")], [u"NHPP - Loglinear"],
                    [_(u"Exponential")], [_(u"Lognormal")], [_(u"Normal")],
                    [u"Weibull"], ["WeiBayes"]]
         _widg.load_combo(self.cmbDistribution, results)
@@ -806,20 +805,33 @@ class Dataset:
         _col_headings_
         """
 
-        for i in range(len(_data_)):
-            _model_.append((_data_[i][_index_[0]], _data_[i][_index_[1]],
-                            _data_[i][_index_[2]], _data_[i][_index_[3]],
-                            _data_[i][_index_[4]], _data_[i][_index_[5]],
-                            _data_[i][_index_[6]], _data_[i][_index_[7]],
-                            _data_[i][_index_[8]], _data_[i][_index_[9]],
-                            _data_[i][_index_[10]], _data_[i][_index_[11]],
-                            _data_[i][_index_[12]], _data_[i][_index_[13]]))
+# Remove the existing model from the gtk.TreeView.
+        self.tvwNonParResults.set_model(None)
 
+# Remove all the existing columns from the gtk.TreeView.
+        _col_ = self.tvwNonParResults.get_columns()
+        for i in range(len(_col_)):
+            self.tvwNonParResults.remove_column(_col_[i])
+
+# Load the model with the data.
+        for i in range(len(_data_)):
+            _lineitem_ = []
+            for j in range(len(_index_)):
+                _lineitem_.append(_data_[i][_index_[j]])
+
+            _model_.append(_lineitem_)
+
+# Add columns to display the data.
         for i in range(len(_col_headings_)):
-            column = self.tvwNonParResults.get_column(i)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>%s</span>" % _col_headings_[i]))
+            cell = gtk.CellRendererText()
+            cell.set_property('editable', 0)
+            cell.set_property('background', 'light gray')
+            column = gtk.TreeViewColumn()
+            label = _widg.make_column_heading(_col_headings_[i])
             column.set_widget(label)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=i)
+            self.tvwNonParResults.append_column(column)
 
         self.tvwNonParResults.set_model(_model_)
 
@@ -957,155 +969,6 @@ class Dataset:
         self.txtHazardRateiUL.hide()
 
 # Non-parametric table of results.
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
-                              gobject.TYPE_INT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                              gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
-        self.tvwNonParResults.set_model(model)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Time"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u""))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u""))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u""))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=3)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"S(t)"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=4)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Standard\nError"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=5)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Lower\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=6)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Upper\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=7)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Cumulative\nMTBF"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=8)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Upper\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=9)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Upper\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=10)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Instantaneous\nMTBF"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=11)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Upper\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=12)
-        self.tvwNonParResults.append_column(column)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Upper\nBound"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=13)
-        self.tvwNonParResults.append_column(column)
-
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwNonParResults)
@@ -1315,7 +1178,7 @@ class Dataset:
             self.lblCumMTBF.set_markup(_(u"<span>MTBF</span>"))
             self.lblCumFI.set_markup(_(u"<span>Failure\nIntensity</span>"))
 
-# update NHPP Power Law analysis information.
+# Update NHPP Power Law analysis information.
         elif(_analysis_ == 3):
             self.hpnAnalysisResults.pack1(self.vbxAnalysisResults1, True, True)
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
@@ -1344,10 +1207,12 @@ class Dataset:
             self.lblFIi.set_markup(_(u"<span>Instantaneous\nFailure\nIntensity</span>"))
             self.lblScale.set_markup(_(u"b"))
             self.lblShape.set_markup(_(u"\u03B1"))
+
+            # Show widgets.
+            self.chkGroup.show()
+            self.chkParts.show()
             self.lblMTBFi.show()
             self.lblFIi.show()
-            self.lblLocation.hide()
-
             self.txtMTBFiLL.show()
             self.txtHazardRateiLL.show()
             self.txtMTBFi.show()
@@ -1355,6 +1220,8 @@ class Dataset:
             self.txtMTBFiUL.show()
             self.txtHazardRateiUL.show()
 
+            # Hide widgets.
+            self.lblLocation.hide()
             self.txtLocation.hide()
             self.txtLocationLL.hide()
             self.txtLocationUL.hide()
@@ -2154,23 +2021,23 @@ class Dataset:
                             _type_=[4], _marker_=['g-'])
 
 # Create a lag plot.
-            #_widg.load_plot(self.axAxis4, self.pltPlot4,
-            #                x=_tbf_[0:n_failures - 1],
-            #                y1=_tbf_[1:n_failures],
-            #                _title_=_(u"Lag Plot of %s") % _name,
-            #                _xlab_=_(u"Lagged Time Between Failure"),
-            #                _ylab_=_(u"Time Between Failure"),
-            #                _type_=[2], _marker_=['go'])
-            #_text_ = (u"Lag 1")
-            #_widg.create_legend(self.axAxis4, _text_, _fontsize_='medium',
-            #                    _frameon_=True, _location_='lower right',
-            #                    _shadow_=True)
+            _zero_line_ = []
+            for i in range(len(_tbf_) - 1):
+                _zero_line_.append(_tbf_[i])
+
+            _widg.load_plot(self.axAxis4, self.pltPlot4,
+                            x=_tbf_[0:len(_tbf_)-1], y1=_tbf_[1:len(_tbf_)],
+                            y2=_zero_line_,
+                            _title_=_(u"Lag Plot of %s") % _name,
+                            _xlab_=_(u"Lagged Time Between Failure"),
+                            _ylab_=_(u"Time Between Failure"),
+                            _type_=[2, 2], _marker_=['go', 'k-'])
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
             self.vbxPlot2.pack_start(self.pltPlot2)
-            #self.vbxPlot2.pack_start(self.pltPlot4)
+            self.vbxPlot2.pack_start(self.pltPlot4)
 
 # Assign the cumulative MTBF for display.
             MTBF = _nonpar_[_n_records_ - 1][10]
@@ -2202,23 +2069,23 @@ class Dataset:
         elif(_analysis_ == 2):              # Kaplan-Meier
 # TODO: Revise tbl_dataset to include a field for the hardware id.
 # TODO: Revise the following query to include the hardware id field that will be added.
-            query = "SELECT fld_left_interval, fld_right_interval, \
-                            fld_status, fld_unit \
-                     FROM tbl_survival_data \
-                     WHERE fld_dataset_id=%d \
-                     AND fld_right_interval >= %f \
-                     AND fld_right_interval <= %f \
-                     ORDER BY fld_right_interval ASC, \
-                     fld_status DESC" % (_dataset_, _starttime_, _reltime_)
-            results = self._app.DB.execute_query(query,
-                                                 None,
-                                                 self._app.ProgCnx)
+            _query_ = "SELECT fld_left_interval, fld_right_interval, \
+                              fld_status, fld_quantity, fld_unit \
+                       FROM tbl_survival_data \
+                       WHERE fld_dataset_id=%d \
+                       AND fld_right_interval >= %f \
+                       AND fld_right_interval <= %f \
+                       ORDER BY fld_right_interval ASC, \
+                       fld_status DESC" % (_dataset_, _starttime_, _reltime_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
 
 # Make a list with the rank of the records that are failures.
             r = []
-            for i in range(len(results)):
-                if(results[i][2] == 'Event' or
-                   results[i][2] == 'Interval Censored'):
+            for i in range(len(_results_)):
+                if(_results_[i][2] == 'Event' or
+                   _results_[i][2] == 'Interval Censored'):
                     r.append(i + 1)
 
 # The Kaplan-Meier function will retun a list of lists where the index of each
@@ -2241,192 +2108,78 @@ class Dataset:
 #   12 = the returned value from the na.action function, if any.
 #        It will be used in the printout of the curve, e.g., the
 #        number of observations deleted due to missing values.
-            nonpar = kaplan_meier(results, _reltime_, _conf_)
+            _nonpar_ = kaplan_meier(_results_, _reltime_, _conf_)
+            turnbull(_results_, _reltime_, _conf_)
 
-            n_points = nonpar[0][0]
-            times = nonpar[1]
-            Shat = nonpar[5]
-            Shatll = nonpar[8]
-            Shatul = nonpar[9]
+            n_points = _nonpar_[0][0]
+            _times_ = _nonpar_[1]
+            _Shat_ = _nonpar_[5]
+            _Shatll_ = _nonpar_[8]
+            _Shatul_ = _nonpar_[9]
 
-# Initialize some list variables.
-            logtimes = []
-            _H_ = []
-            _Hll_ = []
-            _Hul_ = []
-            logH = []
-            logHll = []
-            logHul = []
-            zShat = []
-            _h_ = []
-            _hll_ = []
-            _hul_ = []
-            tr = []
-            S = []
+            n_failures = 0
+            _kaplan_meier_ = []
+            for i in range(len(_times_)):
+                _kaplan_meier_.append([_nonpar_[1][i], _nonpar_[2][i],
+                                       _nonpar_[3][i], _nonpar_[7][i],
+                                       _nonpar_[9][i], _nonpar_[5][i],
+                                       _nonpar_[8][i]])
+                n_failures += _nonpar_[3][i]
 
-# Calculate the cumulative hazard rate, the hazard rate, and the log
-# hazard rate.
-            for i in range(len(times)):
-                logtimes.append(log(times[i]))
+# Calculate the MTBF, the variance on the MTBF, and the limits on the MTBF.
+            _mtbf_ = kaplan_meier_mean(_kaplan_meier_, _conf_)
 
-                try:
-                    _H_.append(-log(Shat[i]))
-                    _Hll_.append(-log(Shatul[i]))
-                    _Hul_.append(-log(Shatll[i]))
-                except ValueError:
-                    try:
-                        _H_.append(_H_[i - 1])
-                        _Hll_.append(_Hll_[i - 1])
-                        _Hul_.append(_Hul_[i - 1])
-                    except IndexError:
-                        _H_.append(0.0)
-                        _Hll_.append(0.0)
-                        _Hul_.append(0.0)
-                except IndexError:
-# TODO: Write error handling routine for KM cumulative hazard plots.
-                    print i, _H_, _Hll_, _Hul_
+            MTBF = _mtbf_[len(_mtbf_) - 1][0]
+            MTBFLL = _mtbf_[len(_mtbf_) - 1][1]
+            MTBFUL = _mtbf_[len(_mtbf_) - 1][2]
 
-                try:
-                    logH.append(log(_H_[i]))
-                    logHll.append(log(_Hll_[i]))
-                    logHul.append(log(_Hul_[i]))
-                except ValueError:
-                    try:
-                        logH.append(logH[i - 1])
-                        logHll.append(logHll[i - 1])
-                        logHul.append(logHul[i - 1])
-                    except IndexError:
-                        logH.append(0.0)
-                        logHll.append(0.0)
-                        logHul.append(0.0)
+# Load the non-parametric results gtk.TreeView
+            _model_ = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                    gobject.TYPE_FLOAT)
+            _index_ = [0, 1, 2, 3, 4, 5, 6]
+            _col_headings_ = [_(u"Time"), _(u"Number\nat Risk"),
+                              _(u"Number\nFailing"), _(u"se S(t)"),
+                              _(u"S(t) Lower\nBound"), _(u"S(t)"),
+                              _(u"S(t) Upper\nBound")]
+            self._load_nonparametric_tree(_model_, _kaplan_meier_,
+                                          _index_, _col_headings_)
 
-                zShat.append(norm.ppf(Shat[i]))
-                _h_.append(_H_[i] / times[i])
-                _hll_.append(_Hll_[i] / times[i])
-                _hul_.append(_Hul_[i] / times[i])
+            _logtimes_ = [log(i) for i in _times_]
 
-# Calculate the mean time between failure.
-                if(nonpar[3][i] != 0):      # Event occured at this time.
-                    for j in range(int(floor(nonpar[3][i]))):
-                        tr.append(nonpar[1][i])
-                        S.append(nonpar[5][i])
+            (_h_, _hll_, _hul_,
+             _H_, _Hll_, _Hul_,
+             _logH_, _logHll_, _logHul_) = kaplan_meier_hazard(_kaplan_meier_)
 
 # Calculate the number of failures and suspensions in the dataset.
-            n_failures = len(tr)
             n_suspensions = n_points - n_failures
-
-# Calculate the MTBF and the variance of the MTBF.
-            MTBF = tr[0]
-            A = []
-            for i in range(n_failures - 1):
-                MTBF += S[i] * (tr[i + 1] - tr[i])
-                A.append(S[i] * (tr[i + 1] - tr[i]))
-
-            for i in range(len(A)):
-                try:
-                    A[i] = sum(A[i:])**2 / \
-                        ((n_points - r[i]) * (n_points - r[i] + 1))
-                except ZeroDivisionError:
-                    A[i] = A[i - 1]
-                except IndexError:
-                    A[i] = 0.0
-
-            try:
-                var_mu = (n_failures / (n_failures - 1)) * sum(A)
-            except ZeroDivisionError:
-                var_mu = 0.0
-
-            MTBFLL = MTBF - sqrt(var_mu) * _z_norm_
-            MTBFUL = MTBF + sqrt(var_mu) * _z_norm_
-
-# Load the table with the Kaplan-Meier results.
-            model = self.tvwNonParResults.get_model()
-            model.clear()
-            for i in range(len(times)):
-                _data_ = [str(nonpar[1][i]), int(nonpar[2][i]),
-                          int(nonpar[3][i]), float(nonpar[5][i]),
-                          float(nonpar[7][i]), float(nonpar[5][i]),
-                          float(nonpar[8][i]), float(nonpar[9][i]),
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                model.append(_data_)
-
-            column = self.tvwNonParResults.get_column(1)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Number at\nRisk</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(2)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>Number\nFailing</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(3)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>p</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(4)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>se S(t)</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(5)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>S(t)</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(6)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>S(t) Lower\nBound</span>"))
-            column.set_widget(label)
-
-            column = self.tvwNonParResults.get_column(7)
-            label = column.get_widget()
-            label.set_markup(_(u"<span weight='bold'>S(t) Upper\nBound</span>"))
-            column.set_widget(label)
-
-# Hide the unused columns.
-            for i in range(8, 14):
-                column = self.tvwNonParResults.get_column(i)
-                column.set_visible(False)
 
 # Plot the survival curve with confidence bounds.
             self._load_plot(self.axAxis1, self.pltPlot1,
-                            x=times, y1=Shat,
-                            y2=Shatll, y3=Shatul,
+                            x=_times_, y1=_Shat_,
+                            y2=_Shatll_, y3=_Shatul_,
                             _title_=_(u"Kaplan-Meier Plot of %s") % _name,
                             _xlab_=_(u"Time"),
                             _ylab_=_(u"Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
-
-# Create the legend.
-            leg = self.axAxis1.legend((u"Survival Function [S(t)]",
-                                       u"Lower CB", u"Upper CB"),
-                                      'upper right',
-                                      shadow=True)
-            for t in leg.get_texts():
-                t.set_fontsize('small')
-            for l in leg.get_lines():
-                l.set_linewidth(0.5)
+            _text_ = (u"Survival Function [S(t)]", u"S(t) LCL", u"S(t) UCL")
+            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='upper right',
+                                _shadow_=True)
 
 # Plot the hazard rate curve with confidence bounds.
             self._load_plot(self.axAxis3, self.pltPlot3,
-                            x=times[1:], y1=_h_[1:],
+                            x=_times_[1:], y1=_h_[1:],
                             y2=_hll_[1:], y3=_hul_[1:],
                             _title_=_(u"Hazard Rate Plot of %s") % _name,
                             _xlab_=_(u"Time"),
                             _ylab_=_(u"Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
-
-# Create the legend.
-            leg = self.axAxis3.legend((u"Hazard Rate [h(t)]",
-                                       u"Lower CB", u"Upper CB"),
-                                      'upper right',
-                                      shadow=True)
-            for t in leg.get_texts():
-                t.set_fontsize('small')
-            for l in leg.get_lines():
-                l.set_linewidth(0.5)
+            _text_ = (u"Hazard Rate [h(t)]", u"h(t) LCL", u"h(t) UCL")
+            _widg.create_legend(self.axAxis3, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='upper right',
+                                _shadow_=True)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
@@ -2436,39 +2189,31 @@ class Dataset:
 
 # Plot the cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis2, self.pltPlot2,
-                            x=times, y1=_H_,
+                            x=_times_, y1=_H_,
                             y2=_Hll_, y3=_Hul_,
                             _title_=_("Cumulative Hazard Plot of %s") % _name,
                             _xlab_=_("Time"),
                             _ylab_=_("Cumulative Hazard Function [H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
-
-# Create the legend.
-            leg = self.axAxis2.legend(('Cum. Hazard Function [H(t)]',
-                                       'Lower CB', 'Upper CB'), 'upper left',
-                                       shadow=True)
-            for t in leg.get_texts():
-                t.set_fontsize('small')
-            for l in leg.get_lines():
-                l.set_linewidth(0.5)
+            _text_ = (u"Cumulative Hazard Function [H(t)]",
+                      u"H(t) LCL", u"H(t) UCL")
+            _widg.create_legend(self.axAxis2, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='upper left',
+                                _shadow_=True)
 
 # Plot the log cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis4, self.pltPlot4,
-                            x=logtimes, y1=logH[:len(logtimes)],
-                            y2=logHll, y3=logHul,
+                            x=_logtimes_, y1=_logH_[:len(_logtimes_)],
+                            y2=_logHll_, y3=_logHul_,
                             _title_=_("Log Cum. Hazard Plot of %s") % _name,
                             _xlab_=_("log(Time)"),
                             _ylab_=_("Log Cum. Hazard Function [log H(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
-
-# Create the legend.
-            leg = self.axAxis4.legend(('Log Cum. Hazard Function [log H(t)]',
-                                       'Lower CB', 'Upper CB'), 'upper left',
-                                       shadow=True)
-            for t in leg.get_texts():
-                t.set_fontsize('small')
-            for l in leg.get_lines():
-                l.set_linewidth(0.5)
+            _text_ = (u"Log Cumulative Hazard Function [log H(t)]",
+                      u"log H(t) LCL", u"log H(t) UCL")
+            _widg.create_legend(self.axAxis4, _text_, _fontsize_='medium',
+                                _frameon_=True, _location_='upper left',
+                                _shadow_=True)
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
@@ -2666,12 +2411,59 @@ class Dataset:
             self.vbxPlot1.pack_start(self.pltPlot1)
             self.vbxPlot1.pack_start(self.pltPlot3)
 
-
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
+
+        elif(_analysis_ == 4):              # NHPP - Loglinear
+
+            _F_ = []
+            _X_ = []
+            _dates_ = []
+            _times_ = []
+            _mtbf_model_ = []
+            _fi_model_ = []
+            _mtbf_c_plot_ll_ = []
+            _mtbf_c_plot_ = []
+            _mtbf_c_plot_ul_ = []
+            _fi_c_plot_ll_ = []
+            _fi_c_plot_ = []
+            _fi_c_plot_ul_ = []
+
+# Create lists of the failure times and number of failures.
+            for i in range(len(_results_)):
+                _F_.append(_results_[i][5])
+                _X_.append(_results_[i][3])
+                _dates_.append(_results_[i][6])
+
+            _T_ = float(self.txtEndTime.get_text())
+
+# The power_law function will return a list of lists where each list contains:
+#   Index       Value
+#    0          Cumulative test time
+#    1          Cumulative number of failures
+#    2          Calculated cumulative MTBF
+#    3          Lower bound on alpha
+#    4          Point estimate of alpha
+#    5          Upper bounf on alpha
+#    6          Lower bound on b
+#    7          Point estimate of b
+#    8          Upper bound on b
+#    9          Lower bound on model estimate of cumulative MTBF
+#   10          Model point estimate of cumulative MTBF
+#   11          Upper bound on model estimate of cumulative MTBF
+#   12          Lower bound on model estimate of instantaneous MTBF
+#   13          Model point estimate of instantaneous MTBF
+#   14          Upper bound on model estimate of instantaneous MTBF
+#   15          Lower bound on model estimate of cumulative failure intensity
+#   16          Model point estimate of cumulative failure intensity
+#   17          Upper bound on model estimate of cumulative failure intensity
+#   18          Lower bound on model estimate of instantaneous failure intensity
+#   19          Model point estimate of instantaneous failure intensity
+#   20          Upper bound on model estimate of instantaneous failure intensity
+            _log_linear_ = loglinear(_F_, _X_, _fitmeth_, _type_, _conf_, _T_)
 
 # =========================================================================== #
 # Fit the data to an exponential distribution and estimate it's parameters.
@@ -2980,9 +2772,14 @@ class Dataset:
                        INNER JOIN tbl_incident AS t2 ON \
                                   t1.fld_incident_id=t2.fld_incident_id \
                        WHERE t2.fld_revision_id=%d \
+                       AND t1.fld_age_at_incident <= %f \
+                       AND t1.fld_age_at_incident > %f \
+                       AND t2.fld_request_date >= %d \
+                       AND t2.fld_request_date < %d \
                        GROUP BY t1.fld_part_num \
                        ORDER BY COUNT(t1.fld_part_num) DESC" % \
-                       self._app.REVISION.revision_id
+                       (self._app.REVISION.revision_id, _reltime_,
+                        _starttime_, _startdate_, _enddate_)
             _results_ = self._app.DB.execute_query(_query_,
                                                   None,
                                                   self._app.ProgCnx)
@@ -3015,7 +2812,7 @@ class Dataset:
 # =========================================================================== #
 # Create and display parametric plots.
 # =========================================================================== #
-        if(_analysis_ > 3):
+        if(_analysis_ > 4):
 # Plot a histogram of interarrival times.
             hist = R.hist(Rtimes, plot='False')
             bins = list(hist[0])

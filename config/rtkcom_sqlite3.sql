@@ -2,7 +2,7 @@ PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
 --
--- Create tables for site-wdie information.
+-- Create tables for site-wide information.
 --
 CREATE TABLE "tbl_site_info" (
     "fld_product_key" VARCHAR(64) NOT NULL,
@@ -312,25 +312,220 @@ INSERT INTO "tbl_hr_type" VALUES (3,'Specified, MTBF');
 DROP TABLE IF EXISTS "tbl_failure_probability";
 CREATE TABLE "tbl_failure_probability" (
     "fld_probability_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_probability_name" VARCHAR(256)
+    "fld_probability_name" VARCHAR(256),
+    "fld_probability_values" INTEGER
 );
-INSERT INTO "tbl_failure_probability" VALUES(0, "Level A - Frequent");
-INSERT INTO "tbl_failure_probability" VALUES(1, "Level B - Reasonably Probable");
-INSERT INTO "tbl_failure_probability" VALUES(2, "Level C - Occasional");
-INSERT INTO "tbl_failure_probability" VALUES(3, "Level D - Remote");
-INSERT INTO "tbl_failure_probability" VALUES(4, "Level E - Extremely Unlikely");
+INSERT INTO "tbl_failure_probability" VALUES(0, "Level A - Frequent", 1);
+INSERT INTO "tbl_failure_probability" VALUES(1, "Level B - Reasonably Probable", 2);
+INSERT INTO "tbl_failure_probability" VALUES(2, "Level C - Occasional", 3);
+INSERT INTO "tbl_failure_probability" VALUES(3, "Level D - Remote", 4);
+INSERT INTO "tbl_failure_probability" VALUES(4, "Level E - Extremely Unlikely", 5);
 
 DROP TABLE IF EXISTS "tbl_criticality";
 CREATE TABLE "tbl_criticality" (
   "fld_criticality_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_criticality_name" VARCHAR(256),
   "fld_criticality_cat" VARCHAR(218),
-  "fld_criticality_description" BLOB
+  "fld_criticality_description" BLOB,
+  "fld_criticality_value" INTEGER
 );
-INSERT INTO "tbl_criticality" VALUES (1,"Catastrophic","I","Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.");
-INSERT INTO "tbl_criticality" VALUES (2,"Critical","II","Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.");
-INSERT INTO "tbl_criticality" VALUES (3,"Marginal","III","Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.");
-INSERT INTO "tbl_criticality" VALUES (4,"Negligble","IV","Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.");
+INSERT INTO "tbl_criticality" VALUES (1,"Catastrophic","I","Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.", 4);
+INSERT INTO "tbl_criticality" VALUES (2,"Critical","II","Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.", 3);
+INSERT INTO "tbl_criticality" VALUES (3,"Marginal","III","Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.", 2);
+INSERT INTO "tbl_criticality" VALUES (4,"Negligble","IV","Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.", 1);
+
+DROP TABLE IF EXISTS "tbl_hazards";
+CREATE TABLE "tbl_hazards" (
+    "fld_hazard_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_category" VARCHAR(256),
+    "fld_subcategory" VARCHAR(256)
+);
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Falls");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Falling Objects");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Fragments/Missiles");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Impacts");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Inadvertent Motion");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Loose Object Translation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Slip/Trip");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Acceleration/Gravity", "Sloshing Liquids");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Chemical/Water Contamination", "Backflow/Siphon Effect");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Chemical/Water Contamination", "Leaks/Spills");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Chemical/Water Contamination", "System-Cross Connection");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Chemical/Water Contamination", "Vessel/Pipe/Conduit Rupture");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Dust/Dirt");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Faulty Calibration");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Fire");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Flooding");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Location");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Maintenance Error");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Moisture/Humidity");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Radiation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Seismic Disturbance/Impact");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Single-Operator Coupling");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Temperature Extremes");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Utility Outages");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Vibration");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Wear-Out");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Common Causes", "Vermin/Insects");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Earthquake");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Fire");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Flooding");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Freezing");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Hailstorm");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Shutdowns/Failures");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Snow/Ice Load");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Utility Outages");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Contingencies", "Windstorm");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Grounding Failure");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Inadvertent Activation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Interferences (EMI/ESI)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Lightning Strike");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Moisture");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Power Outage");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Sneak Circuit");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Control Systems", "Sneak Software");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Burns");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Distribution Feedback");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Explosion (Arc)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Explosion (Electrostatic)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Overheating");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Power Outage");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Electrical", "Shock");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Fatigue");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Faulty/Inadequate Control/Readout Labeling");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Faulty Work Station Design");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Glare");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Inaccessibility");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Inadequate Control/Readout Differentiation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Inadequate/Improper Illumination");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Inappropriate Control/Readout Location");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ergonomics", "Nonexistent/Inadequate 'Kill' Switches");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Conditions", "Explosive Dust Present");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Conditions", "Explosive Gas Present");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Conditions", "Explosive Liquid Present");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Conditions", "Explosive Propellant Present");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Conditions", "Explosive Vapor Present");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Effects", "Blast Overpressure");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Effects", "Mass Fire");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Effects", "Seismic Ground Wave");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Effects", "Thrown Fragments");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Chemical Contamination");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Electrostatic Discharge");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Friction");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Heat");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Impact/Shock");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Lightning");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Vibration");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Explosive Initiator", "Welding (Stray Current/Sparks)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Fire/Flammability", "Fuel");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Fire/Flammability", "Ignition Source");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Fire/Flammability", "Oxidizer");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Fire/Flammability", "Propellant");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Failure to Operate");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Inadvertent Operation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Operated Too Long");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Operated Too Briefly");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Operation Early/Late");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Operation Out of Sequence");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Operator Error");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Human Factors", "Right Operation/Wrong Control");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ionizing Radiation", "Alpha");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ionizing Radiation", "Beta");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ionizing Radiation", "Gamma");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ionizing Radiation", "Neutron");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Ionizing Radiation", "X-Ray");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Asphyxiating");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Corrosive");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Flammable");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Flooding");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Gases/Vapors");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Irritating Dusts");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Liquids/Cryogens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Odorous");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Pathogenic");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Radiation Sources");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Reactive");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Run Off");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Slippery");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Toxic");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Leaks/Spills", "Vapor Propagation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Crushing Surfaces");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Ejected Parts/Fragments");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Lifting Weights");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Pinch Points");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Reciprocating Equipment");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Rotating Equipment");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Sharp Edges/Points");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mechanical", "Stability/Topping Potential");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Activation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Calibration");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Checkout");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Coupling/Uncoupling");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Delivery");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Diagnosis/Trouble Shooting");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Emergency Start");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Installation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Load Change");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Maintenance");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Normal Operation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Shake Down");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Shutdown Emergency");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Standard Shutdown");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Standard Start");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Stressed Operation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Mission Phasing", "Transport");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Nonionizing Radiation", "Infrared");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Nonionizing Radiation", "Laser");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Nonionizing Radiation", "Microwave");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Nonionizing Radiation", "Ultraviolet");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Allergens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Asphyxiants");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Baropressure Extremes");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Carcinogens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Cryogens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Fatigue");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Irritants");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Lifted Weights");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Mutagens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Noise");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Nuisance Dust/Odors");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Pathogens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Temperature Extremes");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Teratogens");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Toxins");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Physiological", "Vibration (Raynaud’s Syndrome)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Backflow");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Blown Objects");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Crossflow");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Dynamic Pressure Loading");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Hydraulic Ram");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Implosion");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Inadvertent Release");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Miscalibrated Relief Device");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Mislocated Relief Device");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Overpressurization");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Pipe/Hose Whip");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Pipe/Vessel/Duct Rupture");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Pneumatic/Hydraulic", "Relief Pressure Improperly Set");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Altered Structural Properties (e.g., Embrittlement)");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Confined Gas/Liquid");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Elevated Flammability");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Elevated Reactivity");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Elevated Volatility");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Freezing");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Heat Source/Sink");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Hot/Cold Surface Burns");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Humidity/Moisture");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Thermal", "Pressure Evaluation");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Air Conditioning");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Compressed Air/Gas");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Electricity");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Exhaust");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Fuel");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Heating/Cooling");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Lubrication Drains/Sumps");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Steam");
+INSERT INTO "tbl_hazards" ("fld_category", "fld_subcategory") VALUES ("Unannunciated Utility Outages", "Ventilation");
 
 --
 -- Create tables used to store information for software reliability

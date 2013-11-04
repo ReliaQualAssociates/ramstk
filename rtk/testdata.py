@@ -32,12 +32,16 @@ DUANE_TEST_X = [9.2, 15.8, 36.5, 198.5, 40.0, 410.0, 206.0, 94.0, 210.0,
                 670.0, 1300.0, 1600.0, 1300.0, 1200.0, 7400.0]
 
 # Dataset used to test Kaplan-Meier algorithms.
-KM_TEST = [(3.0, 3.0, u'Interval Censored'), (4.0, 4.0, u'Right Censored'),
-           (5.7, 5.7, u'Right Censored'), (6.5, 6.5, u'Interval Censored'),
-           (6.5, 6.5, u'Interval Censored'), (8.4, 8.4, u'Right Censored'),
-           (10.0, 10.0, u'Interval Censored'), (10.0, 10.0, u'Right Censored'),
-           (12.0, 12.0, u'Interval Censored'),
-           (15.0, 15.0, u'Interval Censored')]
+KM_TEST = [(3.0, 3.0, u'Interval Censored', 1),
+           (4.0, 4.0, u'Right Censored', 1),
+           (5.7, 5.7, u'Right Censored', 1),
+           (6.5, 6.5, u'Interval Censored', 1),
+           (6.5, 6.5, u'Interval Censored', 1),
+           (8.4, 8.4, u'Right Censored', 1),
+           (10.0, 10.0, u'Interval Censored', 1),
+           (10.0, 10.0, u'Right Censored', 1),
+           (12.0, 12.0, u'Interval Censored', 1),
+           (15.0, 15.0, u'Interval Censored', 1)]
 
 # Dataset of 100 exponentially distributed points used to test parametric
 # algorithms.

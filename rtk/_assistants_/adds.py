@@ -260,8 +260,8 @@ class AddRevision:
 
                 # Retrieve the information needed to copy the function hierarchy
                 # from the base revision to the new revision.
-                _query_ = "SELECT fld_code, fld_level, fld_name, fld_parent_id, \
-                                  fld_remarks \
+                _query_ = "SELECT fld_code, fld_level, fld_name, \
+                                  fld_parent_id, fld_remarks \
                            FROM tbl_functions \
                            WHERE fld_revision_id=%d" % _base_revision_
                 _function_ = self._app.DB.execute_query(_query_,
@@ -367,7 +367,10 @@ class AddRevision:
                                       fld_quantity, \
                                       fld_ref_des, fld_remarks, \
                                       fld_specification_number, \
-                                      fld_subcategory_id \
+                                      fld_subcategory_id, fld_mtbf_predicted, \
+                                      fld_mtbf_specified, fld_mtbf_lcl, \
+                                      fld_mtbf_ucl, fld_failure_rate_lcl, \
+                                      fld_failure_rate_ucl \
                                FROM tbl_system \
                                WHERE fld_revision_id=%d" % _base_revision_
                 else:
@@ -401,7 +404,10 @@ class AddRevision:
                                     _system_[i][16], _system_[i][17],
                                     _system_[i][18], _system_[i][19],
                                     _system_[i][20], _system_[i][21],
-                                    _system_[i][22], _system_[i][23], _who_)
+                                    _system_[i][22], _system_[i][23],
+                                    _system_[i][24], _system_[i][25],
+                                    _system_[i][26], _system_[i][27],
+                                    _system_[i][28], _system_[i][29], _who_)
                         _query_ = "INSERT INTO tbl_system \
                                    (fld_revision_id, fld_assembly_id, \
                                     fld_cage_code, fld_category_id, \
@@ -416,12 +422,15 @@ class AddRevision:
                                     fld_part, fld_part_number, fld_quantity, \
                                     fld_ref_des, fld_remarks, \
                                     fld_specification_number, \
-                                    fld_subcategory_id, fld_entered_by) \
+                                    fld_subcategory_id, fld_mtbf_predicted, \
+                                    fld_mtbf_specified, fld_mtbf_lcl, \
+                                    fld_mtbf_ucl, fld_failure_rate_lcl, \
+                                    fld_failure_rate_ucl, fld_entered_by) \
                                    VALUES (%d, %d, '%s', %d, '%s', %f, %f, \
                                            %f, %f, %d, '%s', '%s', %d, %d, \
                                            %f, '%s', '%s', '%s', '%s', %d, \
                                            '%s', %d, '%s', '%s', '%s', %d, \
-                                           '%s')" % _values_
+                                           %f, %f, %f, %f, %f, %f, '%s')" % _values_
                     else:
                         _values_ = (_revision_id_, _assembly_id_,
                                     _system_[i][0], _system_[i][1],
@@ -1701,19 +1710,31 @@ class CreateDataSet:
                         _n_inconsistent_ += 1
 
                 else:                                       # Different unit.
-                    if(_results_[i][3] <= _results_[i + 1][3]):
+                    if(i < _n_records_):
+                        if(_results_[i][3] <= _results_[i + 1][3]):
+                            _left_ = 0.0
+                            _right_ = float(_results_[i][3])
+                            _tbf_ = _right_ - _left_
+                            _values_ = (i, _dataset_id_, _left_, _right_,
+                                        'Interval Censored', 1,
+                                        _results_[i][0], _tbf_,
+                                        _results_[i][11], _results_[i][10])
+                            _add_ = True
+                            n = 1
+                        else:
+                            _add_ = False
+                            n += 1
+                            _n_inconsistent_ += 1
+                    else:
                         _left_ = 0.0
                         _right_ = float(_results_[i][3])
                         _tbf_ = _right_ - _left_
                         _values_ = (i, _dataset_id_, _left_, _right_,
-                                    'Interval Censored', 1, _results_[i][0],
-                                    _tbf_, _results_[i][11], _results_[i][10])
+                                    'Interval Censored', 1,
+                                    _results_[i][0], _tbf_, _results_[i][11],
+                                    _results_[i][10])
                         _add_ = True
                         n = 1
-                    else:
-                        _add_ = False
-                        n += 1
-                        _n_inconsistent_ += 1
         else:
             # Write the first record to the open file.
             _file_.write('0\t0\t' + str(_results_[0][3]) + '\t' +
