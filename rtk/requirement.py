@@ -116,6 +116,15 @@ class Requirement:
         if self._general_data_tab_create():
             self._app.debug_log.error("requirement.py: Failed to create General Data tab.")
 
+# Create the Analysis tab widgets for the REQUIREMENT object.
+        self.chkQ1 = _widg.make_check_button()
+        self.chkQ2 = _widg.make_check_button()
+        self.chkQ3 = _widg.make_check_button()
+        self.chkQ4 = _widg.make_check_button()
+        self.chkQ5 = _widg.make_check_button()
+        if self._analysis_tab_create():
+            self._app.debug_log.error("requirement.py: Failed to create Analysis tab.")
+
 # Create the V & V tab widgets for the REQUIREMENT object.
         self.tvwValidation = gtk.TreeView()
         self.scwValidation = gtk.ScrolledWindow()
@@ -388,6 +397,98 @@ class Requirement:
         self.txtSpecification.set_text(str(self.model.get_value(self.selected_row, 11)))
         self.txtPageNumber.set_text(str(self.model.get_value(self.selected_row, 12)))
         self.txtFigureNumber.set_text(str(self.model.get_value(self.selected_row, 13)))
+
+        return False
+
+    def _analysis_tab_create(self):
+        """
+        Method to the create the tab for analyzing the selected requirement.
+        """
+
+        fixed = gtk.Fixed()
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(fixed)
+
+        frame = _widg.make_frame(_label_=_("General Information"))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        y_pos = 5
+
+        label = _widg.make_label(_(u"The selected requirement clearly states what is required."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.chkQ1, 560, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The selected requirement is measurable through test and/or analysis."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.chkQ2, 560, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The selected requirement is technically achievable."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.chkQ3, 560, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The selected requirement is realistic within the program budget."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.chkQ4, 560, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The selected requirement is achievable within the program schedule."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        fixed.put(self.chkQ5, 560, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"Stakeholders understand the selected requirement as written."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The task(s) that will validate and verify the final design meet the selected requirement have been identified."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        y_pos += 30
+
+        label = _widg.make_label(_(u"The identified validation and verification task(s) have been added to the validation plan (e.g., DVP)."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 5, y_pos)
+        y_pos += 30
+
+        y_pos = 5
+
+        label = _widg.make_label(_(u"The principal stakeholders (customers) of the product/application/system were identified."),
+                                 550, 25)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        fixed.put(label, 605, y_pos)
+
+# Insert the tab.
+        label = gtk.Label()
+        label.set_markup("<span weight='bold'>" +
+                         _("Analysis") +
+                         "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.set_tooltip_text(_("Analyzes the selected requirement."))
+        label.show_all()
+        self.notebook.insert_page(frame,
+                                  tab_label=label,
+                                  position=-1)
 
         return False
 

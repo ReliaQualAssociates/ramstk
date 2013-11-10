@@ -289,10 +289,10 @@ class Assembly:
         self.fraRiskAnalysis = _widg.make_frame()
         self.tvwRisk = gtk.TreeView()
         self.tvwRiskMap = gtk.TreeView()
-        if self._risk_analysis_widgets_create():
-            self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
-        if self._risk_analysis_tab_create():
-            self._app.debug_log.error("assembly.py: Failed to create Risk Analysis tab.")
+        #if self._risk_analysis_widgets_create():
+        #    self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
+        #if self._risk_analysis_tab_create():
+        #    self._app.debug_log.error("assembly.py: Failed to create Risk Analysis tab.")
 
 # Create the Similar Items Analysis tab widgets for the ASSEMBLY object.
         self.tvwSIA = gtk.TreeView()
@@ -3522,7 +3522,7 @@ class Assembly:
 
         self._general_data_tab_load()
         self._allocation_tab_load()
-        self._risk_analysis_tab_load()
+        #self._risk_analysis_tab_load()
         self._similar_item_tab_load()
         self._assessment_inputs_tab_load()
         self.assessment_results_tab_load()

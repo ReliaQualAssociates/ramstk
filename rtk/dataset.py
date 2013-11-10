@@ -132,6 +132,8 @@ class Dataset:
         self.cmbFitMethod = _widg.make_combo()
         self.cmbSource = _widg.make_combo()
 
+        self.fraNevadaChart = _widg.make_frame(_label_=_(u"Nevada Chart"))
+
         self.lblFitMethod = _widg.make_label(self._ai_tab_labels[4], 150, 25)
         self.lblConfMethod = _widg.make_label(self._ai_tab_labels[7], 150, 25)
 
@@ -139,8 +141,10 @@ class Dataset:
         self.tvwDataset.set_search_column(0)
         self.tvwDataset.set_reorderable(True)
 
+        self.tvwNevadaChart = gtk.TreeView()
+
         self.txtConfidence = _widg.make_entry(_width_=100)
-        self.txtDescription = _widg.make_entry(_width_=400)
+        self.txtDescription = _widg.make_entry(_width_=200)
         self.txtStartTime = _widg.make_entry(_width_=100)
         self.txtEndTime = _widg.make_entry(_width_=100)
         self.txtRelPoints = _widg.make_entry(_width_=100)
@@ -509,6 +513,7 @@ class Dataset:
 
         self.chkParts.set_tooltip_text(_(u"When checked, the MTBF and failure intensity results will be distributed to all components according to the percentage of records each component contributes.  This assumes failure times are exponentially distributed."))
 
+# Create the Dataset treeview.
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                               gobject.TYPE_INT, gobject.TYPE_STRING)
@@ -593,6 +598,24 @@ class Dataset:
         column.set_visible(1)
         self.tvwDataset.append_column(column)
 
+# Create the Nevada chart treeview.
+        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                              gobject.TYPE_INT, gobject.TYPE_INT,
+                              gobject.TYPE_INT, gobject.TYPE_INT)
+        self.tvwNevadaChart.set_model(model)
+
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', 0)
+        cell.set_property('visible', 1)
+        cell.set_property('background', 'gray')
+        column = gtk.TreeViewColumn()
+        label = _widg.make_column_heading(_(u"Shipment\nDate"))
+        column.set_widget(label)
+        column.pack_start(cell, True)
+        column.set_attributes(cell, text=0)
+        column.set_visible(1)
+        self.tvwNevadaChart.append_column(column)
+
         return False
 
     def _analyses_input_tab_create(self):
@@ -607,9 +630,22 @@ class Dataset:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwDataset)
 
-        hbox.pack_start(scrollwindow, True, True)
+        frame = _widg.make_frame(_label_=_(u"Dataset"))
+        frame.add(scrollwindow)
+
+        hbox.pack_start(frame, True, True)
 
 # Populate tab.
+        vpaned = gtk.VPaned()
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add(self.tvwNevadaChart)
+
+        self.fraNevadaChart.add(scrollwindow)
+
+        vpaned.pack1(self.fraNevadaChart)
+
         fixed = gtk.Fixed()
 
         frame = _widg.make_frame(_label_=_(u"Analyses Inputs"))
@@ -654,43 +690,50 @@ class Dataset:
 
         fixed.put(self.lblConfMethod, 5, y_pos)
         fixed.put(self.cmbConfMethod, 205, y_pos)
-        y_pos += 35
+
+        y_pos = 5
 
         label = _widg.make_label(self._ai_tab_labels[8], 200, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtStartTime, 205, y_pos)
+        fixed.put(label, 420, y_pos)
+        fixed.put(self.txtStartTime, 725, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._ai_tab_labels[9], 200, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtEndTime, 205, y_pos)
+        fixed.put(label, 420, y_pos)
+        fixed.put(self.txtEndTime, 725, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._ai_tab_labels[10], 200, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtRelPoints, 205, y_pos)
+        fixed.put(label, 420, y_pos)
+        fixed.put(self.txtRelPoints, 725, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._ai_tab_labels[11], 200, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtStartDate, 205, y_pos)
-        fixed.put(self.btnStartDate, 310, y_pos)
+        fixed.put(label, 420, y_pos)
+        fixed.put(self.txtStartDate, 725, y_pos)
+        fixed.put(self.btnStartDate, 830, y_pos)
         y_pos += 30
 
         label = _widg.make_label(self._ai_tab_labels[12], 200, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtEndDate, 205, y_pos)
-        fixed.put(self.btnEndDate, 310, y_pos)
+        fixed.put(label, 420, y_pos)
+        fixed.put(self.txtEndDate, 725, y_pos)
+        fixed.put(self.btnEndDate, 830, y_pos)
         y_pos += 30
 
-        fixed.put(self.chkGroup, 5, y_pos)
+        fixed.put(self.chkGroup, 420, y_pos)
         y_pos += 30
 
-        fixed.put(self.chkParts, 5, y_pos)
+        fixed.put(self.chkParts, 420, y_pos)
 
         fixed.show_all()
 
-        hbox.pack_start(frame, True, True)
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(frame)
+
+        vpaned.pack2(scrollwindow)
+
+        hbox.pack_start(vpaned, True, True)
 
         self.chkGroup.hide()
         self.chkParts.hide()
@@ -3425,6 +3468,12 @@ class Dataset:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
+
+        _nevada_chart_ = 0
+        if(_nevada_chart_ == 1):
+            self.fraNevadaChart.show_all()
+        else:
+            self.fraNevadaChart.hide_all()
 
         _title = _(u"RTK Work Book: Program Survival Analyses (%d Datasets)") % \
                    self.n_datasets
