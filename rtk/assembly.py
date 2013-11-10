@@ -3744,13 +3744,13 @@ class Assembly:
 
 # Get the list of failure probability names.
         _columns_ = self.tvwRiskMap.get_columns()
-        _probs_ = []
+        _probs_ = {}
         for i in range(len(_columns_)):
             try:
                 _text_ = _columns_[i].get_widget().get_text()
                 _text_ = _text_.replace('\t', '')
                 _text_ = _text_.replace('\n', ' ')
-                _probs_.append([_text_, 0])
+                _probs_[_text_] = 0
             except AttributeError:
                 pass
 
@@ -3787,12 +3787,14 @@ class Assembly:
 # Update the counts in the risk matrix gtk.TreeView().
         model = self.tvwRiskMap.get_model()
         row = model.get_iter_first()
+        _keys_ = _probs_.keys()
         while row is not None:
             _crit_ = model.get_value(row, 0)
             j = 2
-            for i in range(len(_probs_)):
+            for i in range(len(_keys_)):
                 try:
-                    _count_ = self._assembly_risks_[_crit_][1][_probs_[i]][0]
+                    print _crit_, _keys_[i], _probs_[_keys_[i]]
+                    _count_ = self._assembly_risks_[_crit_][1][_keys_[i]][0]
                     model.set_value(row, j, _count_)
                     j += 3
                 except KeyError:
