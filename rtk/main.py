@@ -154,7 +154,7 @@ class RTK:
 
         if(datetime.datetime.today().toordinal() > _results[0][1]):
             _expire_date = str(datetime.datetime.fromordinal(int(_results[0][1])).strftime('%Y-%m-%d'))
-            _util.application_error(_(u"Invlaid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
+            _util.application_error(_(u"Invalid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
             quit()
 
 # Get a connection to the program database.

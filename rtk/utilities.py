@@ -135,6 +135,10 @@ def read_configuration():
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'riskformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    formatfile = conf.read_configuration().get('Files', 'ffmecaformat')
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    formatfile = conf.read_configuration().get('Files', 'sfmecaformat')
+    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
 # Get color information.
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
@@ -570,7 +574,7 @@ def save_project(widget, _app):
     _app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
     _app.REVISION.revision_save()
-    _app.FUNCTION.function_save(None)
+    _app.FUNCTION.function_save()
     _app.REQUIREMENT.requirement_save()
     _app.HARDWARE.hardware_save()
     _app.SOFTWARE.software_save()

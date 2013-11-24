@@ -1394,9 +1394,12 @@ class CreateDataSet:
         self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to Database"))
         self.optFile = gtk.RadioButton(group=self.optDatabase,
                                        label=_(u"Save Data Set to File"))
+        self.chkNevadaChart = _widg.make_check_button(
+                              _label_=_(u"Create Nevada chart from data."))
 
         fixed.put(self.optDatabase, 5, 5)
         fixed.put(self.optFile, 5, 35)
+        fixed.put(self.chkNevadaChart, 5, 65)
 
 # Create the radio buttons that allow choice of MTTF or MTBF estimates.
         self.optMTTF = gtk.RadioButton(label=_(u"Include only the first failure time for each unit."))
@@ -1405,16 +1408,16 @@ class CreateDataSet:
         self.optMTBF = gtk.RadioButton(group=self.optMTTF,
                                        label=_(u"Include all failure times for each unit."))
 
-        fixed.put(self.optMTTF, 5, 75)
-        fixed.put(self.optMTBBD, 5, 105)
-        fixed.put(self.optMTBF, 5, 135)
+        fixed.put(self.optMTTF, 5, 105)
+        fixed.put(self.optMTBBD, 5, 135)
+        fixed.put(self.optMTBF, 5, 165)
 
 # Create the checkbutton to include or exclude zero hour failures.
         self.chkIncludeZeroHour = _widg.make_check_button(
-        _label_=_(u"Include zero hour failures."))
+                                  _label_=_(u"Include zero hour failures."))
         self.chkIncludeZeroHour.set_active(True)
 
-        fixed.put(self.chkIncludeZeroHour, 5, 175)
+        fixed.put(self.chkIncludeZeroHour, 5, 205)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
@@ -1599,8 +1602,7 @@ class CreateDataSet:
                        WHERE t1.fld_age_at_incident >= %f \
                        ORDER BY t2.fld_unit ASC, \
                                 t2.fld_request_date ASC, \
-                                t1.fld_age_at_incident ASC" % \
-                       _starttime_
+                                t1.fld_age_at_incident ASC" % _starttime_
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx)
@@ -1611,7 +1613,7 @@ class CreateDataSet:
                               t1.fld_failure, t1.fld_suspension, \
                               t1.fld_cnd_nff, t1.fld_occ_fault, \
                               t1.fld_initial_installation, \
-                              t1.fld_interval_censored, t2.fld_request_date. \
+                              t1.fld_interval_censored, t2.fld_request_date, \
                               t2.fld_hardware_id \
                        FROM tbl_incident_detail AS t1 \
                        INNER JOIN \
@@ -1626,8 +1628,7 @@ class CreateDataSet:
                        GROUP BY t2.fld_unit,t1.fld_age_at_incident \
                        ORDER BY t2.fld_unit ASC, \
                                 t2.fld_request_date ASC, \
-                                t1.fld_age_at_incident ASC" % \
-                       _starttime_
+                                t1.fld_age_at_incident ASC" % _starttime_
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx)
@@ -1646,8 +1647,7 @@ class CreateDataSet:
                        WHERE t1.fld_age_at_incident >= %f \
                        ORDER BY t2.fld_unit ASC, \
                                 t2.fld_request_date ASC, \
-                                t1.fld_age_at_incident ASC" % \
-                       _starttime_
+                                t1.fld_age_at_incident ASC" % _starttime_
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx)
@@ -1710,7 +1710,7 @@ class CreateDataSet:
                         _n_inconsistent_ += 1
 
                 else:                                       # Different unit.
-                    if(i < _n_records_):
+                    if(i < _n_records_ - 1):
                         if(_results_[i][3] <= _results_[i + 1][3]):
                             _left_ = 0.0
                             _right_ = float(_results_[i][3])

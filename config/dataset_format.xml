@@ -347,5 +347,14 @@ experience. -->
             <editable>1</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Nevada Chart</defaulttitle>
+            <usertitle>Nevada Chart</usertitle>
+            <datatype>gint</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

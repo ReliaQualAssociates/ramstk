@@ -100,6 +100,7 @@ class Dataset:
         """
 
         self._ready = False
+        self._nevada_chart_ = True         # Dataset created from a Nevada chart.
 
         self._app = application
 
@@ -598,24 +599,6 @@ class Dataset:
         column.set_visible(1)
         self.tvwDataset.append_column(column)
 
-# Create the Nevada chart treeview.
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
-                              gobject.TYPE_INT, gobject.TYPE_INT,
-                              gobject.TYPE_INT, gobject.TYPE_INT)
-        self.tvwNevadaChart.set_model(model)
-
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('visible', 1)
-        cell.set_property('background', 'gray')
-        column = gtk.TreeViewColumn()
-        label = _widg.make_column_heading(_(u"Shipment\nDate"))
-        column.set_widget(label)
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
-        column.set_visible(1)
-        self.tvwNevadaChart.append_column(column)
-
         return False
 
     def _analyses_input_tab_create(self):
@@ -802,7 +785,12 @@ class Dataset:
         self.txtStartDate.set_text(str(_start_date_))
         self.txtEndDate.set_text(str(_end_date_))
 
+        self._nevada_chart_ = self.model.get_value(self.selected_row, 37)
+
         self._load_dataset_tree()
+
+        if(self._nevada_chart_ != 0):
+            self._load_nevada_chart()
 
         return False
 
@@ -831,6 +819,126 @@ class Dataset:
         for i in range(n_events):
             _data_ = [results[i][0], results[i][1], results[i][2],
                       results[i][3], results[i][4], results[i][5]]
+            model.append(_data_)
+
+        return False
+
+    def _load_nevada_chart(self):
+        """
+        Method to load the Nevada chart if one is associated with the selevcted
+        dataset.
+        """
+
+        import pango
+        from datetime import date, datetime
+
+        _nevada_ = {}
+
+        _query_ = "SELECT DISTINCT(fld_ship_date), fld_number_shipped \
+                   FROM tbl_nevada_chart \
+                   WHERE fld_dataset_id=%d \
+                   ORDER BY fld_ship_date" % self.dataset_id
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        _query_ = "SELECT fld_ship_date, fld_return_date, fld_number_returned \
+                   FROM tbl_nevada_chart \
+                   WHERE fld_dataset_id=%d \
+                   ORDER BY fld_ship_date, fld_return_date" % self.dataset_id
+        _returns_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        if not _results_ or not _returns_:
+            return True
+
+        _n_periods_ = len(_results_)
+        _n_returns_ = len(_returns_)
+
+# Create a dictionary with the following:
+#
+#     Key -- shipment date (month-year).
+#   Value -- list with each position containing:
+#       0 = the number of units shipped.
+#       1 = dictionary of returned units where the key is the return date and
+#           the value is the number of units returned.
+#
+#   {u'Jan-08': [32, {u'Mar-08': 0, u'Feb-08': 0}]}
+#
+# Create a list of GObject types to use for creating the gtkListStore() used
+# to display the Nevada chart.
+        _gobject_types_ = [gobject.TYPE_STRING, gobject.TYPE_STRING,
+                           gobject.TYPE_INT, gobject.TYPE_STRING]
+        for i in range(_n_periods_):
+            _date_ship_ = datetime.strftime(
+                          date.fromordinal(_results_[i][0]), '%b-%y')
+            _nevada_[_date_ship_] = [_results_[i][1], {}]
+
+        _n_cols_ = 2
+        _headings_ = [_(u"Ship Date"), _(u"Number\nShipped")]
+        for i in range(_n_returns_):
+            _date_ship_ = datetime.strftime(
+                          date.fromordinal(_returns_[i][0]), '%b-%y')
+            _date_return_ = datetime.strftime(
+                            date.fromordinal(_returns_[i][1]), '%b-%y')
+            _nevada_[_date_ship_][1][_date_return_] = _returns_[i][2]
+            _n_cols_ = max(_n_cols_, len(_nevada_[_date_ship_][1]) + 2)
+            if(_date_return_ not in _headings_):
+                _headings_.append(_date_return_)
+                _gobject_types_.append(gobject.TYPE_INT)
+                _gobject_types_.append(gobject.TYPE_STRING)
+
+# Create the gtk.ListStore() and columns for the Nevada chart gtk.TreeView().
+        j = 0
+        model = gtk.ListStore(*_gobject_types_)
+        for i in range(_n_cols_):
+            cell = gtk.CellRendererText()       # Value to be displayed.
+            cell.set_property('editable', 0)
+            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            cell.set_property('xalign', 0.5)
+            cell.set_property('yalign', 0.1)
+
+            column = gtk.TreeViewColumn("")
+            label = gtk.Label(column.get_title())
+            label.set_line_wrap(True)
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+            column.set_widget(label)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=j, background=j+1)
+            column.set_resizable(True)
+            column.set_alignment(0.5)
+
+            cell = gtk.CellRendererText()       # Cell background color.
+            cell.set_property('visible', False)
+            column.pack_start(cell, True)
+            column.set_attributes(cell, text=j+1)
+
+            self.tvwNevadaChart.append_column(column)
+
+            j += 2
+
+        self.tvwNevadaChart.set_model(model)
+
+# Load the Nevada chart gtk.ListStore() with the data.
+        _date_ship_ = _nevada_.keys()
+        _date_return_ = _headings_[2:]
+        for i in range(len(_date_ship_)):
+            _returns_ = _nevada_[_date_ship_[i]][1].keys()
+            _data_ = [_date_ship_[i], 'light gray',
+                      _nevada_[_date_ship_[i]][0], 'light gray']
+            for j in range(len(_date_return_)):
+                if(_date_return_[j] not in _returns_):
+                    _data_.append(0)
+                    _data_.append('light gray')
+                else:
+                    _data_.append(_nevada_[_date_ship_[i]][1][_date_return_[j]])
+                    _data_.append('#FFFFFF')
             model.append(_data_)
 
         return False
@@ -3469,8 +3577,7 @@ class Dataset:
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
 
-        _nevada_chart_ = 0
-        if(_nevada_chart_ == 1):
+        if(self._nevada_chart_):
             self.fraNevadaChart.show_all()
         else:
             self.fraNevadaChart.hide_all()

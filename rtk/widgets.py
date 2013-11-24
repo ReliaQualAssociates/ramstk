@@ -44,6 +44,93 @@ import gettext
 _ = gettext.gettext
 
 
+class CellRendererML(gtk.CellRendererText):
+
+    def __init__(self):
+        gtk.CellRendererText.__init__(self)
+
+    def do_get_size(self, widget, cell_area):
+        # We start from the standard dimension...
+        size_tuple = gtk.CellRendererText.do_get_size(self, widget, cell_area)
+        return(size_tuple)
+
+    def do_start_editing(self, event, treeview, path, background_area, cell_area, flags):
+
+        if not self.get_property('editable'):
+            return
+
+        self.selection = treeview.get_selection()
+        self.treestore, self.treeiter = self.selection.get_selected()
+
+        self.textedit_window = gtk.Dialog(parent=treeview.get_toplevel())
+
+        self.textedit_window.action_area.hide()
+        self.textedit_window.set_decorated(False)
+        self.textedit_window.set_property('skip-taskbar-hint', True)
+        self.textedit_window.set_transient_for(None) # cancel the modality of dialog
+
+        self.textedit = gtk.TextView()
+        self.textedit.set_editable(True)
+        self.textedit.set_property('visible', True)
+        self.textbuffer = self.textedit.get_buffer()
+        self.textbuffer.set_property('text', self.get_property('text'))
+
+        #map key-press-event handler
+        self.textedit_window.connect('key-press-event', self._keyhandler)
+
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_property('visible', True)
+        #self.textedit_window.vbox.pack_start(scrolled_window)
+
+        scrolled_window.add(self.textedit)
+        self.textedit_window.vbox.add(scrolled_window)
+        self.textedit_window.realize()
+
+        # position the popup below the edited cell (and try hard to keep the popup within the toplevel window)
+
+        (tree_x, tree_y) = treeview.get_bin_window().get_origin()
+        (tree_w, tree_h) = treeview.window.get_geometry()[2:4]
+        (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]
+        x = tree_x + min(cell_area.x, tree_w - t_w + treeview.get_visible_rect().x)
+        y = tree_y + min(cell_area.y, tree_h - t_h + treeview.get_visible_rect().y)
+        self.textedit_window.move(x, y)
+        self.textedit_window.resize(cell_area.width, cell_area.height)
+
+        #now run dialog, get response by tracking keypresses
+        response = self.textedit_window.run()
+
+        if response == gtk.RESPONSE_OK:
+            self.textedit_window.destroy()
+            #update text and so forth....
+            (iter_first, iter_last) = self.textbuffer.get_bounds()
+            text = self.textbuffer.get_text(iter_first, iter_last)
+            #store the text
+            #self.treestore[path][2] = text
+
+            #set focus back on row
+            treeview.set_cursor(path, None, False)
+
+            #propagate edited signal for other handlers...
+            self.emit('edited', path, text)
+
+        elif response == gtk.RESPONSE_CANCEL:
+            self.textedit_window.destroy()
+        else:
+            print "response %i received" % response
+            self.textedit_window.destroy()
+
+    def _keyhandler(self, widget, event):
+        # track keystrokes, look for shift-return or ctrl-return to signal end of cell editing
+        keyname = gtk.gdk.keyval_name(event.keyval)
+
+        if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and gtk.gdk.keyval_name(event.keyval) == 'Return':
+
+            self.textedit_window.response(gtk.RESPONSE_OK)
+
+gobject.type_register(CellRendererML)
+
+
 def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
     """
     Utility function to create Button widgets.
@@ -252,6 +339,29 @@ def make_label(text, width=190, height=25, bold=True):
     return(label)
 
 
+def make_labels(label_text, container, y_pos):
+    """
+    Utility function to make labels.  The width of each label is set using a
+    natural request.  This ensures the label doesn't wrap or cut off letters.
+    The maximum size of the labels is determined and used to set the left
+    position of widget displaying the data described y the label.  This
+    ensures everything lines up.
+
+    Keyword Arguments:
+    label_text -- a list containing the text for each label.
+    container  -- the container widget to place the labels on.
+    y_pos      -- the y_pos of the first label.
+    """
+
+    _max_length_ = 0
+    for i in range(len(label_text)):
+        label = make_label(label_text[i], -1, 25)
+        _max_length_ = max(_max_length_, label.size_request()[0])
+        container.put(label, 5, (30 * i + y_pos))
+
+    return(_max_length_)
+
+
 def make_text_view(buffer_=None, width=200, height=100):
     """
     Utility function to create gtk.TextView widgets.
@@ -370,7 +480,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
     if(fmt_idx == 3):
         gobject_types.append(gtk.gdk.Pixbuf)
-    elif(fmt_idx == 9):
+    elif(fmt_idx == 9 or fmt_idx == 18):
         gobject_types.append(gobject.TYPE_INT)
         gobject_types.append(gobject.TYPE_STRING)
         gobject_types.append(gobject.TYPE_BOOLEAN)
@@ -414,6 +524,15 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell = gtk.CellRendererToggle()
             cell.set_property('activatable', int(editable[i].text))
             cell.connect('toggled', cell_toggled, int(position[i].text), model)
+        elif(widget[i].text == 'blob'):
+            cell = CellRendererML()
+            cell.set_property('background', bg_col)
+            cell.set_property('editable', int(editable[i].text))
+            cell.set_property('foreground', fg_col)
+            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            cell.set_property('yalign', 0.1)
+            cell.connect('edited', edit_tree, int(position[i].text), model)
         else:
             cell = gtk.CellRendererText()
             cell.set_property('background', bg_col)

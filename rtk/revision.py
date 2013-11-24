@@ -566,7 +566,7 @@ class Revision:
         if self.selected_row is not None:
             self._app.REQUIREMENT.requirement_save()
             self._app.REQUIREMENT.load_tree()
-            self._app.FUNCTION.function_save(None)
+            self._app.FUNCTION.function_save()
             self._app.FUNCTION.load_tree()
             self._app.HARDWARE.hardware_save()
             self._app.HARDWARE.load_tree()

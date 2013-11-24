@@ -6,14 +6,14 @@ BEGIN TRANSACTION;
 --
 DROP TABLE IF EXISTS "tbl_program_info";
 CREATE TABLE "tbl_program_info" (
-    "fld_program_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_revision_prefix" VARCHAR(16) NOT NULL DEFAULT('REVISION'),
-    "fld_revision_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_function_prefix" VARCHAR(16) NOT NULL DEFAULT('FUNCTION'),
-    "fld_function_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_assembly_prefix" VARCHAR(16) NOT NULL DEFAULT('ASSEMBLY'),
-    "fld_assembly_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_part_prefix" VARCHAR(16) NOT NULL DEFAULT('PART'),
+    "fld_program_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    --
+    "fld_revision_prefix" VARCHAR(16) NOT NULL DEFAULT('REVISION'), -- Default prefix to use for new revisions.
+    "fld_revision_next_id" INTEGER NOT NULL DEFAULT(1),             -- Next revision ID.
+    "fld_function_prefix" VARCHAR(16) NOT NULL DEFAULT('FUNCTION'), -- Default prefix to use for new function.
+    "fld_function_next_id" INTEGER NOT NULL DEFAULT(1),             -- Next function ID.
+    "fld_assembly_prefix" VARCHAR(16) NOT NULL DEFAULT('ASSEMBLY'), -- Default prefix to use for new hardware assembly.
+    "fld_assembly_next_id" INTEGER NOT NULL DEFAULT(1),             -- Next hardware assembly ID.
+    "fld_part_prefix" VARCHAR(16) NOT NULL DEFAULT('PART'),         -- Default prefix to use for new hardware part or component.
     "fld_part_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_fmeca_prefix" VARCHAR(16) NOT NULL DEFAULT('FMEA'),
     "fld_fmeca_next_id" INTEGER NOT NULL DEFAULT(1),
@@ -163,14 +163,14 @@ CREATE TABLE "tbl_system" (
     "fld_add_adj_factor" REAL NOT NULL DEFAULT(0),                  -- Failure rate additive adjustment factor.
     "fld_allocation_type" INTEGER NOT NULL DEFAULT(0),              --
     "fld_alt_part_number" VARCHAR(128) DEFAULT(''),                 -- Alternate part number.
-    "fld_assembly_criticality" VARCHAR(256) DEFAULT(''),            --
+    "fld_assembly_criticality" VARCHAR(256) DEFAULT(''),            -- MIL-STD-1629A criticality of the assembly.
     "fld_attachments" VARCHAR(256) DEFAULT(''),                     -- Hyperlinks to any attachments.
     "fld_availability" REAL NOT NULL DEFAULT(1),                    -- Inherent availability.
     "fld_availability_mission" REAL NOT NULL DEFAULT(1),            -- Estimated mission availability.
     "fld_cage_code" VARCHAR(64) DEFAULT(''),                        -- CAGE code for assembly or part.
     "fld_calculation_model" INTEGER NOT NULL DEFAULT(1),            -- Failure rate calculation model to use.
-    "fld_category_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_comp_ref_des" VARCHAR(128) DEFAULT(''),
+    "fld_category_id" INTEGER NOT NULL DEFAULT(0),                  -- Component category ID.
+    "fld_comp_ref_des" VARCHAR(128) DEFAULT(''),                    -- Composite reference designator.
     "fld_cost" REAL NOT NULL DEFAULT (0),
     "fld_cost_failure" REAL NOT NULL DEFAULT (0),
     "fld_cost_hour" REAL NOT NULL DEFAULT (0),
@@ -182,18 +182,18 @@ CREATE TABLE "tbl_system" (
     "fld_entered_by" VARCHAR(64) DEFAULT (''),
     "fld_environment_active" INTEGER NOT NULL DEFAULT (0),
     "fld_environment_dormant" INTEGER NOT NULL DEFAULT (0),
-    "fld_failure_dist" INTEGER NOT NULL DEFAULT (0),
-    "fld_failure_parameter_1" REAL NOT NULL DEFAULT (0),
-    "fld_failure_parameter_2" REAL NOT NULL DEFAULT (0),
-    "fld_failure_parameter_3" REAL NOT NULL DEFAULT (0),
+    "fld_failure_dist" INTEGER NOT NULL DEFAULT (0),                -- Failure distribution.
+    "fld_failure_parameter_1" REAL NOT NULL DEFAULT (0),            -- Scale parameter.
+    "fld_failure_parameter_2" REAL NOT NULL DEFAULT (0),            -- Shape parameter.
+    "fld_failure_parameter_3" REAL NOT NULL DEFAULT (0),            -- Location parameter.
     "fld_failure_rate_active" REAL NOT NULL DEFAULT (0),
     "fld_failure_rate_dormant" REAL NOT NULL DEFAULT (0),
     "fld_failure_rate_mission" REAL NOT NULL DEFAULT (0),
     "fld_failure_rate_percent" REAL NOT NULL DEFAULT (0),
     "fld_failure_rate_predicted" REAL NOT NULL DEFAULT (0),
-    "fld_failure_rate_software" REAL NOT NULL DEFAULT (0),
-    "fld_failure_rate_specified" REAL NOT NULL DEFAULT (0),
-    "fld_failure_rate_type" INTEGER NOT NULL DEFAULT(1),
+    "fld_failure_rate_software" REAL NOT NULL DEFAULT (0),          -- Software failure rate.
+    "fld_failure_rate_specified" REAL NOT NULL DEFAULT (0),         -- Specified failure rate.
+    "fld_failure_rate_type" INTEGER NOT NULL DEFAULT(1),            -- How the failure rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
     "fld_figure_number" VARCHAR(32) DEFAULT (''),
     "fld_humidity" REAL NOT NULL DEFAULT (50),
     "fld_image_file" VARCHAR(128) DEFAULT (''),
@@ -362,15 +362,20 @@ CREATE TABLE "tbl_risk_analysis" (
     "fld_assembly_effect" VARCHAR(512) DEFAULT (''),
     "fld_assembly_severity" VARCHAR(128) DEFAULT (''),
     "fld_assembly_probability" VARCHAR(128) DEFAULT (''),
+    "fld_assembly_hri" INTEGER DEFAULT (0),
+    "fld_assembly_mitigation" BLOB DEFAULT (''),
+    "fld_assembly_severity_f" VARCHAR(128) DEFAULT (''),
+    "fld_assembly_probability_f" VARCHAR(128) DEFAULT (''),
+    "fld_assembly_hri_f" INTEGER DEFAULT (0),
     "fld_system_effect" VARCHAR(512) DEFAULT (''),
     "fld_system_severity" VARCHAR(128) DEFAULT (''),
     "fld_system_probability" VARCHAR(128) DEFAULT (''),
-    "fld_mitigation_strategy" BLOB DEFAULT (''),
+    "fld_system_hri" INTEGER DEFAULT (0),
+    "fld_system_mitigation" BLOB DEFAULT (''),
+    "fld_system_severity_f" VARCHAR(128) DEFAULT (''),
+    "fld_system_probability_f" VARCHAR(128) DEFAULT (''),
+    "fld_system_hri_f" INTEGER DEFAULT (0),
     "fld_remarks" BLOB DEFAULT (''),
-    "fld_assembly_init_hri" INTEGER DEFAULT (0),
-    "fld_assembly_current_hri" INTEGER DEFAULT (0),
-    "fld_system_init_hri" INTEGER DEFAULT (0),
-    "fld_system_current_hri" INTEGER DEFAULT (0),
     "fld_function_1" VARCHAR(128) NOT NULL DEFAULT (''),
     "fld_function_2" VARCHAR(128) NOT NULL DEFAULT (''),
     "fld_function_3" VARCHAR(128) NOT NULL DEFAULT (''),
@@ -391,7 +396,7 @@ CREATE TABLE "tbl_risk_analysis" (
     "fld_user_int_2" INTEGER DEFAULT (0),
     "fld_user_int_3" INTEGER DEFAULT (0)
 );
-INSERT INTO "tbl_risk_analysis" VALUES(0,0,0,'','','','','','','','','','',0,0,0,0,'','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "tbl_risk_analysis" VALUES(0,0,0,'','','','','',0,'','','',0,'','','',0,'','','',0,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
 
 CREATE TABLE "tbl_risk_matrix" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
@@ -862,7 +867,8 @@ CREATE TABLE "tbl_dataset" (
     "fld_mle" FLOAT DEFAULT(0),
     "fld_start_time" FLOAT DEFAULT(0),          -- Minimum failure time for filtering survival data records.
     "fld_start_date" INTEGER DEFAULT(719163),   -- Start date for filtering survival data records.
-    "fld_end_date" INTEGER DEFAULT(719163)      -- End date for filtering survival data records.
+    "fld_end_date" INTEGER DEFAULT(719163),     -- End date for filtering survival data records.
+    "fld_nevada_chart" INTEGER DEFAULT(0)       -- Whether or not the dataset includes a Nevada chart.
 );
 
 CREATE TABLE "tbl_survival_data" (
@@ -881,6 +887,14 @@ CREATE TABLE "tbl_survival_data" (
     "fld_assembly_id" INTEGER DEFAULT (0),
     "fld_request_date" INTEGER DEFAULT (719163),
     PRIMARY KEY ("fld_record_id", "fld_dataset_id")
+);
+
+CREATE TABLE "tbl_nevada_chart" (
+    "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_ship_date" INTEGER DEFAULT(719163),
+    "fld_number_shipped" INTEGER DEFAULT(1),
+    "fld_return_date" INTEGER DEFAULT(719163),
+    "fld_number_returned" INTEGER DEFAULT(0)
 );
 
 --

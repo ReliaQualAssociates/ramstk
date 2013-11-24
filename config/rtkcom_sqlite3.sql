@@ -123,6 +123,7 @@ INSERT INTO "tbl_category" VALUES (7,'Switching Device');
 INSERT INTO "tbl_category" VALUES (8,'Connection');
 INSERT INTO "tbl_category" VALUES (9,'Meter');
 INSERT INTO "tbl_category" VALUES (10,'Miscellaneous');
+INSERT INTO "tbl_category" VALUES (1000,'Function');
 
 DROP TABLE IF EXISTS "tbl_subcategory";
 CREATE TABLE "tbl_subcategory" (
@@ -218,6 +219,7 @@ INSERT INTO "tbl_subcategory" VALUES (10,80,'Crystal');
 INSERT INTO "tbl_subcategory" VALUES (10,81,'Lamp');
 INSERT INTO "tbl_subcategory" VALUES (10,82,'Fuse');
 INSERT INTO "tbl_subcategory" VALUES (10,83,'Filter, Non-Tunable Electronic');
+INSERT INTO "tbl_subcategory" VALUES (1000,1,'All');
 
 --
 -- Create tables for storing environmental information.
@@ -630,6 +632,11 @@ INSERT INTO "tbl_failure_modes" VALUES (4,40,1,"Shorted",0.6);
 INSERT INTO "tbl_failure_modes" VALUES (4,40,2,"Opened",0.35);
 INSERT INTO "tbl_failure_modes" VALUES (4,40,3,"Parametric Drift",0.05);
 INSERT INTO "tbl_failure_modes" VALUES (4,41,4,"",0.0);
+INSERT INTO "tbl_failure_modes" VALUES (1000,1,1,"Function fails to occur when required",0.0);
+INSERT INTO "tbl_failure_modes" VALUES (1000,1,2,"Function occurs when not required",0.0);
+INSERT INTO "tbl_failure_modes" VALUES (1000,1,3,"Function occurs when required, but under performs (i.e., too little function)",0.0);
+INSERT INTO "tbl_failure_modes" VALUES (1000,1,4,"Function occurs when required, but over performs (i.e., too much function)",0.0);
+INSERT INTO "tbl_failure_modes" VALUES (1000,1,5,"Function occurs when required, but is erratic/intermittent",0.0);
 
 DROP TABLE IF EXISTS "tbl_failure_mechanisms";
 CREATE TABLE "tbl_failure_mechanisms" (

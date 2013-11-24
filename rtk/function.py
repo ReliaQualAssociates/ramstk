@@ -88,21 +88,30 @@ class Function:
 
         self._FunctionMatrix = None
 
+# Find the user's preferred gtk.Notebook tab position.
+        self.notebook = gtk.Notebook()
+        if(_conf.TABPOS[2] == 'left'):
+            self.notebook.set_tab_pos(gtk.POS_LEFT)
+        elif(_conf.TABPOS[2] == 'right'):
+            self.notebook.set_tab_pos(gtk.POS_RIGHT)
+        elif(_conf.TABPOS[2] == 'top'):
+            self.notebook.set_tab_pos(gtk.POS_TOP)
+        else:
+            self.notebook.set_tab_pos(gtk.POS_BOTTOM)
+
+        self.notebook.connect('switch-page', self._notebook_page_switched)
+
+# Create the toolbar buttons.
+        self.btnAddSibling = gtk.ToolButton()
+        self.btnAddChild = gtk.ToolButton()
+        self.btnAddMode = gtk.ToolButton()
+        self.btnRemoveFunction = gtk.ToolButton()
+        self.btnRemoveMode = gtk.ToolButton()
+        self.btnCalculate = gtk.ToolButton()
+        self.btnSave = gtk.ToolButton()
+
         self.vbxFunction = gtk.VBox()
         toolbar = self._toolbar_create()
-
-        # Find the user's preferred gtk.Notebook tab position.
-        if(_conf.TABPOS[2] == 'left'):
-            _position = gtk.POS_LEFT
-        elif(_conf.TABPOS[2] == 'right'):
-            _position = gtk.POS_RIGHT
-        elif(_conf.TABPOS[2] == 'top'):
-            _position = gtk.POS_TOP
-        else:
-            _position = gtk.POS_BOTTOM
-
-        self.notebook = gtk.Notebook()
-        self.notebook.set_tab_pos(_position)
 
         self.vbxFunction.pack_start(toolbar, expand=False)
         self.vbxFunction.pack_start(self.notebook)
@@ -146,7 +155,17 @@ class Function:
             self._app.debug_log.error("function.py: Failed to create Assessment Results tab.")
 
         # ----- ----- ----- Create the FMECA Worksheet tab  ----- ----- ----- #
-        # TODO: Implement FMECA Worksheet for FUNCTION.
+        bg_color = _conf.RTK_COLORS[6]
+        fg_color = _conf.RTK_COLORS[7]
+        (self.tvwFMECA,
+         self._FMECA_col_order) = _widg.make_treeview('FFMECA', 18,
+                                                      self._app,
+                                                      None,
+                                                      bg_color,
+                                                      fg_color)
+
+        if self._fmeca_tab_create():
+            self._app.debug_log.error("function.py: Failed to create FMECA tab.")
 
         self._ready = True
 
@@ -158,62 +177,79 @@ class Function:
         _pos = 0
 
 # Add sibling function button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new function at the same indenture level as the selected function to the RTK Program database."))
+        self.btnAddSibling.set_tooltip_text(_("Adds a new function at the same indenture level as the selected function (i.e., a sibling function)."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.function_add, 0)
-        toolbar.insert(button, _pos)
+        self.btnAddSibling.set_icon_widget(image)
+        self.btnAddSibling.connect('clicked', self.function_add, 0)
+        toolbar.insert(self.btnAddSibling, _pos)
         _pos += 1
 
 # Add child function button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
-        button.set_tooltip_text(_("Adds a new function one indenture level subordinate to the selected function to the RTK Program database."))
+        self.btnAddChild.set_tooltip_text(_("Adds a new function one indenture level subordinate to the selected function (i.e., a child function)."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.function_add, 1)
-        toolbar.insert(button, _pos)
+        self.btnAddChild.set_icon_widget(image)
+        self.btnAddChild.connect('clicked', self.function_add, 1)
+        toolbar.insert(self.btnAddChild, _pos)
+        _pos += 1
+
+# Add a failure mode button.
+        self.btnAddMode.set_tooltip_text(_("Adds a failure mode to the currently selected function."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnAddMode.set_icon_widget(image)
+        self.btnAddMode.connect('clicked', self._failure_mode_add)
+        toolbar.insert(self.btnAddMode, _pos)
         _pos += 1
 
 # Delete function button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
-        button.set_tooltip_text(_("Removes the currently selected function from the RTK Program Database."))
+        self.btnRemoveFunction.set_tooltip_text(_("Removes the currently selected function."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.function_delete)
-        toolbar.insert(button, _pos)
+        self.btnRemoveFunction.set_icon_widget(image)
+        self.btnRemoveFunction.connect('clicked', self.function_delete)
+        toolbar.insert(self.btnRemoveFunction, _pos)
+        _pos += 1
+
+# Delete a failure mode button.
+        self.btnRemoveMode.set_tooltip_text(_("Removes the currently selected failure mode."))
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemoveMode.set_icon_widget(image)
+        self.btnRemoveMode.connect('clicked', self._failure_mode_delete)
+        toolbar.insert(self.btnRemoveMode, _pos)
         _pos += 1
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
 # Calculate function button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        button.set_tooltip_text(_("Calculate the functions."))
+        self.btnCalculate.set_tooltip_text(_("Calculate the functions."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', _calc.calculate_project, self._app, 2)
-        toolbar.insert(button, _pos)
+        self.btnCalculate.set_icon_widget(image)
+        self.btnCalculate.connect('clicked', _calc.calculate_project, self._app, 2)
+        toolbar.insert(self.btnCalculate, _pos)
         _pos += 1
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
 # Save function button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-        button.set_tooltip_text(_("Saves function changes to the RTK Program Database."))
+        self.btnSave.set_tooltip_text(_("Saves changes to the selected function."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.function_save)
-        toolbar.insert(button, _pos)
+        self.btnSave.set_icon_widget(image)
+        self.btnSave.set_name('Save')
+        self.btnSave.connect('clicked', self._toolbutton_pressed)
+        toolbar.insert(self.btnSave, _pos)
         _pos += 1
 
         toolbar.show()
+
+        self.btnAddMode.hide()
+        self.btnRemoveMode.hide()
 
         return(toolbar)
 
@@ -321,7 +357,9 @@ class Function:
         textbuffer = self.txtName.get_child().get_child().get_buffer()
         textbuffer.set_text(self.model.get_value(self.selected_row, 14))
         textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
-        textbuffer.set_text(self.model.get_value(self.selected_row, 15))
+        _text_ = self.model.get_value(self.selected_row, 15)
+        _text_ = _util.none_to_string(_text_)
+        textbuffer.set_text(_text_)
         self.txtModeCount.set_text(str('{0:0.0f}'.format(self.model.get_value(self.selected_row, 16))))
         self.txtPartCount.set_text(str('{0:0.0f}'.format(self.model.get_value(self.selected_row, 17))))
 
@@ -626,6 +664,189 @@ class Function:
 
         return False
 
+    def _fmeca_tab_create(self):
+        """
+        Method to create the FMECA gtk.Notebook tab and populate it with the
+        appropriate widgets.
+        """
+
+# Load the severity classification gtk.CellRendererCombo.
+        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[11])
+        _cell_ = _column_.get_cell_renderers()
+        _cellmodel_ = _cell_[0].get_property('model')
+        _cellmodel_.clear()
+        _query_ = "SELECT fld_criticality_id, fld_criticality_name, \
+                          fld_criticality_cat \
+                   FROM tbl_criticality"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+
+        if(_results_ == '' or not _results_ or _results_ is None):
+            _util.application_error(_(u"There was a problem loading the failure criticality list in the Function Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
+        else:
+            _n_crit_ = len(_results_)
+            _cellmodel_.append([""])
+            for i in range(_n_crit_):
+                _cellmodel_.append([_results_[i][2] + " - " + _results_[i][1]])
+
+# Load the qualitative failure probability gtk.CellRendererCombo.
+        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[13])
+        _cell_ = _column_.get_cell_renderers()
+        _cellmodel_ = _cell_[0].get_property('model')
+        _cellmodel_.clear()
+        _query_ = "SELECT * FROM tbl_failure_probability"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+
+        if(_results_ == '' or not _results_ or _results_ is None):
+            _util.application_error(_(u"There was a problem loading the failure probability list in the Function Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
+        else:
+            _n_probs_ = len(_results_)
+            _cellmodel_.append([""])
+            for i in range(_n_probs_):
+                _cellmodel_.append([_results_[i][1]])
+
+# Load the RPN severity and RPN severity new gtk.CellRendererCombo.
+        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[20])
+        _cell_ = _column_.get_cell_renderers()
+        _cellmodel1_ = _cell_[0].get_property('model')
+        _cellmodel1_.clear()
+        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[21])
+        _cell_ = _column_.get_cell_renderers()
+        _cellmodel2_ = _cell_[0].get_property('model')
+        _cellmodel2_.clear()
+        _query_ = "SELECT fld_severity_name \
+                   FROM tbl_rpn_severity \
+                   WHERE fld_fmeca_type=0"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+
+        if(_results_ == '' or not _results_ or _results_ is None):
+            _util.application_error(_(u"There was a problem loading the RPN Severity list in the Function Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
+        else:
+            _n_sev_ = len(_results_)
+            _cellmodel1_.append([""])
+            _cellmodel2_.append([""])
+            for i in range(_n_sev_):
+                _cellmodel1_.append([_results_[i][0]])
+                _cellmodel2_.append([_results_[i][0]])
+
+        #self.tvwFMECA.connect('cursor_changed',
+        #                      self._fmeca_treeview_row_changed, None, None)
+        #self.tvwFMECA.connect('row_activated',
+        #                      self._fmeca_treeview_row_changed)
+
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrollwindow.add_with_viewport(self.tvwFMECA)
+
+        frame = _widg.make_frame(_label_=_(u"Failure Mode, Effects, and Criticality Analysis"))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame.add(scrollwindow)
+
+        label = gtk.Label()
+        _heading = _(u"FMEA/FMECA\nWorksheet")
+        label.set_markup("<span weight='bold'>" + _heading + "</span>")
+        label.set_alignment(xalign=0.5, yalign=0.5)
+        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.show_all()
+        label.set_tooltip_text(_(u"Failure mode, effects, and criticality analysis (FMECA) for the selected function."))
+
+        self.notebook.insert_page(frame,
+                                  tab_label=label,
+                                  position=-1)
+
+        return False
+
+    def _fmeca_tab_load(self):
+        """ Method to load the FMECA tab information. """
+
+        _model_ = self.tvwFMECA.get_model()
+        _model_.clear()
+
+# Load the mission phase gtk.CellRendererCombo.
+        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[2])
+        _cell_ = _column_.get_cell_renderers()
+        _cellmodel_ = _cell_[0].get_property('model')
+        _cellmodel_.clear()
+
+        _query_ = "SELECT fld_phase_id, fld_phase_name, fld_phase_time \
+                   FROM tbl_mission_phase"
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        if(not _results_ or _results_ == '' or _results_ is None):
+            _util.application_error(_(u"There was a problem loading the mission phase list in the Function Work Book FMEA/FMECA tab.  This may indicate your RTK program database is corrupt."))
+        else:
+            _phases_ = len(_results_)
+            _cellmodel_.append([""])
+            for i in range(_phases_):
+                _cellmodel_.append([_results_[i][1]])
+
+# Load the FMEA/FMECA worksheet.
+        _query_ = "SELECT fld_mode_id, fld_mode_description, \
+                          fld_mission_phase, fld_local_effect, \
+                          fld_next_effect, fld_end_effect, \
+                          fld_detection_method, fld_other_indications, \
+                          fld_isolation_method, fld_design_provisions, \
+                          fld_operator_actions, fld_severity_class, \
+                          fld_hazard_rate_source, fld_failure_probability, \
+                          fld_effect_probability, fld_mode_ratio, \
+                          fld_mode_failure_rate, fld_mode_op_time, \
+                          fld_mode_criticality, fld_rpn_severity, \
+                          fld_rpn_severity_new, fld_critical_item, \
+                          fld_single_point, fld_remarks \
+                   FROM tbl_fmeca \
+                   WHERE fld_revision_id=%d \
+                   AND fld_assembly_id=0 \
+                   AND fld_function_id=%d" % (self._app.REVISION.revision_id,
+                                              self.function_id)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        if(not _results_ or _results_ == ''):
+            return True
+
+        _n_modes_ = len(_results_)
+        icon = _conf.ICON_DIR + '32x32/mode.png'
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+        for i in range(_n_modes_):
+            _data_ = [_results_[i][0],
+                      _util.none_to_string(_results_[i][1]),
+                      _util.none_to_string(_results_[i][2]),
+                      _util.none_to_string(_results_[i][3]),
+                      _util.none_to_string(_results_[i][4]),
+                      _util.none_to_string(_results_[i][5]),
+                      _util.none_to_string(_results_[i][6]),
+                      _util.none_to_string(_results_[i][7]),
+                      _util.none_to_string(_results_[i][8]),
+                      _util.none_to_string(_results_[i][9]),
+                      _util.none_to_string(_results_[i][10]),
+                      _util.none_to_string(_results_[i][11]),
+                      _util.none_to_string(_results_[i][12]),
+                      _util.none_to_string(_results_[i][13]),
+                      _util.none_to_string(_results_[i][14]),
+                      str(_results_[i][15]), str(_results_[i][16]),
+                      str(_results_[i][17]), str(_results_[i][18]), "",
+                      str(_results_[i][19]), str(_results_[i][20]),
+                      _results_[i][21], _results_[i][22],
+                      _util.none_to_string(_results_[i][23]),
+                      0, '#FFFFFF', True, icon]
+
+            # Load the FMECA gtk.TreeView with the data.
+            try:
+                _model_.append(None, _data_)
+            except TypeError:
+                _util.application_error(_(u"Failed to load FMEA/FMECA failure mode %d" % _results_[i][0]))
+                pass
+
+        return False
+
     def create_tree(self):
         """
         Creates the Function TreeView and connects it to callback functions to
@@ -915,16 +1136,72 @@ class Function:
 
         return False
 
-    def function_save(self, widget):
+    def function_save(self):
         """
         Saves the Function Object treeview information to the Program's
         MySQL or SQLite3 database.
-
-        Keyword Arguments:
-        widget -- the gtk.Widget that called this method.
         """
 
         self.model.foreach(self._save_line_item)
+
+        return False
+
+    def _failure_mode_add(self, button):
+        """
+        Method to add a failure mode to the FMEA/FMECA for the selected
+        function.
+
+        Keyword Arguments:
+        button -- the gtk.Toolbutton that called this function.
+        """
+
+# Find the id of the next failure mode.
+        _query_ = "SELECT seq FROM sqlite_sequence \
+                   WHERE name='tbl_fmeca'"
+        _last_id_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+
+        if(not _last_id_):
+            _last_id_ = 0
+        else:
+            _last_id_ = _last_id_[0][0] + 1
+
+# Insert the new failure mode.
+        _query_ = "INSERT INTO tbl_fmeca \
+                   (fld_revision_id, fld_assembly_id, \
+                    fld_function_id, fld_mode_id) \
+                   VALUES (%d, 0, %d, %d)" % \
+                   (self._app.REVISION.revision_id,
+                    self.function_id, _last_id_)
+        self._app.DB.execute_query(_query_,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
+
+        return False
+
+    def _failure_mode_delete(self, button):
+        """
+        Method to delete the currently selected failure mode from the
+        FMEA/FMECA for the selected function.
+
+        Keyword Arguments:
+        button -- the gtk.Toolbutton that called this function.
+        """
+
+        _selection_ = self.tvwFMECA.get_selection()
+        (_model_, _row_) = _selection_.get_selected()
+
+        _mode_id_ = _model_.get_value(_row_, 0)
+
+        _query_ = "DELETE FROM tbl_fmeca \
+                   WHERE fld_function_id=%d \
+                   AND fld_mode_id=%d" % (self.function_id, _mode_id_)
+        self._app.DB.execute_query(_query_,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
 
         return False
 
@@ -992,6 +1269,81 @@ class Function:
         if not results:
             self._app.debug_log.error("function.py: Failed to save function to function table.")
             return True
+
+        return False
+
+    def _fmeca_save(self):
+        """
+        Saves the ASSEMBLY Object FMECA gtk.TreeView information to the
+        Program's MySQL or SQLite3 database.
+        """
+
+        _model_ = self.tvwFMECA.get_model()
+        _model_.foreach(self._fmeca_save_line_item)
+
+        return False
+
+    def _fmeca_save_line_item(self, model, path, row):
+        """
+        Saves each row in the Assembly Object FMEA/FMECA treeview model to the
+        open RTK database.
+
+        Keyword Arguments:
+        model -- the Assembly Object similar item analysis gtk.TreeModel.
+        path  -- the path of the active row in the Assembly Object
+                 similar item analysis gtk.TreeModel.
+        row   -- the selected row in the Assembly Object similar item
+                 analysis gtk.TreeView.
+        """
+
+# Update the FMECA table.
+        _values_ = (model.get_value(row, self._FMECA_col_order[1]), \
+                    model.get_value(row, self._FMECA_col_order[2]), \
+                    model.get_value(row, self._FMECA_col_order[3]), \
+                    model.get_value(row, self._FMECA_col_order[4]), \
+                    model.get_value(row, self._FMECA_col_order[5]), \
+                    model.get_value(row, self._FMECA_col_order[6]), \
+                    model.get_value(row, self._FMECA_col_order[7]), \
+                    model.get_value(row, self._FMECA_col_order[8]), \
+                    model.get_value(row, self._FMECA_col_order[9]), \
+                    model.get_value(row, self._FMECA_col_order[10]), \
+                    model.get_value(row, self._FMECA_col_order[11]), \
+                    model.get_value(row, self._FMECA_col_order[12]), \
+                    model.get_value(row, self._FMECA_col_order[13]), \
+                    float(model.get_value(row, self._FMECA_col_order[14])), \
+                    float(model.get_value(row, self._FMECA_col_order[15])), \
+                    float(model.get_value(row, self._FMECA_col_order[16])), \
+                    float(model.get_value(row, self._FMECA_col_order[17])), \
+                    float(model.get_value(row, self._FMECA_col_order[18])), \
+                    model.get_value(row, self._FMECA_col_order[20]), \
+                    model.get_value(row, self._FMECA_col_order[21]),
+                    int(model.get_value(row, self._FMECA_col_order[22])), \
+                    int(model.get_value(row, self._FMECA_col_order[23])), \
+                    model.get_value(row, self._FMECA_col_order[24]), \
+                    int(model.get_value(row, self._FMECA_col_order[0])))
+
+        _query_ = "UPDATE tbl_fmeca \
+                   SET fld_mode_description='%s', fld_mission_phase='%s', \
+                       fld_local_effect='%s', fld_next_effect='%s', \
+                       fld_end_effect='%s', fld_detection_method='%s', \
+                       fld_other_indications='%s', \
+                       fld_isolation_method='%s', \
+                       fld_design_provisions='%s', \
+                       fld_operator_actions='%s', \
+                       fld_severity_class='%s', \
+                       fld_hazard_rate_source='%s', \
+                       fld_failure_probability='%s', \
+                       fld_effect_probability=%f, \
+                       fld_mode_ratio=%f, fld_mode_failure_rate=%f, \
+                       fld_mode_op_time=%f, fld_mode_criticality=%f, \
+                       fld_rpn_severity='%s', fld_rpn_severity_new='%s', \
+                       fld_critical_item=%d, fld_single_point=%d, \
+                       fld_remarks='%s' \
+                   WHERE fld_mode_id=%d" % _values_
+        self._app.DB.execute_query(_query_,
+                                   None,
+                                   self._app.ProgCnx,
+                                   commit=True)
 
         return False
 
@@ -1149,13 +1501,17 @@ class Function:
             self._general_data_tab_load()
             self._functional_matrix_tab_load()
             self._assessment_results_tab_load()
+            self._fmeca_tab_load()
 
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
+
         self._app.winWorkBook.add(self.vbxFunction)
         self._app.winWorkBook.show_all()
 
         self._app.winWorkBook.set_title(_(u"RTK Work Book: Function"))
+
+        self.notebook.set_current_page(0)
 
         return False
 
@@ -1191,3 +1547,68 @@ class Function:
         self.model.set_value(self.selected_row, _index_, text_)
 
         return False
+
+    def _notebook_page_switched(self, notebook, page, page_num):
+        """
+        Called whenever the Tree Book notebook page is changed.
+
+        Keyword Arguments:
+        notebook -- the Tree Book notebook widget.
+        page     -- the newly selected page widget.
+        page_num -- the newly selected page number.
+                    0 = General Data
+                    1 = Functional Matrix
+                    2 = Assessment Results
+                    3 = FMEA
+        """
+
+        if(page_num == 3):                  # FMEA/FMECA tab
+            self.btnAddSibling.hide()
+            self.btnAddChild.hide()
+            self.btnAddMode.show()
+            self.btnRemoveFunction.hide()
+            self.btnRemoveMode.show()
+            self.btnCalculate.show()
+            self.btnSave.show()
+            self.btnSave.set_tooltip_text(_("Saves changes to Functional FMEA for the selected function.."))
+        else:
+            self.btnAddSibling.show()
+            self.btnAddChild.show()
+            self.btnAddMode.hide()
+            self.btnRemoveFunction.show()
+            self.btnRemoveMode.hide()
+            self.btnCalculate.show()
+            self.btnSave.show()
+            self.btnSave.set_tooltip_text(_("Saves changes to the selected function."))
+
+        return False
+
+    def _toolbutton_pressed(self, widget):
+        """
+        Method to reacte to the ASSEMBLY Object toolbar button clicked events.
+
+        Keyword Arguments:
+        widget -- the toolbar button that was pressed.
+        """
+
+        # FMEA roll-up lower level FMEA.
+        # FMEA calculate criticality.
+        # V&V add new task
+        # V&V assign existing task
+        # Maintenance planning
+        # Maintenance planning save changes to selected maintenance policy
+        _button_ = widget.get_name()
+        _page_ = self.notebook.get_current_page()
+
+        if(_page_ == 0):                    # General data tab.
+            if(_button_ == 'Save'):
+                self.function_save()
+        elif(_page_ == 1):                  # Functional matrix tab.
+            if(_button_ == 'Save'):
+                self.function_save()
+        elif(_page_ == 2):                  # Assessment results tab.
+            if(_button_ == 'Save'):
+                self.function_save()
+        elif(_page_ == 3):                  # FMECA/FMECA tab.
+            if(_button_ == 'Save'):
+                self._fmeca_save()

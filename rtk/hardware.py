@@ -185,16 +185,19 @@ class Hardware:
 
             row = self.model.append(piter, data_)
 
+            if(results[i][1] == self._assembly_id):
+                self.selected_row = row
+
             self.dicHARDWARE[results[i][1]] = data_ + (self.model.get_string_from_iter(row),)
             self._treepaths[results[i][68]] = self.model.get_path(row)
 
         self.treeview.expand_all()
-        self.treeview.set_cursor('0', None, False)
-        root = self.model.get_iter_root()
-        if root is not None:
-            path = self.model.get_path(root)
-            col = self.treeview.get_column(0)
-            self.treeview.row_activated(path, col)
+        if(self.selected_row is None):
+            self.selected_row = self.model.get_iter_root()
+
+        _path_ = self.model.get_path(self.selected_row)
+        self.treeview.set_cursor(_path_, None, False)
+        self.treeview.row_activated(_path_, self.treeview.get_column(0))
 
         return False
 

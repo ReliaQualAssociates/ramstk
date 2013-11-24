@@ -1169,7 +1169,7 @@ class Requirement:
         self._app.winWorkBook.add(self.vbxRequirement)
         self._app.winWorkBook.show_all()
 
-        self._app.winWorkBook.set_title(_("RTK Work Book: Requirement"))
+        self._app.winWorkBook.set_title(_(u"RTK Work Book: Requirement"))
 
         self.btnAddVandVTask.hide()
         self.btnAssignVandVTask.hide()

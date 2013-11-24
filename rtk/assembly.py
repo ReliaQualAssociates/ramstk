@@ -186,7 +186,7 @@ class Assembly:
         self._mission = {}
         self._mission_phase = {}
         self._assembly_risks_ = {}          # Carries risk matrix values for the assembly.
-        self._system_risks_ = {}          # Carries risk matrix values for the system.
+        self._system_risks_ = {}            # Carries risk matrix values for the system.
         self._hrmodel = {}
         self._fmeca = {}
         self._mechanisms = {}
@@ -241,7 +241,7 @@ class Assembly:
         self.txtRefDes = _widg.make_entry()
         self.txtCompRefDes = _widg.make_entry()
         self.txtQuantity = _widg.make_entry()
-        self.txtDescription = _widg.make_entry()
+        self.txtDescription = _widg.make_entry(_width_=700)
         self.fxdGenDataQuad2 = gtk.Fixed()
         self.cmbManufacturer = _widg.make_combo(simple=False)
         self.txtCAGECode = _widg.make_entry()
@@ -289,10 +289,10 @@ class Assembly:
         self.fraRiskAnalysis = _widg.make_frame()
         self.tvwRisk = gtk.TreeView()
         self.tvwRiskMap = gtk.TreeView()
-        #if self._risk_analysis_widgets_create():
-        #    self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
-        #if self._risk_analysis_tab_create():
-        #    self._app.debug_log.error("assembly.py: Failed to create Risk Analysis tab.")
+        if self._risk_analysis_widgets_create():
+            self._app.debug_log.error("assembly.py: Failed to create Risk Analysis widgets.")
+        if self._risk_analysis_tab_create():
+            self._app.debug_log.error("assembly.py: Failed to create Risk Analysis tab.")
 
 # Create the Similar Items Analysis tab widgets for the ASSEMBLY object.
         self.tvwSIA = gtk.TreeView()
@@ -487,13 +487,15 @@ class Assembly:
         self._safety_significance_widgets_create()
         self._safety_significance_tab_create()
 
-        self._maintenance_planning_tab_create()
+        #self._maintenance_planning_tab_create()
 
         self.vbxAssembly = gtk.VBox()
         toolbar = self._toolbar_create()
 
         self.vbxAssembly.pack_start(toolbar, expand=False)
         self.vbxAssembly.pack_start(self.notebook)
+
+        self._selected_tab = 0
 
         self._ready = True
 
@@ -503,7 +505,7 @@ class Assembly:
         toolbar = gtk.Toolbar()
 
         _pos = 0
-# TODO: Add 'SAVE' button for saving the currently selected Assembly.
+
 # Add sibling assembly button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RTK Program Database."))
@@ -596,6 +598,7 @@ class Assembly:
 
 # Save results button.  Depending on the notebook page selected will determine
 # which results are saved.
+# TODO: Add 'SAVE' button for saving the currently selected Assembly.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         self.btnSaveResults.set_icon_widget(image)
@@ -657,6 +660,19 @@ class Assembly:
     def _general_data_widgets_create(self):
         """ Method to create General Data widgets. """
 
+# Create the labels for the upper-left and lower-left quadrants.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._gd_tab_labels[0],
+                                   self.fxdGenDataQuad1,
+                                   y_pos)
+        _max2_ = _widg.make_labels(self._gd_tab_labels[2],
+                                   self.fxdGenDataQuad2,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
+
 # Quadrant 1 (upper left) widgets.  These widgets are used to display general
 # information about the selected assembly.
         self.txtName.set_tooltip_text(_("Enter the name of the selected assembly."))
@@ -687,24 +703,19 @@ class Assembly:
         self.txtDescription.connect('focus-out-event',
                                     self._callback_entry, 'text', 17)
 
-        y_pos = 5
-        for i in range(len(self._gd_tab_labels[0])):
-            label = _widg.make_label(self._gd_tab_labels[0][i], 150, 25)
-            self.fxdGenDataQuad1.put(label, 5, (30 * i + y_pos))
-
-        self.fxdGenDataQuad1.put(self.txtName, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtName, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad1.put(self.txtPartNum, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtPartNum, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad1.put(self.txtAltPartNum, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtAltPartNum, _x_pos_, y_pos)
         y_pos += 90
-        self.fxdGenDataQuad1.put(self.txtRefDes, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtRefDes, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad1.put(self.txtCompRefDes, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtCompRefDes, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad1.put(self.txtQuantity, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtQuantity, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad1.put(self.txtDescription, 155, y_pos)
+        self.fxdGenDataQuad1.put(self.txtDescription, _x_pos_, y_pos)
 
         self.fxdGenDataQuad1.show_all()
 
@@ -740,21 +751,30 @@ class Assembly:
                                  self._callback_entry, 'int', 87)
 
         y_pos = 5
-        for i in range(len(self._gd_tab_labels[2])):
-            label = _widg.make_label(self._gd_tab_labels[2][i], 150, 25)
-            self.fxdGenDataQuad2.put(label, 5, (30 * i + y_pos))
-
-        self.fxdGenDataQuad2.put(self.cmbManufacturer, 155, y_pos)
+        self.fxdGenDataQuad2.put(self.cmbManufacturer, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad2.put(self.txtCAGECode, 155, y_pos)
+        self.fxdGenDataQuad2.put(self.txtCAGECode, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad2.put(self.txtLCN, 155, y_pos)
+        self.fxdGenDataQuad2.put(self.txtLCN, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad2.put(self.txtNSN, 155, y_pos)
+        self.fxdGenDataQuad2.put(self.txtNSN, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad2.put(self.txtYearMade, 155, y_pos)
+        self.fxdGenDataQuad2.put(self.txtYearMade, _x_pos_, y_pos)
 
         self.fxdGenDataQuad2.show_all()
+
+# Create the labels for the upper-right and lower-right quadrants.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._gd_tab_labels[1],
+                                   self.fxdGenDataQuad3,
+                                   y_pos)
+        _max2_ = _widg.make_labels(self._gd_tab_labels[3],
+                                   self.fxdGenDataQuad4,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
 
 # Quadrant 3 (lower left) widgets.  These widget are used to display
 # requirements information about the selected assembly.
@@ -783,21 +803,17 @@ class Assembly:
                                     self._callback_entry, 'float', 45)
 
         y_pos = 5
-        for i in range(len(self._gd_tab_labels[1])):
-            label = _widg.make_label(self._gd_tab_labels[1][i], 150, 25)
-            self.fxdGenDataQuad3.put(label, 5, (30 * i + y_pos))
-
-        self.fxdGenDataQuad3.put(self.txtSpecification, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtSpecification, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad3.put(self.txtPageNum, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtPageNum, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad3.put(self.txtFigNum, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtFigNum, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad3.put(self.txtImageFile, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtImageFile, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad3.put(self.txtAttachments, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtAttachments, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad3.put(self.txtMissionTime, 155, y_pos)
+        self.fxdGenDataQuad3.put(self.txtMissionTime, _x_pos_, y_pos)
 
         self.fxdGenDataQuad3.show_all()
 
@@ -812,22 +828,18 @@ class Assembly:
         self.chkTagged.connect('toggled', self._callback_check, 79)
 
         y_pos = 5
-        for i in range(len(self._gd_tab_labels[3])):
-            label = _widg.make_label(self._gd_tab_labels[3][i], 150, 25)
-            self.fxdGenDataQuad4.put(label, 5, (30 * i + y_pos))
-
-        self.fxdGenDataQuad4.put(self.txtRevisionID, 155, y_pos)
+        self.fxdGenDataQuad4.put(self.txtRevisionID, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad4.put(self.chkRepairable, 155, y_pos)
+        self.fxdGenDataQuad4.put(self.chkRepairable, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdGenDataQuad4.put(self.chkTagged, 155, y_pos)
+        self.fxdGenDataQuad4.put(self.chkTagged, _x_pos_, y_pos)
         y_pos += 30
 
         self.txtRemarks.set_tooltip_text(_(u"Enter any remarks associated with the selected assembly."))
         self.txtRemarks.get_child().get_child().connect('focus-out-event',
                                                         self._callback_entry,
                                                         'text', 71)
-        self.fxdGenDataQuad4.put(self.txtRemarks, 155, y_pos)
+        self.fxdGenDataQuad4.put(self.txtRemarks, _x_pos_, y_pos)
 
         self.fxdGenDataQuad4.show_all()
 
@@ -1238,32 +1250,31 @@ class Assembly:
         import pango
         from lxml import etree
 
-        # Create the gtk.TreeView.
-        # Retrieve the column heading text from the format file.
+# Retrieve the user-defined column heading text from the format file.
         path = "/root/tree[@name='Risk']/column/usertitle"
         heading = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Retrieve the column datatype from the format file.
+# Retrieve the column datatype from the format file.
         path = "/root/tree[@name='Risk']/column/datatype"
         datatype = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Retrieve the cellrenderer type from the format file.
+# Retrieve the cellrenderer type from the format file.
         path = "/root/tree[@name='Risk']/column/widget"
         widget = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Retrieve the column position from the format file.
+# Retrieve the column position from the format file.
         path = "/root/tree[@name='Risk']/column/position"
         position = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Retrieve whether or not the column is editable from the format file.
+# Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='Risk']/column/editable"
         editable = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Retrieve whether or not the column is visible from the format file.
+# Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='Risk']/column/visible"
         visible = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(path)
 
-        # Create a list of GObject datatypes to pass to the model.
+# Create a list of GObject datatypes to pass to the model.
         types = []
         for i in range(len(position)):
             types.append(datatype[i].text)
@@ -1272,6 +1283,7 @@ class Assembly:
         gobject_types = [gobject.type_from_name(types[ix])
             for ix in range(len(types))]
 
+# Retrieve the list of hazards to include in the risk analysis worksheet.
         query = "SELECT fld_category, \
                         fld_subcategory \
                  FROM tbl_hazards"
@@ -1279,6 +1291,8 @@ class Assembly:
                                                  None,
                                                  self._app.ComCnx)
 
+# Retrieve the list of hazard severities to include in the risk analysis
+# worksheet.
         _query_ = "SELECT fld_criticality_name, fld_criticality_value \
                    FROM tbl_criticality \
                    ORDER BY fld_criticality_value DESC"
@@ -1286,6 +1300,8 @@ class Assembly:
                                                    None,
                                                    self._app.ComCnx)
 
+# Retrieve the list of hazard probabilities to include in the risk analysis
+# worksheet.
         _query_ = "SELECT fld_probability_name, fld_probability_value \
                    FROM tbl_failure_probability"
         _probability_ = self._app.COMDB.execute_query(_query_,
@@ -1295,7 +1311,7 @@ class Assembly:
         bg_color = _conf.RTK_COLORS[6]
         fg_color = _conf.RTK_COLORS[7]
 
-# Create the model and treeview.
+# Create the model and treeview for the risk analysis worksheet.
         model = gtk.TreeStore(*gobject_types)
         self.tvwRisk.set_model(model)
 
@@ -1308,18 +1324,18 @@ class Assembly:
                 cell = gtk.CellRendererCombo()
                 cellmodel = gtk.ListStore(gobject.TYPE_STRING)
 
-                cellmodel.append([_(u"None")])
+                cellmodel.append([""])
                 if(i == 3):
                     for j in range(len(_hazard_)):
                         cellmodel.append([_hazard_[j][0] + ", " + _hazard_[j][1]])
-                elif(i == 6 or i == 9):
+                elif(i == 6 or i == 10 or i == 14 or i == 18):
                     for j in range(len(_severity_)):
                         cellmodel.append([_severity_[j][0]])
-                elif(i == 7 or i == 10):
+                elif(i == 7 or i == 11 or i == 15 or i == 19):
                     for j in range(len(_probability_)):
                         cellmodel.append([_probability_[j][0]])
 
-                cell.set_property('has-entry', False)
+                cell.set_property('has-entry', False)   # Prevent users from adding new values.
                 cell.set_property('model', cellmodel)
                 cell.set_property('text-column', 0)
                 cell.connect('changed', self._callback_combo_cell,
@@ -1373,7 +1389,14 @@ class Assembly:
         self.tvwRisk.set_tooltip_text(_(u"Displays the risk analysis for the selected Assembly."))
         self.tvwRisk.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
-# Create the Risk Matrix gtk.TreeView.
+# Create the gtk.TreeModel() and gtk.TreeView() for the risk matrix.
+#
+# Index     Information
+#   0       Criticality category
+#   1       Criticality value
+#   2       Count of probability 1      (index 5, 8, 11, etc.)
+#   3       Value of probability 1      (index 6, 9, 12, etc.)
+#   4       Cell background color code  (index 7, 10, 13, etc.)
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_INT, gobject.TYPE_INT,
                               gobject.TYPE_STRING,
@@ -1402,7 +1425,7 @@ class Assembly:
         cell = gtk.CellRendererText()       # Severity noun name.
         cell.set_property('visible', True)
         cell.set_property('editable', False)
-        cell.set_property('background', 'gray')
+        cell.set_property('background', 'light gray')
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
         cell = gtk.CellRendererText()       # Severity multiplier.
@@ -1460,12 +1483,12 @@ class Assembly:
             for j in range(len(_probability_)):
                 _risk_ = _severity_[i][1] * _probability_[j][1]
                 if(_risk_ <= _conf.RTK_RISK_POINTS[0]):
-                    _color_ = '#90EE90' # Green
+                    _color_ = '#90EE90'     # Green
                 elif(_risk_ > _conf.RTK_RISK_POINTS[0] and
                      _risk_ <= _conf.RTK_RISK_POINTS[1]):
-                    _color_ = '#FFFF79' # Yellow
+                    _color_ = '#FFFF79'     # Yellow
                 else:
-                    _color_ = '#FFC0CB' # Red
+                    _color_ = '#FFC0CB'     # Red
 
                 _prob_[_probability_[j][0]] = [0, _probability_[j][1], _color_]
                 _data_.append(0)
@@ -1531,34 +1554,55 @@ class Assembly:
         """
 
         if self._app.HARDWARE.selected_row is not None:
-            model = self._app.HARDWARE.model
-            row = self._app.HARDWARE.selected_row
-            _path_ = model.get_string_from_iter(row)
+            _model_ = self._app.HARDWARE.model
+            _row_ = self._app.HARDWARE.selected_row
+            _path_ = _model_.get_string_from_iter(_row_)
 
         if(_conf.RTK_MODULES[0] == 1):
             _values_ = (self._app.REVISION.revision_id, _path_)
         else:
             _values_ = (0, _path_)
 
-        _query_ = "SELECT t1.fld_risk_id, t2.fld_name, \
+        _query_ = "SELECT t1.fld_risk_id, \
+                          t2.fld_name, \
                           t2.fld_failure_rate_predicted, \
-                          t1.fld_potential_hazard, t1.fld_potential_cause, \
-                          t1.fld_assembly_effect, t1.fld_assembly_severity, \
-                          t1.fld_assembly_probability, t1.fld_system_effect, \
-                          t1.fld_system_severity, t1.fld_system_probability, \
-                          t1.fld_mitigation_strategy, t1.fld_remarks, \
-                          t1.fld_assembly_init_hri, \
-                          t1.fld_assembly_current_hri, t1.fld_system_init_hri, \
-                          t1.fld_system_current_hri, \
-                          t1.fld_function_1, t1.fld_function_2, \
-                          t1.fld_function_3, t1.fld_function_4, \
+                          t1.fld_potential_hazard, \
+                          t1.fld_potential_cause, \
+                          t1.fld_assembly_effect, \
+                          t1.fld_assembly_severity, \
+                          t1.fld_assembly_probability, \
+                          t1.fld_assembly_hri, \
+                          t1.fld_assembly_mitigation, \
+                          t1.fld_assembly_severity_f, \
+                          t1.fld_assembly_probability_f, \
+                          t1.fld_assembly_hri_f, \
+                          t1.fld_system_effect, \
+                          t1.fld_system_severity, \
+                          t1.fld_system_probability, \
+                          t1.fld_system_hri, \
+                          t1.fld_system_mitigation, \
+                          t1.fld_system_severity_f, \
+                          t1.fld_system_probability_f, \
+                          t1.fld_system_hri_f, \
+                          t1.fld_remarks, \
+                          t1.fld_function_1, \
+                          t1.fld_function_2, \
+                          t1.fld_function_3, \
+                          t1.fld_function_4, \
                           t1.fld_function_5, \
-                          t1.fld_result_1, t1.fld_result_2, t1.fld_result_3, \
-                          t1.fld_result_4, t1.fld_result_5, \
-                          t1.fld_user_blob_1, t1.fld_user_blob_2, \
-                          t1.fld_user_blob_3, t1.fld_user_float_1, \
-                          t1.fld_user_float_2, t1.fld_user_float_3, \
-                          t1.fld_user_int_1, t1.fld_user_int_2, \
+                          t1.fld_result_1, \
+                          t1.fld_result_2, \
+                          t1.fld_result_3, \
+                          t1.fld_result_4, \
+                          t1.fld_result_5, \
+                          t1.fld_user_blob_1, \
+                          t1.fld_user_blob_2, \
+                          t1.fld_user_blob_3, \
+                          t1.fld_user_float_1, \
+                          t1.fld_user_float_2, \
+                          t1.fld_user_float_3, \
+                          t1.fld_user_int_1, \
+                          t1.fld_user_int_2, \
                           t1.fld_user_int_3 \
                    FROM tbl_risk_analysis AS t1 \
                    INNER JOIN tbl_system AS t2 \
@@ -1570,26 +1614,47 @@ class Assembly:
                                                self._app.ProgCnx)
 
         if(not _results_ or len(_results_) == 0):
-            _query_ = "SELECT t1.fld_risk_id, t2.fld_name, \
+            _query_ = "SELECT t1.fld_risk_id, \
+                              t2.fld_name, \
                               t2.fld_failure_rate_predicted, \
-                              t1.fld_potential_hazard, t1.fld_potential_cause, \
-                              t1.fld_assembly_effect, t1.fld_assembly_severity, \
-                              t1.fld_assembly_probability, t1.fld_system_effect, \
-                              t1.fld_system_severity, t1.fld_system_probability, \
-                              t1.fld_mitigation_strategy, t1.fld_remarks, \
-                              t1.fld_assembly_init_hri, \
-                              t1.fld_assembly_current_hri, t1.fld_system_init_hri, \
-                              t1.fld_system_current_hri, \
-                              t1.fld_function_1, t1.fld_function_2, \
-                              t1.fld_function_3, t1.fld_function_4, \
+                              t1.fld_potential_hazard, \
+                              t1.fld_potential_cause, \
+                              t1.fld_assembly_effect, \
+                              t1.fld_assembly_severity, \
+                              t1.fld_assembly_probability, \
+                              t1.fld_assembly_hri, \
+                              t1.fld_assembly_mitigation, \
+                              t1.fld_assembly_severity_f, \
+                              t1.fld_assembly_probability_f, \
+                              t1.fld_assembly_hri_f, \
+                              t1.fld_system_effect, \
+                              t1.fld_system_severity, \
+                              t1.fld_system_probability, \
+                              t1.fld_system_hri, \
+                              t1.fld_system_mitigation, \
+                              t1.fld_system_severity_f, \
+                              t1.fld_system_probability_f, \
+                              t1.fld_system_hri_f, \
+                              t1.fld_remarks, \
+                              t1.fld_function_1, \
+                              t1.fld_function_2, \
+                              t1.fld_function_3, \
+                              t1.fld_function_4, \
                               t1.fld_function_5, \
-                              t1.fld_result_1, t1.fld_result_2, \
-                              t1.fld_result_3, t1.fld_result_4, \
-                              t1.fld_result_5, t1.fld_user_blob_1, \
-                              t1.fld_user_blob_2, t1.fld_user_blob_3, \
-                              t1.fld_user_float_1, t1.fld_user_float_2, \
-                              t1.fld_user_float_3, t1.fld_user_int_1, \
-                              t1.fld_user_int_2, t1.fld_user_int_3 \
+                              t1.fld_result_1, \
+                              t1.fld_result_2, \
+                              t1.fld_result_3, \
+                              t1.fld_result_4, \
+                              t1.fld_result_5, \
+                              t1.fld_user_blob_1, \
+                              t1.fld_user_blob_2, \
+                              t1.fld_user_blob_3, \
+                              t1.fld_user_float_1, \
+                              t1.fld_user_float_2, \
+                              t1.fld_user_float_3, \
+                              t1.fld_user_int_1, \
+                              t1.fld_user_int_2, \
+                              t1.fld_user_int_3 \
                        FROM tbl_risk_analysis AS t1 \
                        INNER JOIN tbl_system AS t2 \
                        ON t2.fld_assembly_id=t1.fld_assembly_id \
@@ -1603,13 +1668,13 @@ class Assembly:
         if(not _results_ or len(_results_) == 0):
             return True
 
-        model = self.tvwRisk.get_model()
-        model.clear()
+        _model_ = self.tvwRisk.get_model()
+        _model_.clear()
 
-        n_assemblies = len(_results_)
-        for i in range(n_assemblies):
+        _n_assemblies_ = len(_results_)
+        for i in range(_n_assemblies_):
             try:
-                row = model.append(None, _results_[i])
+                _model_.append(None, _results_[i])
             except TypeError:
                 pass
 
@@ -1623,9 +1688,8 @@ class Assembly:
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
-        #print _results_
-        model = self.tvwRiskMap.get_model()
 
+        _model_ = self.tvwRiskMap.get_model()
         #for i in range(len(_results_)):
          #   model.set(row, _results_[i][2])
 
@@ -1701,6 +1765,8 @@ class Assembly:
                 adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
                 cell.set_property('adjustment', adjustment)
                 cell.set_property('digits', 2)
+            elif(widget[i].text == 'blob'):
+                cell = _widg.CellRendererML()
             else:
                 cell = gtk.CellRendererText()
 
@@ -1839,268 +1905,255 @@ class Assembly:
     def _assessment_inputs_widgets_create(self):
         """ Method to create the Assessment Inputs widgets. """
 
-        # Quadrant 1 (upper left) widgets.  These widgets are used to
-        # display reliability assessment inputs.
+# Create the left side labels.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._ai_tab_labels[0],
+                                   self.fxdRelInputQuad1,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
+
+# Quadrant 1 (upper left) widgets.  These widgets are used to display
+# reliability assessment inputs.
         self.cmbHRType.set_tooltip_text(_(u"Select the method of assessing the failure intensity for the selected assembly."))
-
-        query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbHRType, results)
+        _query_ = "SELECT fld_hr_type_noun FROM tbl_hr_type"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbHRType, _results_)
         self.cmbHRType.connect('changed', self._callback_combo, 35)
+        self.fxdRelInputQuad1.put(self.cmbHRType, _x_pos_, y_pos)
+        y_pos += 30
 
         self.cmbCalcModel.set_tooltip_text(_(u"Select the reliability prediction model for the selected assembly."))
-
-        query = "SELECT fld_model_noun FROM tbl_calculation_model"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbCalcModel, results)
+        _query_ = "SELECT fld_model_noun FROM tbl_calculation_model"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbCalcModel, _results_)
         self.cmbCalcModel.connect('changed', self._callback_combo, 10)
+        self.fxdRelInputQuad1.put(self.cmbCalcModel, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtSpecifiedHt.set_tooltip_text(_(u"Enter the specified failure intensity for the selected assembly."))
         self.txtSpecifiedHt.connect('focus-out-event',
                                     self._callback_entry, 'float', 34)
+        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtSpecifiedMTBF.set_tooltip_text(_(u"Enter the specified mean time between failure (MTBF) for the selected assembly."))
         self.txtSpecifiedMTBF.connect('focus-out-event',
                                       self._callback_entry, 'float', 51)
+        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtSoftwareHt.set_tooltip_text(_(u"Enter the software failure rate for the selected assembly."))
         self.txtSoftwareHt.connect('focus-out-event',
                                    self._callback_entry, 'float', 33)
+        self.fxdRelInputQuad1.put(self.txtSoftwareHt, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtAddAdj.set_tooltip_text(_(u"Enter any reliability assessment additive adjustment factor for the selected assembly."))
         self.txtAddAdj.connect('focus-out-event',
                                self._callback_entry, 'float', 2)
+        self.fxdRelInputQuad1.put(self.txtAddAdj, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtMultAdj.set_tooltip_text(_(u"Enter any reliability assessment multiplicative adjustment factor for the selected assembly."))
         self.txtMultAdj.connect('focus-out-event',
                                 self._callback_entry, 'float', 57)
+        self.fxdRelInputQuad1.put(self.txtMultAdj, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtAllocationWF.set_tooltip_text(_(u"Enter the reliability allocation weighting factor for the selected assembly."))
         self.txtAllocationWF.connect('focus-out-event',
                                      self._callback_entry, 'float', 3)
+        self.fxdRelInputQuad1.put(self.txtAllocationWF, _x_pos_, y_pos)
+        y_pos += 30
 
         self.cmbFailDist.set_tooltip_text(_(u"Select the distribution of times to failure for the selected assembly."))
-
-        query = "SELECT fld_distribution_noun \
-                 FROM tbl_distributions"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbFailDist, results)
+        _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbFailDist, _results_)
         self.cmbFailDist.connect('changed', self._callback_combo, 24)
+        self.fxdRelInputQuad1.put(self.cmbFailDist, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtFailScale.set_tooltip_text(_(u"Enter the time to failure distribution scale factor."))
         self.txtFailScale.connect('focus-out-event',
                                   self._callback_entry, 'float', 25)
+        self.fxdRelInputQuad1.put(self.txtFailScale, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtFailShape.set_tooltip_text(_(u"Enter the time to failure distribution shape factor."))
         self.txtFailShape.connect('focus-out-event',
                                   self._callback_entry, 'float', 26)
+        self.fxdRelInputQuad1.put(self.txtFailShape, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtFailLoc.set_tooltip_text(_(u"Enter the time to failure distribution location factor."))
         self.txtFailLoc.connect('focus-out-event',
                                 self._callback_entry, 'float', 27)
+        self.fxdRelInputQuad1.put(self.txtFailLoc, _x_pos_, y_pos)
+        y_pos += 30
 
         self.cmbActEnviron.set_tooltip_text(_(u"Select the active operating environment for the selected assembly."))
         self.cmbActEnviron.connect('changed', self._callback_combo, 22)
-
-        query = "SELECT fld_active_environ_code, fld_active_environ_noun \
-                 FROM tbl_active_environs"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
+        _query_ = "SELECT fld_active_environ_code, fld_active_environ_noun \
+                   FROM tbl_active_environs"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
         model = self.cmbActEnviron.get_model()
         model.clear()
         self.cmbActEnviron.append_text('')
-        for i in range(len(results)):
-            self.cmbActEnviron.append_text(results[i][0] + ' - ' +
-                                           results[i][1])
+        for i in range(len(_results_)):
+            self.cmbActEnviron.append_text(_results_[i][0] + ' - ' +
+                                           _results_[i][1])
+        self.fxdRelInputQuad1.put(self.cmbActEnviron, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtActTemp.set_tooltip_text(_(u"Enter the active environment operating temperature for the selected assembly."))
         self.txtActTemp.connect('focus-out-event',
                                 self._callback_entry, 'float', 80)
+        self.fxdRelInputQuad1.put(self.txtActTemp, _x_pos_, y_pos)
+        y_pos += 30
 
         self.cmbDormantEnviron.set_tooltip_text(_(u"Select the dormant environment for the selected assembly."))
-
-        query = "SELECT fld_dormant_environ_noun \
-                 FROM tbl_dormant_environs"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbDormantEnviron, results)
+        _query_ = "SELECT fld_dormant_environ_noun \
+                   FROM tbl_dormant_environs"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbDormantEnviron, _results_)
         self.cmbDormantEnviron.connect('changed', self._callback_combo, 23)
+        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtDormantTemp.set_tooltip_text(_(u"Enter the dormant environment temperature for the selected assembly."))
         self.txtDormantTemp.connect('focus-out-event',
                                     self._callback_entry, 'float', 81)
+        self.fxdRelInputQuad1.put(self.txtDormantTemp, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtDutyCycle.set_tooltip_text(_(u"Enter the operating duty cycle for the selected assembly."))
         self.txtDutyCycle.connect('focus-out-event',
                                   self._callback_entry, 'float', 20)
+        self.fxdRelInputQuad1.put(self.txtDutyCycle, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtHumidity.set_tooltip_text(_(u"Enter the active environment operating humidity for the selected assembly."))
         self.txtHumidity.connect('focus-out-event',
                                  self._callback_entry, 'float', 37)
+        self.fxdRelInputQuad1.put(self.txtHumidity, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtVibration.set_tooltip_text(_(u"Enter the active environment operating vibration level for the selected assembly."))
         self.txtVibration.connect('focus-out-event',
                                   self._callback_entry, 'float', 84)
+        self.fxdRelInputQuad1.put(self.txtVibration, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtRPM.set_tooltip_text(_(u"Enter the active environment operating RPM for the selected assembly."))
         self.txtRPM.connect('focus-out-event',
                             self._callback_entry, 'float', 76)
+        self.fxdRelInputQuad1.put(self.txtRPM, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtWeibullFile.set_tooltip_text(_(u"Enter the URL to a survival analysis file for the selected assembly."))
         self.txtWeibullFile.connect('focus-out-event',
                                     self._callback_entry, 'text', 86)
-
-        _lbl_width = 200
-        y_pos = 5
-        for i in range(len(self._ai_tab_labels[0])):
-            label = _widg.make_label(self._ai_tab_labels[0][i],
-                                     _lbl_width, 25)
-            self.fxdRelInputQuad1.put(label, 5, (30 * i + y_pos))
-
-        self.fxdRelInputQuad1.put(self.cmbHRType, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbCalcModel, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtSoftwareHt, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtAddAdj, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtMultAdj, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtAllocationWF, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbFailDist, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailScale, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailShape, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtFailLoc, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbActEnviron, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtActTemp, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtDormantTemp, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtDutyCycle, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtHumidity, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtVibration, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtRPM, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad1.put(self.txtWeibullFile, _lbl_width + 5, y_pos)
+        self.fxdRelInputQuad1.put(self.txtWeibullFile, _x_pos_, y_pos)
 
         self.fxdRelInputQuad1.show_all()
 
+# Create the right side labels.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._ai_tab_labels[1],
+                                   self.fxdRelInputQuad2,
+                                   y_pos)
+        _max2_ = _widg.make_labels(self._ai_tab_labels[3],
+                                   self.fxdRelInputQuad4,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
+
 # Create quadrant 2 (upper right) widgets.
         self.cmbMTTRType.set_tooltip_text(_(u"Select the method of assessing the mean time to repair (MTTR) for the selected assembly."))
+        _query_ = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
 
-        query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbMTTRType, results)
+        _widg.load_combo(self.cmbMTTRType, _results_)
         self.cmbMTTRType.connect('changed', self._callback_combo, 56)
+        self.fxdRelInputQuad2.put(self.cmbMTTRType, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtSpecifiedMTTR.set_tooltip_text(_(u"Enter the specified mean time to repair (MTTR) for the selected assembly."))
         self.txtSpecifiedMTTR.connect('focus-out-event',
                                       self._callback_entry, 'float', 55)
+        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtMTTRAddAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment additive adjustment factor for the selected assembly."))
         self.txtMTTRAddAdj.connect('focus-out-event',
                                    self._callback_entry, 'float', 53)
+        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtMTTRMultAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment multaplicative adjustment factor for the selected assembly."))
         self.txtMTTRMultAdj.connect('focus-out-event',
                                     self._callback_entry, 'float', 54)
+        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, _x_pos_, y_pos)
+        y_pos += 30
 
         self.cmbRepairDist.set_tooltip_text(_(u"Select the time to repair distribution for the selected assembly."))
-
-        query = "SELECT fld_distribution_noun FROM tbl_distributions"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbRepairDist, results)
+        _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbRepairDist, _results_)
         self.cmbRepairDist.connect('changed', self._callback_combo, 72)
+        self.fxdRelInputQuad2.put(self.cmbRepairDist, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtRepairScale.set_tooltip_text(_(u"Enter the time to repair distribution scale parameter."))
         self.txtRepairScale.connect('focus-out-event',
                                     self._callback_entry, 'float', 73)
+        self.fxdRelInputQuad2.put(self.txtRepairScale, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtRepairShape.set_tooltip_text(_(u"Enter the time to repair distribution shape parameter."))
         self.txtRepairShape.connect('focus-out-event',
                                     self._callback_entry, 'float', 74)
-
-        y_pos = 5
-        for i in range(len(self._ai_tab_labels[1])):
-            label = _widg.make_label(self._ai_tab_labels[1][i],
-                                     _lbl_width, 25)
-            self.fxdRelInputQuad2.put(label, 5, (30 * i + y_pos))
-
-        self.fxdRelInputQuad2.put(self.cmbMTTRType, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.cmbRepairDist, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtRepairScale, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad2.put(self.txtRepairShape, _lbl_width + 5, y_pos)
+        self.fxdRelInputQuad2.put(self.txtRepairShape, _x_pos_, y_pos)
 
         self.fxdRelInputQuad2.show_all()
 
 # Create quadrant 4 (lower right) widgets.
+        y_pos = 5
+
         self.cmbCostType.set_tooltip_text(_(u"Select the method for assessing the cost of the selected assembly."))
-
-        query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbCostType, results)
+        _query_ = "SELECT fld_cost_type_noun FROM tbl_cost_type"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+        _widg.load_combo(self.cmbCostType, _results_)
         self.cmbCostType.connect('changed', self._callback_combo, 16)
+        self.fxdRelInputQuad4.put(self.cmbCostType, _x_pos_, y_pos)
+        y_pos += 30
 
         self.txtCost.set_tooltip_text(_(u"Enter the cost of the selected assembly."))
         self.txtCost.connect('focus-out-event',
                              self._callback_entry, 'float', 13)
-
-        y_pos = 5
-        for i in range(len(self._ai_tab_labels[3])):
-            label = _widg.make_label(self._ai_tab_labels[3][i],
-                                     _lbl_width, 25)
-            self.fxdRelInputQuad4.put(label, 5, (30 * i + y_pos))
-
-        self.fxdRelInputQuad4.put(self.cmbCostType, _lbl_width + 5, y_pos)
-        y_pos += 30
-        self.fxdRelInputQuad4.put(self.txtCost, _lbl_width + 5, y_pos)
+        self.fxdRelInputQuad4.put(self.txtCost, _x_pos_, y_pos)
 
         self.fxdRelInputQuad4.show_all()
 
@@ -2114,7 +2167,7 @@ class Assembly:
 
         hbox = gtk.HBox()
 
-        # Populate quadrant 1 (upper left).
+# Populate quadrant 1 (upper left).
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.fxdRelInputQuad1)
@@ -2843,7 +2896,8 @@ class Assembly:
                  FROM tbl_fmeca AS t1 \
                  INNER JOIN tbl_system AS t2 \
                  ON t2.fld_assembly_id=t1.fld_assembly_id \
-                 WHERE t1.fld_assembly_id=%d" % self.assembly_id
+                 WHERE t1.fld_assembly_id=%d \
+                 AND t1.fld_function_id=0" % self.assembly_id
         _results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
@@ -3044,7 +3098,7 @@ class Assembly:
             col = self.tvwFMECA.get_column(1)
             self.tvwFMECA.set_cursor(path, col, False)
             self.tvwFMECA.row_activated(path, col)
-        print self._fmeca
+
         return False
 
     def _fmeca_treeview_row_changed(self, treeview, path, column):
@@ -3522,7 +3576,7 @@ class Assembly:
 
         self._general_data_tab_load()
         self._allocation_tab_load()
-        #self._risk_analysis_tab_load()
+        self._risk_analysis_tab_load()
         self._similar_item_tab_load()
         self._assessment_inputs_tab_load()
         self.assessment_results_tab_load()
@@ -3535,21 +3589,13 @@ class Assembly:
         if(self._app.winWorkBook.get_child() is not None):
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxAssembly)
-        self._app.winWorkBook.show_all()
 
         _title_ = _(u"RTK Work Book: Analyzing %s") % \
                   self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 58)
         self._app.winWorkBook.set_title(_title_)
 
-        self.notebook.set_current_page(0)
-
-        self.btnAddItem.show()
-        self.btnFMECAAdd.hide()
-        self.btnRemoveItem.hide()
-        self.btnAnalyze.hide()
-        self.btnSaveResults.hide()
-        self.btnRollup.hide()
-        self.btnEdit.hide()
+        self.notebook.set_current_page(self._selected_tab)
+        self._app.winWorkBook.show_all()
 
         return False
 
@@ -3742,65 +3788,110 @@ class Assembly:
     def _calculate_risk(self):
         """ Calculates the Assembly Object risk analysis. """
 
-# Get the list of failure probability names.
+# Get the list of failure probability names then create a dictionary using
+# these probability names as the keys.  The values for each key are a list
+# where the list contains:
+#
+#   Index       Information
+#     0         Count of assembly-level combinations before mitigation.
+#     1         Count of system-level combinations before mitigation.
+#     2         Count of assembly-level combinations after mitigation.
+#     3         Count of system-level combinations after mitigation.
+#     4         Index in the gtk.TreeView() risk map for the first count.
+# {'Probability Name': [Assembly Count, System Count, Assembly Count, System Count, Index]}
         _columns_ = self.tvwRiskMap.get_columns()
         _probs_ = {}
-        for i in range(len(_columns_)):
+        j = 2
+        for i in range(1, len(_columns_)):
             try:
                 _text_ = _columns_[i].get_widget().get_text()
                 _text_ = _text_.replace('\t', '')
                 _text_ = _text_.replace('\n', ' ')
-                _probs_[_text_] = 0
+                _probs_[_text_] = [0, 0, 0, 0, j]
+                j += 3
             except AttributeError:
                 pass
 
 # Get the count of hazard criticality and hazard probability combinations for
 # assembly level effects and system level effects.
-        model = self.tvwRisk.get_model()
-        row = model.get_iter_first()
-        while row is not None:
-            _assembly_crit_ = model.get_value(row, 6)
-            _assembly_prob_ = model.get_value(row, 7)
-            _system_crit_ = model.get_value(row, 9)
-            _system_prob_ = model.get_value(row, 10)
-
-            _probs_[_assembly_prob_] += 1
+        _model_ = self.tvwRisk.get_model()
+        _row_ = _model_.get_iter_first()
+        _keys_ = _probs_.keys()
+        while _row_ is not None:
+            _assembly_crit_ = _model_.get_value(_row_, 6)
+            _assembly_prob_ = _model_.get_value(_row_, 7)
+            _assembly_crit_f_ = _model_.get_value(_row_, 10)
+            _assembly_prob_f_ = _model_.get_value(_row_, 11)
+            _system_crit_ = _model_.get_value(_row_, 14)
+            _system_prob_ = _model_.get_value(_row_, 15)
+            _system_crit_f_ = _model_.get_value(_row_, 18)
+            _system_prob_f_ = _model_.get_value(_row_, 19)
 
 #{'Severity Name': [Severity Value, {'Probability Name': [Count, P Value, Cell Color]}
-            self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][0] += 1
-            self._system_risks_[_system_crit_][1][_system_prob_][0] += 1
+            # Increment the count of assembly and system severity/probability
+            # combinations.
+            try:
+                _probs_[_assembly_prob_][0] += 1
+                _probs_[_system_prob_][1] += 1
+            except KeyError:
+                pass
 
-# Calculate the hazard risk index (HRI) for the assembly and the system.
-            _c_ = self._assembly_risks_[_assembly_crit_][0]
-            _p_ = self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][1]
-            _assembly_hri_ = _c_ * _p_
+            try:
+                _c_ = self._assembly_risks_[_assembly_crit_][0]
+                _p_ = self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][1]
+                _assembly_hri_ = _c_ * _p_
+                _c_ = self._assembly_risks_[_assembly_crit_f_][0]
+                _p_ = self._assembly_risks_[_assembly_crit_f_][1][_assembly_prob_f_][1]
+                _assembly_hri_f_ = _c_ * _p_
+            except KeyError:
+                _assembly_hri_ = 0
+                _assembly_hri_f_ = 0
 
-            _c_ = self._system_risks_[_system_crit_][0]
-            _p_ = self._system_risks_[_system_crit_][1][_system_prob_][1]
-            _system_hri_ = _c_ * _p_
+            try:
+                _c_ = self._system_risks_[_system_crit_][0]
+                _p_ = self._system_risks_[_system_crit_][1][_system_prob_][1]
+                _system_hri_ = _c_ * _p_
+                _c_ = self._system_risks_[_system_crit_f_][0]
+                _p_ = self._system_risks_[_system_crit_f_][1][_system_prob_f_][1]
+                _system_hri_f_ = _c_ * _p_
+            except KeyError:
+                _system_hri_ = 0
+                _system_hri_f_ = 0
 
-            model.set_value(row, 13, _assembly_hri_)
-            model.set_value(row, 15, _system_hri_)
+            _model_.set_value(_row_, 8, _assembly_hri_)
+            _model_.set_value(_row_, 12, _assembly_hri_f_)
+            _model_.set_value(_row_, 16, _system_hri_)
+            _model_.set_value(_row_, 20, _system_hri_f_)
 
-            row = model.iter_next(row)
-
-# Update the counts in the risk matrix gtk.TreeView().
-        model = self.tvwRiskMap.get_model()
-        row = model.get_iter_first()
-        _keys_ = _probs_.keys()
-        while row is not None:
-            _crit_ = model.get_value(row, 0)
-            j = 2
+# Update the count of severity/probability interactions and calculate the
+# hazard risk index (HRI) for the assembly and the system.
             for i in range(len(_keys_)):
                 try:
-                    print _crit_, _keys_[i], _probs_[_keys_[i]]
-                    _count_ = self._assembly_risks_[_crit_][1][_keys_[i]][0]
-                    model.set_value(row, j, _count_)
-                    j += 3
+                    self._assembly_risks_[_assembly_crit_][1][_keys_[i]][0] = _probs_[_keys_[i]][0]
                 except KeyError:
                     pass
 
-            row = model.iter_next(row)
+                try:
+                    self._system_risks_[_system_crit_][1][_keys_[i]][0] = _probs_[_keys_[i]][1]
+                except KeyError:
+                    pass
+
+            _row_ = _model_.iter_next(_row_)
+
+# Update the counts in the risk matrix gtk.TreeView().
+        _model_ = self.tvwRiskMap.get_model()
+        _row_ = _model_.get_iter_first()
+        while _row_ is not None:
+            _crit_ = _model_.get_value(_row_, 0)
+            for i in range(len(_keys_)):
+                try:
+                    _count_ = self._assembly_risks_[_crit_][1][_keys_[i]][0]
+                    _idx_ = _probs_[_keys_[i]][4]
+                    _model_.set_value(_row_, _idx_, _count_)
+                except KeyError:
+                    pass
+
+            _row_ = _model_.iter_next(_row_)
 
 # Perform user-defined calculations.
         model = self.tvwRisk.get_model()
@@ -3813,28 +3904,28 @@ class Assembly:
             _calculations_['hr'] = model.get_value(row, 2)
 
 # Get the user-defined float and integer values.
-            _calculations_['uf1'] = float(model.get_value(row, 30))
-            _calculations_['uf2'] = float(model.get_value(row, 31))
-            _calculations_['uf3'] = float(model.get_value(row, 32))
-            _calculations_['ui1'] = float(model.get_value(row, 33))
-            _calculations_['ui2'] = float(model.get_value(row, 34))
-            _calculations_['ui3'] = float(model.get_value(row, 35))
+            _calculations_['uf1'] = float(model.get_value(row, 35))
+            _calculations_['uf2'] = float(model.get_value(row, 36))
+            _calculations_['uf3'] = float(model.get_value(row, 37))
+            _calculations_['ui1'] = float(model.get_value(row, 38))
+            _calculations_['ui2'] = float(model.get_value(row, 39))
+            _calculations_['ui3'] = float(model.get_value(row, 40))
 
 # Get the user-defined functions.
-            _calculations_['equation1'] = model.get_value(row, 17)
-            _calculations_['equation2'] = model.get_value(row, 18)
-            _calculations_['equation3'] = model.get_value(row, 19)
-            _calculations_['equation4'] = model.get_value(row, 20)
-            _calculations_['equation5'] = model.get_value(row, 21)
+            _calculations_['equation1'] = model.get_value(row, 22)
+            _calculations_['equation2'] = model.get_value(row, 23)
+            _calculations_['equation3'] = model.get_value(row, 24)
+            _calculations_['equation4'] = model.get_value(row, 25)
+            _calculations_['equation5'] = model.get_value(row, 26)
 
 # Get the existing results.  This allows the use of the results fields to be
 # manually set to a float values by the user.  Essentially creating five more
 # user-defined float values.
-            _calculations_['res1'] = model.get_value(row, 22)
-            _calculations_['res2'] = model.get_value(row, 23)
-            _calculations_['res3'] = model.get_value(row, 24)
-            _calculations_['res4'] = model.get_value(row, 25)
-            _calculations_['res5'] = model.get_value(row, 26)
+            _calculations_['res1'] = model.get_value(row, 27)
+            _calculations_['res2'] = model.get_value(row, 28)
+            _calculations_['res3'] = model.get_value(row, 29)
+            _calculations_['res4'] = model.get_value(row, 30)
+            _calculations_['res5'] = model.get_value(row, 31)
 
             keys = _calculations_.keys()
             values = _calculations_.values()
@@ -4057,13 +4148,14 @@ class Assembly:
             else:
                 value = 1.0
 
-            _values = (model.get_value(row, 15), model.get_value(row, 17), \
+            _values = (model.get_value(row, 15), model.get_value(row, 17), 3, \
                        measure, value, model.get_value(row, 0), \
                        model.get_value(row, 1))
 
             query = "UPDATE tbl_system \
-                     SET fld_failure_rate_predicted=%f, \
-                         fld_mtbf_predicted=%f, \
+                     SET fld_failure_rate_specified=%f, \
+                         fld_mtbf_specified=%f, \
+                         fld_failure_rate_type=%d, \
                          fld_reliability_goal_measure=%d, \
                          fld_reliability_goal=%f \
                      WHERE fld_revision_id=%d \
@@ -4351,8 +4443,13 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         information to the Program's MySQL or SQLite3 database.
         """
 
-        model = self.tvwRisk.get_model()
-        model.foreach(self._risk_save_line_item)
+# First save the risk analysis worksheet to tbl_risk_analysis.
+        _model_ = self.tvwRisk.get_model()
+        _model_.foreach(self._risk_save_line_item)
+
+# Then save the risk matrix.
+        _model_ = self.tvwRiskMap.get_model()
+        _model_.foreach(self._risk_map_save_line_item)
 
         return False
 
@@ -4370,17 +4467,17 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         """
 
         if(_conf.BACKEND == 'mysql'):
-            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[17]))
-            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[18]))
-            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[19]))
-            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[20]))
-            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[21]))
+            equation1 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[22]))
+            equation2 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[23]))
+            equation3 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[24]))
+            equation4 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[25]))
+            equation5 = self._app.ProgCnx.escape_string(model.get_value(row, self._risk_col_order[26]))
         elif(_conf.BACKEND == 'sqlite3'):
-            equation1 = model.get_value(row, self._risk_col_order[17])
-            equation2 = model.get_value(row, self._risk_col_order[18])
-            equation3 = model.get_value(row, self._risk_col_order[19])
-            equation4 = model.get_value(row, self._risk_col_order[20])
-            equation5 = model.get_value(row, self._risk_col_order[21])
+            equation1 = model.get_value(row, self._risk_col_order[22])
+            equation2 = model.get_value(row, self._risk_col_order[23])
+            equation3 = model.get_value(row, self._risk_col_order[24])
+            equation4 = model.get_value(row, self._risk_col_order[25])
+            equation5 = model.get_value(row, self._risk_col_order[26])
 
         _values = (model.get_value(row, self._risk_col_order[3]), \
                    model.get_value(row, self._risk_col_order[4]), \
@@ -4396,16 +4493,16 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[14]), \
                    model.get_value(row, self._risk_col_order[15]), \
                    model.get_value(row, self._risk_col_order[16]), \
+                   model.get_value(row, self._risk_col_order[17]), \
+                   model.get_value(row, self._risk_col_order[18]), \
+                   model.get_value(row, self._risk_col_order[19]), \
+                   model.get_value(row, self._risk_col_order[20]), \
+                   model.get_value(row, self._risk_col_order[21]), \
                    equation1, \
                    equation2, \
                    equation3, \
                    equation4, \
                    equation5, \
-                   model.get_value(row, self._risk_col_order[22]), \
-                   model.get_value(row, self._risk_col_order[23]), \
-                   model.get_value(row, self._risk_col_order[24]), \
-                   model.get_value(row, self._risk_col_order[25]), \
-                   model.get_value(row, self._risk_col_order[26]), \
                    model.get_value(row, self._risk_col_order[27]), \
                    model.get_value(row, self._risk_col_order[28]), \
                    model.get_value(row, self._risk_col_order[29]), \
@@ -4415,19 +4512,38 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                    model.get_value(row, self._risk_col_order[33]), \
                    model.get_value(row, self._risk_col_order[34]), \
                    model.get_value(row, self._risk_col_order[35]), \
+                   model.get_value(row, self._risk_col_order[36]), \
+                   model.get_value(row, self._risk_col_order[37]), \
+                   model.get_value(row, self._risk_col_order[38]), \
+                   model.get_value(row, self._risk_col_order[39]), \
+                   model.get_value(row, self._risk_col_order[40]), \
                    self._app.REVISION.revision_id, \
                    model.get_value(row, self._risk_col_order[0]))
 
         query = "UPDATE tbl_risk_analysis \
-                 SET fld_potential_hazard='%s', fld_potential_cause='%s', \
-                     fld_assembly_effect='%s', fld_assembly_severity='%s', \
-                     fld_assembly_probability='%s', fld_system_effect='%s', \
-                     fld_system_severity='%s', fld_system_probability='%s', \
-                     fld_mitigation_strategy='%s', fld_remarks='%s', \
-                     fld_assembly_init_hri=%d, fld_assembly_current_hri=%d, \
-                     fld_system_init_hri=%d, fld_system_current_hri=%d, \
-                     fld_function_1='%s', fld_function_2='%s', \
-                     fld_function_3='%s', fld_function_4='%s', \
+                 SET fld_potential_hazard='%s', \
+                     fld_potential_cause='%s', \
+                     fld_assembly_effect='%s', \
+                     fld_assembly_severity='%s', \
+                     fld_assembly_probability='%s', \
+                     fld_assembly_hri=%d, \
+                     fld_assembly_mitigation='%s', \
+                     fld_assembly_severity_f='%s', \
+                     fld_assembly_probability_f='%s', \
+                     fld_assembly_hri_f=%d, \
+                     fld_system_effect='%s', \
+                     fld_system_severity='%s', \
+                     fld_system_probability='%s', \
+                     fld_system_hri=%d, \
+                     fld_system_mitigation='%s', \
+                     fld_system_severity_f='%s', \
+                     fld_system_probability_f='%s', \
+                     fld_system_hri_f=%d, \
+                     fld_remarks='%s', \
+                     fld_function_1='%s', \
+                     fld_function_2='%s', \
+                     fld_function_3='%s', \
+                     fld_function_4='%s', \
                      fld_function_5='%s', \
                      fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
                      fld_result_4=%f, fld_result_5=%f, \
@@ -4446,6 +4562,50 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         if not results:
             self._app.debug_log.error("assembly.py: Failed to save assembly to risk analysis table.")
             return True
+
+    def _risk_map_save_line_item(self, model, path_, row):
+        """
+        Saves each row in the Assembly Object risk map gtk.TreeView() model to
+        the database.
+
+        Keyword Arguments:
+        model -- the Assembly Object risk matrix gtk.TreeModel().
+        path_ -- the path of the active row in the Assembly Object risk matrix
+                 gtk.TreeModel().
+        row   -- the selected row in the Assembly Object risk matrix
+                 gtk.TreeView().
+        """
+
+        _crit_ = model.get_value(row, 1)
+
+        for j in (2, 5, 8, 11, 14):
+            _count_ = model.get_value(row, j)
+            _prob_ = model.get_value(row, j + 1)
+            _values_ = (_count_, self._app.REVISION.revision_id,
+                        self.assembly_id, _crit_, _prob_)
+            _query_ = "UPDATE tbl_risk_matrix \
+                       SET fld_hazard_count=%d \
+                       WHERE fld_revision_id=%d \
+                       AND fld_assembly_id=%d \
+                       AND fld_severity_id=%d \
+                       AND fld_probability_id=%d" % _values_
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx,
+                                                   commit=True)
+
+# The combination of revision, assembly, severity, and probability doesn't
+# already exist so add it.
+            if _results_:
+                _query_ = "INSERT INTO tbl_risk_matrix \
+                           (fld_hazard_count, fld_revision_id, \
+                            fld_assembly_id, fld_severity_id, \
+                            fld_probability_id) \
+                           VALUES(%d, %d, %d, %d, %d)" % _values_
+                _results_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx,
+                                                       commit=True)
 
         return False
 
@@ -4551,6 +4711,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                        fld_user_int_3=%d \
                    WHERE fld_revision_id=%d \
                    AND fld_sia_id=%d" % _values_
+
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
@@ -5211,13 +5372,16 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
         page_num -- the newly selected page number.
                     0 = General Data
                     1 = Allocation
-                    2 = Similar Items Analysis
-                    3 = Assessment Inputs
-                    4 = Assessment Results
-                    4 = FMEA
-                    5 = Maintenance Planning
-                    6 = Reliability Growth Planning
+                    2 = Hazard Analysis
+                    3 = Similar Items Analysis
+                    4 = Assessment Inputs
+                    5 = Assessment Results
+                    6 = FMEA
+                    7 = Maintenance Planning
+                    8 = Reliability Growth Planning
         """
+
+        self._selected_tab = page_num
 
         if(page_num == 0):                  # General data tab.
             self.btnAddItem.show()
@@ -5239,7 +5403,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnAddItem.set_tooltip_text(_(u"Add components to the currently selected assembly."))
             self.btnAnalyze.set_tooltip_text(_(u"Allocates the reliability to the child assemblies/parts."))
             self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation results for the selected assembly."))
-        elif(page_num == 2):                # Risk analysis tab
+        elif(page_num == 2):                # Hazard analysis tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()

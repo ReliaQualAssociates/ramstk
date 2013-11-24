@@ -63,6 +63,8 @@ LOG_DIR = ''
 #    Position 15: Software Tree formatting.
 #    Position 16: Dataset Tree formatting.
 #    Position 17: Risk Analysis formatting.
+#    Position 18: Functional FMECA formatting.
+#    Position 19: Software FMECA formatting.
 RTK_FORMAT_FILE = []
 
 # Global list containing the colors to use for various widgets.
@@ -109,7 +111,7 @@ RTK_COLORS = []
 #    Position 10: FMECA mode prefix
 #    Position 11: Next FMECA mode index
 #    Position 12: FMECA effect prefix
-#    Position 13: NExt FMECA effect index
+#    Position 13: Next FMECA effect index
 #    Position 14: FMECA cause prefix
 #    Position 15: Next FMECA cause index
 #    Position 16: Software prefix
@@ -145,8 +147,8 @@ RTK_PAGE_NUMBER = []
 #    Position 04: User password
 RTK_COM_INFO = []
 
-# Global list for
-RTK_RISK_POINTS = [3, 9]
+# Global list for risk level cutoffs.
+RTK_RISK_POINTS = [4, 10]
 
 # Global list for MySQL or SQLite3 connection information to the Program
 # database.
