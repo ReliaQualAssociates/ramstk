@@ -773,8 +773,10 @@ class Function:
         _cellmodel_ = _cell_[0].get_property('model')
         _cellmodel_.clear()
 
-        _query_ = "SELECT fld_phase_id, fld_phase_name, fld_phase_time \
-                   FROM tbl_mission_phase"
+        _query_ = "SELECT fld_phase_id, fld_phase_name, fld_phase_start, \
+                        fld_phase_end \
+                   FROM tbl_mission_phase \
+                   WHERE fld_mission_id=%d" % 0
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)

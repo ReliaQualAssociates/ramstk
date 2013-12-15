@@ -703,6 +703,7 @@ class Assembly:
         self.txtDescription.connect('focus-out-event',
                                     self._callback_entry, 'text', 17)
 
+        # Place the widgets.
         self.fxdGenDataQuad1.put(self.txtName, _x_pos_, y_pos)
         y_pos += 30
         self.fxdGenDataQuad1.put(self.txtPartNum, _x_pos_, y_pos)
@@ -750,6 +751,7 @@ class Assembly:
         self.txtYearMade.connect('focus-out-event',
                                  self._callback_entry, 'int', 87)
 
+        # Place the widgets.
         y_pos = 5
         self.fxdGenDataQuad2.put(self.cmbManufacturer, _x_pos_, y_pos)
         y_pos += 30
@@ -802,7 +804,7 @@ class Assembly:
         self.txtMissionTime.connect('focus-out-event',
                                     self._callback_entry, 'float', 45)
 
-        y_pos = 5
+        # Place the widgets.
         self.fxdGenDataQuad3.put(self.txtSpecification, _x_pos_, y_pos)
         y_pos += 30
         self.fxdGenDataQuad3.put(self.txtPageNum, _x_pos_, y_pos)
@@ -827,6 +829,7 @@ class Assembly:
         self.chkTagged.set_tooltip_text(_("Indicates whether or not the selected assembly is tagged."))
         self.chkTagged.connect('toggled', self._callback_check, 79)
 
+        # Place the widgets.
         y_pos = 5
         self.fxdGenDataQuad4.put(self.txtRevisionID, _x_pos_, y_pos)
         y_pos += 30
@@ -1924,8 +1927,6 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbHRType, _results_)
         self.cmbHRType.connect('changed', self._callback_combo, 35)
-        self.fxdRelInputQuad1.put(self.cmbHRType, _x_pos_, y_pos)
-        y_pos += 30
 
         self.cmbCalcModel.set_tooltip_text(_(u"Select the reliability prediction model for the selected assembly."))
         _query_ = "SELECT fld_model_noun FROM tbl_calculation_model"
@@ -1934,44 +1935,30 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbCalcModel, _results_)
         self.cmbCalcModel.connect('changed', self._callback_combo, 10)
-        self.fxdRelInputQuad1.put(self.cmbCalcModel, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtSpecifiedHt.set_tooltip_text(_(u"Enter the specified failure intensity for the selected assembly."))
         self.txtSpecifiedHt.connect('focus-out-event',
                                     self._callback_entry, 'float', 34)
-        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtSpecifiedMTBF.set_tooltip_text(_(u"Enter the specified mean time between failure (MTBF) for the selected assembly."))
         self.txtSpecifiedMTBF.connect('focus-out-event',
                                       self._callback_entry, 'float', 51)
-        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtSoftwareHt.set_tooltip_text(_(u"Enter the software failure rate for the selected assembly."))
         self.txtSoftwareHt.connect('focus-out-event',
                                    self._callback_entry, 'float', 33)
-        self.fxdRelInputQuad1.put(self.txtSoftwareHt, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtAddAdj.set_tooltip_text(_(u"Enter any reliability assessment additive adjustment factor for the selected assembly."))
         self.txtAddAdj.connect('focus-out-event',
                                self._callback_entry, 'float', 2)
-        self.fxdRelInputQuad1.put(self.txtAddAdj, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtMultAdj.set_tooltip_text(_(u"Enter any reliability assessment multiplicative adjustment factor for the selected assembly."))
         self.txtMultAdj.connect('focus-out-event',
                                 self._callback_entry, 'float', 57)
-        self.fxdRelInputQuad1.put(self.txtMultAdj, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtAllocationWF.set_tooltip_text(_(u"Enter the reliability allocation weighting factor for the selected assembly."))
         self.txtAllocationWF.connect('focus-out-event',
                                      self._callback_entry, 'float', 3)
-        self.fxdRelInputQuad1.put(self.txtAllocationWF, _x_pos_, y_pos)
-        y_pos += 30
 
         self.cmbFailDist.set_tooltip_text(_(u"Select the distribution of times to failure for the selected assembly."))
         _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
@@ -1980,26 +1967,18 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbFailDist, _results_)
         self.cmbFailDist.connect('changed', self._callback_combo, 24)
-        self.fxdRelInputQuad1.put(self.cmbFailDist, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtFailScale.set_tooltip_text(_(u"Enter the time to failure distribution scale factor."))
         self.txtFailScale.connect('focus-out-event',
                                   self._callback_entry, 'float', 25)
-        self.fxdRelInputQuad1.put(self.txtFailScale, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtFailShape.set_tooltip_text(_(u"Enter the time to failure distribution shape factor."))
         self.txtFailShape.connect('focus-out-event',
                                   self._callback_entry, 'float', 26)
-        self.fxdRelInputQuad1.put(self.txtFailShape, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtFailLoc.set_tooltip_text(_(u"Enter the time to failure distribution location factor."))
         self.txtFailLoc.connect('focus-out-event',
                                 self._callback_entry, 'float', 27)
-        self.fxdRelInputQuad1.put(self.txtFailLoc, _x_pos_, y_pos)
-        y_pos += 30
 
         self.cmbActEnviron.set_tooltip_text(_(u"Select the active operating environment for the selected assembly."))
         self.cmbActEnviron.connect('changed', self._callback_combo, 22)
@@ -2014,14 +1993,10 @@ class Assembly:
         for i in range(len(_results_)):
             self.cmbActEnviron.append_text(_results_[i][0] + ' - ' +
                                            _results_[i][1])
-        self.fxdRelInputQuad1.put(self.cmbActEnviron, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtActTemp.set_tooltip_text(_(u"Enter the active environment operating temperature for the selected assembly."))
         self.txtActTemp.connect('focus-out-event',
                                 self._callback_entry, 'float', 80)
-        self.fxdRelInputQuad1.put(self.txtActTemp, _x_pos_, y_pos)
-        y_pos += 30
 
         self.cmbDormantEnviron.set_tooltip_text(_(u"Select the dormant environment for the selected assembly."))
         _query_ = "SELECT fld_dormant_environ_noun \
@@ -2031,42 +2006,72 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbDormantEnviron, _results_)
         self.cmbDormantEnviron.connect('changed', self._callback_combo, 23)
-        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtDormantTemp.set_tooltip_text(_(u"Enter the dormant environment temperature for the selected assembly."))
         self.txtDormantTemp.connect('focus-out-event',
                                     self._callback_entry, 'float', 81)
-        self.fxdRelInputQuad1.put(self.txtDormantTemp, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtDutyCycle.set_tooltip_text(_(u"Enter the operating duty cycle for the selected assembly."))
         self.txtDutyCycle.connect('focus-out-event',
                                   self._callback_entry, 'float', 20)
-        self.fxdRelInputQuad1.put(self.txtDutyCycle, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtHumidity.set_tooltip_text(_(u"Enter the active environment operating humidity for the selected assembly."))
         self.txtHumidity.connect('focus-out-event',
                                  self._callback_entry, 'float', 37)
-        self.fxdRelInputQuad1.put(self.txtHumidity, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtVibration.set_tooltip_text(_(u"Enter the active environment operating vibration level for the selected assembly."))
         self.txtVibration.connect('focus-out-event',
                                   self._callback_entry, 'float', 84)
-        self.fxdRelInputQuad1.put(self.txtVibration, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtRPM.set_tooltip_text(_(u"Enter the active environment operating RPM for the selected assembly."))
         self.txtRPM.connect('focus-out-event',
                             self._callback_entry, 'float', 76)
-        self.fxdRelInputQuad1.put(self.txtRPM, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtWeibullFile.set_tooltip_text(_(u"Enter the URL to a survival analysis file for the selected assembly."))
         self.txtWeibullFile.connect('focus-out-event',
                                     self._callback_entry, 'text', 86)
+
+        # Place the widgets.
+        self.fxdRelInputQuad1.put(self.cmbHRType, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.cmbCalcModel, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtSpecifiedHt, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtSpecifiedMTBF, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtSoftwareHt, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtAddAdj, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtMultAdj, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtAllocationWF, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.cmbFailDist, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtFailScale, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtFailShape, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtFailLoc, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.cmbActEnviron, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtActTemp, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.cmbDormantEnviron, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtDormantTemp, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtDutyCycle, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtHumidity, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtVibration, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad1.put(self.txtRPM, _x_pos_, y_pos)
+        y_pos += 30
         self.fxdRelInputQuad1.put(self.txtWeibullFile, _x_pos_, y_pos)
 
         self.fxdRelInputQuad1.show_all()
@@ -2093,26 +2098,18 @@ class Assembly:
 
         _widg.load_combo(self.cmbMTTRType, _results_)
         self.cmbMTTRType.connect('changed', self._callback_combo, 56)
-        self.fxdRelInputQuad2.put(self.cmbMTTRType, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtSpecifiedMTTR.set_tooltip_text(_(u"Enter the specified mean time to repair (MTTR) for the selected assembly."))
         self.txtSpecifiedMTTR.connect('focus-out-event',
                                       self._callback_entry, 'float', 55)
-        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtMTTRAddAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment additive adjustment factor for the selected assembly."))
         self.txtMTTRAddAdj.connect('focus-out-event',
                                    self._callback_entry, 'float', 53)
-        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtMTTRMultAdj.set_tooltip_text(_(u"Enter any mean time to repair (MTTR) assessment multaplicative adjustment factor for the selected assembly."))
         self.txtMTTRMultAdj.connect('focus-out-event',
                                     self._callback_entry, 'float', 54)
-        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, _x_pos_, y_pos)
-        y_pos += 30
 
         self.cmbRepairDist.set_tooltip_text(_(u"Select the time to repair distribution for the selected assembly."))
         _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
@@ -2121,25 +2118,33 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbRepairDist, _results_)
         self.cmbRepairDist.connect('changed', self._callback_combo, 72)
-        self.fxdRelInputQuad2.put(self.cmbRepairDist, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtRepairScale.set_tooltip_text(_(u"Enter the time to repair distribution scale parameter."))
         self.txtRepairScale.connect('focus-out-event',
                                     self._callback_entry, 'float', 73)
-        self.fxdRelInputQuad2.put(self.txtRepairScale, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtRepairShape.set_tooltip_text(_(u"Enter the time to repair distribution shape parameter."))
         self.txtRepairShape.connect('focus-out-event',
                                     self._callback_entry, 'float', 74)
+
+        # Place the widgets.
+        self.fxdRelInputQuad2.put(self.cmbMTTRType, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad2.put(self.txtSpecifiedMTTR, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad2.put(self.txtMTTRAddAdj, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad2.put(self.txtMTTRMultAdj, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad2.put(self.cmbRepairDist, _x_pos_, y_pos)
+        y_pos += 30
+        self.fxdRelInputQuad2.put(self.txtRepairScale, _x_pos_, y_pos)
+        y_pos += 30
         self.fxdRelInputQuad2.put(self.txtRepairShape, _x_pos_, y_pos)
 
         self.fxdRelInputQuad2.show_all()
 
 # Create quadrant 4 (lower right) widgets.
-        y_pos = 5
-
         self.cmbCostType.set_tooltip_text(_(u"Select the method for assessing the cost of the selected assembly."))
         _query_ = "SELECT fld_cost_type_noun FROM tbl_cost_type"
         _results_ = self._app.COMDB.execute_query(_query_,
@@ -2147,12 +2152,15 @@ class Assembly:
                                                   self._app.ComCnx)
         _widg.load_combo(self.cmbCostType, _results_)
         self.cmbCostType.connect('changed', self._callback_combo, 16)
-        self.fxdRelInputQuad4.put(self.cmbCostType, _x_pos_, y_pos)
-        y_pos += 30
 
         self.txtCost.set_tooltip_text(_(u"Enter the cost of the selected assembly."))
         self.txtCost.connect('focus-out-event',
                              self._callback_entry, 'float', 13)
+
+        # Place teh widgets.
+        y_pos = 5
+        self.fxdRelInputQuad4.put(self.cmbCostType, _x_pos_, y_pos)
+        y_pos += 30
         self.fxdRelInputQuad4.put(self.txtCost, _x_pos_, y_pos)
 
         self.fxdRelInputQuad4.show_all()
@@ -2265,6 +2273,16 @@ class Assembly:
     def _assessment_results_widgets_create(self):
         """ Method to create the Assessment Results widgets. """
 
+# Create the left side labels.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._ar_tab_labels[0],
+                                   self.fxdCalcResultsQuad1,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
+
 # Create the quadrant 1 (upper left) widgets.
         self.txtActiveHt.set_tooltip_text(_(u"Displays the active failure intensity for the selected assembly."))
         self.txtDormantHt.set_tooltip_text(_(u"Displays the dormant failure intensity for the selected assembly."))
@@ -2277,34 +2295,40 @@ class Assembly:
         self.txtReliability.set_tooltip_text(_(u"Displays the limiting reliability for the selected assembly."))
         self.txtMissionRt.set_tooltip_text(_(u"Displays the mission reliability for the selected assembly."))
 
-        _lbl_width = 200
-        y_pos = 5
-        for i in range(len(self._ar_tab_labels[0])):
-            label = _widg.make_label(self._ar_tab_labels[0][i],
-                                     _lbl_width, 25)
-            self.fxdCalcResultsQuad1.put(label, 5, (30 * i + y_pos))
-
-        self.fxdCalcResultsQuad1.put(self.txtActiveHt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtActiveHt, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtDormantHt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtDormantHt, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtSoftwareHt2, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtSoftwareHt2, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtPredictedHt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtPredictedHt, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionHt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionHt, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtHtPerCent, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtHtPerCent, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMTBF, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMTBF, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionMTBF, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionMTBF, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtReliability, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtReliability, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad1.put(self.txtMissionRt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad1.put(self.txtMissionRt, _x_pos_, y_pos)
 
         self.fxdCalcResultsQuad1.show_all()
+
+# Create the right side labels.
+        y_pos = 5
+        _max1_ = 0
+        _max2_ = 0
+        _max1_ = _widg.make_labels(self._ar_tab_labels[1],
+                                   self.fxdCalcResultsQuad2,
+                                   y_pos)
+        _max2_ = _widg.make_labels(self._ar_tab_labels[3],
+                                   self.fxdCalcResultsQuad4,
+                                   y_pos)
+
+        _x_pos_ = max(_max1_, _max2_) + 20
 
 # Create the quadrant 2 (upper right) widgets.
         self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive maintenance time (MPMT) for the selected assembly."))
@@ -2314,23 +2338,17 @@ class Assembly:
         self.txtAvailability.set_tooltip_text(_(u"Displays the limiting availability for the selected assembly."))
         self.txtMissionAt.set_tooltip_text(_(u"Displays the mission availability for the selected assembly."))
 
-        y_pos = 5
-        for i in range(len(self._ar_tab_labels[1])):
-            label = _widg.make_label(self._ar_tab_labels[1][i],
-                                     _lbl_width, 25)
-            self.fxdCalcResultsQuad2.put(label, 5, (30 * i + y_pos))
-
-        self.fxdCalcResultsQuad2.put(self.txtMPMT, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMPMT, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMCMT, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMCMT, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMTTR, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMTTR, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMMT, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMMT, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtAvailability, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtAvailability, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad2.put(self.txtMissionAt, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad2.put(self.txtMissionAt, _x_pos_, y_pos)
 
         self.fxdCalcResultsQuad2.show_all()
 
@@ -2343,22 +2361,17 @@ class Assembly:
         self.txtTotalPwr.set_tooltip_text(_(u"Displays the total power of the selected assembly."))
 
         y_pos = 5
-        for i in range(len(self._ar_tab_labels[3])):
-            label = _widg.make_label(self._ar_tab_labels[3][i],
-                                     _lbl_width, 25)
-            self.fxdCalcResultsQuad4.put(label, 5, (30 * i + y_pos))
-
-        self.fxdCalcResultsQuad4.put(self.txtTotalCost, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtTotalCost, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtCostFailure, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtCostFailure, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtCostHour, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtCostHour, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtAssemblyCrit, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtAssemblyCrit, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtPartCount, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtPartCount, _x_pos_, y_pos)
         y_pos += 30
-        self.fxdCalcResultsQuad4.put(self.txtTotalPwr, _lbl_width + 5, y_pos)
+        self.fxdCalcResultsQuad4.put(self.txtTotalPwr, _x_pos_, y_pos)
 
         self.fxdCalcResultsQuad4.show_all()
 
@@ -2864,8 +2877,10 @@ class Assembly:
         cellmodel = cell[0].get_property('model')
         cellmodel.clear()
 
-        query = "SELECT fld_phase_id, fld_phase_name, fld_phase_time \
-                 FROM tbl_mission_phase"
+        query = "SELECT fld_phase_id, fld_phase_name, fld_phase_start, \
+                        fld_phase_end \
+                 FROM tbl_mission_phase \
+                 WHERE fld_mission_id=%d" % 0
         _results = self._app.DB.execute_query(query,
                                               None,
                                               self._app.ProgCnx)
@@ -2876,7 +2891,7 @@ class Assembly:
             _phases = len(_results)
             cellmodel.append([""])
             for i in range(_phases):
-                self._mission_phase[_results[i][0]] = _results[i][2]
+                self._mission_phase[_results[i][0]] = float(_results[i][3]) - float(_results[i][2])
                 cellmodel.append([_results[i][1]])
 
 # Load the failure modes to the gtk.TreeView.

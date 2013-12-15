@@ -1,4 +1,4 @@
-PRAGMA foreign_keys=OFF;
+PRAGMA foreign_keys=ON;
 BEGIN TRANSACTION;
 
 --
@@ -46,16 +46,56 @@ CREATE TABLE "tbl_program_info" (
 );
 INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,0,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','','STANDARD');
 
+DROP TABLE IF EXISTS "tbl_missions";
+CREATE TABLE "tbl_missions" (
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- Identifier for the revision.
+    "fld_mission_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Identifier for the mission.
+    "fld_mission_time" REAL DEFAULT(0),                 -- Total length of the mission.
+    "fld_mission_units" INTEGER DEFAULT(0),             -- Unit of time measure for the mission.
+    "fld_mission_description" BLOB                      -- Description of the mission.
+);
+INSERT INTO "tbl_missions" VALUES(0, 0, 100.0, 0, "Default mission");
+
+DROP TABLE IF EXISTS "tbl_mission_phase";
 CREATE TABLE "tbl_mission_phase" (
-    "fld_phase_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),       -- Identifier for the mission.
+    "fld_phase_id" INTEGER NOT NULL,                    -- Identifier for the mission phase.
+    "fld_phase_start" REAL,                             -- Start time of mission phase.
+    "fld_phase_end" REAL,                               -- End time of mission phase.
     "fld_phase_name" VARCHAR(64),                       -- Noun name of the mission phase.
     "fld_phase_description" BLOB,                       -- Description of the mission phase.
-    "fld_phase_time" REAL                               -- Length of mission phase.
+    FOREIGN KEY("fld_mission_id") REFERENCES "tbl_missions"("fld_mission_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_mission_id", "fld_phase_id")
 );
-INSERT INTO "tbl_mission_phase" VALUES(0, 'Phase I', 'This is the first phase of a default mission created for all systems.', 0.5);
-INSERT INTO "tbl_mission_phase" VALUES(1, 'Phase II', 'This is the second phase of a default mission created for all systems.', 90.0);
-INSERT INTO "tbl_mission_phase" VALUES(2, 'Phase III', 'This is the third phase of a default mission created for all systems.', 9.5);
+INSERT INTO "tbl_mission_phase" VALUES(0, 1, 0.0, 0.5, 'Phase I', 'This is the first phase of the default mission.');
+INSERT INTO "tbl_mission_phase" VALUES(0, 2, 0.5, 90.5, 'Phase II', 'This is the second phase of the default mission.');
+INSERT INTO "tbl_mission_phase" VALUES(0, 3, 90.5, 100.0, 'Phase III', 'This is the third phase of the default mission.');
 
+DROP TABLE IF EXISTS "tbl_environmental_profile";
+CREATE TABLE "tbl_environmental_profile" (
+    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),       -- Identifier for the mission.
+    "fld_phase_id" INTEGER NOT NULL DEFAULT(0),         -- Identifier for the mission phase.
+    "fld_condition_id" INTEGER,                         -- Identifier for the environmental condition.
+    "fld_condition_name" VARCHAR(128),                  -- Noun name of the environmental condition.
+    "fld_units" VARCHAR(64),                            -- Units of measure for the environmental condition.
+    "fld_minimum" REAL,                                 -- Minimum value of the environmental condition.
+    "fld_maximum" REAL,                                 -- Maximum value of the environmental condition.
+    "fld_mean" REAL,                                    -- Mean value of the environmental condition.
+    "fld_variance" REAL,                                -- Variance of the environmental condition.
+    FOREIGN KEY("fld_mission_id") REFERENCES "tbl_missions"("fld_mission_id") ON DELETE CASCADE
+    FOREIGN KEY("fld_phase_id") REFERENCES "tbl_mission_phase"("fld_phase_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_mission_id", "fld_condition_id")
+);
+
+DROP TABLE IF EXISTS "tbl_failure_definitions";
+CREATE TABLE "tbl_failure_definitions" (
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- Indentifier for the revision.
+    "fld_definition_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, --Identifier for the failure definition.
+    "fld_definition" BLOB,                              -- Definition of the failure.
+    FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS "tbl_revisions";
 CREATE TABLE "tbl_revisions" (
     "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_availability" REAL NOT NULL DEFAULT(1),        -- Assessed availability of the revision.
@@ -161,7 +201,7 @@ CREATE TABLE "tbl_system" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision code.
     "fld_assembly_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Assembly code.
     "fld_add_adj_factor" REAL NOT NULL DEFAULT(0),                  -- Failure rate additive adjustment factor.
-    "fld_allocation_type" INTEGER NOT NULL DEFAULT(0),              --
+    "fld_allocation_type" INTEGER NOT NULL DEFAULT(0),              -- Allocation method to use.
     "fld_alt_part_number" VARCHAR(128) DEFAULT(''),                 -- Alternate part number.
     "fld_assembly_criticality" VARCHAR(256) DEFAULT(''),            -- MIL-STD-1629A criticality of the assembly.
     "fld_attachments" VARCHAR(256) DEFAULT(''),                     -- Hyperlinks to any attachments.
@@ -570,23 +610,11 @@ CREATE TABLE "tbl_prediction" (
 --
 -- Create tables for storing software reliability information.
 --
-CREATE TABLE "tbl_anomaly_management" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_phase_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_question_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_value" INTEGER DEFAULT (0),
-    "fld_ratio" REAL DEFAULT (0),
-    "fld_y" TINYINT DEFAULT (0),
-    "fld_n" TINYINT DEFAULT (0),
-    "fld_na" TINYINT DEFAULT (0),
-    "fld_unk" TINYINT DEFAULT (0),
-     PRIMARY KEY("fld_software_id", "fld_phase_id", "fld_question_id")
-);
-
 CREATE TABLE "tbl_software_development" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_question_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_y" TINYINT DEFAULT (0),
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
     PRIMARY KEY("fld_software_id", "fld_question_id")
 );
 INSERT INTO "tbl_software_development" VALUES(0, 0, 0);
@@ -633,31 +661,213 @@ INSERT INTO "tbl_software_development" VALUES(0, 40, 0);
 INSERT INTO "tbl_software_development" VALUES(0, 41, 0);
 INSERT INTO "tbl_software_development" VALUES(0, 42, 0);
 
-CREATE TABLE "tbl_software_quality" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_phase_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_question_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_value" INTEGER DEFAULT (0),
-    "fld_ratio" REAL DEFAULT (0),
-    "fld_y" TINYINT DEFAULT (0),
-    "fld_n" TINYINT DEFAULT (0),
-    "fld_na" TINYINT DEFAULT (0),
-    "fld_unk" TINYINT DEFAULT (0),
-    PRIMARY KEY("fld_software_id", "fld_phase_id", "fld_question_id")
+CREATE TABLE "tbl_srr_ssr" (
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
+    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_software_id", "fld_question_id")
 );
+INSERT INTO "tbl_srr_ssr" VALUES(0, 0, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 1, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 2, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 3, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 4, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 5, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 6, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 7, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 8, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 9, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 10, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 11, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 12, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 13, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 14, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 15, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 16, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 17, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 18, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 19, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 20, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 21, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 22, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 23, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 24, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 25, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 26, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 27, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 28, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 29, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 30, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 31, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 32, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 33, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 34, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 35, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 36, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 37, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 38, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 39, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 40, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 41, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 42, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 43, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 44, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 45, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 46, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 47, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 48, 0, 0);
+INSERT INTO "tbl_srr_ssr" VALUES(0, 49, 0, 0);
 
-CREATE TABLE "tbl_software_standards" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_phase_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_question_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_value" INTEGER DEFAULT (0),
-    "fld_ratio" REAL DEFAULT (0),
-    "fld_y" TINYINT DEFAULT (0),
-    "fld_n" TINYINT DEFAULT (0),
-    "fld_na" TINYINT DEFAULT (0),
-    "fld_unk" TINYINT DEFAULT (0),
-    PRIMARY KEY("fld_software_id", "fld_phase_id", "fld_question_id")
+CREATE TABLE "tbl_pdr" (
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
+    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_software_id", "fld_question_id")
 );
+INSERT INTO "tbl_pdr" VALUES(0, 0, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 1, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 2, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 3, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 4, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 5, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 6, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 7, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 8, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 9, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 10, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 11, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 12, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 13, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 14, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 15, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 16, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 17, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 18, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 19, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 20, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 21, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 22, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 23, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 24, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 25, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 26, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 27, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 28, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 29, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 30, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 31, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 32, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 33, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 34, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 35, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 36, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 37, 0, 0);
+INSERT INTO "tbl_pdr" VALUES(0, 38, 0, 0);
+
+CREATE TABLE "tbl_cdr" (
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
+    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_software_id", "fld_question_id")
+);
+INSERT INTO "tbl_cdr" VALUES(0, 0, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 1, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 2, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 3, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 4, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 5, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 6, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 7, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 8, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 9, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 10, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 11, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 12, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 13, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 14, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 15, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 16, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 17, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 18, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 19, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 20, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 21, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 22, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 23, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 24, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 25, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 26, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 27, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 28, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 29, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 30, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 31, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 32, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 33, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 34, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 35, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 36, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 37, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 38, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 39, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 40, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 41, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 42, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 43, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 44, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 45, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 46, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 47, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 48, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 49, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 50, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 51, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 52, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 53, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 54, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 55, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 56, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 57, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 58, 0, 0);
+
+CREATE TABLE "tbl_trr" (
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
+    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
+    PRIMARY KEY("fld_software_id", "fld_question_id")
+);
+INSERT INTO "tbl_trr" VALUES(0, 0, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 1, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 2, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 3, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 4, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 5, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 6, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 7, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 8, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 9, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 10, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 11, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 12, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 13, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 14, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 15, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 16, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 17, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 18, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 19, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 20, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 21, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 22, 0, 0);
+INSERT INTO "tbl_trr" VALUES(0, 23, 0, 0);
 
 CREATE TABLE "tbl_software_tests" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),

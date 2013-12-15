@@ -4,6 +4,7 @@ BEGIN TRANSACTION;
 --
 -- Create tables for site-wide information.
 --
+DROP TABLE IF EXISTS "tbl_site_info";
 CREATE TABLE "tbl_site_info" (
     "fld_product_key" VARCHAR(64) NOT NULL,
     "fld_expire_date" INTEGER NOT NULL DEFAULT(719163)
@@ -262,6 +263,46 @@ CREATE TABLE "tbl_dormant_environs" (
 INSERT INTO "tbl_dormant_environs" VALUES (1,1,'Ground');
 INSERT INTO "tbl_dormant_environs" VALUES (1,2,'Naval');
 INSERT INTO "tbl_dormant_environs" VALUES (1,3,'Airborne');
+
+DROP TABLE IF EXISTS "tbl_environmental_conditions";
+CREATE TABLE "tbl_environmental_conditions" (
+    "fld_condition_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_condition_name" VARCHAR(128)
+);
+INSERT INTO "tbl_environmental_conditions" VALUES(0, "Abrasion");
+INSERT INTO "tbl_environmental_conditions" VALUES(1, "Acceleration");
+INSERT INTO "tbl_environmental_conditions" VALUES(2, "Corona");
+INSERT INTO "tbl_environmental_conditions" VALUES(3, "Contamination, Chemicals");
+INSERT INTO "tbl_environmental_conditions" VALUES(4, "Contamination, Dirt/Dust");
+INSERT INTO "tbl_environmental_conditions" VALUES(5, "Contamination, Salt Spray");
+INSERT INTO "tbl_environmental_conditions" VALUES(6, "Electrostatic Discharge");
+INSERT INTO "tbl_environmental_conditions" VALUES(7, "Fungus");
+INSERT INTO "tbl_environmental_conditions" VALUES(8, "Gas, Ionized");
+INSERT INTO "tbl_environmental_conditions" VALUES(9, "Geomagnetics");
+INSERT INTO "tbl_environmental_conditions" VALUES(10, "Humidity");
+INSERT INTO "tbl_environmental_conditions" VALUES(11, "Ozone");
+INSERT INTO "tbl_environmental_conditions" VALUES(12, "Pressure, Atmospheric");
+INSERT INTO "tbl_environmental_conditions" VALUES(13, "Pressure");
+INSERT INTO "tbl_environmental_conditions" VALUES(14, "Radiation, Alpha");
+INSERT INTO "tbl_environmental_conditions" VALUES(15, "Radiation, Electromagnetic");
+INSERT INTO "tbl_environmental_conditions" VALUES(16, "Radiation, Gamma");
+INSERT INTO "tbl_environmental_conditions" VALUES(17, "Radiation, Neutron");
+INSERT INTO "tbl_environmental_conditions" VALUES(18, "Radiation, Solar");
+INSERT INTO "tbl_environmental_conditions" VALUES(19, "Shock, Mechanical");
+INSERT INTO "tbl_environmental_conditions" VALUES(20, "Shock, Thermal");
+INSERT INTO "tbl_environmental_conditions" VALUES(21, "Temperature");
+INSERT INTO "tbl_environmental_conditions" VALUES(22, "Thermal Cycles");
+INSERT INTO "tbl_environmental_conditions" VALUES(23, "Vibration, Acoustic");
+INSERT INTO "tbl_environmental_conditions" VALUES(24, "Vibration, Mechanical");
+INSERT INTO "tbl_environmental_conditions" VALUES(25, "Weather, Fog");
+INSERT INTO "tbl_environmental_conditions" VALUES(26, "Weather, Freezing Rain");
+INSERT INTO "tbl_environmental_conditions" VALUES(27, "Weather, Frost");
+INSERT INTO "tbl_environmental_conditions" VALUES(28, "Weather, Hail");
+INSERT INTO "tbl_environmental_conditions" VALUES(29, "Weather, Ice");
+INSERT INTO "tbl_environmental_conditions" VALUES(30, "Weather, Rain");
+INSERT INTO "tbl_environmental_conditions" VALUES(31, "Weather, Sleet");
+INSERT INTO "tbl_environmental_conditions" VALUES(32, "Weather, Snow");
+INSERT INTO "tbl_environmental_conditions" VALUES(33, "Weather, Wind");
 
 --
 -- Create tables for system reliability assessments.
@@ -600,7 +641,7 @@ CREATE TABLE "tbl_software_level" (
   "fld_level_desc" VARCHAR(64) DEFAULT NULL
 );
 INSERT INTO "tbl_software_level" VALUES (0,'Software System');
-INSERT INTO "tbl_software_level" VALUES (1,'Computer Software Configuration Item (CSCI)');
+INSERT INTO "tbl_software_level" VALUES (1,'Software Module');
 INSERT INTO "tbl_software_level" VALUES (2,'Software Unit');
 
 DROP TABLE IF EXISTS "tbl_test_techniques";

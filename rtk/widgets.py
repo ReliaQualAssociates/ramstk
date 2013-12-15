@@ -133,13 +133,18 @@ gobject.type_register(CellRendererML)
 
 def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
     """
-    Utility function to create Button widgets.
+    Utility function to create gtk.Button() widgets.
 
     Keyword Arguments:
     _width_ -- the width of the Button widget.
     _label_ -- the text to display with the Button widget.
                Default is None.
-    _image_ -- the file image to display on the Button.
+    _image_ -- the file image to display on the Button.  Options for this
+               argument are:
+               add
+               assign
+               calculate
+               commit
     """
 
     if(_width_ == 0):
@@ -174,6 +179,7 @@ def make_check_button(_label_=None):
     checkbutton = gtk.CheckButton(_label_, True)
     if(_label_ is not None):
         checkbutton.get_child().set_use_markup(True)
+        checkbutton.get_child().set_line_wrap(True)
 
     return(checkbutton)
 
@@ -339,7 +345,7 @@ def make_label(text, width=190, height=25, bold=True):
     return(label)
 
 
-def make_labels(label_text, container, y_pos):
+def make_labels(label_text, container, y_pos, y_inc=30):
     """
     Utility function to make labels.  The width of each label is set using a
     natural request.  This ensures the label doesn't wrap or cut off letters.
@@ -351,13 +357,14 @@ def make_labels(label_text, container, y_pos):
     label_text -- a list containing the text for each label.
     container  -- the container widget to place the labels on.
     y_pos      -- the y_pos of the first label.
+    y_inc      -- the amount to increment the y_pos between each label.
     """
 
     _max_length_ = 0
     for i in range(len(label_text)):
         label = make_label(label_text[i], -1, 25)
         _max_length_ = max(_max_length_, label.size_request()[0])
-        container.put(label, 5, (30 * i + y_pos))
+        container.put(label, 5, (y_inc * i + y_pos))
 
     return(_max_length_)
 

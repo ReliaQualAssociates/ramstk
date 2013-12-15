@@ -296,6 +296,22 @@ def ordinal_to_date(ordinal):
 
     return(results)
 
+
+def tuple_to_list(_tuple_, _list_):
+    """
+    Appends a tuple to a list.
+
+    Keyword Arguments:
+    _tuple_ -- the tuple to add to the list.
+    _list_  -- the existing list to add the tuple elements to.
+    """
+
+    for i in range(len(_tuple_)):
+        _list_.append(_tuple_[i])
+
+    return(_list_)
+
+
 def dir_exists(_directory_):
     """
     Checks for the existence of a directory.
@@ -1459,6 +1475,67 @@ def date_select(widget, entry):
     dialog.destroy()
 
     entry.set_text(_date_)
+
+
+def set_cursor(_app_, _cursor_):
+    """
+    Function to set the cursor for a gtk.gdk.Window()
+
+    Keyword Araguments:
+    _app_    -- the running instance of the RTK application.
+    _cursor_ -- the gtk.gdk.Cursor() to set.  Only handles one of the following:
+                gtk.gdk.X_CURSOR
+                gtk.gdk.ARROW
+                gtk.gdk.CENTER_PTR
+                gtk.gdk.CIRCLE
+                gtk.gdk.CROSS
+                gtk.gdk.CROSS_REVERSE
+                gtk.gdk.CROSSHAIR
+                gtk.gdk.DIAMOND_CROSS
+                gtk.gdk.DOUBLE_ARROW
+                gtk.gdk.DRAFT_LARGE
+                gtk.gdk.DRAFT_SMALL
+                gtk.gdk.EXCHANGE
+                gtk.gdk.FLEUR
+                gtk.gdk.GUMBY
+                gtk.gdk.HAND1
+                gtk.gdk.HAND2
+                gtk.gdk.LEFT_PTR - used for non-busy cursor
+                gtk.gdk.PENCIL
+                gtk.gdk.PLUS
+                gtk.gdk.QUESTION_ARROW
+                gtk.gdk.RIGHT_PTR
+                gtk.gdk.SB_DOWN_ARROW
+                gtk.gdk.SB_H_DOUBLE_ARROW
+                gtk.gdk.SB_LEFT_ARROW
+                gtk.gdk.SB_RIGHT_ARROW
+                gtk.gdk.SB_UP_ARROW
+                gtk.gdk.SB_V_DOUBLE_ARROW
+                gtk.gdk.TCROSS
+                gtk.gdk.TOP_LEFT_ARROW
+                gtk.gdk.WATCH - used when application is busy
+                gtk.gdk.XTERM - selection bar
+    """
+
+    _app_.winTree.window.set_cursor(gtk.gdk.Cursor(_cursor_))
+    _app_.winParts.window.set_cursor(gtk.gdk.Cursor(_cursor_))
+    _app_.winWorkBook.window.set_cursor(gtk.gdk.Cursor(_cursor_))
+
+    gtk.gdk.flush()
+
+    return False
+
+def long_call(_app_):
+    """
+    Function for restoring the cursor to normal after a long call.
+
+    Keyword Arguments:
+    _app_ -- the running instance of the RTK application.
+    """
+
+    _app_.winTree.window.set_cursor(None)
+    _app_.winParts.window.set_cursor(None)
+    _app_.winWorkBook.window.set_cursor(None)
 
 
 class Options:
