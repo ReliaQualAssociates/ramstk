@@ -1131,7 +1131,7 @@ class Revision:
                         WHERE fld_revision_id=%d"
 
         if self.selected_row is not None:
-            self._app.REQUIREMENT.requirement_save()
+            self._app.REQUIREMENT.requirement_save(None)
             self._app.REQUIREMENT.load_tree()
             self._app.FUNCTION.function_save()
             self._app.FUNCTION.load_tree()

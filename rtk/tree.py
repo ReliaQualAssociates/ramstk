@@ -96,7 +96,7 @@ class TreeWindow(gtk.Window):
         self.toolbar = self._toolbar_create()
         vbox.pack_start(self.toolbar, expand=False, fill=False)
 
-        # Find the user's preferred gtk.Notebook tab position.
+# Find the user's preferred gtk.Notebook tab position.
         if(_conf.TABPOS[0] == 'left'):
             _position = gtk.POS_LEFT
         elif(_conf.TABPOS[0] == 'right'):
@@ -110,8 +110,7 @@ class TreeWindow(gtk.Window):
         self.notebook.set_tab_pos(_position)
         self.notebook.connect('switch-page', self._notebook_page_switched)
 
-# Create a tree for each module.  The order they are listed here is the order
-# they will appear in the RTK Tree Book.
+# Create a tree for each module.
         self.scwRevision = self._app.REVISION.create_tree()
         self.scwRequirement = self._app.REQUIREMENT.create_tree()
         self.scwFunction = self._app.FUNCTION.create_tree()
@@ -163,19 +162,6 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.REVISION.load_tree()
 
-        if(_conf.RTK_MODULES[2] == 1):
-            label = gtk.Label()
-            _heading = _(u"Functions")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_("Displays the system functional hierarchy."))
-            self.notebook.insert_page(self.scwFunction,
-                                      tab_label=label,
-                                      position=-1)
-            _app.FUNCTION.load_tree()
-
         if(_conf.RTK_MODULES[1] == 1):
             label = gtk.Label()
             _heading = _(u"Requirements")
@@ -188,6 +174,19 @@ class TreeWindow(gtk.Window):
                                       tab_label=label,
                                       position=-1)
             _app.REQUIREMENT.load_tree()
+
+        if(_conf.RTK_MODULES[2] == 1):
+            label = gtk.Label()
+            _heading = _(u"Functions")
+            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.show_all()
+            label.set_tooltip_text(_("Displays the system functional hierarchy."))
+            self.notebook.insert_page(self.scwFunction,
+                                      tab_label=label,
+                                      position=-1)
+            _app.FUNCTION.load_tree()
 
         if(_conf.RTK_MODULES[3] == 1):
             label = gtk.Label()
@@ -616,15 +615,6 @@ class TreeWindow(gtk.Window):
                 pass
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
             try:
-                self._app.FUNCTION.treeview.grab_focus()
-                model = self._app.FUNCTION.model
-                path = model.get_path(model.get_iter_root())
-                column = self._app.FUNCTION.treeview.get_column(0)
-                self._app.FUNCTION.treeview.row_activated(path, column)
-            except TypeError:               # There are no functions.
-                self._app.FUNCTION.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
-            try:
                 self._app.REQUIREMENT.treeview.grab_focus()
                 model = self._app.REQUIREMENT.model
                 path = model.get_path(model.get_iter_root())
@@ -632,6 +622,15 @@ class TreeWindow(gtk.Window):
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
                 self._app.REQUIREMENT.load_notebook()
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
+            try:
+                self._app.FUNCTION.treeview.grab_focus()
+                model = self._app.FUNCTION.model
+                path = model.get_path(model.get_iter_root())
+                column = self._app.FUNCTION.treeview.get_column(0)
+                self._app.FUNCTION.treeview.row_activated(path, column)
+            except TypeError:               # There are no functions.
+                self._app.FUNCTION.load_notebook()
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()

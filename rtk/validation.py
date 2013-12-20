@@ -651,7 +651,7 @@ class Validation:
         else:
             values = (0,)
 
-        # Select everything from the validation table.
+# Select everything from the validation table.
         if(_conf.BACKEND == 'mysql'):
             query = "SELECT * FROM tbl_validation \
                      WHERE fld_revision_id=%d \

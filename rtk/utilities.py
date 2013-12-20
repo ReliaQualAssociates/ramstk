@@ -591,7 +591,7 @@ def save_project(widget, _app):
 
     _app.REVISION.revision_save()
     _app.FUNCTION.function_save()
-    _app.REQUIREMENT.requirement_save()
+    _app.REQUIREMENT.requirement_save(None)
     _app.HARDWARE.hardware_save()
     _app.SOFTWARE.software_save()
     _app.winParts.save_component()

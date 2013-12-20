@@ -48,6 +48,26 @@ import gettext
 _ = gettext.gettext
 
 
+def _vandv_tree_edit(cell, path, new_text, position, model):
+    """
+    Function called whenever a gtk.CellRenderer is edited in teh V&V task list.
+
+    Keyword Arguments:
+    cell     -- the CellRenderer that was edited.
+    path     -- the TreeView path of the CellRenderer that was edited.
+    new_text -- the new text in the edited CellRenderer.
+    position -- the column position of the edited CellRenderer.
+    model    -- the TreeModel the CellRenderer belongs to.
+    """
+
+    if(position == 4):
+        model[path][position] = float(new_text)
+    else:
+        model[path][position] = new_text
+
+    return False
+
+
 class Requirement:
     """
     The Requirement class is used to represent the requirements in a
@@ -952,13 +972,13 @@ class Requirement:
                                 gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwValidation)
 
-        frame = gtk.Frame(_("Verification and Validation Task List"))
+        frame = _widg.make_frame(_(u"Verification and Validation Task List"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        column = gtk.TreeViewColumn(_("Task ID"))
+        column = gtk.TreeViewColumn(_(u"Task ID"))
         column.set_visible(0)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=0)
@@ -966,9 +986,9 @@ class Requirement:
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.connect('edited', self._vandv_tree_edit, 1,
+        cell.connect('edited', _vandv_tree_edit, 1,
                      self.tvwValidation.get_model())
-        column = gtk.TreeViewColumn(_("Task Description"))
+        column = gtk.TreeViewColumn(_(u"Task Description"))
         column.set_visible(1)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         column.set_resizable(True)
@@ -978,9 +998,9 @@ class Requirement:
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.connect('edited', self._vandv_tree_edit, 2,
+        cell.connect('edited', _vandv_tree_edit, 2,
                      self.tvwValidation.get_model())
-        column = gtk.TreeViewColumn(_("Start Date"))
+        column = gtk.TreeViewColumn(_(u"Start Date"))
         column.set_visible(1)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=2)
@@ -988,9 +1008,9 @@ class Requirement:
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.connect('edited', self._vandv_tree_edit, 3,
+        cell.connect('edited', _vandv_tree_edit, 3,
                      self.tvwValidation.get_model())
-        column = gtk.TreeViewColumn(_("Due Date"))
+        column = gtk.TreeViewColumn(_(u"Due Date"))
         column.set_visible(1)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=3)
@@ -998,9 +1018,9 @@ class Requirement:
 
         cell = gtk.CellRendererText()
         cell.set_property('editable', 0)
-        cell.connect('edited', self._vandv_tree_edit, 4,
+        cell.connect('edited', _vandv_tree_edit, 4,
                      self.tvwValidation.get_model())
-        column = gtk.TreeViewColumn(_("% Complete"))
+        column = gtk.TreeViewColumn(_(u"% Complete"))
         column.set_visible(1)
         column.pack_start(cell, True)
         column.set_attributes(cell, text=4)
@@ -1013,7 +1033,7 @@ class Requirement:
                          "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_tooltip_text(_("Displays the list of V&V tasks for the selected requirement."))
+        label.set_tooltip_text(_(u"Displays the list of V&V tasks for the selected requirement."))
         label.show_all()
         self.nbkRequirement.insert_page(frame,
                                   tab_label=label,
@@ -1070,11 +1090,12 @@ class Requirement:
             col = self.tvwValidation.get_column(0)
             self.tvwValidation.row_activated(path, col)
 
-        # Load the list of V&V task to the gtk.ComboBox used to
-        # associate existing V&V tasks with requirements.
+# Load the list of V&V task to the gtk.ComboBox used to associate existing V&V
+# tasks with requirements.
         query = "SELECT DISTINCT(fld_validation_id), \
                  fld_task_desc, fld_task_type \
-                 FROM tbl_validation"
+                 FROM tbl_validation \
+                 WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
 
         results = self._app.DB.execute_query(query,
                                              None,
@@ -1184,8 +1205,8 @@ class Requirement:
         column   -- the actived gtk.TreeViewColumn.
         """
 
-        selection = treeview.get_selection()
-        (self.model, self.selected_row) = selection.get_selected()
+        _selection_ = treeview.get_selection()
+        (self.model, self.selected_row) = _selection_.get_selected()
 
         if self.selected_row is not None:
             self.load_notebook()
@@ -1208,29 +1229,12 @@ class Requirement:
 
         return False
 
-    def _vandv_tree_edit(self, cell, path, new_text, position, model):
+    def _requirement_add(self, button, type_):
         """
-        Called whenever a TreeView CellRenderer is edited.
+        Method to add a new Requirement to the RTK Program's database.
 
         Keyword Arguments:
-        cell     -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        new_text -- the new text in the edited CellRenderer.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
-        """
-
-        if(position == 4):
-            model[path][position] = float(new_text)
-        else:
-            model[path][position] = new_text
-
-    def _requirement_add(self, widget, type_):
-        """
-        Adds a new Requirement to the Program's database.
-
-        Keyword Arguments:
-        widget -- the widget that called this function.
+        button -- the gtk.ToolButton() that called this function.
         type_  -- the type of Requirement to add; 0 = sibling, 1 = child.
         """
 
@@ -1321,7 +1325,7 @@ class Requirement:
 
         return False
 
-    def requirement_save(self, widget=None):
+    def requirement_save(self, widget):
         """
         Saves the Requirement Object treeview information to the Program's
         database.
@@ -1553,13 +1557,12 @@ class Requirement:
 
         return False
 
-    def _vandv_task_add(self, widget, type_=0):
+    def _vandv_task_add(self, type_=0):
         """
         Adds a new Verification and Validation task to the selected
         Requirement to the Program's MySQL or SQLite3 database.
 
         Keyword Arguments:
-        widget -- the widget that called this function.
         type_  -- type of add; 0 = add new task, 1 = assign existing task
         """
 
@@ -1573,7 +1576,7 @@ class Requirement:
 
             _query_ = "INSERT INTO tbl_validation \
                        (fld_revision_id, fld_task_desc) \
-                       VALUES (%d, %d)" % _values_
+                       VALUES (%d, '%s')" % _values_
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx,
@@ -1611,6 +1614,8 @@ class Requirement:
                 self._app.debug_log.error("requirement.py: Failed to add V&V task.")
                 return True
 
+            self._app.VALIDATION.load_tree()
+
         elif(type_ == 1):
             _model_ = self.cmbVandVTasks.get_model()
             _row_ = self.cmbVandVTasks.get_active_iter()
@@ -1647,7 +1652,7 @@ class Requirement:
         database.
         """
 
-        def _save_line_item(self, model, path_, row):
+        def _save_line_item(model, path_, row, self):
             """
             Saves each task associated with the selected Requirement to the RTK
             Program database.
@@ -1890,14 +1895,14 @@ class Requirement:
             if(_button_ == 'Remove'):
                 self._requirement_delete()
             elif(_button_ == 'Save'):
-                self.requirement_save()
+                self.requirement_save(None)
         elif(_page_ == 3):                  # V&V Tasks tab.
             if(_button_ == 'Add'):
                 self._vandv_task_add(0)
             elif(_button_ == 'Assign'):
                 self._vandv_task_add(1)
             elif(_button_ == 'Remove'):
-                print "Lets remove this V&V task"
+                print "Lets remove this validation task"
             elif(_button_ == 'Save'):
                 self._vandv_tasks_save()
 
