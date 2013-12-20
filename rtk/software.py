@@ -2582,9 +2582,8 @@ class Software:
 
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._gd_tab_labels[0][1:],
-                                   fixed, y_pos, y_inc=35)
-
+        (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0][1:],
+                                                fixed, y_pos, y_inc=35)
         _x_pos_ = max(_max1_, _max2_) + 20
 
         # Place the widgets.
@@ -5259,9 +5258,8 @@ class Software:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ts_tab_labels[0:4],
-                                   fixed, y_pos, y_inc=35)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[0:4],
+                                                fixed, y_pos, y_inc=35)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         # Add the test planning widgets to the left half.
@@ -5315,9 +5313,8 @@ class Software:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ts_tab_labels[4:10],
-                                   fixed, y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[4:10],
+                                                fixed, y_pos)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         y_pos = 5
@@ -5351,9 +5348,8 @@ class Software:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ts_tab_labels[10:18],
-                                   fixed, y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[10:18],
+                                                fixed, y_pos)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         y_pos = 5
@@ -5983,10 +5979,12 @@ class Software:
         if(type_ == 0):
             _iter = self.model.iter_parent(self._selected_row)
             _parent = self.model.get_string_from_iter(_iter)
-            n_new_module = _util.add_items(_("Sibling Module"))
+            n_new_module = _util.add_items(title=_(u"RTK - Add Sibling Modules"),
+                                           prompt=_(u"How many sibling modules to add?"))
         if(type_ == 1):
             _parent = self.model.get_string_from_iter(self._selected_row)
-            n_new_module = _util.add_items(_("Child Module"))
+            n_new_module = _util.add_items(title = _(u"RTK - Child Modules"),
+                                           prompt=_(u"How many child modules to add?"))
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 

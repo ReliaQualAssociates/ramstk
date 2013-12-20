@@ -11,6 +11,24 @@ CREATE TABLE "tbl_site_info" (
 );
 
 --
+-- Table to store responsible department information.
+--
+DROP TABLE IF EXISTS "tbl_departments";
+CREATE TABLE "tbl_departments" (
+    "fld_department_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT  -- Identifier for the department.
+    "fld_department_name" VARCHAR(512) NOT NULL DEFAULT('') -- Noun name of the department.
+);
+
+--
+-- Table to store customer need affinity groups.
+--
+DROP TABLE IF EXISTS "tbl_need_groups";
+CREATE TABLE "tbl_need_groups" (
+    "fld_group_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT   -- Identifier for the need group.
+    "fld_group_name" VARCHAR(256) NOT NULL DEFAULT('')  -- Name of the need group.
+);
+
+--
 -- Create tables for general program information.
 --
 DROP TABLE IF EXISTS "tbl_distributions";
@@ -70,14 +88,19 @@ CREATE TABLE "tbl_requirement_type" (
   "fld_requirement_type_desc" VARCHAR(32) DEFAULT NULL,
   "fld_requirement_type_code" VARCHAR(4) DEFAULT NULL
 );
-INSERT INTO "tbl_requirement_type" VALUES (1,'MARKETING','MKT');
-INSERT INTO "tbl_requirement_type" VALUES (2,'FINANCIAL','FIN');
-INSERT INTO "tbl_requirement_type" VALUES (3,'REGULATORY','REG');
-INSERT INTO "tbl_requirement_type" VALUES (4,'PERFORMANCE','PRF');
-INSERT INTO "tbl_requirement_type" VALUES (5,'RELIABILITY','REL');
-INSERT INTO "tbl_requirement_type" VALUES (6,'SAFETY','SAF');
-INSERT INTO "tbl_requirement_type" VALUES (7,'SOFTWARE','SFT');
-INSERT INTO "tbl_requirement_type" VALUES (8,'MAINTAINABILITY','MNT');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Functional','FUN');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Performance','PRF');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Regulatory','REG');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Reliability','REL');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Safety','SAF');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Serviceability','SVC');
+INSERT INTO "tbl_requirement_type" ("fld_requirement_type_desc", "fld_requirement_type_code") VALUES ('Usability','USE');
+
+DROP TABLE IF EXISTS "tbl_stakeholders";
+CREATE TABLE "tbl_stakeholders" (
+    "fld_stakeholder_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_stakeholder" VARCHAR(128)
+);
 
 DROP TABLE IF EXISTS "tbl_status";
 CREATE TABLE "tbl_status" (
@@ -85,25 +108,38 @@ CREATE TABLE "tbl_status" (
   "fld_status_name" VARCHAR(256),
   "fld_status_description" BLOB
 );
-INSERT INTO "tbl_status" VALUES(1, 'Initiated', 'Incident or action has been initiated.');
-INSERT INTO "tbl_status" VALUES(2, 'Reviewed', 'Incident or action has been reviewed.');
-INSERT INTO "tbl_status" VALUES(3, 'Analysis', 'Incident or action has been assigned and is being analyzed.');
-INSERT INTO "tbl_status" VALUES(4, 'Solution Identified', 'A solution to the reported problem has been identified.');
-INSERT INTO "tbl_status" VALUES(5, 'Solution Implemented', 'A solution to the reported problem has been implemented.');
-INSERT INTO "tbl_status" VALUES(6, 'Solution Verified', 'A solution to the reported problem has been verified.');
-INSERT INTO "tbl_status" VALUES(7, 'Ready for Approval', 'Incident analysis or action is ready to be approved.');
-INSERT INTO "tbl_status" VALUES(8, 'Approved', 'Incident or action has been approved.');
-INSERT INTO "tbl_status" VALUES(9, 'Ready for Closure', 'Incident or action is ready to be closed.');
-INSERT INTO "tbl_status" VALUES(10, 'Closed', 'Incident or action has been closed.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Initiated', 'Incident or action has been initiated.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Reviewed', 'Incident or action has been reviewed.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Analysis', 'Incident or action has been assigned and is being analyzed.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Solution Identified', 'A solution to the reported problem has been identified.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Solution Implemented', 'A solution to the reported problem has been implemented.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Solution Verified', 'A solution to the reported problem has been verified.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Ready for Approval', 'Incident analysis or action is ready to be approved.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Approved', 'Incident or action has been approved.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Ready for Closure', 'Incident or action is ready to be closed.');
+INSERT INTO "tbl_status" ("fld_status_name", "fld_status_description") VALUES ('Closed', 'Incident or action has been closed.');
+
+DROP TABLE IF EXISTS "tbl_groups";
+CREATE TABLE "tbl_groups" (
+    "fld_group_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,  -- Identifier for the group.
+    "fld_group_name" VARCHAR (256)                      -- Name of the group.
+);
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Design');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Logistics Support');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Maintainability');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Reliability');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Safety');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Software');
 
 DROP TABLE IF EXISTS "tbl_users";
 CREATE TABLE "tbl_users" (
-    "fld_user_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_user_lname" VARCHAR(256),
-    "fld_user_fname" VARCHAR(256),
-    "fld_user_email" VARCHAR(256),
-    "fld_user_phone" VARCHAR(256),
-    "fld_user_group" VARCHAR(256)
+    "fld_user_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Identifier for the user.
+    "fld_group_id" VARCHAR (256),                 -- Group ID user belongs too.
+    "fld_user_lname" VARCHAR (256),                     -- User's last name.
+    "fld_user_fname" VARCHAR (256),                     -- User's first name.
+    "fld_user_email" VARCHAR (256),                     -- User's email address.
+    "fld_user_phone" VARCHAR (256),                     -- User's phone number.
+    "fld_is_admin" TINYINT DEFAULT (0)                  -- Indicates whether or not the user has admin privileges.
 );
 
 --

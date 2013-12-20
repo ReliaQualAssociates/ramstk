@@ -119,7 +119,7 @@ def read_configuration():
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'fmecaformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'modeformat')
+    formatfile = conf.read_configuration().get('Files', 'stakeholderformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'testformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
@@ -804,23 +804,21 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     return False
 
 
-def add_items(_class_):
+def add_items(title, prompt=""):
     """
     Adds one or more items to a treeview hierarchy.
 
     Keyword Arguments:
-    _class_ -- the type of item to add (i.e., function, assembly,
-               component).
+    title -- the string to put in the title bar of the dialog.
+    prompt -- the prompt to put on the dialog.
     """
 
-    _title_ = _(u"RTK - Add %s") % _class_
-
-    _dialog_ = _widg.make_dialog(_title_)
+    _dialog_ = _widg.make_dialog(title)
 
     _fixed_ = gtk.Fixed()
-    _fixed_.set_size_request(400, 80)
+    _fixed_.set_size_request(600, 80)
 
-    _label_ = _widg.make_label(_(u"Add how many %s?") % _class_, 150, 80)
+    _label_ = _widg.make_label(prompt, 150, 80)
     txtQuantity = _widg.make_entry(_width_=100)
     txtQuantity.set_text("1")
 

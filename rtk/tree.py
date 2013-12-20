@@ -110,9 +110,11 @@ class TreeWindow(gtk.Window):
         self.notebook.set_tab_pos(_position)
         self.notebook.connect('switch-page', self._notebook_page_switched)
 
+# Create a tree for each module.  The order they are listed here is the order
+# they will appear in the RTK Tree Book.
         self.scwRevision = self._app.REVISION.create_tree()
-        self.scwFunction = self._app.FUNCTION.create_tree()
         self.scwRequirement = self._app.REQUIREMENT.create_tree()
+        self.scwFunction = self._app.FUNCTION.create_tree()
         self.scwHardware = self._app.HARDWARE.create_tree()
         self.scwSoftware = self._app.SOFTWARE.create_tree()
         self.scwTesting = self._app.TESTING.create_tree()

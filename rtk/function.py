@@ -1007,14 +1007,18 @@ class Function:
                 if prow is not None:
                     _parent = self.model.get_string_from_iter(prow)
 
-            n_functions = _util.add_items(_("Sibling Function"))
+            _title_ = _(u"RTK - Add Sibling Functions")
+            _prompt_ = _(u"How many sibling functions to add?")
 
         elif(type_ == 1):
             _parent = "-"
             if self.selected_row is not None:
                 _parent = self.model.get_string_from_iter(self.selected_row)
 
-            n_functions = _util.add_items(_("Child Function"))
+            _title_ = _(u"RTK - Add Child Functions")
+            _prompt_ = _(u"How many child functions to add?")
+
+        n_functions = _util.add_items(_title_, _prompt_)
 
         for i in range(n_functions):
             _code = str(_conf.RTK_PREFIX[2]) + ' ' + \

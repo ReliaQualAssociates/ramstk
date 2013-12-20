@@ -315,23 +315,28 @@ def make_entry(_width_=200, _height_=25,
     return(entry)
 
 
-def make_label(text, width=190, height=25, bold=True):
+def make_label(text, width=190, height=25, bold=True, wrap=False,
+               justify=gtk.JUSTIFY_LEFT):
     """
     Utility function to create gtk.Label widgets.
 
     Keyword Arguments:
-    text   -- the text to display in the gtk.Label widget.
-    width  -- width of the gtk.Label widget.  Default is 190.
-    height -- height of the gtk.Label widget.  Default is 25.
-    bold   -- boolean indicating whether text should be bold.  Defaults
-              to True.
+    text    -- the text to display in the gtk.Label widget.
+    width   -- width of the gtk.Label widget.  Default is 190.
+    height  -- height of the gtk.Label widget.  Default is 25.
+    bold    -- boolean indicating whether text should be bold.  Defaults
+               to True.
+    wrap    -- boolean indicating whether the label should be multi-line or
+               not.
+    justify -- the justification type when the label wraps and contains more
+               than one line.
     """
 
     label = gtk.Label()
     label.set_markup("<span>" + text + "</span>")
-    label.set_line_wrap(True)
-    label.set_alignment(xalign=0.5, yalign=0.5)
-    label.set_justify(gtk.JUSTIFY_CENTER)
+    label.set_line_wrap(wrap)
+    label.set_justify(justify)
+    label.set_alignment(xalign=0.05, yalign=0.5)
     label.props.width_request = width
     label.props.height_request = height
 
@@ -345,28 +350,33 @@ def make_label(text, width=190, height=25, bold=True):
     return(label)
 
 
-def make_labels(label_text, container, y_pos, y_inc=30):
+def make_labels(text, container, y_pos, y_inc=25):
     """
-    Utility function to make labels.  The width of each label is set using a
-    natural request.  This ensures the label doesn't wrap or cut off letters.
-    The maximum size of the labels is determined and used to set the left
-    position of widget displaying the data described y the label.  This
-    ensures everything lines up.
+    Utility function to make and place a group of labels.  The width of each
+    label is set using a natural request.  This ensures the label doesn't cut
+    off letters.  The maximum size of the labels is determined and used to set
+    the left position of widget displaying the data described by the label.
+    This ensures everything lines up.  It also returns a list of y-coordinates
+    indicating the placement of each label that is used to place the
+    corresponding widget.
 
     Keyword Arguments:
-    label_text -- a list containing the text for each label.
-    container  -- the container widget to place the labels on.
-    y_pos      -- the y_pos of the first label.
-    y_inc      -- the amount to increment the y_pos between each label.
+    text      -- a list containing the text for each label.
+    container -- the container widget to place the labels on.
+    y_pos     -- the y_pos of the first label.
+    y_inc     -- the amount to increment the y_pos between each label.
     """
 
-    _max_length_ = 0
-    for i in range(len(label_text)):
-        label = make_label(label_text[i], -1, 25)
-        _max_length_ = max(_max_length_, label.size_request()[0])
-        container.put(label, 5, (y_inc * i + y_pos))
+    _int_max_x_ = 0
+    _lst_y_pos_ = []
+    for i in range(len(text)):
+        label = make_label(text[i], width=-1, height=-1, wrap=True)
+        _int_max_x_ = max(_int_max_x_, label.size_request()[0])
+        container.put(label, 5, y_pos)
+        _lst_y_pos_.append(y_pos)
+        y_pos += max(label.size_request()[1], y_inc) + 5
 
-    return(_max_length_)
+    return(_int_max_x_, _lst_y_pos_)
 
 
 def make_text_view(buffer_=None, width=200, height=100):
@@ -550,7 +560,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
 
-        if(int(editable[i].text) == 0):
+        if(int(editable[i].text) == 0 and widget[i].text != 'toggle'):
             cell.set_property('background', 'light gray')
 
         column = gtk.TreeViewColumn("")

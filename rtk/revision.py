@@ -39,7 +39,6 @@ import pango
 # Import other RTK modules.
 import calculations as _calc
 import configuration as _conf
-import utilities as _util
 import widgets as _widg
 
 from _assistants_.adds import AddRevision
@@ -152,27 +151,38 @@ class Revision:
 
 # Create the failure definition tab.
         self.btnAddDefinition = _widg.make_button(_width_=40, _image_='add')
-        self.btnRemoveDefinition = _widg.make_button(_width_=40, _image_='remove')
+        self.btnRemoveDefinition = _widg.make_button(_width_=40,
+                                                     _image_='remove')
         self.tvwFailureDefinitions = gtk.TreeView()
         if self._failure_definition_tab_create():
             self._app.debug_log.error("revision.py: Failed to create Failue Definition tab.")
 
 # Create the Assessment Results tab.
-        self.txtActiveHt = _widg.make_entry(editable=False, bold=True)
-        self.txtDormantHt = _widg.make_entry(editable=False, bold=True)
-        self.txtSoftwareHt = _widg.make_entry(editable=False, bold=True)
-        self.txtPredictedHt = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionHt = _widg.make_entry(editable=False, bold=True)
-        self.txtMTBF = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionMTBF = _widg.make_entry(editable=False, bold=True)
-        self.txtReliability = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionRt = _widg.make_entry(editable=False, bold=True)
-        self.txtMPMT = _widg.make_entry(editable=False, bold=True)
-        self.txtMCMT = _widg.make_entry(editable=False, bold=True)
-        self.txtMTTR = _widg.make_entry(editable=False, bold=True)
-        self.txtMMT = _widg.make_entry(editable=False, bold=True)
-        self.txtAvailability = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionAt = _widg.make_entry(editable=False, bold=True)
+        self.txtActiveHt = _widg.make_entry(_width_=100, editable=False,
+                                            bold=True)
+        self.txtDormantHt = _widg.make_entry(_width_=100, editable=False,
+                                             bold=True)
+        self.txtSoftwareHt = _widg.make_entry(_width_=100, editable=False,
+                                              bold=True)
+        self.txtPredictedHt = _widg.make_entry(_width_=100, editable=False,
+                                               bold=True)
+        self.txtMissionHt = _widg.make_entry(_width_=100, editable=False,
+                                             bold=True)
+        self.txtMTBF = _widg.make_entry(_width_=100, editable=False, bold=True)
+        self.txtMissionMTBF = _widg.make_entry(_width_=100, editable=False,
+                                               bold=True)
+        self.txtReliability = _widg.make_entry(_width_=100, editable=False,
+                                               bold=True)
+        self.txtMissionRt = _widg.make_entry(_width_=100, editable=False,
+                                             bold=True)
+        self.txtMPMT = _widg.make_entry(_width_=100, editable=False, bold=True)
+        self.txtMCMT = _widg.make_entry(_width_=100, editable=False, bold=True)
+        self.txtMTTR = _widg.make_entry(_width_=100, editable=False, bold=True)
+        self.txtMMT = _widg.make_entry(_width_=100, editable=False, bold=True)
+        self.txtAvailability = _widg.make_entry(_width_=100, editable=False,
+                                                bold=True)
+        self.txtMissionAt = _widg.make_entry(_width_=100, editable=False,
+                                             bold=True)
         if self._assessment_results_tab_create():
             self._app.debug_log.error("revision.py: Failed to create Assessment Results tab.")
 
@@ -279,8 +289,7 @@ class Revision:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._gd_tab_labels[0], fixed, y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0], fixed, y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
         fixed.put(self.txtCode, _x_pos_, y_pos)
@@ -532,9 +541,8 @@ class Revision:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._uc_tab_labels[0], fixed,
+        (_max1_, _heights_) = _widg.make_labels(self._uc_tab_labels[0], fixed,
                                    y_pos, y_inc=35)
-
         _x_pos_ = max(_max1_, _max2_) + 20
 
         scrollwindow = gtk.ScrolledWindow()
@@ -1133,7 +1141,7 @@ class Revision:
             self._app.SOFTWARE.load_tree()
             self._app.VALIDATION.validation_save()
             self._app.VALIDATION.load_tree()
-            #self._app.winParts.load_part_tree(qryParts, self.revision_id)
+            self._app.winParts.load_part_tree(qryParts, self.revision_id)
             #self._app.winParts.load_test_tree(qryTests, values)
             #self._app.winParts.load_incident_tree(qryIncidents, self.revision_id)
 
@@ -1463,12 +1471,11 @@ class Revision:
         elif(_conf.BACKEND == 'sqlite3'):
             _query_ = "SELECT seq FROM sqlite_sequence \
                        WHERE name='tbl_missions'"
-        self._int_mission_id_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
+        self._int_mission_id = self._app.DB.execute_query(_query_,
+                                                          None,
+                                                          self._app.ProgCnx)
 
-        self._dic_missions['New Mission'] = [self._int_mission_id_, 0.0, 0,
+        self._dic_missions['New Mission'] = [self._int_mission_id, 0.0, 0,
                                              "New Mission"]
         self._use_profile_tab_load()
 
@@ -1560,9 +1567,6 @@ class Revision:
             return True
 
         self._load_mission_profile()
-
-        return False
-
 
         return False
 

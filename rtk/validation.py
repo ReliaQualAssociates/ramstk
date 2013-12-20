@@ -782,7 +782,8 @@ class Validation:
             else:
                 _revision = 0
 
-        n_tasks = _util.add_items(_("V &amp; V Activity"))
+        n_tasks = _util.add_items(title=_(u"RTK - Add V &amp; V Activity"),
+                                  prompt=_(u"How many V &amp; V activities to add?"))
 
         for i in range(n_tasks):
 

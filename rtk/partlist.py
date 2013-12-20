@@ -66,12 +66,16 @@ class ListWindow(gtk.Window):
 
         self._app = application
 
-# Define list variables.
-        self._VISIBLE_PARTS_ = []
-
-# Define dictionary variables.
+# Define global dictionary variables.
         self.parttreepaths = {}
+
+# Define local dictionary variables.
+# Dictionary to hold the Assembly ID/Hardware Tree treemodel paths.  This is
+# used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
+
+# Define local list variables.
+        self._VISIBLE_PARTS_ = []
 
 # Define global object variables.
         self.objPartModel = None
@@ -414,20 +418,15 @@ class ListWindow(gtk.Window):
         values -- the tuple of values to pass with the query.
         """
 
-        _results = self._app.DB.execute_query(_query_,
-                                              _values_,
-                                              self._app.ProgCnx)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               _values_,
+                                               self._app.ProgCnx)
 
-        self.objPartModel.clear()
-
-# Create an empty dictionary to hold the Assembly ID/Hardware Tree treemodel
-# paths.  This is used to keep the Hardware Tree and the Parts List in sync.
-        self._treepaths = {}
-
-        _n_parts = len(_results)
-        if(_n_parts == 0):
+        if(_results_ == '' or not _results_ or _results_ is None):
             return True
 
+        self.objPartModel.clear()
+        _n_parts = len(_results)
         for i in range(_n_parts):
             row = self.objPartModel.append(None, _results[i])
             self._treepaths[_results[i][1]] = self.objPartModel.get_path(row)

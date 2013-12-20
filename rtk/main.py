@@ -167,9 +167,10 @@ class RTK:
 # Create the GUI and objects for each of the RTK classes.
         self.winWorkBook = _note.WorkBookWindow(self)
 
+# Create each of the modules.
         self.REVISION = Revision(self)
-        self.FUNCTION = Function(self)
         self.REQUIREMENT = Requirement(self)
+        self.FUNCTION = Function(self)
         self.HARDWARE = Hardware(self)
         self.SOFTWARE = Software(self)
         self.VALIDATION = Validation(self)

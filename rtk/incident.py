@@ -943,7 +943,8 @@ class Incident:
         widget -- the widget that called this function.
         """
 
-        n_tasks = _util.add_items(_("Components to Program Incident"))
+        n_tasks = _util.add_items(title=_(u"RTK - Add Components to Program Incident"),
+                                  prompt=_(u"How many components to add to the selected program incident?"))
 
         if(n_tasks < 1):
             return True

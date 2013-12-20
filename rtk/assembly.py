@@ -664,13 +664,12 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._gd_tab_labels[0],
-                                   self.fxdGenDataQuad1,
-                                   y_pos)
-        _max2_ = _widg.make_labels(self._gd_tab_labels[2],
-                                   self.fxdGenDataQuad2,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0],
+                                                self.fxdGenDataQuad1,
+                                                y_pos)
+        (_max2_, _heights_) = _widg.make_labels(self._gd_tab_labels[2],
+                                                self.fxdGenDataQuad2,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Quadrant 1 (upper left) widgets.  These widgets are used to display general
@@ -769,13 +768,12 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._gd_tab_labels[1],
-                                   self.fxdGenDataQuad3,
-                                   y_pos)
-        _max2_ = _widg.make_labels(self._gd_tab_labels[3],
-                                   self.fxdGenDataQuad4,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[1],
+                                                self.fxdGenDataQuad3,
+                                                y_pos)
+        (_max2_, _heights_) = _widg.make_labels(self._gd_tab_labels[3],
+                                                self.fxdGenDataQuad4,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Quadrant 3 (lower left) widgets.  These widget are used to display
@@ -1912,10 +1910,9 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ai_tab_labels[0],
-                                   self.fxdRelInputQuad1,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ai_tab_labels[0],
+                                                self.fxdRelInputQuad1,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Quadrant 1 (upper left) widgets.  These widgets are used to display
@@ -2080,13 +2077,12 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ai_tab_labels[1],
-                                   self.fxdRelInputQuad2,
-                                   y_pos)
-        _max2_ = _widg.make_labels(self._ai_tab_labels[3],
-                                   self.fxdRelInputQuad4,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ai_tab_labels[1],
+                                                self.fxdRelInputQuad2,
+                                                y_pos)
+        (_max2_, _heights_) = _widg.make_labels(self._ai_tab_labels[3],
+                                                self.fxdRelInputQuad4,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Create quadrant 2 (upper right) widgets.
@@ -2277,10 +2273,9 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ar_tab_labels[0],
-                                   self.fxdCalcResultsQuad1,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ar_tab_labels[0],
+                                                self.fxdCalcResultsQuad1,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Create the quadrant 1 (upper left) widgets.
@@ -2321,13 +2316,12 @@ class Assembly:
         y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        _max1_ = _widg.make_labels(self._ar_tab_labels[1],
-                                   self.fxdCalcResultsQuad2,
-                                   y_pos)
-        _max2_ = _widg.make_labels(self._ar_tab_labels[3],
-                                   self.fxdCalcResultsQuad4,
-                                   y_pos)
-
+        (_max1_, _heights_) = _widg.make_labels(self._ar_tab_labels[1],
+                                                self.fxdCalcResultsQuad2,
+                                                y_pos)
+        (_max2_, _heights_) = _widg.make_labels(self._ar_tab_labels[3],
+                                                self.fxdCalcResultsQuad4,
+                                                y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
 # Create the quadrant 2 (upper right) widgets.
@@ -3321,11 +3315,15 @@ class Assembly:
                 except TypeError:
                     _util.application_error(_(u"An sibling assembly can not be added to the top-level assembly."))
                     return True
-                n_new_assembly = _util.add_items(_(u"Sibling Assembly"))
+                _title_ = _(u"RTK - Add Sibling Assemblies")
+                _prompt_ = _(u"How many sibling assemblies to add?")
+
             if(type_ == 1):
                 _parent = self._app.HARDWARE.model.get_string_from_iter(self._app.HARDWARE.selected_row)
-                n_new_assembly = _util.add_items(_(u"Child Assembly"))
+                _title_ = _(u"RTK - Add Child Assemblies")
+                _prompt_ = _(u"How many child assemblies to add?")
 
+        n_new_assembly = _util.add_items(_title_, _prompt_)
         for i in range(n_new_assembly):
 
 # Create the default description of the assembly.

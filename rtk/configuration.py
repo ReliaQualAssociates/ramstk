@@ -55,7 +55,7 @@ LOG_DIR = ''
 #    Position 07: Parts List formatting.
 #    Position 08: Similar Item Analysis formatting.
 #    Position 09: FMECA worksheet formatting.
-#    Position 10:  formatting.
+#    Position 10: Stakeholder Input formatting.
 #    Position 11: Test Planning List formatting.
 #    Position 12:  formatting.
 #    Position 13:  formatting.
@@ -401,7 +401,7 @@ class RTKConf:
 # TODO: Remove the following format files from RTK.
                 config.set('Files', 'rgformat', 'rgincident_format.xml')
                 config.set('Files', 'fracaformat', 'incident_format.xml')
-                config.set('Files', 'modeformat', 'incident_format.xml')
+                config.set('Files', 'stakeholderformat', 'stakeholder_format.xml')
                 config.set('Files', 'mechanismformat', 'incident_format.xml')
 
                 config.add_section('Colors')
@@ -501,7 +501,7 @@ class RTKConf:
 #           5           Parts List
 #           8           Similar Item Analysis
 #           9           FMECA worksheet
-#          10           Failure Modes List
+#          10           Stakeholder Input List
 #          11           Failure Effects List
 #          12           Failure Mechanisms List
 # =========================================================================== #
@@ -516,7 +516,7 @@ class RTKConf:
             config.set('Files', 'partformat', path.basename(RTK_FORMAT_FILE[7]))
             config.set('Files', 'siaformat', path.basename(RTK_FORMAT_FILE[8]))
             config.set('Files', 'fmecaformat', path.basename(RTK_FORMAT_FILE[9]))
-            config.set('Files', 'modeformat', path.basename(RTK_FORMAT_FILE[10]))
+            config.set('Files', 'stakeholderformat', path.basename(RTK_FORMAT_FILE[10]))
             config.set('Files', 'testformat', path.basename(RTK_FORMAT_FILE[11]))
             config.set('Files', 'mechanismformat', path.basename(RTK_FORMAT_FILE[12]))
             config.set('Files', 'rgincidentformat', path.basename(RTK_FORMAT_FILE[13]))

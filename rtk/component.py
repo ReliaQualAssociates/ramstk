@@ -1602,9 +1602,10 @@ class Component():
         event  -- which button was pressed to call this function.
         """
 
-        n_new_components = _util.add_items(_(u"Component"))
+        _n_components_ = _util.add_items(title=_(u"RTK - Add Components"),
+                                         prompt=_(u"How many components to add?"))
 
-        for i in range(n_new_components):
+        for i in range(_n_components_):
 
 # If no assembly is selected or the selected assembly is the top of the tree,
 # set parent to the top assembly.
