@@ -93,7 +93,7 @@ Factor</usertitle>
             <datatype>gfloat</datatype>
             <position>7</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -108,11 +108,11 @@ Weighting</usertitle>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Requirement ID</defaulttitle>
-            <usertitle>Requirement ID</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Requirement</defaulttitle>
+            <usertitle>Requirement</usertitle>
+            <datatype>gchararray</datatype>
             <position>9</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
@@ -153,8 +153,8 @@ Weighting</usertitle>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>User Float 1</defaulttitle>
-            <usertitle>User Float 1</usertitle>
+            <defaulttitle>User Float 5</defaulttitle>
+            <usertitle>User Float 5</usertitle>
             <datatype>gfloat</datatype>
             <position>14</position>
             <widget>text</widget>

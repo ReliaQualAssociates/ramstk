@@ -57,10 +57,6 @@ _ = gettext.gettext
 class Revision:
     """ This is the REVISION Class for the RTK Project. """
 
-    _gd_tab_labels = [[_(u"Revision Code:"), _(u"Revision Name:"),
-                       _(u"Total Cost:"), _(u"Cost/Failure:"), _(u"Cost/Hour:"),
-                       _(u"Total Part Count:"), _(u"Remarks:")], [], [], []]
-    _uc_tab_labels = [[_(u"Mission:"), _(u"Mission Time:")]]
     _ar_tab_labels = [[_(u"Active h(t):"), _(u"Dormant h(t):"),
                        _(u"Software h(t):"), _(u"Predicted h(t):"),
                        _(u"Mission h(t):"), _(u"MTBF:"), _(u"Mission MTBF:"),
@@ -251,6 +247,10 @@ class Revision:
         with the appropriate widgets for the REVISION object.
         """
 
+        _labels_ = [_(u"Revision Code:"), _(u"Revision Name:"),
+                    _(u"Total Cost:"), _(u"Cost/Failure:"), _(u"Cost/Hour:"),
+                    _(u"Total Part Count:"), _(u"Remarks:")]
+
         def _general_data_widgets_create(self):
             """
             Method to create General Data widgets for the REVISION object.
@@ -286,31 +286,23 @@ class Revision:
         frame.add(scrollwindow)
 
 # Create and place the labels.
-        y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0], fixed, y_pos)
+        (_max1_, _y_pos_) = _widg.make_labels(_labels_, fixed, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 20
 
-        fixed.put(self.txtCode, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtName, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtTotalCost, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtCostFailure, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtCostHour, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtPartCount, _x_pos_, y_pos)
-        y_pos += 30
+        fixed.put(self.txtCode, _x_pos_, _y_pos_[0])
+        fixed.put(self.txtName, _x_pos_, _y_pos_[1])
+        fixed.put(self.txtTotalCost, _x_pos_, _y_pos_[2])
+        fixed.put(self.txtCostFailure, _x_pos_, _y_pos_[3])
+        fixed.put(self.txtCostHour, _x_pos_, _y_pos_[4])
+        fixed.put(self.txtPartCount, _x_pos_, _y_pos_[5])
 
         textview = _widg.make_text_view(buffer_=self.txtRemarks, width=400)
         textview.set_tooltip_text(_("Enter any remarks associated with the selected revision."))
         _view_ = textview.get_children()[0].get_children()[0]
         _view_.connect('focus-out-event', self._callback_entry, 'text', 20)
-        fixed.put(textview, _x_pos_, y_pos)
-        y_pos += 130
+        fixed.put(textview, _x_pos_, _y_pos_[6])
 
         fixed.show_all()
 
@@ -350,6 +342,8 @@ class Revision:
         Method to create the Usage Profile gtk.Notebook tab and populate it
         with the appropriate widgets for the REVISION object.
         """
+
+        _labels_ = [_(u"Mission:"), _(u"Mission Time:")]
 
         def _use_profile_widgets_create(self):
             """
@@ -538,11 +532,9 @@ class Revision:
 
         fixed = gtk.Fixed()
 
-        y_pos = 5
         _max1_ = 0
         _max2_ = 0
-        (_max1_, _heights_) = _widg.make_labels(self._uc_tab_labels[0], fixed,
-                                   y_pos, y_inc=35)
+        (_max1_, _y_pos_) = _widg.make_labels(_labels_, fixed, 5, 5, y_inc=35)
         _x_pos_ = max(_max1_, _max2_) + 20
 
         scrollwindow = gtk.ScrolledWindow()
@@ -553,15 +545,14 @@ class Revision:
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
-        fixed.put(self.cmbMission, _x_pos_, y_pos)
-        fixed.put(self.txtMission, _x_pos_+205, y_pos+3)
-        fixed.put(self.btnAddMission, _x_pos_+410, y_pos)
-        fixed.put(self.btnRemoveMission, _x_pos_+455, y_pos)
-        fixed.put(self.btnAddPhase, _x_pos_+510, y_pos)
-        fixed.put(self.btnRemovePhase, _x_pos_+555, y_pos)
-        y_pos += 35
-        fixed.put(self.txtMissionTime, _x_pos_, y_pos)
-        fixed.put(self.cmbTimeUnit, _x_pos_+100, y_pos-3)
+        fixed.put(self.cmbMission, _x_pos_, _y_pos_[0])
+        fixed.put(self.txtMission, _x_pos_+205, _y_pos_[0])
+        fixed.put(self.btnAddMission, _x_pos_+410, _y_pos_[0])
+        fixed.put(self.btnRemoveMission, _x_pos_+455, _y_pos_[0])
+        fixed.put(self.btnAddPhase, _x_pos_+510, _y_pos_[0])
+        fixed.put(self.btnRemovePhase, _x_pos_+555, _y_pos_[0])
+        fixed.put(self.txtMissionTime, _x_pos_, _y_pos_[1])
+        fixed.put(self.cmbTimeUnit, _x_pos_+100, _y_pos_[1])
 
         vbox.pack_start(frame, expand=False)
 

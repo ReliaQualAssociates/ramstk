@@ -183,17 +183,17 @@ CREATE TABLE "tbl_stakeholder_input" (
     "fld_stakeholder" VARCHAR(128),                     -- The name of the stakeholder providing the input.
     "fld_description" BLOB,                             -- Description of the stakeholder input.
     "fld_group" VARCHAR(128),                           -- Name of the group this stakeholder input is assigned to.
-    "fld_priority" INTEGER DEFAULT(5),                  -- stakeholder priority for the input.
-    "fld_customer_rank" INTEGER DEFAULT(1),             -- stakeholder satisfaction rating of the existing product for the input.
-    "fld_planned_rank" INTEGER DEFAULT(3),              -- Planned satisfaction rating of the new product for the input.
-    "fld_improvement" FLOAT DEFAULT(1.0),               -- The improvement factor on the satisfaction rating.
-    "fld_overall_weight" FLOAT DEFAULT(0),              -- Overall weighting factor for the need/desire.
-    "fld_requirement_id" INTEGER DEFAULT(0),            -- Identifier for the requirement that satisfies this stakeholder input.
-    "fld_user_float_1" FLOAT DEFAULT(0.0),              -- User defined float value.
-    "fld_user_float_2" FLOAT DEFAULT(0.0),              -- User defined float value.
-    "fld_user_float_3" FLOAT DEFAULT(0.0),              -- User defined float value.
-    "fld_user_float_4" FLOAT DEFAULT(0.0),              -- User defined float value.
-    "fld_user_float_5" FLOAT DEFAULT(0.0),              -- User defined float value.
+    "fld_priority" INTEGER DEFAULT (5),                 -- stakeholder priority for the input.
+    "fld_customer_rank" INTEGER DEFAULT (1),            -- stakeholder satisfaction rating of the existing product for the input.
+    "fld_planned_rank" INTEGER DEFAULT (3),             -- Planned satisfaction rating of the new product for the input.
+    "fld_improvement" FLOAT DEFAULT (1.0),              -- The improvement factor on the satisfaction rating.
+    "fld_overall_weight" FLOAT DEFAULT (0),             -- Overall weighting factor for the need/desire.
+    "fld_requirement_code" VARCHAR(16) DEFAULT (''),    -- The alphanumeric code of the requirement that satisfies this stakeholder input.
+    "fld_user_float_1" FLOAT DEFAULT (0.0),             -- User defined float value.
+    "fld_user_float_2" FLOAT DEFAULT (0.0),             -- User defined float value.
+    "fld_user_float_3" FLOAT DEFAULT (0.0),             -- User defined float value.
+    "fld_user_float_4" FLOAT DEFAULT (0.0),             -- User defined float value.
+    "fld_user_float_5" FLOAT DEFAULT (0.0),             -- User defined float value.
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 
@@ -204,7 +204,7 @@ CREATE TABLE "tbl_requirements" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),      -- The ID of the hardware assembly associated with the requirement.
     "fld_requirement_desc" BLOB,                        -- Noun description of the requirement.
     "fld_requirement_type" VARCHAR(128) DEFAULT (''),   -- Type of requirement.
-    "fld_requirement_code" VARCHAR(16) DEFAULT NULL,    -- Alphanumeric code for the requirement.
+    "fld_requirement_code" VARCHAR(16) DEFAULT (''),    -- Alphanumeric code for the requirement.
     "fld_derived" TINYINT DEFAULT(0),                   -- Indicates whether or not the requirement is derived.
     "fld_parent_requirement" VARCHAR(45) NOT NULL DEFAULT('-'), -- If a derived requirement, the gtk.TreePath of the parent.
     "fld_validated" TINYINT DEFAULT(0),                 -- Indicates whether or not the requirement has been validated.
@@ -959,7 +959,7 @@ CREATE TABLE "tbl_validation" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_validation_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_task_desc" BLOB,
-    "fld_task_type" INTEGER DEFAULT(0),
+    "fld_task_type" VARCHAR(256) DEFAULT(''),
     "fld_task_specification" VARCHAR(128) NOT NULL DEFAULT(''),
     "fld_measurement_unit" INTEGER DEFAULT(0),
     "fld_min_acceptable" REAL DEFAULT(0),
@@ -968,24 +968,7 @@ CREATE TABLE "tbl_validation" (
     "fld_variance_acceptable" REAL DEFAULT(0),
     "fld_start_date" VARCHAR(45) DEFAULT(''),
     "fld_end_date" VARCHAR(45) DEFAULT(''),
-    "fld_status" REAL DEFAULT(0),
-    "fld_effectiveness" REAL DEFAULT(0)
-);
-
-CREATE TABLE "tbl_validation_effectiveness" (
-    "fld_validation_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q1" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q2" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q3" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q4" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q5" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q6" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q7" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q8" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q9" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q10" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q11" INTEGER NOT NULL DEFAULT(0),
-    "fld_Q12" INTEGER NOT NULL DEFAULT(0)
+    "fld_status" REAL DEFAULT(0)
 );
 
 CREATE TABLE "tbl_validation_matrix" (

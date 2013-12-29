@@ -266,17 +266,14 @@ def date_to_ordinal(date):
     date -- the date string to convert.
     """
 
-    from datetime import datetime
+    from dateutil.parser import parse
 
     try:
-        results = datetime.strptime(str(date), '%m/%d/%y').toordinal()
+        _results_ = parse(str(date)).toordinal()
     except ValueError:
-        try:
-            results = datetime.strptime(str(date), '%Y-%m-%d').toordinal()
-        except ValueError:
-            results = datetime.strptime('01/01/70', '%m/%d/%y').toordinal()
+        _results_ = parse('01/01/70').toordinal()
 
-    return(results)
+    return(_results_)
 
 
 def ordinal_to_date(ordinal):

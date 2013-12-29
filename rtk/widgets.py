@@ -350,7 +350,7 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
     return(label)
 
 
-def make_labels(text, container, y_pos, y_inc=25):
+def make_labels(text, container, x_pos, y_pos, y_inc=25):
     """
     Utility function to make and place a group of labels.  The width of each
     label is set using a natural request.  This ensures the label doesn't cut
@@ -363,7 +363,9 @@ def make_labels(text, container, y_pos, y_inc=25):
     Keyword Arguments:
     text      -- a list containing the text for each label.
     container -- the container widget to place the labels on.
-    y_pos     -- the y_pos of the first label.
+    x_pos     -- the x position in the container for the left edge of all
+                 labels.
+    y_pos     -- the y position in the container of the first label.
     y_inc     -- the amount to increment the y_pos between each label.
     """
 

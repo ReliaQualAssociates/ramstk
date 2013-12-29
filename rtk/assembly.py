@@ -665,10 +665,10 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0],
-                                                self.fxdGenDataQuad1,
+                                                self.fxdGenDataQuad1, 5,
                                                 y_pos)
         (_max2_, _heights_) = _widg.make_labels(self._gd_tab_labels[2],
-                                                self.fxdGenDataQuad2,
+                                                self.fxdGenDataQuad2, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
@@ -769,10 +769,10 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[1],
-                                                self.fxdGenDataQuad3,
+                                                self.fxdGenDataQuad3, 5,
                                                 y_pos)
         (_max2_, _heights_) = _widg.make_labels(self._gd_tab_labels[3],
-                                                self.fxdGenDataQuad4,
+                                                self.fxdGenDataQuad4, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
@@ -1911,7 +1911,7 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ai_tab_labels[0],
-                                                self.fxdRelInputQuad1,
+                                                self.fxdRelInputQuad1, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
@@ -2078,10 +2078,10 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ai_tab_labels[1],
-                                                self.fxdRelInputQuad2,
+                                                self.fxdRelInputQuad2, 5,
                                                 y_pos)
         (_max2_, _heights_) = _widg.make_labels(self._ai_tab_labels[3],
-                                                self.fxdRelInputQuad4,
+                                                self.fxdRelInputQuad4, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
@@ -2274,7 +2274,7 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ar_tab_labels[0],
-                                                self.fxdCalcResultsQuad1,
+                                                self.fxdCalcResultsQuad1, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 
@@ -2317,10 +2317,10 @@ class Assembly:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ar_tab_labels[1],
-                                                self.fxdCalcResultsQuad2,
+                                                self.fxdCalcResultsQuad2, 5,
                                                 y_pos)
         (_max2_, _heights_) = _widg.make_labels(self._ar_tab_labels[3],
-                                                self.fxdCalcResultsQuad4,
+                                                self.fxdCalcResultsQuad4, 5,
                                                 y_pos)
         _x_pos_ = max(_max1_, _max2_) + 20
 

@@ -189,12 +189,10 @@ class Requirement:
         self.nbkRequirement.set_tab_pos(_position)
         bg_color = _conf.RTK_COLORS[4]
         fg_color = _conf.RTK_COLORS[5]
-        (self.treeview, self._lst_col_order) = _widg.make_treeview('Requirement',
-                                                               2,
-                                                               self._app,
-                                                               None,
-                                                               bg_color,
-                                                               fg_color)
+        (self.treeview,
+         self._lst_col_order) = _widg.make_treeview('Requirement', 2,
+                                                    self._app, None,
+                                                    bg_color, fg_color)
 
 # Create the Stakeholder Input tab.
         (self.tvwStakeholderInput,
@@ -334,6 +332,10 @@ class Requirement:
             _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[3]).get_cell_renderers()
             _cell_[0].set_property('has-entry', True)
 
+            for i in range(4, 9):
+                _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[i]).get_cell_renderers()
+                _cell_[0].set_alignment(xalign=0.5, yalign=0.5)
+
     # Set the priority, customer rating, and planned rating
     # gtk.CellRendererSpin to integer spins with increments of 1.  Make it an
     # integer spin by setting the number of digits to 0.
@@ -415,11 +417,29 @@ class Requirement:
         for i in range(_n_groups_):
             _model_.append([_results_[i][0]])
 
+# Load the stakeholder gtk.CellRendererCombo with a list of existing
+# requirement codes in the database.
+        _query_ = "SELECT fld_requirement_code \
+                   FROM tbl_requirements"
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
+        try:
+            _n_requirements_ = len(_results_)
+        except TypeError:
+            _n_requirements_ = 0
+
+        _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[9]).get_cell_renderers()
+        _model_ = _cell_[0].get_property('model')
+        _model_.clear()
+        for i in range(_n_requirements_):
+            _model_.append([_results_[i][0]])
+
 # Now load the Stakeholder Inputs gtk.TreeView.
         _query_ = "SELECT fld_input_id, fld_stakeholder, fld_description, \
                           fld_group, fld_priority, fld_customer_rank, \
                           fld_planned_rank, fld_improvement, \
-                          fld_overall_weight, fld_requirement_id, \
+                          fld_overall_weight, fld_requirement_code, \
                           fld_user_float_1, fld_user_float_2, \
                           fld_user_float_3, fld_user_float_4, \
                           fld_user_float_5 \
@@ -474,7 +494,7 @@ class Requirement:
 # uses the noun name of the group as the key and the index in the gtk.ComboBox
 # as the value.
             _model_ = self.cmbOwner.get_model()
-            _cell_ = self.treeview.get_column(self._lst_stakeholder_col_order[10]).get_cell_renderers()
+            _cell_ = self.treeview.get_column(self._lst_col_order[10]).get_cell_renderers()
             _cell_model_ = _cell_[0].get_property('model')
             _model_.clear()
             _cell_model_.clear()
@@ -539,49 +559,39 @@ class Requirement:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("General Information"))
+        frame = _widg.make_frame(_label_=_(u"General Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
 # Create the labels for the upper-left and lower-left quadrants.
-        y_pos = 140
         _max1_ = 0
         _max2_ = 0
-        (_max1_, _heights_) = _widg.make_labels(_labels_[2:9], fixed, y_pos)
+        (_max1_, _y_pos_) = _widg.make_labels(_labels_[2:9], fixed, 5, 140)
         _x_pos_ = max(_max1_, _max2_) + 20
 
-        y_pos = 5
         label = _widg.make_label(_labels_[0], 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtCode, _x_pos_, y_pos)
-        y_pos += 30
+        fixed.put(label, 5, 5)
+        fixed.put(self.txtCode, _x_pos_, 5)
         label = _widg.make_label(_labels_[1], 150, 25)
-        fixed.put(label, 5, y_pos)
+        fixed.put(label, 5, 35)
         textview = _widg.make_text_view(buffer_=self.txtRequirement, width=400)
         textview.set_tooltip_text(_(u"Detailed description of the requirement."))
         _widget = textview.get_children()[0].get_children()[0]
         _widget.connect('focus-out-event', self._callback_entry, 'text', 3)
-        fixed.put(textview, _x_pos_, y_pos)
-        y_pos += 105
+        fixed.put(textview, _x_pos_, 35)
 
-        fixed.put(self.cmbRqmtType, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtSpecification, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtPageNumber, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.txtFigureNumber, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.chkDerived, _x_pos_, y_pos)
-        y_pos += 30
-        fixed.put(self.chkValidated, _x_pos_, y_pos)
+        fixed.put(self.cmbRqmtType, _x_pos_, _y_pos_[0])
+        fixed.put(self.txtSpecification, _x_pos_, _y_pos_[1])
+        fixed.put(self.txtPageNumber, _x_pos_, _y_pos_[2])
+        fixed.put(self.txtFigureNumber, _x_pos_, _y_pos_[3])
+        fixed.put(self.chkDerived, _x_pos_, _y_pos_[4])
+        fixed.put(self.chkValidated, _x_pos_, _y_pos_[5])
         label = _widg.make_label(_labels_[9],
                                  150, 25)
-        fixed.put(label, _x_pos_+25, y_pos)
-        fixed.put(self.txtValidatedDate, _x_pos_ + 200, y_pos)
-        fixed.put(self.btnValidateDate, _x_pos_ + 305 , y_pos)
-        y_pos += 30
-        fixed.put(self.cmbOwner, _x_pos_, y_pos)
+        fixed.put(label, _x_pos_+25, _y_pos_[5])
+        fixed.put(self.txtValidatedDate, _x_pos_ + 200, _y_pos_[5])
+        fixed.put(self.btnValidateDate, _x_pos_ + 305 , _y_pos_[5])
+        fixed.put(self.cmbOwner, _x_pos_, _y_pos_[6])
 
         fixed.show_all()
 
@@ -761,12 +771,12 @@ class Requirement:
 # Create the labels for quadrant #1.
         _max1_ = 0
         _max2_ = 0
-        (_max1_, _y_pos1_) = _widg.make_labels(_labels_[0], fixed1, 5)
+        (_max1_, _y_pos1_) = _widg.make_labels(_labels_[0], fixed1, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 50
 
 # Create the labels for quadrant #3.
         _max2_ = 0
-        (_max2_, _y_pos2_) = _widg.make_labels(_labels_[1], fixed2, 5)
+        (_max2_, _y_pos2_) = _widg.make_labels(_labels_[1], fixed2, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 50
 
 # Place the quadrant 1 widgets.
@@ -826,12 +836,12 @@ class Requirement:
 # Create the labels for quadrant #2.
         _max1_ = 0
         _max2_ = 0
-        (_max1_, _y_pos1_) = _widg.make_labels(_labels_[2], fixed1, 5)
+        (_max1_, _y_pos1_) = _widg.make_labels(_labels_[2], fixed1, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 50
 
 # Create the labels for quadrant #2.
         _max2_ = 0
-        (_max2_, _y_pos2_) = _widg.make_labels(_labels_[3], fixed2, 5)
+        (_max2_, _y_pos2_) = _widg.make_labels(_labels_[3], fixed2, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 50
 
 # Place the quadrant #2 widgets.
@@ -1047,40 +1057,29 @@ class Requirement:
         relationship matrix.
         """
 
-        values = (self.model.get_value(self.selected_row, self._lst_col_order[0]),
-                  self.model.get_value(self.selected_row, self._lst_col_order[1]))
+        _values_ = (self.model.get_value(self.selected_row, self._lst_col_order[0]),
+                    self.model.get_value(self.selected_row, self._lst_col_order[1]))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t1.fld_validation_id, t1.fld_task_desc, \
-                            t1.fld_start_date, t1.fld_end_date, t1.fld_status \
-                     FROM tbl_validation AS t1 \
-                     INNER JOIN tbl_validation_matrix AS t2 \
-                     ON t2.fld_validation_id=t1.fld_validation_id \
-                     WHERE t1.fld_revision_id=%d \
-                     AND t2.fld_requirement_id=%d \
-                     GROUP BY t1.fld_validation_id"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t1.fld_validation_id, t1.fld_task_desc, \
-                            t1.fld_start_date, t1.fld_end_date, t1.fld_status \
-                     FROM tbl_validation AS t1 \
-                     INNER JOIN tbl_validation_matrix AS t2 \
-                     ON t2.fld_validation_id=t1.fld_validation_id \
-                     WHERE t1.fld_revision_id=? \
-                     AND t2.fld_requirement_id=? \
-                     GROUP BY t1.fld_validation_id"
+        _query_ = "SELECT t1.fld_validation_id, t1.fld_task_desc, \
+                          t1.fld_start_date, t1.fld_end_date, t1.fld_status \
+                   FROM tbl_validation AS t1 \
+                   INNER JOIN tbl_validation_matrix AS t2 \
+                   ON t2.fld_validation_id=t1.fld_validation_id \
+                   WHERE t1.fld_revision_id=%d \
+                   AND t2.fld_requirement_id=%d \
+                   GROUP BY t1.fld_validation_id" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx)
-
-        if(results == ''):
+        if(_results_ == '' or not _results_ or _results_ is None):
             return True
 
-        n_records = len(results)
+        _n_tasks_ = len(_results_)
         model = self.tvwValidation.get_model()
         model.clear()
-        for i in range(n_records):
-            model.append(None, results[i])
+        for i in range(_n_tasks_):
+            model.append(None, _results_[i])
 
         root = model.get_iter_root()
         if root is not None:
@@ -1092,20 +1091,20 @@ class Requirement:
 
 # Load the list of V&V task to the gtk.ComboBox used to associate existing V&V
 # tasks with requirements.
-        query = "SELECT DISTINCT(fld_validation_id), \
-                 fld_task_desc, fld_task_type \
-                 FROM tbl_validation \
-                 WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _query_ = "SELECT DISTINCT(fld_validation_id), \
+                          fld_task_desc, fld_task_type \
+                   FROM tbl_validation \
+                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
-        tasks = []
-        for i in range(len(results)):
-            tasks.append((results[i][1], results[i][0], results[i][2]))
+        _tasks_ = []
+        for i in range(len(_results_)):
+            _tasks_.append((_results_[i][1], _results_[i][0], _results_[i][2]))
 
-        _widg.load_combo(self.cmbVandVTasks, tasks, simple=False)
+        _widg.load_combo(self.cmbVandVTasks, _tasks_, simple=False)
 
         return False
 
@@ -1386,6 +1385,33 @@ class Requirement:
             Function to save each node in the Stakeholder Input gtk.TreeView.
             """
 
+            _priority_ = model.get_value(row,
+                                         self._lst_stakeholder_col_order[4])
+            _current_sat_ = model.get_value(row,
+                                            self._lst_stakeholder_col_order[5])
+            _planned_sat_ = model.get_value(row,
+                                            self._lst_stakeholder_col_order[6])
+            _user_def_1_ = max(1.0, model.get_value(row,
+                                          self._lst_stakeholder_col_order[10]))
+            _user_def_2_ = max(1.0, model.get_value(row,
+                                          self._lst_stakeholder_col_order[11]))
+            _user_def_3_ = max(1.0, model.get_value(row,
+                                          self._lst_stakeholder_col_order[12]))
+            _user_def_4_ = max(1.0, model.get_value(row,
+                                          self._lst_stakeholder_col_order[13]))
+            _user_def_5_ = max(1.0, model.get_value(row,
+                                          self._lst_stakeholder_col_order[14]))
+
+            _improvement_ = 1.0 + 0.2 * (_planned_sat_ - _current_sat_)
+            _overall_ = _priority_ * _improvement_ * _user_def_1_ * \
+                        _user_def_2_ * _user_def_3_ * _user_def_4_ * \
+                        _user_def_5_
+
+            model.set_value(row, self._lst_stakeholder_col_order[7],
+                            _improvement_)
+            model.set_value(row, self._lst_stakeholder_col_order[8],
+                            _overall_)
+
             _values_ = (model.get_value(row, self._lst_stakeholder_col_order[1]),
                         model.get_value(row, self._lst_stakeholder_col_order[2]),
                         model.get_value(row, self._lst_stakeholder_col_order[3]),
@@ -1407,7 +1433,7 @@ class Requirement:
                            fld_group='%s', fld_priority=%d, \
                            fld_customer_rank=%d, fld_planned_rank=%d, \
                            fld_improvement=%f, fld_overall_weight=%f, \
-                           fld_requirement_id=%d, fld_user_float_1=%f, \
+                           fld_requirement_code='%s', fld_user_float_1=%f, \
                            fld_user_float_2=%f, fld_user_float_3=%f, \
                            fld_user_float_4=%f, fld_user_float_5=%f \
                        WHERE fld_revision_id=%d \
@@ -1423,6 +1449,7 @@ class Requirement:
 
             return False
 
+        self._input_weight()
         _model_ = self.tvwStakeholderInput.get_model()
         _model_.foreach(_save_line_item)
 
@@ -1812,6 +1839,39 @@ class Requirement:
 
         self.model.set_value(self.selected_row, 5, code)
         self.txtCode.set_text(code)
+
+        return False
+
+    def _input_weight(self):
+        """
+        Method for calculating the overall weighting of a stakeholder input.
+        """
+
+        (_model_, _row_) = self.tvwStakeholderInput.get_selection().get_selected()
+
+        _priority_ = _model_.get_value(_row_,
+                                       self._lst_stakeholder_col_order[4])
+        _current_sat_ = _model_.get_value(_row_,
+                                          self._lst_stakeholder_col_order[5])
+        _planned_sat_ = _model_.get_value(_row_,
+                                          self._lst_stakeholder_col_order[6])
+        _user_def_1_ = max(1.0, _model_.get_value(_row_,
+                                        self._lst_stakeholder_col_order[10]))
+        _user_def_2_ = max(1.0, _model_.get_value(_row_,
+                                        self._lst_stakeholder_col_order[11]))
+        _user_def_3_ = max(1.0, _model_.get_value(_row_,
+                                        self._lst_stakeholder_col_order[12]))
+        _user_def_4_ = max(1.0, _model_.get_value(_row_,
+                                        self._lst_stakeholder_col_order[13]))
+        _user_def_5_ = max(1.0, _model_.get_value(_row_,
+                                        self._lst_stakeholder_col_order[14]))
+
+        _improvement_ = 1.0 + 0.2 * (_planned_sat_ - _current_sat_)
+        _overall_ = _priority_ * _improvement_ * _user_def_1_ * _user_def_2_ * \
+                    _user_def_3_ * _user_def_4_ * _user_def_5_
+
+        _model_.set_value(_row_, self._lst_stakeholder_col_order[7], _improvement_)
+        _model_.set_value(_row_, self._lst_stakeholder_col_order[8], _overall_)
 
         return False
 

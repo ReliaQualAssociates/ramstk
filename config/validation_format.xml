@@ -42,11 +42,11 @@ experience. -->
         <column>
             <defaulttitle>V and V Activity Type</defaulttitle>
             <usertitle>V and V Activity Type</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>3</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
         </column>
         <column>
             <defaulttitle>Specification</defaulttitle>
@@ -62,7 +62,7 @@ experience. -->
             <usertitle>Measurement Unit</usertitle>
             <datatype>gint</datatype>
             <position>5</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -125,18 +125,9 @@ experience. -->
             <usertitle>% Complete</usertitle>
             <datatype>gfloat</datatype>
             <position>12</position>
-            <widget>text</widget>
-            <editable>0</editable>
+            <widget>spin</widget>
+            <editable>1</editable>
             <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Effectiveness</defaulttitle>
-            <usertitle>Effectiveness</usertitle>
-            <datatype>gfloat</datatype>
-            <position>13</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
         </column>
     </tree>
 </root>

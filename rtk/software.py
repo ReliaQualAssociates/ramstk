@@ -2583,7 +2583,7 @@ class Software:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._gd_tab_labels[0][1:],
-                                                fixed, y_pos, y_inc=35)
+                                                fixed, 5, y_pos, y_inc=35)
         _x_pos_ = max(_max1_, _max2_) + 20
 
         # Place the widgets.
@@ -5259,7 +5259,7 @@ class Software:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[0:4],
-                                                fixed, y_pos, y_inc=35)
+                                                fixed, 5, y_pos, y_inc=35)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         # Add the test planning widgets to the left half.
@@ -5310,11 +5310,10 @@ class Software:
         hboxl.pack_start(frame)
 
         # Create and place the labels.
-        y_pos = 5
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[4:10],
-                                                fixed, y_pos)
+                                                fixed, 5, 5)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         y_pos = 5
@@ -5349,7 +5348,7 @@ class Software:
         _max1_ = 0
         _max2_ = 0
         (_max1_, _heights_) = _widg.make_labels(self._ts_tab_labels[10:18],
-                                                fixed, y_pos)
+                                                fixed, 5, y_pos)
         _x_pos_ = max(_max1_, _max2_) + 25
 
         y_pos = 5

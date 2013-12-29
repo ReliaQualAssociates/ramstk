@@ -71,8 +71,11 @@ CREATE TABLE "tbl_measurement_units" (
   "fld_measurement_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_measurement_code" VARCHAR(64) DEFAULT NULL
 );
-INSERT INTO "tbl_measurement_units" VALUES (1,'lbf');
-INSERT INTO "tbl_measurement_units" VALUES (2,'hours');
+INSERT INTO "tbl_measurement_units" ("fld_measurement_code") VALUES ('lbf');
+INSERT INTO "tbl_measurement_units" ("fld_measurement_code") VALUES ('hours');
+INSERT INTO "tbl_measurement_units" ("fld_measurement_code") VALUES ('minutes');
+INSERT INTO "tbl_measurement_units" ("fld_measurement_code") VALUES ('seconds');
+INSERT INTO "tbl_measurement_units" ("fld_measurement_code") VALUES ('N');
 
 DROP TABLE IF EXISTS "tbl_mttr_type";
 CREATE TABLE "tbl_mttr_type" (
@@ -130,6 +133,7 @@ INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Maintainabilit
 INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Reliability');
 INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Safety');
 INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Software');
+INSERT INTO "tbl_groups" ("fld_group_name") VALUES ('Engineering, Systems');
 
 DROP TABLE IF EXISTS "tbl_users";
 CREATE TABLE "tbl_users" (
@@ -870,9 +874,30 @@ CREATE TABLE "tbl_validation_type" (
   "fld_validation_type_desc" VARCHAR(128) DEFAULT NULL,
   "fld_validation_type_code" VARCHAR(16) DEFAULT NULL
 );
-INSERT INTO "tbl_validation_type" VALUES (1,'System Engineering','SYS');
-INSERT INTO "tbl_validation_type" VALUES (2,'Reliability Analysis','REL');
-INSERT INTO "tbl_validation_type" VALUES (3,'Design for X','DFX');
-INSERT INTO "tbl_validation_type" VALUES (4,'SubSystem Reliability Testing','SRT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Manufacturing Test, DOE','DOE');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Manufacturing Test, ESS','ESS');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Manufacturing Test, HASS','HSS');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Manufacturing Test, PRAT','PRT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, Assessment','RAA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, Durability Analysis','RDA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, FFMEA','RFF');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, (D)FMEA','RDF');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, Root Cause Analysis','RCA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability, Survival Analysis','RSA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability Test, ALT','ALT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability Test, Demonstration','RDT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability Test, HALT','HLT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Reliability Test, Growth','RGT');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Safety, Fault Tree Analysis','FTA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('Safety, Hazards Analysis','PHA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Electromagnetic Analysis','EMA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, FEA','FEA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, 2D Model','2DM');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, 3D Model','3DM');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Robust Design','SRD');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Sneak Circuit Analysis','SCA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Thermal Analysis','THA');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Tolerance Analysis','TOL');
+INSERT INTO "tbl_validation_type" ("fld_validation_type_desc", "fld_validation_type_code") VALUES ('System Engineering, Worst Case Analysis','WCA');
 
 END TRANSACTION;

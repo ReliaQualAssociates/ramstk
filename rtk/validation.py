@@ -58,14 +58,6 @@ class Validation:
 
     # TODO: Write code to update notebook widgets when editing the Validation treeview.
     # TODO: Add tooltips to all widgets.
-    _gd_tab_labels = [[_(u"Task ID:"), _(u"Task Effectiveness:"),
-                       _(u"Task Description:"), _(u"Task Type:"),
-                       _(u"Specification:"), _(u"Measurement Unit:"),
-                       _(u"Min. Acceptable:"), _(u"Max. Acceptable:"),
-                       _(u"Mean Acceptable:"), _(u"Variance:"),
-                       _(u"Start Date:"), _(u"End Date:"), _(u"% Complete:")],
-                      [], [], []]
-
     _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
                       _(u"Does this activity provide quantitative strength information as an output?"),
                       _(u"Does this activity provide operating environment information as an output?"),
@@ -79,7 +71,65 @@ class Validation:
                       _(u"Hardware item design requirements and/or goals"),
                       _(u"")]
 
-    n_attributes = 13
+    notebook = gtk.Notebook()
+    vbxValidation = gtk.VBox()
+
+# Create the General Data tab widgets.
+    btnEndDate = _widg.make_button(_height_=25, _width_=25,
+                                   _label_="...", _image_=None)
+    btnStartDate = _widg.make_button(_height_=25, _width_=25,
+                                     _label_="...", _image_=None)
+
+    cmbTaskType = _widg.make_combo()
+    cmbMeasurementUnit = _widg.make_combo()
+
+    spnStatus = gtk.SpinButton()
+
+    txtEndDate = _widg.make_entry(_width_=100)
+    txtID = _widg.make_entry(_width_=50, editable=False)
+    txtMaxAcceptable = _widg.make_entry(_width_=100)
+    txtMeanAcceptable = _widg.make_entry(_width_=100)
+    txtMinAcceptable = _widg.make_entry(_width_=100)
+    txtVarAcceptable = _widg.make_entry(_width_=100)
+    txtStartDate = _widg.make_entry(_width_=100)
+    txtSpecification = _widg.make_entry()
+    txtTask = _widg.make_text_view(width=400)
+
+# Create the Assessment tab widgets.
+    scwAssessment = gtk.ScrolledWindow()
+
+    # Create the widgets for assessing the quality of a reliability model.
+    fxdModel = gtk.Fixed()
+
+    chkModelQ1 = _widg.make_check_button(_(u"All functional elements are included in the diagram/model."))
+    chkModelQ2 = _widg.make_check_button(_(u"All modes of operation are considered in the model."))
+    chkModelQ3 = _widg.make_check_button(_(u"The model results show the design achieves the reliability target."))
+
+    # Create the widgets for assessing the quality of a reliability prediction.
+    fxdPrediction = gtk.Fixed()
+
+    chkPredictionQ1 = _widg.make_check_button(_(u"The sum of the part failure rates is equal to the module or assembly failure rate."))
+    chkPredictionQ2 = _widg.make_check_button(_(u"Environmental conditions and part qualities are representative of the actual design."))
+    chkPredictionQ3 = _widg.make_check_button(_(u"Assembly and part temperatures are identified and they realistically represent the thermal approach used."))
+    chkPredictionQ4 = _widg.make_check_button(_(u"All system, assembly, subassembly, and part reliability drivers are identified."))
+    chkPredictionQ5 = _widg.make_check_button(_(u"All part failure rates are from acceptable sources."))
+
+    # Create the widgets for assessing the quality of a FMEA.
+    fxdFMEA = gtk.Fixed()
+
+    chkFMEAQ1 = _widg.make_check_button(_(u"The system definition/description is compatible with the system requirements."))
+    chkFMEAQ2 = _widg.make_check_button(_(u"Ground rules and assumptions are clearly stated."))
+    chkFMEAQ3 = _widg.make_check_button(_(u"Block diagrams are provided showing functional dependencies at all hardware levels."))
+    chkFMEAQ4 = _widg.make_check_button(_(u"The failure effects analysis starts at the lowest hardware level and systematically works to higher levels."))
+    chkFMEAQ5 = _widg.make_check_button(_(u"Failure mode data sources are fully described."))
+    chkFMEAQ6 = _widg.make_check_button(_(u"Detailed FMEA worksheets clearly track from lower to higher hardware levels."))
+    chkFMEAQ7 = _widg.make_check_button(_(u"The FMEA worksheets clearly correspond to the block diagrams."))
+    chkFMEAQ8 = _widg.make_check_button(_(u"The FMEA worksheets provide an adequate scope of analysis."))
+    chkFMEAQ9 = _widg.make_check_button(_(u"Failure severity classifications are provided."))
+    chkFMEAQ10 = _widg.make_check_button(_(u"Specific failure definitions are established."))
+    chkFMEAQ11 = _widg.make_check_button(_(u"FMEA results are timely."))
+    chkFMEAQ12 = _widg.make_check_button(_(u"FMEA results are clearly summarized and comprehensive recommendations are provided."))
+    chkFMEAQ13 = _widg.make_check_button(_(u"FMEA results are being communicated to enhance other program decisions."))
 
     def __init__(self, application):
         """
@@ -93,14 +143,17 @@ class Validation:
 
         self._app = application
 
-        self.treeview = None
-        self.model = None
-        self.selected_row = None
+# Define local dictionary variables.
+        self._dic_types = {}                # Dictionary of task types.
+
+# Define local list variables.
+        self._lst_col_order = []
+        self._lst_handler_id = []
+
+# Define global integer variables.
         self.validation_id = 0
-        self._col_order = []
 
 # Create the Notebook for the VALIDATION object.
-        self.notebook = gtk.Notebook()
         if(_conf.TABPOS[2] == 'left'):
             self.notebook.set_tab_pos(gtk.POS_LEFT)
         elif(_conf.TABPOS[2] == 'right'):
@@ -110,78 +163,15 @@ class Validation:
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
-        # Calculate the width of the gtk.Entry widgets based on the number
-        # of decimal places the user has specified.
-        entry_width = int((int(_conf.PLACES) + 5) * 8)
-
-# Create the General Data tab for the VALIDATION Object.
-        self.txtID = _widg.make_entry(_width_=50)
-        self.txtTask = _widg.make_text_view(width=400)
-        self.cmbTaskType = _widg.make_combo(simple=False)
-        self.txtSpecification = _widg.make_entry()
-        self.cmbMeasurementUnit = _widg.make_combo()
-        self.txtMinAcceptable = _widg.make_entry(_width_=entry_width)
-        self.txtMaxAcceptable = _widg.make_entry(_width_=entry_width)
-        self.txtMeanAcceptable = _widg.make_entry(_width_=entry_width)
-        self.txtVarAcceptable = _widg.make_entry(_width_=entry_width)
-        self.txtStartDate = _widg.make_entry(_width_=100)
-        self.txtEndDate = _widg.make_entry(_width_=100)
-        self.txtStatus = gtk.SpinButton()
-        self.txtEffectiveness = _widg.make_entry(_width_=50)
-        if self._general_data_widgets_create():
-            self._app.debug_log.error("validation.py: Failed to create General Data widgets.")
+# Create the General Data tab.
         if self._general_data_tab_create():
             self._app.debug_log.error("validation.py: Failed to create General Data tab.")
 
-# Create the Task Assessment tab for the VALIDATION Object.
-        self.optQ11 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ12 = gtk.RadioButton(group=self.optQ11, label=_(u"No"))
-        self.optQ13 = gtk.RadioButton(group=self.optQ11, label=_(u"Partially"))
-        self.optQ21 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ22 = gtk.RadioButton(group=self.optQ21, label=_(u"No"))
-        self.optQ23 = gtk.RadioButton(group=self.optQ21, label=_(u"Partially"))
-        self.optQ31 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ32 = gtk.RadioButton(group=self.optQ31, label=_(u"No"))
-        self.optQ33 = gtk.RadioButton(group=self.optQ31, label=_(u"Partially"))
-        self.optQ41 = gtk.RadioButton(label=_(u">75%"))
-        self.optQ42 = gtk.RadioButton(group=self.optQ41, label=_(u"25% - 75%"))
-        self.optQ43 = gtk.RadioButton(group=self.optQ41, label=_(u"<25%"))
-        self.optQ51 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ52 = gtk.RadioButton(group=self.optQ51, label=_(u"No"))
-        self.optQ53 = gtk.RadioButton(group=self.optQ51, label=_(u"Partially"))
-        self.optQ61 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ62 = gtk.RadioButton(group=self.optQ61, label=_(u"No"))
-        self.optQ63 = gtk.RadioButton(group=self.optQ61, label=_(u"Partially"))
-        self.optQ64 = gtk.RadioButton(group=self.optQ61, label=_(u"Not Applicable"))
-        self.optQ71 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ72 = gtk.RadioButton(group=self.optQ71, label=_(u"No"))
-        self.optQ73 = gtk.RadioButton(group=self.optQ71, label=_(u"Partially"))
-        self.optQ74 = gtk.RadioButton(group=self.optQ71, label=_(u"Not Applicable"))
-        self.optQ81 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ82 = gtk.RadioButton(group=self.optQ81, label=_(u"No"))
-        self.optQ83 = gtk.RadioButton(group=self.optQ81, label=_(u"Partially"))
-        self.optQ84 = gtk.RadioButton(group=self.optQ81, label=_(u"Not Applicable"))
-        self.optQ91 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ92 = gtk.RadioButton(group=self.optQ91, label=_(u"No"))
-        self.optQ93 = gtk.RadioButton(group=self.optQ91, label=_(u"Partially"))
-        self.optQ101 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ102 = gtk.RadioButton(group=self.optQ101, label=_(u"No"))
-        self.optQ103 = gtk.RadioButton(group=self.optQ101, label=_(u"Partially"))
-        self.optQ111 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ112 = gtk.RadioButton(group=self.optQ111, label=_(u"No"))
-        self.optQ113 = gtk.RadioButton(group=self.optQ111, label=_(u"Partially"))
-        self.optQ114 = gtk.RadioButton(group=self.optQ111, label=_(u"Not Applicable"))
-        self.optQ121 = gtk.RadioButton(label=_(u"Yes"))
-        self.optQ122 = gtk.RadioButton(group=self.optQ121, label=_(u"No"))
-        self.optQ123 = gtk.RadioButton(group=self.optQ121, label=_(u"Partially"))
-        self.optQ124 = gtk.RadioButton(group=self.optQ121, label=_(u"Not Applicable"))
-        if self._task_assessment_widgets_create():
-            self._app.debug_log.error("validation.py: Failed to create Task Assessment widgets.")
-        if self._task_assessment_tab_create():
-            self._app.debug_log.error("validation.py: Failed to create Task Assessment tab.")
+# Create the Task Assessment tab.
+        #if self._task_assessment_tab_create():
+        #    self._app.debug_log.error("validation.py: Failed to create Task Assessment tab.")
 
 # Put it all together.
-        self.vbxValidation = gtk.VBox()
         toolbar = self._toolbar_create()
 
         self.vbxValidation.pack_start(toolbar, expand=False)
@@ -192,14 +182,14 @@ class Validation:
         self._ready = True
 
     def _toolbar_create(self):
-        """ Method to create the toolbar for the VALIDATAION Object work
-            book.
+        """
+        Method to create the toolbar for the VALIDATAION Object Work Book.
         """
 
         toolbar = gtk.Toolbar()
 
-        # Add item button.  Depending on the notebook page selected will
-        # determine what type of item is added.
+# Add item button.  Depending on the notebook page selected will determine what
+# type of item is added.
         button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -209,8 +199,8 @@ class Validation:
         button.set_tooltip_text(_("Adds a new V&V activity."))
         toolbar.insert(button, 0)
 
-        # Remove item button.  Depending on the notebook page selected will
-        # determine what type of item is removed.
+# Remove item button.  Depending on the notebook page selected will determine
+# what type of item is removed.
         button = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
@@ -220,8 +210,8 @@ class Validation:
         button.set_tooltip_text(_("Deletes the selected V&V activity."))
         toolbar.insert(button, 1)
 
-        # Save results button.  Depending on the notebook page selected will
-        # determine which results are saved.
+# Save results button.  Depending on the notebook page selected will determine
+# which results are saved.
         button = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -235,170 +225,163 @@ class Validation:
 
         return(toolbar)
 
-    def _general_data_widgets_create(self):
-        """ Method to create the General Data widgets. """
-
-        self.txtID.set_tooltip_text(_("Displays the unique code for the selected V&V activity."))
-
-        self.cmbTaskType.set_tooltip_text(_("Selects and displays the type of task for the selected V&V activity."))
-        query = "SELECT fld_validation_type_desc, \
-                        fld_validation_type_code, \
-                        fld_validation_type_id \
-                 FROM tbl_validation_type"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbTaskType, results, False)
-        self.cmbTaskType.connect('changed', self._callback_combo, 3)
-
-        self.txtSpecification.set_tooltip_text(_("Displays the internal or industry specification or procedure governing the selected V&V activity."))
-        self.txtSpecification.connect('focus-out-event',
-                                      self._callback_entry, 'text', 4)
-
-        self.cmbMeasurementUnit.set_tooltip_text(_("Selects and displays the measurement unit for the selected V&V activity acceptance parameter."))
-        query = "SELECT fld_measurement_code \
-                 FROM tbl_measurement_units"
-        results = self._app.COMDB.execute_query(query,
-                                                None,
-                                                self._app.ComCnx)
-
-        _widg.load_combo(self.cmbMeasurementUnit, results)
-        self.cmbMeasurementUnit.connect('changed',
-                                        self._callback_combo, 5)
-
-        self.txtMinAcceptable.set_tooltip_text(_("Displays the minimum acceptable value for the selected V&V activity."))
-        self.txtMinAcceptable.connect('focus-out-event',
-                                      self._callback_entry, 'float', 6)
-
-        self.txtMaxAcceptable.set_tooltip_text(_("Displays the maximum acceptable value for the selected V&V activity."))
-        self.txtMaxAcceptable.connect('focus-out-event',
-                                      self._callback_entry, 'float', 8)
-
-        self.txtMeanAcceptable.set_tooltip_text(_("Displays the mean acceptable value for the selected V&V activity."))
-        self.txtMeanAcceptable.connect('focus-out-event',
-                                       self._callback_entry, 'float', 7)
-
-        self.txtVarAcceptable.set_tooltip_text(_("Displays the acceptable variance for the selected V&V activity."))
-        self.txtVarAcceptable.connect('focus-out-event',
-                                      self._callback_entry, 'float', 9)
-
-        self.txtStartDate.set_tooltip_text(_("Displays the date the selected V&V activity is scheduled to start."))
-        self.txtStartDate.connect('focus-out-event',
-                                  self._callback_entry, 'text', 10)
-
-        self.txtEndDate.set_tooltip_text(_("Displays the date the selected V&V activity is scheduled to end."))
-        self.txtEndDate.connect('focus-out-event',
-                                self._callback_entry, 'text', 11)
-
-        adjustment = gtk.Adjustment(0, 0, 100, 1, 0.1)
-        self.txtStatus.set_tooltip_text(_("Displays % complete of the selected V&V activity."))
-        self.txtStatus.set_adjustment(adjustment)
-        self.txtStatus.connect('focus-out-event',
-                               self._callback_entry, 'float', 12)
-
-        self.txtEffectiveness.set_tooltip_text(_("Displays the effectiveness of the selected V&V activity as a percent improvement in system MTBF."))
-        self.txtEffectiveness.connect('focus-out-event',
-                                      self._callback_entry, 'float', 13)
-
-        return False
-
     def _general_data_tab_create(self):
         """
         Method to create the General Data gtk.Notebook tab and populate it with
         the appropriate widgets.
         """
 
-        # Place the quadrant 1 (upper left) widgets.
+        _labels_ = [_(u"Task ID:"), _(u"Task Description:"), _(u"Task Type:"),
+                    _(u"Specification:"), _(u"Measurement Unit:"),
+                    _(u"Minimum Acceptable:"), _(u"Maximum Acceptable:"),
+                    _(u"Mean Acceptable:"), _(u"Variance:"),
+                    _(u"Start Date:"), _(u"End Date:"), _(u"% Complete:")]
+
+        def _general_data_widgets_create(self):
+            """
+            Function to create the General Data widgets.
+            """
+
+            self.btnEndDate.set_tooltip_text(_(u"Launches the calendar to select the date the task was completed."))
+            self.btnEndDate.connect('released', _util.date_select,
+                                    self.txtEndDate)
+
+            self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to select the date the task was started."))
+            self.btnStartDate.connect('released', _util.date_select,
+                                      self.txtStartDate)
+
+            self.txtID.set_tooltip_text(_(u"Displays the unique code for the selected V&V activity."))
+
+            self.txtTask.set_tooltip_text(_(u"Displays the description of the selected V&V activity."))
+            _buffer_ = self.txtTask.get_child().get_child()
+            _id_ = _buffer_.connect('focus-out-event', self._callback_entry,
+                                    'text', 2)
+            self._lst_handler_id.append(_id_)
+
+            self.cmbTaskType.set_tooltip_text(_(u"Selects and displays the type of task for the selected V&V activity."))
+            query = "SELECT fld_validation_type_desc \
+                     FROM tbl_validation_type"
+            results = self._app.COMDB.execute_query(query,
+                                                    None,
+                                                    self._app.ComCnx)
+            _widg.load_combo(self.cmbTaskType, results)
+            _id_ = self.cmbTaskType.connect('changed', self._callback_combo, 3)
+            self._lst_handler_id.append(_id_)
+
+            self.txtSpecification.set_tooltip_text(_(u"Displays the internal or industry specification or procedure governing the selected V&V activity."))
+            _id_ = self.txtSpecification.connect('focus-out-event',
+                                                 self._callback_entry,
+                                                 'text', 4)
+            self._lst_handler_id.append(_id_)
+
+            self.cmbMeasurementUnit.set_tooltip_text(_(u"Selects and displays the measurement unit for the selected V&V activity acceptance parameter."))
+            query = "SELECT fld_measurement_code \
+                     FROM tbl_measurement_units"
+            results = self._app.COMDB.execute_query(query,
+                                                    None,
+                                                    self._app.ComCnx)
+            _widg.load_combo(self.cmbMeasurementUnit, results)
+            _id_= self.cmbMeasurementUnit.connect('changed',
+                                                  self._callback_combo, 5)
+            self._lst_handler_id.append(_id_)
+
+            self.txtMinAcceptable.set_tooltip_text(_(u"Displays the minimum acceptable value for the selected V&V activity."))
+            _id_ = self.txtMinAcceptable.connect('focus-out-event',
+                                                 self._callback_entry,
+                                                 'float', 6)
+            self._lst_handler_id.append(_id_)
+
+            self.txtMeanAcceptable.set_tooltip_text(_(u"Displays the mean acceptable value for the selected V&V activity."))
+            _id_ = self.txtMeanAcceptable.connect('focus-out-event',
+                                                  self._callback_entry,
+                                                  'float', 7)
+            self._lst_handler_id.append(_id_)
+
+            self.txtMaxAcceptable.set_tooltip_text(_(u"Displays the maximum acceptable value for the selected V&V activity."))
+            _id_ = self.txtMaxAcceptable.connect('focus-out-event',
+                                                 self._callback_entry,
+                                                 'float', 8)
+            self._lst_handler_id.append(_id_)
+
+            self.txtVarAcceptable.set_tooltip_text(_(u"Displays the acceptable variance for the selected V&V activity."))
+            _id_ = self.txtVarAcceptable.connect('focus-out-event',
+                                                 self._callback_entry,
+                                                 'float', 9)
+            self._lst_handler_id.append(_id_)
+
+            self.txtStartDate.set_tooltip_text(_(u"Displays the date the selected V&V activity is scheduled to start."))
+            _id_ = self.txtStartDate.connect('focus-out-event',
+                                             self._callback_entry, 'text', 10)
+            self._lst_handler_id.append(_id_)
+
+            self.txtEndDate.set_tooltip_text(_(u"Displays the date the selected V&V activity is scheduled to end."))
+            _id_ = self.txtEndDate.connect('focus-out-event',
+                                           self._callback_entry, 'text', 11)
+            self._lst_handler_id.append(_id_)
+
+            # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
+            # update if value is numeric and within range.
+            adjustment = gtk.Adjustment(0, 0, 100, 1, 0.1)
+            self.spnStatus.set_adjustment(adjustment)
+            self.spnStatus.set_update_policy(gtk.UPDATE_IF_VALID)
+            self.spnStatus.set_numeric(True)
+            self.spnStatus.set_snap_to_ticks(True)
+            self.spnStatus.set_tooltip_text(_(u"Displays % complete of the selected V&V activity."))
+            _id_ = self.spnStatus.connect('value-changed',
+                                          self._callback_spin, 'float', 12)
+            self._lst_handler_id.append(_id_)
+
+            return False
+
+        if _general_data_widgets_create(self):
+            self._app.debug_log.error("validation.py: Failed to create General Data widgets.")
+
+# Create the tab.
         fixed = gtk.Fixed()
 
         scrollwindow = gtk.ScrolledWindow()
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("General Information"))
+        frame = _widg.make_frame(_label_=_(u"General Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
-        y_pos = 5
+# Create the labels.  Place labels 2 - 11 first and then 0 and 1 to account for
+# The larger gtk.TextView() used for the task description.
+        _max1_ = 0
+        _max2_ = 0
+        (_max1_, _y_pos_) = _widg.make_labels(_labels_[2:], fixed, 5, 140)
 
-        label = _widg.make_label(self._gd_tab_labels[0][0], 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtID, 155, y_pos)
+        label = _widg.make_label(_labels_[0], -1, 25)
+        fixed.put(label, 5, 5)
+        _max2_ = label.size_request()[0]
+        _x_pos_ = max(_max1_, _max2_) + 20
 
-        label = _widg.make_label(self._gd_tab_labels[0][1], 150, 25)
-        fixed.put(label, 350, y_pos)
-        fixed.put(self.txtEffectiveness, 505, y_pos)
-        y_pos += 30
+        label = _widg.make_label(_labels_[1], 150, 25)
+        fixed.put(label, 5, 35)
+        _max2_ = label.size_request()[0]
+        _x_pos_ = max(_x_pos_, _max2_) + 20
 
-        label = _widg.make_label(self._gd_tab_labels[0][2], 150, 25)
-        self.txtTask.set_tooltip_text(_("Displays the description of the selected V&V activity."))
-        self.txtTask.get_child().get_child().connect('focus-out-event',
-                                                     self._callback_entry,
-                                                     'text', 2)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtTask, 155, y_pos)
-        y_pos += 105
+        fixed.put(self.txtID, _x_pos_, 5)
+        fixed.put(self.txtTask, _x_pos_, 35)
 
-        label = _widg.make_label(self._gd_tab_labels[0][3], 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.cmbTaskType, 155, y_pos)
-        y_pos += 35
-
-        label = _widg.make_label(self._gd_tab_labels[0][4],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtSpecification, 155, y_pos)
-        y_pos += 30
-
-        label = _widg.make_label(self._gd_tab_labels[0][5],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.cmbMeasurementUnit, 155, y_pos)
-        y_pos += 35
-
-        label = _widg.make_label(self._gd_tab_labels[0][6],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMinAcceptable, 155, y_pos)
-
-        label = _widg.make_label(self._gd_tab_labels[0][8],
-                                 150, 25)
-        fixed.put(label, 300, y_pos)
-        fixed.put(self.txtMeanAcceptable, 455, y_pos)
-        y_pos += 30
-
-        label = _widg.make_label(self._gd_tab_labels[0][7],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtMaxAcceptable, 155, y_pos)
-
-        label = _widg.make_label(self._gd_tab_labels[0][9],
-                                 150, 25)
-        fixed.put(label, 300, y_pos)
-        fixed.put(self.txtVarAcceptable, 455, y_pos)
-        y_pos += 30
-
-        label = _widg.make_label(self._gd_tab_labels[0][10],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtStartDate, 155, y_pos)
-
-        label = _widg.make_label(self._gd_tab_labels[0][11],
-                                 150, 25)
-        fixed.put(label, 300, y_pos)
-        fixed.put(self.txtEndDate, 455, y_pos)
-        y_pos += 30
-
-        label = _widg.make_label(self._gd_tab_labels[0][12],
-                                 150, 25)
-        fixed.put(label, 5, y_pos)
-        fixed.put(self.txtStatus, 155, y_pos)
-        y_pos += 60
+        fixed.put(self.cmbTaskType, _x_pos_, _y_pos_[0])
+        fixed.put(self.txtSpecification, _x_pos_, _y_pos_[1])
+        fixed.put(self.cmbMeasurementUnit, _x_pos_, _y_pos_[2]-3)
+        fixed.put(self.txtMinAcceptable, _x_pos_, _y_pos_[3])
+        fixed.put(self.txtMeanAcceptable, _x_pos_, _y_pos_[4])
+        fixed.put(self.txtMaxAcceptable, _x_pos_, _y_pos_[5])
+        fixed.put(self.txtVarAcceptable, _x_pos_, _y_pos_[6])
+        fixed.put(self.txtStartDate, _x_pos_, _y_pos_[7])
+        fixed.put(self.btnStartDate, _x_pos_+105, _y_pos_[7])
+        fixed.put(self.txtEndDate, _x_pos_, _y_pos_[8])
+        fixed.put(self.btnEndDate, _x_pos_+105, _y_pos_[8])
+        fixed.put(self.spnStatus, _x_pos_, _y_pos_[9])
 
         fixed.show_all()
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
                          _(u"General\nData") +
@@ -418,70 +401,29 @@ class Validation:
         Loads the widgets with general information about the VALIDATION Object.
         """
 
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+
         try:
-            self.txtID.set_text(str(self.model.get_value(self.selected_row, 1)))
+            _index_ = self._dic_types[_model_.get_value(_row_, 3)]
+        except KeyError:
+            _index_ = 0
+
+        try:
+            self.txtID.set_text(str(_model_.get_value(_row_, 1)))
             textbuffer = self.txtTask.get_child().get_child().get_buffer()
-            textbuffer.set_text(self.model.get_value(self.selected_row, 2))
-            self.cmbTaskType.set_active(int(self.model.get_value(self.selected_row, 3)))
-            self.txtSpecification.set_text(str(self.model.get_value(self.selected_row, 4)))
-            self.cmbMeasurementUnit.set_active(int(self.model.get_value(self.selected_row, 5)))
-            self.txtMinAcceptable.set_text(str(self.model.get_value(self.selected_row, 6)))
-            self.txtMeanAcceptable.set_text(str(self.model.get_value(self.selected_row, 7)))
-            self.txtMaxAcceptable.set_text(str(self.model.get_value(self.selected_row, 8)))
-            self.txtVarAcceptable.set_text(str(self.model.get_value(self.selected_row, 9)))
-            self.txtStartDate.set_text(str(self.model.get_value(self.selected_row, 10)))
-            self.txtEndDate.set_text(str(self.model.get_value(self.selected_row, 11)))
-            self.txtStatus.set_value(self.model.get_value(self.selected_row, 12))
-            self.txtEffectiveness.set_text(str(self.model.get_value(self.selected_row, 13)))
+            textbuffer.set_text(_model_.get_value(_row_, 2))
+            self.cmbTaskType.set_active(_index_)
+            self.txtSpecification.set_text(str(_model_.get_value(_row_, 4)))
+            self.cmbMeasurementUnit.set_active(int(_model_.get_value(_row_, 5)))
+            self.txtMinAcceptable.set_text(str(_model_.get_value(_row_, 6)))
+            self.txtMeanAcceptable.set_text(str(_model_.get_value(_row_, 7)))
+            self.txtMaxAcceptable.set_text(str(_model_.get_value(_row_, 8)))
+            self.txtVarAcceptable.set_text(str(_model_.get_value(_row_, 9)))
+            self.txtStartDate.set_text(str(_model_.get_value(_row_, 10)))
+            self.txtEndDate.set_text(str(_model_.get_value(_row_, 11)))
+            self.spnStatus.set_value(_model_.get_value(_row_, 12))
         except IndexError:                  # There are no V&V tasks.
             pass
-
-        return False
-
-    def _task_assessment_widgets_create(self):
-        """ Method to create the Task Assessment widgets. """
-
-        self.optQ11.connect('toggled', self._callback_radio)
-        self.optQ12.connect('toggled', self._callback_radio)
-        self.optQ13.connect('toggled', self._callback_radio)
-        self.optQ21.connect('toggled', self._callback_radio)
-        self.optQ22.connect('toggled', self._callback_radio)
-        self.optQ23.connect('toggled', self._callback_radio)
-        self.optQ31.connect('toggled', self._callback_radio)
-        self.optQ32.connect('toggled', self._callback_radio)
-        self.optQ33.connect('toggled', self._callback_radio)
-        self.optQ41.connect('toggled', self._callback_radio)
-        self.optQ42.connect('toggled', self._callback_radio)
-        self.optQ43.connect('toggled', self._callback_radio)
-        self.optQ51.connect('toggled', self._callback_radio)
-        self.optQ52.connect('toggled', self._callback_radio)
-        self.optQ53.connect('toggled', self._callback_radio)
-        self.optQ61.connect('toggled', self._callback_radio)
-        self.optQ62.connect('toggled', self._callback_radio)
-        self.optQ63.connect('toggled', self._callback_radio)
-        self.optQ64.connect('toggled', self._callback_radio)
-        self.optQ71.connect('toggled', self._callback_radio)
-        self.optQ72.connect('toggled', self._callback_radio)
-        self.optQ73.connect('toggled', self._callback_radio)
-        self.optQ74.connect('toggled', self._callback_radio)
-        self.optQ81.connect('toggled', self._callback_radio)
-        self.optQ82.connect('toggled', self._callback_radio)
-        self.optQ83.connect('toggled', self._callback_radio)
-        self.optQ84.connect('toggled', self._callback_radio)
-        self.optQ91.connect('toggled', self._callback_radio)
-        self.optQ92.connect('toggled', self._callback_radio)
-        self.optQ93.connect('toggled', self._callback_radio)
-        self.optQ101.connect('toggled', self._callback_radio)
-        self.optQ102.connect('toggled', self._callback_radio)
-        self.optQ103.connect('toggled', self._callback_radio)
-        self.optQ111.connect('toggled', self._callback_radio)
-        self.optQ112.connect('toggled', self._callback_radio)
-        self.optQ113.connect('toggled', self._callback_radio)
-        self.optQ114.connect('toggled', self._callback_radio)
-        self.optQ121.connect('toggled', self._callback_radio)
-        self.optQ122.connect('toggled', self._callback_radio)
-        self.optQ123.connect('toggled', self._callback_radio)
-        self.optQ124.connect('toggled', self._callback_radio)
 
         return False
 
@@ -491,91 +433,38 @@ class Validation:
         with the appropriate widgets.
         """
 
-        fixed = gtk.Fixed()
+        def _task_assessment_widgets_create(self):
+            """
+            Function to create the Task Assessment widgets.
+            """
 
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(fixed)
+            self.scwAssessment.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        frame = _widg.make_frame(_label_=_(u"Select the best answer to the following questions when assessing the selected V &amp; V task."))
+            self.chkModelQ1.set_tooltip_text(_(u"Reliability models/diagrams should agree with hardware design drawings/diagrams."))
+            self.chkModelQ2.set_tooltip_text(_(u"Duty cycles, alternate paths, degraded conditions, and redundant units should be defined and modeled."))
+            self.chkModelQ3.set_tooltip_text(_(u"Unit failure rates and redundancy equations should be used."))
+
+            self.chkPredictionQ1.set_tooltip_text(_(u"Reliability assessments may neglect to include all parts, producing optimistic results."))
+            self.chkPredictionQ2.set_tooltip_text(_(u"Optimistic quality levels and favorable environmental conditions are often assumed, causing optimistic results."))
+            self.chkPredictionQ3.set_tooltip_text(_(u"Temperature is a significant driver of part failure rates, both electronic and mechanical."))
+            self.chkPredictionQ4.set_tooltip_text(_(u"Identification is needed so reliability improvement can be considered."))
+            self.chkPredictionQ5.set_tooltip_text(_(u"In the absence of historical operating data (preferred), specific part test data or handbook information are typically acceptable."))
+
+            return False
+
+        if _task_assessment_widgets_create(self):
+            self._app.debug_log.error("validation.py: Failed to create Task Assessment widgets.")
+
+# Lay out the Reliability Model questions.
+        self.fxdModel.put(self.chkModelQ1, 5, 5)
+        self.fxdModel.put(self.chkModelQ2, 5, 35)
+        self.fxdModel.put(self.chkModelQ3, 5, 70)
+
+        self.scwAssessment.add_with_viewport(self.fxdModel)
+
+        frame = _widg.make_frame(_label_=_(u"Answer the following questions relative to the selected V &amp; V task."))
         frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
-
-        _lbl_width = 1200
-        y_pos = 5
-        for i in range(len(self._ta_tab_labels)):
-            label = _widg.make_label(self._ta_tab_labels[i], _lbl_width, 25)
-            fixed.put(label, 5, y_pos)
-            y_pos += 30
-
-        y_pos = 5
-
-        fixed.put(self.optQ11, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ12, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ13, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ21, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ22, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ23, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ31, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ32, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ33, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ41, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ42, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ43, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ51, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ52, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ53, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ61, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ62, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ63, _lbl_width + 205, y_pos)
-        fixed.put(self.optQ64, _lbl_width + 305, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ71, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ72, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ73, _lbl_width + 205, y_pos)
-        fixed.put(self.optQ74, _lbl_width + 305, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ81, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ82, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ83, _lbl_width + 205, y_pos)
-        fixed.put(self.optQ84, _lbl_width + 305, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ91, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ92, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ93, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ101, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ102, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ103, _lbl_width + 205, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ111, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ112, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ113, _lbl_width + 205, y_pos)
-        fixed.put(self.optQ114, _lbl_width + 305, y_pos)
-        y_pos += 30
-
-        fixed.put(self.optQ121, _lbl_width + 5, y_pos)
-        fixed.put(self.optQ122, _lbl_width + 105, y_pos)
-        fixed.put(self.optQ123, _lbl_width + 205, y_pos)
-        fixed.put(self.optQ124, _lbl_width + 305, y_pos)
-        y_pos += 30
-
-        fixed.show_all()
+        frame.add(self.scwAssessment)
 
 # Insert the tab.
         label = gtk.Label()
@@ -624,12 +513,18 @@ class Validation:
         scrollwindow = gtk.ScrolledWindow()
         bg_color = _conf.RTK_COLORS[8]
         fg_color = _conf.RTK_COLORS[9]
-        (self.treeview, self._col_order) = _widg.make_treeview('Validation', 4,
+        (self.treeview, self._lst_col_order) = _widg.make_treeview('Validation', 4,
                                                                self._app,
                                                                None,
                                                                bg_color,
                                                                fg_color)
         self.treeview.set_enable_tree_lines(True)
+
+# Connect the cells to the callback function.
+        for i in range(2, 13):
+            _cell_ = self.treeview.get_column(self._lst_col_order[i]).get_cell_renderers()
+            _cell_[0].connect('edited', self._vandv_tree_edit, i,
+                              self.treeview.get_model())
 
         scrollwindow.add(self.treeview)
         self.model = self.treeview.get_model()
@@ -642,36 +537,47 @@ class Validation:
 
     def load_tree(self):
         """
-        Loads the Validation treeview model with system information.  This
-        information can be stored either in a MySQL or SQLite3 database.
+        Loads the Validation treeview model with information from the RTK
+        Program database.
         """
 
-        if(_conf.RTK_MODULES[0] == 1):
-            values = (self._app.REVISION.revision_id,)
-        else:
-            values = (0,)
+# Load the Requirement Type gtk.CellRendererCombo().
+        _query_ = "SELECT fld_validation_type_desc \
+                   FROM tbl_validation_type"
+        _results_ = self._app.COMDB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ComCnx)
+
+        if(_results_ == '' or not _results_ or _results_ is None):
+            pass
+
+        # Load the gtk.CellRendererCombo() and the the local dictionary
+        # holding the task types.  The noun name of the task type is the
+        # dictionary key and the position in the list is the dictionary value.
+        _cell_ = self.treeview.get_column(self._lst_col_order[3]).get_cell_renderers()
+        _model_ = _cell_[0].get_property('model')
+        _model_.clear()
+        _model_.append([""])
+        for i in range(len(_results_)):
+            _model_.append([_results_[i][0]])
+            self._dic_types[_results_[i][0]] = i + 1
 
 # Select everything from the validation table.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT * FROM tbl_validation \
-                     WHERE fld_revision_id=%d \
-                     ORDER BY fld_validation_id"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT * FROM tbl_validation \
-                     WHERE fld_revision_id=? \
-                     ORDER BY fld_validation_id"
+        _query_ = "SELECT * FROM tbl_validation \
+                   WHERE fld_revision_id=%d \
+                   ORDER BY fld_validation_id" % self._app.REVISION.revision_id
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx)
-
-        if(results == '' or not results):
+        if(_results_ == '' or not _results_ or _results_ is None):
             return True
 
-        n_records = len(results)
+# Add all the tasks to the Tree Book.
+        _n_tasks_ = len(_results_)
         self.model.clear()
-        for i in range(n_records):
-            self.model.append(None, results[i])
+        for i in range(_n_tasks_):
+            self.model.append(None, _results_[i])
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
@@ -761,7 +667,72 @@ class Validation:
         model    -- the TreeModel the CellRenderer belongs to.
         """
 
-        model[path][position] = new_text
+# Update the gtk.TreeModel() with the new value.
+        type = gobject.type_name(model.get_column_type(position))
+
+        if(type == 'gchararray'):
+            model[path][position] = str(new_text)
+        elif(type == 'gint'):
+            model[path][position] = int(new_text)
+        elif(type == 'gfloat'):
+            model[path][position] = float(new_text)
+
+# Not update the associated gtk.Widget() in the Work Book with the new value.
+# We block and unblock the signal handlers for the widgets so a race condition
+# does not ensue.
+        if(self._lst_col_order[position] == 2):
+            _buffer_ = self.txtTask.get_child().get_child().get_buffer()
+            _buffer_.handler_block(self._lst_handler_id[0])
+            _buffer_.set_text(str(new_text))
+            _buffer_.handler_unblock(self._lst_handler_id[0])
+        elif(self._lst_col_order[position] == 3):
+            try:
+                _index_ = self._dic_types[new_text]
+            except KeyError:
+                _index_ = 0
+            self.cmbTaskType.handler_block(self._lst_handler_id[1])
+            self.cmbTaskType.set_active(_index_)
+            self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
+        elif(self._lst_col_order[position] == 4):
+            self.txtSpecification.handler_block(self._lst_handler_id[2])
+            self.txtSpecification.set_text(str(new_text))
+            self.txtSpecification.handler_unblock(self._lst_handler_id[2])
+        elif(self._lst_col_order[position] == 5):
+            self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
+            self.cmbMeasurementUnit.set_active(int(new_text))
+            self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
+        elif(self._lst_col_order[position] == 6):
+            self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
+            self.txtMinAcceptable.set_text(str(new_text))
+            self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
+        elif(self._lst_col_order[position] == 7):
+            self.txtMaxAcceptable.handler_block(self._lst_handler_id[5])
+            self.txtMaxAcceptable.set_text(str(new_text))
+            self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[5])
+        elif(self._lst_col_order[position] == 8):
+            self.txtMeanAcceptable.handler_block(self._lst_handler_id[6])
+            self.txtMeanAcceptable.set_text(str(new_text))
+            self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[6])
+        elif(self._lst_col_order[position] == 9):
+            self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
+            self.txtVarAcceptable.set_text(str(new_text))
+            self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
+        elif(self._lst_col_order[position] == 10):
+            self.txtStartDate.handler_block(self._lst_handler_id[8])
+            self.txtStartDate.set_text(str(new_text))
+            self.txtStartDate.handler_unblock(self._lst_handler_id[8])
+        elif(self._lst_col_order[position] == 11):
+            self.txtEndDate.handler_block(self._lst_handler_id[9])
+            self.txtEndDate.set_text(str(new_text))
+            self.txtEndDate.handler_unblock(self._lst_handler_id[9])
+        elif(self._lst_col_order[position] == 12):
+            self.spnStatus.handler_block(self._lst_handler_id[10])
+            _adjustment_ = self.spnStatus.get_adjustment()
+            _adjustment_.set_value(float(new_text))
+            self.spnStatus.update()
+            self.spnStatus.handler_unblock(self._lst_handler_id[10])
+
+        return False
 
     def vandv_task_add(self, widget):
         """
@@ -772,7 +743,7 @@ class Validation:
         widget -- the widget that called this function.
         """
 
-        # Find the selected revision.
+# Find the selected revision.
         if self.selected_row is not None:
             _revision = self.model.get_value(self.selected_row, 0)
             _assembly = self.model.get_value(self.selected_row, 2)
@@ -822,26 +793,19 @@ class Validation:
         menuitem -- the gtk.MenuItem that called this function.
         """
 
-        selection = self.treeview.get_selection()
-        (model, row) = selection.get_selected()
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
 
-        values = (self._app.REVISION.revision_id, \
-                  model.get_value(row, 1))
+        _values_ = (self._app.REVISION.revision_id, \
+                    _model_.get_value(_row_, 1))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_validation \
-                     WHERE fld_revision_id=%d \
-                     AND fld_validation_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_validation \
-                     WHERE fld_revision_id=? \
-                     AND fld_validation_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-        if not results:
+        _query_ = "DELETE FROM tbl_validation \
+                   WHERE fld_revision_id=%d \
+                   AND fld_validation_id=%d" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+        if not _results_:
             self._app.user_log.error("validation.py: Failed to delete V&V task.")
             return True
 
@@ -858,7 +822,8 @@ class Validation:
         widget -- the widget that called this function.
         """
 
-        self.model.foreach(self._save_line_item)
+        _model_ = self.treeview.get_model()
+        _model_.foreach(self._save_line_item)
 
         return False
 
@@ -874,28 +839,26 @@ class Validation:
         row   -- the selected row in the Validation Object treeview.
         """
 
-        _values = (model.get_value(row, self._col_order[2]), \
-                   model.get_value(row, self._col_order[3]), \
-                   model.get_value(row, self._col_order[4]), \
-                   model.get_value(row, self._col_order[5]), \
-                   model.get_value(row, self._col_order[6]), \
-                   model.get_value(row, self._col_order[7]), \
-                   model.get_value(row, self._col_order[8]), \
-                   model.get_value(row, self._col_order[9]), \
-                   model.get_value(row, self._col_order[10]), \
-                   model.get_value(row, self._col_order[11]), \
-                   model.get_value(row, self._col_order[12]), \
-                   model.get_value(row, self._col_order[13]), \
+        _values = (model.get_value(row, self._lst_col_order[2]), \
+                   model.get_value(row, self._lst_col_order[3]), \
+                   model.get_value(row, self._lst_col_order[4]), \
+                   model.get_value(row, self._lst_col_order[5]), \
+                   model.get_value(row, self._lst_col_order[6]), \
+                   model.get_value(row, self._lst_col_order[7]), \
+                   model.get_value(row, self._lst_col_order[8]), \
+                   model.get_value(row, self._lst_col_order[9]), \
+                   model.get_value(row, self._lst_col_order[10]), \
+                   model.get_value(row, self._lst_col_order[11]), \
+                   model.get_value(row, self._lst_col_order[12]), \
                    self._app.REVISION.revision_id, \
-                   model.get_value(row, self._col_order[1]))
+                   model.get_value(row, self._lst_col_order[1]))
 
         query = "UPDATE tbl_validation \
-                 SET fld_task_desc='%s', fld_task_type=%d, \
+                 SET fld_task_desc='%s', fld_task_type='%s', \
                      fld_task_specification='%s', fld_measurement_unit=%d, \
                      fld_min_acceptable=%f, fld_mean_acceptable=%f, \
                      fld_max_acceptable=%f, fld_variance_acceptable=%f, \
-                     fld_start_date='%s', fld_end_date='%s', fld_status=%f, \
-                     fld_effectiveness=%f \
+                     fld_start_date='%s', fld_end_date='%s', fld_status=%f \
                  WHERE fld_revision_id=%d \
                  AND fld_validation_id=%d" % _values
         results = self._app.DB.execute_query(query,
@@ -909,27 +872,30 @@ class Validation:
 
         return False
 
-    def _callback_combo(self, combo, _index_):
+    def _callback_combo(self, combo, index):
         """
         Callback function to retrieve and save combobox changes.
 
         Keyword Arguments:
-        combo  -- the combobox that called the function.
-        index_ -- the position in the Validation Object _attribute list
-                  associated with the data from the calling combobox.
+        combo -- the combobox that called the function.
+        index -- the position in the Validation Object _attribute list
+                 associated with the data from the calling combobox.
         """
 
-        # Update the Validation Tree.
-        try:
-            self.model.set_value(self.selected_row, _index_,
-                                 int(combo.get_active()))
-        except TypeError:
-            print _index_
+# Update the Validation Tree.
+        if(index == 3):                     # Task type
+            _model_ = combo.get_model()
+            _row_ = combo.get_active_iter()
+            _data_ = _model_.get_value(_row_, 0)
+        else:
+            _data_ = int(combo.get_active())
 
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        _model_.set_value(_row_, index, _data_)
 
         return False
 
-    def _callback_entry(self, entry, event, convert, _index_):
+    def _callback_entry(self, entry, event, convert, index):
         """
         Callback function to retrieve and save entry changes.
 
@@ -937,17 +903,16 @@ class Validation:
         entry   -- the entry that called the function.
         event   -- the gtk.gdk.Event that called this function.
         convert -- the data type to convert the entry contents to.
-        index_  -- the position in the Validation Object _attribute list
+        index   -- the position in the Validation Object _attribute list
                    associated with the data from the calling entry.
         """
 
         if(convert == 'text'):
-            if(_index_ == 2):
+            if(index == 2):
                 textbuffer = self.txtTask.get_child().get_child().get_buffer()
                 _text_ = textbuffer.get_text(*textbuffer.get_bounds())
             else:
                 _text_ = entry.get_text()
-
         elif(convert == 'int'):
             _text_ = int(entry.get_text())
 
@@ -958,10 +923,33 @@ class Validation:
                 _text_ = ""
 
 # Update the Validation Tree.
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
         try:
-            self.model.set_value(self.selected_row, _index_, _text_)
+            _model_.set_value(_row_, index, _text_)
         except TypeError:
-            print _index_
+            print index
+
+        return False
+
+    def _callback_spin(self, spinbutton, convert, index):
+        """
+        Callback function to retrieve and save spinbutton changes.
+
+        Keyword Arguments:
+        spinbutton -- the gtk.SpinButton() that called this function.
+        convert    -- the data type to convert the entry contents to.
+        index      -- the position in the Validation Object _attribute list
+                      associated with the data from the calling entry.
+        """
+
+        _text_ = float(spinbutton.get_value())
+
+# Update the Validation Tree.
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        try:
+            _model_.set_value(_row_, index, _text_)
+        except TypeError:
+            print index
 
         return False
 
