@@ -4198,23 +4198,22 @@ class Assembly:
         if(_index_ == 0):
             selection = self.tvwRisk.get_selection()
             (model, row) = selection.get_selected()
+            _title_ = _(u"RTK - Edit Risk Analysis Functions")
         elif(_index_ == 1):
             selection = self.tvwSIA.get_selection()
             (model, row) = selection.get_selected()
+            _title_ = _(u"RTK - Edit Similar Item Analysis Functions")
 
-        dialog = _widg.make_dialog(_(u"RTK - Edit Risk Analysis or Similar Item Functions"),
-                                   self._app.winWorkBook)
+        dialog = _widg.make_dialog(_title_, self._app.winWorkBook)
 
         fixed = gtk.Fixed()
 
         y_pos = 10
 
-        label = _widg.make_label(_(u"You can define up to five functions using the Risk Analysis or Similar Item data.  You can use the selected assembly hazard rate, change category index, the change factor, the change cost, the user float, the user integer values, and results of other functions.\n\n \
+        label = _widg.make_label(_(u"You can define up to five functions.  You can use the system failure rate, selected assembly failure rate, the change factor, the user float, the user integer values, and results of other functions.\n\n \
 System hazard rate is hr_sys\n \
 Assembly hazard rate is hr\n \
-Risk category index is cat[1-8]\n \
 Change factor is pi[1-8]\n \
-Change cost is cost[1-8]\n \
 User float is uf[1-3]\n \
 User integer is ui[1-3]\n \
 Function result is res[1-5]\n\n \

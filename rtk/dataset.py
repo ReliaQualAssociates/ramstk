@@ -1466,7 +1466,7 @@ class Dataset:
         self.vbxPlot2.pack_start(self.pltPlot2)
         self.vbxPlot2.pack_start(self.pltPlot4)
 
-        # Insert the tab.
+# Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>Analysis\nPlots</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
@@ -1482,20 +1482,21 @@ class Dataset:
     def _load_plot(self, axis, plot, x, y1=None, y2=None, y3=None,
                    _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1],
                    _marker_=['g-', 'r-', 'b-']):
-        """ Method to load the matplotlib plots.
+        """
+        Method to load the matplotlib plots.
 
-            Keyword Arguments:
-            axis     -- the matplotlib axis object.
-            plot     -- the matplotlib plot object.
-            x        -- the x values to plot.
-            y1       -- the first data set y values to plot.
-            y2       -- the second data set y values to plot.
-            y3       -- the third data set y values to plot.
-            _title_  -- the title for the plot.
-            _xlab_   -- the x asis label for the plot.
-            _ylab_   -- the y axis label for the plot.
-            _type_   -- the type of line to plot (1=step, 2=plot, 3=histogram).
-            _marker_ -- the marker to use on the plot.
+        Keyword Arguments:
+        axis     -- the matplotlib axis object.
+        plot     -- the matplotlib plot object.
+        x        -- the x values to plot.
+        y1       -- the first data set y values to plot.
+        y2       -- the second data set y values to plot.
+        y3       -- the third data set y values to plot.
+        _title_  -- the title for the plot.
+        _xlab_   -- the x asis label for the plot.
+        _ylab_   -- the y axis label for the plot.
+        _type_   -- the type of line to plot (1=step, 2=plot, 3=histogram).
+        _marker_ -- the marker to use on the plot.
         """
 
         from scipy.interpolate import spline

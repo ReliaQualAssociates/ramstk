@@ -966,9 +966,19 @@ CREATE TABLE "tbl_validation" (
     "fld_mean_acceptable" REAL DEFAULT(0),
     "fld_max_acceptable" REAL DEFAULT(0),
     "fld_variance_acceptable" REAL DEFAULT(0),
-    "fld_start_date" VARCHAR(45) DEFAULT(''),
-    "fld_end_date" VARCHAR(45) DEFAULT(''),
-    "fld_status" REAL DEFAULT(0)
+    "fld_start_date" INTEGER DEFAULT(719163),
+    "fld_end_date" INTEGER DEFAULT(719163),
+    "fld_status" REAL DEFAULT(0),
+    "fld_minimum_time" REAL DEFAULT(0),
+    "fld_average_time" REAL DEFAULT(0),
+    "fld_maximum_time" REAL DEFAULT(0),
+    "fld_mean_time" REAL DEFAULT(0),
+    "fld_time_variance" REAL DEFAULT(0),
+    "fld_minimum_cost" REAL DEFAULT(0),
+    "fld_average_cost" REAL DEFAULT(0),
+    "fld_maximum_cost" REAL DEFAULT(0),
+    "fld_mean_cost" REAL DEFAULT(0),
+    "fld_cost_variance" REAL DEFAULT(0)
 );
 
 CREATE TABLE "tbl_validation_matrix" (
@@ -976,6 +986,13 @@ CREATE TABLE "tbl_validation_matrix" (
     "fld_requirement_id" INTEGER NOT NULL,
     "fld_revision_id" INTEGER DEFAULT(1),
     PRIMARY KEY ("fld_validation_id","fld_requirement_id")
+);
+
+CREATE TABLE "tbl_validation_status" (
+    "fld_revision_id" INTEGER DEFAULT(0),
+    "fld_update_date" INTEGER DEFAULT(719163) NOT NULL PRIMARY KEY,
+    "fld_time_remaining" REAL DEFAULT(0),
+    "fld_cost_remaining" REAL DEFAULT(0)
 );
 
 --

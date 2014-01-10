@@ -167,7 +167,7 @@ def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
     return(button)
 
 
-def make_check_button(_label_=None):
+def make_check_button(_label_=None, width=-1):
     """
     Utility function to create CheckButton widgets.
 
@@ -180,6 +180,7 @@ def make_check_button(_label_=None):
     if(_label_ is not None):
         checkbutton.get_child().set_use_markup(True)
         checkbutton.get_child().set_line_wrap(True)
+        checkbutton.get_child().props.width_request = width
 
     return(checkbutton)
 
@@ -739,7 +740,7 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
               _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1, 1],
               _marker_=['g-', 'r-', 'b-', 'k--']):
         """
-        Funciton to load the matplotlib plots.
+        Function to load the matplotlib plots.
 
         Keyword Arguments:
         axis     -- the matplotlib axis object.
@@ -748,11 +749,20 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
         y1       -- the first data set y values to plot.
         y2       -- the second data set y values to plot.
         y3       -- the third data set y values to plot.
+        y4       -- the fourth data set y values to plot.
         _title_  -- the title for the plot.
         _xlab_   -- the x asis label for the plot.
         _ylab_   -- the y axis label for the plot.
-        _type_   -- the type of line to plot (1=step, 2=plot, 3=histogram).
+        _type_   -- the type of line to plot.
+                    1 = step
+                    2 = plot
+                    3 = histogram
+                    4 = date plot
         _marker_ -- the marker to use on the plot.
+                    g- = green solid line
+                    r- = red solid line
+                    b- = blue solid line
+                    k- = black dashed line
         """
 
         #import numpy

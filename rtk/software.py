@@ -56,7 +56,7 @@ from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
 
-def _test_selection_tree_edit(cell, path, new_text, position, model):
+def _test_selection_tree_edit(cell, path, position, model):
     """
     Called whenever a gtk.TreeView CellRenderer is edited for the
     test selection worksheet.
@@ -70,1506 +70,9 @@ def _test_selection_tree_edit(cell, path, new_text, position, model):
     model    -- the gtk.TreeModel the gtk.CellRenderer belongs to.
     """
 
-    _type_ = gobject.type_name(model.get_column_type(position))
-
-    if(position != 0 and position != 7):
-        model[path][position] = not cell.get_active()
-    elif(_type_ == 'gchararray'):
-        model[path][position] = str(new_text)
-    elif(_type_ == 'gint'):
-        model[path][position] = int(new_text)
-    elif(_type_ == 'gfloat'):
-        model[path][position] = float(new_text)
+    model[path][position] = not cell.get_active()
 
     return False
-
-
-def _test_techniques(button, _parent_):
-    """
-    Function used to display a gtk.Dialog with the software categories versus
-    testing techniques matrix (Table TS201-2 in RL-TR-82-52)
-
-    Keyword Arguments:
-    button   -- the gtk.Button that called this function.
-    _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_(u"Software Categories and Testing Techniques"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Matrix of software categories and test techniques.  Select test techniques with a confidence level less than or equal to the desired test confidence level."))
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn(_("Software Category"))
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=0)
-    label = gtk.Label(column.get_title())
-    _heading = _("Software Category")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=1)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Code Reviews")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=2)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Error/Anomaly Detection")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=3)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Structure Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=4)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Program Quality Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=5)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Path Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=6)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Domain Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=7)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Partition Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=8)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Data-Flow Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=9)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Path Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=10)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Performance Measurement")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=11)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Assertion Checking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Debug Aids")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=13)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Random Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=14)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Functional Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=15)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Mutation Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=16)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Real-Time Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=17)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Symbolic Testing")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.pack_start(cell, True)
-    column.set_attributes(cell, text=18)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Formal Analysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 450
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = ((_("Batch (General)"), "L", "M", "H", "H", "H", "M", "H", "VH", "H", "M", "H", "H", "VH", "L", "VH", "", "VH", "VH"),
-             (_("Event Control"), "L", "L", "M", "M", "M", "M", "VH", "VH", "H", "M", "H", "M", "H", "L", "VH", "H", "VH", "VH"),
-             (_("Process Control"), "L", "L", "L", "M", "M", "L", "VH", "H", "M", "M", "H", "M", "H", "L", "VH", "M", "VH", "VH"),
-             (_("Procedure Control"), "L", "L", "L", "L", "M", "L", "VH", "H", "M", "M", "M", "L", "H", "L", "H", "M", "H", "VH"),
-             (_("Navigation"), "L", "L", "L", "H", "H", "H", "VH", "H", "H", "H", "H", "H", "VH", "L", "VH", "M", "VH", "VH"),
-             (_("Flight Dynamics"), "L", "L", "L", "M", "H", "M", "H", "H", "H", "H", "H", "H", "H", "L", "VH", "L", "VH", "VH"),
-             (_("Orbital Dynamics"), "L", "L", "L", "M", "H", "M", "M", "H", "H", "H", "M", "L", "H", "L", "H", "M", "H", "VH"),
-             (_("Message Processing"), "L", "L", "M", "H", "H", "M", "H", "VH", "H", "H", "H", "M", "H", "L", "VH", "H", "VH", "VH"),
-             (_("Diagnostic Software"), "L", "L", "L", "M", "L", "L", "H", "H", "M", "M", "H", "L", "H", "L", "H", "M", "VH", "VH"),
-             (_("Sensor & Signal Processing"), "L", "L", "L", "L", "L", "L", "H", "H", "M", "M", "H", "L", "H", "L", "H", "M", "VH", "VH"),
-             (_("Simulation"), "M", "M", "VH", "H", "L", "L", "H", "VH", "H", "M", "H", "L", "H", "L", "H", "M", "VH", "VH"),
-             (_("Database Maangement"), "L", "L", "M", "M", "H", "L", "M", "H", "M", "M", "H", "M", "H", "L", "VH", "M", "VH", "VH"),
-             (_("Data Acquisition"), "L", "L", "L", "H", "H", "L", "VH", "VH", "H", "M", "H", "M", "H", "L", "VH", "M", "VH", "VH"),
-             (_("Data Presentation"), "L", "L", "L", "M", "M", "L", "H", "VH", "H", "M", "H", "L", "H", "L", "VH", "M", "H", "VH"),
-             (_("Decision & Planning Aids"), "L", "L", "L", "M", "M", "M", "M", "H", "M", "H", "H", "M", "H", "L", "VH", "M", "H", "VH"),
-             (_("Pattern & Image Processing"), "L", "L", "L", "M", "M", "L", "M", "H", "M", "H", "H", "L", "H", "L", "VH", "M", "H", "VH"),
-             (_("Computer System Software"), "L", "L", "L", "M", "M", "M", "M", "H", "M", "H", "H", "L", "H", "L", "H", "M", "H", "VH"),
-             (_("Software Development Tools"), "L", "L", "L", "M", "M", "M", "M", "M", "M", "H", "H", "L", "H", "L", "VH", "", "VH", ""))
-
-    for i in range(len(_data)):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _csci_single_matrix(button, _parent_):
-    """
-    Function used to display a gtk.Dialog with the CSCI single test technique
-    rankings based on effort, effectiveness, coverage, and efficiency
-    (Table TS203-3 in RL-TR-82-52)
-
-    Keyword Arguments:
-    button   -- the gtk.Button that called this function.
-    _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Single Test Technique Rankings (CSCI Level)"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Single test technique rankings by effort, effectiveness, coverage, and efficiency (CSCI Level)."))
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Test Technique")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=7)
-    label = gtk.Label(column.get_title())
-    column.set_sort_column_id(1)
-    _heading = _("Stopping\nRule\n(Hours)")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=7)
-    label = gtk.Label(column.get_title())
-    column.set_sort_column_id(2)
-    _heading = _("Average\nEffort\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=7)
-    column.set_sort_column_id(3)
-    label = gtk.Label(column.get_title())
-    _heading = _("% of Errors\nFound\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=4, cell_background=7)
-    label = gtk.Label(column.get_title())
-    column.set_sort_column_id(4)
-    _heading = _("Detection\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=5, cell_background=7)
-    label = gtk.Label(column.get_title())
-    column.set_sort_column_id(5)
-    _heading = _("% Average\nCoverage\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=6, cell_background=7)
-    label = gtk.Label(column.get_title())
-    column.set_sort_column_id(6)
-    _heading = _("Coverage\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = (("Error/Anomaly Detection", 12, 1, 4, 1, 0, 0, '#E5E5E5'),
-             ("Structure Analysis", 18, 1, 6, 5, 0 , 0, '#FFFFFF'),
-             ("Code Review", 16, 3, 2, 2, 0 , 0, '#E5E5E5'),
-             ("Functional Testing", 32, 4, 3, 4, 2, 1, '#FFFFFF'),
-             ("Branch Testing", 58, 5, 1, 3, 1 , 2, '#E5E5E5'),
-             ("Random Testing", 44, 5, 5, 6, 3, 3, '#FFFFFF'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _csci_paired_matrix(button, _parent_):
-    """
-    Function used to display a gtk.Dialog with the CSCI paired test technique
-    rankings based on effort, effectiveness, coverage, and efficiency
-    (Table TS203-4 in RL-TR-82-52)
-
-    Keyword Arguments:
-    button   -- the gtk.Button that called this function.
-    _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Paired Test Technique Rankings (CSCI Level)"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Paired test technique rankings by effort, effectiveness, coverage, and efficiency (CSCI Level)."))
-    treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Category")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Error\Anomaly\nDetection")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Code\nReview")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Functional\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=4, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Branch\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=5, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Random\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=6, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Structure\nAnalysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=7, cell_background=12)
-    column.set_sort_column_id(7)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Average\nEffort\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=8, cell_background=12)
-    column.set_sort_column_id(8)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("% of Errors\nFound\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=9, cell_background=12)
-    column.set_sort_column_id(9)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Detection\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=10, cell_background=12)
-    column.set_sort_column_id(10)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("% Average\nCoverage\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=11, cell_background=12)
-    column.set_sort_column_id(11)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Coverage\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = ((1, "X", "X", " ", " ", " " , " ", 2, 7, 1, 0, 0, '#E5E5E5'),
-             (1, " ", "X", " ", " ", " " , "X", 2, 7, 1, 0, 0, '#FFFFFF'),
-             (1, "X", " ", " ", " ", " " , "X", 1, 1, 3, 0, 0, '#E5E5E5'),
-             (2, " ", "X", "X", " ", " " , " ", 4, 6, 4, 7, 1, '#FFFFFF'),
-             (2, " ", " ", " ", "X", " " , "X", 10, 14, 5, 3, 3, '#E5E5E5'),
-             (2, "X", " ", " ", "X", " " , " ", 10, 14, 5, 3, 3, '#FFFFFF'),
-             (2, " ", "X", " ", " ", "X" , " ", 5, 3, 7, 10, 2, '#E5E5E5'),
-             (2, "X", " ", "X", " ", " " , " ", 6, 10, 8, 7, 5, '#FFFFFF'),
-             (2, " ", " ", "X", " ", " " , "X", 6, 9, 9, 7, 5, '#E5E5E5'),
-             (3, " ", "X", " ", "X", " " , "X", 12, 12, 10, 3, 9, '#FFFFFF'),
-             (3, " ", " ", "X", "X", " " , "X", 13, 12, 11, 1, 10, '#E5E5E5'),
-             (3, "X", " ", " ", " ", "X" , " ", 8, 3, 12, 10, 7, '#FFFFFF'),
-             (3, " ", " ", " ", " ", "X" , "X", 8, 3, 12, 10, 7, '#E5E5E5'),
-             (3, " ", " ", " ", "X", "X" , " ", 15, 11, 14, 1, 11, '#FFFFFF'),
-             (4, " ", " ", "X", " ", "X" , " ", 13, 2, 15, 6, 12, '#E5E5E5'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _unit_single_matrix(button, _parent_):
-
-    """ Function used to display a gtk.Dialog with the unit single test
-        technique rankings based on effort, effectiveness, coverage, and
-        efficiency (Table TS203-1 in RL-TR-82-52)
-
-        Keyword Arguments:
-        button   -- the gtk.Button that called this function.
-        _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Single Test Technique Rankings (Unit Level)"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Single test technique rankings by effort, effectiveness, coverage, and efficiency (Unit Level)."))
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Test Technique")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Stopping\nRule\n(Hours)")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=7)
-    column.set_sort_column_id(2)
-    label = gtk.Label(column.get_title())
-    _heading = _("Average\nEffort\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=7)
-    column.set_sort_column_id(3)
-    label = gtk.Label(column.get_title())
-    _heading = _("% of Errors\nFound\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=4, cell_background=7)
-    column.set_sort_column_id(4)
-    label = gtk.Label(column.get_title())
-    _heading = _("Detection\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=5, cell_background=7)
-    column.set_sort_column_id(5)
-    label = gtk.Label(column.get_title())
-    _heading = _("% Average\nCoverage\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=6, cell_background=7)
-    column.set_sort_column_id(6)
-    label = gtk.Label(column.get_title())
-    _heading = _("Coverage\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = (("Error/Anomaly Detection", 6, 2, 2, 1, 0, 0, '#E5E5E5'),
-             ("Structure Analysis", 4, 1, 6, 2, 0, 0, '#FFFFFF'),
-             ("Code Review", 8, 4, 1, 3, 0, 0, '#E5E5E5'),
-             ("Functional Testing", 16, 3, 4, 4, 2 , 1, '#FFFFFF'),
-             ("Branch Testing", 29, 6, 3, 5, 1, 3, '#E5E5E5'),
-             ("Random Testing", 22, 5, 5, 6, 2, 2, '#FFFFFF'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _unit_paired_matrix(button, _parent_):
-    """
-    Function used to display a gtk.Dialog with the unit paired test technique
-    rankings based on effort, effectiveness, coverage, and efficiency
-    (Table TS203-2 in RL-TR-82-52)
-
-    Keyword Arguments:
-    button   -- the gtk.Button that called this function.
-    _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Paired Test Technique Rankings (Unit Level)"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_INT, gobject.TYPE_INT,
-                          gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Paired test technique rankings by effort, effectiveness, coverage, and efficiency (Unit Level)."))
-    treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Category")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Error\Anomaly\nDetection")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Code\nReview")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Functional\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=4, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Branch\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=5, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Random\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=6, cell_background=12)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Structure\nAnalysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=7, cell_background=12)
-    column.set_sort_column_id(7)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Average\nEffort\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=8, cell_background=12)
-    column.set_sort_column_id(8)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("% of Errors\nFound\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=9, cell_background=12)
-    column.set_sort_column_id(9)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Detection\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=10, cell_background=12)
-    column.set_sort_column_id(10)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("% Average\nCoverage\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=11, cell_background=12)
-    column.set_sort_column_id(11)
-    label = gtk.Label(column.get_title())
-    label.set_property('angle', 90)
-    _heading = _("Coverage\nEfficiency\nRanking")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = ((1, "X", " ", " ", " ", " " , "X", 1, 9, 1, 0, 0, '#E5E5E5'),
-             (1, "X", "X", " ", " ", " " , " ", 3, 1, 2, 0, 0, '#FFFFFF'),
-             (1, " ", "X", " ", " ", " " , "X", 2, 7, 3, 0, 0, '#E5E5E5'),
-             (2, "X", " ", "X", " ", " " , " ", 10, 2, 4, 7, 1, '#FFFFFF'),
-             (2, " ", "X", " ", " ", "X" , " ", 9, 4, 5, 7, 3, '#E5E5E5'),
-             (2, "X", " ", " ", " ", "X" , " ", 5, 5, 6, 7, 3, '#FFFFFF'),
-             (2, "X", " ", " ", "X", " " , " ", 12, 3, 7, 3, 2, '#E5E5E5'),
-             (2, " ", "X", "X", " ", " " , " ", 6, 6, 8, 7, 5, '#FFFFFF'),
-             (3, " ", " ", "X", " ", "X" , " ", 7, 10, 9, 6, 9, '#E5E5E5'),
-             (3, " ", " ", "X", " ", " " , "X", 8, 12, 10, 7, 10, '#FFFFFF'),
-             (3, " ", " ", " ", "X", "X" , " ", 13, 11, 11, 1, 7, '#E5E5E5'),
-             (3, " ", " ", " ", "X", " " , "X", 11, 14, 12, 3, 7, '#FFFFFF'),
-             (3, " ", " ", " ", " ", "X" , "X", 4, 15, 13, 7, 11, '#E5E5E5'),
-             (4, " ", "X", " ", "X", " " , " ", 15, 8, 14, 3, 12, '#FFFFFF'),
-             (4, " ", " ", "X", "X", " " , " ", 14, 13, 15, 1, 12, '#E5E5E5'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _test_effectiveness(button, _parent_):
-
-    """ Function used to display a gtk.Dialog with the test technique
-        effectiveness versus error category matrix
-        (Table TS203-6 in RL-TR-82-52)
-
-        Keyword Arguments:
-        button   -- the gtk.Button that called this function.
-        _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Test Techniques Effectiuveness by Error Category"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Matrix of testing effectiveness by error category."))
-    treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Error\nCategory")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Code\nReview")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Error/Anomaly\nDetection")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Structure\nAnalysis")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=4, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Random\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=5, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Functional\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=6, cell_background=7)
-    label = gtk.Label(column.get_title())
-    _heading = _("Branch\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = (("Computational Errors", "L", "L", " ", "L", "L", "L", '#E5E5E5'),
-             ("Logic Errors", "H", "M", "L", " ", "L", "M", '#FFFFFF'),
-             ("Data Input Errors", " ", " ", " ", "L", " ", " ", '#E5E5E5'),
-             ("Data Verification Errors", "L", " ", " ", " ", "L", " ", '#FFFFFF'),
-             ("Data Handling Errors", "H", " ", " ", "M", "H", "H", '#E5E5E5'),
-             ("Data Output Errors", " ", " ", " ", "L", " ", "L", '#FFFFFF'),
-             ("Interface Errors", "M", " ", " ", "M", "H", "H", '#E5E5E5'),
-             ("Data Definition Errors", "L", "H", " ", " ", " ", " ", '#FFFFFF'),
-             ("Database Errors", " ", " ", " ", " ", " ", " ", '#E5E5E5'),
-             ("Other Errors", " ", " ", " ", " ", " ", " ", '#FFFFFF'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
-
-
-def _test_stopping_rules(button, _parent_):
-
-    """ Function used to display a gtk.Dialog with the test technique
-        effectiveness versus error category matrix
-        (Table TS203-6 in RL-TR-82-52)
-
-        Keyword Arguments:
-        button   -- the gtk.Button that called this function.
-        _parent_ -- the parent widget for this dialog.
-    """
-
-    dialog = gtk.Dialog(title=_("Test Stopping Rules"),
-                        parent=_parent_,
-                        flags=(gtk.DIALOG_DESTROY_WITH_PARENT),
-                        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    dialog.set_has_separator(True)
-
-    model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_STRING)
-    treeview = gtk.TreeView(model)
-    treeview.set_tooltip_text(_("Stopping rules for various test techniques."))
-    treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=0, cell_background=4)
-    label = gtk.Label(column.get_title())
-    _heading = _("Test\nTechnique")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    cell.set_property('wrap-width', 150)
-    cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=1, cell_background=4)
-    label = gtk.Label(column.get_title())
-    _heading = _("Stopping\nRule")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=2, cell_background=4)
-    label = gtk.Label(column.get_title())
-    _heading = _("Unit Level\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    cell = gtk.CellRendererText()
-    cell.set_property('editable', 0)
-    column = gtk.TreeViewColumn()
-    column.set_visible(1)
-    column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-    column.set_resizable(True)
-    column.pack_start(cell, False)
-    column.set_attributes(cell, text=3, cell_background=4)
-    label = gtk.Label(column.get_title())
-    _heading = _("CSCI Level\nTesting")
-    label.set_markup("<span weight='bold'>" + _heading + "</span>")
-    label.show_all()
-    column.set_widget(label)
-    treeview.append_column(column)
-
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.add(treeview)
-    scrollwindow.show_all()
-
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.props.height_request = 250
-    frame.props.width_request = 750
-    frame.add(scrollwindow)
-
-    frame.show_all()
-
-    _data = (("Code Review", "All required aspects of the method have been evaluated using SDDL where possible, manually where not.  Not to exceed X hours.", "X = 8", "X = 16", '#E5E5E5'),
-             ("Error/Anomaly Detection", "All required aspects of the method have been evaluated using automated tools where possible, manually where not.  Not to exceed X hours.", "X = 6", "X = 12", '#FFFFFF'),
-             ("Structure Analysis", "All required aspects of the method have been evaluated using automated tools where possible, manually where not.  Not to exceed X hours.", "X = 4", "X = 8", '#E5E5E5'),
-             ("Random Testing", "Minimum number, Y, sampled from input space.  Not to exceed X hours.", "X = 22\nY = 25", "X = 44\nY = 50", '#FFFFFF'),
-             ("Functional Testing", "All test procedures executed.  Not to exceed X hours.", "X = 16", "X = 32", '#FFFFFF'),
-             ("Branch Testing", "100% of branches tested (with a minimum of two traversals per branch).  Not to exceed X hours.", "X = 29", "X = 58", '#E5E5E5'))
-
-    n_records = len(_data)
-    for i in range(n_records):
-        model.append(None, _data[i])
-
-    dialog.vbox.pack_start(frame)
-
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        dialog.destroy()
 
 
 class Software:
@@ -1585,7 +88,7 @@ class Software:
     _gd_tab_labels = [[_("Module Description:"), _("Application Level:"),
                        _("Application Type:"), _("Development Phase:")]]
 
-    _de_tab_labels_ = [_(u"There are separate design and coding organizations."),
+    _de_labels_ = [_(u"There are separate design and coding organizations."),
                        _(u"There is an independent software test organization."),
                        _(u"There is an independent software quality assurance organization."),
                        _(u"There is an independent software configuration management organization."),
@@ -1629,7 +132,7 @@ class Software:
                        _(u"Error and anomaly detection testing will be used."),
                        _(u"Structure analysis will be used.")]
 
-    _srr_tab_labels_ = [[_(u"There is a standard for handling recognized errors such that all error conditions are passed to the calling function."),
+    _srr_labels_ = [[_(u"There is a standard for handling recognized errors such that all error conditions are passed to the calling function."),
                          _(u"Error tolerances are specified for all applicable external input data (i.e., range of numerical values, legal  combinations of alphanumerical values)."),
                          _(u"There are requirements for detection of and/or recovery from all computational failures."),
                          _(u"There are requirements to range test all critical loop and multiple transfer index parameters before used."),
@@ -1680,7 +183,7 @@ class Software:
                          _(u"Number of data items that are identified (e.g., documented with regard to source, meaning, and format):"),
                          _(u"Number of data items that are referenced:")]]
 
-    _pdr_tab_labels_ = [[_(u"There are provisions for recovery from all computational errors."),
+    _pdr_labels_ = [[_(u"There are provisions for recovery from all computational errors."),
                          _(u"There are provisions for recovery from all detected hardware faults (e.g., arithmetic faults, power failure, clock interrupt)."),
                          _(u"There are provisions for recovery from all I/O device errors."),
                          _(u"There are provisions for recovery from all communication transmission errors."),
@@ -1720,7 +223,7 @@ class Software:
                          _(u"Number of software discrepancy reports have been recorded, to date:"),
                          _(u"Number of software discrepancy reports have been closed, to date:")]]
 
-    _cdr_tab_labels_ = [[_(u"Values of all applicable external inputs with range specifications are checked with respect to specified range prior to use."),
+    _cdr_labels_ = [[_(u"Values of all applicable external inputs with range specifications are checked with respect to specified range prior to use."),
                          _(u"All applicable external inputs are checked with respect to specified conflicting requests prior to use."),
                          _(u"All applicable external inputs are checked with respect to specified illegal combinations prior to use."),
                          _(u"All applicable external inputs are checked for reasonableness before processing begins."),
@@ -1780,7 +283,7 @@ class Software:
                          _(u"Number of software discrepancy reports recorded, to date, for this unit:"),
                          _(u"Number of software discrepancy reports recorded that have been closed, to date, for this unit:")]]
 
-    _trr_tab_labels_ = [[_(u"Number of units in this module:"),
+    _trr_labels_ = [[_(u"Number of units in this module:"),
                          _(u"Total executable lines of source code in this module:"),
                          _(u"Total assembly language lines of code in this module:"),
                          _(u"Total higher order language lines of code in this module:")],
@@ -1805,46 +308,6 @@ class Software:
                          _(u"Number of conditional branch statements (If, While, DO, FOR, Case) in this unit:"),
                          _(u"Number of unconditional branch statements (GOTO, CALL, RETURN) in this unit:")]]
 
-    _ar_tab_labels = [_("Application Type Factor (A)."),
-                      _("Number of Development Characteristics (De)."),
-                      _("Fraction of Development Characteristics Not Used (Dc)"),
-                      _("Development Environment Factor (D = f(Dc))"),
-                      _("Fraction of Anomaly Management Tools Not Used (AM)."),
-                      _("Software Anomaly Management Factor (SA = f(AM))"),
-                      _("Fraction of Requirements Analysis Tools Not Used (DR)."),
-                      _("Software Requirements Traceability Factor (ST = f(DR))"),
-                      _("Software Quality Factor (SQ)."),
-                      _("Requirements and Design Representation Metric (S1 = SA*ST*SQ)"),
-                      _("Number of Higher Order Language lines of Code (HLOC)"),
-                      _("Number of Assembly Language Lines of Code (ALOC)"),
-                      _("Total Number of Executable Lines of Code (SLOC)"),
-                      _("Software Language Type Factor (SL = f(HLOC,ALOC))."),
-                      _("Total Number of Modules in CSCI (NM)"),
-                      _(u"Number of modules SLOC \u2264 200 (um)"),
-                      _(u"Number of modules 200 \u2264 SLOC \u2264 3000 SLOC (wm)"),
-                      _("Number of modules > 3000 SLOC (xm)"),
-                      _("Software Modularity Factor (SM = f(um,wm,xm))."),
-                      _("Number of CSCI Units with sx > 20 (ax)"),
-                      _(u"Number of CSCI units with 7 \u2264 sx \u2264 20 (bx)"),
-                      _(u"Number of CSCI units with sx \u2264 7 (cx)"),
-                      _("Software Complexity Factor (SX = f(ax,bx,cx))."),
-                      _("Fraction of Standards Complied (DF)."),
-                      _("Software Standards Review Factor (SR = f(DF))"),
-                      _("Software Implementation Metric (S2 = SL*SM*SX*SR)"),
-                      _("Reliability Prediction Figure of Merit (RPFOM = A*D*S1*S2)"),
-                      _("Test Effort Factor (TE)"),
-                      _("Test Methodology Factor (TM)"),
-                      _("Test Coverage Factor (TC)"),
-                      _("Test Efficiency Factor (T = TE*TM*TC)"),
-                      _("Average Failure Rate During Testing (FT1)"),
-                      _("Average Failure Rate at End of Testing (FT2)"),
-                      _("Estimated Failure Rate of CSCI During Testing (F1 = FT1*T)"),
-                      _("Estimated Failure Rate of CSCI at End of Testing (F2 = FT2*T)"),
-                      _("Operating Environment Variability (EV)"),
-                      _("Operating Environment Workload (EW)"),
-                      _("Operating Environment Factor (E = EV*EW)"),
-                      _("Estimated Operational Failure Rate (F = 0.14*FT2*T*E)")]
-
     _ts_tab_labels = [_("Test Confidence Level:"), _("Test Path:"),
                       _("Test Effort:"), _("Test Approach:"),
                       _("Labor Hours for Testing:"),
@@ -1864,47 +327,452 @@ class Software:
                       _("Number of Requirements:"),
                       _("Number of Requirements Tested:")]
 
-    _tt_tab_labels = [[_("Incident ID:"), _("Incident Date:"),
-                       _("Reported By:"), _("Category:"),
-                       _("Problem Type:"), _("Description:"),
-                       _("Details:"), _("Criticality:"),
-                       _("Method of Detection:"), _("Remarks:"),
-                       _("Product Life Cycle:"), _("Incident Status:")],
-                      [_("Test Procedure:"), _("Test Case:"),
-                       _("Execution Time:"), _("Effect of Problem:"),
-                       _("Recommended Solution:")],
-                      [_("This failure occurred on equipment or a component part that is production intent."),
-                       _("This failure is independent of any other failure."),
-                       _("This failure is due to design deficiencies or poor workmanship of the equipment or component part."),
-                       _("This failure is due to a defective component part."),
-                       _("This failure is due to a component part that wore out prior to it's stipulated life."),
-                       _("This failure is the first occurrence of an intermittent failure on this equipment."),
-                       _("This failure is a malfunction (including false alarm) of the built-in test features."),
-                       _("This failure is due to misadjustment of operator controls AND the information necessary to properly adjust these controls is not available from indicators which are integral to the equipment under test."),
-                       _("This failure is dependent on another, relevent, failure."),
-                       _("This failure is directly attributable to improper test setup."),
-                       _("This failure is the failure of test insrumentation or monitoring equipment (other than built-in test equipment)."),
-                       _("This failure is the result of test operator error."),
-                       _("This failure is attributable to an error in the test procedure."),
-                       _("This failure is the second or subsequent intermittent failure on this equipment."),
-                       _("This failure occurred during burn-in, troubleshooting, repair verification, or setup."),
-                       _("This failure is clearly attributable to an overstress condition in excess of the design requirements."),
-                       _("This failure is within the responsibility of this organization.")],
-                      [_("Prescribed Action:"), _("Action Taken:"),
-                       _("Owner:"), _("Due Date:"), _("Status:"),
-                       _("Approved"), _("Approved By:"), _("Approval Date:"),
-                       _("Closed"), _("Closed By:"), _("Closure Date:")],
-                      [_("Reviewed"), _("Reviewed By:"), _("Reviewed Date:"),
-                       _("Approved"), _("Approved By:"), _("Approved Date:"),
-                       _("Closed"), _("Closed By:"), _("Closure Date:")]]
+# Create top level containers for the SOFTWARE object.
+    notebook = gtk.Notebook()
+    vbxSoftware = gtk.VBox()
 
-    _re_tab_labels = [_("Average FR During Test:"),
-                      _("Failure Rate at EOT:"), _("Average REN:"),
-                      _("EOT REN:"), _("Number of Exception Conditions:"),
-                      _("Input Variability:"), _("Total Execution Time:"),
-                      _("OS Overhead Time:"), _("Workload:"),
-                      _("Operating Environment Factor:"),
-                      _("Estimated Failure Rate:")]
+# Create generic toolbar action buttons.  These will call different methods or
+# functions depending on the ASSEMBLY Object notebook tab that is selected.
+    btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
+    btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
+    btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
+    btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+
+# Create the General Data tab widgets.
+    cmbApplication = _widg.make_combo(simple=True)
+    cmbDevelopment = _widg.make_combo(simple=True)
+    cmbLevel = _widg.make_combo(simple=True)
+    cmbPhase = _widg.make_combo(simple=True)
+    txtDescription = _widg.make_text_view(width=400)
+
+# Create the Risk Analysis tab widgets.
+    hpnRiskAnalysis = gtk.HPaned()
+    nbkRiskAnalysis = gtk.Notebook()
+    tvwRiskMap = gtk.TreeView()
+
+    # Create the Development Environment tab widgets.
+    chkDevelopmentQ1 = _widg.make_check_button(_de_labels_[0])
+    chkDevelopmentQ2 = _widg.make_check_button(_de_labels_[1])
+    chkDevelopmentQ3 = _widg.make_check_button(_de_labels_[2])
+    chkDevelopmentQ4 = _widg.make_check_button(_de_labels_[3])
+    chkDevelopmentQ5 = _widg.make_check_button(_de_labels_[4])
+    chkDevelopmentQ6 = _widg.make_check_button(_de_labels_[5])
+    chkDevelopmentQ7 = _widg.make_check_button(_de_labels_[6])
+    chkDevelopmentQ8 = _widg.make_check_button(_de_labels_[7])
+    chkDevelopmentQ9 = _widg.make_check_button(_de_labels_[8])
+    chkDevelopmentQ10 = _widg.make_check_button(_de_labels_[9])
+    chkDevelopmentQ11 = _widg.make_check_button(_de_labels_[10])
+    chkDevelopmentQ12 = _widg.make_check_button(_de_labels_[11])
+    chkDevelopmentQ13 = _widg.make_check_button(_de_labels_[12])
+    chkDevelopmentQ14 = _widg.make_check_button(_de_labels_[13])
+    chkDevelopmentQ15 = _widg.make_check_button(_de_labels_[14])
+    chkDevelopmentQ16 = _widg.make_check_button(_de_labels_[15])
+    chkDevelopmentQ17 = _widg.make_check_button(_de_labels_[16])
+    chkDevelopmentQ18 = _widg.make_check_button(_de_labels_[17])
+    chkDevelopmentQ19 = _widg.make_check_button(_de_labels_[18])
+    chkDevelopmentQ20 = _widg.make_check_button(_de_labels_[19])
+    chkDevelopmentQ21 = _widg.make_check_button(_de_labels_[20])
+    chkDevelopmentQ22 = _widg.make_check_button(_de_labels_[21])
+    chkDevelopmentQ23 = _widg.make_check_button(_de_labels_[22])
+    chkDevelopmentQ24 = _widg.make_check_button(_de_labels_[23])
+    chkDevelopmentQ25 = _widg.make_check_button(_de_labels_[24])
+    chkDevelopmentQ26 = _widg.make_check_button(_de_labels_[25])
+    chkDevelopmentQ27 = _widg.make_check_button(_de_labels_[26])
+    chkDevelopmentQ28 = _widg.make_check_button(_de_labels_[27])
+    chkDevelopmentQ29 = _widg.make_check_button(_de_labels_[28])
+    chkDevelopmentQ30 = _widg.make_check_button(_de_labels_[29])
+    chkDevelopmentQ31 = _widg.make_check_button(_de_labels_[30])
+    chkDevelopmentQ32 = _widg.make_check_button(_de_labels_[31])
+    chkDevelopmentQ33 = _widg.make_check_button(_de_labels_[32])
+    chkDevelopmentQ34 = _widg.make_check_button(_de_labels_[33])
+    chkDevelopmentQ35 = _widg.make_check_button(_de_labels_[34])
+    chkDevelopmentQ36 = _widg.make_check_button(_de_labels_[35])
+    chkDevelopmentQ37 = _widg.make_check_button(_de_labels_[36])
+    chkDevelopmentQ38 = _widg.make_check_button(_de_labels_[37])
+    chkDevelopmentQ39 = _widg.make_check_button(_de_labels_[38])
+    chkDevelopmentQ40 = _widg.make_check_button(_de_labels_[39])
+    chkDevelopmentQ41 = _widg.make_check_button(_de_labels_[40])
+    chkDevelopmentQ42 = _widg.make_check_button(_de_labels_[41])
+    chkDevelopmentQ43 = _widg.make_check_button(_de_labels_[42])
+
+    hbxDevelopmentEnvironment = gtk.HBox()
+
+    # Create the Requirements Review widgets.
+    # [0] = CSCI-level Yes/No from WS2A (16 questions --> Q1 - Q16)
+    # [1] = CSCI-level Yes/No from WS3A (1 question --> Q17)
+    # [2] = CSCI-level Yes/No from WS4A (23 questions --> Q18 - Q40)
+    # [3] = CSCI-level quantity from WS2A (6 questions --> Q41 - Q46)
+    # [4] = CSCI-level quantity from WS4A (4 questions --> Q47 - Q50)
+    chkSRRQ1 = _widg.make_check_button(_srr_labels_[0][0])
+    chkSRRQ2 = _widg.make_check_button(_srr_labels_[0][1])
+    chkSRRQ3 = _widg.make_check_button(_srr_labels_[0][2])
+    chkSRRQ4 = _widg.make_check_button(_srr_labels_[0][3])
+    chkSRRQ5 = _widg.make_check_button(_srr_labels_[0][4])
+    chkSRRQ6 = _widg.make_check_button(_srr_labels_[0][5])
+    chkSRRQ7 = _widg.make_check_button(_srr_labels_[0][6])
+    chkSRRQ8 = _widg.make_check_button(_srr_labels_[0][7])
+    chkSRRQ9 = _widg.make_check_button(_srr_labels_[0][8])
+    chkSRRQ10 = _widg.make_check_button(_srr_labels_[0][9])
+    chkSRRQ11 = _widg.make_check_button(_srr_labels_[0][10])
+    chkSRRQ12 = _widg.make_check_button(_srr_labels_[0][11])
+    chkSRRQ13 = _widg.make_check_button(_srr_labels_[0][12])
+    chkSRRQ14 = _widg.make_check_button(_srr_labels_[0][13])
+    chkSRRQ15 = _widg.make_check_button(_srr_labels_[0][14])
+    chkSRRQ16 = _widg.make_check_button(_srr_labels_[0][15])
+    chkSRRQ17 = _widg.make_check_button(_srr_labels_[1][0])
+    chkSRRQ18 = _widg.make_check_button(_srr_labels_[2][0])
+    chkSRRQ19 = _widg.make_check_button(_srr_labels_[2][1])
+    chkSRRQ20 = _widg.make_check_button(_srr_labels_[2][2])
+    chkSRRQ21 = _widg.make_check_button(_srr_labels_[2][3])
+    chkSRRQ22 = _widg.make_check_button(_srr_labels_[2][4])
+    chkSRRQ23 = _widg.make_check_button(_srr_labels_[2][5])
+    chkSRRQ24 = _widg.make_check_button(_srr_labels_[2][6])
+    chkSRRQ25 = _widg.make_check_button(_srr_labels_[2][7])
+    chkSRRQ26 = _widg.make_check_button(_srr_labels_[2][8])
+    chkSRRQ27 = _widg.make_check_button(_srr_labels_[2][9])
+    chkSRRQ28 = _widg.make_check_button(_srr_labels_[2][10])
+    chkSRRQ29 = _widg.make_check_button(_srr_labels_[2][11])
+    chkSRRQ30 = _widg.make_check_button(_srr_labels_[2][12])
+    chkSRRQ31 = _widg.make_check_button(_srr_labels_[2][13])
+    chkSRRQ32 = _widg.make_check_button(_srr_labels_[2][14])
+    chkSRRQ33 = _widg.make_check_button(_srr_labels_[2][15])
+    chkSRRQ34 = _widg.make_check_button(_srr_labels_[2][16])
+    chkSRRQ35 = _widg.make_check_button(_srr_labels_[2][17])
+    chkSRRQ36 = _widg.make_check_button(_srr_labels_[2][18])
+    chkSRRQ37 = _widg.make_check_button(_srr_labels_[2][19])
+    chkSRRQ38 = _widg.make_check_button(_srr_labels_[2][20])
+    chkSRRQ39 = _widg.make_check_button(_srr_labels_[2][21])
+    chkSRRQ40 = _widg.make_check_button(_srr_labels_[2][22])
+    lblSRRQ41 = _widg.make_label(_srr_labels_[3][0], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ42 = _widg.make_label(_srr_labels_[3][1], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ43 = _widg.make_label(_srr_labels_[3][2], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ44 = _widg.make_label(_srr_labels_[3][3], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ45 = _widg.make_label(_srr_labels_[3][4], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ46 = _widg.make_label(_srr_labels_[3][5], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ47 = _widg.make_label(_srr_labels_[4][0], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ48 = _widg.make_label(_srr_labels_[4][1], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ49 = _widg.make_label(_srr_labels_[4][2], width=500, height=-1,
+                                 bold=False)
+    lblSRRQ50 = _widg.make_label(_srr_labels_[4][3], width=500, height=-1,
+                                 bold=False)
+    txtSRRQ41 = _widg.make_entry(_width_=50)
+    txtSRRQ42 = _widg.make_entry(_width_=50)
+    txtSRRQ43 = _widg.make_entry(_width_=50)
+    txtSRRQ44 = _widg.make_entry(_width_=50)
+    txtSRRQ45 = _widg.make_entry(_width_=50)
+    txtSRRQ46 = _widg.make_entry(_width_=50)
+    txtSRRQ47 = _widg.make_entry(_width_=50)
+    txtSRRQ48 = _widg.make_entry(_width_=50)
+    txtSRRQ49 = _widg.make_entry(_width_=50)
+    txtSRRQ50 = _widg.make_entry(_width_=50)
+
+    hpnSRR = gtk.HPaned()
+    lblSRR = gtk.Label()
+
+    # Create the Preliminary Design Review widgets.
+    # [0] = CSCI-level Yes/No from WS2B (14 questions --> Q1 - Q14)
+    # [1] = CSCI-level Yes/No from WS3B (1 question --> Q15)
+    # [2] = CSCI-level Yes/No from WS4B (14 questions --> Q16 - Q29)
+    # [3] = CSCI-level quantity from WS4B (10 questions --> Q30 - Q39)
+    chkPDRQ1 = _widg.make_check_button(_pdr_labels_[0][0])
+    chkPDRQ2 = _widg.make_check_button(_pdr_labels_[0][1])
+    chkPDRQ3 = _widg.make_check_button(_pdr_labels_[0][2])
+    chkPDRQ4 = _widg.make_check_button(_pdr_labels_[0][3])
+    chkPDRQ5 = _widg.make_check_button(_pdr_labels_[0][4])
+    chkPDRQ6 = _widg.make_check_button(_pdr_labels_[0][5])
+    chkPDRQ7 = _widg.make_check_button(_pdr_labels_[0][6])
+    chkPDRQ8 = _widg.make_check_button(_pdr_labels_[0][7])
+    chkPDRQ9 = _widg.make_check_button(_pdr_labels_[0][8])
+    chkPDRQ10 = _widg.make_check_button(_pdr_labels_[0][9])
+    chkPDRQ11 = _widg.make_check_button(_pdr_labels_[0][10])
+    chkPDRQ12 = _widg.make_check_button(_pdr_labels_[0][11])
+    chkPDRQ13 = _widg.make_check_button(_pdr_labels_[0][12])
+    chkPDRQ14 = _widg.make_check_button(_pdr_labels_[0][13])
+    chkPDRQ15 = _widg.make_check_button(_pdr_labels_[1][0])
+    chkPDRQ16 = _widg.make_check_button(_pdr_labels_[2][0])
+    chkPDRQ17 = _widg.make_check_button(_pdr_labels_[2][1])
+    chkPDRQ18 = _widg.make_check_button(_pdr_labels_[2][2])
+    chkPDRQ19 = _widg.make_check_button(_pdr_labels_[2][3])
+    chkPDRQ20 = _widg.make_check_button(_pdr_labels_[2][4])
+    chkPDRQ21 = _widg.make_check_button(_pdr_labels_[2][5])
+    chkPDRQ22 = _widg.make_check_button(_pdr_labels_[2][6])
+    chkPDRQ23 = _widg.make_check_button(_pdr_labels_[2][7])
+    chkPDRQ24 = _widg.make_check_button(_pdr_labels_[2][8])
+    chkPDRQ25 = _widg.make_check_button(_pdr_labels_[2][9])
+    chkPDRQ26 = _widg.make_check_button(_pdr_labels_[2][10])
+    chkPDRQ27 = _widg.make_check_button(_pdr_labels_[2][11])
+    chkPDRQ28 = _widg.make_check_button(_pdr_labels_[2][12])
+    chkPDRQ29 = _widg.make_check_button(_pdr_labels_[2][13])
+    lblPDRQ30 = _widg.make_label(_pdr_labels_[3][0], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ31 = _widg.make_label(_pdr_labels_[3][1], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ32 = _widg.make_label(_pdr_labels_[3][2], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ33 = _widg.make_label(_pdr_labels_[3][3], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ34 = _widg.make_label(_pdr_labels_[3][4], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ35 = _widg.make_label(_pdr_labels_[3][5], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ36 = _widg.make_label(_pdr_labels_[3][6], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ37 = _widg.make_label(_pdr_labels_[3][7], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ38 = _widg.make_label(_pdr_labels_[3][8], width=500, height=-1,
+                                 bold=False)
+    lblPDRQ39 = _widg.make_label(_pdr_labels_[3][9], width=500, height=-1,
+                                 bold=False)
+    txtPDRQ30 = _widg.make_entry(_width_=50)
+    txtPDRQ31 = _widg.make_entry(_width_=50)
+    txtPDRQ32 = _widg.make_entry(_width_=50)
+    txtPDRQ33 = _widg.make_entry(_width_=50)
+    txtPDRQ34 = _widg.make_entry(_width_=50)
+    txtPDRQ35 = _widg.make_entry(_width_=50)
+    txtPDRQ36 = _widg.make_entry(_width_=50)
+    txtPDRQ37 = _widg.make_entry(_width_=50)
+    txtPDRQ38 = _widg.make_entry(_width_=50)
+    txtPDRQ39 = _widg.make_entry(_width_=50)
+
+    hpnPDR = gtk.HPaned()
+    lblPDR = gtk.Label()
+
+    # Create the Critical Design Review widgets.
+    chkCDRQ1 = _widg.make_check_button(_cdr_labels_[0][0], 700)
+    chkCDRQ2 = _widg.make_check_button(_cdr_labels_[0][1], 700)
+    chkCDRQ3 = _widg.make_check_button(_cdr_labels_[0][2], 700)
+    chkCDRQ4 = _widg.make_check_button(_cdr_labels_[0][3], 700)
+    chkCDRQ5 = _widg.make_check_button(_cdr_labels_[0][4], 700)
+    chkCDRQ6 = _widg.make_check_button(_cdr_labels_[0][5], 700)
+    chkCDRQ7 = _widg.make_check_button(_cdr_labels_[0][6], 700)
+    chkCDRQ8 = _widg.make_check_button(_cdr_labels_[0][7], 700)
+    chkCDRQ9 = _widg.make_check_button(_cdr_labels_[1][0], 700)
+    chkCDRQ10 = _widg.make_check_button(_cdr_labels_[1][1], 700)
+    lblCDRQ11 = _widg.make_label(_cdr_labels_[2][0], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ12 = _widg.make_label(_cdr_labels_[2][1], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ13 = _widg.make_label(_cdr_labels_[2][2], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ14 = _widg.make_label(_cdr_labels_[2][3], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ15 = _widg.make_label(_cdr_labels_[2][4], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ16 = _widg.make_label(_cdr_labels_[2][5], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ17 = _widg.make_label(_cdr_labels_[2][6], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ18 = _widg.make_label(_cdr_labels_[2][7], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ19 = _widg.make_label(_cdr_labels_[2][8], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ20 = _widg.make_label(_cdr_labels_[2][9], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ21 = _widg.make_label(_cdr_labels_[2][10], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ22 = _widg.make_label(_cdr_labels_[2][11], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ23 = _widg.make_label(_cdr_labels_[2][12], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ24 = _widg.make_label(_cdr_labels_[2][13], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ25 = _widg.make_label(_cdr_labels_[2][14], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ26 = _widg.make_label(_cdr_labels_[2][15], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ27 = _widg.make_label(_cdr_labels_[2][16], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ28 = _widg.make_label(_cdr_labels_[2][17], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ29 = _widg.make_label(_cdr_labels_[2][18], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ30 = _widg.make_label(_cdr_labels_[2][19], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ31 = _widg.make_label(_cdr_labels_[2][20], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ32 = _widg.make_label(_cdr_labels_[2][21], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ33 = _widg.make_label(_cdr_labels_[2][22], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ34 = _widg.make_label(_cdr_labels_[2][23], width=500, height=-1,
+                                 bold=False)
+    txtCDRQ11 = _widg.make_entry(_width_=50)
+    txtCDRQ12 = _widg.make_entry(_width_=50)
+    txtCDRQ13 = _widg.make_entry(_width_=50)
+    txtCDRQ14 = _widg.make_entry(_width_=50)
+    txtCDRQ15 = _widg.make_entry(_width_=50)
+    txtCDRQ16 = _widg.make_entry(_width_=50)
+    txtCDRQ17 = _widg.make_entry(_width_=50)
+    txtCDRQ18 = _widg.make_entry(_width_=50)
+    txtCDRQ19 = _widg.make_entry(_width_=50)
+    txtCDRQ20 = _widg.make_entry(_width_=50)
+    txtCDRQ21 = _widg.make_entry(_width_=50)
+    txtCDRQ22 = _widg.make_entry(_width_=50)
+    txtCDRQ23 = _widg.make_entry(_width_=50)
+    txtCDRQ24 = _widg.make_entry(_width_=50)
+    txtCDRQ25 = _widg.make_entry(_width_=50)
+    txtCDRQ26 = _widg.make_entry(_width_=50)
+    txtCDRQ27 = _widg.make_entry(_width_=50)
+    txtCDRQ28 = _widg.make_entry(_width_=50)
+    txtCDRQ29 = _widg.make_entry(_width_=50)
+    txtCDRQ30 = _widg.make_entry(_width_=50)
+    txtCDRQ31 = _widg.make_entry(_width_=50)
+    txtCDRQ32 = _widg.make_entry(_width_=50)
+    txtCDRQ33 = _widg.make_entry(_width_=50)
+    txtCDRQ34 = _widg.make_entry(_width_=50)
+    chkCDRQ35 = _widg.make_check_button(_cdr_labels_[3][0], 700)
+    chkCDRQ36 = _widg.make_check_button(_cdr_labels_[3][1], 700)
+    chkCDRQ37 = _widg.make_check_button(_cdr_labels_[3][2], 700)
+    chkCDRQ38 = _widg.make_check_button(_cdr_labels_[3][3], 700)
+    chkCDRQ39 = _widg.make_check_button(_cdr_labels_[3][4], 700)
+    chkCDRQ40 = _widg.make_check_button(_cdr_labels_[3][5], 700)
+    chkCDRQ41 = _widg.make_check_button(_cdr_labels_[3][6], 700)
+    chkCDRQ42 = _widg.make_check_button(_cdr_labels_[3][7], 700)
+    chkCDRQ43 = _widg.make_check_button(_cdr_labels_[3][8], 700)
+    chkCDRQ44 = _widg.make_check_button(_cdr_labels_[3][9], 700)
+    chkCDRQ45 = _widg.make_check_button(_cdr_labels_[3][10], 700)
+    chkCDRQ46 = _widg.make_check_button(_cdr_labels_[3][11], 700)
+    lblCDRQ47 = _widg.make_label(_cdr_labels_[4][0], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ48 = _widg.make_label(_cdr_labels_[4][1], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ49 = _widg.make_label(_cdr_labels_[4][2], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ50 = _widg.make_label(_cdr_labels_[4][3], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ51 = _widg.make_label(_cdr_labels_[4][4], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ52 = _widg.make_label(_cdr_labels_[4][5], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ53 = _widg.make_label(_cdr_labels_[4][6], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ54 = _widg.make_label(_cdr_labels_[4][7], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ55 = _widg.make_label(_cdr_labels_[4][8], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ56 = _widg.make_label(_cdr_labels_[4][9], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ57 = _widg.make_label(_cdr_labels_[4][10], width=500, height=-1,
+                                 bold=False)
+    lblCDRQ58 = _widg.make_label(_cdr_labels_[4][11], width=500, height=-1,
+                                 bold=False)
+    txtCDRQ47 = _widg.make_entry(_width_=50)
+    txtCDRQ48 = _widg.make_entry(_width_=50)
+    txtCDRQ49 = _widg.make_entry(_width_=50)
+    txtCDRQ50 = _widg.make_entry(_width_=50)
+    txtCDRQ51 = _widg.make_entry(_width_=50)
+    txtCDRQ52 = _widg.make_entry(_width_=50)
+    txtCDRQ53 = _widg.make_entry(_width_=50)
+    txtCDRQ54 = _widg.make_entry(_width_=50)
+    txtCDRQ55 = _widg.make_entry(_width_=50)
+    txtCDRQ56 = _widg.make_entry(_width_=50)
+    txtCDRQ57 = _widg.make_entry(_width_=50)
+    txtCDRQ58 = _widg.make_entry(_width_=50)
+
+    fraCSCICDRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
+    fraCSCICDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
+    fraUnitCDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
+    hpnCDR = gtk.HPaned()
+    lblCDR = gtk.Label()
+
+    # Create the Test Readiness Review widgets.
+    # [0] = CSCI-level quantity from WS8D and WS9D (4 questions -> Q1 - Q4)
+    # [2] = Unit-level Yes/No from WS2C (2 questions --> Q5 - Q8)
+    # [3] = Unit-level Yes/No from WS4C (14 questions --> Q9 - Q22)
+    # [4] = Unit-level Yes/No from WS8D (3 questions -> Q23 - Q25)
+    chkTRRQ5 = _widg.make_check_button(_trr_labels_[1][0])
+    chkTRRQ6 = _widg.make_check_button(_trr_labels_[1][1])
+    chkTRRQ7 = _widg.make_check_button(_trr_labels_[2][0])
+    chkTRRQ8 = _widg.make_check_button(_trr_labels_[2][1])
+    chkTRRQ9 = _widg.make_check_button(_trr_labels_[2][2])
+    chkTRRQ10 = _widg.make_check_button(_trr_labels_[2][3])
+    chkTRRQ11 = _widg.make_check_button(_trr_labels_[2][4])
+    chkTRRQ12 = _widg.make_check_button(_trr_labels_[2][5])
+    chkTRRQ13 = _widg.make_check_button(_trr_labels_[2][6])
+    chkTRRQ14 = _widg.make_check_button(_trr_labels_[2][7])
+    chkTRRQ15 = _widg.make_check_button(_trr_labels_[2][8])
+    chkTRRQ16 = _widg.make_check_button(_trr_labels_[2][9])
+    chkTRRQ17 = _widg.make_check_button(_trr_labels_[2][10])
+    chkTRRQ18 = _widg.make_check_button(_trr_labels_[2][11])
+    chkTRRQ19 = _widg.make_check_button(_trr_labels_[2][12])
+    chkTRRQ20 = _widg.make_check_button(_trr_labels_[2][13])
+    lblTRRQ1 = _widg.make_label(_trr_labels_[0][0], width=500, height=-1,
+                                bold=False)
+    lblTRRQ2 = _widg.make_label(_trr_labels_[0][1], width=500, height=-1,
+                                bold=False)
+    lblTRRQ3 = _widg.make_label(_trr_labels_[0][2], width=500, height=-1,
+                                bold=False)
+    lblTRRQ4 = _widg.make_label(_trr_labels_[0][3], width=500, height=-1,
+                                bold=False)
+    lblTRRQ21 = _widg.make_label(_trr_labels_[3][0], width=500, height=-1,
+                                 bold=False)
+    lblTRRQ22 = _widg.make_label(_trr_labels_[3][1], width=500, height=-1,
+                                 bold=False)
+    lblTRRQ23 = _widg.make_label(_trr_labels_[3][2], width=500, height=-1,
+                                 bold=False)
+    lblTRRQ24 = _widg.make_label(_trr_labels_[3][3], width=500, height=-1,
+                                 bold=False)
+    txtTRRQ1 = _widg.make_entry(_width_=50)
+    txtTRRQ2 = _widg.make_entry(_width_=50)
+    txtTRRQ3 = _widg.make_entry(_width_=50)
+    txtTRRQ4 = _widg.make_entry(_width_=50)
+    txtTRRQ21 = _widg.make_entry(_width_=50)
+    txtTRRQ22 = _widg.make_entry(_width_=50)
+    txtTRRQ23 = _widg.make_entry(_width_=50)
+    txtTRRQ24 = _widg.make_entry(_width_=50)
+
+    fraCSCITRRSX = _widg.make_frame(_label_=_(u"Complexity &amp; Modularity"))
+    fraUnitTRRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
+    fraUnitTRRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
+    hpnTRR = gtk.HPaned()
+    lblTRR = gtk.Label()
+
+# Create the Test Technique Selection tab widgets.
+    cmbTCL = _widg.make_combo(simple=True)
+    cmbTestPath = _widg.make_combo(simple=True)
+    cmbTestEffort = _widg.make_combo(simple=True)
+    cmbTestApproach = _widg.make_combo(simple=True)
+
+    txtLaborTest = _widg.make_entry(_width_=100)
+    txtLaborDev = _widg.make_entry(_width_=100)
+    txtBudgetTest = _widg.make_entry(_width_=100)
+    txtBudgetDev = _widg.make_entry(_width_=100)
+    txtScheduleTest = _widg.make_entry(_width_=100)
+    txtScheduleDev = _widg.make_entry(_width_=100)
+    txtBranches = _widg.make_entry(_width_=100)
+    txtBranchesTest = _widg.make_entry(_width_=100)
+    txtInputs = _widg.make_entry(_width_=100)
+    txtInputsTest = _widg.make_entry(_width_=100)
+    txtUnits = _widg.make_entry(_width_=100)
+    txtUnitsTest = _widg.make_entry(_width_=100)
+    txtInterfaces = _widg.make_entry(_width_=100)
+    txtInterfacesTest = _widg.make_entry(_width_=100)
+
+    scwTestSelectionMatrix = gtk.ScrolledWindow()
+
+    tvwUnitTestSelectionMatrix = gtk.TreeView()
+    tvwCSCITestSelectionMatrix = gtk.TreeView()
+
+# Create the Reliability Estimation tab widgets.
+    txtFT1 = _widg.make_entry()
+    txtFT2 = _widg.make_entry()
+    txtRENAVG = _widg.make_entry()
+    txtRENEOT = _widg.make_entry()
+    txtEC = _widg.make_entry()
+    txtEV = _widg.make_entry()
+    txtET = _widg.make_entry()
+    txtOS = _widg.make_entry()
+    txtEW = _widg.make_entry()
+    txtE = _widg.make_entry()
+    txtF = _widg.make_entry()
 
     def __init__(self, application):
         """
@@ -1924,6 +792,9 @@ class Software:
         self.model = None
         self._selected_row = None
 
+# Define global integer variables.
+        self.software_id = 0
+
 # Define local dictionary variables.
         self._dicSoftware = {}
         self._development_env_ = {}
@@ -1937,15 +808,12 @@ class Software:
         self._col_order = []
 
 # Define local integer variables.
-        self.software_id = 0
         self._app_level = 0
         self._dev_phase = 0
 
 # Define local float variables.
-        self.rpfom = 0.0
+        self._rpfom = 0.0
 
-# Create the Notebook for the SOFTWARE object.
-        self.notebook = gtk.Notebook()
         if(_conf.TABPOS[2] == 'left'):
             self.notebook.set_tab_pos(gtk.POS_LEFT)
         elif(_conf.TABPOS[2] == 'right'):
@@ -1955,487 +823,24 @@ class Software:
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
-# Create generic toolbar action buttons.  These will call different methods or
-# functions depending on the ASSEMBLY Object notebook tab that is selected.
-        self.btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
-        self.btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
-        self.btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-        self.btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
-
-# Create the General Data tab widgets for the SOFTWARE object.
-        self.txtDescription = _widg.make_text_view(width=400)
-        self.cmbLevel = _widg.make_combo(simple=True)
-        self.cmbApplication = _widg.make_combo(simple=True)
-        self.cmbDevelopment = _widg.make_combo(simple=True)
-        self.cmbPhase = _widg.make_combo(simple=True)
-        self.chkDevAssessType = _widg.make_check_button(_("Perform detailed development environment assessment"))
-        if self._general_data_widgets_create():
-            self._app.debug_log.error("software.py: Failed to create General Data tab widgets.")
+# Create the General Data tab
         if self._general_data_tab_create():
             self._app.debug_log.error("software.py: Failed to create General Data tab.")
 
-# Create the Risk Analysis tab widgets for the SOFTWARE object.
-        self.hpnRiskAnalysis = gtk.HPaned()
-
-        self.nbkRiskAnalysis = gtk.Notebook()
-        self.nbkRiskAnalysis.set_tab_pos(gtk.POS_RIGHT)
-        self.nbkRiskAnalysis.connect('switch_page',
-                                     self._notebook_page_switched, 1)
-
-        self.tvwRiskMap = gtk.TreeView()
-
-        # Create the Development Environment tab widgets for the SOFTWARE
-        # object.
-        self.chkDevelopmentQ1 = _widg.make_check_button(self._de_tab_labels_[0])
-        self.chkDevelopmentQ2 = _widg.make_check_button(self._de_tab_labels_[1])
-        self.chkDevelopmentQ3 = _widg.make_check_button(self._de_tab_labels_[2])
-        self.chkDevelopmentQ4 = _widg.make_check_button(self._de_tab_labels_[3])
-        self.chkDevelopmentQ5 = _widg.make_check_button(self._de_tab_labels_[4])
-        self.chkDevelopmentQ6 = _widg.make_check_button(self._de_tab_labels_[5])
-        self.chkDevelopmentQ7 = _widg.make_check_button(self._de_tab_labels_[6])
-        self.chkDevelopmentQ8 = _widg.make_check_button(self._de_tab_labels_[7])
-        self.chkDevelopmentQ9 = _widg.make_check_button(self._de_tab_labels_[8])
-        self.chkDevelopmentQ10 = _widg.make_check_button(self._de_tab_labels_[9])
-        self.chkDevelopmentQ11 = _widg.make_check_button(self._de_tab_labels_[10])
-        self.chkDevelopmentQ12 = _widg.make_check_button(self._de_tab_labels_[11])
-        self.chkDevelopmentQ13 = _widg.make_check_button(self._de_tab_labels_[12])
-        self.chkDevelopmentQ14 = _widg.make_check_button(self._de_tab_labels_[13])
-        self.chkDevelopmentQ15 = _widg.make_check_button(self._de_tab_labels_[14])
-        self.chkDevelopmentQ16 = _widg.make_check_button(self._de_tab_labels_[15])
-        self.chkDevelopmentQ17 = _widg.make_check_button(self._de_tab_labels_[16])
-        self.chkDevelopmentQ18 = _widg.make_check_button(self._de_tab_labels_[17])
-        self.chkDevelopmentQ19 = _widg.make_check_button(self._de_tab_labels_[18])
-        self.chkDevelopmentQ20 = _widg.make_check_button(self._de_tab_labels_[19])
-        self.chkDevelopmentQ21 = _widg.make_check_button(self._de_tab_labels_[20])
-        self.chkDevelopmentQ22 = _widg.make_check_button(self._de_tab_labels_[21])
-        self.chkDevelopmentQ23 = _widg.make_check_button(self._de_tab_labels_[22])
-        self.chkDevelopmentQ24 = _widg.make_check_button(self._de_tab_labels_[23])
-        self.chkDevelopmentQ25 = _widg.make_check_button(self._de_tab_labels_[24])
-        self.chkDevelopmentQ26 = _widg.make_check_button(self._de_tab_labels_[25])
-        self.chkDevelopmentQ27 = _widg.make_check_button(self._de_tab_labels_[26])
-        self.chkDevelopmentQ28 = _widg.make_check_button(self._de_tab_labels_[27])
-        self.chkDevelopmentQ29 = _widg.make_check_button(self._de_tab_labels_[28])
-        self.chkDevelopmentQ30 = _widg.make_check_button(self._de_tab_labels_[29])
-        self.chkDevelopmentQ31 = _widg.make_check_button(self._de_tab_labels_[30])
-        self.chkDevelopmentQ32 = _widg.make_check_button(self._de_tab_labels_[31])
-        self.chkDevelopmentQ33 = _widg.make_check_button(self._de_tab_labels_[32])
-        self.chkDevelopmentQ34 = _widg.make_check_button(self._de_tab_labels_[33])
-        self.chkDevelopmentQ35 = _widg.make_check_button(self._de_tab_labels_[34])
-        self.chkDevelopmentQ36 = _widg.make_check_button(self._de_tab_labels_[35])
-        self.chkDevelopmentQ37 = _widg.make_check_button(self._de_tab_labels_[36])
-        self.chkDevelopmentQ38 = _widg.make_check_button(self._de_tab_labels_[37])
-        self.chkDevelopmentQ39 = _widg.make_check_button(self._de_tab_labels_[38])
-        self.chkDevelopmentQ40 = _widg.make_check_button(self._de_tab_labels_[39])
-        self.chkDevelopmentQ41 = _widg.make_check_button(self._de_tab_labels_[40])
-        self.chkDevelopmentQ42 = _widg.make_check_button(self._de_tab_labels_[41])
-        self.chkDevelopmentQ43 = _widg.make_check_button(self._de_tab_labels_[42])
-
-        self.hbxDevelopmentEnvironment = gtk.HBox()
-
-        # Create the Requirements Review tab widgets for the SOFTWARE object.
-        # [0] = CSCI-level Yes/No from WS2A (16 questions --> Q1 - Q16)
-        # [1] = CSCI-level Yes/No from WS3A (1 question --> Q17)
-        # [2] = CSCI-level Yes/No from WS4A (23 questions --> Q18 - Q40)
-        # [3] = CSCI-level quantity from WS2A (6 questions --> Q41 - Q46)
-        # [4] = CSCI-level quantity from WS4A (4 questions --> Q47 - Q50)
-        self.chkSRRQ1 = _widg.make_check_button(self._srr_tab_labels_[0][0])
-        self.chkSRRQ2 = _widg.make_check_button(self._srr_tab_labels_[0][1])
-        self.chkSRRQ3 = _widg.make_check_button(self._srr_tab_labels_[0][2])
-        self.chkSRRQ4 = _widg.make_check_button(self._srr_tab_labels_[0][3])
-        self.chkSRRQ5 = _widg.make_check_button(self._srr_tab_labels_[0][4])
-        self.chkSRRQ6 = _widg.make_check_button(self._srr_tab_labels_[0][5])
-        self.chkSRRQ7 = _widg.make_check_button(self._srr_tab_labels_[0][6])
-        self.chkSRRQ8 = _widg.make_check_button(self._srr_tab_labels_[0][7])
-        self.chkSRRQ9 = _widg.make_check_button(self._srr_tab_labels_[0][8])
-        self.chkSRRQ10 = _widg.make_check_button(self._srr_tab_labels_[0][9])
-        self.chkSRRQ11 = _widg.make_check_button(self._srr_tab_labels_[0][10])
-        self.chkSRRQ12 = _widg.make_check_button(self._srr_tab_labels_[0][11])
-        self.chkSRRQ13 = _widg.make_check_button(self._srr_tab_labels_[0][12])
-        self.chkSRRQ14 = _widg.make_check_button(self._srr_tab_labels_[0][13])
-        self.chkSRRQ15 = _widg.make_check_button(self._srr_tab_labels_[0][14])
-        self.chkSRRQ16 = _widg.make_check_button(self._srr_tab_labels_[0][15])
-        self.chkSRRQ17 = _widg.make_check_button(self._srr_tab_labels_[1][0])
-        self.chkSRRQ18 = _widg.make_check_button(self._srr_tab_labels_[2][0])
-        self.chkSRRQ19 = _widg.make_check_button(self._srr_tab_labels_[2][1])
-        self.chkSRRQ20 = _widg.make_check_button(self._srr_tab_labels_[2][2])
-        self.chkSRRQ21 = _widg.make_check_button(self._srr_tab_labels_[2][3])
-        self.chkSRRQ22 = _widg.make_check_button(self._srr_tab_labels_[2][4])
-        self.chkSRRQ23 = _widg.make_check_button(self._srr_tab_labels_[2][5])
-        self.chkSRRQ24 = _widg.make_check_button(self._srr_tab_labels_[2][6])
-        self.chkSRRQ25 = _widg.make_check_button(self._srr_tab_labels_[2][7])
-        self.chkSRRQ26 = _widg.make_check_button(self._srr_tab_labels_[2][8])
-        self.chkSRRQ27 = _widg.make_check_button(self._srr_tab_labels_[2][9])
-        self.chkSRRQ28 = _widg.make_check_button(self._srr_tab_labels_[2][10])
-        self.chkSRRQ29 = _widg.make_check_button(self._srr_tab_labels_[2][11])
-        self.chkSRRQ30 = _widg.make_check_button(self._srr_tab_labels_[2][12])
-        self.chkSRRQ31 = _widg.make_check_button(self._srr_tab_labels_[2][13])
-        self.chkSRRQ32 = _widg.make_check_button(self._srr_tab_labels_[2][14])
-        self.chkSRRQ33 = _widg.make_check_button(self._srr_tab_labels_[2][15])
-        self.chkSRRQ34 = _widg.make_check_button(self._srr_tab_labels_[2][16])
-        self.chkSRRQ35 = _widg.make_check_button(self._srr_tab_labels_[2][17])
-        self.chkSRRQ36 = _widg.make_check_button(self._srr_tab_labels_[2][18])
-        self.chkSRRQ37 = _widg.make_check_button(self._srr_tab_labels_[2][19])
-        self.chkSRRQ38 = _widg.make_check_button(self._srr_tab_labels_[2][20])
-        self.chkSRRQ39 = _widg.make_check_button(self._srr_tab_labels_[2][21])
-        self.chkSRRQ40 = _widg.make_check_button(self._srr_tab_labels_[2][22])
-        self.lblSRRQ41 = _widg.make_label(self._srr_tab_labels_[3][0],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ42 = _widg.make_label(self._srr_tab_labels_[3][1],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ43 = _widg.make_label(self._srr_tab_labels_[3][2],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ44 = _widg.make_label(self._srr_tab_labels_[3][3],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ45 = _widg.make_label(self._srr_tab_labels_[3][4],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ46 = _widg.make_label(self._srr_tab_labels_[3][5],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ47 = _widg.make_label(self._srr_tab_labels_[4][0],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ48 = _widg.make_label(self._srr_tab_labels_[4][1],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ49 = _widg.make_label(self._srr_tab_labels_[4][2],
-                                          width=500, height=-1, bold=False)
-        self.lblSRRQ50 = _widg.make_label(self._srr_tab_labels_[4][3],
-                                          width=500, height=-1, bold=False)
-        self.txtSRRQ41 = _widg.make_entry(_width_=50)
-        self.txtSRRQ42 = _widg.make_entry(_width_=50)
-        self.txtSRRQ43 = _widg.make_entry(_width_=50)
-        self.txtSRRQ44 = _widg.make_entry(_width_=50)
-        self.txtSRRQ45 = _widg.make_entry(_width_=50)
-        self.txtSRRQ46 = _widg.make_entry(_width_=50)
-        self.txtSRRQ47 = _widg.make_entry(_width_=50)
-        self.txtSRRQ48 = _widg.make_entry(_width_=50)
-        self.txtSRRQ49 = _widg.make_entry(_width_=50)
-        self.txtSRRQ50 = _widg.make_entry(_width_=50)
-
-        self.hpnSRR = gtk.HPaned()
-        self.lblSRR = gtk.Label()
-
-        # Create the Preliminary Design Review tab widgets for the SOFTWARE
-        # object.
-        # [0] = CSCI-level Yes/No from WS2B (14 questions --> Q1 - Q14)
-        # [1] = CSCI-level Yes/No from WS3B (1 question --> Q15)
-        # [2] = CSCI-level Yes/No from WS4B (14 questions --> Q16 - Q29)
-        # [3] = CSCI-level quantity from WS4B (10 questions --> Q30 - Q39)
-        self.chkPDRQ1 = _widg.make_check_button(self._pdr_tab_labels_[0][0])
-        self.chkPDRQ2 = _widg.make_check_button(self._pdr_tab_labels_[0][1])
-        self.chkPDRQ3 = _widg.make_check_button(self._pdr_tab_labels_[0][2])
-        self.chkPDRQ4 = _widg.make_check_button(self._pdr_tab_labels_[0][3])
-        self.chkPDRQ5 = _widg.make_check_button(self._pdr_tab_labels_[0][4])
-        self.chkPDRQ6 = _widg.make_check_button(self._pdr_tab_labels_[0][5])
-        self.chkPDRQ7 = _widg.make_check_button(self._pdr_tab_labels_[0][6])
-        self.chkPDRQ8 = _widg.make_check_button(self._pdr_tab_labels_[0][7])
-        self.chkPDRQ9 = _widg.make_check_button(self._pdr_tab_labels_[0][8])
-        self.chkPDRQ10 = _widg.make_check_button(self._pdr_tab_labels_[0][9])
-        self.chkPDRQ11 = _widg.make_check_button(self._pdr_tab_labels_[0][10])
-        self.chkPDRQ12 = _widg.make_check_button(self._pdr_tab_labels_[0][11])
-        self.chkPDRQ13 = _widg.make_check_button(self._pdr_tab_labels_[0][12])
-        self.chkPDRQ14 = _widg.make_check_button(self._pdr_tab_labels_[0][13])
-        self.chkPDRQ15 = _widg.make_check_button(self._pdr_tab_labels_[1][0])
-        self.chkPDRQ16 = _widg.make_check_button(self._pdr_tab_labels_[2][0])
-        self.chkPDRQ17 = _widg.make_check_button(self._pdr_tab_labels_[2][1])
-        self.chkPDRQ18 = _widg.make_check_button(self._pdr_tab_labels_[2][2])
-        self.chkPDRQ19 = _widg.make_check_button(self._pdr_tab_labels_[2][3])
-        self.chkPDRQ20 = _widg.make_check_button(self._pdr_tab_labels_[2][4])
-        self.chkPDRQ21 = _widg.make_check_button(self._pdr_tab_labels_[2][5])
-        self.chkPDRQ22 = _widg.make_check_button(self._pdr_tab_labels_[2][6])
-        self.chkPDRQ23 = _widg.make_check_button(self._pdr_tab_labels_[2][7])
-        self.chkPDRQ24 = _widg.make_check_button(self._pdr_tab_labels_[2][8])
-        self.chkPDRQ25 = _widg.make_check_button(self._pdr_tab_labels_[2][9])
-        self.chkPDRQ26 = _widg.make_check_button(self._pdr_tab_labels_[2][10])
-        self.chkPDRQ27 = _widg.make_check_button(self._pdr_tab_labels_[2][11])
-        self.chkPDRQ28 = _widg.make_check_button(self._pdr_tab_labels_[2][12])
-        self.chkPDRQ29 = _widg.make_check_button(self._pdr_tab_labels_[2][13])
-        self.lblPDRQ30 = _widg.make_label(self._pdr_tab_labels_[3][0],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ31 = _widg.make_label(self._pdr_tab_labels_[3][1],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ32 = _widg.make_label(self._pdr_tab_labels_[3][2],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ33 = _widg.make_label(self._pdr_tab_labels_[3][3],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ34 = _widg.make_label(self._pdr_tab_labels_[3][4],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ35 = _widg.make_label(self._pdr_tab_labels_[3][5],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ36 = _widg.make_label(self._pdr_tab_labels_[3][6],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ37 = _widg.make_label(self._pdr_tab_labels_[3][7],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ38 = _widg.make_label(self._pdr_tab_labels_[3][8],
-                                          width=500, height=-1, bold=False)
-        self.lblPDRQ39 = _widg.make_label(self._pdr_tab_labels_[3][9],
-                                          width=500, height=-1, bold=False)
-        self.txtPDRQ30 = _widg.make_entry(_width_=50)
-        self.txtPDRQ31 = _widg.make_entry(_width_=50)
-        self.txtPDRQ32 = _widg.make_entry(_width_=50)
-        self.txtPDRQ33 = _widg.make_entry(_width_=50)
-        self.txtPDRQ34 = _widg.make_entry(_width_=50)
-        self.txtPDRQ35 = _widg.make_entry(_width_=50)
-        self.txtPDRQ36 = _widg.make_entry(_width_=50)
-        self.txtPDRQ37 = _widg.make_entry(_width_=50)
-        self.txtPDRQ38 = _widg.make_entry(_width_=50)
-        self.txtPDRQ39 = _widg.make_entry(_width_=50)
-
-        self.hpnPDR = gtk.HPaned()
-        self.lblPDR = gtk.Label()
-
-        # Create the Critical Design Review tab widgets for the SOFTWARE
-        # object.
-        self.chkCDRQ1 = _widg.make_check_button(self._cdr_tab_labels_[0][0])
-        self.chkCDRQ2 = _widg.make_check_button(self._cdr_tab_labels_[0][1])
-        self.chkCDRQ3 = _widg.make_check_button(self._cdr_tab_labels_[0][2])
-        self.chkCDRQ4 = _widg.make_check_button(self._cdr_tab_labels_[0][3])
-        self.chkCDRQ5 = _widg.make_check_button(self._cdr_tab_labels_[0][4])
-        self.chkCDRQ6 = _widg.make_check_button(self._cdr_tab_labels_[0][5])
-        self.chkCDRQ7 = _widg.make_check_button(self._cdr_tab_labels_[0][6])
-        self.chkCDRQ8 = _widg.make_check_button(self._cdr_tab_labels_[0][7])
-        self.chkCDRQ9 = _widg.make_check_button(self._cdr_tab_labels_[1][0])
-        self.chkCDRQ10 = _widg.make_check_button(self._cdr_tab_labels_[1][1])
-        self.lblCDRQ11 = _widg.make_label(self._cdr_tab_labels_[2][0],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ12 = _widg.make_label(self._cdr_tab_labels_[2][1],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ13 = _widg.make_label(self._cdr_tab_labels_[2][2],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ14 = _widg.make_label(self._cdr_tab_labels_[2][3],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ15 = _widg.make_label(self._cdr_tab_labels_[2][4],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ16 = _widg.make_label(self._cdr_tab_labels_[2][5],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ17 = _widg.make_label(self._cdr_tab_labels_[2][6],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ18 = _widg.make_label(self._cdr_tab_labels_[2][7],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ19 = _widg.make_label(self._cdr_tab_labels_[2][8],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ20 = _widg.make_label(self._cdr_tab_labels_[2][9],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ21 = _widg.make_label(self._cdr_tab_labels_[2][10],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ22 = _widg.make_label(self._cdr_tab_labels_[2][11],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ23 = _widg.make_label(self._cdr_tab_labels_[2][12],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ24 = _widg.make_label(self._cdr_tab_labels_[2][13],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ25 = _widg.make_label(self._cdr_tab_labels_[2][14],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ26 = _widg.make_label(self._cdr_tab_labels_[2][15],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ27 = _widg.make_label(self._cdr_tab_labels_[2][16],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ28 = _widg.make_label(self._cdr_tab_labels_[2][17],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ29 = _widg.make_label(self._cdr_tab_labels_[2][18],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ30 = _widg.make_label(self._cdr_tab_labels_[2][19],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ31 = _widg.make_label(self._cdr_tab_labels_[2][20],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ32 = _widg.make_label(self._cdr_tab_labels_[2][21],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ33 = _widg.make_label(self._cdr_tab_labels_[2][22],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ34 = _widg.make_label(self._cdr_tab_labels_[2][23],
-                                          width=500, height=-1, bold=False)
-        self.txtCDRQ11 = _widg.make_entry(_width_=50)
-        self.txtCDRQ12 = _widg.make_entry(_width_=50)
-        self.txtCDRQ13 = _widg.make_entry(_width_=50)
-        self.txtCDRQ14 = _widg.make_entry(_width_=50)
-        self.txtCDRQ15 = _widg.make_entry(_width_=50)
-        self.txtCDRQ16 = _widg.make_entry(_width_=50)
-        self.txtCDRQ17 = _widg.make_entry(_width_=50)
-        self.txtCDRQ18 = _widg.make_entry(_width_=50)
-        self.txtCDRQ19 = _widg.make_entry(_width_=50)
-        self.txtCDRQ20 = _widg.make_entry(_width_=50)
-        self.txtCDRQ21 = _widg.make_entry(_width_=50)
-        self.txtCDRQ22 = _widg.make_entry(_width_=50)
-        self.txtCDRQ23 = _widg.make_entry(_width_=50)
-        self.txtCDRQ24 = _widg.make_entry(_width_=50)
-        self.txtCDRQ25 = _widg.make_entry(_width_=50)
-        self.txtCDRQ26 = _widg.make_entry(_width_=50)
-        self.txtCDRQ27 = _widg.make_entry(_width_=50)
-        self.txtCDRQ28 = _widg.make_entry(_width_=50)
-        self.txtCDRQ29 = _widg.make_entry(_width_=50)
-        self.txtCDRQ30 = _widg.make_entry(_width_=50)
-        self.txtCDRQ31 = _widg.make_entry(_width_=50)
-        self.txtCDRQ32 = _widg.make_entry(_width_=50)
-        self.txtCDRQ33 = _widg.make_entry(_width_=50)
-        self.txtCDRQ34 = _widg.make_entry(_width_=50)
-
-        self.chkCDRQ35 = _widg.make_check_button(self._cdr_tab_labels_[3][0])
-        self.chkCDRQ36 = _widg.make_check_button(self._cdr_tab_labels_[3][1])
-        self.chkCDRQ37 = _widg.make_check_button(self._cdr_tab_labels_[3][2])
-        self.chkCDRQ38 = _widg.make_check_button(self._cdr_tab_labels_[3][3])
-        self.chkCDRQ39 = _widg.make_check_button(self._cdr_tab_labels_[3][4])
-        self.chkCDRQ40 = _widg.make_check_button(self._cdr_tab_labels_[3][5])
-        self.chkCDRQ41 = _widg.make_check_button(self._cdr_tab_labels_[3][6])
-        self.chkCDRQ42 = _widg.make_check_button(self._cdr_tab_labels_[3][7])
-        self.chkCDRQ43 = _widg.make_check_button(self._cdr_tab_labels_[3][8])
-        self.chkCDRQ44 = _widg.make_check_button(self._cdr_tab_labels_[3][9])
-        self.chkCDRQ45 = _widg.make_check_button(self._cdr_tab_labels_[3][10])
-        self.chkCDRQ46 = _widg.make_check_button(self._cdr_tab_labels_[3][11])
-        self.lblCDRQ47 = _widg.make_label(self._cdr_tab_labels_[4][0],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ48 = _widg.make_label(self._cdr_tab_labels_[4][1],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ49 = _widg.make_label(self._cdr_tab_labels_[4][2],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ50 = _widg.make_label(self._cdr_tab_labels_[4][3],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ51 = _widg.make_label(self._cdr_tab_labels_[4][4],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ52 = _widg.make_label(self._cdr_tab_labels_[4][5],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ53 = _widg.make_label(self._cdr_tab_labels_[4][6],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ54 = _widg.make_label(self._cdr_tab_labels_[4][7],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ55 = _widg.make_label(self._cdr_tab_labels_[4][8],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ56 = _widg.make_label(self._cdr_tab_labels_[4][9],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ57 = _widg.make_label(self._cdr_tab_labels_[4][10],
-                                          width=500, height=-1, bold=False)
-        self.lblCDRQ58 = _widg.make_label(self._cdr_tab_labels_[4][11],
-                                          width=500, height=-1, bold=False)
-        self.txtCDRQ47 = _widg.make_entry(_width_=50)
-        self.txtCDRQ48 = _widg.make_entry(_width_=50)
-        self.txtCDRQ49 = _widg.make_entry(_width_=50)
-        self.txtCDRQ50 = _widg.make_entry(_width_=50)
-        self.txtCDRQ51 = _widg.make_entry(_width_=50)
-        self.txtCDRQ52 = _widg.make_entry(_width_=50)
-        self.txtCDRQ53 = _widg.make_entry(_width_=50)
-        self.txtCDRQ54 = _widg.make_entry(_width_=50)
-        self.txtCDRQ55 = _widg.make_entry(_width_=50)
-        self.txtCDRQ56 = _widg.make_entry(_width_=50)
-        self.txtCDRQ57 = _widg.make_entry(_width_=50)
-        self.txtCDRQ58 = _widg.make_entry(_width_=50)
-
-        self.fraCSCICDRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
-        self.fraCSCICDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
-        self.fraUnitCDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
-        self.hpnCDR = gtk.HPaned()
-        self.lblCDR = gtk.Label()
-
-        # Create the Test Readiness Review tab widgets for the SOFTWARE object.
-        # [0] = CSCI-level quantity from WS8D and WS9D (4 questions -> Q1 - Q4)
-        # [2] = Unit-level Yes/No from WS2C (2 questions --> Q5 - Q8)
-        # [3] = Unit-level Yes/No from WS4C (14 questions --> Q9 - Q22)
-        # [4] = Unit-level Yes/No from WS8D (3 questions -> Q23 - Q25)
-        self.chkTRRQ5 = _widg.make_check_button(self._trr_tab_labels_[1][0])
-        self.chkTRRQ6 = _widg.make_check_button(self._trr_tab_labels_[1][1])
-        self.chkTRRQ7 = _widg.make_check_button(self._trr_tab_labels_[2][0])
-        self.chkTRRQ8 = _widg.make_check_button(self._trr_tab_labels_[2][1])
-        self.chkTRRQ9 = _widg.make_check_button(self._trr_tab_labels_[2][2])
-        self.chkTRRQ10 = _widg.make_check_button(self._trr_tab_labels_[2][3])
-        self.chkTRRQ11 = _widg.make_check_button(self._trr_tab_labels_[2][4])
-        self.chkTRRQ12 = _widg.make_check_button(self._trr_tab_labels_[2][5])
-        self.chkTRRQ13 = _widg.make_check_button(self._trr_tab_labels_[2][6])
-        self.chkTRRQ14 = _widg.make_check_button(self._trr_tab_labels_[2][7])
-        self.chkTRRQ15 = _widg.make_check_button(self._trr_tab_labels_[2][8])
-        self.chkTRRQ16 = _widg.make_check_button(self._trr_tab_labels_[2][9])
-        self.chkTRRQ17 = _widg.make_check_button(self._trr_tab_labels_[2][10])
-        self.chkTRRQ18 = _widg.make_check_button(self._trr_tab_labels_[2][11])
-        self.chkTRRQ19 = _widg.make_check_button(self._trr_tab_labels_[2][12])
-        self.chkTRRQ20 = _widg.make_check_button(self._trr_tab_labels_[2][13])
-
-        self.lblTRRQ1 = _widg.make_label(self._trr_tab_labels_[0][0],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ2 = _widg.make_label(self._trr_tab_labels_[0][1],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ3 = _widg.make_label(self._trr_tab_labels_[0][2],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ4 = _widg.make_label(self._trr_tab_labels_[0][3],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ21 = _widg.make_label(self._trr_tab_labels_[3][0],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ22 = _widg.make_label(self._trr_tab_labels_[3][1],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ23 = _widg.make_label(self._trr_tab_labels_[3][2],
-                                         width=500, height=-1, bold=False)
-        self.lblTRRQ24 = _widg.make_label(self._trr_tab_labels_[3][3],
-                                         width=500, height=-1, bold=False)
-
-        self.txtTRRQ1 = _widg.make_entry(_width_=50)
-        self.txtTRRQ2 = _widg.make_entry(_width_=50)
-        self.txtTRRQ3 = _widg.make_entry(_width_=50)
-        self.txtTRRQ4 = _widg.make_entry(_width_=50)
-        self.txtTRRQ21 = _widg.make_entry(_width_=50)
-        self.txtTRRQ22 = _widg.make_entry(_width_=50)
-        self.txtTRRQ23 = _widg.make_entry(_width_=50)
-        self.txtTRRQ24 = _widg.make_entry(_width_=50)
-
-        self.fraCSCITRRSX = _widg.make_frame(_label_=_(u"Complexity &amp; Modularity"))
-        self.fraUnitTRRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
-        self.fraUnitTRRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
-        self.hpnTRR = gtk.HPaned()
-        self.lblTRR = gtk.Label()
-
+# Create the Risk Analysis tab.
         if self._risk_analysis_widgets_create():
             self._app.debug_log.error("software.py: Failed to create Risk Analysis widgets.")
         if self._risk_analysis_tab_create():
             self._app.debug_log.error("software.py: Failed to create Risk Analysis tab.")
 
-# Create the Test Technique Selection tab widgets for the SOFTWARE object.
-        self.btnCSCISingleMatrix = _widg.make_button(_width_=40, _image_="help")
-        self.btnCSCIPairedMatrix = _widg.make_button(_width_=40, _image_="help")
-        self.btnErrorCatMatrix = _widg.make_button(_width_=40, _image_="help")
-        self.btnSoftwareMatrix = _widg.make_button(_width_=40, _image_="help")
-        self.btnStoppingRules = _widg.make_button(_width_=40, _image_="help")
-        self.btnUnitSingleMatrix = _widg.make_button(_width_=40, _image_="help")
-        self.btnUnitPairedMatrix = _widg.make_button(_width_=40, _image_="help")
-
-        self.cmbTCL = _widg.make_combo(simple=True)
-        self.cmbTestPath = _widg.make_combo(simple=True)
-        self.cmbTestEffort = _widg.make_combo(simple=True)
-        self.cmbTestApproach = _widg.make_combo(simple=True)
-
-        self.txtLaborTest = _widg.make_entry(_width_=100)
-        self.txtLaborDev = _widg.make_entry(_width_=100)
-        self.txtBudgetTest = _widg.make_entry(_width_=100)
-        self.txtBudgetDev = _widg.make_entry(_width_=100)
-        self.txtScheduleTest = _widg.make_entry(_width_=100)
-        self.txtScheduleDev = _widg.make_entry(_width_=100)
-        self.txtBranches = _widg.make_entry(_width_=100)
-        self.txtBranchesTest = _widg.make_entry(_width_=100)
-        self.txtInputs = _widg.make_entry(_width_=100)
-        self.txtInputsTest = _widg.make_entry(_width_=100)
-        self.txtUnits = _widg.make_entry(_width_=100)
-        self.txtUnitsTest = _widg.make_entry(_width_=100)
-        self.txtInterfaces = _widg.make_entry(_width_=100)
-        self.txtInterfacesTest = _widg.make_entry(_width_=100)
-
-        self.scwTestSelectionMatrix = gtk.ScrolledWindow()
-
-        self.tvwUnitTestSelectionMatrix = gtk.TreeView()
-        self.tvwCSCITestSelectionMatrix = gtk.TreeView()
-        if self._test_selection_widgets_create():
-            self._app.debug_log.error("software.py: Failed to create Test Technique Selection tab widgets.")
+# Create the Test Technique Selection tab.
         if self._test_selection_tab_create():
             self._app.debug_log.error("software.py: Failed to create Test Technique Selection tab.")
 
-# Create the Reliability Estimation tab widgets for the SOFTWARE object.
-        self.txtFT1 = _widg.make_entry()
-        self.txtFT2 = _widg.make_entry()
-        self.txtRENAVG = _widg.make_entry()
-        self.txtRENEOT = _widg.make_entry()
-        self.txtEC = _widg.make_entry()
-        self.txtEV = _widg.make_entry()
-        self.txtET = _widg.make_entry()
-        self.txtOS = _widg.make_entry()
-        self.txtEW = _widg.make_entry()
-        self.txtE = _widg.make_entry()
-        self.txtF = _widg.make_entry()
-        if self._reliability_estimation_widgets_create():
-            self._app.debug_log.error("software.py: Failed to create Reliability Estimation tab widgets.")
+# Create the Reliability Estimation tab.
         if self._reliability_estimation_tab_create():
             self._app.debug_log.error("software.py: Failed to create Reliability Estimation tab.")
 
-        self.vbxSoftware = gtk.VBox()
         toolbar = self._toolbar_create()
 
         self.vbxSoftware.pack_start(toolbar, expand=False)
@@ -2502,66 +907,67 @@ class Software:
 
         return(toolbar)
 
-    def _general_data_widgets_create(self):
-        """ Method to create General Data widgets. """
-
-# Quadrant 1 (upper left) widgets.  These widgets are used to display general
-# information about the selected software module.
-        self.txtDescription.set_tooltip_text(_("Enter a description of the selected software module."))
-        self.txtDescription.get_child().get_child().connect('focus-out-event',
-                                                            self._callback_entry,
-                                                            'text', 3)
-
-        self.cmbLevel.set_tooltip_text(_("Select the application level of the selected software module."))
-        _query_ = "SELECT fld_level_desc \
-                   FROM tbl_software_level"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
-                                                  self._app.ComCnx)
-        _widg.load_combo(self.cmbLevel, _results_, True)
-        self.cmbLevel.connect('changed',
-                              self._callback_combo, 2)
-
-        self.cmbApplication.set_tooltip_text(_("Select the application type of the selected software module."))
-        self.cmbApplication.connect('changed',
-                                    self._callback_combo, 4)
-        _query_ = "SELECT fld_category_name \
-                   FROM tbl_software_category"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
-                                                  self._app.ComCnx)
-        _widg.load_combo(self.cmbApplication, _results_, True)
-
-        #self.cmbDevelopment.set_tooltip_text(_("Select the type of development environment for the selected software module."))
-        #self.cmbDevelopment.connect('changed',
-        #                            self._callback_combo, 5)
-        #_query_ = "SELECT fld_development_desc \
-        #           FROM tbl_development_environment"
-        #_results_ = self._app.COMDB.execute_query(_query_,
-        #                                          None,
-        #                                          self._app.ComCnx)
-        #_widg.load_combo(self.cmbDevelopment, _results_, True)
-
-        self.cmbPhase.set_tooltip_text(_("Select the development phase for the selected software module."))
-        self.cmbPhase.connect('changed',
-                              self._callback_combo, 36)
-        _query_ = "SELECT fld_phase_desc \
-                   FROM tbl_development_phase"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
-                                                  self._app.ComCnx)
-        _widg.load_combo(self.cmbPhase, _results_, True)
-
-        #self.chkDevAssessType.connect('toggled',
-        #                              self._callback_check, 35)
-
-        return False
-
     def _general_data_tab_create(self):
         """
         Method to create the General Data gtk.Notebook tab and add it to the
         gtk.Notebook at the proper location.
         """
+
+        def _general_data_widgets_create(self):
+            """
+            Function to create General Data widgets.
+            """
+
+    # Quadrant 1 (upper left) widgets.  These widgets are used to display
+    # general information about the selected software module.
+            self.txtDescription.set_tooltip_text(_("Enter a description of the selected software module."))
+            self.txtDescription.get_child().get_child().connect('focus-out-event',
+                                                                self._callback_entry,
+                                                                'text', 3)
+
+            self.cmbLevel.set_tooltip_text(_("Select the application level of the selected software module."))
+            _query_ = "SELECT fld_level_desc \
+                       FROM tbl_software_level"
+            _results_ = self._app.COMDB.execute_query(_query_,
+                                                      None,
+                                                      self._app.ComCnx)
+            _widg.load_combo(self.cmbLevel, _results_, True)
+            self.cmbLevel.connect('changed', self._callback_combo, 2)
+
+            self.cmbApplication.set_tooltip_text(_("Select the application type of the selected software module."))
+            self.cmbApplication.connect('changed', self._callback_combo, 4)
+            _query_ = "SELECT fld_category_name \
+                       FROM tbl_software_category"
+            _results_ = self._app.COMDB.execute_query(_query_,
+                                                      None,
+                                                      self._app.ComCnx)
+            _widg.load_combo(self.cmbApplication, _results_, True)
+
+            #self.cmbDevelopment.set_tooltip_text(_("Select the type of development environment for the selected software module."))
+            #self.cmbDevelopment.connect('changed', self._callback_combo, 5)
+            #_query_ = "SELECT fld_development_desc \
+            #           FROM tbl_development_environment"
+            #_results_ = self._app.COMDB.execute_query(_query_,
+            #                                          None,
+            #                                          self._app.ComCnx)
+            #_widg.load_combo(self.cmbDevelopment, _results_, True)
+
+            self.cmbPhase.set_tooltip_text(_("Select the development phase for the selected software module."))
+            self.cmbPhase.connect('changed', self._callback_combo, 36)
+            _query_ = "SELECT fld_phase_desc \
+                       FROM tbl_development_phase"
+            _results_ = self._app.COMDB.execute_query(_query_,
+                                                      None,
+                                                      self._app.ComCnx)
+            _widg.load_combo(self.cmbPhase, _results_, True)
+
+            #self.chkDevAssessType.connect('toggled',
+            #                              self._callback_check, 35)
+
+            return False
+
+        if _general_data_widgets_create(self):
+            self._app.debug_log.error("software.py: Failed to create General Data tab widgets.")
 
 # Populate quadrant 1 (upper left).
         fixed = gtk.Fixed()
@@ -2570,7 +976,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("General Information"))
+        frame = _widg.make_frame(_label_=_(u"General Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -2592,7 +998,6 @@ class Software:
         y_pos += 110
 
         fixed.put(self.cmbLevel, _x_pos_, y_pos)
-        #fixed.put(self.btnHelpLevel, 410, y_pos)
         y_pos += 35
 
         fixed.put(self.cmbApplication, _x_pos_, y_pos)
@@ -2604,19 +1009,17 @@ class Software:
         fixed.put(self.cmbPhase, _x_pos_, y_pos)
         y_pos += 35
 
-        #fixed.put(self.chkDevAssessType, 5, y_pos)
-
         fixed.show_all()
 
         # Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
-                         _("General\nData") +
+                         _(u"General\nData") +
                          "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays general information about the selected software module."))
+        label.set_tooltip_text(_(u"Displays general information about the selected software module."))
         self.notebook.insert_page(frame,
                                   tab_label=label,
                                   position=-1)
@@ -2958,25 +1361,15 @@ class Software:
             Method to create the critical design review widgets.
             """
 
-            self.chkCDRQ1.get_child().props.width_request = 700
             self.chkCDRQ1.connect('toggled', self._callback_check, 400)
-            self.chkCDRQ2.get_child().props.width_request = 700
             self.chkCDRQ2.connect('toggled', self._callback_check, 401)
-            self.chkCDRQ3.get_child().props.width_request = 700
             self.chkCDRQ3.connect('toggled', self._callback_check, 402)
-            self.chkCDRQ4.get_child().props.width_request = 700
             self.chkCDRQ4.connect('toggled', self._callback_check, 403)
-            self.chkCDRQ5.get_child().props.width_request = 700
             self.chkCDRQ5.connect('toggled', self._callback_check, 404)
-            self.chkCDRQ6.get_child().props.width_request = 700
             self.chkCDRQ6.connect('toggled', self._callback_check, 405)
-            self.chkCDRQ7.get_child().props.width_request = 700
             self.chkCDRQ7.connect('toggled', self._callback_check, 406)
-            self.chkCDRQ8.get_child().props.width_request = 700
             self.chkCDRQ8.connect('toggled', self._callback_check, 407)
-            self.chkCDRQ9.get_child().props.width_request = 700
             self.chkCDRQ9.connect('toggled', self._callback_check, 408)
-            self.chkCDRQ10.get_child().props.width_request = 700
             self.chkCDRQ10.connect('toggled', self._callback_check, 409)
 
             self.lblCDRQ11.set_alignment(xalign=0.05, yalign=0.05)
@@ -3077,29 +1470,17 @@ class Software:
             self.txtCDRQ34.connect('focus-out-event', self._callback_entry,
                                    'int', 433)
 
-            self.chkCDRQ35.get_child().props.width_request = 700
             self.chkCDRQ35.connect('toggled', self._callback_check, 434)
-            self.chkCDRQ36.get_child().props.width_request = 700
             self.chkCDRQ36.connect('toggled', self._callback_check, 435)
-            self.chkCDRQ37.get_child().props.width_request = 700
             self.chkCDRQ37.connect('toggled', self._callback_check, 436)
-            self.chkCDRQ38.get_child().props.width_request = 700
             self.chkCDRQ38.connect('toggled', self._callback_check, 437)
-            self.chkCDRQ39.get_child().props.width_request = 700
             self.chkCDRQ39.connect('toggled', self._callback_check, 438)
-            self.chkCDRQ40.get_child().props.width_request = 700
             self.chkCDRQ40.connect('toggled', self._callback_check, 439)
-            self.chkCDRQ41.get_child().props.width_request = 700
             self.chkCDRQ41.connect('toggled', self._callback_check, 440)
-            self.chkCDRQ42.get_child().props.width_request = 700
             self.chkCDRQ42.connect('toggled', self._callback_check, 441)
-            self.chkCDRQ43.get_child().props.width_request = 700
             self.chkCDRQ43.connect('toggled', self._callback_check, 442)
-            self.chkCDRQ44.get_child().props.width_request = 700
             self.chkCDRQ44.connect('toggled', self._callback_check, 443)
-            self.chkCDRQ45.get_child().props.width_request = 700
             self.chkCDRQ45.connect('toggled', self._callback_check, 444)
-            self.chkCDRQ46.get_child().props.width_request = 700
             self.chkCDRQ46.connect('toggled', self._callback_check, 445)
 
             self.lblCDRQ47.set_alignment(xalign=0.05, yalign=0.05)
@@ -3153,13 +1534,13 @@ class Software:
                                    'int', 457)
 
             self.lblCDR.set_markup("<span weight='bold'>" +
-                                   _("Critical\nDesign\nReview") +
+                                   _(u"Critical\nDesign\nReview") +
                                    "</span>")
             self.lblCDR.set_alignment(xalign=0.5, yalign=0.5)
             self.lblCDR.set_justify(gtk.JUSTIFY_CENTER)
             self.lblCDR.set_angle(90)
             self.lblCDR.show_all()
-            self.lblCDR.set_tooltip_text(_("Allows assessment of risk at the critical design review."))
+            self.lblCDR.set_tooltip_text(_(u"Allows assessment of risk at the critical design review."))
 
             return False
 
@@ -3256,6 +1637,10 @@ class Software:
             self._app.debug_log.error("software.py: Failed to create Critical Design Review widgets.")
         if _trr_widgets_create(self):
             self._app.debug_log.error("software.py: Failed to create Test Readiness Review widgets.")
+
+        self.nbkRiskAnalysis.set_tab_pos(gtk.POS_RIGHT)
+        self.nbkRiskAnalysis.connect('switch_page',
+                                     self._notebook_page_switched, 1)
 
         model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                               gobject.TYPE_STRING, gobject.TYPE_STRING,
@@ -4852,406 +3237,384 @@ class Software:
 
         return False
 
-    def _test_selection_widgets_create(self):
-        """
-        Method to create the test planning tab widgets for the SOFTWARE Object.
-        """
-
-# Software test technique selection widgets.  These widgets are used to
-# display test technique information about the selected software module.
-        self.cmbTCL.connect('changed',
-                            self._callback_combo, 37)
-        self.cmbTCL.set_tooltip_text(_("Select the desired software test confidence level."))
-        _list = [["Low"], ["Medium"], ["High"], ["Very High"]]
-        _widg.load_combo(self.cmbTCL, _list, True)
-
-        self.cmbTestPath.connect('changed',
-                                 self._callback_combo, 38)
-        self.cmbTestPath.set_tooltip_text(_("Select the path for determining software testing techniques."))
-        _list = [[_("Choose techniques based on software category")],
-                 [_("Choose techniques based on types of software errors")]]
-        _widg.load_combo(self.cmbTestPath, _list, True)
-
-        self.cmbTestEffort.connect('changed',
-                                   self._callback_combo, 40)
-        self.cmbTestEffort.set_tooltip_text(_("Select the software test effort alternative."))
-        _list = [[_("Alternative 1, Labor Hours")],
-                 [_("Alternative 2, Budget")],
-                 [_("Alternative 3, Schedule")]]
-        _widg.load_combo(self.cmbTestEffort, _list, True)
-
-        self.cmbTestApproach.connect('changed',
-                                     self._callback_combo, 41)
-        self.cmbTestApproach.set_tooltip_text(_("Select the software test approach."))
-        _list = [[_("Test Until Method is Exhausted")],
-                 [_("Stopping Rules")]]
-        _widg.load_combo(self.cmbTestApproach, _list, True)
-
-        self.txtLaborTest.set_tooltip_text(_("Total number of labor hours for software testing."))
-        self.txtLaborTest.connect('focus-out-event',
-                                  self._callback_entry, 'float', 42)
-
-        self.txtLaborDev.set_tooltip_text(_("Total number of labor hours entire software development effort."))
-        self.txtLaborDev.connect('focus-out-event',
-                                 self._callback_entry, 'float', 43)
-
-        self.txtBudgetTest.set_tooltip_text(_("Total budget for software testing."))
-        self.txtBudgetTest.connect('focus-out-event',
-                                   self._callback_entry, 'float', 44)
-
-        self.txtBudgetDev.set_tooltip_text(_("Total budget for entire software development effort."))
-        self.txtBudgetDev.connect('focus-out-event',
-                                  self._callback_entry, 'float', 45)
-
-        self.txtScheduleTest.set_tooltip_text(_("Working days scheduled for software testing."))
-        self.txtScheduleTest.connect('focus-out-event',
-                                     self._callback_entry, 'float', 46)
-
-        self.txtScheduleDev.set_tooltip_text(_("Working days scheduled for entire development effort."))
-        self.txtScheduleDev.connect('focus-out-event',
-                                    self._callback_entry, 'float', 47)
-
-        self.txtBranches.set_tooltip_text(_("The total number of execution branches in the selected unit."))
-        self.txtBranches.connect('focus-out-event',
-                                 self._callback_entry, 'int', 48)
-
-        self.txtBranchesTest.set_tooltip_text(_("The total number of execution branches actually tested in the selected unit."))
-        self.txtBranchesTest.connect('focus-out-event',
-                                     self._callback_entry, 'int', 49)
-
-        self.txtInputs.set_tooltip_text(_("The total number of inputs to the selected unit."))
-        self.txtInputs.connect('focus-out-event',
-                               self._callback_entry, 'int', 50)
-
-        self.txtInputsTest.set_tooltip_text(_("The total number of inputs to the selected unit actually tested."))
-        self.txtInputsTest.connect('focus-out-event',
-                                   self._callback_entry, 'int', 51)
-
-        self.txtUnits.set_tooltip_text(_("The total number of units in the selected CSCI."))
-
-        self.txtUnitsTest.set_tooltip_text(_("The total number of units in the selected CSCI actually tested."))
-        self.txtUnitsTest.connect('focus-out-event',
-                                  self._callback_entry, 'int', 52)
-
-        self.txtInterfaces.set_tooltip_text(_("The total number of interfaces to the selected CSCI."))
-        self.txtInterfaces.connect('focus-out-event',
-                                   self._callback_entry, 'int', 53)
-
-        self.txtInterfacesTest.set_tooltip_text(_("The total number of interfaces in the selected CSCI actually tested."))
-        self.txtInterfacesTest.connect('focus-out-event',
-                                       self._callback_entry, 'int', 54)
-
-        self.btnSoftwareMatrix.set_tooltip_text(_("Display the software category vs. testing technique matrix."))
-        self.btnSoftwareMatrix.connect('clicked', _test_techniques,
-                                       self._app.winWorkBook)
-
-        self.btnCSCISingleMatrix.set_tooltip_text(_("Display the CSCI level single test technique matrix."))
-        self.btnCSCISingleMatrix.connect('clicked', _csci_single_matrix,
-                                         self._app.winWorkBook)
-
-        self.btnCSCIPairedMatrix.set_tooltip_text(_("Display the CSCI level paired test technique matrix."))
-        self.btnCSCIPairedMatrix.connect('clicked', _csci_paired_matrix,
-                                         self._app.winWorkBook)
-
-        self.btnUnitSingleMatrix.set_tooltip_text(_("Display the unit level single test technique matrix."))
-        self.btnUnitSingleMatrix.connect('clicked', _unit_single_matrix,
-                                         self._app.winWorkBook)
-
-        self.btnUnitPairedMatrix.set_tooltip_text(_("Display the unit level paired test technique matrix."))
-        self.btnUnitPairedMatrix.connect('clicked', _unit_paired_matrix,
-                                         self._app.winWorkBook)
-
-        self.btnErrorCatMatrix.set_tooltip_text(_("Display the error category vs. test technique matrix."))
-        self.btnErrorCatMatrix.connect('clicked', _test_effectiveness,
-                                       self._app.winWorkBook)
-
-        self.btnStoppingRules.set_tooltip_text(_("Display the estopping rules for test techniques."))
-        self.btnStoppingRules.connect('clicked', _test_stopping_rules,
-                                      self._app.winWorkBook)
-
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
-# Create and load the Test Matrix for CSCI-level testing.
-        _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_STRING)
-        self.tvwCSCITestSelectionMatrix.set_model(_model_)
-        self.tvwCSCITestSelectionMatrix.set_tooltip_text(_("Software test technique selection matrix."))
-        self.tvwCSCITestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        _test_rankings_ = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],
-                           [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],
-                           [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0, 0, ''],
-                           [0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0, 0, ''],
-                           [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0, 0, ''],
-                           [0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0, 0, ''],
-                           [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
-                           [0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
-                           [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0, 0, ''],
-                           [0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0, 0, ''],
-                           [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
-                           [1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
-                           [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0, 0, ''],
-                           [1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0, 0, ''],
-                           [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0, 0, ''],
-                           [0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9', 0, 0, ''],
-                           [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10', 0, 0, ''],
-                           [1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
-                           [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
-                           [0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11', 0, 0, ''],
-                           [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12', 0, 0, '']]
-
-        _headings_ = [_(u"Error/Anomaly\nDetection"),
-                      _(u"Structure\nAnalysis &amp;\nDocumentation"),
-                      _(u"Code\nReviews"), _(u"Functional\nTesting"),
-                      _(u"Branch\nTesting"), _(u"Random\nTesting"),
-                      _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
-                      _(u"Average %\nErrors Found"),
-                      _(u"Detection\nEfficiency"), _(u"% Average\nCoverage"),
-                      _(u"Coverage\nEfficiency")]
-
-        for i in range(len(_headings_[:6])):
-            cell = gtk.CellRendererToggle()
-            cell.set_property('activatable', 0)
-            cell.set_property('xalign', 0.5)
-            cell.set_property('yalign', 0.5)
-            label = gtk.Label()
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_property('angle', 90)
-            label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
-            label.set_use_markup(True)
-            label.show_all()
-            column = gtk.TreeViewColumn()
-            column.pack_start(cell, True)
-            column.set_attributes(cell, active=i)
-            column.set_clickable(True)
-            column.set_reorderable(True)
-            column.set_max_width(75)
-            column.set_sort_column_id(i)
-            column.set_widget(label)
-            self.tvwCSCITestSelectionMatrix.append_column(column)
-
-        for i in range(len(_headings_[6:])):
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            cell.set_property('xalign', 0.5)
-            cell.set_property('yalign', 0.5)
-            label = gtk.Label()
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_property('angle', 90)
-            label.set_markup("<span weight='bold'>" + _headings_[i+6] + "</span>")
-            label.set_use_markup(True)
-            label.show_all()
-            column = gtk.TreeViewColumn()
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=i+6)
-            column.set_clickable(True)
-            column.set_reorderable(True)
-            column.set_max_width(75)
-            column.set_sort_column_id(i+6)
-            column.set_widget(label)
-            self.tvwCSCITestSelectionMatrix.append_column(column)
-
-        cell = gtk.CellRendererToggle()
-        cell.set_property('activatable', 1)
-        cell.set_property('xalign', 0.5)
-        cell.set_property('yalign', 0.5)
-        _header_ = _(u"Recommended")
-        label = gtk.Label()
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_property('angle', 90)
-        label.set_markup("<span weight='bold'>" + _header_ + "</span>")
-        label.set_use_markup(True)
-        label.show_all()
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, active=21)
-        column.set_clickable(True)
-        column.set_max_width(75)
-        column.set_sort_column_id(21)
-        column.set_widget(label)
-        self.tvwCSCITestSelectionMatrix.append_column(column)
-
-        cell = gtk.CellRendererToggle()
-        cell.set_property('activatable', 1)
-        cell.set_property('xalign', 0.5)
-        cell.set_property('yalign', 0.5)
-        _header_ = _(u"Selected")
-        label = gtk.Label()
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_property('angle', 90)
-        label.set_markup("<span weight='bold'>" + _header_ + "</span>")
-        label.set_use_markup(True)
-        label.show_all()
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, active=22)
-        column.set_clickable(True)
-        column.set_max_width(75)
-        column.set_sort_column_id(22)
-        column.set_widget(label)
-        self.tvwCSCITestSelectionMatrix.append_column(column)
-
-        for i in range(len(_test_rankings_)):
-            _model_.append(_test_rankings_[i])
-
-# Create and load the Test Matrix for unit-level testing.
-        _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                gobject.TYPE_INT, gobject.TYPE_INT,
-                                gobject.TYPE_STRING)
-        self.tvwUnitTestSelectionMatrix.set_model(_model_)
-        self.tvwUnitTestSelectionMatrix.set_tooltip_text(_("Software test technique selection matrix."))
-        self.tvwUnitTestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        _test_rankings_ = [[1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L', 'M', '', '', '', '', 'H', '', '', '', 0, 0, ''],
-                           [0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '', 'L', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L', 'H', '', 'L', 'H', '', 'L', 'M', '', 'L', 0, 0, ''],
-                           [0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1', 'L', 'L', '', 'L', 'H', '', '', 'H', '', 'L', 0, 0, ''],
-                           [0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3', 'L', 'M', '', '', 'H', 'L', '', 'H', '', 'L', 0, 0, ''],
-                           [0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2', 'L', '', 'L', '', 'M', 'L', '', 'M', '', 'L', 0, 0, ''],
-                           [1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                           [0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, '']]
-
-        _headings_ = [_(u"Error/Anomaly\nDetection"),
-                      _(u"Structure\nAnalysis &amp;\nDocumentation"),
-                      _(u"Code\nReviews"), _(u"Functional\nTesting"),
-                      _(u"Branch\nTesting"), _(u"Random\nTesting"),
-                      _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
-                      _(u"Average %\nErrors Found"),
-                      _(u"Detection\nEfficiency"), _(u"% Average\nCoverage"),
-                      _(u"Coverage\nEfficiency"), _(u"Computational\nErrors"),
-                      _(u"Logic\nErrors"), _(u"Data\nInput\nErrors"),
-                      _(u"Data\nVerification\nErrors"),
-                      _(u"Data\nHandling\nErrors"), _(u"Data\nOutput\nErrors"),
-                      _(u"Data\nDefinition\nErrors"), _(u"Interface\nErrors"),
-                      _(u"Database\nErrors"), _(u"Other\nErrors")]
-
-        for i in range(len(_headings_[:6])):
-            cell = gtk.CellRendererToggle()
-            cell.set_property('activatable', 0)
-            label = gtk.Label()
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_property('angle', 90)
-            label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
-            label.set_use_markup(True)
-            label.show_all()
-            column = gtk.TreeViewColumn()
-            column.pack_start(cell, True)
-            column.set_attributes(cell, active=i)
-            column.set_clickable(True)
-            column.set_reorderable(True)
-            column.set_max_width(75)
-            column.set_sort_column_id(i)
-            column.set_widget(label)
-            self.tvwUnitTestSelectionMatrix.append_column(column)
-
-        for i in range(len(_headings_[6:])):
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            label = gtk.Label()
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_property('angle', 90)
-            label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
-            label.set_use_markup(True)
-            label.show_all()
-            column = gtk.TreeViewColumn()
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=i+6)
-            column.set_clickable(True)
-            column.set_reorderable(True)
-            column.set_max_width(75)
-            column.set_sort_column_id(i+6)
-            column.set_widget(label)
-            self.tvwUnitTestSelectionMatrix.append_column(column)
-
-        cell = gtk.CellRendererToggle()
-        cell.set_property('activatable', 1)
-        _header_ = _(u"Recommended")
-        label = gtk.Label()
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_property('angle', 90)
-        label.set_markup("<span weight='bold'>" + _header_ + "</span>")
-        label.set_use_markup(True)
-        label.show_all()
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, active=21)
-        column.set_clickable(True)
-        column.set_max_width(75)
-        column.set_sort_column_id(21)
-        column.set_widget(label)
-        self.tvwUnitTestSelectionMatrix.append_column(column)
-
-
-        cell = gtk.CellRendererToggle()
-        cell.set_property('activatable', 1)
-        _header_ = _(u"Selected")
-        label = gtk.Label()
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_property('angle', 90)
-        label.set_markup("<span weight='bold'>" + _header_ + "</span>")
-        label.set_use_markup(True)
-        label.show_all()
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, active=22)
-        column.set_clickable(True)
-        column.set_max_width(75)
-        column.set_sort_column_id(22)
-        column.set_widget(label)
-        self.tvwUnitTestSelectionMatrix.append_column(column)
-
-        for i in range(len(_test_rankings_)):
-            _model_.append(_test_rankings_[i])
-
-        return False
-
     def _test_selection_tab_create(self):
         """
         Method to create the Test Technique selection gtk.Notebook tab and add
         it to the gtk.Notebook at the proper location.
         """
 
-        hbox = gtk.HBox()
+        def _test_selection_widgets_create(self):
+            """
+            Method to create the test planning tab widgets for the SOFTWARE Object.
+            """
+
+    # Software test technique selection widgets.  These widgets are used to
+    # display test technique information about the selected software module.
+            self.cmbTCL.connect('changed',
+                                self._callback_combo, 37)
+            self.cmbTCL.set_tooltip_text(_("Select the desired software test confidence level."))
+            _list = [["Low"], ["Medium"], ["High"], ["Very High"]]
+            _widg.load_combo(self.cmbTCL, _list, True)
+
+            self.cmbTestPath.connect('changed',
+                                     self._callback_combo, 38)
+            self.cmbTestPath.set_tooltip_text(_("Select the path for determining software testing techniques."))
+            _list = [[_("Choose techniques based on software category")],
+                     [_("Choose techniques based on types of software errors")]]
+            _widg.load_combo(self.cmbTestPath, _list, True)
+
+            self.cmbTestEffort.connect('changed',
+                                       self._callback_combo, 40)
+            self.cmbTestEffort.set_tooltip_text(_("Select the software test effort alternative."))
+            _list = [[_("Alternative 1, Labor Hours")],
+                     [_("Alternative 2, Budget")],
+                     [_("Alternative 3, Schedule")]]
+            _widg.load_combo(self.cmbTestEffort, _list, True)
+
+            self.cmbTestApproach.connect('changed',
+                                         self._callback_combo, 41)
+            self.cmbTestApproach.set_tooltip_text(_("Select the software test approach."))
+            _list = [[_("Test Until Method is Exhausted")],
+                     [_("Stopping Rules")]]
+            _widg.load_combo(self.cmbTestApproach, _list, True)
+
+            self.txtLaborTest.set_tooltip_text(_("Total number of labor hours for software testing."))
+            self.txtLaborTest.connect('focus-out-event',
+                                      self._callback_entry, 'float', 42)
+
+            self.txtLaborDev.set_tooltip_text(_("Total number of labor hours entire software development effort."))
+            self.txtLaborDev.connect('focus-out-event',
+                                     self._callback_entry, 'float', 43)
+
+            self.txtBudgetTest.set_tooltip_text(_("Total budget for software testing."))
+            self.txtBudgetTest.connect('focus-out-event',
+                                       self._callback_entry, 'float', 44)
+
+            self.txtBudgetDev.set_tooltip_text(_("Total budget for entire software development effort."))
+            self.txtBudgetDev.connect('focus-out-event',
+                                      self._callback_entry, 'float', 45)
+
+            self.txtScheduleTest.set_tooltip_text(_("Working days scheduled for software testing."))
+            self.txtScheduleTest.connect('focus-out-event',
+                                         self._callback_entry, 'float', 46)
+
+            self.txtScheduleDev.set_tooltip_text(_("Working days scheduled for entire development effort."))
+            self.txtScheduleDev.connect('focus-out-event',
+                                        self._callback_entry, 'float', 47)
+
+            self.txtBranches.set_tooltip_text(_("The total number of execution branches in the selected unit."))
+            self.txtBranches.connect('focus-out-event',
+                                     self._callback_entry, 'int', 48)
+
+            self.txtBranchesTest.set_tooltip_text(_("The total number of execution branches actually tested in the selected unit."))
+            self.txtBranchesTest.connect('focus-out-event',
+                                         self._callback_entry, 'int', 49)
+
+            self.txtInputs.set_tooltip_text(_("The total number of inputs to the selected unit."))
+            self.txtInputs.connect('focus-out-event',
+                                   self._callback_entry, 'int', 50)
+
+            self.txtInputsTest.set_tooltip_text(_("The total number of inputs to the selected unit actually tested."))
+            self.txtInputsTest.connect('focus-out-event',
+                                       self._callback_entry, 'int', 51)
+
+            self.txtUnits.set_tooltip_text(_("The total number of units in the selected CSCI."))
+
+            self.txtUnitsTest.set_tooltip_text(_("The total number of units in the selected CSCI actually tested."))
+            self.txtUnitsTest.connect('focus-out-event',
+                                      self._callback_entry, 'int', 52)
+
+            self.txtInterfaces.set_tooltip_text(_("The total number of interfaces to the selected CSCI."))
+            self.txtInterfaces.connect('focus-out-event',
+                                       self._callback_entry, 'int', 53)
+
+            self.txtInterfacesTest.set_tooltip_text(_("The total number of interfaces in the selected CSCI actually tested."))
+            self.txtInterfacesTest.connect('focus-out-event',
+                                           self._callback_entry, 'int', 54)
+
+            # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+    # Create and load the Test Matrix for CSCI-level testing.
+            _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_STRING)
+            self.tvwCSCITestSelectionMatrix.set_model(_model_)
+            self.tvwCSCITestSelectionMatrix.set_tooltip_text(_("Software test technique selection matrix."))
+            self.tvwCSCITestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+            _test_rankings_ = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],
+                               [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],
+                               [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0, 0, ''],
+                               [0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0, 0, ''],
+                               [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0, 0, ''],
+                               [0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0, 0, ''],
+                               [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                               [0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                               [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0, 0, ''],
+                               [0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0, 0, ''],
+                               [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                               [1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                               [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0, 0, ''],
+                               [1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0, 0, ''],
+                               [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0, 0, ''],
+                               [0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9', 0, 0, ''],
+                               [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10', 0, 0, ''],
+                               [1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                               [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                               [0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11', 0, 0, ''],
+                               [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12', 0, 0, '']]
+
+            _headings_ = [_(u"Error/Anomaly\nDetection"),
+                          _(u"Structure\nAnalysis &amp;\nDocumentation"),
+                          _(u"Code\nReviews"), _(u"Functional\nTesting"),
+                          _(u"Branch\nTesting"), _(u"Random\nTesting"),
+                          _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
+                          _(u"Average %\nErrors Found"),
+                          _(u"Detection\nEfficiency"), _(u"% Average\nCoverage"),
+                          _(u"Coverage\nEfficiency")]
+
+            for i in range(len(_headings_[:6])):
+                cell = gtk.CellRendererToggle()
+                cell.set_property('activatable', 0)
+                cell.set_property('xalign', 0.5)
+                cell.set_property('yalign', 0.5)
+                label = gtk.Label()
+                label.set_alignment(xalign=0.5, yalign=0.5)
+                label.set_justify(gtk.JUSTIFY_CENTER)
+                label.set_property('angle', 90)
+                label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
+                label.set_use_markup(True)
+                label.show_all()
+                column = gtk.TreeViewColumn()
+                column.pack_start(cell, True)
+                column.set_attributes(cell, active=i)
+                column.set_clickable(True)
+                column.set_reorderable(True)
+                column.set_max_width(75)
+                column.set_sort_column_id(i)
+                column.set_widget(label)
+                self.tvwCSCITestSelectionMatrix.append_column(column)
+
+            for i in range(len(_headings_[6:])):
+                cell = gtk.CellRendererText()
+                cell.set_property('editable', 0)
+                cell.set_property('xalign', 0.5)
+                cell.set_property('yalign', 0.5)
+                label = gtk.Label()
+                label.set_alignment(xalign=0.5, yalign=0.5)
+                label.set_justify(gtk.JUSTIFY_CENTER)
+                label.set_property('angle', 90)
+                label.set_markup("<span weight='bold'>" + _headings_[i+6] + "</span>")
+                label.set_use_markup(True)
+                label.show_all()
+                column = gtk.TreeViewColumn()
+                column.pack_start(cell, True)
+                column.set_attributes(cell, text=i+6)
+                column.set_clickable(True)
+                column.set_reorderable(True)
+                column.set_max_width(75)
+                column.set_sort_column_id(i+6)
+                column.set_widget(label)
+                self.tvwCSCITestSelectionMatrix.append_column(column)
+
+            cell = gtk.CellRendererToggle()
+            cell.set_property('activatable', 1)
+            cell.set_property('xalign', 0.5)
+            cell.set_property('yalign', 0.5)
+            _header_ = _(u"Recommended")
+            label = gtk.Label()
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_property('angle', 90)
+            label.set_markup("<span weight='bold'>" + _header_ + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+            column = gtk.TreeViewColumn()
+            column.pack_start(cell, True)
+            column.set_attributes(cell, active=12)
+            column.set_clickable(True)
+            column.set_max_width(75)
+            column.set_sort_column_id(12)
+            column.set_widget(label)
+            self.tvwCSCITestSelectionMatrix.append_column(column)
+            cell.connect('toggled', _test_selection_tree_edit, 12, _model_)
+
+            cell = gtk.CellRendererToggle()
+            cell.set_property('activatable', 1)
+            cell.set_property('xalign', 0.5)
+            cell.set_property('yalign', 0.5)
+            _header_ = _(u"Selected")
+            label = gtk.Label()
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_property('angle', 90)
+            label.set_markup("<span weight='bold'>" + _header_ + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+            column = gtk.TreeViewColumn()
+            column.pack_start(cell, True)
+            column.set_attributes(cell, active=13)
+            column.set_clickable(True)
+            column.set_max_width(75)
+            column.set_sort_column_id(13)
+            column.set_widget(label)
+            self.tvwCSCITestSelectionMatrix.append_column(column)
+            cell.connect('toggled', _test_selection_tree_edit, 13, _model_)
+
+            for i in range(len(_test_rankings_)):
+                _model_.append(_test_rankings_[i])
+
+    # Create and load the Test Matrix for unit-level testing.
+            _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                    gobject.TYPE_INT, gobject.TYPE_INT,
+                                    gobject.TYPE_STRING)
+            self.tvwUnitTestSelectionMatrix.set_model(_model_)
+            self.tvwUnitTestSelectionMatrix.set_tooltip_text(_("Software test technique selection matrix."))
+            self.tvwUnitTestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+            _test_rankings_ = [[1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L', 'M', '', '', '', '', 'H', '', '', '', 0, 0, ''],
+                               [0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '', 'L', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L', 'H', '', 'L', 'H', '', 'L', 'M', '', 'L', 0, 0, ''],
+                               [0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1', 'L', 'L', '', 'L', 'H', '', '', 'H', '', 'L', 0, 0, ''],
+                               [0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3', 'L', 'M', '', '', 'H', 'L', '', 'H', '', 'L', 0, 0, ''],
+                               [0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2', 'L', '', 'L', '', 'M', 'L', '', 'M', '', 'L', 0, 0, ''],
+                               [1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                               [0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, '']]
+
+            _headings_ = [_(u"Error/Anomaly\nDetection"),
+                          _(u"Structure\nAnalysis &amp;\nDocumentation"),
+                          _(u"Code\nReviews"), _(u"Functional\nTesting"),
+                          _(u"Branch\nTesting"), _(u"Random\nTesting"),
+                          _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
+                          _(u"Average %\nErrors Found"),
+                          _(u"Detection\nEfficiency"), _(u"% Average\nCoverage"),
+                          _(u"Coverage\nEfficiency"), _(u"Computational\nErrors"),
+                          _(u"Logic\nErrors"), _(u"Data\nInput\nErrors"),
+                          _(u"Data\nVerification\nErrors"),
+                          _(u"Data\nHandling\nErrors"), _(u"Data\nOutput\nErrors"),
+                          _(u"Data\nDefinition\nErrors"), _(u"Interface\nErrors"),
+                          _(u"Database\nErrors"), _(u"Other\nErrors")]
+
+            for i in range(len(_headings_[:6])):
+                cell = gtk.CellRendererToggle()
+                cell.set_property('activatable', 0)
+                label = gtk.Label()
+                label.set_alignment(xalign=0.5, yalign=0.5)
+                label.set_justify(gtk.JUSTIFY_CENTER)
+                label.set_property('angle', 90)
+                label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
+                label.set_use_markup(True)
+                label.show_all()
+                column = gtk.TreeViewColumn()
+                column.pack_start(cell, True)
+                column.set_attributes(cell, active=i)
+                column.set_clickable(True)
+                column.set_reorderable(True)
+                column.set_max_width(75)
+                column.set_sort_column_id(i)
+                column.set_widget(label)
+                self.tvwUnitTestSelectionMatrix.append_column(column)
+
+            for i in range(len(_headings_[6:])):
+                cell = gtk.CellRendererText()
+                cell.set_property('editable', 0)
+                label = gtk.Label()
+                label.set_alignment(xalign=0.5, yalign=0.5)
+                label.set_justify(gtk.JUSTIFY_CENTER)
+                label.set_property('angle', 90)
+                label.set_markup("<span weight='bold'>" + _headings_[i+6] + "</span>")
+                label.set_use_markup(True)
+                label.show_all()
+                column = gtk.TreeViewColumn()
+                column.pack_start(cell, True)
+                column.set_attributes(cell, text=i+6)
+                column.set_clickable(True)
+                column.set_reorderable(True)
+                column.set_max_width(75)
+                column.set_sort_column_id(i+6)
+                column.set_widget(label)
+                self.tvwUnitTestSelectionMatrix.append_column(column)
+
+            cell = gtk.CellRendererToggle()
+            cell.set_property('activatable', 1)
+            _header_ = _(u"Recommended")
+            label = gtk.Label()
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_property('angle', 90)
+            label.set_markup("<span weight='bold'>" + _header_ + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+            column = gtk.TreeViewColumn()
+            column.pack_start(cell, True)
+            column.set_attributes(cell, active=22)
+            column.set_clickable(True)
+            column.set_max_width(75)
+            column.set_sort_column_id(22)
+            column.set_widget(label)
+            self.tvwUnitTestSelectionMatrix.append_column(column)
+            cell.connect('toggled', _test_selection_tree_edit, 22, _model_)
+
+            cell = gtk.CellRendererToggle()
+            cell.set_property('activatable', 1)
+            _header_ = _(u"Selected")
+            label = gtk.Label()
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.set_property('angle', 90)
+            label.set_markup("<span weight='bold'>" + _header_ + "</span>")
+            label.set_use_markup(True)
+            label.show_all()
+            column = gtk.TreeViewColumn()
+            column.pack_start(cell, True)
+            column.set_attributes(cell, active=23)
+            column.set_clickable(True)
+            column.set_max_width(75)
+            column.set_sort_column_id(23)
+            column.set_widget(label)
+            self.tvwUnitTestSelectionMatrix.append_column(column)
+            cell.connect('toggled', _test_selection_tree_edit, 23, _model_)
+
+            for i in range(len(_test_rankings_)):
+                _model_.append(_test_rankings_[i])
+
+            return False
+
+        if _test_selection_widgets_create(self):
+            self._app.debug_log.error("software.py: Failed to create Test Technique Selection tab widgets.")
+
+        hpaned = gtk.HPaned()
 
 # Add the user input widgets to the left half.
         vpaned = gtk.VPaned()
-        hbox.pack_start(vpaned)
+        hpaned.pack1(vpaned, resize=False)
 
         # Create and place the labels.
         fixed = gtk.Fixed()
@@ -5282,15 +3645,6 @@ class Software:
         fixed.put(self.cmbTestEffort, _x_pos_, y_pos)
         y_pos += 35
         fixed.put(self.cmbTestApproach, _x_pos_, y_pos)
-        y_pos += 35
-
-        #fixed.put(self.btnSoftwareMatrix, 5, y_pos)
-        #fixed.put(self.btnCSCISingleMatrix, 5, y_pos)
-        #fixed.put(self.btnUnitSingleMatrix, 5, y_pos)
-        #fixed.put(self.btnCSCIPairedMatrix, 50, y_pos)
-        #fixed.put(self.btnUnitPairedMatrix, 50, y_pos)
-        #fixed.put(self.btnErrorCatMatrix, 95, y_pos)
-        #fixed.put(self.btnStoppingRules, 140, y_pos)
 
         # Add the test effort widgets to the lower left half.
         hboxl = gtk.HBox()
@@ -5378,7 +3732,7 @@ class Software:
         frame.add(self.scwTestSelectionMatrix)
         frame.show_all()
 
-        hbox.pack_end(frame)
+        hpaned.pack2(frame, resize=False)
 
 # Insert the tab.
         label = gtk.Label()
@@ -5389,7 +3743,7 @@ class Software:
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
         label.set_tooltip_text(_("Assists in planning of software test program."))
-        self.notebook.insert_page(hbox,
+        self.notebook.insert_page(hpaned,
                                   tab_label=label,
                                   position=-1)
 
@@ -5487,37 +3841,48 @@ class Software:
 
         return False
 
-    def _reliability_estimation_widgets_create(self):
-        """
-        Method for creating reliability estimation widgets for the SOFTWARE
-        Object.
-        """
-
-        self.txtFT1.set_tooltip_text(_("Displays the average failure rate during test for the selected software module."))
-        self.txtFT2.set_tooltip_text(_("Displays the failure rate at the end of test for the selected software module."))
-        self.txtRENAVG.set_tooltip_text(_("Displays the average Reliability Estimation Number (REN) for the selected software module."))
-        self.txtRENEOT.set_tooltip_text(_("Displays the end of test Reliability Estimation Number (REN) for the selected software module."))
-        self.txtEC.set_tooltip_text(_("Displays the number of exception conditions for the selected software module."))
-        self.txtEC.connect('focus-out-event',
-                           self._callback_entry, 'float', 63)
-        self.txtEV.set_tooltip_text(_("Displays the variability of input for the selected software module."))
-        self.txtET.set_tooltip_text(_("Displays the total execution time for the selected software module."))
-        self.txtET.connect('focus-out-event',
-                           self._callback_entry, 'float', 65)
-        self.txtOS.set_tooltip_text(_("Displays the operating system overhead time for the selected software module."))
-        self.txtOS.connect('focus-out-event',
-                           self._callback_entry, 'float', 66)
-        self.txtEW.set_tooltip_text(_("Displays the workload for the selected software module."))
-        self.txtE.set_tooltip_text(_("Displays the operating environment factor for the selected software module."))
-        self.txtF.set_tooltip_text(_("Displays the estimated failure rate for the selected software module."))
-
-        return False
-
     def _reliability_estimation_tab_create(self):
         """
         Method to create the reliability estimation gtk.Notebook tab and add it
         to the gtk.Notebook at the correct location.
         """
+
+        _labels_ = [_(u"Average FR During Test:"), _(u"Failure Rate at EOT:"),
+                    _(u"Average REN:"), _(u"EOT REN:"),
+                    _(u"Number of Exception Conditions:"),
+                    _(u"Input Variability:"), _(u"Total Execution Time:"),
+                    _(u"OS Overhead Time:"), _(u"Workload:"),
+                    _(u"Operating Environment Factor:"),
+                    _(u"Estimated Failure Rate:")]
+
+        def _reliability_estimation_widgets_create(self):
+            """
+            Method for creating reliability estimation widgets for the SOFTWARE
+            Object.
+            """
+
+            self.txtFT1.set_tooltip_text(_("Displays the average failure rate during test for the selected software module."))
+            self.txtFT2.set_tooltip_text(_("Displays the failure rate at the end of test for the selected software module."))
+            self.txtRENAVG.set_tooltip_text(_("Displays the average Reliability Estimation Number (REN) for the selected software module."))
+            self.txtRENEOT.set_tooltip_text(_("Displays the end of test Reliability Estimation Number (REN) for the selected software module."))
+            self.txtEC.set_tooltip_text(_("Displays the number of exception conditions for the selected software module."))
+            self.txtEC.connect('focus-out-event',
+                               self._callback_entry, 'float', 63)
+            self.txtEV.set_tooltip_text(_("Displays the variability of input for the selected software module."))
+            self.txtET.set_tooltip_text(_("Displays the total execution time for the selected software module."))
+            self.txtET.connect('focus-out-event',
+                               self._callback_entry, 'float', 65)
+            self.txtOS.set_tooltip_text(_("Displays the operating system overhead time for the selected software module."))
+            self.txtOS.connect('focus-out-event',
+                               self._callback_entry, 'float', 66)
+            self.txtEW.set_tooltip_text(_("Displays the workload for the selected software module."))
+            self.txtE.set_tooltip_text(_("Displays the operating environment factor for the selected software module."))
+            self.txtF.set_tooltip_text(_("Displays the estimated failure rate for the selected software module."))
+
+            return False
+
+        if _reliability_estimation_widgets_create(self):
+            self._app.debug_log.error("software.py: Failed to create Reliability Estimation tab widgets.")
 
         fixed = gtk.Fixed()
 
@@ -5525,75 +3890,75 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Reliability Estimation Results"))
+        frame = _widg.make_frame(_label_=_(u"Reliability Estimation Results"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
         frame.show_all()
 
         y_pos = 5
-        label = _widg.make_label(self._re_tab_labels[0])
+        label = _widg.make_label(_labels_[0])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtFT1, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[1])
+        label = _widg.make_label(_labels_[1])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtFT2, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[2])
+        label = _widg.make_label(_labels_[2])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtRENAVG, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[3])
+        label = _widg.make_label(_labels_[3])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtRENEOT, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[4])
+        label = _widg.make_label(_labels_[4])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtEC, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[5])
+        label = _widg.make_label(_labels_[5])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtEV, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[6])
+        label = _widg.make_label(_labels_[6])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtET, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[7])
+        label = _widg.make_label(_labels_[7])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtOS, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[8])
+        label = _widg.make_label(_labels_[8])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtEW, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[9])
+        label = _widg.make_label(_labels_[9])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtE, 200, y_pos)
         y_pos += 30
 
-        label = _widg.make_label(self._re_tab_labels[10])
+        label = _widg.make_label(_labels_[10])
         fixed.put(label, 5, y_pos)
         fixed.put(self.txtF, 200, y_pos)
 
         # Insert the tab.
         label = gtk.Label()
         label.set_markup("<span weight='bold'>" +
-                         _("Reliability\nEstimation") +
+                         _(u"Reliability\nEstimation") +
                          "</span>")
         label.set_alignment(xalign=0.5, yalign=0.5)
         label.set_justify(gtk.JUSTIFY_CENTER)
         label.show_all()
-        label.set_tooltip_text(_("Displays software reliability estimation results."))
+        label.set_tooltip_text(_(u"Displays software reliability estimation results."))
         self.notebook.insert_page(frame,
                                   tab_label=label,
                                   position=-1)
@@ -5806,35 +4171,60 @@ class Software:
     # Calculate the Software Quality factor.
                 _ratios_ = [0, 0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0]
-                if(self._cdr_[12] / self._cdr_[11] <= 0.3): _ratios_[0] = 1
-                if(self._cdr_[13] / self._cdr_[10] <= 0.3): _ratios_[1] = 1
-                if(self._cdr_[15] / self._cdr_[14] <= 0.3): _ratios_[2] = 1
-                if(self._cdr_[16] / self._cdr_[10] > 0.5): _ratios_[3] = 1
-                if(self._cdr_[18] / self._cdr_[17] > 0.5): _ratios_[4] = 1
-                if(self._cdr_[20] / self._cdr_[19] > 0.5): _ratios_[5] = 1
-                if(self._cdr_[22] / self._cdr_[21] > 0.5): _ratios_[6] = 1
-                if(self._cdr_[23] / self._cdr_[10] > 0.5): _ratios_[7] = 1
-                if(self._cdr_[24] / self._cdr_[10] > 0.5): _ratios_[8] = 1
-                if(self._cdr_[26] / self._cdr_[25] > 0.75): _ratios_[9] = 1
-                if(self._cdr_[27] / self._cdr_[10] > 0.5): _ratios_[10] = 1
-                if(self._cdr_[28] / self._cdr_[10] > 0.5): _ratios_[11] = 1
-                if(self._cdr_[29] / self._cdr_[10] > 0.5): _ratios_[12] = 1
-                if(self._cdr_[30] / self._cdr_[10] > 0.5): _ratios_[13] = 1
-                if(self._cdr_[31] / self._cdr_[10] > 0.5): _ratios_[14] = 1
-                if(self._cdr_[32] / self._cdr_[10] > 0.5): _ratios_[15] = 1
-                if(self._cdr_[33] / self._cdr_[10] > 0.5): _ratios_[16] = 1
-                if(self._cdr_[34] / self._cdr_[10] > 0.5): _ratios_[17] = 1
+                if(self._cdr_[12] / self._cdr_[11] <= 0.3):
+                    _ratios_[0] = 1
+                if(self._cdr_[13] / self._cdr_[10] <= 0.3):
+                    _ratios_[1] = 1
+                if(self._cdr_[15] / self._cdr_[14] <= 0.3):
+                    _ratios_[2] = 1
+                if(self._cdr_[16] / self._cdr_[10] > 0.5):
+                    _ratios_[3] = 1
+                if(self._cdr_[18] / self._cdr_[17] > 0.5):
+                    _ratios_[4] = 1
+                if(self._cdr_[20] / self._cdr_[19] > 0.5):
+                    _ratios_[5] = 1
+                if(self._cdr_[22] / self._cdr_[21] > 0.5):
+                    _ratios_[6] = 1
+                if(self._cdr_[23] / self._cdr_[10] > 0.5):
+                    _ratios_[7] = 1
+                if(self._cdr_[24] / self._cdr_[10] > 0.5):
+                    _ratios_[8] = 1
+                if(self._cdr_[26] / self._cdr_[25] > 0.75):
+                    _ratios_[9] = 1
+                if(self._cdr_[27] / self._cdr_[10] > 0.5):
+                    _ratios_[10] = 1
+                if(self._cdr_[28] / self._cdr_[10] > 0.5):
+                    _ratios_[11] = 1
+                if(self._cdr_[29] / self._cdr_[10] > 0.5):
+                    _ratios_[12] = 1
+                if(self._cdr_[30] / self._cdr_[10] > 0.5):
+                    _ratios_[13] = 1
+                if(self._cdr_[31] / self._cdr_[10] > 0.5):
+                    _ratios_[14] = 1
+                if(self._cdr_[32] / self._cdr_[10] > 0.5):
+                    _ratios_[15] = 1
+                if(self._cdr_[33] / self._cdr_[10] > 0.5):
+                    _ratios_[16] = 1
+                if(self._cdr_[34] / self._cdr_[10] > 0.5):
+                    _ratios_[17] = 1
 
             elif(self._app_level == 3):    # Unit
     # Calculate the Software Quality factor.
                 _ratios_ = [0, 0, 0, 0, 0, 0, 0]
-                if(self._cdr_[47] / self._cdr_[46] <= 0.3): _ratios_[0] = 1
-                if(self._cdr_[34] / self._cdr_[12] <= 0.3): _ratios_[1] = 1
-                if(self._cdr_[49] / self._cdr_[48] <= 0.3): _ratios_[2] = 1
-                if(self._cdr_[50] / self._cdr_[51] > 0.5): _ratios_[3] = 1
-                if(self._cdr_[53] / self._cdr_[52] > 0.5): _ratios_[4] = 1
-                if(self._cdr_[55] / self._cdr_[54] > 0.5): _ratios_[5] = 1
-                if(self._cdr_[57] / self._cdr_[56] > 0.75): _ratios_[6] = 1
+                if(self._cdr_[47] / self._cdr_[46] <= 0.3):
+                    _ratios_[0] = 1
+                if(self._cdr_[34] / self._cdr_[12] <= 0.3):
+                    _ratios_[1] = 1
+                if(self._cdr_[49] / self._cdr_[48] <= 0.3):
+                    _ratios_[2] = 1
+                if(self._cdr_[50] / self._cdr_[51] > 0.5):
+                    _ratios_[3] = 1
+                if(self._cdr_[53] / self._cdr_[52] > 0.5):
+                    _ratios_[4] = 1
+                if(self._cdr_[55] / self._cdr_[54] > 0.5):
+                    _ratios_[5] = 1
+                if(self._cdr_[57] / self._cdr_[56] > 0.75):
+                    _ratios_[6] = 1
 
             y = sum(self._cdr_[i] for i in range(34, 36)) + sum(_ratios_)
             _DR_ = y / 18.0
@@ -6916,21 +5306,11 @@ class Software:
 
         if(index == 0):                     # Main gtk.Notebook
             if(page_num == 1):              # Risk Analysis
-                self.btnSaveResults.set_tooltip_text(_("Saves risk analysis information for the selected software module."))
-            elif(page_num == 2):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves anomaly management information for the selected software module."))
-            elif(page_num == 3):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves requirements traceability information for the selected software module."))
-            elif(page_num == 4):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves quality review information for the selected software module."))
-            elif(page_num == 5):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves language type information for the selected software module."))
-            elif(page_num == 6):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves modularity and complexity information for the selected software module."))
-            elif(page_num == 7):            #
-                self.btnSaveResults.set_tooltip_text(_("Saves standards review information for the selected software module."))
-            elif(page_num == 8):            # RG tracking tab
-                self.btnSaveResults.set_tooltip_text(_("Saves test planning information for the selected software module."))
+                self.btnSaveResults.set_tooltip_text(_("Saves risk analysis information for the selected software unit or module."))
+            elif(page_num == 2):            # Test planning
+                self.btnSaveResults.set_tooltip_text(_("Saves test planning information for the selected software unit or module."))
+            elif(page_num == 3):            # Reliability estimation
+                self.btnSaveResults.set_tooltip_text(_("Saves reliability estimates for the selected software unit or module."))
             else:                           # Everything else
                 self.btnSaveResults.set_tooltip_text(_("Saves the selected software module."))
 

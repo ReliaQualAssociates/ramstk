@@ -3,7 +3,8 @@
 
       validation_format.xml is part of the RTK Project
 
-      Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland
+                              <andrew.rowland@reliaqual.com>
 -->
 
 <!-- This file contains information used by the RTK application to draw
@@ -105,7 +106,7 @@ experience. -->
         <column>
             <defaulttitle>Start Date</defaulttitle>
             <usertitle>Start Date</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>10</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -114,7 +115,7 @@ experience. -->
         <column>
             <defaulttitle>End Date</defaulttitle>
             <usertitle>End Date</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>11</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -128,6 +129,96 @@ experience. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Minimum Task Time</defaulttitle>
+            <usertitle>Minimum Task Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Expected Task Time</defaulttitle>
+            <usertitle>Expected Task Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Maximum Task Time</defaulttitle>
+            <usertitle>Maximum Task Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Project Time</defaulttitle>
+            <usertitle>Mean Project Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Project Time Variance</defaulttitle>
+            <usertitle>Project Time Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Minimum Task Cost</defaulttitle>
+            <usertitle>Minimum Task Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Expected Task Cost</defaulttitle>
+            <usertitle>Expected Task Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Maximum Task Cost</defaulttitle>
+            <usertitle>Maximum Task Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Expected Project Cost</defaulttitle>
+            <usertitle>Expected Project Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Project Cost Variance</defaulttitle>
+            <usertitle>Project Cost Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
         </column>
     </tree>
 </root>
