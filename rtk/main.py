@@ -12,11 +12,6 @@ __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 
 import sys
 
-from gi import pygtkcompat
-
-pygtkcompat.enable()
-pygtkcompat.enable_gtk(version='3.0')
-
 # Modules required for the GUI.
 try:
     import pygtk

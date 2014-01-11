@@ -197,6 +197,8 @@ class Validation:
 
         toolbar = gtk.Toolbar()
 
+        _pos_ = 0
+
 # Add item button.  Depending on the notebook page selected will determine what
 # type of item is added.
         button = gtk.ToolButton()
@@ -206,7 +208,8 @@ class Validation:
         button.set_name('Add')
         button.connect('clicked', self.vandv_task_add)
         button.set_tooltip_text(_("Adds a new V&V activity."))
-        toolbar.insert(button, 0)
+        toolbar.insert(button, _pos_)
+        _pos_ += 1
 
 # Remove item button.  Depending on the notebook page selected will determine
 # what type of item is removed.
@@ -217,9 +220,11 @@ class Validation:
         button.set_name('Remove')
         button.connect('clicked', self._vandv_task_delete)
         button.set_tooltip_text(_("Deletes the selected V&V activity."))
-        toolbar.insert(button, 1)
+        toolbar.insert(button, _pos_)
+        _pos_ += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), 3)
+        toolbar.insert(gtk.SeparatorToolItem(), _pos_)
+        _pos_ += 1
 
 # Calculate button.
         button = gtk.ToolButton()
@@ -229,9 +234,11 @@ class Validation:
         button.set_name('Analyze')
         button.connect('clicked', self._calculate)
         button.set_tooltip_text(_("Calculates program V&V effort and plots the results."))
-        toolbar.insert(button, 2)
+        toolbar.insert(button, _pos_)
+        _pos_ += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), 3)
+        toolbar.insert(gtk.SeparatorToolItem(), _pos_)
+        _pos_ += 1
 
 # Save results button.  Depending on the notebook page selected will determine
 # which results are saved.
@@ -242,7 +249,7 @@ class Validation:
         button.set_name('Save')
         button.connect('clicked', self.validation_save)
         button.set_tooltip_text(_("Saves the selected V&V activity."))
-        toolbar.insert(button, 3)
+        toolbar.insert(button, _pos_)
 
         toolbar.show()
 
@@ -851,8 +858,7 @@ class Validation:
 
         _n_updates_ = len(_results_)
         for i in range(_n_updates_):
-            self._dic_status[_results_[i][0]] = [_results_[i][1],
-                                                 _results_[i][2]]
+            self._dic_status[_results_[i][0]] = _results_[i][1]
 
 # Select everything from the validation table.
         _query_ = "SELECT * FROM tbl_validation \
