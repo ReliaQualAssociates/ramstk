@@ -1208,8 +1208,8 @@ CREATE TABLE "tbl_rel_growth" (
     "fld_ti" REAL DEFAULT(0),                           --
     "fld_test_time" REAL DEFAULT(0),                    -- Total test time for the test phase.
     "fld_num_fails" INTEGER DEFAULT(0),                 -- Number of failures expected during the test phase.
-    "fld_start_date" INTEGER,                           -- Start date of test phase.
-    "fld_end_date" INTEGER,                             -- End date of test phase.
+    "fld_start_date" INTEGER DEFAULT(719163),           -- Start date of test phase.
+    "fld_end_date" INTEGER DEFAULT(719163),             -- End date of test phase.
     "fld_weeks" REAL DEFAULT(0),                        -- Length of test phase in weeks
     "fld_test_units" INTEGER DEFAULT(0),                -- Number of test units used in test phase.
     "fld_tpu" REAL DEFAULT(0),                          --

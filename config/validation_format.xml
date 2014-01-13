@@ -106,7 +106,7 @@ experience. -->
         <column>
             <defaulttitle>Start Date</defaulttitle>
             <usertitle>Start Date</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>10</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -115,7 +115,7 @@ experience. -->
         <column>
             <defaulttitle>End Date</defaulttitle>
             <usertitle>End Date</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>11</position>
             <widget>text</widget>
             <editable>0</editable>
