@@ -84,6 +84,7 @@ class SQLite3Interface:
                     results = cur.fetchall()
                 except sqlite3.Error, e:
                     self._app.debug_log.error(e)
+                    self._app.debug_log.error(query)
                     results = False
             else:
                 try:
@@ -91,10 +92,12 @@ class SQLite3Interface:
                     results = True
                 except sqlite3.Error, e:
                     self._app.debug_log.error(e)
+                    self._app.debug_log.error(query)
                     results = False
 
         except sqlite3.Error, e:
             self._app.debug_log.error(e)
+            self._app.debug_log.error(query)
             results = False
 
         cur.close()

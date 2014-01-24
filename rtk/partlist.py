@@ -406,7 +406,7 @@ class ListWindow(gtk.Window):
 
         return(toolbar)
 
-    def load_part_tree(self, _query_, _values_):
+    def load_part_tree(self, query):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Revision, Function, or Assembly.
@@ -415,11 +415,10 @@ class ListWindow(gtk.Window):
         query  -- the SQL query to execute to retrieve the list of parts
                   associated with the calling Revision, Function, or
                   Assembly.
-        values -- the tuple of values to pass with the query.
         """
 
-        _results_ = self._app.DB.execute_query(_query_,
-                                               _values_,
+        _results_ = self._app.DB.execute_query(query,
+                                               None,
                                                self._app.ProgCnx)
 
         if(_results_ == '' or not _results_ or _results_ is None):

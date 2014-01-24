@@ -14,7 +14,7 @@ import sys
 import pango
 
 from os import environ, name
-from datetime import datetime
+from datetime import date, datetime
 
 # Modules required for the GUI.
 try:
@@ -1191,12 +1191,11 @@ class AddRGRecord(gtk.Assistant):
 
     _labels = [_(u"Date:"), _(u"Time:"), _(u"Number of Failures:")]
 
-    def __init__(self, button, app):
+    def __init__(self, app):
         """
         Method to initialize the Reliability Growth Record Add Assistant.
 
         Keyword Arguments:
-        button -- the gtk.ToolButton that called this assistant.
         app    -- the RTK application.
         """
 
@@ -1212,8 +1211,8 @@ class AddRGRecord(gtk.Assistant):
 # Create the introduction page.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK reliability growth record assistant.  It will help you add a record for reliability growth tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text_ = _(u"This is the RTK reliability growth record assistant.  It will help you add a record for tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=500, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.append_page(fixed)
         self.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1230,8 +1229,12 @@ class AddRGRecord(gtk.Assistant):
         frame.add(fixed)
 
 # Create the gtk.Combo that allow one of multiple selections.
-        self.txtDate = _widg.make_entry()
+        self.txtDate = _widg.make_entry(_width_=100)
         self.txtDate.set_tooltip_text(_(u"Date test record was generated.  This is not necessarily the date the record is being added."))
+        self.btnDate = _widg.make_button(_height_=25, _width_=25,
+                                         _label_="...", _image_=None)
+        self.btnDate.connect('released', _util.date_select,
+                             self.txtDate)
         self.txtTime = _widg.make_entry()
         self.txtTime.set_tooltip_text(_(u"Test time."))
         self.chkAdditional = _widg.make_check_button(_(u"Additional"))
@@ -1244,6 +1247,7 @@ class AddRGRecord(gtk.Assistant):
         label = _widg.make_label(self._labels[0], 150, 25)
         fixed.put(label, 5, 5)
         fixed.put(self.txtDate, 160, 5)
+        fixed.put(self.btnDate, 260, 5)
 
         label = _widg.make_label(self._labels[1], 150, 25)
         fixed.put(label, 5, 40)
@@ -1263,8 +1267,8 @@ class AddRGRecord(gtk.Assistant):
 # Create the page to apply the import criteria.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text_ = _(u"Press 'Apply' to add the record or 'Cancel' to quit the assistant without adding the record.")
+        label = _widg.make_label(_text_, width=500, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.append_page(fixed)
         self.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
@@ -1314,15 +1318,16 @@ class AddRGRecord(gtk.Assistant):
             _time = _time + _last_time
         _n_fails = int(self.txtNumFails.get_text())
 
+        _date_ = datetime.strptime(self.txtDate.get_text(), '%Y-%m-%d').toordinal()
         query = "INSERT INTO tbl_survival_data \
                  (fld_record_id, fld_dataset_id, fld_left_interval, \
                   fld_right_interval, fld_quantity, fld_unit, \
                   fld_part_num, fld_market, fld_model, fld_mode_type, \
-                  fld_assembly_id) \
+                  fld_assembly_id, fld_request_date) \
                  VALUES (%d, %d, %f, %f, %d, '%s', '%s', '%s', '%s', \
-                         %d, %d)" % (_last_id, self._app.TESTING.test_id, \
+                         %d, %d, %d)" % (_last_id, self._app.TESTING.test_id, \
                                      0.0, _time, _n_fails, '', '', '', '', \
-                                     0, _assembly_id)
+                                     0, _assembly_id, _date_)
 
         results = self._app.DB.execute_query(query,
                                              None,

@@ -203,5 +203,50 @@ experience. -->
             <editable>1</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Grouped</defaulttitle>
+            <usertitle>Grouped</usertitle>
+            <datatype>gint</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Group Interval</defaulttitle>
+            <usertitle>Group Interval</usertitle>
+            <datatype>gfloat</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Time</defaulttitle>
+            <usertitle>Cum. Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Failures</defaulttitle>
+            <usertitle>Cum. Failures</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence</defaulttitle>
+            <usertitle>Confidence</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

@@ -1503,17 +1503,16 @@ class Function:
     def load_notebook(self):
         """ Method to load the FUNCTION Object work book. """
 
+        if(self._app.winWorkBook.get_child() is not None):
+            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
+        self._app.winWorkBook.add(self.vbxFunction)
+        self._app.winWorkBook.show_all()
+
         if self.selected_row is not None:
             self._general_data_tab_load()
             self._functional_matrix_tab_load()
             self._assessment_results_tab_load()
             self._fmeca_tab_load()
-
-        if(self._app.winWorkBook.get_child() is not None):
-            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
-
-        self._app.winWorkBook.add(self.vbxFunction)
-        self._app.winWorkBook.show_all()
 
         self._app.winWorkBook.set_title(_(u"RTK Work Book: Function"))
 

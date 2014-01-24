@@ -298,15 +298,17 @@ class Hardware:
                     INNER JOIN tbl_system AS t2 \
                     ON t1.fld_assembly_id=t2.fld_assembly_id \
                     WHERE t2.fld_revision_id=%d \
-                    AND t2.fld_parent_assembly='%s'" % _values1_
+                    AND t2.fld_parent_assembly='%s'" % \
+                    (self._app.REVISION.revision_id, _path_)
         qryIncidents = "SELECT * FROM tbl_incident\
                         WHERE fld_revision_id=%d \
                         AND fld_hardware_id=%d \
-                        ORDER BY fld_incident_id" % _values2_
+                        ORDER BY fld_incident_id" % \
+                        (self._app.REVISION.revision_id, self._assembly_id)
         qryDatasets = "SELECT * FROM tbl_dataset \
                        WHERE fld_assembly_id=%d" % (self._assembly_id)
 
-        self._app.winParts.load_part_tree(qryParts, None)
+        self._app.winParts.load_part_tree(qryParts)
         self._app.winParts.load_incident_tree(qryIncidents, None)
         self._app.winParts.load_dataset_tree(qryDatasets, None)
 

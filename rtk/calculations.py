@@ -2167,6 +2167,194 @@ def criticality_analysis(_CA_, _ItemCA_, _RPN_):
     return(_CA_, _ItemCA_, _RPN_)
 
 
+def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
+    """
+    Function to calculate the values for an individual reliability growth
+    phase.
+
+    Keyword Arguments:
+    T1    -- the length of the first test phase.
+    MTBFi -- the inital MTBF for the test phase.
+    MTBFf -- the final MTBF for the test phase.
+    MTBFa -- the average MTBF for the test phase.
+    GR    -- the average growth rate across the entire test program.
+    MS    -- the management strategy for this program.
+    FEF   -- the average FEF for this program.
+    Prob  -- the probability of seeing one failure.
+    ti    -- the growth start time; time to first fix for this program.
+    fix   -- list of True/False indicating which parameters are fixed when
+             calculating results for each test phase.
+             0 = Program probability
+             1 = Management strategy
+             2 = Time to first failure
+             3 = Total test time for test phase
+             4 = Test phase initial MTBF
+             5 = Test phase final MTBF
+             6 = Growth rate
+    """
+
+# Calculate the average growth rate for the phase.
+    if(not fix[6]):
+        try:
+            GRi = -log(T1 / ti) - 1.0 + sqrt((1.0 + log(T1 / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
+        except(ValueError, ZeroDivisionError):
+            GRi = 0.0
+    else:
+        GRi = GR
+
+# Calculate initial MTBF for the phase.
+    if(not fix[4]):
+        try:
+            MTBFi = (-1.0 * ti * MS) / log(1.0 - Prob)
+        except(ValueError, ZeroDivisionError):
+            try:
+                MTBFi = MTBFf / exp(GRi * (0.5 * GRi + log(T1 / ti) + 1.0))
+            except(ValueError, ZeroDivisionError):
+                try:
+                    MTBFi = (ti * (T1 / ti)**(1.0 - GRi)) / Ni
+                except(ValueError, ZeroDivisionError):
+                    MTBFi = 0.0
+
+# Calculate final MTBF for the phase.
+    if(not fix[5]):
+        try:
+            MTBFf = MTBFi * exp(GRi * (0.5 * GRi + log(T1 / ti) + 1.0))
+        except (ValueError, ZeroDivisionError):
+            MTBFf = 0.0
+
+# Calculate total test time for the phase.
+    if(not fix[3]):
+        try:
+            T1 = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
+        except(ValueError, ZeroDivisionError):
+            T1 = 0.0
+
+    return(GRi, T1, MTBFi, MTBFf)
+
+
+def calculate_rgtmc(F, X, I, _grouped=False):
+    """
+    Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
+    continous model using either the Option for Individual Failure Data
+    (default) or the Option for Grouped Failure Data.
+
+    Keyword Arguments:
+    F -- list of failure counts.
+    X -- list of failures times.
+    I -- the grouping interval width.
+    _grouped -- whether or not to use grouped data.
+    """
+
+    from scipy.optimize import fsolve
+    from scipy.stats import chi2
+
+# Define the function that will be set equal to zero and solved for beta.
+    def _beta(b, f, t, logt):
+        """ Function for estimating the beta value from grouped data. """
+
+        return(sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) / (t[1:]**b - t[:-1]**b) - log(max(t)))))
+
+# Find the total time on test.
+    TTT = X[len(X) - 1:][0]
+    FFF = sum(F)
+
+    _beta_hat = []
+    _lambda_hat = []
+    _rho = []
+    _mu = []
+
+    if(not _grouped):
+        for i in range(len(X)):
+            try:
+                _iters = int(X[i] - X[i - 1])
+            except IndexError:
+                _iters = int(X[i])
+
+# Estimate the failure rate of this interval.
+            for j in range(_iters - 1):
+                _rho.append(np.nan)
+
+            try:
+                _rho_ = F[i] / (X[i] - X[i - 1])
+            except IndexError:
+                _rho_ = F[i] / X[i]
+            except ZeroDivisionError:
+                _rho_ = _rho[i - 1]
+
+            if(_rho_ < 0):
+                _rho_ = 0.0
+            _rho.append(_rho_)
+
+# Estimate the MTBF of this interval.
+            for j in range(_iters - 1):
+                _mu.append(np.nan)
+
+            try:
+                _mu_ = (X[i] - X[i - 1]) / F[i]
+            except IndexError:
+                _mu_ = X[i] / F[i]
+            except ZeroDivisionError:
+                _mu_ = _mu[i - 1]
+
+            if(_mu_ < 0.0):
+                _mu_ = 0.0
+
+            _mu.append(_mu_)
+
+        logX = [log(x) for x in X]
+
+        _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
+        _lambda_hat = FFF / TTT**_beta_hat
+
+# Calcualte the chi square statistic for trend.
+        _chi_square_ = 2.0 * FFF / _beta_hat
+
+# Calculate the Cramer-von Mises statistic for fit to the AMSAA-Crow model.
+        _beta_bar_ = (FFF - 1) * _beta_hat / FFF
+        _Cm_ = 0.0
+        for i in range(len(X)):
+            _Cm_ += ((X[i] / TTT)**_beta_bar_ - ((2.0 * i - 1) / (2.0 * FFF)))**2.0
+        _Cm_ = _Cm_ / (12 * FFF)
+
+    elif(_grouped):
+# Calculate the number of intervals we need, then create a list of zeros the
+# same length as the number of intervals.
+        _num_intervals = int(ceil(TTT / I))
+        _cum_fails = [0] * _num_intervals
+
+# Iterate through the data and count the nuber of failures in each interval.
+        for i in range(len(X)):
+            for j in range(_num_intervals):
+                if(X[i] > j * I and X[i] <= (j + 1) * I):
+                    _cum_fails[j] += F[i]
+
+        f = np.array([0], float)
+        t = np.array([0], float)
+        logt = np.array([0], float)
+        for i in range(len(_cum_fails)):
+            f = np.append(f, [_cum_fails[i]])
+            t = np.append(t, [(i + 1) * I])
+            logt = np.append(logt, [log((i + 1) * I)])
+
+            _beta_hat.append(fsolve(_beta, 1.0, args=(f, t, logt))[0])
+            _lambda_hat.append(sum(_cum_fails[:i + 1]) / ((i + 1) * I)**_beta_hat[i])
+            _rho.append(_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0))
+            _mu.append(1.0 / (_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0)))
+
+# Calculate the chi-square statistic to test for trend and the chi-square
+# statistic to test model applicability.
+        _chi_square_ = 0.0
+        _Cm_ = 0.0
+        for i in range(_num_intervals):
+            _NPi_ = sum(_cum_fails) * I / max(X)
+            _chi_square_ += (_cum_fails[i] - _NPi_)**2.0 / (_NPi_)
+            if(i < _num_intervals):
+                _ei_ = _lambda_hat[-1] * ((I * (i + 1))**_beta_hat[-1] - (I * i)**_beta_hat[-1])
+            _Cm_ += (_cum_fails[i] - _ei_)**2.0 / _ei_
+
+    return(_beta_hat, _lambda_hat, _rho, _mu, _cum_fails, _chi_square_, _Cm_)
+
+
 def moving_average(_data_, n=3):
     """
     Function to calculate the moving average of a dataset.
@@ -2540,6 +2728,28 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
         print "No R"
 
     return(fit)
+
+
+def smooth_curve(x, y, num):
+    """
+    Function to produce smoothed plots where there are a small number of data
+    points in the original data set.
+
+    Keyword Arguments:
+    x   -- a numpy array of the raw x-values.
+    y   -- a numpy array of the raw y-values.
+    num -- the number of points to generate.
+    """
+
+    from scipy.interpolate import spline
+
+    _new_x_ = np.linspace(x.min(), x.max(), num)
+    _new_y_ = spline(x, y, _new_x_)
+
+    _new_x_ = _new_x_.tolist()
+    _new_y_ = _new_y_.tolist()
+
+    return(_new_x_, _new_y_)
 
 
 def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):

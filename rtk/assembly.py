@@ -546,6 +546,7 @@ class Assembly:
         self.btnAddItem.set_icon_widget(image)
         self.btnAddItem.set_name('Add')
         self.btnAddItem.connect('clicked', self._toolbutton_pressed)
+        self.btnAddItem.set_tooltip_text(_(u"Add components to the currently selected assembly."))
         toolbar.insert(self.btnAddItem, _pos)
         _pos += 1
 
@@ -646,8 +647,7 @@ class Assembly:
 
         toolbar.show()
 
-# Hide the toolbar buttons associated with specific analyses.
-        self.btnAddItem.hide()
+        self.btnAddItem.show()
         self.btnFMECAAdd.hide()
         self.btnRemoveItem.hide()
         self.btnAnalyze.hide()
@@ -3572,7 +3572,9 @@ class Assembly:
         return False
 
     def load_notebook(self):
-        """ Method to load the Assembly Object gtk.Notebook. """
+        """
+        Method to load the Assembly Object gtk.Notebook.
+        """
 
         self.system_model = self._app.HARDWARE.model
         self.system_selected_row = self._app.HARDWARE.selected_row
@@ -3587,6 +3589,11 @@ class Assembly:
                                          self.system_model.get_value(self.system_selected_row, 68))
                 self._hrmodel = {}
 
+        if(self._app.winWorkBook.get_child() is not None):
+            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
+        self._app.winWorkBook.add(self.vbxAssembly)
+        self._app.winWorkBook.show_all()
+
         self._general_data_tab_load()
         self._allocation_tab_load()
         self._risk_analysis_tab_load()
@@ -3596,19 +3603,12 @@ class Assembly:
         self._fmeca_tab_load()
         #self._maintenance_planning_tab_load()
 
-        if(_conf.METHOD == 'LRM'):
-            self._risk_analysis_tab_load()
-
-        if(self._app.winWorkBook.get_child() is not None):
-            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
-        self._app.winWorkBook.add(self.vbxAssembly)
-
         _title_ = _(u"RTK Work Book: Analyzing %s") % \
                   self._app.HARDWARE.model.get_value(self._app.HARDWARE.selected_row, 58)
         self._app.winWorkBook.set_title(_title_)
 
         self.notebook.set_current_page(self._selected_tab)
-        self._app.winWorkBook.show_all()
+        self._notebook_page_switched(self.notebook, None, self._selected_tab)
 
         return False
 
@@ -5393,8 +5393,6 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
                     8 = Reliability Growth Planning
         """
 
-        self._selected_tab = page_num
-
         if(page_num == 0):                  # General data tab.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
@@ -5448,6 +5446,7 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnSaveResults.hide()
             self.btnRollup.hide()
             self.btnEdit.hide()
+            self.btnAddItem.set_tooltip_text(_(u"Add components to the currently selected assembly."))
             self.btnAnalyze.set_tooltip_text(_("Calculate the hardware metrics in the open RTK Program Database."))
         elif(page_num == 5):                # Assessment results tab
             self.btnAddItem.show()
@@ -5513,6 +5512,8 @@ For example, pi1*pi2+pi3, multiplies the first change factors and adds the value
             self.btnSaveResults.hide()
             self.btnRollup.hide()
             self.btnEdit.hide()
+
+        self._selected_tab = page_num
 
         return False
 

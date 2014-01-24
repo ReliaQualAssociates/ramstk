@@ -1117,9 +1117,9 @@ class Revision:
                     FROM tbl_prediction AS t1 \
                     INNER JOIN tbl_system AS t2 \
                     ON t1.fld_assembly_id=t2.fld_assembly_id \
-                    WHERE t2.fld_revision_id=%d"
+                    WHERE t2.fld_revision_id=%d" % self.revision_id
         qryIncidents = "SELECT * FROM tbl_incident\
-                        WHERE fld_revision_id=%d"
+                        WHERE fld_revision_id=%d" % self.revision_id
 
         if self.selected_row is not None:
             self._app.REQUIREMENT.requirement_save(None)
@@ -1132,7 +1132,7 @@ class Revision:
             self._app.SOFTWARE.load_tree()
             self._app.VALIDATION.validation_save()
             self._app.VALIDATION.load_tree()
-            self._app.winParts.load_part_tree(qryParts, self.revision_id)
+            self._app.winParts.load_part_tree(qryParts)
             #self._app.winParts.load_test_tree(qryTests, values)
             #self._app.winParts.load_incident_tree(qryIncidents, self.revision_id)
 

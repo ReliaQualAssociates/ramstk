@@ -730,7 +730,7 @@ class Validation:
 
         for i in range(len(_targets_)):
             self.axAxis1.annotate(str(fmt.format(_targets_[i][0])) + "\n" + str(fmt.format(_targets_[i][1])),
-                                  xy=(_assess_dates_[i], 1.05 * max(_y3_)),
+                                  xy=(_assess_dates_[i], 0.95 * max(_y3_)),
                                   xycoords='data',
                                   xytext=(-55, 0), textcoords='offset points',
                                   size=12, va="center",

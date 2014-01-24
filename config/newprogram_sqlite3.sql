@@ -139,6 +139,7 @@ CREATE TABLE "tbl_units" (
 --
 -- Create tables for storing system function information.
 --
+DROP TABLE IF EXISTS "tbl_functions";
 CREATE TABLE "tbl_functions" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_function_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -258,6 +259,7 @@ CREATE TABLE "tbl_requirements" (
 -- Create tables for storing system hardware and software
 -- structure information.
 --
+DROP TABLE IF EXISTS "tbl_system";
 CREATE TABLE "tbl_system" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision code.
     "fld_assembly_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Assembly code.
@@ -1189,32 +1191,45 @@ CREATE TABLE "tbl_tests" (
     "fld_attachment" VARCHAR(512),
     "fld_ttt" REAL DEFAULT(0),
     "fld_avg_growth" REAL DEFAULT(0.3),
-    "fld_avg_ms" REAL DEFAULT(0),
-    "fld_prob" REAL DEFAULT(0.75),
-    "fld_ttff" REAL DEFAULT(0),
-    "fld_avg_fef" REAL DEFAULT(0.7)
+    "fld_avg_ms" REAL DEFAULT(0),                       -- Average management strategy for test.
+    "fld_prob" REAL DEFAULT(0.75),                      -- Probability of observing a failure during test.
+    "fld_ttff" REAL DEFAULT(0),                         -- Time to first failure.
+    "fld_avg_fef" REAL DEFAULT(0.7),                    -- Average fix effectiveness factor for test.
+    "fld_grouped" INTEGER DEFAULT(0),                   -- Indicates whether or not the observed failure times are exact (0) or grouped (1).
+    "fld_group_interval" REAL DEFAULT(0.0),             -- The length of the grouping interval if failure times are grouped.
+    "fld_cum_time" REAL DEFAULT(0.0),                   -- Cumulative test time.
+    "fld_cum_failures" INTEGER DEFAULT(0.0),            -- Cumulative number of failures.
+    "fld_confidence" REAL DEFAULT(0.75)                 -- Confidence level for GoF tests, MTBF bounds, etc.
 );
 
 CREATE TABLE "tbl_rel_growth" (
     "fld_test_id" INTEGER,
     "fld_phase_id" INTEGER,
     "fld_growth_rate" REAL DEFAULT(0),                  -- Average growth rate across entire reliability growth phase.
-    "fld_ms" REAL DEFAULT(0),                           --
+    "fld_ms" REAL DEFAULT(0),                           -- Management strategy (i.e., the percent of problems that will be fixed).
     "fld_fef_avg" REAL DEFAULT(0),                      -- Average fix effectiveness factor across entire reliability growth phase.
     "fld_mi" REAL DEFAULT(0),                           -- Initial MTBF for the test phase.
     "fld_mf" REAL DEFAULT(0),                           -- Final MTBF for the test phase.
-    "fld_ma" REAL DEFAULT(0),                           --
-    "fld_ff_prob" REAL DEFAULT(0),                      --
-    "fld_ti" REAL DEFAULT(0),                           --
+    "fld_ma" REAL DEFAULT(0),                           -- Average MTBF over the test phase.
+    "fld_ff_prob" REAL DEFAULT(0),                      -- Probability of observing a failure during test phase.
+    "fld_ti" REAL DEFAULT(0),                           -- Time to first failure.
     "fld_test_time" REAL DEFAULT(0),                    -- Total test time for the test phase.
     "fld_num_fails" INTEGER DEFAULT(0),                 -- Number of failures expected during the test phase.
     "fld_start_date" INTEGER DEFAULT(719163),           -- Start date of test phase.
     "fld_end_date" INTEGER DEFAULT(719163),             -- End date of test phase.
     "fld_weeks" REAL DEFAULT(0),                        -- Length of test phase in weeks
     "fld_test_units" INTEGER DEFAULT(0),                -- Number of test units used in test phase.
-    "fld_tpu" REAL DEFAULT(0),                          --
-    "fld_tpupw" REAL DEFAULT(0),                        --
+    "fld_tpu" REAL DEFAULT(0),                          -- Average test time per test unit.
+    "fld_tpupw" REAL DEFAULT(0),                        -- Average test time per test unit per week.
     PRIMARY KEY ("fld_test_id", "fld_phase_id")
+);
+
+CREATE TABLE "tbl_test_status" (
+    "fld_test_id" INTEGER NOT NULL,                     -- ID of the test plan.
+    "fld_update_date" INTEGER DEFAULT(719163),          -- Date the update was made.
+    "fld_cum_hours" REAL DEFAULT(0.0),                  -- Cumulative number of test hours when updated.
+    "fld_failure_rate" REAL DEFAULT(0.0),               -- Estimated failure rate.
+    "fld_mtbf" REAL DEFAULT(0.0)                        -- Estimated MTBF.
 );
 
 --
@@ -1393,7 +1408,7 @@ CREATE TABLE "tbl_tasks" (
 CREATE TABLE "tbl_age_exploration" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_task_id" INTEGER NOT NULL AUTOINCREMENT,
+    "fld_task_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_required_info" BLOB,                           -- Information required to V&V the default decision.
     "fld_prelim_task" BLOB,                             -- Description of the preliminary age exploration task.
     "fld_sample_size" INTEGER,                          -- Required minimum sample size for the age exploration task.

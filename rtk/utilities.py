@@ -815,12 +815,13 @@ def add_items(title, prompt=""):
     _fixed_ = gtk.Fixed()
     _fixed_.set_size_request(600, 80)
 
-    _label_ = _widg.make_label(prompt, 150, 80)
-    txtQuantity = _widg.make_entry(_width_=100)
+    _label_ = _widg.make_label(prompt, -1, -1)
+    _x_pos_ = _label_.size_request()[0] + 50
+    txtQuantity = _widg.make_entry(_width_=50)
     txtQuantity.set_text("1")
 
     _fixed_.put(_label_, 5, 10)
-    _fixed_.put(txtQuantity, 160, 38)
+    _fixed_.put(txtQuantity, _x_pos_, 10)
     _fixed_.show_all()
 
     _dialog_.vbox.pack_start(_fixed_)

@@ -1724,17 +1724,16 @@ class Requirement:
         object.
         """
 
+        if(self._app.winWorkBook.get_child() is not None):
+            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
+        self._app.winWorkBook.add(self.vbxRequirement)
+        self._app.winWorkBook.show_all()
+
         if self.selected_row is not None:
             self._stakeholder_input_tab_load()
             self._general_data_tab_load()
             self._analysis_tab_load()
             self._vandv_tab_load()
-
-        if(self._app.winWorkBook.get_child() is not None):
-            self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
-
-        self._app.winWorkBook.add(self.vbxRequirement)
-        self._app.winWorkBook.show_all()
 
         self._app.winWorkBook.set_title(_(u"RTK Work Book: Requirement"))
 

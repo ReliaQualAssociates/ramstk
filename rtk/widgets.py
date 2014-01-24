@@ -774,6 +774,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
 
         axis.grid(True, which='both')
 
+        _lst_min_ = []
+        _lst_max_ = []
         if(y1 is not None):
             if(_type_[0] == 1):
                 line, = axis.step(x, y1, _marker_[0], where='mid')
@@ -789,6 +791,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
             elif(_type_[0] == 4):
                 line, = axis.plot_date(x, y1, _marker_[0],
                                        xdate=True, linewidth=2)
+            _lst_min_.append(min(y1))
+            _lst_max_.append(max(y1))
 
         if(y2 is not None):
             if(_type_[1] == 1):
@@ -806,6 +810,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
             elif(_type_[1] == 4):
                 line2, = axis.plot_date(x, y2, _marker_[1],
                                         xdate=True, linewidth=2)
+            _lst_min_.append(min(y2))
+            _lst_max_.append(max(y2))
 
         if(y3 is not None):
             if(_type_[2] == 1):
@@ -823,6 +829,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
             elif(_type_[2] == 4):
                 line3, = axis.plot_date(x, y3, _marker_[2],
                                         xdate=True, linewidth=2)
+            _lst_min_.append(min(y3))
+            _lst_max_.append(max(y3))
 
         if(y4 is not None):
             if(_type_[3] == 1):
@@ -840,10 +848,16 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
             elif(_type_[3] == 4):
                 line4, = axis.plot_date(x, y4, _marker_[3],
                                         xdate=True, linewidth=2)
+            _lst_min_.append(min(y4))
+            _lst_max_.append(max(y4))
 
         axis.set_title(_title_)
         axis.set_xlabel(_xlab_)
         axis.set_ylabel(_ylab_)
+
+        _min_ = min(_lst_min_)
+        _max_ = max(_lst_max_)
+        axis.set_ybound(_min_, _max_)
 
         plot.draw()
 
