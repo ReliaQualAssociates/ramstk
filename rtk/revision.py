@@ -1132,6 +1132,7 @@ class Revision:
             self._app.SOFTWARE.load_tree()
             self._app.VALIDATION.validation_save()
             self._app.VALIDATION.load_tree()
+            self._app.TESTING.load_tree()
             self._app.winParts.load_part_tree(qryParts)
             #self._app.winParts.load_test_tree(qryTests, values)
             #self._app.winParts.load_incident_tree(qryIncidents, self.revision_id)
@@ -1430,7 +1431,7 @@ class Revision:
         self._use_profile_tab_load()
         self._failure_definition_tab_load()
 
-        _title = _("RTK Work Book: Revision (Analyzing Revision %d)") % \
+        _title = _(u"RTK Work Book: Revision (Analyzing Revision %d)") % \
                  self.revision_id
         self._app.winWorkBook.set_title(_title)
 

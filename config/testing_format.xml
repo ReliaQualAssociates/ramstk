@@ -15,10 +15,19 @@ experience. -->
 <root>
     <tree name="Testing">
         <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
             <defaulttitle>Assembly ID</defaulttitle>
             <usertitle>Assembly ID</usertitle>
             <datatype>gint</datatype>
-            <position>0</position>
+            <position>1</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -27,7 +36,7 @@ experience. -->
             <defaulttitle>Test ID</defaulttitle>
             <usertitle>Test ID</usertitle>
             <datatype>gint</datatype>
-            <position>1</position>
+            <position>2</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -36,7 +45,7 @@ experience. -->
             <defaulttitle>Test Name</defaulttitle>
             <usertitle>Test Name</usertitle>
             <datatype>gchararray</datatype>
-            <position>2</position>
+            <position>3</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -45,7 +54,7 @@ experience. -->
             <defaulttitle>Test Description</defaulttitle>
             <usertitle>Test Description</usertitle>
             <datatype>gchararray</datatype>
-            <position>3</position>
+            <position>4</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -54,7 +63,7 @@ experience. -->
             <defaulttitle>Test Type</defaulttitle>
             <usertitle>Test Type</usertitle>
             <datatype>gint</datatype>
-            <position>4</position>
+            <position>5</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -63,7 +72,7 @@ experience. -->
             <defaulttitle>Initial Program MTBF</defaulttitle>
             <usertitle>Initial Program MTBF</usertitle>
             <datatype>gfloat</datatype>
-            <position>5</position>
+            <position>6</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -72,7 +81,7 @@ experience. -->
             <defaulttitle>Final Program MTBF</defaulttitle>
             <usertitle>Final Program MTBF</usertitle>
             <datatype>gfloat</datatype>
-            <position>6</position>
+            <position>7</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -81,7 +90,7 @@ experience. -->
             <defaulttitle>Growth Potential MTBF</defaulttitle>
             <usertitle>Growth Potential MTBF</usertitle>
             <datatype>gfloat</datatype>
-            <position>7</position>
+            <position>8</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -90,7 +99,7 @@ experience. -->
             <defaulttitle>Required Program MTBF</defaulttitle>
             <usertitle>Required Program MTBF</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
+            <position>9</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -99,7 +108,7 @@ experience. -->
             <defaulttitle>Consumer Risk</defaulttitle>
             <usertitle>Consumer Risk</usertitle>
             <datatype>gfloat</datatype>
-            <position>9</position>
+            <position>10</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -108,7 +117,7 @@ experience. -->
             <defaulttitle>Producer Risk</defaulttitle>
             <usertitle>Producer Risk</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
+            <position>11</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -117,7 +126,7 @@ experience. -->
             <defaulttitle>Growth Plan Model</defaulttitle>
             <usertitle>Growth Plan Model</usertitle>
             <datatype>gint</datatype>
-            <position>11</position>
+            <position>12</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -126,7 +135,7 @@ experience. -->
             <defaulttitle>Growth Assessment Model</defaulttitle>
             <usertitle>Growth Plan Model</usertitle>
             <datatype>gint</datatype>
-            <position>12</position>
+            <position>13</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -135,7 +144,7 @@ experience. -->
             <defaulttitle>Number of Growth Phases</defaulttitle>
             <usertitle>Number of Growth Phases</usertitle>
             <datatype>gint</datatype>
-            <position>13</position>
+            <position>14</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -144,7 +153,7 @@ experience. -->
             <defaulttitle>Attachment</defaulttitle>
             <usertitle>Attachment</usertitle>
             <datatype>gchararray</datatype>
-            <position>14</position>
+            <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -153,7 +162,7 @@ experience. -->
             <defaulttitle>Total Test Time</defaulttitle>
             <usertitle>Total Test Time</usertitle>
             <datatype>gfloat</datatype>
-            <position>15</position>
+            <position>16</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -162,7 +171,7 @@ experience. -->
             <defaulttitle>Average Growth Rate</defaulttitle>
             <usertitle>Average Growth Rate</usertitle>
             <datatype>gfloat</datatype>
-            <position>16</position>
+            <position>17</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -171,7 +180,7 @@ experience. -->
             <defaulttitle>Average MS</defaulttitle>
             <usertitle>Average MS</usertitle>
             <datatype>gfloat</datatype>
-            <position>17</position>
+            <position>18</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -180,7 +189,7 @@ experience. -->
             <defaulttitle>Probability of Seeing Failure</defaulttitle>
             <usertitle>Probability of Seeing Failure</usertitle>
             <datatype>gfloat</datatype>
-            <position>18</position>
+            <position>19</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -189,7 +198,7 @@ experience. -->
             <defaulttitle>Time to First Fix</defaulttitle>
             <usertitle>Time to First Fix</usertitle>
             <datatype>gfloat</datatype>
-            <position>19</position>
+            <position>20</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -198,7 +207,7 @@ experience. -->
             <defaulttitle>Average FEF</defaulttitle>
             <usertitle>Average FEF</usertitle>
             <datatype>gfloat</datatype>
-            <position>20</position>
+            <position>21</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -207,7 +216,7 @@ experience. -->
             <defaulttitle>Grouped</defaulttitle>
             <usertitle>Grouped</usertitle>
             <datatype>gint</datatype>
-            <position>21</position>
+            <position>22</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -216,7 +225,7 @@ experience. -->
             <defaulttitle>Group Interval</defaulttitle>
             <usertitle>Group Interval</usertitle>
             <datatype>gfloat</datatype>
-            <position>22</position>
+            <position>23</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -225,7 +234,7 @@ experience. -->
             <defaulttitle>Cum. Time</defaulttitle>
             <usertitle>Cum. Time</usertitle>
             <datatype>gfloat</datatype>
-            <position>23</position>
+            <position>24</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -234,7 +243,7 @@ experience. -->
             <defaulttitle>Cum. Failures</defaulttitle>
             <usertitle>Cum. Failures</usertitle>
             <datatype>gint</datatype>
-            <position>24</position>
+            <position>25</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -243,7 +252,7 @@ experience. -->
             <defaulttitle>Confidence</defaulttitle>
             <usertitle>Confidence</usertitle>
             <datatype>gfloat</datatype>
-            <position>25</position>
+            <position>26</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>

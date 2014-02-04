@@ -484,8 +484,8 @@ class Assembly:
         self.chkSSI = _widg.make_check_button(_label_=self._mp_tab_labels[0][4])
         self.chkFSI = _widg.make_check_button(_label_=self._mp_tab_labels[0][5])
 
-        self._safety_significance_widgets_create()
-        self._safety_significance_tab_create()
+        #self._safety_significance_widgets_create()
+        #self._safety_significance_tab_create()
 
         #self._maintenance_planning_tab_create()
 

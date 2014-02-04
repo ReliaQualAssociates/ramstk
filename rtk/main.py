@@ -216,9 +216,20 @@ class RTK:
             _conf.RTK_PREFIX.append(results[0][i + 1])
 
 # Find which modules are active in this project.
-        for i in range(10):
+        for i in range(11):
             _conf.RTK_MODULES.append(results[0][i + 19])
             if results[0][i + 19] == 1:
+                # 19 = Revision Tree = 0
+                # 20 = Requirements Tree = 1
+                # 21 = Function Tree = 2
+                # 22 = Hardware Tree = 3
+                # 23 = Software Tree = 4
+                # 24 = Validation Tree = 5
+                # 25 = Reliability Testing Tree = 6
+                # 26 = Reliability Centered Maintenance = 7
+                # 27 = Field Incident Tree = 8
+                # 28 = FMECA = 9
+                # 29 = Survival Analyses Tree = 10
                 _conf.RTK_PAGE_NUMBER.append(i)
 
         _conf.METHOD = results[0][36]

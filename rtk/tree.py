@@ -591,8 +591,8 @@ class TreeWindow(gtk.Window):
         page     -- the newly selected page widget.
         page_num -- the newly selected page number.
                     0 = Revision Tree
-                    1 = Function Tree
-                    2 = Requirements Tree
+                    1 = Requirements Tree
+                    2 = Function Tree
                     3 = Hardware Tree
                     4 = Software Tree
                     5 = Validation Tree
@@ -689,7 +689,7 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 9):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 10):
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model

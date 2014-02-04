@@ -49,6 +49,7 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import other RTK modules.
+import calculations as _calc
 import configuration as _conf
 import imports as _impt
 import utilities as _util
@@ -759,6 +760,17 @@ class Dataset:
         else:
             self.chkGroup.hide()
             self.chkParts.hide()
+
+        if(self.model.get_value(self.selected_row, 4) == 3):        # NHPP - Power Law
+            if(self.model.get_value(self.selected_row, 8) == 1):    # MLE
+                _results_ = [[_(u"Fisher Matrix")], [_(u"Crow")],
+                             [_(u"Bootstrap")]]
+            elif(self.model.get_value(self.selected_row, 8) == 2):  # Regression
+                _results_ = [[_(u"Duane")], [_(u"Bootstrap")]]
+        else:
+            _results_ = [[_(u"Fisher Matrix")], [_(u"Likelihood")],
+                         [_(u"Bootstrap")]]
+        _widg.load_combo(self.cmbConfMethod, _results_)
 
         self.cmbSource.set_active(self.model.get_value(self.selected_row, 3))
         self.cmbDistribution.set_active(
@@ -1901,6 +1913,7 @@ class Dataset:
         _analysis_ = self.cmbDistribution.get_active()          # Distribution ID.
         _conf_ = float(self.txtConfidence.get_text())           # Confidence.
         _type_ = self.cmbConfType.get_active()                  # Confidence type.
+        _confmeth_ = self.cmbConfMethod.get_active()            # Confidence method.
         _fitmeth_ = self.cmbFitMethod.get_active()              # Fit method.
         _starttime_ = float(self.txtStartTime.get_text())       # Minimum time.
         _reltime_ = float(self.txtEndTime.get_text())           # Maximum time.
@@ -2406,7 +2419,7 @@ class Dataset:
 #    2          Calculated cumulative MTBF
 #    3          Lower bound on alpha
 #    4          Point estimate of alpha
-#    5          Upper bounf on alpha
+#    5          Upper bound on alpha
 #    6          Lower bound on b
 #    7          Point estimate of b
 #    8          Upper bound on b
@@ -2422,7 +2435,8 @@ class Dataset:
 #   18          Lower bound on model estimate of instantaneous failure intensity
 #   19          Model point estimate of instantaneous failure intensity
 #   20          Upper bound on model estimate of instantaneous failure intensity
-            _power_law_ = power_law(_F_, _X_, _fitmeth_, _type_, _conf_, _T_)
+            _power_law_ = power_law(_F_, _X_, _fitmeth_, _type_, _confmeth_,
+                                    _conf_, _T_)
 
 # Load the non-parametric results gtk.TreeView
             _model_ = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
@@ -2463,16 +2477,39 @@ class Dataset:
             MTBFi = _power_law_[len(_power_law_) - 1][13]
             MTBFiUL = _power_law_[len(_power_law_) - 1][14]
 
+            _start_ = int(0.1 * len(_power_law_))
+            _end_ = len(_power_law_) - 1
+            _shape_ = sum([z[4] for z in _power_law_[_start_:_end_]]) / (_end_ - _start_)
+            _scale_ = sum([z[7] for z in _power_law_[_start_:_end_]]) / (_end_ - _start_)
+
+# Calculate the bounds at each observation point.
+            _mtbf_c_plot_ll_ = np.array([], float)
+            _mtbf_c_plot_ul_ = np.array([], float)
+            _fi_c_plot_ll_ = np.array([], float)
+            _fi_c_plot_ul_ = np.array([], float)
             for i in range(len(_power_law_)):
                 _times_.append(_power_law_[i][0])
-                _mtbf_model_.append(scale * _power_law_[i][0]**shape)
-                _fi_model_.append((1.0 / scale) * _power_law_[i][0]**-shape)
-                _mtbf_c_plot_ll_.append(_power_law_[i][9])
+                _mtbf_model_.append(_scale_ * _power_law_[i][0]**_shape_)
+                _fi_model_.append((1.0 / _scale_) * _power_law_[i][0]**-_shape_)
+                _mtbf_c_plot_ll_ = np.append(_mtbf_c_plot_ll_, _power_law_[i][9])
                 _mtbf_c_plot_.append(_power_law_[i][10])
-                _mtbf_c_plot_ul_.append(_power_law_[i][11])
-                _fi_c_plot_ll_.append(_power_law_[i][15])
+                _mtbf_c_plot_ul_ = np.append(_mtbf_c_plot_ul_, _power_law_[i][11])
+                _fi_c_plot_ll_ = np.append(_fi_c_plot_ll_, _power_law_[i][15])
                 _fi_c_plot_.append(_power_law_[i][16])
-                _fi_c_plot_ul_.append(_power_law_[i][17])
+                _fi_c_plot_ul_ = np.append(_fi_c_plot_ul_, _power_law_[i][17])
+
+            _times_ = np.array(_times_[:len(_mtbf_c_plot_ll_)])
+
+            (_new_times_,
+             _mtbf_c_plot_ll_) = _calc.smooth_curve(_times_, _mtbf_c_plot_ll_,
+                                                    50 * len(_mtbf_c_plot_ll_))
+            _mtbf_c_plot_ul_ = _calc.smooth_curve(_times_, _mtbf_c_plot_ul_,
+                                                  50 * len(_mtbf_c_plot_ul_))[1]
+            _fi_c_plot_ll_ = _calc.smooth_curve(_times_, _fi_c_plot_ll_,
+                                                50 * len(_fi_c_plot_ll_))[1]
+            _fi_c_plot_ul_ = _calc.smooth_curve(_times_, _fi_c_plot_ul_,
+                                                50 * len(_fi_c_plot_ul_))[1]
+            _times_ = _times_.tolist()
 
 # Display the NHPP Power Law specific results.
             self.txtMTBFi.set_text(str(fmt.format(MTBFi)))
@@ -2496,61 +2533,80 @@ class Dataset:
 
 # Plot the MTBF curve with confidence bounds.
             _widg.load_plot(self.axAxis1, self.pltPlot1, x=_times_,
-                            y1=_mtbf_c_plot_, y2=_mtbf_c_plot_ll_,
-                            y3=_mtbf_c_plot_ul_, y4=_mtbf_model_,
+                            y1=_mtbf_c_plot_, y2=_mtbf_model_,
                             _title_=_(u"Duane Plot of %s Cumulative MTBF") % _name,
                             _xlab_=_(u"Cumulative Time [hours]"),
                             _ylab_=_(u"Cumulative MTBF [m(t)] "),
-                            _marker_=['go', 'r-', 'b-', 'k--'],
-                            _type_=[2, 2, 2, 2])
+                            _marker_=['go', 'k--'],
+                            _type_=[2, 2])
+
+# Plot the smoothed confidence bounds.
+            line = matplotlib.lines.Line2D(_new_times_, _mtbf_c_plot_ll_,
+                                           lw=1.5, color='r', ls='-.')
+            self.axAxis1.add_line(line)
+            line = matplotlib.lines.Line2D(_new_times_, _mtbf_c_plot_ul_,
+                                           lw=1.5, color='b', ls='-.')
+            self.axAxis1.add_line(line)
+
+            self.axAxis1.set_xscale('log')
+            self.axAxis1.set_yscale('log')
+
             _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                       _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
             _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
                                 _frameon_=True, _location_='lower right',
                                 _shadow_=True)
 
-            self.axAxis1.set_xscale('log')
-            self.axAxis1.set_yscale('log')
-
             _widg.load_plot(self.axAxis2, self.pltPlot2, x=_dates_,
-                            y1=_mtbf_c_plot_, y2=_mtbf_c_plot_ll_,
-                            y3=_mtbf_c_plot_ul_, y4=_mtbf_model_,
+                            y1=_mtbf_c_plot_, y2=_mtbf_model_,
                             _title_=_(u"Duane Plot of %s Cumulative MTBF Over Calendar Time") % _name,
                             _xlab_=_(u"Calendar Time"),
                             _ylab_=_(u"Cumulative MTBF [m(t)] "),
-                            _marker_=['go', 'r-', 'b-', 'k--'],
-                            _type_=[4, 4, 4, 4])
+                            _marker_=['go', 'k--'],
+                            _type_=[4, 4])
+
             _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                       _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
             _widg.create_legend(self.axAxis2, _text_, _fontsize_='medium',
                                 _frameon_=True, _location_='lower right',
                                 _shadow_=True)
 
+# Load the failure intensity versus cumulative operating time.
             _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times_,
-                            y1=_fi_c_plot_, y2=_fi_c_plot_ll_,
-                            y3=_fi_c_plot_ul_, y4=_fi_model_,
+                            y1=_fi_c_plot_, y2=_fi_model_,
                             _title_=_(u"Duane Plot of %s Cumulative Failure Intesity") % _name,
                             _xlab_=_(u"Cumulative Time [hours]"),
                             _ylab_=_(u"Cumulative Failure Intensity "),
-                            _marker_=['go', 'r-', 'b-', 'k--'],
-                            _type_=[2, 2, 2, 2])
+                            _marker_=['go', 'k--'],
+                            _type_=[2, 2])
+
+# Plot the smoothed confidence bounds.
+            line = matplotlib.lines.Line2D(_new_times_, _fi_c_plot_ll_,
+                                           lw=1.5, color='r', ls='-.')
+            self.axAxis3.add_line(line)
+
+            line = matplotlib.lines.Line2D(_new_times_, _fi_c_plot_ul_,
+                                           lw=1.5, color='b', ls='-.')
+            self.axAxis3.add_line(line)
+
+            self.axAxis3.set_xscale('log')
+            self.axAxis3.set_yscale('log')
+
             _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
                       _(u"Cum. FI UCL"), _(u"Fitted Model"))
             _widg.create_legend(self.axAxis3, _text_,  _fontsize_='medium',
                                 _frameon_=True, _location_='upper right',
                                 _shadow_=True)
 
-            self.axAxis3.set_xscale('log')
-            self.axAxis3.set_yscale('log')
-
+# Load the failure intensity versus calendar time plot.
             _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates_[3:],
-                            y1=_fi_c_plot_[3:], y2=_fi_c_plot_ll_[3:],
-                            y3=_fi_c_plot_ul_[3:], y4=_fi_model_[3:],
-                            _title_=_(u"Duane Plot of %s Cumulative Failure Intesity Over Calendar Time") % _name,
+                            y1=_fi_c_plot_[3:], y2=_fi_model_[3:],
+                            _title_=_(u"Duane Plot of %s Cumulative Failure Intensity Over Calendar Time") % _name,
                             _xlab_=_(u"Calendar Time"),
                             _ylab_=_(u"Cumulative Failure Intensity "),
-                            _marker_=['go', 'r-', 'b-', 'k--'],
-                            _type_=[4, 4, 4, 4])
+                            _marker_=['go', 'k--'],
+                            _type_=[4, 4])
+
             _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
                       _(u"Cum. FI UCL"), _(u"Fitted Model"))
             _widg.create_legend(self.axAxis4, _text_,  _fontsize_='medium',
@@ -2568,6 +2624,8 @@ class Dataset:
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
+
+            self.pltPlot1.draw()
 
         elif(_analysis_ == 4):              # NHPP - Loglinear
 
@@ -2621,7 +2679,7 @@ class Dataset:
 # Fit the data to an exponential distribution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 5):
-            fit = parametric_fit(results, _starttime_, _reltime_,
+            fit = parametric_fit(_results_, _starttime_, _reltime_,
                                  _fitmeth_, 'exponential')
 
             if(_fitmeth_ == 1):             # MLE
@@ -2647,7 +2705,7 @@ class Dataset:
             para = R.list(rate=scale)
             _theop_ = theoretical_distribution(censdata, 'exp', para)
 
-            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            times = [float(i[3]) for i in _results_ if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=scale),
@@ -2674,7 +2732,7 @@ class Dataset:
 # Fit the data to a lognormal and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 6):
-            fit = parametric_fit(results, _starttime_, _reltime_,
+            fit = parametric_fit(_results_, _starttime_, _reltime_,
                                  _fitmeth_, 'lognormal')
 
             if(_fitmeth_ == 1):             # MLE
@@ -2711,7 +2769,7 @@ class Dataset:
             para = R.list(sdlog=shape, meanlog=scale)
             _theop_ = theoretical_distribution(censdata, 'lnorm', para)
 
-            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            times = [float(i[3]) for i in _results_ if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qlnorm(R.ppoints(Rtimes), meanlog=scale,
@@ -2740,7 +2798,7 @@ class Dataset:
 # Fit the data to a normal distibution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 7):
-            fit = parametric_fit(results, _starttime_, _reltime_,
+            fit = parametric_fit(_results_, _starttime_, _reltime_,
                                  _fitmeth_, 'normal')
 
             if(_fitmeth_ == 1):             # MLE
@@ -2774,7 +2832,7 @@ class Dataset:
             para = R.list(sd=shape, mean=scale)
             _theop_ = theoretical_distribution(censdata, 'norm', para)
 
-            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            times = [float(i[3]) for i in _results_ if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qnorm(R.ppoints(Rtimes), mean=scale,
@@ -2803,7 +2861,7 @@ class Dataset:
 # Fit the data to a Weibull distribution and estimate it's parameters.
 # =========================================================================== #
         elif(_analysis_ == 8):
-            fit = parametric_fit(results, _starttime_, _reltime_,
+            fit = parametric_fit(_results_, _starttime_, _reltime_,
                                  _fitmeth_, 'weibull')
 
             if(_fitmeth_ == 1):             # MLE
@@ -2844,7 +2902,7 @@ class Dataset:
             para = R.list(shape=shape, scale=scale)
             _theop_ = theoretical_distribution(censdata, 'weibull', para)
 
-            times = [float(i[3]) for i in results if i[2] <= _reltime_]
+            times = [float(i[3]) for i in _results_ if i[2] <= _reltime_]
             Rtimes = robjects.FloatVector(times)
             Rtimes = R.sort(Rtimes)
             _qqplot_ = R.qqplot(R.qweibull(R.ppoints(Rtimes), shape=shape,
@@ -3312,8 +3370,8 @@ class Dataset:
         else:
             _text_ = combo.get_active()
 
-        if(_index_ == 4):
-            if(_text_ == 1 or _text_ == 2 or _index_ == 3): # MCF, Kaplan-Meier, or NHPP - Power Law
+        if(_index_ == 4):                   # Statistical distribution.
+            if(_text_ == 1 or _text_ == 2 or _text_ == 3):  # MCF, Kaplan-Meier, or NHPP - Power Law
                 self.chkGroup.show()
                 self.chkParts.show()
                 self.cmbFitMethod.hide()
@@ -3344,6 +3402,20 @@ class Dataset:
                 dialog.run()
 
                 dialog.destroy()
+
+        elif(_index_ == 8):             # Fit method.
+            if(self.cmbDistribution.get_active() == 3): # NHPP.
+                if(_text_ == 1):        # MLE
+                    _results_ = [[_(u"Fisher Matrix")], [_(u"Crow")],
+                                 [_(u"Bootstrap")]]
+                else:                   # Regression
+                    _results_ = [[_(u"Duane")], [_(u"Bootstrap")]]
+            else:
+                _results_ = [[_(u"Fisher Matrix")], [_(u"Likelihood")],
+                             [_(u"Bootstrap")]]
+            _widg.load_combo(self.cmbConfMethod, _results_)
+            self.cmbConfMethod.set_active(
+                self.model.get_value(self.selected_row, 8))
 
         self.model.set_value(self.selected_row, _index_, _text_)
 

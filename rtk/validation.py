@@ -1064,39 +1064,30 @@ class Validation:
         widget -- the widget that called this function.
         """
 
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+
 # Find the selected revision.
-        if self.selected_row is not None:
-            _revision = self.model.get_value(self.selected_row, 0)
-            _assembly = self.model.get_value(self.selected_row, 2)
+        if _row_ is not None:
+            _revision_ = _model_.get_value(_row_, 0)
         else:
-            if(_conf.RTK_MODULES[0] == 1):
-                _revision = self._app.REVISION.revision_id
-            else:
-                _revision = 0
+            _revision_ = self._app.REVISION.revision_id
 
-        n_tasks = _util.add_items(title=_(u"RTK - Add V &amp; V Activity"),
-                                  prompt=_(u"How many V &amp; V activities to add?"))
+        _n_tasks_ = _util.add_items(title=_(u"RTK - Add V &amp; V Activity"),
+                                    prompt=_(u"How many V &amp; V activities to add?"))
 
-        for i in range(n_tasks):
+        for i in range(_n_tasks_):
+            _task_name_ = "New V&V Activity " + str(i)
 
-            task_name = "New V&V Activity " + str(i)
-            values = (_revision, task_name)
+            _query_ = "INSERT INTO tbl_validation \
+                       (fld_revision_id, fld_task_desc) \
+                       VALUES (%d, '%s')" % \
+                       (_revision_, _task_name_)
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx,
+                                                   commit=True)
 
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_validation \
-                         (fld_revision_id, fld_task_desc) \
-                         VALUES (%d, '%s')"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_validation \
-                         (fld_revision_id, fld_task_desc) \
-                         VALUES (?, ?)"
-
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if not results:
+            if not _results_:
                 self._app.user_log.error("validation.py: Failed to add V&V task.")
                 return True
 

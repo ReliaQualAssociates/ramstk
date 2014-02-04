@@ -52,6 +52,7 @@ except ImportError:
 
 # Import mathematical functions.
 import numpy as np
+from numpy.linalg import inv
 from math import ceil, exp, floor, log, sqrt
 from scipy.stats import chi2, norm, t
 from scipy.optimize import fsolve
@@ -219,20 +220,22 @@ def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):
     return(GRi, TTTi)
 
 
-def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
+def power_law(_F_, _X_, _fitmeth_, _type_, _confmeth_,
+              _conf_=0.75, _T_star_=0.0):
     """
     Function to estimate the parameters (beta and alpha) of the NHPP power law
     model.
 
     Keyword Arguments:
-    _F_       -- list of failure counts.
-    _X_       -- list of individual failures times.
-    _fitmeth_ -- method used to fit the data (1=MLE, 2=regression).
-    _type_    -- the confidence level type
-                 (1=lower one-sided, 2=upper one-sided, 3=two-sided).
-    _conf_    -- the confidence level.
-    _T_star_  -- the end of the observation period for time terminated, or
-                 Type I, tests.
+    _F_        -- list of failure counts.
+    _X_        -- list of individual failures times.
+    _fitmeth_  -- method used to fit the data (1=MLE, 2=regression).
+    _type_     -- the confidence level type
+                  (1=lower one-sided, 2=upper one-sided, 3=two-sided).
+    _confmeth_ -- the method for calculating confidence bounds.
+    _conf_     -- the confidence level.
+    _T_star_   -- the end of the observation period for time terminated, or
+                  Type I, tests.
     """
 
     from scipy.stats import chi2, norm, t
@@ -265,10 +268,9 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         _N_ = len(_X_) - 2
 
     for i in range(len(_X_)):
-
 # Increment the total number of failures and the total time on test then
 # calculate the cumulative MTBF.
-        _n_ += float(_F_[i])
+        _n_ += int(_F_[i])
         _T_ += float(_X_[i])
         _M_ = _T_ / _n_
 
@@ -279,28 +281,117 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
         _logTlogM_ += log(_T_) * log(_M_)
 
 # Calculate the Power Law parameters.
-        if(_fitmeth_ == 1):             # MLE
+        if(_fitmeth_ == 1):                 # MLE
             try:
-                _beta_hat_ = _n_ / (_n_ * log(_T_star_) - _logT_)
+                _beta_hat_ = (_n_ - 1.0) / (_n_ * log(_T_star_) - _logT_)
             except ZeroDivisionError:
                 _beta_hat_ = 1.0
-            _alpha_hat_ = 1.0 - _beta_hat_
             try:
                 _lambda_hat_ = _n_ / _T_**_beta_hat_
             except OverflowError:
                 _lambda_hat_ = _n_ / _T_
-            _b_hat_ = 1.0 / _lambda_hat_
 
-        elif(_fitmeth_ == 2):           # Regression
+            # Calculate the lower and upper bound bounds on the Duane
+            # parameters.
+            if(_confmeth_ == 1):            # Fisher bounds.
+                try:
+                    _del_lambda_ = -_n_ / _lambda_hat_**2.0
+                except ZeroDivisionError:
+                    _del_lambda_ = 1.0
+
+                try:
+                    _del_beta_ = -_n_ / _beta_hat_**2.0 - _lambda_hat_ * _T_**_beta_hat_ * log(_T_)**2.0
+                except ZeroDivisionError:
+                    _del_beta_ = 1.0
+
+                _del_beta_lambda_ = -_T_**_beta_hat_ * log(_T_)
+                _fisher_ = inv(np.array([[-_del_lambda_, -_del_beta_lambda_],
+                                         [-_del_beta_lambda_, -_del_beta_]]))
+
+                _lambda_ll_ = _lambda_hat_ * exp(-_z_norm_ * sqrt(_fisher_[0][0]) / _lambda_hat_)
+                _lambda_ul_ = _lambda_hat_ * exp(_z_norm_ * sqrt(_fisher_[0][0]) / _lambda_hat_)
+
+                try:
+                    _beta_ll_ = _beta_hat_ * exp(-_z_norm_ * sqrt(_fisher_[1][1]) / _beta_hat_)
+                except ValueError:
+                    _beta_ll_ = _beta_hat_
+                try:
+                    _beta_ul_ = _beta_hat_ * exp(_z_norm_ * sqrt(_fisher_[1][1]) / _beta_hat_)
+                except ValueError:
+                    _beta_ul_ = _beta_hat_
+
+            elif(_confmeth_ == 2):          # Crow bounds.
+                _lambda_ul_ = chi2.ppf(_conf_, 2*_n_) / (2.0 * _T_**_beta_hat_)
+                _lambda_ll_ = chi2.ppf(1.0-_conf_, 2*_n_) / (2.0 * _T_**_beta_hat_)
+
+                _beta_ll_ = _beta_hat_ * chi2.ppf(1.0 - _conf_, 2 * _n_) / (2 * _n_ - 1)
+                _beta_ul_ = _beta_hat_ * chi2.ppf(_conf_, 2 * _n_) / (2 * _n_ - 1)
+
+            _alpha_hat_ = 1.0 - _beta_hat_
+            _alpha_lower_ = 1.0 - _beta_ul_
+            _alpha_upper_ = 1.0 - _beta_ll_
+
+            _b_hat_ = 1.0 / _lambda_hat_
+            _b_lower_ = 1.0 / _lambda_ul_
+            _b_upper_ = 1.0 / _lambda_ll_
+
+            # Calculate the lower and upper bound multipliers for the
+            # cumulative MTBF.
+            _mll_ = (_n_ * (_n_ - 1.0)) / ((_n_ + (_z_norm_**2.0 / 4.0) + sqrt(_n_ * (_z_norm_**2.0 / 4.0) + (_z_norm_**4.0 / 16.0)))**2.0)
+            _mul_ = (_n_ * (_n_ - 1.0)) / ((_n_ - _z_norm_ * sqrt(_n_ / 2.0))**2.0)
+
+        elif(_fitmeth_ == 2):               # Regression
             try:
                 _alpha_hat_ = (_n_ * _logTlogM_ - _logT_ * _logM_) / (_n_ * _logT2_ - _logT_**2.0)
             except ZeroDivisionError:
                 _alpha_hat_ = 0.0
             _b_hat_ = exp((1.0 / _n_) * (_logM_ - _alpha_hat_ * _logT_))
 
+            # Calculate the lower and upper bound bounds on the Duane
+            # parameters.
+            if(_n_ >= 2):
+                _critical_value_t_ = t.ppf(_conf_, _n_ - 2)
+            else:
+                _critical_value_t_ = 0.0
+
+            try:
+                _SSE_ += (log(_b_hat_ * _T_**_alpha_hat_) - log(_M_))**2.0
+            except ValueError:
+                _SSE_ += (log(_M_))**2.0
+
+            try:
+                _sigma2_ = _SSE_ / (_n_ - 2.0)
+            except ZeroDivisionError:
+                _sigma2_ = 1.0
+
+            try:
+                _Sxx_ = _logT2_ - (_logT_**2.0 / _n_)
+            except ZeroDivisionError:
+                _Sxx_ = 1.0
+
+            try:
+                _se_alpha_ = sqrt(_sigma2_) / sqrt(_Sxx_)
+            except ZeroDivisionError:
+                _se_alpha_ = 0.0
+
+            try:
+                _se_b_ = sqrt(_sigma2_) * sqrt(_logT2_ / (_n_ * _Sxx_))
+            except ZeroDivisionError:
+                _se_b_ = 0.0
+
+            _alpha_lower_ = _alpha_hat_ - _critical_value_t_ * _se_alpha_
+            _alpha_upper_ = _alpha_hat_ + _critical_value_t_ * _se_alpha_
+
+            _b_lower_ = _b_hat_ * exp(-_critical_value_t_ * _se_b_)
+            _b_upper_ = _b_hat_ * exp(_critical_value_t_ * _se_b_)
+
+            # Calculate the lower and upper bound multipliers for the
+            # cumulative MTBF.
+            _mll_ = exp(-_z_norm_ * sqrt(_sigma2_))
+            _mul_ = exp(_z_norm_ * sqrt(_sigma2_))
+
 # Calculate the cumulative and instantaneous MTBF from the model.
         _mc_hat_ = _b_hat_ * _T_**_alpha_hat_
-        _mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
 
 # Calculate the cumulative and instantaneous failure intensity.
         try:
@@ -309,68 +400,37 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
             _lc_hat_ = (1.0 / _b_hat_) * _T_
         _li_hat_ = (1.0 - _alpha_hat_) * _lc_hat_
 
-# Calculate bounds on the Duane parameters.
-        if(_n_ >= 2):
-            _critical_value_t_ = t.ppf(_conf_, _n_ - 2)
-        else:
-            _critical_value_t_ = 0.0
+# Calculate bounds on the cumulative MTBF.
+        _mc_lower_ = _mc_hat_ * _mll_
+        _mc_upper_ = _mc_hat_ * _mul_
 
         try:
-            _SSE_ += (log(_mc_hat_) - log(_M_))**2.0
-        except ValueError:
-            _SSE_ += (log(_M_))**2.0
-
-        try:
-            _sigma2_ = _SSE_ / (_n_ - 2.0)
+            _mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
+            _mi_lower_ = _mc_lower_ / (1.0 - _alpha_hat_)
+            _mi_upper_ = _mc_upper_ / (1.0 - _alpha_hat_)
         except ZeroDivisionError:
-            _sigma2_ = 1.0
-
-        try:
-            _Sxx_ = _logT2_ - (_logT_**2.0 / _n_)
-        except ZeroDivisionError:
-            _Sxx_ = 1.0
-
-        try:
-            _se_alpha_ = sqrt(_sigma2_) / sqrt(_Sxx_)
-        except ZeroDivisionError:
-            _se_alpha_ = 0.0
-
-        try:
-            _se_b_ = sqrt(_sigma2_) * sqrt(_logT2_ / (_n_ * _Sxx_))
-        except ZeroDivisionError:
-            _se_b_ = 0.0
-
-        _alpha_lower_ = _alpha_hat_ - _critical_value_t_ * _se_alpha_
-        _alpha_upper_ = _alpha_hat_ + _critical_value_t_ * _se_alpha_
-
-        _b_lower_ = _b_hat_ * exp(-_critical_value_t_ * _se_b_)
-        _b_upper_ = _b_hat_ * exp(_critical_value_t_ * _se_b_)
-
-# Calculate bounds on the MTBF.
-        _mc_lower_ = _mc_hat_ * exp(-_z_norm_ * sqrt(_sigma2_))
-        _mc_upper_ = _mc_hat_ * exp(_z_norm_ * sqrt(_sigma2_))
-
-        _mi_lower_ = _mc_lower_ / (1.0 - _alpha_hat_)
-        _mi_upper_ = _mc_upper_ / (1.0 - _alpha_hat_)
+            _mi_hat_ = _mc_hat_
+            _mi_lower_ = _mc_lower_
+            _mi_upper_ = _mc_upper_
 
 # Calculate bounds on the failure intensity.
         try:
-            _lc_lower_ = 1.0 / _mc_upper_
+            _lc_lower_ = 1.0 / float(_mc_upper_)
         except ZeroDivisionError:
             _lc_lower_ = _lc_hat_
 
         try:
-            _lc_upper_ = 1.0 / _mc_lower_
+            _lc_upper_ = 1.0 / float(_mc_lower_)
         except ZeroDivisionError:
             _lc_upper_ = _lc_hat_
 
         try:
-            _li_lower_ = 1.0 / _mi_upper_
+            _li_lower_ = 1.0 / float(_mi_upper_)
         except ZeroDivisionError:
             _li_lower_ = _li_hat_
 
         try:
-            _li_upper_ = 1.0 / _mi_lower_
+            _li_upper_ = 1.0 / float(_mi_lower_)
         except ZeroDivisionError:
             _li_upper_ = _li_hat_
 

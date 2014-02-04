@@ -314,17 +314,17 @@ class AddRevision:
                                   fld_page_number, fld_figure_number \
                            FROM tbl_requirements \
                            WHERE fld_revision_id=%d" % _base_revision_
-                _requirement_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx)
+                _requirements_ = self._app.DB.execute_query(_query_,
+                                                            None,
+                                                            self._app.ProgCnx)
 
                 # Copy the requirement hierarchy for the new revision.
                 for i in range(len(_requirements_)):
                     _values_ = (_revision_id_, _requirement_id_,
-                                _requirement_[i][0], _requirement_[i][1],
-                                _requirement_[i][2], _requirement_[i][3],
-                                _requirement_[i][4], _requirement_[i][5],
-                                _requirement_[i][6], _requirement_[i][7])
+                                _requirements_[i][0], _requirements_[i][1],
+                                _requirements_[i][2], _requirements_[i][3],
+                                _requirements_[i][4], _requirements_[i][5],
+                                _requirements_[i][6], _requirements_[i][7])
                     _query_ = "INSERT INTO tbl_requirements \
                                (fld_revision_id, fld_requirement_id, \
                                 fld_requirement_desc, fld_requirement_code, \

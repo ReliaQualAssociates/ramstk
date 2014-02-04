@@ -1173,24 +1173,26 @@ CREATE TABLE "tbl_nevada_chart" (
 --
 -- Create tables for storing program test information.
 --
+DROP TABLE IF EXISTS "tbl_tests";
 CREATE TABLE "tbl_tests" (
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- The ID of the revision the test is associated with.
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),      -- The ID of the assembly the test is associated with.
     "fld_test_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_test_name" VARCHAR(512),
-    "fld_test_description" BLOB,
-    "fld_test_type" INTEGER NOT NULL DEFAULT(0),
-    "fld_mi" REAL DEFAULT(0),
-    "fld_mg" REAL DEFAULT(0),
-    "fld_mgp" REAL DEFAULT(0),
-    "fld_tr" REAL DEFAULT(0),
-    "fld_consumer_risk" REAL DEFAULT(0),
-    "fld_producer_risk" REAL DEFAULT(0),
-    "fld_rg_plan_model" INTEGER DEFAULT(0),
-    "fld_rg_assess_model" INTEGER DEFAULT(0),
-    "fld_num_phases" INTEGER DEFAULT(1),
-    "fld_attachment" VARCHAR(512),
-    "fld_ttt" REAL DEFAULT(0),
-    "fld_avg_growth" REAL DEFAULT(0.3),
+    "fld_test_name" VARCHAR(512),                       -- Short name of the test.
+    "fld_test_description" BLOB,                        -- Long description of the test.
+    "fld_test_type" INTEGER NOT NULL DEFAULT(0),        -- Type of test.
+    "fld_mi" REAL DEFAULT(0),                           --
+    "fld_mg" REAL DEFAULT(0),                           --
+    "fld_mgp" REAL DEFAULT(0),                          --
+    "fld_tr" REAL DEFAULT(0),                           --
+    "fld_consumer_risk" REAL DEFAULT(0),                --
+    "fld_producer_risk" REAL DEFAULT(0),                --
+    "fld_rg_plan_model" INTEGER DEFAULT(0),             --
+    "fld_rg_assess_model" INTEGER DEFAULT(0),           --
+    "fld_num_phases" INTEGER DEFAULT(1),                --
+    "fld_attachment" VARCHAR(512),                      --
+    "fld_ttt" REAL DEFAULT(0),                          --
+    "fld_avg_growth" REAL DEFAULT(0.3),                 --
     "fld_avg_ms" REAL DEFAULT(0),                       -- Average management strategy for test.
     "fld_prob" REAL DEFAULT(0.75),                      -- Probability of observing a failure during test.
     "fld_ttff" REAL DEFAULT(0),                         -- Time to first failure.

@@ -1444,7 +1444,7 @@ def options(widget, _app):
     opts = Options(_app)
 
 
-def date_select(widget, entry):
+def date_select(widget, entry=None):
     """
     Function to select a date from a calendar widget.
 
@@ -1455,7 +1455,7 @@ def date_select(widget, entry):
 
     from datetime import date, datetime
 
-    dialog = _widg.make_dialog(_("Select Date"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = _widg.make_dialog(_(u"Select Date"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
     calendar = gtk.Calendar()
     dialog.vbox.pack_start(calendar)
@@ -1470,7 +1470,10 @@ def date_select(widget, entry):
 
     dialog.destroy()
 
-    entry.set_text(_date_)
+    if(entry is not None):
+        entry.set_text(_date_)
+
+    return(_date_)
 
 
 def set_cursor(_app_, _cursor_):
@@ -1550,8 +1553,10 @@ class Options:
 
         import pango
 
+        self._app = _app
+
         self.winOptions = gtk.Window()
-        self.winOptions.set_title(_("RTK - Options"))
+        self.winOptions.set_title(_(u"RTK - Options"))
 
         notebook = gtk.Notebook()
 
@@ -1559,13 +1564,13 @@ class Options:
         if(_conf.RTK_PROG_INFO[2] != ''):
             fixed = gtk.Fixed()
 
-            self.chkRevisions = _widg.make_check_button(_("Revisions"))
-            self.chkFunctions = _widg.make_check_button(_("Functions"))
-            self.chkRequirements = _widg.make_check_button(_("Requirements"))
-            self.chkSoftware = _widg.make_check_button(_("Software Reliability"))
-            self.chkValidation = _widg.make_check_button(_("Validation Tasks"))
-            self.chkRG = _widg.make_check_button(_("Reliability Growth"))
-            self.chkIncidents = _widg.make_check_button(_("Field Incidents"))
+            self.chkRevisions = _widg.make_check_button(_(u"Revisions"))
+            self.chkFunctions = _widg.make_check_button(_(u"Functions"))
+            self.chkRequirements = _widg.make_check_button(_(u"Requirements"))
+            self.chkSoftware = _widg.make_check_button(_(u"Software Reliability"))
+            self.chkValidation = _widg.make_check_button(_(u"Validation Tasks"))
+            self.chkRG = _widg.make_check_button(_(u"Reliability Tests"))
+            self.chkIncidents = _widg.make_check_button(_(u"Field Incidents"))
 
             self.btnSaveOptions = gtk.Button(stock=gtk.STOCK_SAVE)
             self.btnSaveOptions.connect('clicked', self.save_options)
@@ -1625,8 +1630,8 @@ class Options:
         fixed.put(self.rdoUsers, 5, 125)
         fixed.put(self.btnListEdit, 5, 205)
 
-        label = gtk.Label(_("Edit Lists"))
-        label.set_tooltip_text(_("Allows editting of lists used in RTK."))
+        label = gtk.Label(_(u"Edit Lists"))
+        label.set_tooltip_text(_(u"Allows editting of lists used in RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
@@ -1954,6 +1959,28 @@ class Options:
         return(_name, _fmt_idx)
 
     def save_options(self, button):
+
+        _values_ = (self.chkRevisions.get_active(),
+                    self.chkFunctions.get_active(),
+                    self.chkRequirements.get_active(),
+                    self.chkSoftware.get_active(),
+                    self.chkValidation.get_active(),
+                    self.chkRG.get_active(),
+                    0,
+                    self.chkIncidents.get_active(),
+                    0, 0, 0, 0)
+
+        _query_ = "UPDATE tbl_program_info \
+                   SET fld_revision_active=%d, fld_function_active=%d, \
+                       fld_requirement_active=%d, fld_software_active=%d, \
+                       fld_vandv_active=%d, fld_testing_active=%d, \
+                       fld_rcm_active=%d, fld_fraca_active=%d, \
+                       fld_fmeca_active=%d, fld_survival_active=%d, \
+                       fld_rbd_active=%d, fld_fta_active=%d" % _values_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=False)
 
         self.winOptions.destroy()
 
