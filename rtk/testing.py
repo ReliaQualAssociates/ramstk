@@ -1317,7 +1317,7 @@ class Testing:
 
             return(plan)
 
-        def _rg_plot_load_observed(self, obs, N):
+        def _load_observed(self, obs, N):
             """
             Method to load the observed MTBF values.
 
@@ -1423,7 +1423,8 @@ class Testing:
 
 # If there are any observed values, build the observed MTBF curve with bounds.
         if(len(_obs_) > 0):
-            (_obs_times_, _new_obs_times, _obsll_, _obsul_) = _load_observed(self, _obs_, _N_)
+            (_obs_times_, _new_obs_times,
+             _obsll_, _obsul_) = _load_observed(self, _obs_, _N_)
 
             line = matplotlib.lines.Line2D(_obs_times_, _obs_, lw=0.0, color='k',
                                            marker='o', markersize=6)

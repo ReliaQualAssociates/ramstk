@@ -1286,55 +1286,55 @@ class AddRGRecord(gtk.Assistant):
         button -- the gtk.ToolButton that called this method.
         """
 
-        model = self._app.TESTING.model
-        row = self._app.TESTING.selected_row
-        idx = self._app.TESTING._col_order[0]
+        (_model_, _row_) = self._app.TESTING.treeview.get_selection().get_selected()
+        _idx_ = self._app.TESTING._col_order[0]
 
-        query = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
-                 FROM tbl_survival_data \
-                 WHERE fld_dataset_id=%d" % self._app.TESTING.test_id
-        _results = self._app.DB.execute_query(query,
-                                              None,
-                                              self._app.ProgCnx,
-                                              commit=False)
+        _query_ = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
+                   FROM tbl_survival_data \
+                   WHERE fld_dataset_id=%d" % self._app.TESTING.test_id
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=False)
 
-        if(_results[0][0] is None or _results[0][0] == ''):
-            _last_id = 0
+        if(_results_[0][0] is None or _results_[0][0] == ''):
+            _last_id_ = 0
         else:
-            _last_id = _results[0][0]
+            _last_id_ = _results_[0][0]
 
-        if(_results[0][1] is None or _results[0][1] == ''):
-            _last_time = 0.0
+        if(_results_[0][1] is None or _results_[0][1] == ''):
+            _last_time_ = 0.0
         else:
-            _last_time = float(_results[0][1])
+            _last_time_ = float(_results_[0][1])
 
-        _last_id += 1
+        _last_id_ += 1
 
-        _assembly_id = model.get_value(row, idx)
+        _assembly_id_ = _model_.get_value(_row_, _idx_)
 # Read the test time entered by the user.  If this is entered as additional
 # test time, calculate the cumulative test time.
-        _time = float(self.txtTime.get_text())
+        _time_ = float(self.txtTime.get_text())
         if(self.chkAdditional.get_active()):
-            _time = _time + _last_time
-        _n_fails = int(self.txtNumFails.get_text())
+            _time_ = _time_ + _last_time_
+        _n_fails_ = int(self.txtNumFails.get_text())
 
         _date_ = datetime.strptime(self.txtDate.get_text(), '%Y-%m-%d').toordinal()
-        query = "INSERT INTO tbl_survival_data \
-                 (fld_record_id, fld_dataset_id, fld_left_interval, \
-                  fld_right_interval, fld_quantity, fld_unit, \
-                  fld_part_num, fld_market, fld_model, fld_mode_type, \
-                  fld_assembly_id, fld_request_date) \
-                 VALUES (%d, %d, %f, %f, %d, '%s', '%s', '%s', '%s', \
-                         %d, %d, %d)" % (_last_id, self._app.TESTING.test_id, \
-                                     0.0, _time, _n_fails, '', '', '', '', \
-                                     0, _assembly_id, _date_)
+        _query_ = "INSERT INTO tbl_survival_data \
+                   (fld_record_id, fld_dataset_id, fld_left_interval, \
+                    fld_right_interval, fld_quantity, fld_unit, \
+                    fld_part_num, fld_market, fld_model, fld_mode_type, \
+                    fld_assembly_id, fld_request_date) \
+                   VALUES (%d, %d, %f, %f, %d, '%s', '%s', '%s', '%s', \
+                           %d, %d, %d)" % (_last_id_, \
+                                           self._app.TESTING.test_id, \
+                                           0.0, _time_, _n_fails_, '', '', \
+                                           '', '', 0, _assembly_id_, _date_)
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
 
-        if not results:
+        if not _results_:
             self._app.debug_log.error("adds.py: Failed to add new test record to survival data table.")
             return True
 
