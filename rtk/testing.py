@@ -768,7 +768,10 @@ class Testing:
 
         _assembly_id = _model_.get_value(_row_,
                                          self._col_order[1])
-        _index_ = self._dic_assemblies[_assembly_id]
+        try:
+            _index_ = self._dic_assemblies[_assembly_id]
+        except KeyError:
+            _index_ = 0
         self.cmbAssembly.set_active(_index_)
 
         _test_type = _model_.get_value(_row_, self._col_order[5])
@@ -1367,17 +1370,18 @@ class Testing:
             _obsll_ = np.array([], float)
             _obsul_ = np.array([], float)
             for i in range(len(_obs_)):
-                _Cll_ = (1.0 - (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(_N_[:i+1]))))**-2.0
-                _Cul_ = (1.0 + (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(_N_[:i+1]))))**-2.0
+                _Cll_ = (1.0 - (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0
+                _Cul_ = (1.0 + (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0
                 _obsll_ = np.append(_obsll_, obs[i] * _Cll_)
                 _obsul_ = np.append(_obsul_, obs[i] * _Cul_)
 
             (_new_obs_times_, _obsll_) = _calc.smooth_curve(_obs_times_, _obsll_,
                                                             50 * len(obs))
-            _obsul_ = _calc.smooth_curve(_obs_times_, _obsul_, 50 * len(obs))[1]
+            (_new_obs_times_, _obsul_) = _calc.smooth_curve(_obs_times_, _obsul_,
+                                                            50 * len(obs))
             _obs_times_ = _obs_times_.tolist()
 
-            return(_obs_times_, _new_obs_times, _obsll_, _obsul_)
+            return(_obs_times_, _new_obs_times_, _obsll_, _obsul_)
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
@@ -1423,7 +1427,7 @@ class Testing:
 
 # If there are any observed values, build the observed MTBF curve with bounds.
         if(len(_obs_) > 0):
-            (_obs_times_, _new_obs_times,
+            (_obs_times_, _new_obs_times_,
              _obsll_, _obsul_) = _load_observed(self, _obs_, _N_)
 
             line = matplotlib.lines.Line2D(_obs_times_, _obs_, lw=0.0, color='k',
@@ -1732,7 +1736,7 @@ class Testing:
         t1 = _model_.get_value(_row_, 20)
         AvgMS = _model_.get_value(_row_, 18)
         AvgGR = _model_.get_value(_row_, 17)
-        Prob = _model_.get_value(_row_, 18)
+        Prob = _model_.get_value(_row_, 19)
         AvgFEF = _model_.get_value(_row_, 21)
         _alpha_ = self.spnConfidence.get_value() / 100.0
 
@@ -1802,7 +1806,6 @@ class Testing:
 # Calculate the expected number of failures for the phase and the average MTBF
 # for the phase.
             TTTi.append(T)
-
             try:
                 Ni = ((t1 / MTBFI) * (sum(TTTi) / t1)**(1.0 - GR)) - sum(N)
                 M = T / Ni
@@ -1856,8 +1859,8 @@ class Testing:
             _mtbfc = _mu[-1]
 
 # Load the results.
-            _model_.set_value(_row_, 23, max(X))
-            _model_.set_value(_row_, 24, sum(F))
+            _model_.set_value(_row_, 24, max(X))
+            _model_.set_value(_row_, 25, sum(F))
             self.txtScale.set_text(str(fmt.format(_lambda_hat[-1])))
             self.txtShape.set_text(str(fmt.format(_beta_hat[-1])))
             self.txtGRActual.set_text(str(fmt.format(_gr)))
@@ -1885,9 +1888,9 @@ class Testing:
         self._assess_plan_feasibility(TTTi, N)
         self._assessment_tab_load()
         if(self.optMTBF.get_active()):
-            self._rg_plot_load(TTTi, MTBFAP, _mu, N)
+            self._rg_plot_load(TTTi, MTBFAP, _mu, _N_)
         elif(self.optFailureIntensity.get_active()):
-            self._rg_plot_load(TTTi, MTBFAP, _rho, N)
+            self._rg_plot_load(TTTi, MTBFAP, _rho, _N_)
 
         return False
 
@@ -2017,23 +2020,23 @@ class Testing:
 
 # Find the notebook page that is currently selected.  We only save the
 # information associated with the currently selected page.
-        _page = self.notebook.get_current_page()
+        _page_ = self.notebook.get_current_page()
 
 # Find the test type so we can save the contents of any gtk.TreeView
 # associated specifically with the selected type of test.
-        _test_type = _model_.get_value(_row_, 4)
+        _test_type_ = _model_.get_value(_row_, 5)
 
         self.model.foreach(self._save_line_item)
-        if(_test_type == 5):                # Reliability growth.
-            model = self.tvwRGPlanDetails.get_model()
-            model.foreach(self._save_rg_phases)
+        if(_test_type_ == 5):                # Reliability growth.
+            _model_ = self.tvwRGPlanDetails.get_model()
+            _model_.foreach(self._save_rg_phases)
 
-            model = self.tvwTestFeasibility.get_model()
-            model.foreach(self._save_rg_feasibility)
+            _model_ = self.tvwTestFeasibility.get_model()
+            _model_.foreach(self._save_rg_feasibility)
 
-        if(_page == 2):                     # Observed data.
-            model = self.tvwTestAssessment.get_model()
-            model.foreach(self._save_rg_data)
+        if(_page_ == 2):                     # Observed data.
+            _model_ = self.tvwTestAssessment.get_model()
+            _model_.foreach(self._save_rg_data)
 
         return False
 
@@ -2120,7 +2123,6 @@ class Testing:
                     model.get_value(row, 6), model.get_value(row, 7), \
                     model.get_value(row, 8), model.get_value(row, 0), \
                     self.test_id)
-
         _query_ = "UPDATE tbl_rel_growth \
                    SET fld_test_units=%d, fld_start_date='%s', fld_end_date='%s', \
                        fld_test_time=%f, fld_growth_rate=%f, fld_mi=%f, \
@@ -2254,7 +2256,11 @@ class Testing:
             model = combo.get_model()
             row = combo.get_active_iter()
             if(row is not None):
-                _text_ = int(model.get_value(row, 1))
+                try:
+                    _text_ = int(model.get_value(row, 1))
+                except ValueError:
+                    print model.get_value(row, 1)
+                    _text_ = 0
             else:
                 _text_ = 0
         else:
