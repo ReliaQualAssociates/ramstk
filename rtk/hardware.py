@@ -69,29 +69,28 @@ class Hardware:
         """
 
         self._ready = False
-
         self._app = application
 
-# Define local dictionary variables.
+        # Define local dictionary variables.
         self._treepaths = {}
 
-# Define global dictionary variables.
+        # Define global dictionary variables.
         self.dicHARDWARE = {}
 
-# Define local list variables.
+        # Define local list variables.
         self._col_order = []
 
-# Define global object variables.
+        # Define global object variables.
         self.treeview = None
         self.model = None
         self.selected_row = None
 
-# Define global scalar variables.
+        # Define global scalar variables.
         self.ispart = False
         self.assembly = None
         self.system_ht = 0.0
 
-# Define local scalar variables.
+        # Define local scalar variables.
         self._assembly_id = 0
 
         self._ready = True

@@ -204,7 +204,12 @@ def make_combo(_width_=200, _height_=30, simple=True):
     """
 
     if simple:
-        _combo_ = gtk.combo_box_new_text()
+        #_combo_ = gtk.combo_box_new_text()
+        _list_ = gtk.ListStore(gobject.TYPE_STRING)
+        _combo_ = gtk.ComboBox(_list_)
+        _cell_ = gtk.CellRendererText()
+        _combo_.pack_start(_cell_, True)
+        _combo_.set_attributes(_cell_, text=0)
     else:
         _list_ = gtk.TreeStore(gobject.TYPE_STRING,
                                gobject.TYPE_STRING,

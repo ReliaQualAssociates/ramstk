@@ -82,19 +82,6 @@ class Validation:
     notebook = gtk.Notebook()
     vbxValidation = gtk.VBox()
 
-# Create the General Data tab widgets.
-    # These widgets are for the Task Description.
-    cmbTaskType = _widg.make_combo()
-    cmbMeasurementUnit = _widg.make_combo()
-
-    txtID = _widg.make_entry(_width_=50, editable=False)
-    txtMaxAcceptable = _widg.make_entry(_width_=100)
-    txtMeanAcceptable = _widg.make_entry(_width_=100)
-    txtMinAcceptable = _widg.make_entry(_width_=100)
-    txtVarAcceptable = _widg.make_entry(_width_=100)
-    txtSpecification = _widg.make_entry()
-    txtTask = _widg.make_text_view(width=400)
-
     # These widgets are for the Task Effort.
     btnEndDate = _widg.make_button(_height_=25, _width_=25,
                                    _label_="...", _image_=None)
@@ -154,6 +141,19 @@ class Validation:
 
 # Define global integer variables.
         self.validation_id = 0
+
+# General Data tab widgets.
+        self.cmbTaskType = _widg.make_combo()
+        self.cmbMeasurementUnit = _widg.make_combo()
+
+        self.txtID = _widg.make_entry(_width_=50, editable=False)
+        self.txtMaxAcceptable = _widg.make_entry(_width_=100)
+        self.txtMeanAcceptable = _widg.make_entry(_width_=100)
+        self.txtMinAcceptable = _widg.make_entry(_width_=100)
+        self.txtVarAcceptable = _widg.make_entry(_width_=100)
+        self.txtSpecification = _widg.make_entry()
+        self.txtTask = _widg.make_text_view(width=400)
+
 
 # Create the Notebook for the VALIDATION object.
         if(_conf.TABPOS[2] == 'left'):
@@ -278,7 +278,7 @@ class Validation:
             Function to create the General Data widgets.
             """
 
-    # Create the Task Description widgets.
+            # Create the Task Description widgets.
             self.txtID.set_tooltip_text(_(u"Displays the unique code for the selected V&V activity."))
 
             self.txtTask.set_tooltip_text(_(u"Displays the description of the selected V&V activity."))

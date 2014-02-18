@@ -338,13 +338,6 @@ class Software:
     btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
     btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
 
-# Create the General Data tab widgets.
-    cmbApplication = _widg.make_combo(simple=True)
-    cmbDevelopment = _widg.make_combo(simple=True)
-    cmbLevel = _widg.make_combo(simple=True)
-    cmbPhase = _widg.make_combo(simple=True)
-    txtDescription = _widg.make_text_view(width=400)
-
 # Create the Risk Analysis tab widgets.
     hpnRiskAnalysis = gtk.HPaned()
     nbkRiskAnalysis = gtk.Notebook()
@@ -735,32 +728,6 @@ class Software:
     hpnTRR = gtk.HPaned()
     lblTRR = gtk.Label()
 
-# Create the Test Technique Selection tab widgets.
-    cmbTCL = _widg.make_combo(simple=True)
-    cmbTestPath = _widg.make_combo(simple=True)
-    cmbTestEffort = _widg.make_combo(simple=True)
-    cmbTestApproach = _widg.make_combo(simple=True)
-
-    txtLaborTest = _widg.make_entry(_width_=100)
-    txtLaborDev = _widg.make_entry(_width_=100)
-    txtBudgetTest = _widg.make_entry(_width_=100)
-    txtBudgetDev = _widg.make_entry(_width_=100)
-    txtScheduleTest = _widg.make_entry(_width_=100)
-    txtScheduleDev = _widg.make_entry(_width_=100)
-    txtBranches = _widg.make_entry(_width_=100)
-    txtBranchesTest = _widg.make_entry(_width_=100)
-    txtInputs = _widg.make_entry(_width_=100)
-    txtInputsTest = _widg.make_entry(_width_=100)
-    txtUnits = _widg.make_entry(_width_=100)
-    txtUnitsTest = _widg.make_entry(_width_=100)
-    txtInterfaces = _widg.make_entry(_width_=100)
-    txtInterfacesTest = _widg.make_entry(_width_=100)
-
-    scwTestSelectionMatrix = gtk.ScrolledWindow()
-
-    tvwUnitTestSelectionMatrix = gtk.TreeView()
-    tvwCSCITestSelectionMatrix = gtk.TreeView()
-
 # Create the Reliability Estimation tab widgets.
     txtFT1 = _widg.make_entry()
     txtFT2 = _widg.make_entry()
@@ -813,6 +780,39 @@ class Software:
 
 # Define local float variables.
         self._rpfom = 0.0
+
+# General Data tab widgets.
+        self.cmbApplication = _widg.make_combo(simple=True)
+        self.cmbDevelopment = _widg.make_combo(simple=True)
+        self.cmbLevel = _widg.make_combo(simple=True)
+        self.cmbPhase = _widg.make_combo(simple=True)
+        self.txtDescription = _widg.make_text_view(width=400)
+
+# Test Technique Selection tab widgets.
+        self.cmbTCL = _widg.make_combo(simple=True)
+        self.cmbTestPath = _widg.make_combo(simple=True)
+        self.cmbTestEffort = _widg.make_combo(simple=True)
+        self.cmbTestApproach = _widg.make_combo(simple=True)
+
+        self.txtLaborTest = _widg.make_entry(_width_=100)
+        self.txtLaborDev = _widg.make_entry(_width_=100)
+        self.txtBudgetTest = _widg.make_entry(_width_=100)
+        self.txtBudgetDev = _widg.make_entry(_width_=100)
+        self.txtScheduleTest = _widg.make_entry(_width_=100)
+        self.txtScheduleDev = _widg.make_entry(_width_=100)
+        self.txtBranches = _widg.make_entry(_width_=100)
+        self.txtBranchesTest = _widg.make_entry(_width_=100)
+        self.txtInputs = _widg.make_entry(_width_=100)
+        self.txtInputsTest = _widg.make_entry(_width_=100)
+        self.txtUnits = _widg.make_entry(_width_=100)
+        self.txtUnitsTest = _widg.make_entry(_width_=100)
+        self.txtInterfaces = _widg.make_entry(_width_=100)
+        self.txtInterfacesTest = _widg.make_entry(_width_=100)
+
+        self.scwTestSelectionMatrix = gtk.ScrolledWindow()
+
+        self.tvwUnitTestSelectionMatrix = gtk.TreeView()
+        self.tvwCSCITestSelectionMatrix = gtk.TreeView()
 
         if(_conf.TABPOS[2] == 'left'):
             self.notebook.set_tab_pos(gtk.POS_LEFT)

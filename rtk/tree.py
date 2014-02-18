@@ -606,17 +606,17 @@ class TreeWindow(gtk.Window):
         if(_conf.RTK_PAGE_NUMBER[page_num] == 0):
             try:
                 self._app.REVISION.treeview.grab_focus()
-                model = self._app.REVISION.model
-                path = model.get_path(model.get_iter_root())
-                column = self._app.REVISION.treeview.get_column(0)
-                self._app.REVISION.treeview.row_activated(path, column)
+                (_model_, _row_) = self._app.REVISION.treeview.get_selection().get_selected()
+                _path_ = _model_.get_path(_model_.get_iter_root())
+                _column_ = self._app.REVISION.treeview.get_column(0)
+                self._app.REVISION.treeview.row_activated(_path_, _column_)
                 button.set_tooltip_text(_(u"Add a new revision to the current RTK Program."))
             except TypeError:               # There are no revisions.
                 pass
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
-                model = self._app.REQUIREMENT.model
+                model = self._app.REQUIREMENT.treeview.get_model()
                 path = model.get_path(model.get_iter_root())
                 column = self._app.REQUIREMENT.treeview.get_column(0)
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
@@ -625,7 +625,7 @@ class TreeWindow(gtk.Window):
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
             try:
                 self._app.FUNCTION.treeview.grab_focus()
-                model = self._app.FUNCTION.model
+                model = self._app.FUNCTION.treeview.get_model()
                 path = model.get_path(model.get_iter_root())
                 column = self._app.FUNCTION.treeview.get_column(0)
                 self._app.FUNCTION.treeview.row_activated(path, column)

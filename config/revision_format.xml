@@ -3,7 +3,7 @@
 
       revision_format.xml is part of The RTK Project
 
-      Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 All rights reserved.
 -->
@@ -159,8 +159,8 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Mean Time To Repair</defaulttitle>
-            <usertitle>Mean Time To Repair</usertitle>
+            <defaulttitle>Mean Time To Repair (MTTR)</defaulttitle>
+            <usertitle>Mean Time To Repair (MTTR)</usertitle>
             <datatype>gfloat</datatype>
             <position>16</position>
             <widget>text</widget>

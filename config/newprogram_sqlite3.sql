@@ -166,13 +166,15 @@ CREATE TABLE "tbl_functions" (
 );
 INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,'-',0,0);
 
+DROP TABLE IF EXISTS "tbl_functional_matrix";
 CREATE TABLE "tbl_functional_matrix" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
     "fld_function_id" INTEGER NOT NULL DEFAULT (0),
     "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
+    "fld_relationship" VARCHAR(2) NOT NULL DEFAULT (''),
     PRIMARY KEY ("fld_assembly_id", "fld_function_id")
 );
-INSERT INTO "tbl_functional_matrix" VALUES(0,0,0);
+INSERT INTO "tbl_functional_matrix" VALUES(0,0,0,'');
 
 --
 -- Create the tables for storing program requirements information.
