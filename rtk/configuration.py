@@ -261,6 +261,7 @@ class RTKConf:
         Creates a default configuration file in the user's configuration
         directory.
         """
+
         from os.path import basename
 
         if(_util.dir_exists(self.conf_dir)):

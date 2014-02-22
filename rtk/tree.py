@@ -488,7 +488,6 @@ class TreeWindow(gtk.Window):
 
 # New file button.
         button = gtk.ToolButton()
-        button.set_label(_(u"New"))
         button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/new.png')
@@ -499,8 +498,7 @@ class TreeWindow(gtk.Window):
 
 # Connect button
         button = gtk.ToolButton()
-        button.set_label(_(u"Open"))
-        button.set_tooltip_text(_("Connect to an existing RTK Program Database."))
+        button.set_tooltip_text(_(u"Connect to an existing RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/open.png')
         button.set_icon_widget(image)
@@ -510,8 +508,7 @@ class TreeWindow(gtk.Window):
 
 # Save button
         button = gtk.ToolButton()
-        button.set_label(_(u"Save"))
-        button.set_tooltip_text(_("Save the currently open RTK Program Database."))
+        button.set_tooltip_text(_(u"Save the currently open RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
@@ -524,26 +521,25 @@ class TreeWindow(gtk.Window):
 
 # Calculate button
         button = gtk.MenuToolButton(None, label = "")
-        button.set_tooltip_text(_("Perform various calculations on the system."))
+        button.set_tooltip_text(_(u"Perform various calculations on the system."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
-        button.set_label(_(u"Calculate"))
         menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("Project"))
-        menu_item.set_tooltip_text(_("Calculate the currently open RTK project."))
+        menu_item = gtk.MenuItem(label=_(u"Project"))
+        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK project."))
         menu_item.connect('activate', _calc.calculate_project, self._app, 0)
         menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Revision"))
-        menu_item.set_tooltip_text(_("Calculate the revisions only."))
+        menu_item = gtk.MenuItem(label=_(u"Revision"))
+        menu_item.set_tooltip_text(_(u"Calculate the revisions only."))
         menu_item.connect('activate', _calc.calculate_project, self._app, 1)
         menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("Function"))
-        menu_item.set_tooltip_text(_("Calculate the functions only."))
+        menu_item = gtk.MenuItem(label=_(u"Function"))
+        menu_item.set_tooltip_text(_(u"Calculate the functions only."))
         menu_item.connect('activate', _calc.calculate_project, self._app, 2)
         menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_("System"))
-        menu_item.set_tooltip_text(_("Calculate the hardware assemblies only."))
+        menu_item = gtk.MenuItem(label=_(u"System"))
+        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies only."))
         menu_item.connect('activate', _calc.calculate_project, self._app, 3)
         menu.add(menu_item)
         button.set_menu(menu)
@@ -557,8 +553,7 @@ class TreeWindow(gtk.Window):
 
 # Save and quit button
         button = gtk.ToolButton()
-        button.set_label(_(u"Save & Quit"))
-        button.set_tooltip_text(_("Save the currently open RTK Program Database then quit"))
+        button.set_tooltip_text(_(u"Save the currently open RTK Program Database then quit"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
@@ -569,8 +564,7 @@ class TreeWindow(gtk.Window):
 
 # Quit without saving button
         button = gtk.ToolButton()
-        button.set_label(_(u"Quit"))
-        button.set_tooltip_text(_("Quit without saving the currently open RTK Program Database"))
+        button.set_tooltip_text(_(u"Quit without saving the currently open RTK Program Database"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
@@ -591,14 +585,15 @@ class TreeWindow(gtk.Window):
         page     -- the newly selected page widget.
         page_num -- the newly selected page number.
                     0 = Revision Tree
-                    1 = Requirements Tree
-                    2 = Function Tree
+                    1 = Function Tree
+                    2 = Requirements Tree
                     3 = Hardware Tree
                     4 = Software Tree
                     5 = Validation Tree
                     6 = Reliability Testing Tree
-                    7 = Field Incident Tree
-                    8 = Survival Analyses Tree
+                    7 = Maintenance Policy Tree
+                    8 = Field Incident Tree
+                    9 = Survival Analyses Tree
         """
 
         button = self.toolbar.get_nth_item(4)
@@ -615,15 +610,6 @@ class TreeWindow(gtk.Window):
                 pass
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
             try:
-                self._app.REQUIREMENT.treeview.grab_focus()
-                model = self._app.REQUIREMENT.treeview.get_model()
-                path = model.get_path(model.get_iter_root())
-                column = self._app.REQUIREMENT.treeview.get_column(0)
-                self._app.REQUIREMENT.treeview.row_activated(path, column)
-            except TypeError:               # There are no requirements.
-                self._app.REQUIREMENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
-            try:
                 self._app.FUNCTION.treeview.grab_focus()
                 model = self._app.FUNCTION.treeview.get_model()
                 path = model.get_path(model.get_iter_root())
@@ -631,6 +617,15 @@ class TreeWindow(gtk.Window):
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
                 self._app.FUNCTION.load_notebook()
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
+            try:
+                self._app.REQUIREMENT.treeview.grab_focus()
+                model = self._app.REQUIREMENT.treeview.get_model()
+                path = model.get_path(model.get_iter_root())
+                column = self._app.REQUIREMENT.treeview.get_column(0)
+                self._app.REQUIREMENT.treeview.row_activated(path, column)
+            except TypeError:               # There are no requirements.
+                self._app.REQUIREMENT.load_notebook()
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()
@@ -689,7 +684,7 @@ class TreeWindow(gtk.Window):
                 button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 10):
+        elif(_conf.RTK_PAGE_NUMBER[page_num] == 9):
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model

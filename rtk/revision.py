@@ -5,7 +5,7 @@ to the revision of the Program.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -69,6 +69,7 @@ class Revision:
         self._int_mission_id = -1
 
         # Define private REVISION class dictionary attributes.
+
         # For mission information.  Mission ID is the key.
         # The value is a list:
         # [Mission Time, Time Units, Mission Name]
@@ -182,81 +183,79 @@ class Revision:
 
     def create_tree(self):
         """
-        Creates the REVISION treeview and connects it to callback functions
-        to handle editting.  Background and foreground colors can be set
-        using the user-defined values in the RTK configuration file.
+        Method to create the REVISION gtk.TreeView() and connects it to
+        callback functions to handle editting.
         """
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
-
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
-
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
         self.treeview.connect('button_press_event', self._treeview_clicked)
 
+        _scrollwindow_ = gtk.ScrolledWindow()
+        _scrollwindow_.add(self.treeview)
+
         return _scrollwindow_
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the REVISION Object work book.
+        Method to create the gtk.ToolBar() for the REVISION class work book.
         """
 
-        toolbar = gtk.Toolbar()
+        _toolbar_ = gtk.Toolbar()
 
         _position_ = 0
 
         # Add revision button.
-        button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Adds a new revision to the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', AddRevision, self._app)
-        toolbar.insert(button, _position_)
+        _button_ = gtk.ToolButton()
+        _button_.set_tooltip_text(_(u"Adds a new revision to the RTK Program Database."))
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        _button_.set_icon_widget(_image_)
+        _button_.connect('clicked', AddRevision, self._app)
+        _toolbar_.insert(_button_, _position_)
         _position_ += 1
 
         # Delete revision button
-        button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Removes the currently selected revision from the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.delete_revision)
-        toolbar.insert(button, _position_)
+        _button_ = gtk.ToolButton()
+        _button_.set_tooltip_text(_(u"Removes the currently selected revision from the RTK Program Database."))
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        _button_.set_icon_widget(_image_)
+        _button_.connect('clicked', self.delete_revision)
+        _toolbar_.insert(_button_, _position_)
         _position_ += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), _position_)
+        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
         _position_ += 1
 
-        # Calculate revision button
-        button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Calculate the currently selected revision."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.calculate)
-        toolbar.insert(button, _position_)
+        # Calculate revision _button_
+        _button_ = gtk.ToolButton()
+        _button_.set_tooltip_text(_(u"Calculate the currently selected revision."))
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
+        _button_.set_icon_widget(_image_)
+        _button_.connect('clicked', self.calculate)
+        _toolbar_.insert(_button_, _position_)
         _position_ += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), _position_)
+        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
         _position_ += 1
 
-        # Save revision button.
-        button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Saves the currently selected revision to the RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        button.set_icon_widget(image)
-        button.connect('clicked', self.save_revision)
-        toolbar.insert(button, _position_)
+        # Save revision _button_.
+        _button_ = gtk.ToolButton()
+        _button_.set_tooltip_text(_(u"Saves the currently selected revision to the RTK Program Database."))
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        _button_.set_icon_widget(_image_)
+        _button_.connect('clicked', self.save_revision)
+        _toolbar_.insert(_button_, _position_)
         _position_ += 1
 
-        toolbar.show()
+        _toolbar_.show()
 
-        return toolbar
+        return _toolbar_
 
     def _create_notebook(self):
         """
@@ -302,13 +301,11 @@ class Revision:
             _x_pos_ = max(_max1_, _max2_) + 25
 
             self.txtCode.set_tooltip_text(_("A unique code for the selected revision."))
-            self.txtCode.connect('focus-out-event',
-                                 self._callback_entry, 'text', 22)
+            self.txtCode.connect('focus-out-event', self._callback_entry, 22)
             _fxdGeneralData_.put(self.txtCode, _x_pos_, _y_pos_[0])
 
             self.txtName.set_tooltip_text(_("The name of the selected revision."))
-            self.txtName.connect('focus-out-event',
-                                 self._callback_entry, 'text', 17)
+            self.txtName.connect('focus-out-event', self._callback_entry, 17)
             _fxdGeneralData_.put(self.txtName, _x_pos_, _y_pos_[1])
 
             self.txtTotalCost.set_tooltip_text(_("Displays the total cost of the selected revision."))
@@ -326,7 +323,7 @@ class Revision:
             textview = _widg.make_text_view(buffer_=self.txtRemarks, width=400)
             textview.set_tooltip_text(_(u"Enter any remarks associated with the selected revision."))
             _view_ = textview.get_children()[0].get_children()[0]
-            _view_.connect('focus-out-event', self._callback_entry, 'text', 20)
+            _view_.connect('focus-out-event', self._callback_entry, 20)
             _fxdGeneralData_.put(textview, _x_pos_, _y_pos_[6])
 
             _fxdGeneralData_.show_all()
@@ -581,12 +578,12 @@ class Revision:
 
             self.txtMission.set_tooltip_text(_(u"Displays the mission name."))
             self.txtMission.connect('focus-out-event',
-                                    self._callback_entry, 'text', 100)
+                                    self._callback_entry, 100)
             _fxdMission_.put(self.txtMission, _x_pos_+205, _y_pos_[0])
 
             self.txtMissionTime.set_tooltip_text(_(u"Displays the total mission time."))
             self.txtMissionTime.connect('focus-out-event',
-                                        self._callback_entry, 'float', 101)
+                                        self._callback_entry, 101)
             _fxdMission_.put(self.txtMissionTime, _x_pos_, _y_pos_[1])
 
             self.cmbTimeUnit.set_tooltip_text(_(u"Select and displays the time units for the selected mission."))
@@ -1864,24 +1861,51 @@ class Revision:
             if _results_ == '' or not _results_ or _results_ is None:
                 return True
 
-        self.cost = float(_results_[0][0])
-        self.active_hazard_rate = float(_results_[0][1])
-        self.dormant_hazard_rate = float(_results_[0][2])
-        self.software_hazard_rate = float(_results_[0][3])
-        self.n_parts = int(_results_[0][4])
+        try:
+            self.cost = float(_results_[0][0])
+        except TypeError:
+            self.cost = 0.0
+
+        try:
+            self.active_hazard_rate = float(_results_[0][1])
+        except TypeError:
+            self.active_hazard_rate = 0.0
+
+        try:
+            self.dormant_hazard_rate = float(_results_[0][2])
+        except TypeError:
+            self.dormant_hazard_rate = 0.0
+
+        try:
+            self.software_hazard_rate = float(_results_[0][3])
+        except TypeError:
+            self.software_hazard_rate = 0.0
+
+        try:
+            self.n_parts = int(_results_[0][4])
+        except TypeError:
+            self.n_parts = 0
 
         # Predicted h(t).
         self.hazard_rate = self.active_hazard_rate + self.dormant_hazard_rate + self.software_hazard_rate
 
         # Calculate the MTBF.
-        self.mtbf = 1.0 / self.hazard_rate
+        try:
+            self.mtbf = 1.0 / self.hazard_rate
+        except ZeroDivisionError:
+            self.mtbf = 0.0
 
         # Calculate reliabilities.
         self.reliability = exp(-1.0 * self.hazard_rate / _conf.FRMULT)
         self.mission_reliability = exp(-1.0 * self.hazard_rate * _conf.MTIME / _conf.FRMULT)
 
         # Calculate availabilities.
-        self.availability = self.mtbf / (self.mtbf + self.mttr)
+        try:
+            self.availability = self.mtbf / (self.mtbf + self.mttr)
+        except ZeroDivisionError:
+            self.availability = 1.0
+        except OverflowError:
+            self.availability = 1.0
 
         # Calculate costs.
         self.cost_per_failure = self.cost * self.hazard_rate

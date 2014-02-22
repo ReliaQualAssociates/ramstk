@@ -167,15 +167,14 @@ class Function:
         set using the user-defined values in the RTK configuration file.
         """
 
-        _scrollwindow_ = gtk.ScrolledWindow()
-
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of functions."))
         self.treeview.set_enable_tree_lines(True)
-        _scrollwindow_.add(self.treeview)
-
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
+
+        _scrollwindow_ = gtk.ScrolledWindow()
+        _scrollwindow_.add(self.treeview)
 
         return _scrollwindow_
 
@@ -352,11 +351,11 @@ class Function:
 
         def _create_functional_matrix_tab(self, notebook):
             """
-            Function to create the functional matrix tab.
+            Function to create the hardware-function matrix tab.
 
             Keyword Arguments:
             self     -- the current instance of a FUNCTION class.
-            notebook -- the gtk.Notebook() to add the page.
+            notebook -- the gtk.Notebook() to which to add the page.
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -394,7 +393,7 @@ class Function:
             # Insert the tab.
             _label_ = gtk.Label()
             _label_.set_markup("<span weight='bold'>" +
-                               _(u"Functional\nMatrix") +
+                               _(u"Hardware-\nFunction\nMatrix") +
                                "</span>")
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)

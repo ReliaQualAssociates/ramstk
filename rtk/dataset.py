@@ -762,11 +762,11 @@ class Dataset:
             self.chkParts.hide()
 
         if(self.model.get_value(self.selected_row, 4) == 3):        # NHPP - Power Law
-            if(self.model.get_value(self.selected_row, 8) == 1):    # MLE
+            if self.model.get_value(self.selected_row, 8) == 2:     # Regression
+                _results_ = [[_(u"Duane")], [_(u"Bootstrap")]]
+            else:                                                   # MLE
                 _results_ = [[_(u"Fisher Matrix")], [_(u"Crow")],
                              [_(u"Bootstrap")]]
-            elif(self.model.get_value(self.selected_row, 8) == 2):  # Regression
-                _results_ = [[_(u"Duane")], [_(u"Bootstrap")]]
         else:
             _results_ = [[_(u"Fisher Matrix")], [_(u"Likelihood")],
                          [_(u"Bootstrap")]]
@@ -1835,7 +1835,10 @@ class Dataset:
                                               self._app.ProgCnx,
                                               False)
 
-        _values = (_results[0][0] + 1, self.dataset_id, _assembly_id)
+        try:
+            _values = (_results[0][0] + 1, self.dataset_id, _assembly_id)
+        except TypeError:
+            _values = (0, self.dataset_id, _assembly_id)
         _query = "INSERT INTO tbl_survival_data \
                   (fld_record_id, fld_dataset_id, fld_assembly_id) \
                   VALUES (%d, %d, %d)" % _values
@@ -2407,7 +2410,7 @@ class Dataset:
 # Create lists of the failure times and number of failures.
             for i in range(len(_results_)):
                 _F_.append(_results_[i][5])
-                _X_.append(_results_[i][3])
+                _X_.append(_results_[i][2])
                 _dates_.append(_results_[i][6])
 
             _T_ = float(self.txtEndTime.get_text())
@@ -2541,10 +2544,10 @@ class Dataset:
                             _type_=[2, 2])
 
 # Plot the smoothed confidence bounds.
-            line = matplotlib.lines.Line2D(_new_times_, _mtbf_c_plot_ll_,
+            line = matplotlib.lines.Line2D(_new_times_[10:], _mtbf_c_plot_ll_[10:],
                                            lw=1.5, color='r', ls='-.')
             self.axAxis1.add_line(line)
-            line = matplotlib.lines.Line2D(_new_times_, _mtbf_c_plot_ul_,
+            line = matplotlib.lines.Line2D(_new_times_[10:], _mtbf_c_plot_ul_[10:],
                                            lw=1.5, color='b', ls='-.')
             self.axAxis1.add_line(line)
 
@@ -3222,6 +3225,7 @@ class Dataset:
         """
 
         self.model.foreach(self._save_line_item)
+        self._survival_data_save(button)
 
         return False
 
@@ -3330,11 +3334,12 @@ class Dataset:
 
         _values_ = (model.get_value(row, 1), model.get_value(row, 2),
                     model.get_value(row, 3), model.get_value(row, 4),
-                    model.get_value(row, 0))
+                    model.get_value(row, 5), model.get_value(row, 0))
 
         _query_ = "UPDATE tbl_survival_data \
                    SET fld_unit='%s', fld_left_interval=%f, \
-                       fld_right_interval=%f, fld_status='%s' \
+                       fld_right_interval=%f, fld_quantity=%d, \
+                       fld_status='%s' \
                    WHERE fld_record_id=%d" % _values_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,

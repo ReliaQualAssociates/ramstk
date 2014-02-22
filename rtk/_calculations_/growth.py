@@ -229,9 +229,13 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _confmeth_,
     Keyword Arguments:
     _F_        -- list of failure counts.
     _X_        -- list of individual failures times.
-    _fitmeth_  -- method used to fit the data (1=MLE, 2=regression).
+    _fitmeth_  -- method used to fit the data
+                  1=MLE
+                  2=regression)
     _type_     -- the confidence level type
-                  (1=lower one-sided, 2=upper one-sided, 3=two-sided).
+                  1=lower one-sided
+                  2=upper one-sided
+                  3=two-sided
     _confmeth_ -- the method for calculating confidence bounds.
     _conf_     -- the confidence level.
     _T_star_   -- the end of the observation period for time terminated, or
@@ -275,10 +279,22 @@ def power_law(_F_, _X_, _fitmeth_, _type_, _confmeth_,
         _M_ = _T_ / _n_
 
 # Calculate interim values.
-        _logT_ += log(_T_)
-        _logT2_ += log(_T_)**2.0
-        _logM_ += log(_M_)
-        _logTlogM_ += log(_T_) * log(_M_)
+        try:
+            _logT_ += log(_T_)
+        except ValueError:
+            _logT_ = 0.0
+        try:
+            _logT2_ += log(_T_)**2.0
+        except ValueError:
+            _logT2_ = 0.0
+        try:
+            _logM_ += log(_M_)
+        except ValueError:
+            _logM_ = 0.0
+        try:
+            _logTlogM_ += log(_T_) * log(_M_)
+        except ValueError:
+            _logTlogM_ = 0.0
 
 # Calculate the Power Law parameters.
         if(_fitmeth_ == 1):                 # MLE

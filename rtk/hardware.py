@@ -5,7 +5,7 @@ the hardware of the Program.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -62,58 +62,51 @@ class Hardware:
 
     def __init__(self, application):
         """
-        Initializes the HARDWARE Object.
+        Initializes the HARDWARE class.
 
         Keyword Arguments:
         application -- the RTK application.
         """
 
+        # Define private HARDWARE class attributes.
         self._ready = False
         self._app = application
+        self._assembly_id = 0
 
-        # Define local dictionary variables.
+        # Define private HARDWARE class dictionary attributes.
         self._treepaths = {}
 
-        # Define global dictionary variables.
-        self.dicHARDWARE = {}
-
-        # Define local list variables.
+        # Define private HARDWARE class list attributes.
         self._col_order = []
 
-        # Define global object variables.
-        self.treeview = None
-        self.model = None
-        self.selected_row = None
-
-        # Define global scalar variables.
+        # Define public HARDWARE class attributes.
         self.ispart = False
         self.assembly = None
         self.system_ht = 0.0
 
-        # Define local scalar variables.
-        self._assembly_id = 0
+        # Define public HARDWARE class dictionary aatributes.
+        self.dicHARDWARE = {}
+
+        # Define global object variables.
+        self.model = None
+        self.selected_row = None
+
+        # Create the main HARDWARE class treeview.
+        (self.treeview,
+         self._col_order) = _widg.make_treeview('Hardware', 3, self._app,
+                                                None, _conf.RTK_COLORS[6],
+                                                _conf.RTK_COLORS[7])
 
         self._ready = True
 
     def create_tree(self):
         """
-        Creates the HARDWARE treeview and connects it to callback functions to
-        handle editting.  Background and foreground colors can be set using the
-        user-defined values in the RTK configuration file.
+        Creates the HARDWARE class gtk.TreeView() and connects it to callback
+        functions to handle editting.
         """
-
-        scrollwindow = gtk.ScrolledWindow()
-        bg_color = _conf.RTK_COLORS[6]
-        fg_color = _conf.RTK_COLORS[7]
-        (self.treeview, self._col_order) = _widg.make_treeview('Hardware', 3,
-                                                               self._app,
-                                                               None,
-                                                               bg_color,
-                                                               fg_color)
 
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of hardware."))
         self.treeview.set_enable_tree_lines(True)
-        scrollwindow.add(self.treeview)
         self.model = self.treeview.get_model()
 
         self.treeview.set_search_column(0)
@@ -123,80 +116,78 @@ class Hardware:
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
 
+        scrollwindow = gtk.ScrolledWindow()
+        scrollwindow.add(self.treeview)
+
         return(scrollwindow)
 
     def load_tree(self):
         """
-        Loads the Hardware treeview model with system information.  This
-        information can be stored either in a MySQL or SQLite3 database.
+        Method to load the HARDWARE class gtk.TreeView() model with system
+        information.
         """
 
-        if(_conf.RTK_MODULES[0] == 1):
-            _values = (self._app.REVISION.revision_id,)
-        else:
-            _values = (0,)
+        _query_ = "SELECT * FROM tbl_system WHERE fld_revision_id=%d" % \
+                   self._app.REVISION.revision_id
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx)
 
-        _query = "SELECT * FROM tbl_system WHERE fld_revision_id=%d" % _values
-        results = self._app.DB.execute_query(_query,
-                                             None,
-                                             self._app.ProgCnx)
+        try:
+            _n_assemblies_ = len(_results_)
+        except TypeError:
+            _n_assemblies_ = 0
 
-        if(results == '' or not results):
-            return True
+        _pixbuf_ = False
+        _cols_ = self.treeview.get_columns()
+        for i in range(len(_cols_)):
+            if(_cols_[i].get_visible() is True and _pixbuf_ is False):
+                _viscol_ = i
+                _pixbuf_ = True
 
-        _n_assemblies = len(results)
-
-        _pixbuf = False
-        cols = self.treeview.get_columns()
-        for i in range(len(cols)):
-            if(cols[i].get_visible() is True and _pixbuf is False):
-                _viscol = i
-                _pixbuf = True
-
-        self.model.clear()
-        self.selected_row = None
+        _model_ = self.treeview.get_model()
+        _model_.clear()
 
 # Create an empty dictionary to hold the Assembly ID/Hardware Tree treemodel
 # paths.  This is used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
 
 # Load the model with the returned results.
-        for i in range(_n_assemblies):
+        for i in range(_n_assemblies_):
 
-            if(results[i][62] == '-'):          # Its the top level element.
-                piter = None
-                self.system_ht = results[i][32]
+            if(_results_[i][62] == '-'):          # Its the top level element.
+                _piter_ = None
+                self.system_ht = _results_[i][32]
             elif(results[i][62] != '-'):        # Its a child element.
-                piter = self.model.get_iter_from_string(results[i][62])
+                _piter_ = _model_.get_iter_from_string(_results_[i][62])
 
 # Select the image to display.  If there is a problem with the part
 # (overstressed, etc.), display the !.  If it is an assembly, display the
 # assembly icon.  If it is a part, display the part icon.
-            if(results[i][60] == 1):
-                icon = _conf.ICON_DIR + '32x32/overstress.png'
-            elif(results[i][63] == 0):
-                icon = _conf.ICON_DIR + '32x32/assembly.png'
+            if(_results_[i][60] == 1):
+                _icon_ = _conf.ICON_DIR + '32x32/overstress.png'
+            elif(_results_[i][63] == 0):
+                _icon_ = _conf.ICON_DIR + '32x32/assembly.png'
             else:
-                icon = _conf.ICON_DIR + '32x32/part.png'
+                _icon_ = _conf.ICON_DIR + '32x32/part.png'
 
-            icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
-            data_ = results[i] + (icon,)
+            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+            _data_ = _results_[i] + (_icon_,)
 
-            row = self.model.append(piter, data_)
+            _row_ = _model_.append(_piter_, _data_)
 
-            if(results[i][1] == self._assembly_id):
-                self.selected_row = row
+            if(_results_[i][1] == self._assembly_id):
+                self.selected_row = _row_
 
-            self.dicHARDWARE[results[i][1]] = data_ + (self.model.get_string_from_iter(row),)
-            self._treepaths[results[i][68]] = self.model.get_path(row)
+            self.dicHARDWARE[_results_[i][1]] = _data_ + (_model_.get_string_from_iter(_row_),)
+            self._treepaths[_results_[i][68]] = _model_.get_path(_row_)
 
-        self.treeview.expand_all()
-        if(self.selected_row is None):
-            self.selected_row = self.model.get_iter_root()
+        _row_ = _model_.get_iter_root()
 
-        _path_ = self.model.get_path(self.selected_row)
+        _path_ = _model_.get_path(_row_)
         self.treeview.set_cursor(_path_, None, False)
         self.treeview.row_activated(_path_, self.treeview.get_column(0))
+        self.treeview.expand_all()
 
         return False
 
@@ -210,8 +201,10 @@ class Hardware:
         values  -- a list of new values for the Hardware Object TreeView.
         """
 
+        (_model_, _row_) = self.treeview.get_selection ().get_selected()
+
         for i in columns:
-            self.model.set_value(self.selected_row, i, values[i])
+            _model_.set_value(_row_, i, values[i])
 
         return False
 
@@ -252,19 +245,20 @@ class Hardware:
         the COMPONENT Object.
 
         Keyword Arguments:
-        treeview -- the HARDWARE Object gtk.TreeView.
-        path     -- the actived row gtk.TreeView path.
-        column   -- the actived gtk.TreeViewColumn.
+        treeview -- the HARDWARE class gtk.TreeView().
+        path     -- the activated row gtk.TreeView() path.
+        column   -- the activated gtk.TreeViewColumn().
         """
 
 # Save the previously selected row in the Hardware tree.
-        if self.selected_row is not None:
-            _path_ = self.model.get_path(self.selected_row)
-            self._save_line_item(self.model, _path_, self.selected_row)
+        #if self.selected_row is not None:
+            #_path_ = self.model.get_path(self.selected_row)
+            #self._save_line(self.model, _path_, self.selected_row)
 
 # Save the previously selected row in the Parts List.
-        _selection_ = self._app.winParts.tvwPartsList.get_selection()
-        (_model_, _row_) = _selection_.get_selected()
+        (_model_,
+         _row_) = self._app.winParts.tvwPartsList.get_selection().get_selected()
+
         if _row_ is not None and \
            self.selected_row is not None and \
            self.model.get_value(self.selected_row, 63) == 1:
@@ -338,13 +332,12 @@ class Hardware:
         while(_model_.get_value(_row_, 1) != self._assembly_id):
             _row_ = _model_.iter_next(_row_)
 
-        if(_row_ is not None):
+        if _row_ is not None:
             self._app.winParts.selected_row = _row_
             _path_ = _model_.get_path(_row_)
             self._app.winParts.tvwPartsList.set_cursor(_path_)
 
         return False
-
 
     def hardware_save(self):
         """
@@ -352,174 +345,189 @@ class Hardware:
         MySQL or SQLite3 database.
         """
 
-        self.model.foreach(self._save_line_item)
+        def _save_line(model, path, row, self):
+            """
+            Saves each row in the HARDWARE Object gtk.TreeView model to the
+            Program's MySQL or SQLite3 database.
 
-        return False
+            Keyword Arguments:
+            model -- the HARDWARE Object gtk.Treemodel.
+            path  -- the path of the active row in the HARDWARE Object
+                     gtk.Treemodel.
+            row   -- the selected row in the HARDWARE Object gtk.TreeView.
+            """
 
-    def _save_line_item(self, model, path_, row):
-        """
-        Saves each row in the HARDWARE Object gtk.TreeView model to the
-        Program's MySQL or SQLite3 database.
+            if _conf.BACKEND == 'mysql':
+                ht_model = self._app.ProgCnx.escape_string(model.get_value(row, self._col_order[88]))
+            elif _conf.BACKEND == 'sqlite3':
+                ht_model = model.get_value(row, self._col_order[88])
 
-        Keyword Arguments:
-        model -- the HARDWARE Object gtk.Treemodel.
-        path_ -- the path of the active row in the HARDWARE Object
-                 gtk.Treemodel.
-        row   -- the selected row in the HARDWARE Object gtk.TreeView.
-        """
+            _values_ = (model.get_value(row, self._col_order[2]),
+                        model.get_value(row, self._col_order[3]),
+                        model.get_value(row, self._col_order[4]),
+                        model.get_value(row, self._col_order[5]),
+                        model.get_value(row, self._col_order[6]),
+                        model.get_value(row, self._col_order[7]),
+                        model.get_value(row, self._col_order[8]),
+                        model.get_value(row, self._col_order[9]),
+                        model.get_value(row, self._col_order[10]),
+                        model.get_value(row, self._col_order[11]),
+                        model.get_value(row, self._col_order[12]),
+                        model.get_value(row, self._col_order[13]),
+                        model.get_value(row, self._col_order[14]),
+                        model.get_value(row, self._col_order[15]),
+                        model.get_value(row, self._col_order[16]),
+                        model.get_value(row, self._col_order[17]),
+                        model.get_value(row, self._col_order[18]),
+                        model.get_value(row, self._col_order[19]),
+                        model.get_value(row, self._col_order[20]),
+                        model.get_value(row, self._col_order[21]),
+                        model.get_value(row, self._col_order[22]),
+                        model.get_value(row, self._col_order[23]),
+                        model.get_value(row, self._col_order[24]),
+                        model.get_value(row, self._col_order[25]),
+                        model.get_value(row, self._col_order[26]),
+                        model.get_value(row, self._col_order[27]),
+                        model.get_value(row, self._col_order[28]),
+                        model.get_value(row, self._col_order[29]),
+                        model.get_value(row, self._col_order[30]),
+                        model.get_value(row, self._col_order[31]),
+                        model.get_value(row, self._col_order[32]),
+                        model.get_value(row, self._col_order[33]),
+                        model.get_value(row, self._col_order[34]),
+                        model.get_value(row, self._col_order[35]),
+                        model.get_value(row, self._col_order[36]),
+                        model.get_value(row, self._col_order[37]),
+                        model.get_value(row, self._col_order[38]),
+                        model.get_value(row, self._col_order[39]),
+                        model.get_value(row, self._col_order[40]),
+                        model.get_value(row, self._col_order[41]),
+                        model.get_value(row, self._col_order[42]),
+                        model.get_value(row, self._col_order[43]),
+                        model.get_value(row, self._col_order[44]),
+                        model.get_value(row, self._col_order[45]),
+                        model.get_value(row, self._col_order[46]),
+                        model.get_value(row, self._col_order[47]),
+                        model.get_value(row, self._col_order[48]),
+                        model.get_value(row, self._col_order[49]),
+                        model.get_value(row, self._col_order[50]),
+                        model.get_value(row, self._col_order[51]),
+                        model.get_value(row, self._col_order[52]),
+                        model.get_value(row, self._col_order[53]),
+                        model.get_value(row, self._col_order[54]),
+                        model.get_value(row, self._col_order[55]),
+                        model.get_value(row, self._col_order[56]),
+                        model.get_value(row, self._col_order[57]),
+                        model.get_value(row, self._col_order[58]),
+                        model.get_value(row, self._col_order[59]),
+                        model.get_value(row, self._col_order[60]),
+                        model.get_value(row, self._col_order[61]),
+                        model.get_value(row, self._col_order[62]),
+                        model.get_value(row, self._col_order[63]),
+                        model.get_value(row, self._col_order[64]),
+                        model.get_value(row, self._col_order[65]),
+                        model.get_value(row, self._col_order[66]),
+                        model.get_value(row, self._col_order[67]),
+                        model.get_value(row, self._col_order[68]),
+                        model.get_value(row, self._col_order[69]),
+                        model.get_value(row, self._col_order[70]),
+                        model.get_value(row, self._col_order[71]),
+                        model.get_value(row, self._col_order[72]),
+                        model.get_value(row, self._col_order[73]),
+                        model.get_value(row, self._col_order[74]),
+                        model.get_value(row, self._col_order[75]),
+                        model.get_value(row, self._col_order[76]),
+                        model.get_value(row, self._col_order[77]),
+                        model.get_value(row, self._col_order[78]),
+                        model.get_value(row, self._col_order[79]),
+                        model.get_value(row, self._col_order[80]),
+                        model.get_value(row, self._col_order[81]),
+                        model.get_value(row, self._col_order[82]),
+                        model.get_value(row, self._col_order[83]),
+                        model.get_value(row, self._col_order[84]),
+                        model.get_value(row, self._col_order[85]),
+                        model.get_value(row, self._col_order[86]),
+                        model.get_value(row, self._col_order[87]),
+                        ht_model,
+                        model.get_value(row, self._col_order[89]),
+                        model.get_value(row, self._col_order[90]),
+                        self._app.REVISION.revision_id,
+                        model.get_value(row, self._col_order[1]))
 
-        if(_conf.BACKEND == 'mysql'):
-            ht_model = self._app.ProgCnx.escape_string(model.get_value(row, self._col_order[88]))
-        elif(_conf.BACKEND == 'sqlite3'):
-            ht_model = model.get_value(row, self._col_order[88])
+            _query_ = "UPDATE tbl_system \
+                       SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
+                           fld_alt_part_number='%s', \
+                           fld_assembly_criticality='%s', \
+                           fld_attachments='%s', fld_availability=%f, \
+                           fld_availability_mission=%f, fld_cage_code='%s', \
+                           fld_calculation_model=%d, fld_category_id=%d, \
+                           fld_comp_ref_des='%s', fld_cost=%f, \
+                           fld_cost_failure=%f, fld_cost_hour=%f, \
+                           fld_cost_type=%f, fld_description='%s', \
+                           fld_detection_fr=%f, fld_detection_percent=%f, \
+                           fld_duty_cycle=%f, fld_entered_by='%s', \
+                           fld_environment_active=%d, \
+                           fld_environment_dormant=%d, fld_failure_dist=%d, \
+                           fld_failure_parameter_1=%f, \
+                           fld_failure_parameter_2=%f, \
+                           fld_failure_parameter_3=%f, \
+                           fld_failure_rate_active=%f, \
+                           fld_failure_rate_dormant=%f, \
+                           fld_failure_rate_mission=%f, \
+                           fld_failure_rate_percent=%f, \
+                           fld_failure_rate_predicted=%f, \
+                           fld_failure_rate_software=%f, \
+                           fld_failure_rate_specified=%f, \
+                           fld_failure_rate_type=%d, \
+                           fld_figure_number='%s', fld_humidity=%f, \
+                           fld_image_file='%s', fld_isolation_fr=%f, \
+                           fld_isolation_percent=%f, fld_lcn='%s', \
+                           fld_level=%d, fld_manufacturer=%d, \
+                           fld_mcmt=%f, fld_mission_time=%f, \
+                           fld_mmt=%f, fld_modified_by='%s', \
+                           fld_mpmt=%f, fld_mtbf_mission=%f, \
+                           fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
+                           fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
+                           fld_mttr_mult_adj_factor=%f, \
+                           fld_mttr_specified=%f, \
+                           fld_mttr_type=%d, fld_mult_adj_factor=%f, \
+                           fld_name='%s', fld_nsn='%s', \
+                           fld_overstress=%d, fld_page_number='%s', \
+                           fld_parent_assembly='%s', fld_part=%d, \
+                           fld_part_number='%s', \
+                           fld_percent_isolation_group_ri=%f, \
+                           fld_percent_isolation_single_ri=%f, \
+                           fld_quantity=%d, \
+                           fld_ref_des='%s', fld_reliability_mission=%f, \
+                           fld_reliability_predicted=%f, fld_remarks='%s', \
+                           fld_repair_dist=%d, fld_repair_parameter_1=%f, \
+                           fld_repair_parameter_2=%f, fld_repairable=%d, \
+                           fld_rpm=%f, fld_specification_number='%s', \
+                           fld_subcategory_id=%d, fld_tagged_part=%d, \
+                           fld_temperature_active=%f, \
+                           fld_temperature_dormant=%f, \
+                           fld_total_part_quantity=%d, \
+                           fld_total_power_dissipation=%f, \
+                           fld_vibration=%f, fld_weibull_data_set=%d, \
+                           fld_weibull_file='%s', \
+                           fld_year_of_manufacture=%d, \
+                           fld_ht_model='%s', \
+                           fld_reliability_goal_measure=%d, \
+                           fld_reliability_goal=%f \
+                   WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values_
 
-        values = (model.get_value(row, self._col_order[2]),
-                  model.get_value(row, self._col_order[3]),
-                  model.get_value(row, self._col_order[4]),
-                  model.get_value(row, self._col_order[5]),
-                  model.get_value(row, self._col_order[6]),
-                  model.get_value(row, self._col_order[7]),
-                  model.get_value(row, self._col_order[8]),
-                  model.get_value(row, self._col_order[9]),
-                  model.get_value(row, self._col_order[10]),
-                  model.get_value(row, self._col_order[11]),
-                  model.get_value(row, self._col_order[12]),
-                  model.get_value(row, self._col_order[13]),
-                  model.get_value(row, self._col_order[14]),
-                  model.get_value(row, self._col_order[15]),
-                  model.get_value(row, self._col_order[16]),
-                  model.get_value(row, self._col_order[17]),
-                  model.get_value(row, self._col_order[18]),
-                  model.get_value(row, self._col_order[19]),
-                  model.get_value(row, self._col_order[20]),
-                  model.get_value(row, self._col_order[21]),
-                  model.get_value(row, self._col_order[22]),
-                  model.get_value(row, self._col_order[23]),
-                  model.get_value(row, self._col_order[24]),
-                  model.get_value(row, self._col_order[25]),
-                  model.get_value(row, self._col_order[26]),
-                  model.get_value(row, self._col_order[27]),
-                  model.get_value(row, self._col_order[28]),
-                  model.get_value(row, self._col_order[29]),
-                  model.get_value(row, self._col_order[30]),
-                  model.get_value(row, self._col_order[31]),
-                  model.get_value(row, self._col_order[32]),
-                  model.get_value(row, self._col_order[33]),
-                  model.get_value(row, self._col_order[34]),
-                  model.get_value(row, self._col_order[35]),
-                  model.get_value(row, self._col_order[36]),
-                  model.get_value(row, self._col_order[37]),
-                  model.get_value(row, self._col_order[38]),
-                  model.get_value(row, self._col_order[39]),
-                  model.get_value(row, self._col_order[40]),
-                  model.get_value(row, self._col_order[41]),
-                  model.get_value(row, self._col_order[42]),
-                  model.get_value(row, self._col_order[43]),
-                  model.get_value(row, self._col_order[44]),
-                  model.get_value(row, self._col_order[45]),
-                  model.get_value(row, self._col_order[46]),
-                  model.get_value(row, self._col_order[47]),
-                  model.get_value(row, self._col_order[48]),
-                  model.get_value(row, self._col_order[49]),
-                  model.get_value(row, self._col_order[50]),
-                  model.get_value(row, self._col_order[51]),
-                  model.get_value(row, self._col_order[52]),
-                  model.get_value(row, self._col_order[53]),
-                  model.get_value(row, self._col_order[54]),
-                  model.get_value(row, self._col_order[55]),
-                  model.get_value(row, self._col_order[56]),
-                  model.get_value(row, self._col_order[57]),
-                  model.get_value(row, self._col_order[58]),
-                  model.get_value(row, self._col_order[59]),
-                  model.get_value(row, self._col_order[60]),
-                  model.get_value(row, self._col_order[61]),
-                  model.get_value(row, self._col_order[62]),
-                  model.get_value(row, self._col_order[63]),
-                  model.get_value(row, self._col_order[64]),
-                  model.get_value(row, self._col_order[65]),
-                  model.get_value(row, self._col_order[66]),
-                  model.get_value(row, self._col_order[67]),
-                  model.get_value(row, self._col_order[68]),
-                  model.get_value(row, self._col_order[69]),
-                  model.get_value(row, self._col_order[70]),
-                  model.get_value(row, self._col_order[71]),
-                  model.get_value(row, self._col_order[72]),
-                  model.get_value(row, self._col_order[73]),
-                  model.get_value(row, self._col_order[74]),
-                  model.get_value(row, self._col_order[75]),
-                  model.get_value(row, self._col_order[76]),
-                  model.get_value(row, self._col_order[77]),
-                  model.get_value(row, self._col_order[78]),
-                  model.get_value(row, self._col_order[79]),
-                  model.get_value(row, self._col_order[80]),
-                  model.get_value(row, self._col_order[81]),
-                  model.get_value(row, self._col_order[82]),
-                  model.get_value(row, self._col_order[83]),
-                  model.get_value(row, self._col_order[84]),
-                  model.get_value(row, self._col_order[85]),
-                  model.get_value(row, self._col_order[86]),
-                  model.get_value(row, self._col_order[87]),
-                  ht_model,
-                  model.get_value(row, self._col_order[89]),
-                  model.get_value(row, self._col_order[90]),
-                  self._app.REVISION.revision_id,
-                  model.get_value(row, self._col_order[1]))
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx,
+                                                   commit=True)
 
-        query = "UPDATE tbl_system \
-                 SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
-                     fld_alt_part_number='%s', fld_assembly_criticality='%s', \
-                     fld_attachments='%s', fld_availability=%f, \
-                     fld_availability_mission=%f, fld_cage_code='%s', \
-                     fld_calculation_model=%d, fld_category_id=%d, \
-                     fld_comp_ref_des='%s', fld_cost=%f, \
-                     fld_cost_failure=%f, fld_cost_hour=%f, \
-                     fld_cost_type=%f, fld_description='%s', \
-                     fld_detection_fr=%f, fld_detection_percent=%f, \
-                     fld_duty_cycle=%f, fld_entered_by='%s', \
-                     fld_environment_active=%d, fld_environment_dormant=%d, \
-                     fld_failure_dist=%d, fld_failure_parameter_1=%f, \
-                     fld_failure_parameter_2=%f, fld_failure_parameter_3=%f, \
-                     fld_failure_rate_active=%f, fld_failure_rate_dormant=%f, \
-                     fld_failure_rate_mission=%f, fld_failure_rate_percent=%f, \
-                     fld_failure_rate_predicted=%f, fld_failure_rate_software=%f, \
-                     fld_failure_rate_specified=%f, fld_failure_rate_type=%d, \
-                     fld_figure_number='%s', fld_humidity=%f, \
-                     fld_image_file='%s', fld_isolation_fr=%f, \
-                     fld_isolation_percent=%f, fld_lcn='%s', \
-                     fld_level=%d, fld_manufacturer=%d, \
-                     fld_mcmt=%f, fld_mission_time=%f, \
-                     fld_mmt=%f, fld_modified_by='%s', \
-                     fld_mpmt=%f, fld_mtbf_mission=%f, \
-                     fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
-                     fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
-                     fld_mttr_mult_adj_factor=%f, fld_mttr_specified=%f, \
-                     fld_mttr_type=%d, fld_mult_adj_factor=%f, \
-                     fld_name='%s', fld_nsn='%s', \
-                     fld_overstress=%d, fld_page_number='%s', \
-                     fld_parent_assembly='%s', fld_part=%d, \
-                     fld_part_number='%s', fld_percent_isolation_group_ri=%f, \
-                     fld_percent_isolation_single_ri=%f, fld_quantity=%d, \
-                     fld_ref_des='%s', fld_reliability_mission=%f, \
-                     fld_reliability_predicted=%f, fld_remarks='%s', \
-                     fld_repair_dist=%d, fld_repair_parameter_1=%f, \
-                     fld_repair_parameter_2=%f, fld_repairable=%d, \
-                     fld_rpm=%f, fld_specification_number='%s', \
-                     fld_subcategory_id=%d, fld_tagged_part=%d, \
-                     fld_temperature_active=%f, fld_temperature_dormant=%f, \
-                     fld_total_part_quantity=%d, fld_total_power_dissipation=%f, \
-                     fld_vibration=%f, fld_weibull_data_set=%d, \
-                     fld_weibull_file='%s', fld_year_of_manufacture=%d, \
-                     fld_ht_model='%s', fld_reliability_goal_measure=%d, \
-                     fld_reliability_goal=%f \
-             WHERE fld_revision_id=%d AND fld_assembly_id=%d" % values
+            if _results_ == '' or not _results_ or _results_ is None:
+                self._app.debug_log.error("hardware.py: Failed to save hardware to system table.")
+                return True
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
+            return False
 
-        if not results:
-            self._app.debug_log.error("hardware.py: Failed to save hardware to system table.")
-            return True
+        _model_ = self.treeview.get_model()
+        _model_.foreach(_save_line, self)
 
         return False

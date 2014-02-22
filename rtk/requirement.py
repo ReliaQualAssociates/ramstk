@@ -92,7 +92,7 @@ class Requirement:
         self._app = application
 
         # Define private REQUIREMENT class dictionary attributes.
-        self._dic_types = {}
+
         self._dic_owners = {}
 
         # Define private REQUIREMENT class list attributes.
@@ -254,13 +254,12 @@ class Requirement:
         #TODO: Load requirement type CellRendererCombo
         #TODO: Load requiquirement owner CellRendererCombo
         self.treeview.set_enable_tree_lines(True)
-
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
-
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
             None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
+
+        _scrollwindow_ = gtk.ScrolledWindow()
+        _scrollwindow_.add(self.treeview)
 
         return _scrollwindow_
 
@@ -271,78 +270,78 @@ class Requirement:
 
         _toolbar_ = gtk.Toolbar()
 
-        _pos_ = 0
+        _position_ = 0
 
         # Add sibling requirement button.
         self.btnAddSibling.set_tooltip_text(_(u"Adds a new requirement at the same level as the selected requirement."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        self.btnAddSibling.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        self.btnAddSibling.set_icon_widget(_image_)
         self.btnAddSibling.connect('clicked', self._add_requirement, 0)
-        _toolbar_.insert(self.btnAddSibling, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnAddSibling, _position_)
+        _position_ += 1
 
         # Add child (derived) requirement button.
         self.btnAddChild.set_tooltip_text(_(u"Adds a new requirement subordinate to the selected requirement."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        self.btnAddChild.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+        self.btnAddChild.set_icon_widget(_image_)
         self.btnAddChild.connect('clicked', self._add_requirement, 1)
-        _toolbar_.insert(self.btnAddChild, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnAddChild, _position_)
+        _position_ += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _pos_)
-        _pos_ += 1
+        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
+        _position_ += 1
 
         # Add button.
         self.btnAdd.set_name('Add')
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        self.btnAdd.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnAdd.set_icon_widget(_image_)
         self.btnAdd.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnAdd, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnAdd, _position_)
+        _position_ += 1
 
         # Remove button.
         self.btnRemove.set_name('Remove')
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemove.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemove.set_icon_widget(_image_)
         self.btnRemove.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnRemove, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnRemove, _position_)
+        _position_ += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _pos_)
-        _pos_ += 1
+        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
+        _position_ += 1
 
         # Save requirement button.
         self.btnSave.set_name('Save')
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        self.btnSave.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSave.set_icon_widget(_image_)
         self.btnSave.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnSave, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnSave, _position_)
+        _position_ += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _pos_)
-        _pos_ += 1
+        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
+        _position_ += 1
 
         # Assign existing V&V task button
         self.btnAssign.set_tooltip_text(_(u"Assigns an exisiting Verification and Validation (V&V) task to the selected requirement."))
         self.btnAssign.set_name('Assign')
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
-        self.btnAssign.set_icon_widget(image)
+        _image_ = gtk.Image()
+        _image_.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
+        self.btnAssign.set_icon_widget(_image_)
         self.btnAssign.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnAssign, _pos_)
-        _pos_ += 1
+        _toolbar_.insert(self.btnAssign, _position_)
+        _position_ += 1
 
         self.cmbVandVTasks.set_tooltip_text(_(u"List of existing V&V activities available to assign to selected requirement."))
         alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
         alignment.add(self.cmbVandVTasks)
         toolitem = gtk.ToolItem()
         toolitem.add(alignment)
-        _toolbar_.insert(toolitem, _pos_)
+        _toolbar_.insert(toolitem, _position_)
 
         _toolbar_.show()
 
@@ -2076,9 +2075,9 @@ class Requirement:
 
         if _page_ == 0:                     # Stakeholder Input tab.
             if button.get_name() == 'Add':
-                self._stakeholder_input_add()
+                self._add_stakeholder_input()
             elif button.get_name() == 'Remove':
-                self._stakeholder_input_delete()
+                self._delete_stakeholder_input()
             elif button.get_name() == 'Save':
                 self._save_stakeholder_inputs()
         elif _page_ == 1 or _page_ == 2:    # General Data tab.
@@ -2088,9 +2087,9 @@ class Requirement:
                 self.save_requirement(None)
         elif _page_ == 3:                   # V&V Tasks tab.
             if button.get_name() == 'Add':
-                self._vandv_task_add(0)
+                self._add_vandv_task(0)
             elif button.get_name() == 'Assign':
-                self._vandv_task_add(1)
+                self._add_vandv_task(1)
             elif button.get_name() == 'Remove':
                 print "Lets remove this validation task"
             elif button.get_name() == 'Save':

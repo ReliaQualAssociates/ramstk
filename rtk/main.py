@@ -75,13 +75,35 @@ class RTK:
 
     def __init__(self):
 
+        # Set the gtk+ theme on Windows.
+        if sys.platform.startswith('win'):
+            # These themes perform well on Windows.
+            # Amaranth
+            # Aurora
+            # Bluecurve
+            # Blueprint
+            # Blueprint-Green
+            # Candido-Calm
+            # CleanIce
+            # CleanIce - Dark
+            # Clearlooks
+            # Metal
+            # MurrinaBlue
+            # Nodoka-Midnight
+            # Rezlooks-Snow
+
+            # These themes perform poorly.
+            # Bluecurve-BerriesAndCream
+            # MurrinaChrome
+            gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\GTK\\2.0\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
+
         self.ProgCnx = None
 
-# Import the test data file if we are executing in developer mode.
+        # Import the test data file if we are executing in developer mode.
         if(len(sys.argv) > 1 and sys.argv[1] == 'devmode'):
             import testdata as _data
 
-# Read the configuration file.
+        # Read the configuration file.
         _util.read_configuration()
 
         if(os.name == 'posix'):
@@ -212,24 +234,29 @@ class RTK:
 
         results = self.DB.execute_query(query, None, self.ProgCnx)
 
-        for i in range(19):
-            _conf.RTK_PREFIX.append(results[0][i + 1])
+        _query_ = "SELECT fld_revision_prefix, fld_function_prefix, \
+                          fld_assembly_prefix, fld_part_prefix, \
+                          fld_fmeca_prefix, fld_mode_prefix, \
+                          fld_effect_prefix, fld_cause_prefix, \
+                          fld_software_prefix \
+                   FROM tbl_program_info"
+        _results_ = self.DB.execute_query(_query_, None, self.ProgCnx)
+
+        for i in range(len(_results_)):
+            _conf.RTK_PREFIX.append(_results_[i])
 
 # Find which modules are active in this project.
-        for i in range(11):
-            _conf.RTK_MODULES.append(results[0][i + 19])
-            if results[0][i + 19] == 1:
-                # 19 = Revision Tree = 0
-                # 20 = Requirements Tree = 1
-                # 21 = Function Tree = 2
-                # 22 = Hardware Tree = 3
-                # 23 = Software Tree = 4
-                # 24 = Validation Tree = 5
-                # 25 = Reliability Testing Tree = 6
-                # 26 = Reliability Centered Maintenance = 7
-                # 27 = Field Incident Tree = 8
-                # 28 = FMECA = 9
-                # 29 = Survival Analyses Tree = 10
+        _query_ = "SELECT fld_revision_active, fld_function_active, \
+                          fld_requirement_active, fld_hardware_active, \
+                          fld_software_active, fld_vandv_active, \
+                          fld_testing_active, fld_rcm_active, \
+                          fld_fraca_active, fld_survival_active \
+                   FROM tbl_program_info"
+        _results_ = self.DB.execute_query(_query_, None, self.ProgCnx)[0]
+
+        for i in range(len(_results_)):
+            _conf.RTK_MODULES.append(_results_[i])
+            if _results_[i] == 1:
                 _conf.RTK_PAGE_NUMBER.append(i)
 
         _conf.METHOD = results[0][36]
@@ -246,10 +273,10 @@ class RTK:
 
         if(_conf.RTK_MODULES[0] == 1):    # Revisions
             self.REVISION.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[1] == 1):  # Requirements
-            self.REQUIREMENT.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[2] == 1):  # Functions
+        elif(_conf.RTK_MODULES[1] == 1):  # Functions
             self.FUNCTION.treeview.grab_focus()
+        elif(_conf.RTK_MODULES[2] == 1):  # Requirements
+            self.REQUIREMENT.treeview.grab_focus()
         elif(_conf.RTK_MODULES[3] == 1):  # Hardware
             self.HARDWARE.load_tree()
         elif(_conf.RTK_MODULES[4] == 1):  # Software
