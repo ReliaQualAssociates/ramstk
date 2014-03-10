@@ -218,16 +218,16 @@ max-args=6
 ignored-argument-names=_.*
 
 # Maximum number of locals for function / method body
-max-locals=15
+max-locals=20
 
 # Maximum number of return / yield for function / method body
-max-returns=6
+max-returns=5
 
 # Maximum number of branch for function / method body
-max-branches=15
+max-branches=25
 
 # Maximum number of statements in function / method body
-max-statements=150
+max-statements=200
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7

@@ -665,13 +665,15 @@ def edit_tree(cell, path, new_text, position, model):
     model    -- the TreeModel the CellRenderer belongs to.
     """
 
-    type = gobject.type_name(model.get_column_type(position))
+    _convert_ = gobject.type_name(model.get_column_type(position))
 
-    if(type == 'gchararray'):
+    if new_text is None:
+        model[path][position] = not cell.get_active()
+    elif _convert_ == 'gchararray':
         model[path][position] = str(new_text)
-    elif(type == 'gint'):
+    elif _convert_ == 'gint':
         model[path][position] = int(new_text)
-    elif(type == 'gfloat'):
+    elif _convert_ == 'gfloat':
         model[path][position] = float(new_text)
 
     return False

@@ -76,7 +76,7 @@ INSERT INTO "tbl_mission_phase" VALUES(0, 3, 90.5, 100.0, 'Phase III', 'This is 
 DROP TABLE IF EXISTS "tbl_environmental_profile";
 CREATE TABLE "tbl_environmental_profile" (
     "fld_mission_id" INTEGER NOT NULL DEFAULT(0),       -- Identifier for the mission.
-    "fld_phase_id" INTEGER NOT NULL DEFAULT(0),         -- Identifier for the mission phase.
+    "fld_phase" VARCHAR(1298 NOT NULL DEFAULT('All'),   -- Name of the mission phase.
     "fld_condition_id" INTEGER,                         -- Identifier for the environmental condition.
     "fld_condition_name" VARCHAR(128),                  -- Noun name of the environmental condition.
     "fld_units" VARCHAR(64),                            -- Units of measure for the environmental condition.
@@ -316,8 +316,8 @@ CREATE TABLE "tbl_system" (
     "fld_mtbf_predicted" REAL NOT NULL DEFAULT (0),
     "fld_mtbf_specified" REAL NOT NULL DEFAULT (0),
     "fld_mttr" REAL NOT NULL DEFAULT (0),
-    "fld_mttr_add_adj_factor" REAL NOT NULL DEFAULT (1),
-    "fld_mttr_mult_adj_factor" REAL NOT NULL DEFAULT (0),
+    "fld_mttr_add_adj_factor" REAL NOT NULL DEFAULT (0),
+    "fld_mttr_mult_adj_factor" REAL NOT NULL DEFAULT (1),
     "fld_mttr_specified" REAL NOT NULL DEFAULT (0),
     "fld_mttr_type" INTEGER NOT NULL DEFAULT (1),
     "fld_mult_adj_factor" REAL NOT NULL DEFAULT (1),

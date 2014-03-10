@@ -151,12 +151,12 @@ class TreeWindow(gtk.Window):
 
         if(_conf.RTK_MODULES[0] == 1):
             label = gtk.Label()
-            _heading = _("Revisions")
+            _heading = _(u"Revisions")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the program revisions."))
+            label.set_tooltip_text(_(u"Displays the program revisions."))
             self.notebook.insert_page(self.scwRevision,
                                       tab_label=label,
                                       position=-1)
@@ -164,29 +164,29 @@ class TreeWindow(gtk.Window):
 
         if(_conf.RTK_MODULES[1] == 1):
             label = gtk.Label()
-            _heading = _(u"Requirements")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_("Displays the system requirement hierarchy."))
-            self.notebook.insert_page(self.scwRequirement,
-                                      tab_label=label,
-                                      position=-1)
-            _app.REQUIREMENT.load_tree()
-
-        if(_conf.RTK_MODULES[2] == 1):
-            label = gtk.Label()
             _heading = _(u"Functions")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system functional hierarchy."))
+            label.set_tooltip_text(_(u"Displays the system functional hierarchy."))
             self.notebook.insert_page(self.scwFunction,
                                       tab_label=label,
                                       position=-1)
             _app.FUNCTION.load_tree()
+
+        if(_conf.RTK_MODULES[2] == 1):
+            label = gtk.Label()
+            _heading = _(u"Requirements")
+            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_alignment(xalign=0.5, yalign=0.5)
+            label.set_justify(gtk.JUSTIFY_CENTER)
+            label.show_all()
+            label.set_tooltip_text(_(u"Displays the system requirement hierarchy."))
+            self.notebook.insert_page(self.scwRequirement,
+                                      tab_label=label,
+                                      position=-1)
+            _app.REQUIREMENT.load_tree()
 
         if(_conf.RTK_MODULES[3] == 1):
             label = gtk.Label()
@@ -195,7 +195,7 @@ class TreeWindow(gtk.Window):
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system hardware hierarchy."))
+            label.set_tooltip_text(_(u"Displays the system hardware hierarchy."))
             self.notebook.insert_page(self.scwHardware,
                                       tab_label=label,
                                       position=-1)
@@ -208,7 +208,7 @@ class TreeWindow(gtk.Window):
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the system software hierarchy."))
+            label.set_tooltip_text(_(u"Displays the system software hierarchy."))
             self.notebook.insert_page(self.scwSoftware,
                                       tab_label=label,
                                       position=-1)
@@ -277,12 +277,12 @@ class TreeWindow(gtk.Window):
         # TODO: Add index to RTK_MODULES array for data sets.
         if(_conf.RTK_MODULES[8] == 1):
             label = gtk.Label()
-            _heading = _("Survival\nAnalyses")
+            _heading = _(u"Survival\nAnalyses")
             label.set_markup("<span weight='bold'>" + _heading + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_("Displays the program survival data sets."))
+            label.set_tooltip_text(_(u"Displays the program survival data sets."))
             self.notebook.insert_page(self.scwDatasets, tab_label=label,
                                       position=-1)
             _app.DATASET.load_tree()
@@ -320,10 +320,19 @@ class TreeWindow(gtk.Window):
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/assembly.png')
-        menu_item.set_label(_("Assembly"))
+        image.set_from_file(_conf.ICON_DIR + '16x16/insert-sibling.png')
+        menu_item.set_label(_(u"Sibling Assembly"))
         menu_item.set_image(image)
-        menu_item.connect('activate', self._app.ASSEMBLY.assembly_add)
+        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
+        menu2.append(menu_item)
+
+        menu_item = gtk.ImageMenuItem()
+        image = gtk.Image()
+        image.show()
+        image.set_from_file(_conf.ICON_DIR + '16x16/insert-child.png')
+        menu_item.set_label(_(u"Child Assembly"))
+        menu_item.set_image(image)
+        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
         menu2.append(menu_item)
 
 # Add component entry.
@@ -331,9 +340,9 @@ class TreeWindow(gtk.Window):
         image = gtk.Image()
         image.show()
         image.set_from_file(_conf.ICON_DIR + '16x16/part.png')
-        menu_item.set_label(_("Component"))
+        menu_item.set_label(_(u"Component"))
         menu_item.set_image(image)
-        menu_item.connect('activate', self._app.COMPONENT.component_add, None)
+        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
         menu2.append(menu_item)
 
 # Add New menu.
@@ -341,7 +350,7 @@ class TreeWindow(gtk.Window):
         image = gtk.Image()
         image.show()
         image.set_from_file(_conf.ICON_DIR + '16x16/new.png')
-        mnuNew.set_label(_("New"))
+        mnuNew.set_label(_(u"New"))
         mnuNew.set_image(image)
 
         mnuNew.set_submenu(menu2)
@@ -629,7 +638,7 @@ class TreeWindow(gtk.Window):
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
             try:
                 self._app.HARDWARE.treeview.grab_focus()
-                model = self._app.HARDWARE.model
+                model = self._app.HARDWARE.treeview.get_model()
                 path = model.get_path(model.get_iter_root())
                 column = self._app.HARDWARE.treeview.get_column(0)
                 self._app.HARDWARE.treeview.row_activated(path, column)

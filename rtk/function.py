@@ -381,12 +381,12 @@ class Function:
                 gtk.TREE_VIEW_GRID_LINES_BOTH)
 
             self.chkParts.set_tooltip_text(_(u"Include components in the functional matrix."))
-            self.chkParts.connect('toggled', self._callback_check, 0)
+            self.chkParts.connect('toggled', self._callback_check)
             self.chkParts.set_active(True)
             _fixed_.put(self.chkParts, 5, 5)
 
             self.chkAssemblies.set_tooltip_text(_(u"Include assemblies in the functional matrix."))
-            self.chkAssemblies.connect('toggled', self._callback_check, 1)
+            self.chkAssemblies.connect('toggled', self._callback_check)
             self.chkAssemblies.set_active(True)
             _fixed_.put(self.chkAssemblies, 5, 35)
 
@@ -981,7 +981,7 @@ class Function:
             Loads the widgets with calculation results for the Function Object.
 
             Keyword Arguments:
-            self
+            self -- the current instance of RTK.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -993,14 +993,14 @@ class Function:
                 fmt.format(self.mission_hazard_rate)))
             self.txtPredictedHt.set_text(str(fmt.format(self.hazard_rate)))
 
-            self.txtMMT.set_text(str('{0:0.2g}'.format(self.mmt)))
-            self.txtMCMT.set_text(str('{0:0.2g}'.format(self.mcmt)))
-            self.txtMPMT.set_text(str('{0:0.2g}'.format(self.mpmt)))
+            self.txtMMT.set_text(str(fmt.format(self.mmt)))
+            self.txtMCMT.set_text(str(fmt.format(self.mcmt)))
+            self.txtMPMT.set_text(str(fmt.format(self.mpmt)))
 
             self.txtMissionMTBF.set_text(str(
-                '{0:0.2g}'.format(self.mission_mtbf)))
-            self.txtMTBF.set_text(str('{0:0.2g}'.format(self.mtbf)))
-            self.txtMTTR.set_text(str('{0:0.2g}'.format(self.mttr)))
+                fmt.format(self.mission_mtbf)))
+            self.txtMTBF.set_text(str(fmt.format(self.mtbf)))
+            self.txtMTTR.set_text(str(fmt.format(self.mttr)))
 
             return False
 
@@ -1019,7 +1019,15 @@ class Function:
 
         self._app.winWorkBook.set_title(_(u"RTK Work Book: Function"))
 
-        self.notebook.set_current_page(0)
+        self.btnAddSibling.show()
+        self.btnAddChild.show()
+        self.btnAddMode.hide()
+        self.btnRemoveFunction.show()
+        self.btnRemoveMode.hide()
+        self.btnCalculate.show()
+        self.btnSave.show()
+
+        #self.notebook.set_current_page(0)
 
         return False
 
@@ -1124,6 +1132,13 @@ class Function:
 
         _n_functions_ = _util.add_items(_title_, _prompt_)
 
+        _query_ = "SELECT fld_assembly_id \
+                   FROM tbl_system \
+                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _assembly_id_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx)
+
         for i in range(_n_functions_):
             _code = str(_conf.RTK_PREFIX[2]) + ' ' + \
                     str(_conf.RTK_PREFIX[3])
@@ -1159,8 +1174,9 @@ class Function:
             try:
                 for i in range(len(_assembly_id_)):
                     _query_ = "INSERT INTO tbl_functional_matrix \
-                               (fld_function_id) \
-                               VALUES (%d)" % _function_id_[0][0]
+                               (fld_assembly_id, fld_function_id) \
+                               VALUES (%d, %d)" % \
+                               (_assembly_id_[0][i], _function_id_[0][0])
                     _results_ = self._app.DB.execute_query(_query_,
                                                            None,
                                                            self._app.ProgCnx,
@@ -1455,14 +1471,12 @@ class Function:
 
         return False
 
-    def _callback_check(self, check, index):
+    def _callback_check(self, __check):
         """
         Callback function to retrieve and save checkbutton changes.
 
         Keyword Arguments:
-        check -- the checkbutton that called the function.
-        index -- the position in the Requirement Object _attribute list
-                 associated with the data from the calling checkbutton.
+        __check -- the checkbutton that called the function.
         """
 
         self._load_functional_matrix()
@@ -1485,22 +1499,22 @@ class Function:
 
         if convert == 'text':
             if index == 14:
-                textbuffer = self.txtName.get_child().get_child().get_buffer()
-                text_ = textbuffer.get_text(*textbuffer.get_bounds())
+                _textbuffer_ = self.txtName.get_child().get_child().get_buffer()
+                _text_ = _textbuffer_.get_text(*_textbuffer_.get_bounds())
             elif index == 15:
-                textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
-                text_ = textbuffer.get_text(*textbuffer.get_bounds())
+                _textbuffer_ = self.txtRemarks.get_child().get_child().get_buffer()
+                _text_ = _textbuffer_.get_text(*_textbuffer_.get_bounds())
             else:
-                text_ = entry.get_text()
+                _text_ = entry.get_text()
 
         elif convert == 'int':
-            text_ = int(entry.get_text())
+            _text_ = int(entry.get_text())
 
         elif convert == 'float':
-            text_ = float(entry.get_text().replace('$', ''))
+            _text_ = float(entry.get_text().replace('$', ''))
 
         # Update the Function Tree.
-        _model_.set_value(_row_, index, text_)
+        _model_.set_value(_row_, index, _text_)
 
         return False
 
@@ -1526,7 +1540,7 @@ class Function:
             self.btnRemoveMode.show()
             self.btnCalculate.show()
             self.btnSave.show()
-            self.btnSave.set_tooltip_text(_(u"Saves changes to Functional FMEA for the selected function."))
+            self.btnSave.set_tooltip_text(_(u"Saves changes to Functional FMEA/FMECA for the selected function."))
         else:
             self.btnAddSibling.show()
             self.btnAddChild.show()
@@ -1585,40 +1599,97 @@ class Function:
             for j in range(_model_.iter_n_children(_row_)):
                 self.calculate(None)
         else:
-            _values_ = (_model_.get_value(_row_, 1),)
-            _query_ = "SELECT SUM(t2.fld_cost), \
-                              SUM(t2.fld_failure_rate_predicted), \
-                              COUNT(t2.fld_assembly_id), \
-                              SUM(t2.fld_failure_rate_software) \
-                       FROM tbl_system AS t2 \
-                       INNER JOIN tbl_functional_matrix AS t1 \
-                       ON t2.fld_assembly_id = t1.fld_assembly_id \
-                       WHERE t1.fld_function_id=%d \
-                       AND t2.fld_part=1"
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            if _conf.MODE == 'developer':
+                _results_ = ([29.32, 0.000147762, 0.00014542, 5, 0.05, 0.4762, 0.41667, 0.08929],)
+            else:
+                _values_ = (_model_.get_value(_row_, 1),)
+                _query_ = "SELECT SUM(t2.fld_cost), \
+                                  SUM(t2.fld_failure_rate_predicted), \
+                                  SUM(t2.fld_failure_rate_mission), \
+                                  COUNT(t2.fld_assembly_id), \
+                                  SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
+                                  SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
+                           FROM tbl_system AS t2 \
+                           INNER JOIN tbl_functional_matrix AS t1 \
+                           ON t2.fld_assembly_id = t1.fld_assembly_id \
+                           WHERE t1.fld_function_id=%d \
+                           AND t2.fld_part=1"
+                _results_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
 
-            if _results_ == '' or not _results_ or _results_ is None:
-                return True
+                if _results_ == '' or not _results_ or _results_ is None:
+                    return True
 
             self.cost = float(_results_[0][0])
             self.hazard_rate = float(_results_[0][1])
-            self.n_parts = int(_results_[0][2])
+            self.mission_hazard_rate = float(_results_[0][2])
+            self.n_parts = int(_results_[0][3])
 
-            # Calculate the MTBF
+            try:
+                self.mpmt = 1.0 / float(_results_[0][4])
+            except ZeroDivisionError:
+                self.mpmt = 0.0
+
+            try:
+                self.mcmt = 1.0 / float(_results_[0][5])
+            except ZeroDivisionError:
+                self.mcmt = 0.0
+
+            try:
+                self.mttr = 1.0 / float(_results_[0][6])
+            except ZeroDivisionError:
+                self.mttr = 0.0
+
+            try:
+                self.mmt = 1.0 / float(_results_[0][7])
+            except ZeroDivisionError:
+                self.mmt = 0.0
+
+            # Calculate the logistics MTBF.
             try:
                 self.mtbf = 1.0 / self.hazard_rate
             except ZeroDivisionError:
                 self.mtbf = 0.0
-                self._app.user_log.error(_("Attempted to divide by zero when calculating function MTBF.\n \
+                self._app.user_log.error(_("Attempted to divide by zero when calculating function logistics MTBF.\n \
                                            function id %s: lambdap = %f") % (self._app.FUNCTION.function_id, self.hazard_rate))
 
-        _model_.set_value(_row_, 5, self.cost)
-        _model_.set_value(_row_, 7, self.hazard_rate)
-        _model_.set_value(_row_, 12, self.mtbf)
-        _model_.set_value(_row_, 17, self.n_parts)
+            # Calculate the mission MTBF.
+            try:
+                self.mission_mtbf = 1.0 / self.mission_hazard_rate
+            except ZeroDivisionError:
+                self.mission_mtbf = 0.0
+                self._app.user_log.error(_("Attempted to divide by zero when calculating function mission MTBF.\n \
+                                           function id %s: lambdap = %f") % (self._app.FUNCTION.function_id, self.mission_hazard_rate))
+
+            # Calculate the logistics availability.
+            try:
+                self.availability = self.mtbf / (self.mtbf + self.mttr)
+            except ZeroDivisionError:
+                self.availability = 1.0
+            except OverflowError:
+                self.availability = 1.0
+
+            # Calculate mission availability.
+            try:
+                self.mission_availability = self.mission_mtbf / (self.mission_mtbf + self.mttr)
+            except ZeroDivisionError:
+                self.mission_availability = 1.0
+            except OverflowError:
+                self.mission_availability = 1.0
+
+        _model_.set_value(_row_, self._col_order[2], self.availability)
+        _model_.set_value(_row_, self._col_order[3], self.mission_availability)
+        _model_.set_value(_row_, self._col_order[5], self.cost)
+        _model_.set_value(_row_, self._col_order[6], self.mission_hazard_rate)
+        _model_.set_value(_row_, self._col_order[7], self.hazard_rate)
+        _model_.set_value(_row_, self._col_order[8], self.mmt)
+        _model_.set_value(_row_, self._col_order[9], self.mcmt)
+        _model_.set_value(_row_, self._col_order[10], self.mpmt)
+        _model_.set_value(_row_, self._col_order[11], self.mission_mtbf)
+        _model_.set_value(_row_, self._col_order[12], self.mtbf)
+        _model_.set_value(_row_, self._col_order[13], self.mttr)
+        _model_.set_value(_row_, self._col_order[17], self.n_parts)
 
         self.load_notebook()
 

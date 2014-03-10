@@ -24,6 +24,11 @@ _ = gettext.gettext
 import utilities as _util
 import widgets as _widg
 
+# Sets the mode of operation.  Defaults to '' for user-mode.  Will be set to
+# 'developer' when devmode is passed as a CLI argument.  The 'developer' mode
+# is used during testing and enables the use of built-in test cases.
+MODE = ''
+
 # Path to the directory containing icon files used by RTK.  Defaults to
 # /usr/share/pixmaps/RTK/ on POSIX systems.
 ICON_DIR = ''
@@ -122,8 +127,8 @@ RTK_PREFIX = []
 #    1 = active, 0 = inactive.
 #
 #    Position 00: Revision module status
-#    Position 01: Requirements module status
-#    Position 02: Function module status
+#    Position 01: Function module status
+#    Position 02: Requirements module status
 #    Position 03: Hardware module status
 #    Position 04: Software module status
 #    Position 05: Validation module status

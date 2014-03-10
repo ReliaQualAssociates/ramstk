@@ -59,7 +59,7 @@ _ = gettext.gettext
 
 class Component():
     """
-    The Components class is used to represent a component in a system being
+    The COMPONENT class is used to represent a component in a system being
     analyzed.
     """
 
@@ -126,8 +126,8 @@ class Component():
 
         self._app = application
 
-        self.system_model = self._app.HARDWARE.model
-        self.system_selected_row = self._app.HARDWARE.selected_row
+        #self.system_model = self._app.HARDWARE.model
+        #self.system_selected_row = self._app.HARDWARE.selected_row
 
         self.model = None
         self.selected_row = None
@@ -1611,7 +1611,7 @@ class Component():
 # set parent to the top assembly.
             treemodel = self._app.HARDWARE.model
             row = self._app.HARDWARE.selected_row
-            if(self._app.HARDWARE.ispart):
+            if(self._app.HARDWARE.part):
                 _parent = treemodel.get_value(row, 62)
             else:
                 _parent = treemodel.get_string_from_iter(row)
@@ -1712,7 +1712,7 @@ class Component():
         """
 
 # If the selected item isn't a part, then don't delete it.
-        if not self._app.HARDWARE.ispart:
+        if not self._app.HARDWARE.part:
             return True
 
         _values = (self._app.REVISION.revision_id,
@@ -2189,7 +2189,7 @@ class Component():
             elif(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)
             elif(_button_ == 'Save'):
-                self._app.HARDWARE.hardware_save()
+                self._app.HARDWARE.save_hardware()
         elif(_page_ == 1):                  # Assessment inputs tab.
             if(_button_ == 'Add'):
                 self.component_add(widget, None)
@@ -2198,7 +2198,7 @@ class Component():
             elif(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)
             elif(_button_ == 'Save'):
-                self._app.HARDWARE.hardware_save()
+                self._app.HARDWARE.save_hardware()
         elif(_page_ == 2):                  # Assessment results tab.
             if(_button_ == 'Add'):
                 self.component_add(widget, None)
@@ -2207,7 +2207,7 @@ class Component():
             elif(_button_ == 'Analyze'):
                 _calc.calculate_project(widget, self._app, 3)
             elif(_button_ == 'Save'):
-                self._app.HARDWARE.hardware_save()
+                self._app.HARDWARE.save_hardware()
         elif(_page_ == 3):                  # FMEA/FMECA tab.
             if(_button_ == 'Add'):
                 #self._mode_add()

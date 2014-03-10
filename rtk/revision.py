@@ -53,8 +53,10 @@ import gettext
 _ = gettext.gettext
 
 
-class Revision:
-    """ This is the REVISION Class for the RTK Project. """
+class Revision(object):
+    """
+    This is the REVISION Class for the RTK Project.
+    """
 
     def __init__(self, application):
         """
@@ -70,9 +72,9 @@ class Revision:
 
         # Define private REVISION class dictionary attributes.
 
-        # For mission information.  Mission ID is the key.
+        # For mission information.  Mission Name is the key.
         # The value is a list:
-        # [Mission Time, Time Units, Mission Name]
+        # [Mission ID, Mission Time, Time Units]
         self._dic_missions = {}
 
         # For environmental profile information.  Environment noun name is the
@@ -355,22 +357,18 @@ class Revision:
             _labels_ = [_(u"Mission:"), _(u"Mission Time:")]
             _units_ = [[_(u"Seconds")], [_(u"Minutes")],
                        [_(u"Hours")], [_(u"Cycles")]]
-            _mission_headings_ = [_(u"Phase ID"), _(u"Start"), _(u"End"),
-                                  _(u"Code"), _(u"Description")]
-            _environ_headings_ = [_(u"Condition ID"),
-                                  _(u"Environmental\nCondition"),
-                                  _(u"Mission\nPhase"), _(u"Units"),
-                                  _(u"Minimum"), _(u"Maximum"), _(u"Mean"),
-                                  _(u"Variance")]
 
             # Create the mission profile gtk.TreeView().
+            _headings_ = [_(u"Phase ID"), _(u"Start"), _(u"End"), _(u"Code"),
+                          _(u"Description")]
+
             self.tvwMissionProfile.set_tooltip_text(_(u"Displays the currently selected mission profile."))
             _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_FLOAT,
                                     gobject.TYPE_FLOAT, gobject.TYPE_STRING,
                                     gobject.TYPE_STRING)
             self.tvwMissionProfile.set_model(_model_)
 
-            for i in range(len(_mission_headings_)):
+            for i in range(len(_headings_)):
                 cell = gtk.CellRendererText()
                 cell.set_property('editable', 1)
                 cell.set_property('wrap-width', 250)
@@ -381,7 +379,7 @@ class Revision:
                 label.set_line_wrap(True)
                 label.set_alignment(xalign=0.5, yalign=0.5)
                 label.set_justify(gtk.JUSTIFY_CENTER)
-                label.set_markup("<span weight='bold'>" + _mission_headings_[i] + "</span>")
+                label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
                 label.set_use_markup(True)
                 label.show_all()
                 column = gtk.TreeViewColumn()
@@ -395,6 +393,10 @@ class Revision:
             self.tvwMissionProfile.get_column(0).set_visible(False)
 
             # Create the environmental profile gtk.TreeView().
+            _headings_ = [_(u"Condition ID"), _(u"Environmental\nCondition"),
+                          _(u"Mission\nPhase"), _(u"Units"), _(u"Minimum"),
+                          _(u"Maximum"), _(u"Mean"), _(u"Variance")]
+
             self.tvwEnvironmentProfile.set_tooltip_text(_(u"Displays the environmental profile for the selected mission."))
             _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                     gobject.TYPE_STRING, gobject.TYPE_STRING,
@@ -410,7 +412,7 @@ class Revision:
 
             cell = gtk.CellRendererText()
             cell.set_property('editable', 0)
-            column = gtk.TreeViewColumn(_environ_headings_[0])
+            column = gtk.TreeViewColumn(_headings_[0])
             column.set_visible(False)
             column.pack_start(cell, True)
             column.set_attributes(cell, text=0)
@@ -428,12 +430,12 @@ class Revision:
             cell.set_property('wrap-width', 250)
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
-            cell.connect('edited', _widg.edit_tree, 1, _model_)
+            cell.connect('edited', self._callback_edit_tree, 1, _model_)
             label = gtk.Label()
             label.set_line_wrap(True)
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_markup("<span weight='bold'>" + _environ_headings_[1] + "</span>")
+            label.set_markup("<span weight='bold'>" + _headings_[1] + "</span>")
             label.set_use_markup(True)
             label.show_all()
             column = gtk.TreeViewColumn()
@@ -453,12 +455,12 @@ class Revision:
             cell.set_property('wrap-width', 250)
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
-            cell.connect('edited', _widg.edit_tree, 2, _model_)
+            cell.connect('edited', self._callback_edit_tree, 2, _model_)
             label = gtk.Label()
             label.set_line_wrap(True)
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_markup("<span weight='bold'>" + _environ_headings_[2] + "</span>")
+            label.set_markup("<span weight='bold'>" + _headings_[2] + "</span>")
             label.set_use_markup(True)
             label.show_all()
             column = gtk.TreeViewColumn()
@@ -480,7 +482,7 @@ class Revision:
                 label.set_line_wrap(True)
                 label.set_alignment(xalign=0.5, yalign=0.5)
                 label.set_justify(gtk.JUSTIFY_CENTER)
-                label.set_markup("<span weight='bold'>" + _environ_headings_[i] + "</span>")
+                label.set_markup("<span weight='bold'>" + _headings_[i] + "</span>")
                 label.set_use_markup(True)
                 label.show_all()
                 column = gtk.TreeViewColumn()
@@ -928,28 +930,34 @@ class Revision:
         _model_ = self.tvwMissionProfile.get_model()
         _model_.clear()
 
-        _mission_ = self.cmbMission.get_active() - 1
+        _mission_ = self.cmbMission.get_active_text()
+        try:
+            _mission_id_ = self._dic_missions[_mission_][0]
+        except KeyError:
+            _mission_id_ = -1
         _query_ = "SELECT fld_phase_id, fld_phase_start, fld_phase_end, \
                           fld_phase_name, fld_phase_description \
                    FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % _mission_
+                   WHERE fld_mission_id=%d" % _mission_id_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.debug_log.error("revision.py: Failed to load mission profile.")
-        else:
+        try:
             _n_phases_ = len(_results_)
-            for i in range(_n_phases_):
-                _model_.append(_results_[i])
+        except TypeError:
+            _n_phases_ = 0
+            self._app.debug_log.error("revision.py: Failed to load mission profile for mission %d." % _mission_id_)
+
+        for i in range(_n_phases_):
+            _model_.append(_results_[i])
 
         # Set the selected mission to the first in the list and then load the
         # remaining widgets appropriately.
         try:
-            self.txtMission.set_text(str(self._dic_missions[_mission_][2]))
-            self.txtMissionTime.set_text(str(self._dic_missions[_mission_][0]))
-            self.cmbTimeUnit.set_active(self._dic_missions[_mission_][1])
+            self.txtMission.set_text(str(_mission_))
+            self.txtMissionTime.set_text(str(self._dic_missions[_mission_][1]))
+            self.cmbTimeUnit.set_active(self._dic_missions[_mission_][2])
         except KeyError:
             self.txtMissionTime.set_text("0.0")
             self.cmbTimeUnit.set_active(0)
@@ -965,22 +973,31 @@ class Revision:
         # profile gtk.TreeView().
         _dic_mission_phases = {}
 
-        _mission_ = self.cmbMission.get_active() - 1
+        _mission_ = self.cmbMission.get_active_text()
+        try:
+            _mission_id_ = self._dic_missions[_mission_][0]
+        except KeyError:
+            _mission_id_ = -1
         _query_ = "SELECT fld_phase_name \
                    FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % _mission_
+                   WHERE fld_mission_id=%d" % _mission_id_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
 
-        _phases_ = len(_results_)
-        _column_ = self.tvwEnvironmentProfile.get_column(2)
-        _cell_ = _column_.get_cell_renderers()
-        _cellmodel_ = _cell_[0].get_property('model')
-        _cellmodel_.clear()
-        _cellmodel_.append(["All"])
-        _dic_mission_phases[0] = "All"
-        for i in range(_phases_):
+        try:
+            _n_phases_ = len(_results_)
+            _column_ = self.tvwEnvironmentProfile.get_column(2)
+            _cell_ = _column_.get_cell_renderers()
+            _cellmodel_ = _cell_[0].get_property('model')
+            _cellmodel_.clear()
+            _cellmodel_.append(["All"])
+            _dic_mission_phases[0] = "All"
+        except TypeError:
+            _n_phases_ = 0
+            self._app.debug_log.error("revision.py: Failed to retrieve mission profile for mission %d." % _mission_id_)
+
+        for i in range(_n_phases_):
             _cellmodel_.append([_results_[i][0]])
             _dic_mission_phases[i + 1] = _results_[i][0]
 
@@ -989,19 +1006,20 @@ class Revision:
         _model_.clear()
 
         _query_ = "SELECT fld_condition_id, fld_condition_name, \
-                          fld_phase_id, fld_units, fld_minimum, \
+                          fld_phase, fld_units, fld_minimum, \
                           fld_maximum, fld_mean, fld_variance \
                    FROM tbl_environmental_profile \
-                   WHERE fld_mission_id=%d" % _mission_
+                   WHERE fld_mission_id=%d" % _mission_id_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
 
-        if _results_ == '' or not _results_:
-            self._app.debug_log.error("revision.py: Failed to retrieve environmental profile for mission %d." % _mission_)
-            return True
+        try:
+            _n_conditions_ = len(_results_)
+        except TypeError:
+            _n_conditions_ = 0
+            self._app.debug_log.error("revision.py: Failed to retrieve environmental profile for mission %d." % _mission_id_)
 
-        _n_conditions_ = len(_results_)
         for i in range(_n_conditions_):
             self._dic_environments[_results_[i][0]] = [_results_[i][1],
                                                        _results_[i][2],
@@ -1010,8 +1028,7 @@ class Revision:
                                                        _results_[i][5],
                                                        _results_[i][6],
                                                        _results_[i][7]]
-            _model_.append([_results_[i][0], _results_[i][1],
-                            _dic_mission_phases[_results_[i][2]],
+            _model_.append([_results_[i][0], _results_[i][1], _results_[i][2],
                             _results_[i][3], _results_[i][4], _results_[i][5],
                             _results_[i][6], _results_[i][7]])
 
@@ -1089,14 +1106,14 @@ class Revision:
             self.txtSoftwareHt.set_text(
                 str(fmt.format(self.software_hazard_rate)))
 
-            self.txtMMT.set_text(str('{0:0.2g}'.format(self.mmt)))
-            self.txtMCMT.set_text(str('{0:0.2g}'.format(self.mcmt)))
-            self.txtMPMT.set_text(str('{0:0.2g}'.format(self.mpmt)))
+            self.txtMMT.set_text(str(fmt.format(self.mmt)))
+            self.txtMCMT.set_text(str(fmt.format(self.mcmt)))
+            self.txtMPMT.set_text(str(fmt.format(self.mpmt)))
 
             self.txtMissionMTBF.set_text(
-                str('{0:0.2g}'.format(self.mission_mtbf)))
-            self.txtMTBF.set_text(str('{0:0.2g}'.format(self.mtbf)))
-            self.txtMTTR.set_text(str('{0:0.2g}'.format(self.mttr)))
+                str(fmt.format(self.mission_mtbf)))
+            self.txtMTBF.set_text(str(fmt.format(self.mtbf)))
+            self.txtMTTR.set_text(str(fmt.format(self.mttr)))
 
             self.txtMissionRt.set_text(
                 str(fmt.format(self.mission_reliability)))
@@ -1124,9 +1141,9 @@ class Revision:
         self.cmbMission.get_model().clear()
         self.cmbMission.append_text("")
         for i in range(_n_missions_):
-            self._dic_missions[_results_[i][1]] = [_results_[i][2],
-                                                   _results_[i][3],
-                                                   _results_[i][4]]
+            self._dic_missions[_results_[i][4]] = [_results_[i][1],
+                                                   _results_[i][2],
+                                                   _results_[i][3]]
             self.cmbMission.append_text(_results_[i][4])
 
         # Load the notebook tabs.
@@ -1140,7 +1157,7 @@ class Revision:
             self.revision_id
         self._app.winWorkBook.set_title(_title)
 
-        self.notebook.set_page(0)
+        #self.notebook.set_page(0)
 
         return False
 
@@ -1225,7 +1242,7 @@ class Revision:
             self._app.REQUIREMENT.load_tree()
             self._app.FUNCTION.save_function()
             self._app.FUNCTION.load_tree()
-            self._app.HARDWARE.hardware_save()
+            self._app.HARDWARE.save_hardware()
             self._app.HARDWARE.load_tree()
             self._app.SOFTWARE.software_save()
             self._app.SOFTWARE.load_tree()
@@ -1248,29 +1265,32 @@ class Revision:
         __button -- the gtk.Button widget that called this method.
         """
 
-        _values_ = (self.revision_id, "New Mission")
+        # Find the largest mission id already in the database and then
+        # increment it by 1 for the new mission.
+        _query_ = "SELECT MAX(fld_mission_id) FROM tbl_missions"
+        _mission_id_ = self._app.DB.execute_query(_query_,
+                                                  None,
+                                                  self._app.ProgCnx)
+
+        try:
+            _mission_id_ = _mission_id_[0][0] + 1
+        except IndexError:
+            _mission_id_ = 1
+
+        _values_ = (self.revision_id, "New Mission %d" % _mission_id_)
         _query_ = "INSERT INTO tbl_missions \
-                               (fld_revision_id, fld_mission_description) \
+                   (fld_revision_id, fld_mission_description) \
                    VALUES (%d, '%s')" % _values_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                commit=True)
 
-        if not _results_:
+        if _results_ == '' or not _results_ or _results_ is None:
             self._app.debug_log.error("revision.py: Failed to add new mission.")
             return True
 
-        if _conf.BACKEND == 'mysql':
-            _query_ = "SELECT LAST_INSERT_ID()"
-        elif _conf.BACKEND == 'sqlite3':
-            _query_ = "SELECT seq FROM sqlite_sequence \
-                       WHERE name='tbl_missions'"
-        self._int_mission_id = self._app.DB.execute_query(_query_,
-                                                          None,
-                                                          self._app.ProgCnx)
-
-        self._dic_missions[self._int_mission_id] = [0.0, 0, "New Mission"]
+        self._dic_missions["New Mission %d" % _mission_id_] = [_mission_id_, 0.0, 0]
 
         self.load_notebook()
 
@@ -1284,24 +1304,26 @@ class Revision:
         __button -- the gtk.Button widget that called this method.
         """
 
+        _mission_ = self.cmbMission.get_active_text()
+        _mission_id_ = self._dic_missions[_mission_][0]
+
         _query_ = "SELECT MAX(fld_phase_id) \
                    FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % self._int_mission_id
-        _last_id_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+                   WHERE fld_mission_id=%d" % _mission_id_
+        _phase_id_ = self._app.DB.execute_query(_query_,
+                                                None,
+                                                self._app.ProgCnx)
 
         try:
-            _last_id_ = _last_id_[0][0] + 1
+            _phase_id_ = _phase_id_[0][0] + 1
         except TypeError:
-            _last_id_ = 0
+            _phase_id_ = 0
 
-        _mission_ = self.cmbMission.get_active() - 1
-        _values_ = (_mission_, _last_id_)
         _query_ = "INSERT INTO tbl_mission_phase \
                    (fld_mission_id, fld_phase_id, fld_phase_start, \
                     fld_phase_end, fld_phase_name, fld_phase_description) \
-                   VALUES (%d, %d, 0.0, 0.0, '', '')" % _values_
+                   VALUES (%d, %d, 0.0, 0.0, '', '')" % \
+                   (_mission_id_, _phase_id_)
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
@@ -1323,12 +1345,13 @@ class Revision:
         __button -- the gtk.Button() that called this function.
         """
 
-        _mission_ = self.cmbMission.get_active() - 1
+        _mission_ = self.cmbMission.get_active_text()
+        _mission_id_ = self._dic_missions[_mission_][0]
 
         # Find the last used condition ID.
         _query_ = "SELECT MAX(fld_condition_id) \
                    FROM tbl_environmental_profile \
-                   WHERE fld_mission_id=%d" % _mission_
+                   WHERE fld_mission_id=%d" % _mission_id_
         _last_id_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx)
@@ -1338,13 +1361,13 @@ class Revision:
             _last_id_ = 0
 
         # Add the new environmental condition.
-        _values_ = (_mission_, 0, _last_id_, '', '',
+        _values_ = (_mission_id_, 'All', _last_id_, '', '',
                     0.0, 0.0, 0.0, 0.0)
         _query_ = "INSERT INTO tbl_environmental_profile \
-                   (fld_mission_id, fld_phase_id, fld_condition_id, \
+                   (fld_mission_id, fld_phase, fld_condition_id, \
                     fld_condition_name, fld_units, fld_minimum, fld_maximum, \
                     fld_mean, fld_variance) \
-                   VALUES (%d, %d, %d, '%s', '%s', %f, %f, %f, %f)" % _values_
+                   VALUES (%d, '%s', %d, '%s', '%s', %f, %f, %f, %f)" % _values_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
@@ -1428,15 +1451,32 @@ class Revision:
         __button -- the gtk.Button widget that called this method.
         """
 
-        _query_ = "DELETE FROM tbl_missions \
-                   WHERE fld_mission_id=%d" % self._int_mission_id
+        _mission_ = self.cmbMission.get_active_text()
+        _mission_id_ = self._dic_missions[_mission_][0]
+
+        _query_ = "DELETE FROM tbl_environmental_profile \
+                   WHERE fld_mission_id=%d" % _mission_id_
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                commit=True)
 
-        if not _results_:
-            self._app.debug_log.error("revision.py: Failed to remove the selected mission.")
+        _query_ = "DELETE FROM tbl_mission_phase \
+                   WHERE fld_mission_id=%d" % _mission_id_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+
+        _query_ = "DELETE FROM tbl_missions \
+                   WHERE fld_mission_id=%d" % _mission_id_
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+
+        if _results_ == '' or not _results_ or _results_ is None:
+            self._app.debug_log.error("revision.py: Failed to remove mission %s." % _mission_)
             return True
 
         self.load_notebook()
@@ -1451,22 +1491,41 @@ class Revision:
         __button -- the gtk.Button widget that called this method.
         """
 
-        (_model_, _row_) = self.tvwMissionProfile.get_selection().get_selected()
+        _mission_ = self.cmbMission.get_active_text()
+        _mission_id_ = self._dic_missions[_mission_][0]
 
-        _values_ = (self._int_mission_id, _model_.get_value(_row_, 0))
-        _query_ = "DELETE FROM tbl_mission_phase \
+        (_model_,
+         _row_) = self.tvwMissionProfile.get_selection().get_selected()
+        try:
+            _phase_id_ = _model_.get_value(_row_, 0)
+            _phase_ = _model_.get_value(_row_, 3)
+        except TypeError:
+            _phase_id_ = -1
+            _phase_ = ''
+
+        _query_ = "DELETE FROM tbl_environmental_profile \
                    WHERE fld_mission_id=%d \
-                   AND fld_phase_id=%d" % _values_
+                   AND fld_phase='%s'" % (_mission_id_, _phase_)
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                commit=True)
 
-        if not _results_:
-            self._app.debug_log.error("revision.py: Failed to remove the selected mission phase.")
+        _query_ = "DELETE FROM tbl_mission_phase \
+                   WHERE fld_mission_id=%d \
+                   AND fld_phase_id=%d" % \
+                   (_mission_id_, _phase_id_)
+        _results_ = self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               commit=True)
+
+        if _results_ == '' or not _results_ or _results_ is None:
+            self._app.debug_log.error("revision.py: Failed to remove mission phase %d from mission %s." % (_phase_id_, _mission_))
             return True
 
         self._load_mission_profile()
+        self._load_environmental_profile()
 
         return False
 
@@ -1479,21 +1538,24 @@ class Revision:
         __button -- the gtk.Button() that called this function.
         """
 
-        _selection_ = self.tvwEnvironmentProfile.get_selection()
-        (_model_, _row_) = _selection_.get_selected()
+        _mission_ = self.cmbMission.get_active_text()
+        _mission_id_ = self._dic_missions[_mission_][0]
+
+        (_model_,
+         _row_) = self.tvwEnvironmentProfile.get_selection().get_selected()
         _condition_id_ = _model_.get_value(_row_, 0)
 
-        _values_ = (self._int_mission_id, _condition_id_)
         _query_ = "DELETE FROM tbl_environmental_profile \
                    WHERE fld_mission_id=%d \
-                   AND fld_condition_id=%d" % _values_
+                   AND fld_condition_id=%d" % \
+                   (_mission_id_, _condition_id_)
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                commit=True)
 
-        if not _results_:
-            self._app.debug_log.error("revision.py: Failed to delete selected environmental condition.")
+        if _results_ == '' or not _results_ or _results_ is None:
+            self._app.debug_log.error("revision.py: Failed to delete selected environmental condition from mission %s." % _mission_)
             return True
 
         self._load_environmental_profile()
@@ -1527,7 +1589,7 @@ class Revision:
             self._app.debug_log.error("revision.py: Failed to delete failure definition.")
             return True
 
-        self._failure_definition_tab_load()
+        self._load_failure_definitions()
 
         return False
 
@@ -1616,16 +1678,17 @@ class Revision:
             Method to save each line item in the mission profile gtk.TreeBiew()
 
             Keyword Arguments:
-            model   -- the Mission Profile gtk.TreeModel().
-            __path  -- the selected path in the Mission Profile gtk.TreeModel().
-            row     -- the selected row in the Mission Profile gtk.TreeModel().
-            self    -- the current REVISION object.
+            model  -- the Mission Profile gtk.TreeModel().
+            __path -- the selected path in the Mission Profile gtk.TreeModel().
+            row    -- the selected row in the Mission Profile gtk.TreeModel().
+            self   -- the current REVISION object.
             """
 
-            _mission_ = self.cmbMission.get_active() - 1
+            _mission_ = self.cmbMission.get_active_text()
+            _mission_id_ = self._dic_missions[_mission_][0]
             _values_ = (model.get_value(row, 1), model.get_value(row, 2),
                         model.get_value(row, 3), model.get_value(row, 4),
-                        _mission_, model.get_value(row, 0))
+                        _mission_id_, model.get_value(row, 0))
             _query_ = "UPDATE tbl_mission_phase \
                        SET fld_phase_start=%f, fld_phase_end=%f, \
                            fld_phase_name='%s', fld_phase_description='%s' \
@@ -1645,23 +1708,25 @@ class Revision:
             gtk.TreeBiew()
 
             Keyword Arguments:
-            model   -- the Environmental Profile gtk.TreeModel().
-            __path  -- the selected path in the Environmental Profile
-                       gtk.TreeModel().
-            row     -- the selected row in the Environmental Profile
-                       gtk.TreeModel().
-            self    -- the current REVISION object.
+            model  -- the Environmental Profile gtk.TreeModel().
+            __path -- the selected path in the Environmental Profile
+                      gtk.TreeModel().
+            row    -- the selected row in the Environmental Profile
+                      gtk.TreeModel().
+            self   -- the current REVISION object.
             """
-
-            _mission_ = self.cmbMission.get_active() - 1
+# [Condition ID, Phase Name, Measurement Units, Minimum Value,
+#  Maximum Value, Mean Value, Variance]
+            _mission_ = self.cmbMission.get_active_text()
+            _mission_id_ = self._dic_missions[_mission_][0]
             _condition_ = self._dic_environments[model.get_value(row, 0)][0]
             _phase_ = self._dic_environments[model.get_value(row, 0)][1]
             _values_ = (_phase_, _condition_, model.get_value(row, 3),
                         model.get_value(row, 4), model.get_value(row, 5),
                         model.get_value(row, 6), model.get_value(row, 7),
-                        _mission_, model.get_value(row, 0))
+                        _mission_id_, model.get_value(row, 0))
             _query_ = "UPDATE tbl_environmental_profile \
-                       SET fld_phase_id=%d, fld_condition_name='%s', \
+                       SET fld_phase='%s', fld_condition_name='%s', \
                            fld_units='%s', fld_minimum=%f, fld_maximum=%f, \
                            fld_mean=%f, fld_variance=%f \
                        WHERE fld_mission_id=%d \
@@ -1675,12 +1740,12 @@ class Revision:
                 self._app.debug_log.error("revision.py: Failed to save environmental profile.")
 
         # Save the currently selected mission.
-        _mission_ = self.cmbMission.get_active() - 1
+        _mission_ = self.cmbMission.get_active_text()
         try:
-            _values_ = (self._dic_missions[_mission_][0],
-                        self._dic_missions[_mission_][1],
+            _values_ = (self._dic_missions[_mission_][1],
                         self._dic_missions[_mission_][2],
-                        _mission_)
+                        _mission_,
+                        self._dic_missions[_mission_][0])
             _query_ = "UPDATE tbl_missions \
                        SET fld_mission_time=%f, fld_mission_units=%d, \
                            fld_mission_description='%s' \
@@ -1762,9 +1827,9 @@ class Revision:
             self._load_environmental_profile()
 
         elif index == 1:                    # Time units
-            _mission_ = self.cmbMission.get_active() - 1
+            _mission_ = self.cmbMission.get_active_text()
             try:
-                self._dic_missions[_mission_][1] = i
+                self._dic_missions[_mission_][2] = i
             except KeyError:
                 pass
 
@@ -1795,7 +1860,7 @@ class Revision:
         elif index == 100:                  # Mission name.
             _model_ = self.cmbMission.get_model()
             _row_ = self.cmbMission.get_active_iter()
-            _mission_ = self.cmbMission.get_active() - 1
+            _mission_ = self.cmbMission.get_active_text()
 
             try:
                 _model_.set_value(_row_, 0, entry.get_text())
@@ -1803,16 +1868,45 @@ class Revision:
                 pass
 
             try:
-                self._dic_missions[_mission_][2] = entry.get_text()
+                self._dic_missions[entry.get_text()] = self._dic_missions.pop(_mission_)
             except KeyError:
-                pass
-        elif index == 101:                  # Total mission time.
-            _mission_ = self.cmbMission.get_active() - 1
-            try:
-                self._dic_missions[_mission_][0] = float(entry.get_text())
-            except KeyError:
-                pass
+                self._app.debug_log.error("revision.py: No mission named %s is available to update." % _mission_)
 
+        elif index == 101:                  # Total mission time.
+            _mission_ = self.cmbMission.get_active_text()
+            try:
+                self._dic_missions[_mission_][1] = float(entry.get_text())
+            except KeyError:
+                self._app.debug_log.error("revision.py: No mission named %s is available to update." % _mission_)
+
+        return False
+
+    def _callback_edit_tree(self, __cell, path, new_text, position, model):
+        """
+        Called whenever a TreeView CellRenderer is edited.
+
+        Keyword Arguments:
+        __cell   -- the CellRenderer that was edited.
+        path     -- the TreeView path of the CellRenderer that was edited.
+        new_text -- the new text in the edited CellRenderer.
+        position -- the column position of the edited CellRenderer.
+        model    -- the TreeModel the CellRenderer belongs to.
+        """
+
+        _type_ = gobject.type_name(model.get_column_type(position))
+
+        if _type_ == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type_ == 'gint':
+            model[path][position] = int(new_text)
+        elif _type_ == 'gfloat':
+            model[path][position] = float(new_text)
+
+        _environment_ = model[path][0]
+        if position == 1:                   # Environmental condition.
+            self._dic_environments[_environment_][0] = str(new_text)
+        elif position == 2:                 # Mission phase.
+            self._dic_environments[_environment_][1] = str(new_text)
         return False
 
     def calculate(self, __button):
@@ -1830,18 +1924,24 @@ class Revision:
 
         # First attempt to calculate results based on components associated
         # with the selected revision.
-        _query_ = "SELECT SUM(fld_cost), \
-                   SUM(fld_failure_rate_active), \
-                   SUM(fld_failure_rate_dormant), \
-                   SUM(fld_failure_rate_software), \
-                   COUNT(fld_assembly_id) \
-                   FROM tbl_system \
-                   WHERE fld_revision_id=%d \
-                   AND fld_part=1" % self.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=False)
+        if _conf.MODE == 'developer':
+            _results_ = ([199.03, 0.0000542, 0.00000342, 0.00142, 112, 0.0014542, 0.05, 0.4762, 0.416667, 0.08929],)
+        else:
+            _query_ = "SELECT SUM(fld_cost), \
+                       SUM(fld_failure_rate_active), \
+                       SUM(fld_failure_rate_dormant), \
+                       SUM(fld_failure_rate_software), \
+                       COUNT(fld_assembly_id), \
+                       SUM(fld_failure_rate_mission), \
+                       SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
+                       SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
+                       FROM tbl_system \
+                       WHERE fld_revision_id=%d \
+                       AND fld_part=1" % self.revision_id
+            _results_ = self._app.DB.execute_query(_query_,
+                                                   None,
+                                                   self._app.ProgCnx,
+                                                   commit=False)
 
         # If that doesn't work, attempt to calculate results based on the first
         # level of assemblies associated with the seletected revision.
@@ -1850,7 +1950,10 @@ class Revision:
                        SUM(fld_failure_rate_active), \
                        SUM(fld_failure_rate_dormant), \
                        SUM(fld_failure_rate_software), \
-                       COUNT(fld_assembly_id) \
+                       COUNT(fld_assembly_id), \
+                       SUM(fld_failure_rate_mission), \
+                       SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
+                       SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
                        FROM tbl_system \
                        WHERE fld_revision_id=%d \
                        AND fld_level=1 AND fld_part=0" % self.revision_id
@@ -1886,26 +1989,65 @@ class Revision:
         except TypeError:
             self.n_parts = 0
 
-        # Predicted h(t).
+        try:
+            self.mission_hazard_rate = float(_results_[0][5])
+        except TypeError:
+            self.mission_hazard_rate = 0
+
+        try:
+            self.mpmt = 1.0 / float(_results_[0][6])
+        except TypeError:
+            self.mpmt = 0.0
+
+        try:
+            self.mcmt = 1.0 / float(_results_[0][7])
+        except TypeError:
+            self.mcmt = 0.0
+
+        try:
+            self.mttr = 1.0 / float(_results_[0][8])
+        except TypeError:
+            self.mttr = 0.0
+
+        try:
+            self.mmt = 1.0 / float(_results_[0][9])
+        except TypeError:
+            self.mmt = 0.0
+
+        # Predicted logistics h(t).
         self.hazard_rate = self.active_hazard_rate + self.dormant_hazard_rate + self.software_hazard_rate
 
-        # Calculate the MTBF.
+        # Calculate the logistics MTBF.
         try:
             self.mtbf = 1.0 / self.hazard_rate
         except ZeroDivisionError:
             self.mtbf = 0.0
 
-        # Calculate reliabilities.
-        self.reliability = exp(-1.0 * self.hazard_rate / _conf.FRMULT)
-        self.mission_reliability = exp(-1.0 * self.hazard_rate * _conf.MTIME / _conf.FRMULT)
+        # Calculate the mission MTBF.
+        try:
+            self.mission_mtbf = 1.0 / self.mission_hazard_rate
+        except ZeroDivisionError:
+            self.mission_mtbf = 0.0
 
-        # Calculate availabilities.
+        # Calculate reliabilities.
+        self.reliability = exp(-1.0 * self.hazard_rate * _conf.MTIME / _conf.FRMULT)
+        self.mission_reliability = exp(-1.0 * self.mission_hazard_rate * _conf.MTIME / _conf.FRMULT)
+
+        # Calculate logistics availability.
         try:
             self.availability = self.mtbf / (self.mtbf + self.mttr)
         except ZeroDivisionError:
             self.availability = 1.0
         except OverflowError:
             self.availability = 1.0
+
+        # Calculate mission availability.
+        try:
+            self.mission_availability = self.mission_mtbf / (self.mission_mtbf + self.mttr)
+        except ZeroDivisionError:
+            self.mission_availability = 1.0
+        except OverflowError:
+            self.mission_availability = 1.0
 
         # Calculate costs.
         self.cost_per_failure = self.cost * self.hazard_rate
@@ -1914,21 +2056,23 @@ class Revision:
         # Update the REVISION gtk.TreeView().
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
+        _model_.set_value(_row_, 1, self.availability)
+        _model_.set_value(_row_, 2, self.mission_availability)
         _model_.set_value(_row_, 3, self.cost)
         _model_.set_value(_row_, 4, self.cost_per_failure)
         _model_.set_value(_row_, 5, self.cost_per_hour)
         _model_.set_value(_row_, 6, self.active_hazard_rate)
         _model_.set_value(_row_, 7, self.dormant_hazard_rate)
-        #_model_.set_value(_row_, 8, self.mission_hazard_rate)
+        _model_.set_value(_row_, 8, self.mission_hazard_rate)
         _model_.set_value(_row_, 9, self.hazard_rate)
         _model_.set_value(_row_, 10, self.software_hazard_rate)
-        #_model_.set_value(_row_, 11, self.mmt)
-        #_model_.set_value(_row_, 12, self.mcmt)
-        #_model_.set_value(_row_, 13, self.mpmt)
-        #_model_.set_value(_row_, 14, self.mission_mtbf)
+        _model_.set_value(_row_, 11, self.mmt)
+        _model_.set_value(_row_, 12, self.mcmt)
+        _model_.set_value(_row_, 13, self.mpmt)
+        _model_.set_value(_row_, 14, self.mission_mtbf)
         _model_.set_value(_row_, 15, self.mtbf)
         _model_.set_value(_row_, 16, self.mttr)
-        #_model_.set_value(_row_, 18, self.mission_reliability)
+        _model_.set_value(_row_, 18, self.mission_reliability)
         _model_.set_value(_row_, 19, self.reliability)
         _model_.set_value(_row_, 21, self.n_parts)
 

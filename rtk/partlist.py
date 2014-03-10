@@ -550,7 +550,7 @@ class ListWindow(gtk.Window):
         if(self.selected_row is not None):
             self._assembly_id = self.objPartsList.get_value(self.selected_row, 1)
             self._app.HARDWARE.model.foreach(self.find_hardware_tree_row)
-            self._app.HARDWARE.ispart = True
+            self._app.HARDWARE.part = True
             self._app.COMPONENT.load_notebook()
 
             return False

@@ -81,7 +81,7 @@ class Requirement:
 
     def __init__(self, application):
         """
-        Initializes the Requirements Object.
+        Initializes the REQUIREMENT class.
 
         Keyword Arguments:
         application -- the RTK application.
@@ -92,7 +92,6 @@ class Requirement:
         self._app = application
 
         # Define private REQUIREMENT class dictionary attributes.
-
         self._dic_owners = {}
 
         # Define private REQUIREMENT class list attributes.
@@ -166,13 +165,13 @@ class Requirement:
         self.btnRemove = gtk.ToolButton()
         self.btnSave = gtk.ToolButton()
 
-        # Stakeholder input tab widgets.
+        # Stakeholder input page widgets.
         (self.tvwStakeholderInput,
          self._lst_stakeholder_col_order) = _widg.make_treeview('Stakeholder',
                                                                 10, self._app,
                                                                 None)
 
-        # General data tab widgets.
+        # General data page widgets.
         self.btnValidateDate = _widg.make_button(_height_=25,
                                                  _width_=25,
                                                  _label_="...",
@@ -253,6 +252,7 @@ class Requirement:
 
         #TODO: Load requirement type CellRendererCombo
         #TODO: Load requiquirement owner CellRendererCombo
+        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of program requirements."))
         self.treeview.set_enable_tree_lines(True)
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
             None, None)
@@ -666,9 +666,7 @@ class Requirement:
 
             _max1_ = 0
             _max2_ = 0
-            (_max1_, _y_pos1_) = _widg.make_labels(_labels_,
-                                                   _fxdClear_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 50
+            (_max1_, _y_pos1_) = _widg.make_labels(_labels_, _fxdClear_, 5, 5)
 
             # Create the labels for quadrant #3.
             _labels_ = [_(u"Performance objectives are properly documented from the user's point of view."),
@@ -682,9 +680,8 @@ class Requirement:
                         _(u"The requirement contains no implied implementation constraints."),
                         _(u"The requirement contains no implied project management constraints.")]
 
-            _max2_ = 0
-            (_max2_, _y_pos2_) = _widg.make_labels(_labels_,
-                                                   _fxdComplete_, 5, 5)
+            (_max2_,
+             _y_pos2_) = _widg.make_labels(_labels_, _fxdComplete_, 5, 5)
             _x_pos_ = max(_max1_, _max2_) + 50
 
             # Place the quadrant 1 widgets.
@@ -1148,8 +1145,8 @@ class Requirement:
 
     def load_notebook(self):
         """
-        Method to load the REQUIREMENT object gtk.Notebook().
-       """
+        Method to load the REQUIREMENT class gtk.Notebook().
+        """
 
         def _load_general_data_tab(self):
             """
@@ -1400,7 +1397,7 @@ class Requirement:
                         fld_requirement_desc, fld_parent_requirement) \
                        VALUES (%d, %d, '%s', '%s')" % \
                        (self._app.REVISION.revision_id,
-                       self._app.ASSEMBLY.assembly_id, _requirement_name_,
+                       self._app.HARDWARE.assembly_id, _requirement_name_,
                        _parent_)
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
@@ -1609,8 +1606,8 @@ class Requirement:
 
     def save_requirement(self, __button=None):
         """
-        Saves the REQUIREMENT object gtk.TreeView() information to the
-        RTK Program's database.
+        Saves the REQUIREMENT class information to the open RTK Program
+        database.
 
         Keyword Arguments:
         __button -- the gtk.Button() that called this function.
@@ -1618,14 +1615,14 @@ class Requirement:
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the Requirement Object treeview model to the MySQL
-            or SQLite3 database.
+            Saves a single row in the REQUIREMENT class gtk.TreeModel() to the
+            open RTK Program database.
 
             Keyword Arguments:
-            model  -- the Requirement Object treemodel.
-            __path -- the path of the active row in the Requirement Object
-                      treemodel.
-            row    -- the selected row in the Requirement Object treeview.
+            model  -- the REQUIREMENT class gtk.TreeModel().
+            __path -- the path of the selected row in the Requirement class
+                      gtk.TreeModel().
+            row    -- the selected row in the Requirement class gtk.TreeView().
             """
 
             _date_ = _util.date_to_ordinal(model.get_value(row,

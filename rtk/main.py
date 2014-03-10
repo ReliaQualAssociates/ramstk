@@ -101,7 +101,7 @@ class RTK:
 
         # Import the test data file if we are executing in developer mode.
         if(len(sys.argv) > 1 and sys.argv[1] == 'devmode'):
-            import testdata as _data
+            _conf.MODE = 'developer'
 
         # Read the configuration file.
         _util.read_configuration()
@@ -197,8 +197,7 @@ class RTK:
         self.SOFTWARE = Software(self)
         self.VALIDATION = Validation(self)
         self.INCIDENT = Incident(self)
-        self.ASSEMBLY = Assembly(self)
-        self.COMPONENT = Component(self)
+        #self.COMPONENT = Component(self)
         self.DATASET = Dataset(self)
         self.TESTING = Testing(self)
 
@@ -234,16 +233,19 @@ class RTK:
 
         results = self.DB.execute_query(query, None, self.ProgCnx)
 
-        _query_ = "SELECT fld_revision_prefix, fld_function_prefix, \
-                          fld_assembly_prefix, fld_part_prefix, \
-                          fld_fmeca_prefix, fld_mode_prefix, \
-                          fld_effect_prefix, fld_cause_prefix, \
-                          fld_software_prefix \
+        _query_ = "SELECT fld_revision_prefix, fld_revision_next_id, \
+                          fld_function_prefix, fld_function_next_id, \
+                          fld_assembly_prefix, fld_assembly_next_id, \
+                          fld_part_prefix, fld_part_next_id, \
+                          fld_fmeca_prefix, fld_fmeca_next_id, \
+                          fld_mode_prefix, fld_mode_next_id, \
+                          fld_effect_prefix, fld_effect_next_id, \
+                          fld_cause_prefix, fld_cause_next_id, \
+                          fld_software_prefix, fld_software_next_id \
                    FROM tbl_program_info"
         _results_ = self.DB.execute_query(_query_, None, self.ProgCnx)
 
-        for i in range(len(_results_)):
-            _conf.RTK_PREFIX.append(_results_[i])
+        _conf.RTK_PREFIX = [_element_ for _element_ in _results_[0]]
 
 # Find which modules are active in this project.
         _query_ = "SELECT fld_revision_active, fld_function_active, \
