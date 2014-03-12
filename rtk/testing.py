@@ -149,11 +149,11 @@ class Testing:
         self.fraPlanDetails = _widg.make_frame(_label_=_(u""))
         self.fraPlanDetails2 = _widg.make_frame(_label_=_(u""))
 
-        self.txtName = _widg.make_entry(_width_=400)
+        self.txtName = _widg.make_entry(width=400)
         self.txtDescription = gtk.TextBuffer()
         self.txtAttachment = gtk.TextBuffer()
-        self.txtConsumerRisk = _widg.make_entry(_width_=100)
-        self.txtProducerRisk = _widg.make_entry(_width_=100)
+        self.txtConsumerRisk = _widg.make_entry(width=100)
+        self.txtProducerRisk = _widg.make_entry(width=100)
 
 # Create widgets for reliability growth planning.
         self.btnFindMTBFI = _widg.make_button(_height_=25, _width_=25,
@@ -180,16 +180,16 @@ class Testing:
 
         self.tvwRGPlanDetails = gtk.TreeView()
 
-        self.txtMTBFI = _widg.make_entry(_width_=100)
-        self.txtMTBFG = _widg.make_entry(_width_=100)
-        self.txtMTBFGP = _widg.make_entry(_width_=100)
-        self.txtTechReq = _widg.make_entry(_width_=100)
-        self.txtTTT = _widg.make_entry(_width_=100)
-        self.txtAverageGR = _widg.make_entry(_width_=100)
-        self.txtAverageFEF = _widg.make_entry(_width_=100)
-        self.txtProgramMS = _widg.make_entry(_width_=100)
-        self.txtProgramProb = _widg.make_entry(_width_=100)
-        self.txtTTFF = _widg.make_entry(_width_=100)
+        self.txtMTBFI = _widg.make_entry(width=100)
+        self.txtMTBFG = _widg.make_entry(width=100)
+        self.txtMTBFGP = _widg.make_entry(width=100)
+        self.txtTechReq = _widg.make_entry(width=100)
+        self.txtTTT = _widg.make_entry(width=100)
+        self.txtAverageGR = _widg.make_entry(width=100)
+        self.txtAverageFEF = _widg.make_entry(width=100)
+        self.txtProgramMS = _widg.make_entry(width=100)
+        self.txtProgramProb = _widg.make_entry(width=100)
+        self.txtTTFF = _widg.make_entry(width=100)
 
         if self._planning_tab_create():
             self._app.debug_log.error("testing.py: Failed to create Planning Input tab.")
@@ -226,10 +226,10 @@ class Testing:
 
         self.tvwTestFeasibility = gtk.TreeView()
 
-        self.txtMIMGP = _widg.make_entry(_width_=75)
-        self.txtFEF = _widg.make_entry(_width_=75)
-        self.txtMGMGP = _widg.make_entry(_width_=75)
-        self.txtTRMG = _widg.make_entry(_width_=75)
+        self.txtMIMGP = _widg.make_entry(width=75)
+        self.txtFEF = _widg.make_entry(width=75)
+        self.txtMGMGP = _widg.make_entry(width=75)
+        self.txtTRMG = _widg.make_entry(width=75)
 
         if self._feasibility_tab_create():
             self._app.debug_log.error("testing.py: Failed to create Test Feasibility tab.")
@@ -263,46 +263,46 @@ class Testing:
         self.tvwTestAssessment = gtk.TreeView()
         self.tvwTestAssessment.set_tooltip_text(_(u"Displays the incidents associated with the selected test plan."))
 
-        self.txtGroupInterval = _widg.make_entry(_width_=75)
+        self.txtGroupInterval = _widg.make_entry(width=75)
         self.txtGroupInterval.set_tooltip_text(_(u"Displays the width of the grouping intervals if using Option for Grouped Data."))
 
         self.spnConfidence = gtk.SpinButton()
         self.spnConfidence.set_tooltip_text(_(u"Displays the confidence level to use for failure rate/MTBF bounds and goodness of fit tests."))
 
 # Widgets to display the estimated parameters for the selected model.
-        self.txtCumTestTime = _widg.make_entry(_width_=100, editable=False)
+        self.txtCumTestTime = _widg.make_entry(width=100, editable=False)
         self.txtCumTestTime.set_tooltip_text(_(u"Displays the cumulative test time to date for the selected test."))
 
-        self.txtCumFailures = _widg.make_entry(_width_=100, editable=False)
+        self.txtCumFailures = _widg.make_entry(width=100, editable=False)
         self.txtCumFailures.set_tooltip_text(_(u"Displays the cumulative number of failures to date for the selected test."))
 
-        self.txtScale = _widg.make_entry(_width_=100, editable=False)
+        self.txtScale = _widg.make_entry(width=100, editable=False)
         self.txtScale.set_tooltip_text(_(u"Displays the reliability growth model estimated scale parameter."))
 
-        self.txtShape = _widg.make_entry(_width_=100, editable=False)
+        self.txtShape = _widg.make_entry(width=100, editable=False)
         self.txtShape.set_tooltip_text(_(u"Displays the reliability growth model estimated shape parameter."))
 
-        self.txtGRActual = _widg.make_entry(_width_=100, editable=False)
+        self.txtGRActual = _widg.make_entry(width=100, editable=False)
         self.txtGRActual.set_tooltip_text(_(u"Displays the average growth rate over the reliability growth program to date."))
 
-        self.txtRhoInst = _widg.make_entry(_width_=100, editable=False)
+        self.txtRhoInst = _widg.make_entry(width=100, editable=False)
         self.txtRhoInst.set_tooltip_text(_(u"Displays the currently assessed instantaneous failure rate of the system under test."))
 
-        self.txtRhoC = _widg.make_entry(_width_=100, editable=False)
+        self.txtRhoC = _widg.make_entry(width=100, editable=False)
         self.txtRhoC.set_tooltip_text(_(u"Displays the currently assessed cumulative failure rate of the system under test."))
 
-        self.txtMTBFInst = _widg.make_entry(_width_=100, editable=False)
+        self.txtMTBFInst = _widg.make_entry(width=100, editable=False)
         self.txtMTBFInst.set_tooltip_text(_(u"Displays the currently assessed instantaneous MTBF of the system under test."))
 
-        self.txtMTBFC = _widg.make_entry(_width_=100, editable=False)
+        self.txtMTBFC = _widg.make_entry(width=100, editable=False)
         self.txtMTBFC.set_tooltip_text(_(u"Displays the currently assessed cumulative MTBF of the system under test."))
 
         self.lblGoFTrend = _widg.make_label("", width=100)
-        self.txtGoFTrend = _widg.make_entry(_width_=100, editable=False)
+        self.txtGoFTrend = _widg.make_entry(width=100, editable=False)
         self.txtGoFTrend.set_tooltip_text(_(u"Displays the goodness of fit test statistic for failure rate/MTBF trend."))
 
         self.lblGoFModel = _widg.make_label("", width=100)
-        self.txtGoFModel = _widg.make_entry(_width_=100, editable=False)
+        self.txtGoFModel = _widg.make_entry(width=100, editable=False)
         self.txtGoFModel.set_tooltip_text(_(u"Displays the goodness of fit test statistic for assessing fit to the selected growth model."))
 
 # Widgets to display the reliability growth plot.
@@ -1657,13 +1657,13 @@ class Testing:
         _x_pos_ = max(_x_pos1_, _x_pos2_)
 
 # Add the user input widgets to the assistant.
-        txtMTBFI = _widg.make_entry(_width_=100)
-        txtNItems = _widg.make_entry(_width_=100)
-        txtHrsWkItem = _widg.make_entry(_width_=100)
-        txtA = _widg.make_entry(_width_=100)
-        txtM = _widg.make_entry(_width_=100)
-        txtB = _widg.make_entry(_width_=100)
-        txtConfidence = _widg.make_entry(_width_=100)
+        txtMTBFI = _widg.make_entry(width=100)
+        txtNItems = _widg.make_entry(width=100)
+        txtHrsWkItem = _widg.make_entry(width=100)
+        txtA = _widg.make_entry(width=100)
+        txtM = _widg.make_entry(width=100)
+        txtB = _widg.make_entry(width=100)
+        txtConfidence = _widg.make_entry(width=100)
 
         _fixed1_.put(txtMTBFI, _x_pos_, _y_pos1_[0])
         _fixed1_.put(txtNItems, _x_pos_, _y_pos1_[1])
@@ -1674,9 +1674,9 @@ class Testing:
         _fixed1_.put(txtConfidence, _x_pos_, _y_pos1_[6])
 
 # Add the results widgets to the assistant.
-        txtMTTFF = _widg.make_entry(_width_=100, editable=False)
-        txtTTFFLL = _widg.make_entry(_width_=100, editable=False)
-        txtTTFFUL = _widg.make_entry(_width_=100, editable=False)
+        txtMTTFF = _widg.make_entry(width=100, editable=False)
+        txtTTFFLL = _widg.make_entry(width=100, editable=False)
+        txtTTFFUL = _widg.make_entry(width=100, editable=False)
 
         _fixed2_.put(txtMTTFF, _x_pos_, _y_pos2_[0])
         _fixed2_.put(txtTTFFLL, _x_pos_, _y_pos2_[1])

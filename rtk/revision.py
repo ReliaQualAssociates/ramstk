@@ -139,7 +139,7 @@ class Revision(object):
         self.tvwMissionProfile = gtk.TreeView()
         self.tvwEnvironmentProfile = gtk.TreeView()
         self.txtMission = _widg.make_entry()
-        self.txtMissionTime = _widg.make_entry(_width_=90)
+        self.txtMissionTime = _widg.make_entry(width=90)
 
         # Failure definition tab widgets.
         self.btnAddDefinition = _widg.make_button(_width_=40, _image_='add')
@@ -148,30 +148,30 @@ class Revision(object):
         self.tvwFailureDefinitions = gtk.TreeView()
 
         # Assessment results tab widgets.
-        self.txtActiveHt = _widg.make_entry(_width_=100, editable=False,
+        self.txtActiveHt = _widg.make_entry(width=100, editable=False,
                                             bold=True)
-        self.txtDormantHt = _widg.make_entry(_width_=100, editable=False,
+        self.txtDormantHt = _widg.make_entry(width=100, editable=False,
                                              bold=True)
-        self.txtSoftwareHt = _widg.make_entry(_width_=100, editable=False,
+        self.txtSoftwareHt = _widg.make_entry(width=100, editable=False,
                                               bold=True)
-        self.txtPredictedHt = _widg.make_entry(_width_=100, editable=False,
+        self.txtPredictedHt = _widg.make_entry(width=100, editable=False,
                                                bold=True)
-        self.txtMissionHt = _widg.make_entry(_width_=100, editable=False,
+        self.txtMissionHt = _widg.make_entry(width=100, editable=False,
                                              bold=True)
-        self.txtMTBF = _widg.make_entry(_width_=100, editable=False, bold=True)
-        self.txtMissionMTBF = _widg.make_entry(_width_=100, editable=False,
+        self.txtMTBF = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMissionMTBF = _widg.make_entry(width=100, editable=False,
                                                bold=True)
-        self.txtReliability = _widg.make_entry(_width_=100, editable=False,
+        self.txtReliability = _widg.make_entry(width=100, editable=False,
                                                bold=True)
-        self.txtMissionRt = _widg.make_entry(_width_=100, editable=False,
+        self.txtMissionRt = _widg.make_entry(width=100, editable=False,
                                              bold=True)
-        self.txtMPMT = _widg.make_entry(_width_=100, editable=False, bold=True)
-        self.txtMCMT = _widg.make_entry(_width_=100, editable=False, bold=True)
-        self.txtMTTR = _widg.make_entry(_width_=100, editable=False, bold=True)
-        self.txtMMT = _widg.make_entry(_width_=100, editable=False, bold=True)
-        self.txtAvailability = _widg.make_entry(_width_=100, editable=False,
+        self.txtMPMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMCMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMTTR = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtAvailability = _widg.make_entry(width=100, editable=False,
                                                 bold=True)
-        self.txtMissionAt = _widg.make_entry(_width_=100, editable=False,
+        self.txtMissionAt = _widg.make_entry(width=100, editable=False,
                                              bold=True)
 
         # Put it all together.

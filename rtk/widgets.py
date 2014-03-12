@@ -282,7 +282,7 @@ def make_dialog(_title_, _parent_=None,
     return(dialog)
 
 
-def make_entry(_width_=200, _height_=25,
+def make_entry(width=200, _height_=25,
                editable=True, bold=False,
                _color_='#BBDDFF'):
     """
@@ -300,7 +300,7 @@ def make_entry(_width_=200, _height_=25,
     """
 
     entry = gtk.Entry()
-    entry.props.width_request = _width_
+    entry.props.width_request = width
     entry.props.height_request = _height_
     entry.props.editable = editable
 
@@ -380,7 +380,7 @@ def make_labels(text, container, x_pos, y_pos, y_inc=25):
     for i in range(len(text)):
         label = make_label(text[i], width=-1, height=-1, wrap=True)
         _int_max_x_ = max(_int_max_x_, label.size_request()[0])
-        container.put(label, 5, y_pos)
+        container.put(label, x_pos, y_pos)
         _lst_y_pos_.append(y_pos)
         y_pos += max(label.size_request()[1], y_inc) + 5
 

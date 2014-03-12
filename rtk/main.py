@@ -53,8 +53,6 @@ from requirement import Requirement
 from hardware import Hardware
 from validation import Validation
 from incident import Incident
-from assembly import Assembly
-from component import Component
 from software import Software
 from dataset import Dataset
 from testing import Testing

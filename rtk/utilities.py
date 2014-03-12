@@ -817,7 +817,7 @@ def add_items(title, prompt=""):
 
     _label_ = _widg.make_label(prompt, -1, -1)
     _x_pos_ = _label_.size_request()[0] + 50
-    txtQuantity = _widg.make_entry(_width_=50)
+    txtQuantity = _widg.make_entry(width=50)
     txtQuantity.set_text("1")
 
     _fixed_.put(_label_, 5, 10)
@@ -1201,7 +1201,6 @@ def set_part_model(category, subcategory):
         else:
             from connections.solder import Solder
             part = Solder(subcategory)
-
     elif(category == 3):                    # Inductive Device
         if(subcategory == 1):
             from inductors.coil import Coil

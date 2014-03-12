@@ -183,12 +183,12 @@ class Requirement:
         self.cmbOwner = _widg.make_combo(simple=False)
         self.cmbRqmtType = _widg.make_combo(simple=False)
 
-        self.txtCode = _widg.make_entry(_width_=100, editable=False)
+        self.txtCode = _widg.make_entry(width=100, editable=False)
         self.txtFigureNumber = _widg.make_entry()
         self.txtPageNumber = _widg.make_entry()
         self.txtRequirement = gtk.TextBuffer()
         self.txtSpecification = _widg.make_entry()
-        self.txtValidatedDate = _widg.make_entry(_width_=100)
+        self.txtValidatedDate = _widg.make_entry(width=100)
 
         # Analysis tab widgets.
         self.chkClearQ1 = _widg.make_check_button()
