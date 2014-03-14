@@ -82,12 +82,12 @@ class Hardware(object):
         application -- the RTK application.
         """
 
-        # Define private HARDWARE class attributes.
+# Define private HARDWARE class attributes.
         self._app = application
         self._component = None
         self._system_ht = 1.0
 
-        # Define private HARDWARE class dictionary attributes.
+# Define private HARDWARE class dictionary attributes.
         self._treepaths = {}
         self._mission = {}
         self._mission_phase = {}
@@ -103,12 +103,12 @@ class Hardware(object):
         self._rpnsev = {}                   # Carries RPN severity values.
         self._RPN = {}                      # Carries RPN and new RPN values.
 
-        # Define private HARDWARE class list attributes.
+# Define private HARDWARE class list attributes.
         self._col_order = []
         self._risk_col_order = []
         self._sia_col_order = []
 
-        # Define public HARDWARE class attributes.
+# Define public HARDWARE class attributes.
         self.revision_id = 0
         self.assembly_id = 0
         self._add_adj_factor = 0.0
@@ -233,10 +233,10 @@ class Hardware(object):
         self.temp_rise = 0.0
         self.case_temp = 0.0
 
-        # Define public HARDWARE class dictionary aatributes.
+# Define public HARDWARE class dictionary attributes.
 #        self.dicHARDWARE = {}
 
-        # Create the main HARDWARE class treeview.
+# Create the main HARDWARE class treeview.
         (self.treeview,
          self._col_order) = _widg.make_treeview('Hardware', 3, self._app,
                                                 None, _conf.RTK_COLORS[6],
@@ -283,7 +283,7 @@ class Hardware(object):
         self.txtRemarks = _widg.make_text_view(width=400)
 
 # Diagrams page widgets.
-        # TODO: Implement Diagram Worksheet for ASSEMBLY.
+        # TODO: Implement Diagram Worksheet for HARDWARE.
 
 # Allocation page widgets.
         self.chkApplyResults = _widg.make_check_button(_(u"Apply results to hardware"))
@@ -577,35 +577,38 @@ class Hardware(object):
 
         _pos = 0
 
-# Add sibling assembly button.
+        # Add sibling assembly button.
         self.btnAddSibling.set_tooltip_text(_(u"Adds a new assembly at the same indenture level as the selected assembly to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         self.btnAddSibling.set_icon_widget(image)
+        self.btnAddSibling.connect('clicked', self._add_hardware, 0)
         toolbar.insert(self.btnAddSibling, _pos)
         _pos += 1
 
-# Add child assembly button.
+        # Add child assembly button.
         self.btnAddChild.set_tooltip_text(_(u"Adds a new assembly one indenture level subordinate to the selected assembly to the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         self.btnAddChild.set_icon_widget(image)
+        self.btnAddChild.connect('clicked', self._add_hardware, 1)
         toolbar.insert(self.btnAddChild, _pos)
         _pos += 1
 
-# Delete assembly button
+        # Delete assembly button
         self.btnRemoveHardware.set_tooltip_text(_(u"Removes the currently selected assembly from the RTK Program Database."))
         _image_ = gtk.Image()
         _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         self.btnRemoveHardware.set_icon_widget(_image_)
+        self.btnRemoveHardware.connect('clicked', self._delete_hardware)
         toolbar.insert(self.btnRemoveHardware, _pos)
         _pos += 1
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-# Add item button.  Depending on the notebook page selected will determine
-# what type of item is added.
+        # Add item button.  Depending on the notebook page selected will
+        # determine what type of item is added.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         self.btnAddItem.set_icon_widget(image)
@@ -642,8 +645,8 @@ class Hardware(object):
         toolbar.insert(self.btnFMECAAdd, _pos)
         _pos += 1
 
-# Remove item button.  Depending on the notebook page selected will determine
-# what type of item is removed.
+        # Remove item button.  Depending on the notebook page selected will
+        # determine what type of item is removed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         self.btnRemoveItem.set_icon_widget(image)
@@ -652,8 +655,8 @@ class Hardware(object):
         toolbar.insert(self.btnRemoveItem, _pos)
         _pos += 1
 
-# Perform analysis button.  Depending on the notebook page selected will
-# determine which analysis is executed.
+        # Perform analysis button.  Depending on the notebook page selected
+        # will determine which analysis is executed.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         self.btnAnalyze.set_icon_widget(image)
@@ -662,8 +665,8 @@ class Hardware(object):
         toolbar.insert(self.btnAnalyze, _pos)
         _pos += 1
 
-# Save results button.  Depending on the notebook page selected will determine
-# which results are saved.
+        # Save results button.  Depending on the notebook page selected will
+        # determine which results are saved.
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         self.btnSaveResults.set_icon_widget(image)
@@ -688,7 +691,7 @@ class Hardware(object):
         toolbar.insert(self.btnEdit, _pos)
         _pos += 1
 
-# Create an import button.
+        # Create an import button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
@@ -699,7 +702,7 @@ class Hardware(object):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Create an export button.
+        # Create an export button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
@@ -1011,9 +1014,9 @@ class Hardware(object):
 
         def _create_allocation_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
+            Function to create the HARDWARE class gtk.Notebook() page for
             displaying the reliability allocation analysis for the selected
-            ASSEMBLY.
+            HARDWARE.
 
             Keyword Arguments:
             self     -- the current instance of a HARDWARE class.
@@ -1185,11 +1188,11 @@ class Hardware(object):
 
         def _create_hazard_analysis_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
-            displaying the hazard analysis for the selected ASSEMBLY.
+            Function to create the HARDWARE class gtk.Notebook() page for
+            displaying the hazard analysis for the selected HARDWARE.
 
             Keyword Arguments:
-            self     -- the current instance of a ASSEMBLY class.
+            self     -- the current instance of a HARDWARE class.
             notebook -- the HARDWARE class gtk.Notebook() widget.
             """
 
@@ -1485,11 +1488,11 @@ class Hardware(object):
 
         def _create_similar_item_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
-            displaying the similar item analysis for the selected ASSEMBLY.
+            Function to create the HARDWARE class gtk.Notebook() page for
+            displaying the similar item analysis for the selected HARDWARE.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             notebook -- the HARDWARE class gtk.Notebook() widget.
             """
 
@@ -1628,11 +1631,11 @@ class Hardware(object):
 
         def _create_assessment_inputs_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
-            displaying the assessment inputs for the selected ASSEMBLY.
+            Function to create the HARDWARE class gtk.Notebook() page for
+            displaying the assessment inputs for the selected HARDWARE.
 
             Keyword Arguments:
-            self     -- the current instance of a ASSEMBLY class.
+            self     -- the current instance of a HARDWARE class.
             notebook -- the HARDWARE class gtk.Notebook() widget.
             """
 
@@ -2076,11 +2079,11 @@ class Hardware(object):
 
         def _create_assessment_results_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
-            displaying the assessment results for the selected ASSEMBLY.
+            Function to create the HARDWARE class gtk.Notebook() page for
+            displaying the assessment results for the selected HARDWARE.
 
             Keyword Arguments:
-            self     -- the current instance of a ASSEMBLY class.
+            self     -- the current instance of a HARDWARE class.
             notebook -- the HARDWARE class gtk.Notebook() widget.
             """
 
@@ -2288,11 +2291,11 @@ class Hardware(object):
 
         def _create_fmeca_tab(self, notebook):
             """
-            Function to create the ASSEMBLY class gtk.Notebook() page for
-            displaying the FMEA/FMECA for the selected ASSEMBLY.
+            Function to create the HARDWARE class gtk.Notebook() page for
+            displaying the FMEA/FMECA for the selected HARDWARE.
 
             Keyword Arguments:
-            self     -- the current instance of a ASSEMBLY class.
+            self     -- the current instance of a HARDWARE class.
             notebook -- the HARDWARE class gtk.Notebook() widget.
             """
 
@@ -2745,7 +2748,7 @@ class Hardware(object):
             Function to load the widgets on the General Data page.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             """
 
             self.txtRevisionID.set_text(str(self.revision_id))
@@ -2792,7 +2795,7 @@ class Hardware(object):
             Function to load the widgets on the Allocation page.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2801,7 +2804,7 @@ class Hardware(object):
 
             _values_ = (_model_.get_string_from_iter(_row_), self.revision_id)
 
-            # Get mission time from the ASSEMBLY gtk.TreeView
+            # Get mission time from the HARDWARE gtk.TreeView
             self.cmbAllocationType.set_active(self.allocation_type)
             self.txtOperTime.set_text(str('{0:0.2f}'.format(self.mission_time)))
 
@@ -2892,7 +2895,7 @@ class Hardware(object):
             Function to load the widgets on the Hazard Analysis page.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -3042,7 +3045,7 @@ class Hardware(object):
             Function to load the widgets on the Similar Item Analysis page.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -3100,7 +3103,7 @@ class Hardware(object):
             Function to load the widgets on the Assessment Inputs page.
 
             Keyword Arguments:
-            self -- the current instance of an ASSEMBLY class.
+            self -- the current instance of an HARDWARE class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -3611,12 +3614,12 @@ class Hardware(object):
 
     def _update_tree(self, columns, values):
         """
-        Updates the values in the HARDWARE Object gtk.TreeView.
+        Updates the values in the HARDWARE class gtk.TreeView().
 
         Keyword Arguments:
         columns -- a list of integers representing the column numbers to
                    update.
-        values  -- a list of new values for the Hardware Object TreeView.
+        values  -- a list of new values for the HARDWARE class TreeView().
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -3759,12 +3762,12 @@ class Hardware(object):
 
     def _treeview_clicked(self, treeview, event):
         """
-        Callback function for handling mouse clicks on the HARDWARE Object
-        gtk.TreeView.
+        Callback function for handling mouse clicks on the HARDWARE class
+        gtk.TreeView().
 
         Keyword Arguments:
-        treeview -- the Hardware Object treeview.
-        event    -- a gtk.gdk.Event that called this function (the
+        treeview -- the HARDWARE class gtkTreeView().
+        event    -- a gtk.gdk.Event() that called this function (the
                     important attribute is which mouse button was clicked).
                     1 = left
                     2 = scrollwheel
@@ -3784,13 +3787,10 @@ class Hardware(object):
 
     def _treeview_row_changed(self, __treeview, __path, __column):
         """
-        Callback function to handle events for the HARDWARE Object
-        gtk.TreeView.  It is called whenever the HARDWARE Object gtk.TreeView
-        is clicked or a row is activated.  It will save the previously selected
-        row in the HARDWARE Object gtk.TreeView and, if the previously
-        selected item is a COMPONENT Object, the Parts List.  Then it loads
-        the ASSEMBLY Object and, if the newly selected item is a Component,
-        the COMPONENT Object.
+        Callback function to handle events for the HARDWARE class
+        gtk.TreeView().  It is called whenever the HARDWARE class
+        gtk.TreeView() is clicked or a row is activated.  It loads the HARDWARE
+        class.
 
         Keyword Arguments:
         __treeview -- the HARDWARE class gtk.TreeView().
@@ -3798,14 +3798,14 @@ class Hardware(object):
         __column   -- the activated gtk.TreeViewColumn().
         """
 
-# Save the previously selected row in the Hardware tree.
+        # Save the previously selected row in the Hardware tree.
         #if self.selected_row is not None:
             #_path_ = self.model.get_path(self.selected_row)
             #self._save_line(self.model, _path_, self.selected_row)
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
-# Save the previously selected row in the Parts List.
+        # Save the previously selected row in the Parts List.
         (_partmodel_,
          _partrow_) = self._app.winParts.tvwPartsList.get_selection().get_selected()
 
@@ -3827,8 +3827,8 @@ class Hardware(object):
             _row_ = _model_.iter_parent(_row_)
             _path_ = _model_.get_string_from_iter(_row_)
 
-# Build the queries to select the reliability tests and program incidents
-# associated with the selected HARDWARE.
+        # Build the queries to select the reliability tests and program
+        # incidents associated with the selected HARDWARE item.
         qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
                     FROM tbl_prediction AS t1 \
                     INNER JOIN tbl_system AS t2 \
@@ -3870,7 +3870,7 @@ class Hardware(object):
         gtk.TreeView().
 
         Keyword Arguments:
-        __treeview -- the ASSEMBLY Object FMECA gtk.TreeView.
+        __treeview -- the HARDWARE class FMECA gtk.TreeView.
         __path     -- the actived row gtk.TreeView path.
         __column   -- the actived gtk.TreeViewColumn.
         """
@@ -4231,7 +4231,7 @@ class Hardware(object):
     def _set_parts_list_row(self):
         """
         Sets the corresponding row in the Parts List when a selected row in
-        the HARDWARE Object gtk.TreeView is a COMPONENT Object.
+        the HARDWARE class gtk.TreeView() is a component.
         """
 
         _model_ = self._app.winParts.tvwPartsList.get_model()
@@ -4248,20 +4248,20 @@ class Hardware(object):
 
     def save_hardware(self):
         """
-        Saves the HARDWARE Object gtk.TreeView information to the Program's
+        Saves the HARDWARE class gtk.TreeView information to the Program's
         MySQL or SQLite3 database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the HARDWARE Object gtk.TreeView model to the
-            Program's MySQL or SQLite3 database.
+            Saves each row in the HARDWARE class gtk.TreeView() model to the
+            RTK Program database.
 
             Keyword Arguments:
-            model  -- the HARDWARE Object gtk.Treemodel.
-            __path -- the path of the active row in the HARDWARE Object
-                      gtk.Treemodel.
-            row    -- the selected row in the HARDWARE Object gtk.TreeView.
+            model  -- the HARDWARE class gtk.Treemodel().
+            __path -- the path of the active row in the HARDWARE class
+                      gtk.Treemodel().
+            row    -- the selected row in the HARDWARE class gtk.TreeView().
             """
 
             if _conf.BACKEND == 'mysql':
@@ -4441,20 +4441,20 @@ class Hardware(object):
 
     def _save_allocation(self):
         """
-        Saves the ASSEMBLY class allocation analysis information to the open
+        Saves the HARDWARE class allocation analysis information to the open
         RTK Program database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves a single row in the ASSEMBLY class allocation gtk.TreeModel()
+            Saves a single row in the HARDWARE class allocation gtk.TreeModel()
             to the open RTK Program database.
 
             Keyword Arguments:
-            model  -- the ASSEMBLY class allocation gtk.TreeModel().
-            __path -- the path of the selected row in the ASSEMBLY class
+            model  -- the HARDWARE class allocation gtk.TreeModel().
+            __path -- the path of the selected row in the HARDWARE class
                        allocation gtk.TreeModel().
-            row    -- the selected row in the ASSEMBLY class allocation
+            row    -- the selected row in the HARDWARE class allocation
                       gtk.TreeView().
             """
 
@@ -4518,7 +4518,7 @@ class Hardware(object):
 
             return False
 
-        # Update the ASSEMBLY class gtk.TreeView() with the reliability goals.
+        # Update the HARDWARE class gtk.TreeView() with the reliability goals.
         _measure_ = self.cmbRqmtType.get_active()
         if _measure_ == 1:
             _value_ = float(self.txtReliabilityGoal.get_text())
@@ -4550,20 +4550,20 @@ class Hardware(object):
 
     def _save_hazard_analysis(self):
         """
-        Saves the ASSEMBLY clss risk analysis information to the open RKT
+        Saves the HARDWARE clss risk analysis information to the open RKT
         Program database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the ASSEMBLY class risk analysis gtk.TreeModel
+            Saves each row in the HARDWARE class risk analysis gtk.TreeModel
             to the open RTK Program database.
 
             Keyword Arguments:
-            model  -- the ASSEMBLY class hazard analysis gtk.TreeModel().
-            __path -- the path of the selected row in the ASSEMBLY class hazard
+            model  -- the HARDWARE class hazard analysis gtk.TreeModel().
+            __path -- the path of the selected row in the HARDWARE class hazard
                        analysis gtk.TreeModel().
-            row    -- the selected row in the ASSEMBLY class hazard analysis
+            row    -- the selected row in the HARDWARE class hazard analysis
                       gtk.TreeView().
             """
 
@@ -4666,14 +4666,14 @@ class Hardware(object):
 
         def _risk_map_save_line(model, __path, row, self):
             """
-            Saves each row in the ASSEMBLY clas risk map to the open RTK
+            Saves each row in the HARDWARE clas risk map to the open RTK
             Program database.
 
             Keyword Arguments:
-            model  -- the ASSEMBLY class risk matrix gtk.TreeModel().
-            __path -- the path of the selected row in the ASSEMBLY class risk
+            model  -- the HARDWARE class risk matrix gtk.TreeModel().
+            __path -- the path of the selected row in the HARDWARE class risk
                       matrix gtk.TreeModel().
-            row    -- the selected row in the ASSEMBLY class risk matrix
+            row    -- the selected row in the HARDWARE class risk matrix
                       gtk.TreeView().
             """
 
@@ -4728,14 +4728,14 @@ class Hardware(object):
 
         def _save_line(model, __path, row, self):
             """
-            Saves a single row in the ASSEMBLY class similar item analysis
+            Saves a single row in the HARDWARE class similar item analysis
             gtk.TreeModel() to the open RTK Program database.
 
             Keyword Arguments:
-            model  -- the ASSEMBLY class similar item analysis gtk.TreeModel().
-            __path -- the path of the selected row in the ASSEMBLY class
+            model  -- the HARDWARE class similar item analysis gtk.TreeModel().
+            __path -- the path of the selected row in the HARDWARE class
                       similar item analysis gtk.TreeModel().
-            row    -- the selected row in the ASSEMBLY class similar item
+            row    -- the selected row in the HARDWARE class similar item
                       analysis gtk.TreeView().
             """
 
@@ -5467,13 +5467,11 @@ class Hardware(object):
                 self.failure_rate_specified = _text_
                 if self.failure_rate_type == 2:
                     try:
-                        self.mtbf_specified = 1.0 / float(self.failure_rate_specified)
+                        self.mtbf_specified = 1.0 / _text_
                     except ZeroDivisionError:
                         self.mtbf_specified = 0.0
 
                     _model_.set_value(_row_, 51, self.mtbf_specified)
-
-                _model_.set_value(_row_, 28, self.failure_rate_specified)
 
             elif index == 51:              # Specified MTBF
                 # Set predicted MTBF to specified value if the hazard rate type
@@ -5481,13 +5479,11 @@ class Hardware(object):
                 self.mtbf_specified = _text_
                 if self.failure_rate_type == 3:
                     try:
-                        self.failure_rate_specified = 1.0 / self.mtbf_specified
+                        self.failure_rate_specified = 1.0 / _text_
                     except ZeroDivisionError:
                         self.failure_rate_specified = 0.0
 
                     _model_.set_value(_row_, 28, self.failure_rate_specified)
-
-                _model_.set_value(_row_, 51, self.mtbf_specified)
 
             elif index == 80:              # Active Temperature
                 # Number of children.
@@ -5500,11 +5496,12 @@ class Hardware(object):
                     _model_.set_value(chrow, index, _text_)
 
                     # Now update the Parts List treeview.
-                    partmodel = self._app.COMPONENT.model
-                    partrow = self._app.COMPONENT.selected_row
-                    partmodel.set_value(partrow, 103, _text_)
+                    #partmodel = self._app.COMPONENT.model
+                    #partrow = self._app.COMPONENT.selected_row
+                    #partmodel.set_value(partrow, 103, _text_)
 
             if self.part:                   # Update the Parts List.
+# TODO: Need code to update the parts list.
                 #self.model.set_value(self.selected_row, _index_, _text_)
                 print "TODO: Write code to update parts list."
 
@@ -5772,7 +5769,7 @@ class Hardware(object):
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.show()
-            self.btnSaveResults.hide()
+            self.btnSaveResults.show()
             self.btnRollup.hide()
             self.btnEdit.hide()
             self.btnAddItem.set_tooltip_text(_(u"Add components to the currently selected assembly."))
@@ -5782,7 +5779,7 @@ class Hardware(object):
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
             self.btnAnalyze.hide()
-            self.btnSaveResults.hide()
+            self.btnSaveResults.show()
             self.btnRollup.hide()
             self.btnEdit.hide()
         elif page_num == 6:                 # FMEA/FMECA tab
@@ -5855,7 +5852,8 @@ class Hardware(object):
         """
 
         _page_ = self.notebook.get_current_page()
-        _row_ = self.treeview.get_model().get_iter_root()
+
+        (__model, _row_) = self.treeview.get_selection().get_selected()
 
         # If the selected hardware item is an assembly, execute the
         # assembly-specific code.  Otherwise, add 3 to the page number to
@@ -5900,53 +5898,56 @@ class Hardware(object):
 
         if _page_ == 0:                     # General data tab.
             if button.get_name() == 'Add':
-                self._app.COMPONENT.component_add(button, None)
+                self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
+                _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
         elif _page_ == 4:                   # Assessment inputs tab.
             if button.get_name() == 'Add':
-                self._app.COMPONENT.component_add(button, None)
+                self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
+                _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
         elif _page_ == 5:                   # Assessment results tab.
             if button.get_name() == 'Add':
-                self._app.COMPONENT.component_add(button, None)
+                self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
+                _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
         elif _page_ == 6:                   # FMEA/FMECA tab.
             if button.get_label() == 'Mode':
                 # Find the id of the next failure mode.
-                query = "SELECT seq FROM sqlite_sequence \
-                         WHERE name='tbl_fmeca'"
-                _last_id = self._app.DB.execute_query(query,
-                                                      None,
-                                                      self._app.ProgCnx)
+                _query_ = "SELECT seq FROM sqlite_sequence \
+                           WHERE name='tbl_fmeca'"
+                _last_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
 
                 try:
-                    _last_id = _last_id[0][0] + 1
+                    _last_id_ = _last_id_[0][0] + 1
                 except TypeError:
-                    _last_id = 0
+                    _last_id_ = 0
 
                 # Insert the new failure mode.
-                query = "INSERT INTO tbl_fmeca \
-                         (fld_assembly_id, fld_function_id, fld_mode_id) \
-                         VALUES (%d, 0, %d)" % (self.assembly_id, _last_id)
-                self._app.DB.execute_query(query,
+                _query_ = "INSERT INTO tbl_fmeca \
+                           (fld_assembly_id, fld_function_id, fld_mode_id) \
+                           VALUES (%d, 0, %d)" % (self.assembly_id, _last_id_)
+                self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
                                            True)
 
                 # Insert a new line in the failure consequence table.
-                query = "INSERT INTO tbl_failure_consequences \
-                         (fld_assembly_id, fld_mode_id) \
-                         VALUES (%d, %d)" % (self.assembly_id, _last_id)
-                self._app.DB.execute_query(query,
+                _query_ = "INSERT INTO tbl_failure_consequences \
+                           (fld_assembly_id, fld_mode_id) \
+                           VALUES (%d, %d)" % (self.assembly_id, _last_id_)
+                self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
                                            True)
@@ -5955,35 +5956,34 @@ class Hardware(object):
 
             elif button.get_label() == 'Mechanism':
                 # Find the id and gtk.TreeIter of the parent failure mode.
-                _selection = self.tvwFMECA.get_selection()
-                (model, row) = _selection.get_selected()
-                _mode_id = model.get_value(row, 0)
-                _parent = model.get_string_from_iter(row)
+                (model, row) = self.tvwFMECA.get_selection().get_selected()
+                _mode_id_ = model.get_value(row, 0)
+                _parent_ = model.get_string_from_iter(row)
 
-                if _parent.count(':') != 0:
+                if _parent_.count(':') != 0:
                     _util.application_error(_(u"  A failure mechanism can only be the child of a failure mode, not another failure mechanism, control, or action."))
                     return True
 
-# Find the id of the next failure mechanism.
-                query = "SELECT seq FROM sqlite_sequence \
-                         WHERE name='tbl_fmeca_mechanisms'"
-                _next_id = self._app.DB.execute_query(query,
+                # Find the id of the next failure mechanism.
+                _query_ = "SELECT seq FROM sqlite_sequence \
+                           WHERE name='tbl_fmeca_mechanisms'"
+                _next_id_ = self._app.DB.execute_query(_query_,
                                                       None,
                                                       self._app.ProgCnx)
 
-                if not _next_id:
-                    _next_id = 0
-                else:
-                    _next_id = _next_id[0][0] + 1
+                try:
+                    _next_id_ = _next_id_[0][0] + 1
+                except TypeError:
+                    _next_id_ = 0
 
-# Insert the new failure mechanism.
-                query = "INSERT INTO tbl_fmeca_mechanisms \
-                         (fld_assembly_id, fld_mode_id, \
-                          fld_mechanism_id, fld_parent) \
-                         VALUES (%d, %d, %d, '%s')" % (self.assembly_id,
-                                                       _mode_id, _next_id,
-                                                       _parent)
-                self._app.DB.execute_query(query,
+                # Insert the new failure mechanism.
+                _query_ = "INSERT INTO tbl_fmeca_mechanisms \
+                           (fld_assembly_id, fld_mode_id, \
+                            fld_mechanism_id, fld_parent) \
+                           VALUES (%d, %d, %d, '%s')" % (self.assembly_id,
+                                                         _mode_id_, _next_id_,
+                                                         _parent_)
+                self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
                                            True)
@@ -5991,42 +5991,41 @@ class Hardware(object):
                 self._load_fmeca_tab()
 
             elif button.get_label() == 'Control':
-# Find the id and gtk.TreeIter of the parent failure mechanism.
-                _selection = self.tvwFMECA.get_selection()
-                (model, row) = _selection.get_selected()
-                _mechanism_id = model.get_value(row, 0)
-                _parent = model.get_string_from_iter(row)
+                # Find the id and gtk.TreeIter of the parent failure mechanism.
+                (model, row) = self.tvwFMECA.get_selection().get_selected()
+                _mechanism_id_ = model.get_value(row, 0)
+                _parent_ = model.get_string_from_iter(row)
 
-                if _parent.count(':') != 1:
+                if _parent_.count(':') != 1:
                     _util.application_error(_(u"A control can only be the child of a failure mechanism, not another control, failure mode, or action."))
                     return True
 
-# Find the id of the grand-parent failure mode.
+                # Find the id of the grand-parent failure mode.
                 row = model.iter_parent(row)
-                _mode_id = model.get_value(row, 0)
+                _mode_id_ = model.get_value(row, 0)
 
-# Find the id of the next control.
-                query = "SELECT seq FROM sqlite_sequence \
-                         WHERE name='tbl_fmeca_controls'"
-                _next_id = self._app.DB.execute_query(query,
-                                                      None,
-                                                      self._app.ProgCnx)
+                # Find the id of the next control.
+                _query_ = "SELECT seq FROM sqlite_sequence \
+                           WHERE name='tbl_fmeca_controls'"
+                _next_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
 
-                if not _next_id:
-                    _next_id = 0
-                else:
-                    _next_id = _next_id[0][0] + 1
+                try:
+                    _next_id_ = _next_id_[0][0] + 1
+                except TypeError:
+                    _next_id_ = 0
 
-# Insert the new control.
-                query = "INSERT INTO tbl_fmeca_controls \
-                         (fld_assembly_id, fld_mode_id, \
-                          fld_mechanism_id, fld_control_id, fld_parent) \
-                         VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
-                                                           _mode_id,
-                                                           _mechanism_id,
-                                                           _next_id,
-                                                           _parent)
-                self._app.DB.execute_query(query,
+                # Insert the new control.
+                _query_ = "INSERT INTO tbl_fmeca_controls \
+                           (fld_assembly_id, fld_mode_id, \
+                            fld_mechanism_id, fld_control_id, fld_parent) \
+                           VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                             _mode_id_,
+                                                             _mechanism_id_,
+                                                             _next_id_,
+                                                             _parent_)
+                self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
                                            True)
@@ -6034,42 +6033,41 @@ class Hardware(object):
                 self._load_fmeca_tab()
 
             elif button.get_label() == 'Action':
-# Find the id and gtk.TreeIter of the parent failure mechanism.
-                _selection = self.tvwFMECA.get_selection()
-                (model, row) = _selection.get_selected()
-                _mechanism_id = model.get_value(row, 0)
-                _parent = model.get_string_from_iter(row)
+                # Find the id and gtk.TreeIter of the parent failure mechanism.
+                (model, row) = self.tvwFMECA.get_selection().get_selected()
+                _mechanism_id_ = model.get_value(row, 0)
+                _parent_ = model.get_string_from_iter(row)
 
-                if _parent.count(':') != 1:
+                if _parent_.count(':') != 1:
                     _util.application_error(_(u"An action can only be the child of a failure mechanism, not another action, failure mode, or control."))
                     return True
 
-# Find the id of the grand-parent failure mode.
+                # Find the id of the grand-parent failure mode.
                 row = model.iter_parent(row)
-                _mode_id = model.get_value(row, 0)
+                _mode_id_ = model.get_value(row, 0)
 
-# Find the id of the next control.
-                query = "SELECT seq FROM sqlite_sequence \
-                         WHERE name='tbl_fmeca_actions'"
-                _next_id = self._app.DB.execute_query(query,
-                                                      None,
-                                                      self._app.ProgCnx)
+                # Find the id of the next control.
+                _query_ = "SELECT seq FROM sqlite_sequence \
+                           WHERE name='tbl_fmeca_actions'"
+                _next_id_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx)
 
-                if not _next_id:
-                    _next_id = 0
-                else:
-                    _next_id = _next_id[0][0] + 1
+                try:
+                    _next_id_ = _next_id_[0][0] + 1
+                except TypeError:
+                    _next_id_ = 0
 
-# Insert the new action.
-                query = "INSERT INTO tbl_fmeca_actions \
-                         (fld_assembly_id, fld_mode_id, \
-                          fld_mechanism_id, fld_action_id, fld_parent) \
-                         VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
-                                                           _mode_id,
-                                                           _mechanism_id,
-                                                           _next_id,
-                                                           _parent)
-                self._app.DB.execute_query(query,
+                # Insert the new action.
+                _query_ = "INSERT INTO tbl_fmeca_actions \
+                           (fld_assembly_id, fld_mode_id, \
+                            fld_mechanism_id, fld_action_id, fld_parent) \
+                           VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                             _mode_id_,
+                                                             _mechanism_id_,
+                                                             _next_id_,
+                                                             _parent_)
+                self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
                                            True)
@@ -6077,79 +6075,77 @@ class Hardware(object):
                 self._load_fmeca_tab()
 
             elif button.get_name() == 'Remove':
-                selection = self.tvwFMECA.get_selection()
-                (model, row) = selection.get_selected()
+                (model, row) = self.tvwFMECA.get_selection().get_selected()
+                _fmeca_len_ = len(self._FMECA_col_order)
+                _type_ = model.get_value(row, _fmeca_len_)
+                _id_ = model.get_value(row, 0)
 
-                _fmeca_len = len(self._FMECA_col_order)
-                _type = model.get_value(row, _fmeca_len)
-                _id = model.get_value(row, 0)
-
-                if _type == 0:
-# Delete the failure mode from the FMECA table, then delete associated failure
-# mechanisms, controls, and actions.
-                    query = "DELETE FROM tbl_fmeca \
-                             WHERE fld_mode_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                if _type_ == 0:
+                # Delete the failure mode from the FMECA table, then delete
+                # associated failure mechanisms, controls, and actions.
+                    _query_ = "DELETE FROM tbl_fmeca \
+                               WHERE fld_mode_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
 
-                    query = "DELETE FROM tbl_fmeca_mechanisms \
-                             WHERE fld_mode_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                    _query_ = "DELETE FROM tbl_fmeca_mechanisms \
+                               WHERE fld_mode_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
 
-                    query = "DELETE FROM tbl_fmeca_controls \
-                             WHERE fld_mode_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                    _query_ = "DELETE FROM tbl_fmeca_controls \
+                               WHERE fld_mode_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
 
-                    query = "DELETE FROM tbl_fmeca_actions \
-                             WHERE fld_mode_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                    _query_ = "DELETE FROM tbl_fmeca_actions \
+                               WHERE fld_mode_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
-                elif _type == 1:
-# Delete the failure mechanism from the FMECA mechanisms table, then delete
-# associated controls and actions.
-                    query = "DELETE FROM tbl_fmeca_mechanisms \
-                             WHERE fld_mechanism_id=%d" % _id
-                    self._app.DB.execute_query(query,
-                                               None,
-                                               self._app.ProgCnx,
-                                               True)
-
-                    query = "DELETE FROM tbl_fmeca_controls \
-                             WHERE fld_mechanism_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                elif _type_ == 1:
+                # Delete the failure mechanism from the FMECA mechanisms table,
+                # then delete associated controls and actions.
+                    _query_ = "DELETE FROM tbl_fmeca_mechanisms \
+                               WHERE fld_mechanism_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
 
-                    query = "DELETE FROM tbl_fmeca_actions \
-                             WHERE fld_mechanism_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                    _query_ = "DELETE FROM tbl_fmeca_controls \
+                               WHERE fld_mechanism_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
-                elif _type == 2:
-# Delete the control from the FMECA controls table.
-                    query = "DELETE FROM tbl_fmeca_controls \
-                             WHERE fld_control_id=%d" % _id
-                    self._app.DB.execute_query(query,
+
+                    _query_ = "DELETE FROM tbl_fmeca_actions \
+                               WHERE fld_mechanism_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
-                elif _type == 3:
-# Delete the control from the FMECA actions table.
-                    query = "DELETE FROM tbl_fmeca_actions \
-                             WHERE fld_action_id=%d" % _id
-                    self._app.DB.execute_query(query,
+                elif _type_ == 2:
+                    # Delete the control from the FMECA controls table.
+                    _query_ = "DELETE FROM tbl_fmeca_controls \
+                               WHERE fld_control_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
+                                               None,
+                                               self._app.ProgCnx,
+                                               True)
+                elif _type_ == 3:
+                    # Delete the control from the FMECA actions table.
+                    _query_ = "DELETE FROM tbl_fmeca_actions \
+                               WHERE fld_action_id=%d" % _id_
+                    self._app.DB.execute_query(_query_,
                                                None,
                                                self._app.ProgCnx,
                                                True)
@@ -6157,58 +6153,62 @@ class Hardware(object):
                 self._load_fmeca_tab()
 
             elif button.get_name() == 'Analyze':
-# Calculate the MIL-STD-1629A and automotive RPN criticalities.
+                # Calculate the MIL-STD-1629A and automotive RPN criticalities.
                 (self._CA,
                  self._ItemCA,
                  self._RPN) = _calc.criticality_analysis(self._CA,
                                                          self._ItemCA,
                                                          self._RPN)
 
-# Update the RTK program database with the MIL-STD-1629A results.
-                _query = "UPDATE tbl_fmeca \
-                          SET fld_mode_criticality=%g, \
-                              fld_mode_failure_rate=%g \
-                          WHERE fld_mode_id=%d"
+                # Update the RTK program database with the MIL-STD-1629A
+                # results.
+                _query_ = "UPDATE tbl_fmeca \
+                           SET fld_mode_criticality=%g, \
+                               fld_mode_failure_rate=%g \
+                           WHERE fld_mode_id=%d"
 
-                _keys = self._CA.keys()
-                for i in range(len(_keys)):
-                    _values = (self._CA[_keys[i]][4], self._CA[_keys[i]][5],
-                               _keys[i])
-                    query = _query % _values
+                _keys_ = self._CA.keys()
+                for i in range(len(_keys_)):
+                    _values_ = (self._CA[_keys_[i]][4], self._CA[_keys_[i]][5],
+                                _keys_[i])
+                    _query_ = _query_ % _values_
 
-                    _results = self._app.DB.execute_query(query,
-                                                          None,
-                                                          self._app.ProgCnx,
-                                                          commit=True)
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
 
-# Update the RTK program database with the automotive RPN results.
-                _query = "UPDATE tbl_fmeca_mechanisms \
-                          SET fld_rpn=%d, fld_rpn_new=%d \
-                          WHERE fld_mechanism_id=%d"
+                # Update the RTK program database with the automotive RPN
+                # results.
+                _query_ = "UPDATE tbl_fmeca_mechanisms \
+                           SET fld_rpn=%d, fld_rpn_new=%d \
+                           WHERE fld_mechanism_id=%d"
 
-                _keys = self._RPN.keys()
-                for i in range(len(_keys)):
-                    _values = (self._RPN[_keys[i]][3], self._RPN[_keys[i]][7],
-                               _keys[i])
-                    query = _query % _values
-                    _results = self._app.DB.execute_query(query,
-                                                          None,
-                                                          self._app.ProgCnx,
-                                                          commit=True)
+                _keys_ = self._RPN.keys()
+                for i in range(len(_keys_)):
+                    _values_ = (self._RPN[_keys_[i]][3],
+                                self._RPN[_keys_[i]][7],
+                               _keys_[i])
+                    _query_ = _query_ % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
 
-# Update the RTK program database with the MIL-STD-1629A item criticality.
-                _query = "UPDATE tbl_system \
-                          SET fld_assembly_criticality='%s' \
-                          WHERE fld_assembly_id=%d"
+                # Update the RTK program database with the MIL-STD-1629A item
+                # criticality.
+                _query_ = "UPDATE tbl_system \
+                           SET fld_assembly_criticality='%s' \
+                           WHERE fld_assembly_id=%d"
 
-                _keys = self._ItemCA.keys()
-                for i in range(len(_keys)):
-                    _values = (self._ItemCA[_keys[i]][-1], _keys[i])
-                    query = _query % _values
-                    _results = self._app.DB.execute_query(query,
-                                                          None,
-                                                          self._app.ProgCnx,
-                                                          commit=True)
+                _keys_ = self._ItemCA.keys()
+                for i in range(len(_keys_)):
+                    _values_ = (self._ItemCA[_keys_[i]][-1], _keys_[i])
+                    _query_ = _query_ % _values_
+                    _results_ = self._app.DB.execute_query(_query_,
+                                                           None,
+                                                           self._app.ProgCnx,
+                                                           commit=True)
 
                 self._load_fmeca_tab()
 
@@ -6358,7 +6358,7 @@ class Hardware(object):
 
     def _calculate_goals(self, measure=500):
         """
-        Calculates the other two reliability metrics from the ASSEMBLY Object
+        Calculates the other two reliability metrics from the HARDWARE class
         similar item analysis goal provided.
 
         Keyword Arguments:
@@ -6701,110 +6701,129 @@ class Hardware(object):
 
         _model_ = self.treeview.get_model()
 
-        _cost_ = 0.0
+        _aaf_ = _model_.get_value(row, self._col_order[2])
+        _duty_cycle_ = _model_.get_value(row, self._col_order[20])
+        _cost_ = _model_.get_value(row, self._col_order[13])
         _lambdaa_ = 0.0
-        _lambdad_ = 0.0
-        _lambdas_ = 0.0
+        _lambdad_ = _model_.get_value(row, self._col_order[29])
+        _lambdas_ = _model_.get_value(row, self._col_order[33])
         _lambdap_ = 0.0
+        _maf_ = _model_.get_value(row, self._col_order[57])
+        _mission_time_ = _model_.get_value(row, self._col_order[45])
         _partcount_ = 0
         _pwrdiss_ = _model_.get_value(row, self._col_order[83])
+        _quantity_ = _model_.get_value(row, self._col_order[67])
 
-        if self.failure_rate_type == 1:     # Assessed
+        if _model_.get_value(row, self._col_order[35]) == 1:    # Assessed
             # Assemblies should not show as overstressed.
             _model_.set_value(row, 60, False)
             _icon_ = _conf.ICON_DIR + '32x32/assembly.png'
             _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
             _model_.set_value(row, 95, _icon_)
 
-            # Calculate all the children and the results.
-            for i in range(_model_.iter_n_children(row)):
-                (_cost_, _lambdaa_, _lambdad_, _lambdas_, _lambdap_,
-                 _partcount_, _pwrdiss_) = self.calculate(_model_.iter_nth_child(row, i))
+            # Calculate all the children and the sum of their results.
+            _n_children_ = _model_.iter_n_children(row)
+            _row_ = _model_.iter_children(row)
+            for i in range(_n_children_):
+                (_c_, _la_, _ld_, _ls_, _lp_,
+                 _n_parts_, _power_) = self.calculate(_row_)
 
-                _cost_ += _cost_
-                _lambdaa_ += _lambdaa_
-                _lambdad_ += _lambdad_
-                _lambdas_ += _lambdas_
-                _lambdap_ += _lambdap_
-                _pwrdiss_ += _pwrdiss_
+                _cost_ += _c_
+                _lambdaa_ += _la_
+                _lambdad_ += _ld_
+                _lambdas_ += _ls_
+                _partcount_ += _n_parts_
+                _pwrdiss_ += _power_
 
-                if _model_.get_value(row, 63):
-                    _partcount_ += 1
+                _row_ = _model_.iter_next(_row_)
 
-        elif self.failure_rate_type == 2:   # Specified, Hazard Rate
-            _lambdaa_ = self.failure_rate_specified
+        elif _model_.get_value(row, self._col_order[35]) == 2:  # Specified, Hazard Rate
+            _lambdaa_ = _model_.get_value(row, self._col_order[34])
 
-        elif self.failure_rate_type == 3:   # Specified, MTBF
-            self.mtbf = self.mtbf_specified
+        elif _model_.get_value(row, self._col_order[35]) == 3:  # Specified, MTBF
+            _mtbf_ = _model_.get_value(row, self._col_order[51])
             try:
-                _lambdaa_ = 1.0 / self.mtbf
+                _lambdaa_ = 1.0 / _mtbf_
             except ZeroDivisionError:
-                self._app.user_log.error(_(u"Attempted to divide by zero when calculating limiting MTBF.\n \
-                                       Item %s: Active failure rate = %f") % (self.ref_des, _lambdaa_))
+                self._app.user_log.error(_(u"Attempted to divide by zero when calculating the MTBF.\n \
+                                         Item %s: Active failure rate = %f") % (self.ref_des, _lambdaa_))
                 _lambdaa_ = 0.0
 
-        # Adjust the active hazard rate for additive adjustment factor,
+        # Adjust the active hazard rate with the additive adjustment factor,
         # quantity of items, multiplicative adjustment factor, and duty cycle.
-        self.failure_rate_active = ((_lambdaa_ + self._add_adj_factor) * self.quantity * self.mult_adj_factor * (self.duty_cycle / 100.0)) / _conf.FRMULT
+        _lambdaa_ = ((_lambdaa_ + _aaf_) * _quantity_ * _maf_ * (_duty_cycle_ / 100.0)) / _conf.FRMULT
 
         # Adjust the dormant hazard rate by the quantity of items.
-        self.failure_rate_dormant = _lambdad_ * self.quantity / _conf.FRMULT
+        _lambdad_ = _lambdad_ * _quantity_ / _conf.FRMULT
 
         # Calculate the software hazard rate.
-        self.failure_rate_software = _lambdas_ * self.quantity / _conf.FRMULT
+        _lambdas_ = _lambdas_ * _quantity_ / _conf.FRMULT
 
         # Calculate the predicted (total) hazard rate.
-        self.failure_rate = self.failure_rate_active + self.failure_rate_dormant + self.failure_rate_software
+        _lambdap_ = _lambdaa_ + _lambdad_ + _lambdas_
 
         # Determine overall percentage of system hazard rate represented by
         # this particular assembly.
         try:
-            self.failure_rate_percent = self.failure_rate / self._system_ht
+            _failure_rate_percent_ = _lambdap_ / self._system_ht
         except ZeroDivisionError:
             _prompt_ = _(u"Attempted to divide by zero when calculating failure rate percentage.\n \
                          Item %s: Failure rate = %f and system failure rate = %f") % \
-                         (self.ref_des, self.failure_rate_active, self._system_ht)
+                         (self.ref_des, _lambdaa_, self._system_ht)
             _util.application_error(_prompt_)
             self._app.user_log.error(_prompt_)
 
-        # Calculate the mission MTBF and limiting MTBF
+        # Calculate the MTBF and mission MTBF.
         try:
-            self.mtbf_mission = 1.0 / (self.failure_rate_active + self.failure_rate_software)
+            _mtbf_ = 1.0 / _lambdap_
         except ZeroDivisionError:
-            self._app.user_log.error(_(u"Attempted to divide by zero when calculating mission MTBF.\n \
-                                       Item %s: Active failure rate = %f and software failure rate = %f") % (self.ref_des, self.failure_rate_active, self.failure_rate_software))
-            self.mtbf_mission = 0.0
+            self._app.user_log.error(
+                _(u"Attempted to divide by zero when calculating MTBF.\n \
+                  Item %s: Predicted failure rate = %f") % \
+                (self.ref_des, _lambdap_))
+            _mtbf_ = 0.0
+        try:
+            _mtbf_mission_ = 1.0 / (_lambdaa_ + _lambdas_)
+        except ZeroDivisionError:
+            self._app.user_log.error(
+                _(u"Attempted to divide by zero when calculating mission MTBF.\n \
+                  Item %s: Active failure rate = %f and software failure rate = %f") % \
+                (self.ref_des, _lambdaa_, _lambdas_))
+            _mtbf_mission_ = 0.0
 
         # Calculate the mission reliability and limiting reliability.
-        self.reliability_mission = exp(-1.0 * (self.failure_rate_active + self.failure_rate_software) * self.mission_time)
-        self.reliability = exp(-1.0 * self.failure_rate * self.mission_time)
+        _reliability_mission_ = exp(-1.0 * (_lambdaa_ + _lambdas_) * _mission_time_)
+        _reliability_ = exp(-1.0 * _lambdap_ * _mission_time_)
 
         # Calculate cost per failure, cost per hour, and total cost.
-        self.cost = _cost_
         try:
-            self.cost_per_failure = self.cost / (self.failure_rate * self.mission_time)
+            _cost_per_failure_ = _cost_ / (_lambdap_ * _mission_time_)
         except ZeroDivisionError:
             self._app.user_log.error(_(u"Attempted to divide by zero when calculating cost per failure.\n \
-                                       Item %s: Predicted failure rate = %f and mission time = %f") % (self.ref_des, self.failure_rate, self.mission_time))
-            self.cost_per_failure = 0.0
+                                       Item %s: Predicted failure rate = %f and mission time = %f") % \
+                                       (self.ref_des, _lambdap_, _mission_time_))
+            _cost_per_failure_ = 0.0
 
-        self.cost_per_hour = self.cost / self.mission_time
+        _cost_per_hour_ = _cost_ / _mission_time_
 
-        self.n_parts = _partcount_
-        self.total_power = _pwrdiss_
+        _model_.set_value(row, 13, _cost_)
+        _model_.set_value(row, 14, _cost_per_failure_)
+        _model_.set_value(row, 15, _cost_per_hour_)
+        _model_.set_value(row, 28, _lambdaa_)
+        _model_.set_value(row, 29, _lambdad_)
+        _model_.set_value(row, 31, _failure_rate_percent_)
+        _model_.set_value(row, 32, _lambdap_)
+        _model_.set_value(row, 49, _mtbf_mission_)
+        _model_.set_value(row, 50, _mtbf_)
+        _model_.set_value(row, 69, _reliability_mission_)
+        _model_.set_value(row, 70, _reliability_)
+        _model_.set_value(row, 82, _partcount_)
+        _model_.set_value(row, 83, _pwrdiss_)
 
-        _model_.set_value(row, 13, self.cost)
-        _model_.set_value(row, 14, self.cost_per_failure)
-        _model_.set_value(row, 15, self.cost_per_hour)
-        _model_.set_value(row, 28, self.failure_rate_active)
-        _model_.set_value(row, 29, self.failure_rate_dormant)
-        _model_.set_value(row, 32, self.failure_rate)
-        _model_.set_value(row, 49, self.mtbf_mission)
-        _model_.set_value(row, 50, self.mtbf)
-        _model_.set_value(row, 69, self.reliability_mission)
-        _model_.set_value(row, 70, self.reliability)
-        _model_.set_value(row, 82, self.n_parts)
-        _model_.set_value(row, 83, self.total_power)
+        # Set the system hazard rate attribute to the predicted hazard rate if
+        # this is the top-level assembly.
+        if _model_.get_value(row, 62) == '-':
+            self._system_ht = _lambdap_
 
         self.load_assessment_results_tab()
 

@@ -58,14 +58,14 @@ from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.patches import Ellipse
 
-class Validation:
+class Validation(object):
     """
-    The Validation class is used to represent the verification and validation
+    The VALIDATION class is used to represent the verification and validation
     tasks for the system being analyzed.
     """
 
-    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-    # TODO: Add tooltips to all widgets.
+# TODO: Write code to update notebook widgets when editing the Validation treeview.
+# TODO: Add tooltips to all widgets.
     _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
                       _(u"Does this activity provide quantitative strength information as an output?"),
                       _(u"Does this activity provide operating environment information as an output?"),
@@ -190,9 +190,34 @@ class Validation:
 
         self._ready = True
 
-    def _toolbar_create(self):
+    def create_tree(self):
         """
-        Method to create the toolbar for the VALIDATAION Object Work Book.
+        Creates the Validation TreeView and connects it to callback functions
+        to handle editting.  Background and foreground colors can be set using
+        the user-defined values in the RTK configuration file.
+        """
+
+        scrollwindow = gtk.ScrolledWindow()
+
+        self.treeview.set_enable_tree_lines(True)
+
+# Connect the cells to the callback function.
+        for i in range(2, 23):
+            _cell_ = self.treeview.get_column(self._lst_col_order[i]).get_cell_renderers()
+            _cell_[0].connect('edited', self._vandv_tree_edit, i,
+                              self.treeview.get_model())
+
+        scrollwindow.add(self.treeview)
+
+        self.treeview.connect('cursor_changed', self._treeview_row_changed,
+                              None, None)
+        self.treeview.connect('row_activated', self._treeview_row_changed)
+
+        return scrollwindow
+
+    def _create_toolbar(self):
+        """
+        Method to create the toolbar for the VALIDATAION class Work Book.
         """
 
         toolbar = gtk.Toolbar()
@@ -794,31 +819,6 @@ class Validation:
         self._app.winWorkBook.set_title(_title_)
 
         return False
-
-    def create_tree(self):
-        """
-        Creates the Validation TreeView and connects it to callback functions
-        to handle editting.  Background and foreground colors can be set using
-        the user-defined values in the RTK configuration file.
-        """
-
-        scrollwindow = gtk.ScrolledWindow()
-
-        self.treeview.set_enable_tree_lines(True)
-
-# Connect the cells to the callback function.
-        for i in range(2, 23):
-            _cell_ = self.treeview.get_column(self._lst_col_order[i]).get_cell_renderers()
-            _cell_[0].connect('edited', self._vandv_tree_edit, i,
-                              self.treeview.get_model())
-
-        scrollwindow.add(self.treeview)
-
-        self.treeview.connect('cursor_changed', self._treeview_row_changed,
-                              None, None)
-        self.treeview.connect('row_activated', self._treeview_row_changed)
-
-        return(scrollwindow)
 
     def load_tree(self):
         """

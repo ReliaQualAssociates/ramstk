@@ -70,7 +70,7 @@ def _vandv_tree_edit(__cell, path, new_text, position, model):
     return False
 
 
-class Requirement:
+class Requirement(object):
     """
     The Requirement class is used to represent the requirements in a
     system being analyzed.
