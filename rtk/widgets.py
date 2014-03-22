@@ -145,6 +145,7 @@ def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
                assign
                calculate
                commit
+    @rtype : gtk.Button()
     """
 
     if(_width_ == 0):
@@ -453,6 +454,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     bg_col  -- the background color to use for each row.  Defaults to white.
     fg_col  -- the foreground (text) color to use for each row.  Defaults to
                black.
+    @rtype : gtk.TreeView()
     """
 
     from lxml import etree

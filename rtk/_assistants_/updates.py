@@ -270,7 +270,7 @@ class AssignMTBFResults:
                 _row_ = _model_.iter_next(_row_)
 
 # Load the hardware gtk.TreeView with the new information.
-        self._app.HARDWARE.load_tree()
+        self._app.HARDWARE.load_tree
         _page = sum(_conf.RTK_MODULES[:4])
         self._app.winTree.notebook.set_current_page(_page - 1)
 

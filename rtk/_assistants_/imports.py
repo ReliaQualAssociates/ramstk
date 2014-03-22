@@ -469,7 +469,7 @@ class ImportHardware:
         _root = [child for child in contents if child[62] == str(j)]
         _iter_ = self._add_children(_root, _iter_, contents)
 
-        self._app.HARDWARE.load_tree()
+        self._app.HARDWARE.load_tree
 
         return False
 
@@ -1005,7 +1005,7 @@ class ImportIncident:
 
         window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
-        self._app.INCIDENT.load_tree(query, values)
+        self._app.INCIDENT.load_tree
 
         return False
 

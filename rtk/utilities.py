@@ -1056,9 +1056,9 @@ def add_parts_system_hierarchy(widget, app):
     if _n_added_ != len(_results_):
         application_error(_(u"There was an error adding one or more components to the database.  Check the RTK error log for more details."))
 
-    app.REVISION.load_tree()
-#TODO: Need to find and select the previously selected revision before loading the hardware tree.
-    app.HARDWARE.load_tree()
+    app.REVISION.load_tree
+    #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+    app.HARDWARE.load_tree
 
     return False
 

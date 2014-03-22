@@ -10,8 +10,8 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 try:
-    import relkit.calculations as _calc
-    import relkit.widgets as _widg
+    import rtk.calculations as _calc
+    import rtk.widgets as _widg
 except:
     import calculations as _calc
     import widgets as _widg
@@ -506,7 +506,7 @@ class Gas(Capacitor):
         y_pos = Capacitor.assessment_inputs_create(self, part, layout,
                                                    x_pos, y_pos)
 
-        part.cmbConstruction = _widg.make_combo(simple=True)
+        part.cmbConstruction = rtk.widgets.make_combo(simple=True)
         for i in range(len(self._construction)):
             part.cmbConstruction.insert_text(i, self._construction[i])
         part.cmbConstruction.connect("changed",

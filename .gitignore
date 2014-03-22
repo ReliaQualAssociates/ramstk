@@ -2,8 +2,9 @@
 *~
 *.lock
 *.DS_Store
-*.swp
 *.out
+.Rhistory
+*.swp
 
 # Python specific files to ignore
 *.pyc

@@ -185,8 +185,8 @@ class Revision(object):
 
     def create_tree(self):
         """
-        Method to create the REVISION gtk.TreeView() and connects it to
-        callback functions to handle editting.
+        Method to create the REVISION class gtk.TreeView() and connects it to
+        callback functions to handle editing.
         """
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
@@ -1239,16 +1239,16 @@ class Revision(object):
                               WHERE fld_revision_id=%d" % self.revision_id
 
             self._app.REQUIREMENT.save_requirement()
-            self._app.REQUIREMENT.load_tree()
+            self._app.REQUIREMENT.load_tree
             self._app.FUNCTION.save_function()
-            self._app.FUNCTION.load_tree()
+            self._app.FUNCTION.load_tree
             self._app.HARDWARE.save_hardware()
-            self._app.HARDWARE.load_tree()
+            self._app.HARDWARE.load_tree
             self._app.SOFTWARE.software_save()
-            self._app.SOFTWARE.load_tree()
+            self._app.SOFTWARE.load_tree
             self._app.VALIDATION.validation_save()
-            self._app.VALIDATION.load_tree()
-            self._app.TESTING.load_tree()
+            self._app.VALIDATION.load_tree
+            self._app.TESTING.load_tree
             self._app.winParts.load_part_tree(_qryParts_)
             #self._app.winParts.load_test_tree(_qryTests_, values)
             #self._app.winParts.load_incident_tree(_qryIncidents_, self.revision_id)

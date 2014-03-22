@@ -5432,8 +5432,8 @@ class Hardware(object):
 
         if convert == 'text':
             if index == 71:
-                textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
-                _text_ = textbuffer.get_text(*textbuffer.get_bounds())
+                _textbuffer_ = self.txtRemarks.get_child().get_child().get_buffer()
+                _text_ = _textbuffer_.get_text(*_textbuffer_.get_bounds())
             else:
                 _text_ = entry.get_text()
 

@@ -757,7 +757,7 @@ class FilterIncident:
         if(_inputs[22]):
             query = query + "fld_reviewed=%d" % 1
 
-        self._app.INCIDENT.load_tree(query, None)
+        self._app.INCIDENT.load_tree
 
     def _cancel(self, button):
         """

@@ -50,7 +50,7 @@ class TreeWindow(gtk.Window):
     This class is the window containing the various gtk.Treeviews.
     """
 
-    #TODO: Create GUI to set/edit user-defined column headings for all trees.
+#TODO: Create GUI to set/edit user-defined column headings for all trees.
 
     def __init__(self, application):
         """
@@ -73,10 +73,10 @@ class TreeWindow(gtk.Window):
         width = gtk.gdk.screen_width() / n_screens
         height = gtk.gdk.screen_height()
 
-        if(_conf.OS == 'Linux'):
+        if _conf.OS == 'Linux':
             _width = (2 * width / 3) - 10
             _height = 2 * height / 7
-        elif(_conf.OS == 'Windows'):
+        elif _conf.OS == 'Windows':
             _width = (2 * width / 3) - 30
             _height = 2 * height / 7
 
@@ -117,7 +117,7 @@ class TreeWindow(gtk.Window):
         self.scwHardware = self._app.HARDWARE.create_tree()
         self.scwSoftware = self._app.SOFTWARE.create_tree()
         self.scwTesting = self._app.TESTING.create_tree()
-        # TODO: Implement Maintenance Policy tree.
+# TODO: Implement Maintenance Policy tree.
         # This is just a placeholder for now.
         # self.scwMaintenance = self._app.MAINTENANCE.create_tree()
         self.scwValidation = self._app.VALIDATION.create_tree()
@@ -239,7 +239,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.TESTING.load_tree()
 
-        #if(_conf.RTK_MODULES[7] == 1):
+            #if(_conf.RTK_MODULES[7] == 1):
             #label = gtk.Label(_("Maintenance Analysis"))
             #label.set_tooltip_text(_("Displays the system maintenance packages."))
             #self.notebook.insert_page(scrollwindow, tab_label=label, position=-1)
@@ -287,7 +287,7 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.DATASET.load_tree()
 
-        #if(_conf.RTK_MODULES[9] == 1):
+            #if(_conf.RTK_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
             # and hardware.
 

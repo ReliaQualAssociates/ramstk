@@ -507,7 +507,7 @@ class AddRevision:
                     _assembly_id_ += 1
 
 # Reload the revision tree.
-        self._app.REVISION.load_tree()
+        self._app.REVISION.load_tree
 
     def _cancel(self, button):
         """
@@ -1166,7 +1166,7 @@ class AddTestPlan:
             self._app.debug_log.error("adds.py: Failed to add new test plan to test table.")
             return True
 
-        self._app.TESTING.load_tree()
+        self._app.TESTING.load_tree
 
         return False
 
@@ -1794,7 +1794,7 @@ class CreateDataSet:
 # Load the dataset gtk.TreeView with the newly created dataset if it was
 # created in teh RTK Program database.
         if(self.optDatabase.get_active()):
-            self._app.DATASET.load_tree()
+            self._app.DATASET.load_tree
             _page_ = sum(_conf.RTK_MODULES[:11])
             self._app.winTree.notebook.set_current_page(_page_ - 1)
 
