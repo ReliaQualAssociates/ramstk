@@ -6,6 +6,7 @@ the functions of the Program.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__updated__ = "2014-03-24 16:49"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +14,14 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import sys
+
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -22,11 +30,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -35,18 +43,13 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
-import gettext
 _ = gettext.gettext
 
 
@@ -317,22 +320,22 @@ class Function:
             _fixed_.put(self.txtName, _x_pos_, _y_pos_[1])
 
             self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of the selected function."))
-            _fixed_.put(self.txtTotalCost, _x_pos_, _y_pos_[2]+110)
+            _fixed_.put(self.txtTotalCost, _x_pos_, _y_pos_[2] + 110)
 
             self.txtModeCount.set_tooltip_text(_(u"Displays the total number of failure modes associated with the selected function."))
-            _fixed_.put(self.txtModeCount, _x_pos_, _y_pos_[3]+110)
+            _fixed_.put(self.txtModeCount, _x_pos_, _y_pos_[3] + 110)
 
             self.txtPartCount.set_tooltip_text(_(u"Displays the total number of components associated with the selected function."))
-            _fixed_.put(self.txtPartCount, _x_pos_, _y_pos_[4]+110)
+            _fixed_.put(self.txtPartCount, _x_pos_, _y_pos_[4] + 110)
 
             self.txtRemarks.set_tooltip_text(_(u"Enter any remarks related to the selected function."))
             self.txtRemarks.get_child().get_child().connect('focus-out-event',
                                                             self._callback_entry,
                                                             'text', 15)
-            _fixed_.put(self.txtRemarks, _x_pos_, _y_pos_[5]+110)
+            _fixed_.put(self.txtRemarks, _x_pos_, _y_pos_[5] + 110)
 
             self.chkSafetyCritical.set_tooltip_text(_(u"Indicates whether or not the selected function is safety critical."))
-            _fixed_.put(self.chkSafetyCritical, 5, _y_pos_[5]+220)
+            _fixed_.put(self.chkSafetyCritical, 5, _y_pos_[5] + 220)
 
             _fixed_.show_all()
 
@@ -710,9 +713,9 @@ class Function:
 
         # Make the treeview to display the functional matrix.
         _types_ = ['gint']
-        for i in range(_n_functions_ + 1):
+        for i in range(_n_functions_ + 1):  # @UnusedVariable
             _types_.append('gchararray')
-        _types_ = [gobject.type_from_name(_types_[i]) for i in range(len(_types_))]
+        _types_ = [gobject.type_from_name(_types_[i]) for i in range(len(_types_))]  # @UndefinedVariable
         _model_ = gtk.ListStore(*_types_)
 
         self.tvwFunctionMatrix.set_model(_model_)
@@ -726,7 +729,7 @@ class Function:
         # Add a column to store the assembly ID.
         _cell_ = gtk.CellRendererText()
         _cell_.set_property('editable', 0)
-        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))
+        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))  # @UndefinedVariable
         _cell_.set_property('font_desc', pango.FontDescription("bold 10"))
         _cell_.set_property('xalign', 0.5)
         _cell_.set_property('yalign', 0.1)
@@ -745,7 +748,7 @@ class Function:
         # Add a column to store the assembly name.
         _cell_ = gtk.CellRendererText()
         _cell_.set_property('editable', 0)
-        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))
+        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))  # @UndefinedVariable
         _cell_.set_property('font_desc', pango.FontDescription("bold 10"))
         _column_ = gtk.TreeViewColumn()
         _column_.set_resizable(True)
@@ -766,7 +769,7 @@ class Function:
 
         _dic_functions_ = {}
         for i in range(_n_functions_):
-            _dic_functions_[i+2] = _functions_[i][0]
+            _dic_functions_[i + 2] = _functions_[i][0]
             _cell_ = gtk.CellRendererCombo()
             _cell_.set_property('editable', True)
             _cell_.set_property('has-entry', False)
@@ -774,12 +777,12 @@ class Function:
             _cell_.set_property('text-column', 0)
             _cell_.set_property('xalign', 0.5)
             _cell_.set_property('yalign', 0.5)
-            _cell_.connect('edited', self._edit_functional_matrix, i+2,
+            _cell_.connect('edited', self._edit_functional_matrix, i + 2,
                 _dic_functions_)
             _column_ = gtk.TreeViewColumn()
             _column_.set_resizable(True)
             _column_.pack_end(_cell_)
-            _column_.set_attributes(_cell_, markup=i+2)
+            _column_.set_attributes(_cell_, markup=i + 2)
             _label_ = gtk.Label(_column_.get_title())
             _label_.set_property('angle', 90)
             _label_.set_tooltip_text(_functions_[i][2])
@@ -917,7 +920,7 @@ class Function:
             _n_modes_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
         for i in range(_n_modes_):
             _data_ = [_results_[i][0],
                       _util.none_to_string(_results_[i][1]),
@@ -1596,7 +1599,7 @@ class Function:
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if _model_.iter_has_child(_row_):
-            for j in range(_model_.iter_n_children(_row_)):
+            for j in range(_model_.iter_n_children(_row_)):  # @UnusedVariable
                 self.calculate(None)
         else:
             if _conf.MODE == 'developer':

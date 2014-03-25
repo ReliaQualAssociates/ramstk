@@ -6,6 +6,7 @@ verification and validation tasks of the Program.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
+__updated__ = "2014-03-22 12:55"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +14,22 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
+from datetime import datetime, date
+import gettext
+import locale
 import sys
+
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.patches import Ellipse
+
+import configuration as _conf
+from utilities import date_select, add_items
+from widgets import make_label, make_text_view, make_treeview, create_legend, \
+    load_plot, make_labels, make_frame, make_entry, make_button, load_combo, \
+    make_combo
+
 
 # Modules required for the GUI.
 try:
@@ -22,11 +38,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -35,30 +51,18 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import configuration as _conf
-from utilities import date_select, add_items
-from widgets import make_label, make_text_view, make_treeview, create_legend, \
-    load_plot, make_labels, make_frame, make_entry, make_button, load_combo, \
-    make_combo
 
-from datetime import datetime, date
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 # Plotting package.
-import matplotlib
 matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.patches import Ellipse
 
 
 # noinspection PyUnresolvedReferences
@@ -859,7 +863,7 @@ class Validation(object):
         """
 
 # Update the gtk.TreeModel() with the new value.
-        _type_ = gobject.type_name(model.get_column_type(position))
+        _type_ = gobject.type_name(model.get_column_type(position))  # @UndefinedVariable
 
         if _type_ == 'gchararray':
             model[path][position] = str(new_text)

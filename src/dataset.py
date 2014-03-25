@@ -5,7 +5,8 @@ Program survival data sets.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2012 - 2014 Andrew "Weibullguy" Rowland'
+__updated__ = "2014-03-22 17:34"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,8 +14,26 @@ __copyright__ = 'Copyright 2012 - 2013 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
-import sys
+import gettext
+import locale
 from os import name
+import sys
+
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+import numpy
+
+from _assistants_.adds import AddDatasetRecord
+from _assistants_.updates import AssignMTBFResults
+from _calculations_.growth import power_law, loglinear, crow_amsaa_continuous
+from _calculations_.survival import *
+import calculations as _calc
+import configuration as _conf
+import imports as _impt
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -35,7 +54,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-import numpy
 
 # Import R library.
 try:
@@ -49,35 +67,21 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import other RTK modules.
-import calculations as _calc
-import configuration as _conf
-import imports as _impt
-import utilities as _util
-import widgets as _widg
 
 # Import other RTK classes.
-from _assistants_.adds import AddDatasetRecord
-from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
-from _calculations_.survival import *
-from _calculations_.growth import power_law, loglinear, crow_amsaa_continuous
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 # Plotting package.
-import matplotlib
 matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
 
 
 class Dataset:

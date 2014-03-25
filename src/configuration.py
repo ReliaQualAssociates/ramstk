@@ -13,16 +13,17 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import ConfigParser
+import gettext
 from os import environ, path, mkdir, name
 
+import utilities as _util
+import widgets as _widg
+
+
 # Add localization support.
-import locale
-import gettext
 _ = gettext.gettext
 
 # Import other RTK modules.
-import utilities as _util
-import widgets as _widg
 
 # Sets the mode of operation.  Defaults to '' for user-mode.  Will be set to
 # 'developer' when devmode is passed as a CLI argument.  The 'developer' mode
@@ -184,8 +185,9 @@ MTIME = 100.0
 TABPOS = ['top', 'bottom', 'bottom']
 
 # Variables to hold various control parameters.
-METHOD= 'STANDARD'                          # STANDARD or LRM
+METHOD = 'STANDARD'                         # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA
+
 
 class RTKConf:
     """ The RTK configuration class. """
@@ -583,7 +585,7 @@ class RTKConf:
             config.set('Colors', 'nofrmodelfg', RTK_COLORS[20])
 
             try:
-                parser = open(self._conf_file,'w')
+                parser = open(self._conf_file, 'w')
                 config.write(parser)
                 parser.close()
             except EnvironmentError:

@@ -10,8 +10,15 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
-import sys
+import gettext
+from math import ceil, exp, floor, log, sqrt
 from os import name
+import sys
+
+import configuration as _conf
+import numpy as np
+import utilities as _util
+
 
 # Modules required for the GUI.
 try:
@@ -33,7 +40,6 @@ except ImportError:
     sys.exit(1)
 
 # Add NLS support.
-import gettext
 _ = gettext.gettext
 
 # Import R library.
@@ -50,12 +56,8 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import mathematical functions.
-import numpy as np
-from math import ceil, exp, floor, log, sqrt
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
 
 
 def calculate_project(button, application, index):
@@ -291,18 +293,18 @@ def calculate_hardware(treemodel, row, application):
                     Irated = partmodel.get_value(partrow, 92)
 
                     try:
-                       Iratio = Ioper / Irated
+                        Iratio = Ioper / Irated
                     except ZeroDivisionError:
-                       Iratio = 0.0
+                        Iratio = 0.0
 
                     # Calculate power ratio of component.
                     Poper = partmodel.get_value(partrow, 64)
                     Prated = partmodel.get_value(partrow, 93)
 
                     try:
-                       Pratio = Poper / Prated
+                        Pratio = Poper / Prated
                     except ZeroDivisionError:
-                       Pratio = 0.0
+                        Pratio = 0.0
 
                     # Determine the total power dissipation.
                     num = treemodel.get_value(row, 67)
@@ -1013,7 +1015,6 @@ def calculate_sx_factor(values, application):
     else:
         nm = results[0][0]
 
-
     # Find the count of all the units with a complexity levels greater than 20
     # in the selected software module.
     if(_conf.BACKEND == 'mysql'):
@@ -1232,9 +1233,9 @@ def calculate_tm_factor(values, application):
         TU = float(TU[0][0])
 
     # Calculate the test methodology factor.
-    if(TU/TT > 0.75):
+    if TU / TT > 0.75:
         TM = 0.9
-    elif(TU/TT < 0.75 and TU/TT > 0.5):
+    elif TU / TT < 0.75 and TU / TT > 0.5:
         TM = 1.0
     else:
         TM = 1.1
@@ -2203,8 +2204,6 @@ def moving_average(_data_, n=3):
     n      -- the desired period.
     """
 
-    import numpy as np
-
     _cumsum_ = np.cumsum(_data_, dtype=float)
 
     return (_cumsum_[n - 1:] - _cumsum_[:1 - n]) / n
@@ -2661,9 +2660,9 @@ def theoretical_distribution(_data_, _distr_, _para_):
     xmaxright = max([i[1] for i in _data_ if i[1] != 'NA'])
     xmax = max(xmaxleft, xmaxright)
 
-    xrange = xmax - xmin
-    xmin = xmin - 0.3 * xrange
-    xmax = xmax + 0.3 * xrange
+    x_range = xmax - xmin
+    xmin = xmin - 0.3 * x_range
+    xmax = xmax + 0.3 * x_range
 
 # Creat a list of probabilities for the theoretical distribution with the
 # estimated parameters.

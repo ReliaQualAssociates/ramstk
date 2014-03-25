@@ -6,6 +6,7 @@ the requirements of the Program.
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__updated__ = "2014-03-22 17:53"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +14,14 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import sys
+
+# Import other RTK modules.
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
 
 # Modules required for the GUI.
 try:
@@ -22,11 +30,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -34,19 +42,12 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
-
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 
@@ -515,7 +516,7 @@ class Requirement(object):
 
             label = _widg.make_label(_labels_[9],
                                      150, 25)
-            _fxdGeneralData.put(label, _x_pos_+25, _y_pos_[5])
+            _fxdGeneralData.put(label, _x_pos_ + 25, _y_pos_[5])
             self.txtValidatedDate.set_tooltip_text(_(u"Displays the date the selected requirement was verified and validated."))
             self.txtValidatedDate.connect('focus-out-event',
                                           self._callback_entry, 'text', 9)

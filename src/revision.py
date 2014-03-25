@@ -6,6 +6,7 @@ to the revision of the Program.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
+__updated__ = "2014-03-24 16:49"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +14,16 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import sys
+
+import pango
+
+# Import other RTK modules.
+from _assistants_.adds import AddRevision
+import configuration as _conf
+import widgets as _widg
 
 # Modules required for the GUI.
 try:
@@ -22,11 +32,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -34,22 +44,12 @@ try:
 except ImportError:
     sys.exit(1)
 
-import pango
-
-# Import other RTK modules.
-import configuration as _conf
-import widgets as _widg
-
-from _assistants_.adds import AddRevision
-
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 
@@ -581,7 +581,7 @@ class Revision(object):
             self.txtMission.set_tooltip_text(_(u"Displays the mission name."))
             self.txtMission.connect('focus-out-event',
                                     self._callback_entry, 100)
-            _fxdMission_.put(self.txtMission, _x_pos_+205, _y_pos_[0])
+            _fxdMission_.put(self.txtMission, _x_pos_ + 205, _y_pos_[0])
 
             self.txtMissionTime.set_tooltip_text(_(u"Displays the total mission time."))
             self.txtMissionTime.connect('focus-out-event',
@@ -591,7 +591,7 @@ class Revision(object):
             self.cmbTimeUnit.set_tooltip_text(_(u"Select and displays the time units for the selected mission."))
             _widg.load_combo(self.cmbTimeUnit, _units_)
             self.cmbTimeUnit.connect('changed', self._callback_combo, 1)
-            _fxdMission_.put(self.cmbTimeUnit, _x_pos_+100, _y_pos_[1])
+            _fxdMission_.put(self.cmbTimeUnit, _x_pos_ + 100, _y_pos_[1])
 
             # Mission profile widgets.
             self.btnAddPhase.set_tooltip_text(_(u"Adds a new phase to the selected mission."))
@@ -1893,7 +1893,7 @@ class Revision(object):
         model    -- the TreeModel the CellRenderer belongs to.
         """
 
-        _type_ = gobject.type_name(model.get_column_type(position))
+        _type_ = gobject.type_name(model.get_column_type(position))  # @UndefinedVariable
 
         if _type_ == 'gchararray':
             model[path][position] = str(new_text)

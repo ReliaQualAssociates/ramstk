@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-""" This is the Class that is used to represent and hold information related
-    to Program incidents. """
+"""
+This is the Class that is used to represent and hold information related to 
+Program incidents. 
+"""
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__updated__ = "2014-03-22 17:34"
 
 # -*- coding: utf-8 -*-
 #
@@ -11,7 +14,18 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import sys
+
+from _assistants_.adds import AddIncident, CreateDataSet
+from _assistants_.filters import FilterIncident
+from _assistants_.imports import ImportIncident
+import configuration as _conf
+import imports as _impt
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -33,24 +47,15 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import configuration as _conf
-import imports as _impt
-import utilities as _util
-import widgets as _widg
 
-from _assistants_.adds import AddIncident, CreateDataSet
-from _assistants_.imports import ImportIncident
 #from _assistants_.exports import ExportIncident
-from _assistants_.filters import FilterIncident
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 

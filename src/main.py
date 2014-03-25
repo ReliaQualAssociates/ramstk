@@ -10,7 +10,30 @@ __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import datetime
+import getpass
+import gettext
+import logging
+import os
 import sys
+
+import configuration as _conf
+from dataset import Dataset
+from function import Function
+from hardware import Hardware
+from incident import Incident
+import mysql as _mysql
+import notebook as _note
+import partlist as _parts
+from requirement import Requirement
+from revision import Revision
+from software import Software
+import sqlite as _sqlite
+from testing import Testing
+import tree as _tree
+import utilities as _util
+from validation import Validation
+
 
 # Modules required for the GUI.
 try:
@@ -23,39 +46,18 @@ try:
 except ImportError:
     sys.exit(1)
 
-import os
-import getpass
-import datetime
-import logging
 
 # We need to explicitly import the following module otherwise pyinstaller
 # won't pick it up and add it to the executable on Windows.
 if(os.name == 'nt'):
-    from scipy.sparse.csgraph import _validation
+    from scipy.sparse.csgraph import _validation  # @UnusedImport
 
 # Add localization support.
-import gettext
 _ = gettext.gettext
 
 # Import other RTK modules.
-import configuration as _conf
-import mysql as _mysql
-import notebook as _note
-import partlist as _parts
-import sqlite as _sqlite
-import tree as _tree
-import utilities as _util
 
 # Import all of the RTK Classes.
-from revision import Revision
-from function import Function
-from requirement import Requirement
-from hardware import Hardware
-from validation import Validation
-from incident import Incident
-from software import Software
-from dataset import Dataset
-from testing import Testing
 
 
 def main():

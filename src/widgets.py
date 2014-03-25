@@ -14,7 +14,13 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
 import sys
+
+import pango
+
+# Import other RTK modules.
+import configuration as _conf
 
 # Modules required for the GUI.
 try:
@@ -23,11 +29,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -35,12 +41,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-import pango
-
-# Import other RTK modules.
-import configuration as _conf
-
-import gettext
 _ = gettext.gettext
 
 
@@ -122,13 +122,13 @@ class CellRendererML(gtk.CellRendererText):
 
     def _keyhandler(self, widget, event):
         # track keystrokes, look for shift-return or ctrl-return to signal end of cell editing
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = gtk.gdk.keyval_name(event.keyval)  # @UndefinedVariable
 
-        if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and gtk.gdk.keyval_name(event.keyval) == 'Return':
+        if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and gtk.gdk.keyval_name(event.keyval) == 'Return':  # @UndefinedVariable
 
             self.textedit_window.response(gtk.RESPONSE_OK)
 
-gobject.type_register(CellRendererML)
+gobject.type_register(CellRendererML)  # @UndefinedVariable
 
 
 def make_button(_height_=40, _width_=0, _label_="", _image_='default'):

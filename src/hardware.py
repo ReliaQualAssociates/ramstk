@@ -6,6 +6,7 @@ the hardware of the Program.
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
+__updated__ = "2014-03-22 12:55"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +14,24 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 #
 # All rights reserved.
 
+from datetime import datetime
+import gettext
+import locale
 import sys
+
+from lxml import etree
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+
+# Import other RTK modules.
+from _assistants_.exports import ExportHardware
+from _assistants_.imports import ImportHardware
+import calculations as _calc
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -22,11 +40,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -39,31 +57,14 @@ except ImportError:
     sys.exit(1)
 
 # Modules required for plotting.
-import matplotlib
 matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-
-from datetime import datetime
-from lxml import etree
-
-# Import other RTK modules.
-import calculations as _calc
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
-
-from _assistants_.imports import ImportHardware
-from _assistants_.exports import ExportHardware
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 
@@ -1246,7 +1247,7 @@ class Hardware(object):
                 _types_.append(_datatype_[i].text)
 
             _gobject_types_ = []
-            _gobject_types_ = [gobject.type_from_name(_types_[ix])
+            _gobject_types_ = [gobject.type_from_name(_types_[ix])  # @UndefinedVariable
                 for ix in range(len(_types_))]
 
             # Retrieve the list of hazards to include in the hazard analysis
@@ -1426,17 +1427,17 @@ class Hardware(object):
                 _cell_.set_property('xalign', 0.5)
                 _cell_.set_property('yalign', 0.5)
                 _column_.pack_start(_cell_, True)
-                _column_.set_attributes(_cell_, text=j, background=j+2)
+                _column_.set_attributes(_cell_, text=j, background=j + 2)
 
                 _cell_ = gtk.CellRendererText()       # Frequency multiplier.
                 _cell_.set_property('visible', False)
                 _column_.pack_start(_cell_, True)
-                _column_.set_attributes(_cell_, text=j+1)
+                _column_.set_attributes(_cell_, text=j + 1)
 
                 _cell_ = gtk.CellRendererText()       # Cell background color.
                 _cell_.set_property('visible', False)
                 _column_.pack_start(_cell_, True)
-                _column_.set_attributes(_cell_, text=j+2)
+                _column_.set_attributes(_cell_, text=j + 2)
                 self.tvwRiskMap.append_column(_column_)
 
                 j += 3
@@ -1540,7 +1541,7 @@ class Hardware(object):
                 _types_.append(_datatype_[i].text)
 
             _gobject_types_ = []
-            _gobject_types_ = [gobject.type_from_name(_types_[ix])
+            _gobject_types_ = [gobject.type_from_name(_types_[ix])  # @UndefinedVariable
                 for ix in range(len(_types_))]
 
             # Create the model and treeview.
@@ -2599,21 +2600,21 @@ class Hardware(object):
 
             self.fxdAction.put(self.txtActionID, 205, _y_pos_[0])
 
-            self.fxdAction.put(self.txtActionRecommended, _x_pos_, _y_pos_[1]) #180
+            self.fxdAction.put(self.txtActionRecommended, _x_pos_, _y_pos_[1])
             self.txtActionRecommended.connect('focus-out-event',
                                               self._callback_entry, 'text', 1000)
 
-            self.fxdAction.put(self.cmbActionCategory, _x_pos_, _y_pos_[2]) #180
+            self.fxdAction.put(self.cmbActionCategory, _x_pos_, _y_pos_[2])
             self.cmbActionCategory.connect('changed', self._callback_combo, 1001)
 
-            self.fxdAction.put(self.cmbActionResponsible, _x_pos_, _y_pos_[3]) #180
+            self.fxdAction.put(self.cmbActionResponsible, _x_pos_, _y_pos_[3])
             self.cmbActionResponsible.connect('changed', self._callback_combo, 1002)
 
-            self.fxdAction.put(self.txtActionDueDate, _x_pos_, _y_pos_[4]) #515
+            self.fxdAction.put(self.txtActionDueDate, _x_pos_, _y_pos_[4])
             self.txtActionDueDate.connect('focus-out-event',
                                           self._callback_entry, 'date', 1003)
 
-            self.fxdAction.put(self.cmbActionStatus, _x_pos_, _y_pos_[5]) #180
+            self.fxdAction.put(self.cmbActionStatus, _x_pos_, _y_pos_[5])
             self.cmbActionStatus.connect('changed', self._callback_combo, 1004)
 
             self.fxdAction.put(self.txtActionTaken, _x_pos_, _y_pos_[6])
@@ -2621,17 +2622,17 @@ class Hardware(object):
                                         self._callback_entry, 'text',
                                         1005)
 
-            self.fxdAction.put(self.cmbActionApproved, _x_pos_, _y_pos_[7]) #180
+            self.fxdAction.put(self.cmbActionApproved, _x_pos_, _y_pos_[7])
             self.cmbActionApproved.connect('changed', self._callback_combo, 1006)
 
-            self.fxdAction.put(self.txtActionApproveDate, _x_pos_, _y_pos_[8]) #515
+            self.fxdAction.put(self.txtActionApproveDate, _x_pos_, _y_pos_[8])
             self.txtActionApproveDate.connect('focus-out-event',
                                               self._callback_entry, 'date', 1007)
 
-            self.fxdAction.put(self.cmbActionClosed, _x_pos_, _y_pos_[9]) #180
+            self.fxdAction.put(self.cmbActionClosed, _x_pos_, _y_pos_[9])
             self.cmbActionClosed.connect('changed', self._callback_combo, 1008)
 
-            self.fxdAction.put(self.txtActionCloseDate, _x_pos_, _y_pos_[10]) #515
+            self.fxdAction.put(self.txtActionCloseDate, _x_pos_, _y_pos_[10])
             self.txtActionCloseDate.connect('focus-out-event',
                                             self._callback_entry, 'date', 1009)
 
@@ -2721,7 +2722,7 @@ class Hardware(object):
             else:
                 _icon_ = _conf.ICON_DIR + '32x32/part.png'
 
-            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
             _data_ = _results_[i] + (_icon_,)
 
             _row_ = _model_.append(_piter_, _data_)
@@ -3036,7 +3037,7 @@ class Hardware(object):
 # TODO: Load the risk map with saved results.
             _model_ = self.tvwRiskMap.get_model()
             #for i in range(len(_results_)):
-             #   model.set(row, _results_[i][2])
+            #   model.set(row, _results_[i][2])
 
             return False
 
@@ -3405,7 +3406,7 @@ class Hardware(object):
             _n_modes_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
         for i in range(_n_modes_):
             self._CA[_results_[i][0]] = [_results_[i][14],
                                         _results_[i][15],
@@ -3499,7 +3500,7 @@ class Hardware(object):
             _n_mechanisms_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/mechanism.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
         for i in range(_n_mechanisms_):
             _piter_ = _model_.get_iter_from_string(_results_[i][10])
             self._mechanisms[_results_[i][2]] = [_results_[i][3],
@@ -3542,7 +3543,7 @@ class Hardware(object):
             _n_actions_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/action.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
         for i in range(_n_actions_):
             _piter_ = _model_.get_iter_from_string(_results_[i][14])
             self._fmeca_actions[_results_[i][3]] = [_results_[i][4],
@@ -3581,7 +3582,7 @@ class Hardware(object):
             _n_controls_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/control.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
         for i in range(_n_controls_):
             try:
                 _piter_ = _model_.get_iter_from_string(_results_[i][6])
@@ -3986,7 +3987,7 @@ class Hardware(object):
             _prompt_ = _(u"How many components to add?")
 
         _n_new_assembly_ = _util.add_items(_title_, _prompt_)
-        for i in range(_n_new_assembly_):
+        for i in range(_n_new_assembly_):  # @UnusedVariable
             # Create the default name of the assembly.
             _name_ = str(_conf.RTK_PREFIX[4]) + ' ' + str(_conf.RTK_PREFIX[5])
 
@@ -5610,9 +5611,9 @@ class Hardware(object):
         for i in range(len(_results_)):
             _system_ = _results_[i][0]
             for j in range(8):
-                if _results_[i][j+1] != '' and _results_[i][j+1] is not None:
+                if _results_[i][j + 1] != '' and _results_[i][j + 1] is not None:
                     _summary_[j] = _summary_[j] + _system_ + ":\n" + \
-                                   _results_[i][j+1] + "\n"
+                                   _results_[i][j + 1] + "\n"
 
         # Update the selected parent assembly's change descriptions with the
         # combined change description.
@@ -5663,9 +5664,9 @@ class Hardware(object):
         for i in range(len(_results_)):
             _system_ = _results_[i][0]
             for j in range(8):
-                if _results_[i][j+1] != '' and _results_[i][j+1] is not None:
+                if _results_[i][j + 1] != '' and _results_[i][j + 1] is not None:
                     _summary_[j] = _summary_[j] + _system_ + ":\n" + \
-                                   _results_[i][j+1] + "\n"
+                                   _results_[i][j + 1] + "\n"
 
         # Now find the sums of the five result fields.
         _query_ = "SELECT SUM(t1.fld_result_1), SUM(t1.fld_result_2), \
@@ -6251,7 +6252,7 @@ class Hardware(object):
 
         if self.cmbAllocationType.get_active() == 1:    # Equal apportionment
             Wi = 1.0 / float(_n_assemblies_)
-            Ri = Rs**Wi
+            Ri = Rs**Wi  # @IgnorePep8
             FRi = -1.0 * log(Ri) / Ts
             try:
                 MTBFi = 1.0 / FRi
@@ -6718,13 +6719,13 @@ class Hardware(object):
             # Assemblies should not show as overstressed.
             _model_.set_value(row, 60, False)
             _icon_ = _conf.ICON_DIR + '32x32/assembly.png'
-            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
+            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
             _model_.set_value(row, 95, _icon_)
 
             # Calculate all the children and the sum of their results.
             _n_children_ = _model_.iter_n_children(row)
             _row_ = _model_.iter_children(row)
-            for i in range(_n_children_):
+            for i in range(_n_children_):  # @UnusedVariable
                 (_c_, _la_, _ld_, _ls_, _lp_,
                  _n_parts_, _power_) = self.calculate(_row_)
 

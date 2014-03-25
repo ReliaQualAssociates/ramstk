@@ -4,6 +4,7 @@
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
+__updated__ = "2014-03-22 16:45"
 
 # -*- coding: utf-8 -*-
 #
@@ -11,8 +12,20 @@ __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import sys
-import pango
+
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas  # @UnusedImport
+from matplotlib.figure import Figure  # @UnusedImport
+import pango  # @UnusedImport
+
+import calculations as _calc
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -21,11 +34,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -34,26 +47,17 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import calculations as _calc
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
-import gettext
 _ = gettext.gettext
 
 # Plotting package.
-import matplotlib
 matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
 
 
 def _test_selection_tree_edit(cell, path, position, model):
@@ -333,10 +337,10 @@ class Software:
 
 # Create generic toolbar action buttons.  These will call different methods or
 # functions depending on the ASSEMBLY Object notebook tab that is selected.
-    btnAddItem = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
-    btnRemoveItem = gtk.ToolButton(stock_id = gtk.STOCK_REMOVE)
-    btnAnalyze = gtk.ToolButton(stock_id = gtk.STOCK_NO)
-    btnSaveResults = gtk.ToolButton(stock_id = gtk.STOCK_SAVE)
+    btnAddItem = gtk.ToolButton()
+    btnRemoveItem = gtk.ToolButton()
+    btnAnalyze = gtk.ToolButton()
+    btnSaveResults = gtk.ToolButton()
 
 # Create the Risk Analysis tab widgets.
     hpnRiskAnalysis = gtk.HPaned()
@@ -856,7 +860,7 @@ class Software:
         toolbar = gtk.Toolbar()
 
 # Add sibling module button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new software module at the same indenture level as the selected software module."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
@@ -865,7 +869,7 @@ class Software:
         toolbar.insert(button, 0)
 
 # Add child module button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_NEW)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Adds a new software module one indenture level subordinate to the selected software module."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
@@ -874,7 +878,7 @@ class Software:
         toolbar.insert(button, 1)
 
 # Delete module button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+        button = gtk.ToolButton()
         button.set_tooltip_text(_("Removes the currently selected software module from the RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
@@ -3408,16 +3412,16 @@ class Software:
                 label.set_alignment(xalign=0.5, yalign=0.5)
                 label.set_justify(gtk.JUSTIFY_CENTER)
                 label.set_property('angle', 90)
-                label.set_markup("<span weight='bold'>" + _headings_[i+6] + "</span>")
+                label.set_markup("<span weight='bold'>" + _headings_[i + 6] + "</span>")
                 label.set_use_markup(True)
                 label.show_all()
                 column = gtk.TreeViewColumn()
                 column.pack_start(cell, True)
-                column.set_attributes(cell, text=i+6)
+                column.set_attributes(cell, text=i + 6)
                 column.set_clickable(True)
                 column.set_reorderable(True)
                 column.set_max_width(75)
-                column.set_sort_column_id(i+6)
+                column.set_sort_column_id(i + 6)
                 column.set_widget(label)
                 self.tvwCSCITestSelectionMatrix.append_column(column)
 
@@ -3549,16 +3553,16 @@ class Software:
                 label.set_alignment(xalign=0.5, yalign=0.5)
                 label.set_justify(gtk.JUSTIFY_CENTER)
                 label.set_property('angle', 90)
-                label.set_markup("<span weight='bold'>" + _headings_[i+6] + "</span>")
+                label.set_markup("<span weight='bold'>" + _headings_[i + 6] + "</span>")
                 label.set_use_markup(True)
                 label.show_all()
                 column = gtk.TreeViewColumn()
                 column.pack_start(cell, True)
-                column.set_attributes(cell, text=i+6)
+                column.set_attributes(cell, text=i + 6)
                 column.set_clickable(True)
                 column.set_reorderable(True)
                 column.set_max_width(75)
-                column.set_sort_column_id(i+6)
+                column.set_sort_column_id(i + 6)
                 column.set_widget(label)
                 self.tvwUnitTestSelectionMatrix.append_column(column)
 
@@ -4010,7 +4014,7 @@ class Software:
         _model_ = self.treeview.get_model()
         self._risk_['Name'] = _model_.get_value(self._selected_row, 3)
 
-        _util.set_cursor(self._app, gtk.gdk.WATCH)
+        _util.set_cursor(self._app, gtk.gdk.WATCH)  # @UndefinedVariable
 
         def _calculate_app_risk(self):
 
@@ -4228,7 +4232,7 @@ class Software:
 
             y = sum(self._cdr_[i] for i in range(34, 36)) + sum(_ratios_)
             _DR_ = y / 18.0
-            if(_DR_  < 0.5):                 # High risk
+            if _DR_ < 0.5:                 # High risk
                 _SQ_ = 1.1
             else:
                 _SQ_ = 1.0
@@ -4255,15 +4259,15 @@ class Software:
             elif(self._app_level == 3):    # Unit
     # Calculate the Anomaly Management factor.
                 y = self._trr_[4] + self._trr_[5]
-                if(y / 2.0 > 0.4):          # Low risk
+                if y / 2.0 > 0.4:          # Low risk
                     _SA_ = 0.9
-                elif(y / 2.0 < 0.6):        # High risk
+                elif y / 2.0 < 0.6:        # High risk
                     _SA_ = 1.1
 
     # Caclulate the Software Quality factor.
                 y = sum(self._trr_[i] for i in range(7, 21))
                 _DR_ = y / 14.0
-                if(_DR_  < 0.5):            # High risk
+                if _DR_ < 0.5:             # High risk
                     _SQ_ = 1.1
 
     # Calculate the Complexity factor.
@@ -4299,7 +4303,7 @@ class Software:
         _row_ = _model_.get_iter_root()
         self._risk_map_update(_model_, _row_)
 
-        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)  # @UndefinedVariable
 
         return False
 
@@ -4343,7 +4347,7 @@ class Software:
         _CT_ = int(self.txtInterfacesTest.get_text())
 
         if(self._app_level == 2):           # CSCI
-            _VS_ = ((_MT_ / _NM_) +(_CT_ / _TC_)) / 2.0
+            _VS_ = ((_MT_ / _NM_) + (_CT_ / _TC_)) / 2.0
         elif(self._app_level == 3):         # Unit
             _VS_ = ((_PT_ / _TP_) + (_IT_ / _TI_)) / 2.0
         _TC_ = 1.0 / _VS_
@@ -4372,10 +4376,10 @@ class Software:
                                            prompt=_(u"How many sibling modules to add?"))
         if(type_ == 1):
             _parent = self.model.get_string_from_iter(self._selected_row)
-            n_new_module = _util.add_items(title = _(u"RTK - Child Modules"),
+            n_new_module = _util.add_items(title=_(u"RTK - Child Modules"),
                                            prompt=_(u"How many child modules to add?"))
 
-        _util.set_cursor(self._app, gtk.gdk.WATCH)
+        _util.set_cursor(self._app, gtk.gdk.WATCH)  # @UndefinedVariable
 
         for i in range(n_new_module):
 # Create the default description of the assembly.
@@ -4494,7 +4498,7 @@ class Software:
 
         self.load_tree()
 
-        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)  # @UndefinedVariable
 
         return False
 
@@ -4516,7 +4520,7 @@ class Software:
                                                self._app.ProgCnx,
                                                commit=True)
 
-        if not results:
+        if not _results_:
             self._app.debug_log.error("software.py: Failed to delete module from software table.")
             return True
 
@@ -4856,7 +4860,7 @@ class Software:
                 SLOC = self.model.get_value(self._selected_row, 19)
                 HLOC = SLOC - _text_
                 try:
-                    SL = (float(HLOC)/float(_text_)) + 1.4 * (float(ALOC)/float(_text_))
+                    SL = (float(HLOC) / float(_text_)) + 1.4 * (float(ALOC) / float(_text_))
                 except ZeroDivisionError:
                     SL = 0.0
                 self.txt83.set_text(str(HLOC))
@@ -4867,7 +4871,7 @@ class Software:
                 SLOC = self.model.get_value(self._selected_row, 19)
                 HLOC = _text_ - ALOC
                 try:
-                    SL = (float(HLOC)/float(_text_)) + 1.4 * (float(ALOC)/float(_text_))
+                    SL = (float(HLOC) / float(_text_)) + 1.4 * (float(ALOC) / float(_text_))
                 except ZeroDivisionError:
                     SL = 0.0
                 self.txt83.set_text(str(HLOC))
@@ -5197,7 +5201,7 @@ class Software:
         if(self._app_level == 3 and _page_ > 0):
             _page_ += 2
 
-        _util.set_cursor(self._app, gtk.gdk.WATCH)
+        _util.set_cursor(self._app, gtk.gdk.WATCH)  # @UndefinedVariable
 
 # Save the correct results.
         if(_page_ == 0):
@@ -5216,7 +5220,7 @@ class Software:
             if _save_trr(self):
                 self._app.debug_log.error("software.py: Failed to save Test Readiness Review answers.")
 
-        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)  # @UndefinedVariable
 
         return False
 
@@ -5337,16 +5341,16 @@ class Software:
                 self._save_test_techniques()
             if(_button_ == 'Calculate'):
                 self._calculate_risk_reduction()
-        elif(_page_ == 3):                  #
+        elif(_page_ == 3):
             if(_button_ == 'Save'):
                 print "Save that shit"
-        elif(_page_ == 4):                  #
+        elif(_page_ == 4):
             if(_button_ == 'Save'):
                 print "Save that shit"
-        elif(_page_ == 5):                  #
+        elif(_page_ == 5):
             if(_button_ == 'Save'):
                 print "Save that shit"
-        elif(_page_ == 7):                  #
+        elif(_page_ == 7):
             if(_button_ == 'Save'):
                 print "Save that shit"
         else:                               # Everything else.

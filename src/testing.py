@@ -5,7 +5,8 @@ Program testing plans.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2013 - 2014 Andrew "weibullguy" Rowland'
+__updated__ = "2014-03-24 16:49"
 
 # -*- coding: utf-8 -*-
 #
@@ -13,8 +14,27 @@ __copyright__ = 'Copyright 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
-import sys
+from datetime import datetime
+import gettext
+import locale
+from math import ceil, exp, log, sqrt
 from os import name
+import sys
+
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.patches import Ellipse
+from scipy.stats import chi2, norm
+
+from _assistants_.adds import AddRGRecord
+import calculations as _calc
+import configuration as _conf
+import imports as _impt
+import numpy as np
+import utilities as _util
+import widgets as _widg
+
 
 # Modules required for the GUI.
 try:
@@ -23,23 +43,17 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk
+    import gtk  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade
+    import gtk.glade  # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
     import gobject
 except ImportError:
     sys.exit(1)
-
-import numpy as np
-from scipy.stats import chi2, norm
-
-from datetime import datetime
-from math import ceil, exp, floor, log, sqrt
 
 # Import R library.
 try:
@@ -53,30 +67,18 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import other RTK modules.
-import calculations as _calc
-import configuration as _conf
-import imports as _impt
-import utilities as _util
-import widgets as _widg
 
-from _assistants_.adds import AddRGRecord
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 # Plotting package.
-import matplotlib
 matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.patches import Ellipse
 
 
 class Testing:
@@ -127,7 +129,6 @@ class Testing:
         self.test_id = 0
         self.n_tests = 0
         self.n_phases = 0
-
 
 # Create the Notebook for the TESTING object.
         self.notebook = gtk.Notebook()
@@ -686,7 +687,7 @@ class Testing:
                     _(u"Total Test Time:"), _(u"Average Growth Rate:"),
                     _(u"Average FEF:"), _(u"Program MS:"),
                     _(u"Program Probability:"), _(u"Producer Risk:"),
-                    _(u"Consumer Risk"),]
+                    _(u"Consumer Risk")]
 
         (_x_pos_, _y_pos_) = _widg.make_labels(_labels_,
                                                self.fxdRGPlanDetails, 5, 110)
@@ -1255,8 +1256,6 @@ class Testing:
 
             times = list(xrange(int(TTT)))
             ideal = []
-            plan = []
-            j = 0
             if(self.optMTBF.get_active()):
                 for i in range(len(times)):
                     if(times[i] < int(ti)):
@@ -1264,7 +1263,7 @@ class Testing:
                     elif(times[i] == int(ti)):
                         ideal.append(np.nan)
                     else:
-                        ideal.append((MTBFI * (times[i] / ti)**AvgGR) / (1.0 - AvgGR))
+                        ideal.append((MTBFI * (times[i] / ti)**AvgGR) / (1.0 - AvgGR))  # @IgnorePep8
 
             elif(self.optFailureIntensity.get_active()):
                 for i in range(len(times)):
@@ -1273,7 +1272,7 @@ class Testing:
                     elif(times[i] == int(ti)):
                         ideal.append(np.nan)
                     else:
-                        ideal.append((1.0 - AvgGR) / (MTBFI * (times[i] / ti)**AvgGR))
+                        ideal.append((1.0 - AvgGR) / (MTBFI * (times[i] / ti)**AvgGR))  # @IgnorePep8
 
             return(ideal)
 
@@ -1289,10 +1288,7 @@ class Testing:
             (_model_, _row_) = self.treeview.get_selection().get_selected()
 
     # Read overall program inputs.
-            MTBFI = _model_.get_value(_row_, 6)
             TTT = _model_.get_value(_row_, 16)
-            AvgGR = _model_.get_value(_row_, 17)
-            ti = _model_.get_value(_row_, 20)
 
             times = list(xrange(int(TTT)))
             plan = []
@@ -1301,7 +1297,7 @@ class Testing:
                 _ylabel = _(u"MTBF")
                 for i in range(len(times)):
                     T0 = int(sum(TPT[:j]))
-                    T1 = int(sum(TPT[:j+1]))
+                    T1 = int(sum(TPT[:j + 1]))
                     if(int(times[i]) >= T0 and int(times[i]) < T1):
                         plan.append(MTBFA[j])
                     else:
@@ -1311,7 +1307,7 @@ class Testing:
                 _ylabel = _(u"Failure Intensity")
                 for i in range(len(times)):
                     T0 = int(sum(TPT[:j]))
-                    T1 = int(sum(TPT[:j+1]))
+                    T1 = int(sum(TPT[:j + 1]))
                     if(int(times[i]) >= T0 and int(times[i]) < T1):
                         plan.append(1.0 / MTBFA[j])
                     else:
@@ -1370,8 +1366,8 @@ class Testing:
             _obsll_ = np.array([], float)
             _obsul_ = np.array([], float)
             for i in range(len(_obs_)):
-                _Cll_ = (1.0 - (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0
-                _Cul_ = (1.0 + (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0
+                _Cll_ = (1.0 - (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0  # @IgnorePep8
+                _Cul_ = (1.0 + (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(2.0 * sum(N[:i+1]))))**-2.0  # @IgnorePep8
                 _obsll_ = np.append(_obsll_, obs[i] * _Cll_)
                 _obsul_ = np.append(_obsul_, obs[i] * _Cul_)
 
@@ -1498,17 +1494,17 @@ class Testing:
 
         _text_ = str(_model_.get_value(_row_, self._col_order[14]))
 
-        iter = self.txtAttachment.get_start_iter()
-        iter2 = self.txtAttachment.get_end_iter()
+        _start_ = self.txtAttachment.get_start_iter()
+        _end_ = self.txtAttachment.get_end_iter()
 
-        self.txtAttachment.delete(iter, iter2)
+        self.txtAttachment.delete(_start_, _end_)
         if(_text_ != 'None'):
-            self.txtAttachment.insert_with_tags_by_name(iter, _text_ + '\n',
+            self.txtAttachment.insert_with_tags_by_name(_start_, _text_ + '\n',
                                                         'hyperlink')
 
         return False
 
-    def _hyperlink_handler(self, tag, widget, event, iter):
+    def _hyperlink_handler(self, tag, widget, event, row):
         """
         Method for retrieving the line (hyperlink) that was clicked in the
         Attachment gtk.TextBuffer and opening the link in the default
@@ -1518,19 +1514,19 @@ class Testing:
         tag    -- the gtk.TextTag that called this method.
         widget -- the gtk.TextView that contains the tag calling this method.
         event  -- the mouse button event calling this method.
-        iter   -- the gtk.TextIter that called this method.
+        row    -- the gtk.TextIter that called this method.
         """
 
         import magic
 
-        line_number = iter.get_line()
-        start_iter =  self.txtAttachment.get_iter_at_line(line_number)
-        end_iter =  self.txtAttachment.get_iter_at_line(line_number + 1)
+        line_number = row.get_line()
+        _start_ = self.txtAttachment.get_iter_at_line(line_number)
+        _end_ = self.txtAttachment.get_iter_at_line(line_number + 1)
 
-        _text_ = self.txtAttachment.get_text(start_iter, end_iter,
+        _text_ = self.txtAttachment.get_text(_start_, _end_,
                                              include_hidden_chars=False)
 
-        if(len(_text_) > 1 and event.type == gtk.gdk.BUTTON_RELEASE):
+        if(len(_text_) > 1 and event.type == gtk.gdk.BUTTON_RELEASE):  # @UndefinedVariable
             mime = magic.Magic(mime=True)
             try:
                 print mime.from_file(_text_)
@@ -1561,7 +1557,7 @@ class Testing:
 
 # Insert the number of test plans the user has requested.
         _n_test_plans_ = _util.add_items(_title_, _prompt_)
-        for i in range(_n_test_plans_):
+        for i in range(_n_test_plans_):  # @UnusedVariable
             _query_ = "INSERT INTO tbl_tests \
                        (fld_revision_id, fld_test_id, fld_test_name) \
                        VALUES(%d, %d, 'Test Plan')" % \
@@ -1761,7 +1757,7 @@ class Testing:
             _fix_[5] = True
 
         if(not self.chkFixAverageGR.get_active()):
-            AvgGR = -log(TTT / t1) - 1.0 + sqrt((1.0 + log(TTT / t1))**2.0 + 2.0 * log(MTBFF / MTBFI))
+            AvgGR = -log(TTT / t1) - 1.0 + sqrt((1.0 + log(TTT / t1))**2.0 + 2.0 * log(MTBFF / MTBFI))  # @IgnorePep8
             _fix_[6] = False
 
         _model_.set_value(_row_, 6, MTBFI)
@@ -1807,7 +1803,7 @@ class Testing:
 # for the phase.
             TTTi.append(T)
             try:
-                Ni = ((t1 / MTBFI) * (sum(TTTi) / t1)**(1.0 - GR)) - sum(N)
+                Ni = ((t1 / MTBFI) * (sum(TTTi) / t1)**(1.0 - GR)) - sum(N)  # @IgnorePep8
                 M = T / Ni
             except ZeroDivisionError:
                 Ni = 0
@@ -1853,7 +1849,7 @@ class Testing:
                 _crit_vals_.append(chi2.ppf(_alpha_, sum(F) - 2))
 
             _gr = 1.0 - _beta_hat[-1]
-            _rhoi = _lambda_hat[-1] * _beta_hat[-1] * max(TTTi)**(_beta_hat[-1] - 1)
+            _rhoi = _lambda_hat[-1] * _beta_hat[-1] * max(TTTi)**(_beta_hat[-1] - 1)  # @IgnorePep8
             _rhoc = _rho[-1]
             _mtbfi = 1.0 / _rhoi
             _mtbfc = _mu[-1]
@@ -1915,64 +1911,61 @@ class Testing:
             MTBFI = float(self.txtMTBFI.get_text())
             MTBFG = float(self.txtMTBFG.get_text())
             MTBFGP = float(self.txtMTBFGP.get_text())
-            TR = float(self.txtTechReq.get_text())
-            GR = float(self.txtAverageGR.get_text())
             FEF = float(self.txtAverageFEF.get_text())
-            MS = float(self.txtProgramMS.get_text())
 
 # Initial MTBF to growth potential MTBF ratio is high enough.  Too low means
 # growth testing is being started too early.
-            self.txtMIMGP.set_text(str(fmt.format(MTBFI/MTBFGP)))
-            if(MTBFI/MTBFGP >= 0.15 and MTBFI/MTBFGP <= 0.47):
+            self.txtMIMGP.set_text(str(fmt.format(MTBFI / MTBFGP)))
+            if MTBFI / MTBFGP >= 0.15 and MTBFI / MTBFGP <= 0.47:
                 self.chkMIMGP.set_active(True)
             else:
                 self.chkMIMGP.set_active(False)
 
-            if(MTBFI/MTBFGP >= 0.35):
+            if MTBFI / MTBFGP >= 0.35:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
-            elif(MTBFI/MTBFGP < 0.35 and MTBFI/MTBFGP >= 0.2):
+            elif MTBFI / MTBFGP < 0.35 and MTBFI / MTBFGP >= 0.2:
                 _text = "<span foreground='yellow'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
             self.lblMIMGP.set_markup(_text)
 
-            self.txtMGMGP.set_text(str(fmt.format(MTBFG/MTBFGP)))
-            if(MTBFG/MTBFGP >= 0.6 and MTBFG/MTBFGP <= 0.8):
+            self.txtMGMGP.set_text(str(fmt.format(MTBFG / MTBFGP)))
+            if MTBFG / MTBFGP >= 0.6 and MTBFG / MTBFGP <= 0.8:
                 self.chkMGMGP.set_active(True)
             else:
                 self.chkMGMGP.set_active(False)
 
-            if(MTBFG/MTBFGP <= 0.7):
+            if MTBFG / MTBFGP <= 0.7:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
-            elif(MTBFG/MTBFGP > 0.7 and MTBFG/MTBFGP <= 0.8):
+            elif MTBFG / MTBFGP > 0.7 and MTBFG / MTBFGP <= 0.8:
                 _text = "<span foreground='yellow'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
             self.lblMGMGP.set_markup(_text)
 
-            self.txtTRMG.set_text(str(fmt.format(MTBFG/MTBFI)))
-            if(MTBFG/MTBFI >= 2.0 and MTBFG/MTBFI <= 3.0):
+            self.txtTRMG.set_text(str(fmt.format(MTBFG / MTBFI)))
+            if MTBFG / MTBFI >= 2.0 and MTBFG / MTBFI <= 3.0:
                 self.chkTRMG.set_active(True)
             else:
                 self.chkTRMG.set_active(False)
 
-            if(MTBFG/MTBFI <= 2.0):
+            if MTBFG / MTBFI <= 2.0:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
-            elif(MTBFG/MTBFI > 2.0 and MTBFG/MTBFI <= 3.0):
+            elif MTBFG / MTBFI > 2.0 and MTBFG / MTBFI <= 3.0:
                 _text = "<span foreground='yellow'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
             self.lblMGMI.set_markup(_text)
 
             self.txtFEF.set_text(str(fmt.format(FEF)))
-            if(FEF >= 0.55 and FEF <= 0.85):
+            if FEF >= 0.55 and FEF <= 0.85:
                 self.chkFEF.set_active(True)
             else:
                 self.chkFEF.set_active(False)
 
-            if(FEF <= 0.7):
+            if FEF <= 0.7:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
-            elif(FEF > 0.7 and FEF <= 0.8):
+            elif FEF > 0.7 and FEF <= 0.8:
                 _text = "<span foreground='yellow'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
@@ -1986,8 +1979,8 @@ class Testing:
                 _articles = model.get_value(row, 1)
 
                 _tpu = TTT[i] / _articles
-                _dt_start = datetime.strptime(model.get_value(row, 2),"%Y-%m-%d").toordinal()
-                _dt_end = datetime.strptime(model.get_value(row, 3),"%Y-%m-%d").toordinal()
+                _dt_start = datetime.strptime(model.get_value(row, 2), "%Y-%m-%d").toordinal()
+                _dt_end = datetime.strptime(model.get_value(row, 3), "%Y-%m-%d").toordinal()
                 _weeks = (_dt_end - _dt_start) / 7.0
                 _tpupw = _tpu / _weeks
 
@@ -2116,8 +2109,8 @@ class Testing:
                  reliability growth phase gtk.TreeView.
         """
 
-        _dt_start = datetime.strptime(model.get_value(row, 2),"%Y-%m-%d").toordinal()
-        _dt_end = datetime.strptime(model.get_value(row, 3),"%Y-%m-%d").toordinal()
+        _dt_start = datetime.strptime(model.get_value(row, 2), "%Y-%m-%d").toordinal()
+        _dt_end = datetime.strptime(model.get_value(row, 3), "%Y-%m-%d").toordinal()
         _values_ = (model.get_value(row, 1), _dt_start, _dt_end, \
                     model.get_value(row, 4), model.get_value(row, 5), \
                     model.get_value(row, 6), model.get_value(row, 7), \
@@ -2306,29 +2299,29 @@ class Testing:
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
-        if(convert == 'text'):
-            if(_index_ == self._col_order[4]):
+        if convert == 'text':
+            if _index_ == self._col_order[4]:
                 _bounds = self.txtDescription.get_bounds()
                 _text_ = self.txtDescription.get_text(_bounds[0], _bounds[1])
-            elif(_index_  == self._col_order[15]):
+            elif _index_ == self._col_order[15]:
                 _bounds = self.txtAttachment.get_bounds()
                 _text_ = self.txtAttachment.get_text(_bounds[0], _bounds[1])
             else:
                 _text_ = entry.get_text()
 
-        elif(convert == 'int'):
+        elif convert == 'int':
             try:
                 _text_ = int(entry.get_text())
             except ValueError:
                 _text_ = 0
 
-        elif(convert == 'float'):
+        elif convert == 'float':
             try:
                 _text_ = float(entry.get_text().replace('$', ''))
             except ValueError:
                 _text_ = 0.0
 
-        elif(convert == 'date'):
+        elif convert == 'date':
             _text_ = datetime.strptime(entry.get_text(), '%Y-%m-%d').toordinal()
 
 # Try to update the gtk.TreeModel.  Just keep going if no row is selected.
@@ -2399,10 +2392,9 @@ class Testing:
                              WHERE fld_test_id=%d \
                              AND fld_phase_id=%d" % \
                             (self.test_id, self.n_phases)
-                    results = self._app.DB.execute_query(query,
-                                                         None,
-                                                         self._app.ProgCnx,
-                                                         commit=True)
+                    self._app.DB.execute_query(query, None, self._app.ProgCnx,
+                                               commit=True)
+
 # If spinning up, add phases until the number of phases is equal to the
 # spinner value.
             elif(_value_ > self.n_phases):
@@ -2412,17 +2404,15 @@ class Testing:
                              (fld_test_id, fld_phase_id) \
                              VALUES(%d, %d)" % \
                             (self.test_id, i + self.n_phases + 1)
-                    results = self._app.DB.execute_query(query,
-                                                         None,
-                                                         self._app.ProgCnx,
-                                                         commit=True)
+                    self._app.DB.execute_query(query, None, self._app.ProgCnx,
+                                               commit=True)
 
             self._load_rg_plan_tree()
             self._load_rg_feasibility_tree()
 
 # Try to update the gtk.TreeModel.  Just keep going if no row is selected.
         try:
-            (_model_, _row_) = self.treeview;get_selection().get_selected()
+            (_model_, _row_) = self.treeview.get_selection().get_selected()
             _model_.set_value(_row_, _index_, _value_)
         except ValueError:
             pass
@@ -2442,18 +2432,18 @@ class Testing:
         _button_ = widget.get_name()
         _page_ = self.notebook.get_current_page()
 
-        if(_page_ == 0):                    # Planning inputs
-            if(_button_ == 'Add'):
+        if _page_ == 0:                     # Planning inputs
+            if _button_ == 'Add':
                 self._test_plan_add()
-            elif(_button_ == 'Remove'):
+            elif _button_ == 'Remove':
                 self._test_plan_remove()
-        elif(_page_ == 1):                  # Test feasibility
-            if(_button_ == 'Add'):
+        elif _page_ == 1:                   # Test feasibility
+            if _button_ == 'Add':
                 self._test_plan_add()
-            elif(_button_ == 'Remove'):
+            elif _button_ == 'Remove':
                 self._test_plan_remove()
-        elif(_page_ == 2):                  # Test assessment
-            if(_button_ == 'Add'):
+        elif _page_ == 2:                   # Test assessment
+            if _button_ == 'Add':
                 AddRGRecord(self._app)
 
         return False
