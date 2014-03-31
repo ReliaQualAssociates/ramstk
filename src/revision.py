@@ -6,7 +6,7 @@ to the revision of the Program.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
-__updated__ = "2014-03-24 16:49"
+__updated__ = "2014-03-25 10:9"
 
 # -*- coding: utf-8 -*-
 #
@@ -1934,7 +1934,7 @@ class Revision(object):
                        COUNT(fld_assembly_id), \
                        SUM(fld_failure_rate_mission), \
                        SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                       SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
+                       SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt) \
                        FROM tbl_system \
                        WHERE fld_revision_id=%d \
                        AND fld_part=1" % self.revision_id
@@ -1945,7 +1945,7 @@ class Revision(object):
 
         # If that doesn't work, attempt to calculate results based on the first
         # level of assemblies associated with the seletected revision.
-        if _results_ == '' or not _results_ or _results_ is None:
+        if _results_[0][4] == 0:
             _query_ = "SELECT SUM(fld_cost), \
                        SUM(fld_failure_rate_active), \
                        SUM(fld_failure_rate_dormant), \
@@ -1953,7 +1953,7 @@ class Revision(object):
                        COUNT(fld_assembly_id), \
                        SUM(fld_failure_rate_mission), \
                        SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                       SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
+                       SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt) \
                        FROM tbl_system \
                        WHERE fld_revision_id=%d \
                        AND fld_level=1 AND fld_part=0" % self.revision_id

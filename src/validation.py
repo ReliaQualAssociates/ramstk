@@ -6,7 +6,7 @@ verification and validation tasks of the Program.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
-__updated__ = "2014-03-22 12:55"
+__updated__ = "2014-03-27 9:3"
 
 # -*- coding: utf-8 -*-
 #
@@ -29,7 +29,6 @@ from utilities import date_select, add_items
 from widgets import make_label, make_text_view, make_treeview, create_legend, \
     load_plot, make_labels, make_frame, make_entry, make_button, load_combo, \
     make_combo
-
 
 # Modules required for the GUI.
 try:

@@ -6,7 +6,7 @@ Program testing plans.
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __copyright__ = 'Copyright 2013 - 2014 Andrew "weibullguy" Rowland'
-__updated__ = "2014-03-24 16:49"
+__updated__ = "2014-03-31 15:38"
 
 # -*- coding: utf-8 -*-
 #
@@ -27,6 +27,7 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Ellipse
 from scipy.stats import chi2, norm
 
+# Import other RTK modules.
 from _assistants_.adds import AddRGRecord
 import calculations as _calc
 import configuration as _conf
@@ -65,8 +66,6 @@ try:
 except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
-
-# Import other RTK modules.
 
 
 # Add localization support.
@@ -2448,17 +2447,17 @@ class Testing:
 
         return False
 
-    def _notebook_page_switched(self, notebook, page, page_num):
+    def _notebook_page_switched(self, __notebook, __page, page_num):
         """
         Called whenever the Tree Book notebook page is changed.
 
         Keyword Arguments:
-        notebook -- the Tree Book notebook widget.
-        page     -- the newly selected page widget.
-        page_num -- the newly selected page number.
-                    0 = General Data
-                    1 = Allocation
-                    2 = Hazard Analysis
+        __notebook -- the Tree Book notebook widget.
+        __page     -- the newly selected page widget.
+        page_num   -- the newly selected page number.
+                      0 = General Data
+                      1 = Allocation
+                      2 = Hazard Analysis
         """
 
         self._selected_tab = page_num
@@ -2469,8 +2468,8 @@ class Testing:
 
     def _rg_plan_details(self, _index_):
 
-        if(_index_ == 1):
-            if(self.fraPlanDetails.get_child() is not None):
+        if _index_ == 1:
+            if self.fraPlanDetails.get_child() is not None:
                 self.fraPlanDetails.remove(self.fraPlanDetails.get_child())
 
             self.fraPlanDetails.add(self.fxdRGPlanDetails)
@@ -2479,8 +2478,8 @@ class Testing:
             label = self.fraPlanDetails.get_label_widget()
             _label_ = _(u"Reliability Growth Test Planning Inputs")
 
-        elif(_index_ == 2):
-            if(self.fraPlanDetails2.get_child() is not None):
+        elif _index_ == 2:
+            if self.fraPlanDetails2.get_child() is not None:
                 self.fraPlanDetails2.remove(self.fraPlanDetails2.get_child())
 
             self.fraPlanDetails2.add(self.scwRGPlanDetails)
@@ -2522,21 +2521,22 @@ class Testing:
         _x_ = int(event.x)
         _y_ = int(event.y)
         _pathinfo_ = treeview.get_path_at_pos(_x_, _y_)
-        if(_pathinfo_ is not None):
+
+        if _pathinfo_ is not None:
             (_path_, _column_, _x_, _y_) = _pathinfo_
             treeview.grab_focus()
             treeview.set_cursor(_path_, _column_, False)
 
-            if(idx == 0):
-                if(event.button == 1):
+            if idx == 0:
+                if event.button == 1:
                     self._treeview_row_changed(treeview, _path_, _column_, idx)
 
-            elif(idx == 1):
-                if(event.button == 3):
+            elif idx == 1:
+                if event.button == 3:
                     (_model_, _row_) = treeview.get_selection().get_selected()
 
                     _phase_id_ = _model_.get_value(_row_, 0)
-                    if(_column_.get_widget().get_text() == 'Start Date'):
+                    if _column_.get_widget().get_text() == 'Start Date':
                         _date_ = _util.date_select(None)
                         _model_.set_value(_row_, 2, _date_)
                         self._dic_rg_plan[_phase_id_][2] = _date_
@@ -2545,7 +2545,7 @@ class Testing:
                         _row_ = _model_.get_iter_from_string(
                                         self._dic_rg_plan[_phase_id_][9])
                         _model_.set_value(_row_, 2, _date_)
-                    elif(_column_.get_widget().get_text() == 'End Date'):
+                    elif _column_.get_widget().get_text() == 'End Date':
                         _date_ = _util.date_select(None)
                         _model_.set_value(_row_, 3, _date_)
                         self._dic_rg_plan[_phase_id_][3] = _date_
@@ -2555,12 +2555,12 @@ class Testing:
                                         self._dic_rg_plan[_phase_id_][9])
                         _model_.set_value(_row_, 3, _date_)
 
-            elif(idx == 2):
-                if(event.button == 3):
+            elif idx == 2:
+                if event.button == 3:
                     (_model_, _row_) = treeview.get_selection().get_selected()
 
                     _phase_id_ = _model_.get_value(_row_, 0)
-                    if(_column_.get_widget().get_text() == 'Start Date'):
+                    if _column_.get_widget().get_text() == 'Start Date':
                         _date_ = _util.date_select(None)
                         _model_.set_value(_row_, 2, _date_)
                         self._dic_rg_plan[_phase_id_][2] = _date_
@@ -2569,7 +2569,7 @@ class Testing:
                         _row_ = _model_.get_iter_from_string(
                                         self._dic_rg_plan[_phase_id_][8])
                         _model_.set_value(_row_, 2, _date_)
-                    elif(_column_.get_widget().get_text() == 'End Date'):
+                    elif _column_.get_widget().get_text() == 'End Date':
                         _date_ = _util.date_select(None)
                         _model_.set_value(_row_, 3, _date_)
                         self._dic_rg_plan[_phase_id_][3] = _date_
@@ -2581,16 +2581,17 @@ class Testing:
 
         return False
 
-    def _treeview_row_changed(self, treeview, path, column, idx):
+    def _treeview_row_changed(self, __treeview, __path, __column, __index):
         """
         Callback function to handle events for the TESTING Object
         gtk.Treeview.  It is called whenever the Incident Object treeview is
         clicked or a row is activated.
 
         Keyword Arguments:
-        treeview -- the Incident Object gtk.TreeView.
-        path     -- the actived row gtk.TreeView path.
-        column   -- the actived gtk.TreeViewColumn.
+        __treeview -- the Incident Object gtk.TreeView.
+        __path     -- the actived row gtk.TreeView path.
+        __column   -- the actived gtk.TreeViewColumn.
+        __index
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()

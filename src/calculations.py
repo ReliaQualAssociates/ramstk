@@ -19,7 +19,6 @@ import configuration as _conf
 import numpy as np
 import utilities as _util
 
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -55,17 +54,13 @@ except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
 
-# Import mathematical functions.
 
-# Import other RTK modules.
-
-
-def calculate_project(button, application, index):
+def calculate_project(__button, application, index):
     """
     Calculates the hazard rate for the project.
 
     Keyword Arguments:
-    button      -- the gtk.Toolbutton that called this function.
+    __button    -- the gtk.Toolbutton that called this function.
     application -- the RTK application object.
     index       -- an index indicating what to calculate:
                    0 - everything below.
@@ -78,12 +73,6 @@ def calculate_project(button, application, index):
     application.winTree.statusbar.push(2, "Calculating")
 
     if(index == 0):                         # Calculate everything.
-        calculate_revision(None, application)
-
-        _model_ = application.FUNCTION.model
-        _row_ = _model_.get_iter_root()
-        calculate_function(_model_, _row_, application)
-
         _model_ = application.HARDWARE.model
         _row_ = _model_.get_iter_root()
         (cost, lambdaa, lambdad, lambdas,
@@ -95,12 +84,6 @@ def calculate_project(button, application, index):
         _row_ = _model_.get_iter_root()
         application.SOFTWARE.rpfom = calculate_software(_model_, _row_,
                                                         application)
-    elif(index == 1):                       # Calculate just the revision.
-        calculate_revision(None, application)
-    elif(index == 2):                       # Calculate just the functions.
-        _model_ = application.FUNCTION.model
-        _row_ = _model_.get_iter_root()
-        calculate_function(_model_, _row_, application)
     elif(index == 3):                       # Calculate just the hardware.
         _model_ = application.HARDWARE.model
         _row_ = _model_.get_iter_root()
@@ -221,7 +204,7 @@ def calculate_hardware(treemodel, row, application):
                 # Assemblies should not show as overstressed.
                 treemodel.set_value(row, 60, False)
                 icon = _conf.ICON_DIR + '32x32/assembly.png'
-                icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+                icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)  # @UndefinedVariable
                 treemodel.set_value(row, 95, icon)
 
             elif(treemodel.get_value(row, 63) == 1):    # Component
@@ -327,7 +310,7 @@ def calculate_hardware(treemodel, row, application):
 
                     # TODO: Need to add field to database for holding the overstress reason.
                     #partmodel.set_value(partrow, , reason)
-                    icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+                    icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)  # @UndefinedVariable
                     treemodel.set_value(row, 91, icon)
 
                 except SyntaxError:
@@ -2654,15 +2637,15 @@ def theoretical_distribution(_data_, _distr_, _para_):
 # Calculate the minimum and maximum values for x.
     xminleft = min([i[0] for i in _data_ if i[0] != 'NA'])
     xminright = min([i[1] for i in _data_ if i[1] != 'NA'])
-    xmin = min(xminleft, xminright)
+    x_min = min(xminleft, xminright)
 
     xmaxleft = max([i[0] for i in _data_ if i[0] != 'NA'])
     xmaxright = max([i[1] for i in _data_ if i[1] != 'NA'])
-    xmax = max(xmaxleft, xmaxright)
+    x_max = max(xmaxleft, xmaxright)
 
-    x_range = xmax - xmin
-    xmin = xmin - 0.3 * x_range
-    xmax = xmax + 0.3 * x_range
+    x_range = x_max - x_min
+    x_min = x_min - 0.3 * x_range
+    x_max = x_max + 0.3 * x_range
 
 # Creat a list of probabilities for the theoretical distribution with the
 # estimated parameters.
@@ -2672,7 +2655,7 @@ def theoretical_distribution(_data_, _distr_, _para_):
     f = R.formals(densfun)
     args = R.names(f)
     m = R.match(nm, args)
-    s = R.seq(xmin, xmax, by=(xmax - xmin) / den)
+    s = R.seq(x_min, x_max, by=(x_max - x_min) / den)
     theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))
 
     return(theop)
