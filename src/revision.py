@@ -4,15 +4,10 @@ This is the Class that is used to represent and hold information related
 to the revision of the Program.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
-__updated__ = "2014-03-25 10:9"
-
 # -*- coding: utf-8 -*-
-#
-#       revision.py is part of the RTK Project
-#
-# All rights reserved.
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 
 import gettext
 import locale
@@ -60,10 +55,10 @@ class Revision(object):
 
     def __init__(self, application):
         """
-        Initializes the REVISION Object.
+        Initializes the REVISION class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param application: the current instance of the RTK application.
+        :type application: RTK pa
         """
 
         # Define private REVISION class attributes.
@@ -704,7 +699,7 @@ class Revision(object):
             _vbxFailureDefs_.pack_end(_fraFailureDefs_)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            # Now place the wdigets used to display failure definitions.    #
+            # Now place the widgets used to display failure definitions.    #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             self.btnAddDefinition.set_tooltip_text(_(u"Adds a new failure definition to the list."))
             self.btnAddDefinition.connect('released',
@@ -1239,16 +1234,16 @@ class Revision(object):
                               WHERE fld_revision_id=%d" % self.revision_id
 
             self._app.REQUIREMENT.save_requirement()
-            self._app.REQUIREMENT.load_tree
+            self._app.REQUIREMENT.load_tree()
             self._app.FUNCTION.save_function()
-            self._app.FUNCTION.load_tree
+            self._app.FUNCTION.load_tree()
             self._app.HARDWARE.save_hardware()
-            self._app.HARDWARE.load_tree
+            self._app.HARDWARE.load_tree()
             self._app.SOFTWARE.software_save()
-            self._app.SOFTWARE.load_tree
+            self._app.SOFTWARE.load_tree()
             self._app.VALIDATION.validation_save()
-            self._app.VALIDATION.load_tree
-            self._app.TESTING.load_tree
+            self._app.VALIDATION.load_tree()
+            self._app.TESTING.load_tree()
             self._app.winParts.load_part_tree(_qryParts_)
             #self._app.winParts.load_test_tree(_qryTests_, values)
             #self._app.winParts.load_incident_tree(_qryIncidents_, self.revision_id)
@@ -1300,37 +1295,35 @@ class Revision(object):
         """
         Method to add a new phase to the selected mission.
 
-        Keyword Arguments
-        __button -- the gtk.Button widget that called this method.
+        :param __button: the gtk.Button() widget that called this method.
+        :type __button: gtk.Button
+        :return: False or True
         """
 
-        _mission_ = self.cmbMission.get_active_text()
-        _mission_id_ = self._dic_missions[_mission_][0]
+        _mission = self.cmbMission.get_active_text()
+        _mission_id = self._dic_missions[_mission][0]
 
-        _query_ = "SELECT MAX(fld_phase_id) \
-                   FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % _mission_id_
-        _phase_id_ = self._app.DB.execute_query(_query_,
-                                                None,
-                                                self._app.ProgCnx)
+        _query = "SELECT MAX(fld_phase_id) \
+                  FROM tbl_mission_phase \
+                  WHERE fld_mission_id=%d" % _mission_id
+        _phase_id = self._app.DB.execute_query(_query,
+                                               None,
+                                               self._app.ProgCnx)
 
         try:
-            _phase_id_ = _phase_id_[0][0] + 1
+            _phase_id = _phase_id[0][0] + 1
         except TypeError:
-            _phase_id_ = 0
+            _phase_id = 0
 
-        _query_ = "INSERT INTO tbl_mission_phase \
-                   (fld_mission_id, fld_phase_id, fld_phase_start, \
-                    fld_phase_end, fld_phase_name, fld_phase_description) \
-                   VALUES (%d, %d, 0.0, 0.0, '', '')" % \
-                   (_mission_id_, _phase_id_)
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
+        _query = "INSERT INTO tbl_mission_phase \
+                  (fld_mission_id, fld_phase_id, fld_phase_start, \
+                   fld_phase_end, fld_phase_name, fld_phase_description) \
+                  VALUES (%d, %d, 0.0, 0.0, '', '')" % \
+                  (_mission_id, _phase_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("revision.py: Failed to add new mission phase.")
+            self._util.application_error(_(u"There was a problem adding the new mission phase.  Check the error log in the RTK configuration directory.  Report to bugs@reliaqual.com if the problem persists."))
             return True
 
         self._load_mission_profile()
@@ -1368,13 +1361,11 @@ class Revision(object):
                     fld_condition_name, fld_units, fld_minimum, fld_maximum, \
                     fld_mean, fld_variance) \
                    VALUES (%d, '%s', %d, '%s', '%s', %f, %f, %f, %f)" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
 
-        if not _results_:
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("revision.py: Failed to add new environmental condition.")
+            _util.application_error(_(u"Failed to add environmental condition.  Check the error log in the RTK configuration directory.  Report to bugs@reliaqual.com if the problem persists."))
             return True
 
         self._load_environmental_profile()
@@ -1386,7 +1377,8 @@ class Revision(object):
         Method to add a failure definition to the revision.
 
         Keyword Arguments:
-        __button -- the gtk.Button() that called this function.
+        :param __button: the gtk.Button() that called this function.
+        :type __button: gtk.Button
         """
 
         _query_ = "INSERT INTO tbl_failure_definitions \
@@ -1410,9 +1402,8 @@ class Revision(object):
         Deletes the currently selected Revision from the Program's
         MySQL database.
 
-        Keyword Arguments:
-        __menuitem -- the gtk.MenuItem that called this function.
-        __event    -- the gtk.Button event that called this function.
+        :param __menuitem: the gtk.MenuItem() that called this function.
+        :param __event: the gdk.gtk.Event() that called this function.
         """
 
         # First delete the hardware items associated with the revision.
@@ -1447,8 +1438,9 @@ class Revision(object):
         """
         Method to remove the currently selected mission from the program.
 
-        Keyword Arguments
-        __button -- the gtk.Button widget that called this method.
+        :param __button: the gtk.Button() widget that called this method.
+        :type __button: gtk.Button
+        :return: True or False
         """
 
         _mission_ = self.cmbMission.get_active_text()
@@ -1477,6 +1469,7 @@ class Revision(object):
 
         if _results_ == '' or not _results_ or _results_ is None:
             self._app.debug_log.error("revision.py: Failed to remove mission %s." % _mission_)
+            _util.application_error(_(u"Error removing mission.  Check the error log %s.  Report to bugs@reliaqual.com if the problem persists." % _conf.LOG_DIR + '/RTK_error.log'))
             return True
 
         self.load_notebook()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
+__copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -54,7 +54,7 @@ _ = gettext.gettext
 class ImportHardware:
     """
     This is the gtk.Assistant that walks the user through the process of
-    importing Hardware records to the open RelKit Program database.
+    importing Hardware records to the open RTK Program database.
     """
 
     def __init__(self, button, app):

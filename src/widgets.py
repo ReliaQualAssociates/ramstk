@@ -309,7 +309,7 @@ def make_entry(width=200, _height_=25,
         entry.modify_font(pango.FontDescription('bold'))
 
     if not editable:
-        bg_color = gtk.gdk.Color(_color_)
+        bg_color = gtk.gdk.Color(_color_)  # @UndefinedVariable
         entry.modify_base(gtk.STATE_NORMAL, bg_color)
         entry.modify_base(gtk.STATE_ACTIVE, bg_color)
         entry.modify_base(gtk.STATE_PRELIGHT, bg_color)

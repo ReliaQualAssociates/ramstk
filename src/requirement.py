@@ -1409,7 +1409,7 @@ class Requirement(object):
                 self._app.debug_log.error("requirement.py: Failed to add requirement.")
                 return True
 
-        self._app.REVISION.load_tree
+        self._app.REVISION.load_tree()
         self.load_tree()
 
         return False
@@ -1510,7 +1510,7 @@ class Requirement(object):
                 self._app.debug_log.error("requirement.py: Failed to add V&V task.")
                 return True
 
-            self._app.VALIDATION.load_tree
+            self._app.VALIDATION.load_tree()
 
         elif type_ == 1:
             _model_ = self.cmbVandVTasks.get_model()

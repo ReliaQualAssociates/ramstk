@@ -1366,8 +1366,10 @@ class CreateDataSet:
         Method to initialize the Dataset Creation Assistant.
 
         Keyword Arguments:
-        button -- the gtk.Button widget that called this method.
-        app    -- the RTK application.
+        :param button: the gtk.Button() that called this method.
+        :type button: gtk.Button
+        :param app: the RTK application.
+        :type app: RTK application
         """
 
         self._app = app
@@ -1378,106 +1380,115 @@ class CreateDataSet:
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
-# Create the introduction page.
-        fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK survival data set assistant.  It will help you create a data set for survival (Weibull) analysis from the Program Incidents.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=600, height=150)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _(u"Introduction"))
-        self.assistant.set_page_complete(fixed, True)
+        # Create the introduction page.
+        _fixed = gtk.Fixed()
+        _text = _(u"This is the RTK survival data set assistant.  It will\n"
+                  u"help you create a data set for survival (Weibull)\n"
+                  u"analysis from the Program Incidents.  Press 'Forward'\n"
+                  u"to continue or 'Cancel' to quit the assistant.")
+        _label = _widg.make_label(_text, width=-1, height=150)
+        _fixed.put(_label, 5, 5)
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(_fixed, _(u"Introduction"))
+        self.assistant.set_page_complete(_fixed, True)
 
-# Create a page to select where data set should be saved.
-        fixed = gtk.Fixed()
+        # Create a page to select where data set should be saved.
+        _fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(fixed)
+        _frame = _widg.make_frame(_label_=_(""))
+        _frame.set_shadow_type(gtk.SHADOW_NONE)
+        _frame.add(_fixed)
 
-# Create the radio buttons that select the output as database or file.
-        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to Database"))
+        # Create the radio buttons that select the output as database or file.
+        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to "
+                                                   u"Database"))
         self.optFile = gtk.RadioButton(group=self.optDatabase,
                                        label=_(u"Save Data Set to File"))
         self.chkNevadaChart = _widg.make_check_button(
                               _label_=_(u"Create Nevada chart from data."))
 
-        fixed.put(self.optDatabase, 5, 5)
-        fixed.put(self.optFile, 5, 35)
-        fixed.put(self.chkNevadaChart, 5, 65)
+        _fixed.put(self.optDatabase, 5, 5)
+        _fixed.put(self.optFile, 5, 35)
+        _fixed.put(self.chkNevadaChart, 5, 65)
 
-# Create the radio buttons that allow choice of MTTF or MTBF estimates.
-        self.optMTTF = gtk.RadioButton(label=_(u"Include only the first failure time for each unit."))
+        # Create the radio buttons that allow choice of MTTF or MTBF estimates.
+        self.optMTTF = gtk.RadioButton(label=_(u"Include only the first "
+                                               u"failure time for each unit."))
         self.optMTBBD = gtk.RadioButton(group=self.optMTTF,
-                                        label=_(u"Include only distinct failure times for each unit."))
+                                        label=_(u"Include only distinct "
+                                                u"failure times for each "
+                                                u"unit."))
         self.optMTBF = gtk.RadioButton(group=self.optMTTF,
-                                       label=_(u"Include all failure times for each unit."))
+                                       label=_(u"Include all failure times "
+                                               u"for each unit."))
 
-        fixed.put(self.optMTTF, 5, 105)
-        fixed.put(self.optMTBBD, 5, 135)
-        fixed.put(self.optMTBF, 5, 165)
+        _fixed.put(self.optMTTF, 5, 105)
+        _fixed.put(self.optMTBBD, 5, 135)
+        _fixed.put(self.optMTBF, 5, 165)
 
-# Create the checkbutton to include or exclude zero hour failures.
+        # Create the checkbutton to include or exclude zero hour failures.
         self.chkIncludeZeroHour = _widg.make_check_button(
                                   _label_=_(u"Include zero hour failures."))
         self.chkIncludeZeroHour.set_active(True)
 
-        fixed.put(self.chkIncludeZeroHour, 5, 205)
+        _fixed.put(self.chkIncludeZeroHour, 5, 205)
 
-        self.assistant.append_page(frame)
-        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
+        self.assistant.append_page(_frame)
+        self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(_frame,
                                       _(u"Select Where to Save Data Set"))
-        self.assistant.set_page_complete(frame, True)
+        self.assistant.set_page_complete(_frame, True)
 
-# Create a page to select where data set should be saved.
-        fixed = gtk.Fixed()
+        # Create a page to select where data set should be saved.
+        _fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(fixed)
+        _frame = _widg.make_frame(_label_=_(""))
+        _frame.set_shadow_type(gtk.SHADOW_NONE)
+        _frame.add(_fixed)
 
         self.cmbAssembly = _widg.make_combo(simple=False)
 
-        _query_ = "SELECT fld_name, fld_assembly_id, fld_description \
-                 FROM tbl_system \
-                 WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
-        _widg.load_combo(self.cmbAssembly, _results_, simple=False)
+        _query = "SELECT fld_name, fld_assembly_id, fld_description \
+                  FROM tbl_system \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        _widg.load_combo(self.cmbAssembly, _results, simple=False)
 
         self.txtDescription = _widg.make_entry()
-        self.txtConfidence = _widg.make_entry(_width_=50)
+        self.txtConfidence = _widg.make_entry(width=50)
 
-        label = _widg.make_label(_(u"Data Set Description:"), width=200)
-        fixed.put(label, 5, 5)
-        fixed.put(self.txtDescription, 210, 5)
+        _label = _widg.make_label(_(u"Data Set Description:"), width=200)
+        _fixed.put(_label, 5, 5)
+        _fixed.put(self.txtDescription, 210, 5)
 
-        label = _widg.make_label(_(u"Analysis Confidence (%):"), width=200)
-        fixed.put(label, 5, 35)
-        fixed.put(self.txtConfidence, 210, 35)
+        _label = _widg.make_label(_(u"Analysis Confidence (%):"), width=200)
+        _fixed.put(_label, 5, 35)
+        _fixed.put(self.txtConfidence, 210, 35)
 
-        label = _widg.make_label(_(u"Assign to Assembly:"), width=200)
-        fixed.put(label, 5, 65)
-        fixed.put(self.cmbAssembly, 210, 65)
+        _label = _widg.make_label(_(u"Assign to Assembly:"), width=200)
+        _fixed.put(_label, 5, 65)
+        _fixed.put(self.cmbAssembly, 210, 65)
 
-        self.assistant.append_page(frame)
-        self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
+        self.assistant.append_page(_frame)
+        self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(_frame,
                                       _(u"Describe the Data Set"))
-        self.assistant.set_page_complete(frame, True)
+        self.assistant.set_page_complete(_frame, True)
 
-# Create the page to apply the import criteria.
-        fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to create the requested data set or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=600, height=150)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed,
+        # Create the page to apply the import criteria.
+        _fixed = gtk.Fixed()
+        _text = _(u"Press 'Apply' to create the requested data set or "
+                  u"'Cancel' to quit the assistant.")
+        _label = _widg.make_label(_text, width=600, height=150)
+        _fixed.put(_label, 5, 5)
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed,
                                      gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _(u"Create Data Set"))
-        self.assistant.set_page_complete(fixed, True)
+        self.assistant.set_page_title(_fixed, _(u"Create Data Set"))
+        self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
 

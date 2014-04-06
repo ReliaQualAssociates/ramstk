@@ -4,15 +4,11 @@ This is the Class that is used to represent and hold information related to
 the functions of the Program.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-__updated__ = "2014-03-24 16:49"
-
 # -*- coding: utf-8 -*-
-#
-#    function.py is part of The RTK Project
-#
-# All rights reserved.
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014'
 
 import gettext
 import locale
@@ -21,7 +17,6 @@ import sys
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
-
 
 # Modules required for the GUI.
 try:
@@ -42,8 +37,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RTK modules.
-
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -53,7 +46,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class Function:
+class Function(object):
     """
     The FUNCTION class is used to represent a function in a system being
     analyzed.
@@ -837,13 +830,12 @@ class Function:
                                                None,
                                                self._app.ProgCnx,
                                                commit=False)
-
         try:
             _n_functions_ = len(_results_)
         except TypeError:
             _n_functions_ = 0
 
-        # Add a line to the functional matrix for every assembly id.  Set the
+        # Add a line to the functional matrix for every assembly ID.  Set the
         # cell under each function column to the appropriate relationship
         # value for each assembly.
         for i in range(_n_items_):          # Loop through all the hardware.

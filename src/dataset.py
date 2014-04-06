@@ -2442,7 +2442,7 @@ class Dataset:
 #   18          Lower bound on model estimate of instantaneous failure intensity
 #   19          Model point estimate of instantaneous failure intensity
 #   20          Upper bound on model estimate of instantaneous failure intensity
-            _power_law_ = power_law(_F_, _X_, _fitmeth_, _type_, _confmeth_,
+            _power_law_ = power_law(_F_, _X_, _confmeth_, _fitmeth_, _type_,
                                     _conf_, _T_)
 
 # Load the non-parametric results gtk.TreeView
