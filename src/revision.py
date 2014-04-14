@@ -190,10 +190,10 @@ class Revision(object):
         self.treeview.connect('row_activated', self._treeview_row_changed)
         self.treeview.connect('button_press_event', self._treeview_clicked)
 
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.treeview)
 
-        return _scrollwindow_
+        return _scrollwindow
 
     def _create_toolbar(self):
         """
@@ -1037,21 +1037,22 @@ class Revision(object):
         self -- the current instance of a REVISION class.
         """
 
-        _query_ = "SELECT fld_definition_id, fld_definition \
-                   FROM tbl_failure_definitions \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT fld_definition_id, fld_definition \
+                  FROM tbl_failure_definitions \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        try:
+            _n_defs = len(_results)
+        except TypeError:
+            _n_defs = 0
+            self._app.debug_log.error("revision.py: Failed to retrieve failure definition list for revision %d." % self.revision_id)
 
-        if _results_ == '' or _results_ is None or not _results_:
-            self._app.debug_log.error("revision.py: Failed to retrieve failure definition list.")
-            return True
-
-        _model_ = self.tvwFailureDefinitions.get_model()
-        _model_.clear()
-        for i in range(len(_results_)):
-            _model_.append(_results_[i])
+        _model = self.tvwFailureDefinitions.get_model()
+        _model.clear()
+        for i in range(_n_defs):
+            _model.append(_results[i])
 
         return False
 
@@ -1188,10 +1189,11 @@ class Revision(object):
         is activated.  It will save the previously selected row in the
         REVISION Object TreeView.
 
-        Keyword Arguments:
-        treeview -- the Revision Object gtk.TreeView.
-        __path   -- the actived row gtk.TreeView path.
-        __column -- the actived gtk.TreeViewColumn.
+        :param treeview: the Revision classt gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param string __path: the actived row gtk.TreeView() path.
+        :param __column: the actived gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
         """
 
         (_model_, _row_) = treeview.get_selection().get_selected()
@@ -1236,13 +1238,17 @@ class Revision(object):
             self._app.REQUIREMENT.save_requirement()
             self._app.REQUIREMENT.load_tree()
             self._app.FUNCTION.save_function()
+            self._app.FUNCTION.revision_id = self.revision_id
             self._app.FUNCTION.load_tree()
             self._app.HARDWARE.save_hardware()
+            self._app.HARDWARE.revision_id = self.revision_id
             self._app.HARDWARE.load_tree()
             self._app.SOFTWARE.software_save()
+            self._app.SOFTWARE.revision_id = self.revision_id
             self._app.SOFTWARE.load_tree()
-            self._app.VALIDATION.validation_save()
+            #self._app.VALIDATION.validation_save()
             self._app.VALIDATION.load_tree()
+            self._app.TESTING.revision_id = self.revision_id
             self._app.TESTING.load_tree()
             self._app.winParts.load_part_tree(_qryParts_)
             #self._app.winParts.load_test_tree(_qryTests_, values)

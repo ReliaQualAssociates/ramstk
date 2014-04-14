@@ -62,29 +62,39 @@ import configuration as _conf
 import utilities as _util
 
 
-def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
-                           AvgFEF=0.7, FixProb=False, FixMS=False,
-                           FixTTFF=False, FixTTT=False, FixMTBFI=False,
-                           FixMTBFG=False, FixGR=False):    #pylint: disable=C0103
+def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   #pylint: disable=C0103, R0913
+                           AvgFEF=0.7, FixProb=False, FixMS=False,              #pylint: disable=C0103
+                           FixTTFF=False, FixTTT=False, FixMTBFI=False,         #pylint: disable=C0103
+                           FixMTBFG=False, FixGR=False):                        #pylint: disable=C0103
     """
     Function to calculate the idealized growth curve for a reliability growth
-    progams.
+    program.
 
     :param float MTBFI: the starting MTBF.
     :param float MTBFF: the final MTBF.
     :param float TTT: the total time on test.  Summed across all phases.
     :param float AvgGR: the average growth rate for the program.
-    :param float t1: the growth start time.  The time the first fix is implemented.
-    :param float AvgMS: the average management strategy across the entire program.
+    :param float t1: the growth start time.  The time the first fix is
+                     implemented.
+    :param float AvgMS: the average management strategy across the entire
+                        program.
     :param float Prob: the probability of observing at least one failure.
-    :param float AvgFEF: the average fix effectiveness factor across the program.
-    :param boolean FixProb:
-    :param boolean FixMS:
-    :param boolean FixTTFF:
-    :param boolean FixTTT:
-    :param boolean FixMTBFI:
-    :param boolean FixMTBFG:
-    :param boolean FixGR:
+    :param float AvgFEF: the average fix effectiveness factor across the
+                         program.
+    :param boolean FixProb: indicates whether or not to fix the probability
+                            value.  Defaults to False.
+    :param boolean FixMS: indicates whether or not to fix the management
+                          strategy value.  Defaults to False.
+    :param boolean FixTTFF: indicates whether or not to fix the time to first
+                            failure value.  Defaults to False.
+    :param boolean FixTTT: indicates whether or not to fix the total test time
+                           value.  Defaults to False.
+    :param boolean FixMTBFI: indicates whether or not to fix the intial MTBF
+                             value.  Defaults to False.
+    :param boolean FixMTBFG: indicates whether or not to fix the goal MTBF
+                             value.  Defaults to False.
+    :param boolean FixGR: indicates whether or not to fix the growth rate
+                          value.  Defaults to False.
     """
 
     MTBFGP = MTBFI / (1.0 - AvgMS * AvgFEF)
@@ -95,7 +105,14 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             Prob = 1.0 - exp(-1.0 * (t1 * AvgMS / MTBFI))
         except(ValueError, ZeroDivisionError):
             Prob = 0.0
-            print "You must provide three of the four inputs: ti, MI, MS, Prob"
+            _util.application_error(_(u"To calculate the probability of "
+                                      u"observing a failure, you must provide "
+                                      u"the following inputs with values "
+                                      u"greater than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Initial MTBF (MI): %f"
+                                      u"3. Management strategy (MS): %f")
+                                    % (t1, MTBFI, AvgMS))
 
     # Calculate the management strategy.
     if not FixMS:
@@ -103,7 +120,15 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             AvgMS = log(1.0 - Prob) * MTBFI / (-1.0 * t1)
         except(ValueError, ZeroDivisionError):
             AvgMS = 0.0
-            print "You must provide three of the four inputs: ti, MI, MS, Prob"
+            _util.application_error(_(u"To calculate the required management"
+                                      u"strategy, you must provide the "
+                                      u"following inputs with values greater "
+                                      u"than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Initial MTBF (MI): %f"
+                                      u"3. Probability of observing a "
+                                      u"failure: %f")
+                                    % (t1, MTBFI, Prob))
 
     # Calculate the minimum length of the first test phase.
     if not FixTTFF:
@@ -111,7 +136,15 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             t1 = log(1.0 - Prob) * MTBFI / (-1.0 * AvgMS)
         except(ValueError, ZeroDivisionError):
             t1 = 0.0
-            print "You must provide three of the four inputs: ti, MI, MS, Prob"
+            _util.application_error(_(u"To calculate the growth start time, "
+                                      u"you must provide the following inputs "
+                                      u"with values greater than zero: "
+                                      u"1. Average management strategy "
+                                      u"(MS): %f"
+                                      u"2. Initial MTBF (MI): %f"
+                                      u"3. Probability of observing a "
+                                      u"failure: %f")
+                                    % (AvgMS, MTBFI, Prob))
 
     # Calculate total test time.
     if not FixTTT:
@@ -119,17 +152,43 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             TTT = exp(log(t1) + 1.0 / AvgGR * (log(MTBFF /MTBFI) + log(1.0 - AvgGR)))
         except(ValueError, ZeroDivisionError):
             TTT = 0.0
-            print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+            _util.application_error(_(u"To calculate the required test time "
+                                      u"for a test phse, you must provide the "
+                                      u"following inputs with values greater "
+                                      u"than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Initial MTBF (MI): %f"
+                                      u"3. Final phase MTBF (MF): %f "
+                                      u"4. Average growth rate (GR): %f")
+                                    % (t1, MTBFI, MTBFF, AvgGR))
 
     # Calculate initial MTBF.
     if not FixMTBFI:
         try:
             MTBFI = (-1.0 * t1 * AvgMS) / log(1.0 - Prob)
         except (ValueError, ZeroDivisionError):
+            _util.application_error(_(u"To calculate the minimum inital "
+                                      u"MTBF, you must provide the following "
+                                      u"inputs with values greater than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Average management strategy "
+                                      u"(MS): %f"
+                                      u"3. Probability of observing a "
+                                      u"failure: %f")
+                                      % (t1, AvgMS, Prob))
             try:
                 MTBFI = MTBFF / exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
             except (ValueError, ZeroDivisionError):
                 MTBFI = 0.0
+                _util.application_error(_(u"To calculate the minimum inital "
+                                          u"MTBF, you must provide the "
+                                          u"following inputs with values "
+                                          u"greater than zero: "
+                                          u"1. Growth start time (ti): %f"
+                                          u"2. Average growth rate (GR): %f"
+                                          u"3. Final MTBF (MF): %f"
+                                          u"4. Total test time (TTT): %f")
+                                          % (t1, AvgGR, MTBFF, TTT))
                 #try:
                 #    MTBFI = (t1 * (TTT / t1)**(1.0 - AvgGR)) / N
                 #except (ValueError, ZeroDivisionError):
@@ -141,7 +200,14 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             MTBFF = MTBFI * exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
         except(ValueError, ZeroDivisionError):
             MTBFF = 0.0
-            print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+            _util.application_error(_(u"To calculate the final phase MTBF, "
+                                      u"you must provide the following inputs "
+                                      u"with values greater than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Intial phase MTBF (MI): %f"
+                                      u"3. Total test time (TTT): %f"
+                                      u"4. Average growth rate (GR): %f")
+                                      % (t1, MTBFI, TTT, t1))
 
     # Calculate the growth rate.
     if not FixGR:
@@ -149,24 +215,35 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,
             AvgGR = -log(TTT / t1) - 1.0 + sqrt((1.0 + log(TTT / t1))**2.0 + 2.0 * log(MTBFF / MTBFI))
         except(ValueError, ZeroDivisionError):
             AvgGR = 0.0
-            print "You must provide four of the five inputs: GR, TI, ti, MI, MF"
+            _util.application_error(_(u"To calculate the minimum phase growth "
+                                      u"rate, you must provide the following "
+                                      u"inputs with values greater than zero: "
+                                      u"1. Growth start time (ti): %f"
+                                      u"2. Total test time (TTT): %f"
+                                      u"3. Initial MTBF (MI): %f"
+                                      u"4. Final MTBF (MF): %f")
+                                      % (t1, TTT, MTBFI, MTBFF))
 
     return(MTBFGP, Prob, AvgMS, t1, TTT, MTBFI, MTBFF, AvgGR)
 
 
-def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):
+def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):  #pylint: disable=C0103
     """
     Function to calculate the planning values for an individual reliability
     growth phase.
 
     Keyword Arguments:
-    model -- the gtk.TreeModel containing the RG phase information.
-    row   -- the selected gtk.Iter containning the specific RG phase
-             information.
-    MS    -- the management strategy for this program.
-    FEF   -- the average FEF for this program.
-    Prob  -- the probability of seeing one failure.
-    ti    -- the growth start time; time to first fix for this program.
+    :param model: the gtk.TreeModel() containing the RG phase information.
+    :type model: gtk.TreeModel
+    :param row: the selected gtk.Iter() containning the specific RG phase
+                information.
+    :type row: gtk.Iter
+    :param float MS: the management strategy for this program.
+    :param float FEF: the average FEF for this program.
+    :param float Prob: the probability of seeing one failure.
+    :param float ti: the growth start time; time to first fix for this program.
+    :return float GRi: the required growth rate for phase i.
+    :return float TTTi: the required test time for phase i.
     """
 
 # Read the RG phase-specific values.
@@ -219,25 +296,48 @@ def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):
     return(GRi, TTTi)
 
 
-def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,
+def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C0103
               _conf_=0.75, _T_star_=0.0):
     """
     Function to estimate the parameters (beta and alpha) of the NHPP power law
     model.
 
-    :param _F_: list of failure counts.
-    :param _X_: list of individual failures times.
-    :param _fitmeth_: method used to fit the data
-                      1=MLE
-                      2=regression (default)
-    :param _type_: the confidence level type
-                   1=lower one-sided
-                   2=upper one-sided
-                   3=two-sided (default)
-    :param _confmeth_: the method for calculating confidence bounds.
-    :param _conf_: the confidence level.
-    :param _T_star_: the end of the observation period for time terminated, or
-                     Type I, tests.
+    :param list F: list of failure counts.
+    :param list X: list of individual failures times.
+    :param integer confmeth: the method for calculating confidence bounds.
+    :param integer fitmeth: method used to fit the data
+                            1=MLE
+                            2=regression (default)
+    :param integer type: the confidence level type
+                         1=lower one-sided
+                         2=upper one-sided
+                         3=two-sided (default)
+    :param float conf: the confidence level.
+    :param float T_star: the end of the observation period for time terminated, or
+                         Type I, tests.
+    :return _power_law_: list of lists with one inner list per observation
+                         point.  The inner lists are comprised of:
+                         _T_
+                         _n_
+                         _M_
+                         _alpha_lower_: lower CL estimate of alpha parameter.
+                         _alpha_hat_: point estimate of alpha parameter.
+                         _alpha_upper_: upper CL estimate of alpha parameter.
+                         _b_lower_: lower CL estimate of beta parameter.
+                         _b_hat_: point estimate of beta parameter.
+                         _b_upper_: upper CL estimate of beta parameter.
+                         _mc_lower_
+                         _mc_hat_: point estimate of cumulative MTBF.
+                         _mc_upper_
+                         _mi_lower_
+                         _mi_hat_: point estimate of instantaneous MTBF.
+                         _mi_upper_
+                         _lc_lower_
+                         _lc_hat_: point estimate of cumulative failure rate.
+                         _lc_upper_
+                         _li_lower_
+                         _li_hat_: point estimate of instantaneous failure rate.
+                         _li_upper_
     """
 
     # Initialize local variables.
@@ -545,10 +645,10 @@ def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
     continous model using either the Option for Individual Failure Data
     (default) or the Option for Grouped Failure Data.
 
-    :param list _F_: list of failure counts.
-    :param list _X_: list of individual failures times.
-    :param float _I_: the grouping interval width.
-    :param boolean _grouped_: whether or not to use grouped data.
+    :param list F: list of failure counts.
+    :param list X: list of individual failures times.
+    :param float I: the grouping interval width.
+    :param boolean grouped: whether or not to use grouped data.
     """
 
     # Initialize local variables.

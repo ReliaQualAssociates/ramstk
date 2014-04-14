@@ -993,7 +993,7 @@ CREATE TABLE "tbl_validation_matrix" (
 
 CREATE TABLE "tbl_validation_status" (
     "fld_revision_id" INTEGER DEFAULT(0),
-    "fld_update_date" INTEGER DEFAULT(719163) NOT NULL PRIMARY KEY,
+    "fld_update_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL PRIMARY KEY,
     "fld_time_remaining" REAL DEFAULT(0),
     "fld_cost_remaining" REAL DEFAULT(0)
 );

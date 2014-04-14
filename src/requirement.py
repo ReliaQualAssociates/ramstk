@@ -958,38 +958,37 @@ class Requirement(object):
         """
 
         # Select everything from the requirements table.
-        _query_ = "SELECT * FROM tbl_requirements \
-                   WHERE fld_revision_id=%d \
-                   ORDER BY fld_requirement_id" % \
-                   self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_requirements \
+                  WHERE fld_revision_id=%d \
+                  ORDER BY fld_requirement_id" % \
+                  self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        try:
+            _n_requirements = len(_results)
+        except TypeError:
+            _n_requirements = 0
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            return True
-
-        _n_requirements_ = len(_results_)
-
-        _model_ = self.treeview.get_model()
-        _model_.clear()
-        for i in range(_n_requirements_):
-            if _results_[i][self._lst_col_order[7]] == '-':
-                _piter_ = None
+        _model = self.treeview.get_model()
+        _model.clear()
+        for i in range(_n_requirements):
+            if _results[i][self._lst_col_order[7]] == '-':
+                _piter = None
             else:
-                _piter_ = _model_.get_iter_from_string(
-                    _results_[i][self._lst_col_order[7]])
+                _piter = _model_.get_iter_from_string(
+                    _results[i][self._lst_col_order[7]])
 
-            _model_.append(_piter_, _results_[i])
+            _model.append(_piter, _results[i])
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
 
-        _root_ = _model_.get_iter_root()
-        if _root_ is not None:
-            _path_ = _model_.get_path(_root_)
-            _col_ = self.treeview.get_column(0)
-            self.treeview.row_activated(_path_, _col_)
+        _root = _model.get_iter_root()
+        if _root is not None:
+            _path = _model.get_path(_root)
+            _col = self.treeview.get_column(0)
+            self.treeview.row_activated(_path, _col)
 
         return False
 
@@ -1000,23 +999,23 @@ class Requirement(object):
 
         # Load the stakeholder gtk.CellRendererCombo with a list of
         # distinct stakeholders already entered into the database.
-        _query_ = "SELECT DISTINCT fld_stakeholder \
-                   FROM tbl_stakeholder_input \
-                   ORDER BY fld_stakeholder ASC"
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT DISTINCT fld_stakeholder \
+                  FROM tbl_stakeholder_input \
+                  ORDER BY fld_stakeholder ASC"
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
         try:
-            _n_stakeholders_ = len(_results_)
+            _n_stakeholders = len(_results)
         except TypeError:
-            _n_stakeholders_ = 0
+            _n_stakeholders = 0
 
-        _cell_ = self.tvwStakeholderInput.get_column(
+        _cell = self.tvwStakeholderInput.get_column(
             self._lst_stakeholder_col_order[1]).get_cell_renderers()
-        _model_ = _cell_[0].get_property('model')
-        _model_.clear()
-        for i in range(_n_stakeholders_):
-            _model_.append([_results_[i][0]])
+        _model = _cell[0].get_property('model')
+        _model.clear()
+        for i in range(_n_stakeholders):
+            _model.append([_results[i][0]])
 
         # Load the stakeholder gtk.CellRendererCombo with a list of distinct
         # affinity groups already entered into the database.
@@ -1040,44 +1039,46 @@ class Requirement(object):
 
         # Load the stakeholder gtk.CellRendererCombo with a list of existing
         # requirement codes in the database.
-        _query_ = "SELECT fld_requirement_code \
-                   FROM tbl_requirements"
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT fld_requirement_code \
+                   FROM tbl_requirements \
+                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
         try:
-            _n_requirements_ = len(_results_)
+            _n_requirements = len(_results)
         except TypeError:
-            _n_requirements_ = 0
+            _n_requirements = 0
 
-        _cell_ = self.tvwStakeholderInput.get_column(
+        _cell = self.tvwStakeholderInput.get_column(
             self._lst_stakeholder_col_order[9]).get_cell_renderers()
-        _model_ = _cell_[0].get_property('model')
-        _model_.clear()
-        for i in range(_n_requirements_):
-            _model_.append([_results_[i][0]])
+        _model = _cell[0].get_property('model')
+        _model.clear()
+        for i in range(_n_requirements):
+            _model.append([_results[i][0]])
 
         # Now load the Stakeholder Inputs gtk.TreeView.
-        _query_ = "SELECT fld_input_id, fld_stakeholder, fld_description, \
-                          fld_group, fld_priority, fld_customer_rank, \
-                          fld_planned_rank, fld_improvement, \
-                          fld_overall_weight, fld_requirement_code, \
-                          fld_user_float_1, fld_user_float_2, \
-                          fld_user_float_3, fld_user_float_4, \
-                          fld_user_float_5 \
-                   FROM tbl_stakeholder_input \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT fld_input_id, fld_stakeholder, fld_description, \
+                         fld_group, fld_priority, fld_customer_rank, \
+                         fld_planned_rank, fld_improvement, \
+                         fld_overall_weight, fld_requirement_code, \
+                         fld_user_float_1, fld_user_float_2, \
+                         fld_user_float_3, fld_user_float_4, \
+                         fld_user_float_5 \
+                  FROM tbl_stakeholder_input \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        try:
+            _n_inputs = len(_results)
+        except TypeError:
+            _n_inputs = 0
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            return True
-
-        _model_ = self.tvwStakeholderInput.get_model()
-        _model_.clear()
-        for i in range(len(_results_)):
-            _model_.append(None, _results_[i])
+        _model = self.tvwStakeholderInput.get_model()
+        _model.clear()
+        for i in range(_n_inputs):
+            _model.append(None, _results[i])
 
         return False
 
@@ -1494,9 +1495,9 @@ class Requirement(object):
 
             if _conf.RTK_MODULES[0] == 1:
                 _values_ = (self._app.REVISION.revision_id, _task_id_[0][0],
-                            _model_.get_value(_row_, 1))
+                            self.requirement_id)
             else:
-                _values_ = (0, _task_id_[0][0], _model_.get_value(_row_, 1))
+                _values_ = (0, _task_id_[0][0], self.requirement_id)
 
             _query_ = "INSERT INTO tbl_validation_matrix \
                        (fld_revision_id, fld_validation_id, \
@@ -1519,9 +1520,9 @@ class Requirement(object):
 
             if _conf.RTK_MODULES[0] == 1:
                 _values_ = (self._app.REVISION.revision_id, _task_id_,
-                            _model_.get_value(_row_, 1))
+                            self.requirement_id)
             else:
-                _values_ = (0, _task_id_, _model_.get_value(_row_, 1))
+                _values_ = (0, _task_id_, self.requirement_id)
 
             _query_ = "INSERT INTO tbl_validation_matrix \
                        (fld_revision_id, fld_validation_id, \
@@ -2008,14 +2009,15 @@ class Requirement(object):
         Called whenever the REQUIREMENT Object's Work Book notebook page is
         changed.
 
-        Keyword Arguments:
-        __notebook -- the Tree Book notebook widget.
-        __page     -- the newly selected page widget.
-        page_num   -- the newly selected page number.
-                      0 = Stakeholder Input
-                      1 = General Data
-                      2 = Analysis
-                      3 = V&V Tasks
+        :param __notebook: the REQUIREMENT class gtk.Notebook() widget.
+        :type __notebook: gtk.Notebook
+        :param __page: the newly selected page's child widget.
+        :type __page: gtk.Widget
+        :param integer page_num: the newly selected page number.
+                                 0 = Stakeholder Input
+                                 1 = General Data
+                                 2 = Analysis
+                                 3 = V & V Tasks
         """
 
         if page_num == 0:
@@ -2065,8 +2067,8 @@ class Requirement(object):
         """
         Method to reacte to the ASSEMBLY Object toolbar button clicked events.
 
-        Keyword Arguments:
-        button -- the gtk.ToolButton() that was pressed.
+        :param button: the gtk.ToolButton() that was pressed.
+        :type button: gtk.ToolButton
         """
 
         _page_ = self.notebook.get_current_page()

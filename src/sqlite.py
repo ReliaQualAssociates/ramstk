@@ -60,21 +60,20 @@ class SQLite3Interface:
         return(cnx)
 
     def execute_query(self, query, values, cnx, commit=False):
-
         """
         Executes a query on the SQLite database and returns the results.
 
-        Keyword Arguments:
-        query  -- the query to execute.
-        cnx    -- the connection to use when executing the query.
-        commit -- whether or not to commit the results.
-        values -- a typle containing the values to insert into the query.
+        :param string query: the query to execute.
+        :param tuple values: a typle containing the values to insert into the
+                             query.
+        :param cnx: the connection to use when executing the query.
+        :param boolean commit: whether or not to commit the results.
         """
-
+#TODO: Revise to eliminate the values parameter.
         cur = cnx.cursor()
 
         try:
-            if(values is None):
+            if values is None:
                 cur.execute(query)
             else:
                 cur.execute(query, values)
@@ -102,4 +101,4 @@ class SQLite3Interface:
 
         cur.close()
 
-        return(results)
+        return results
