@@ -100,14 +100,14 @@ class Rotary(Switch):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiCYC = _widg.make_entry(_width_=entry_width,
+        part.txtPiCYC = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtPiCYC, x_pos, y_pos)
         y_pos += 30
 
         # Create the piL Entry.  This value is stored in the pi_u field in the
         # program database.
-        part.txtPiL = _widg.make_entry(_width_=entry_width,
+        part.txtPiL = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiL, x_pos, y_pos)
 

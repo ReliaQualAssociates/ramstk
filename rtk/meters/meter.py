@@ -107,14 +107,14 @@ class ElapsedTime:
         layout.put(part.cmbType, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOperatingTemp = _widg.make_entry(_width_=entry_width)
+        part.txtOperatingTemp = _widg.make_entry(width=entry_width)
         part.txtOperatingTemp.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 105)
         layout.put(part.txtOperatingTemp, x_pos, y_pos)
         y_pos += 30
 
-        part.txtRatedTemp = _widg.make_entry(_width_=entry_width)
+        part.txtRatedTemp = _widg.make_entry(width=entry_width)
         part.txtRatedTemp.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 55)
@@ -163,19 +163,19 @@ class ElapsedTime:
 
         y_pos += 30
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
         # Create the piT Entry.  We store this value in the pi_sr field in the
         # program database.
-        part.txtPiT = _widg.make_entry(_width_=entry_width,
+        part.txtPiT = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiT, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
         y_pos += 30
@@ -461,7 +461,7 @@ class Panel:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -529,27 +529,27 @@ class Panel:
             layout.put(label, 5, (i * 30 + y_pos))
 
         y_pos += 30
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiF = _widg.make_entry(_width_=entry_width,
+        part.txtPiF = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiF, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
 

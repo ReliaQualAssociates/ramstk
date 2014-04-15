@@ -74,7 +74,7 @@ class Thumbwheel(Switch):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtActiveContacts = _widg.make_entry(_width_=entry_width)
+        part.txtActiveContacts = _widg.make_entry(width=entry_width)
         part.txtActiveContacts.connect("focus-out-event",
                                        self.entry_callback,
                                        part, "int", 57)
@@ -104,24 +104,24 @@ class Thumbwheel(Switch):
 
         # Create the piN Entry.  This value is stored in the pi_m field in the
         # program database.
-        part.txtPiN = _widg.make_entry(_width_=entry_width,
+        part.txtPiN = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiN, x_pos, y_pos)
         y_pos += 30
 
-        part.txtLambdaB2 = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB2 = _widg.make_entry(width=entry_width,
                                             editable=False, bold=True)
         layout.put(part.txtLambdaB2, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiCYC = _widg.make_entry(_width_=entry_width,
+        part.txtPiCYC = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtPiCYC, x_pos, y_pos)
         y_pos += 30
 
         # Create the piL Entry.  This value is stored in the pi_u field in the
         # program database.
-        part.txtPiL = _widg.make_entry(_width_=entry_width,
+        part.txtPiL = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiL, x_pos, y_pos)
 

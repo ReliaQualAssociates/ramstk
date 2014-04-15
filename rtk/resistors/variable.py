@@ -79,7 +79,7 @@ class VarWirewound(Resistor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtResistance = _widg.make_entry(_width_=entry_width)
+        part.txtResistance = _widg.make_entry(width=entry_width)
         part.txtResistance.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 95)
@@ -102,7 +102,7 @@ class VarWirewound(Resistor):
         layout.put(part.cmbSpecSheet, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -132,12 +132,12 @@ class VarWirewound(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -402,7 +402,7 @@ class VarWirewoundPower(Resistor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtResistance = _widg.make_entry(_width_=entry_width)
+        part.txtResistance = _widg.make_entry(width=entry_width)
         part.txtResistance.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 95)
@@ -418,7 +418,7 @@ class VarWirewoundPower(Resistor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -448,17 +448,17 @@ class VarWirewoundPower(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiC = _widg.make_entry(_width_=entry_width,
+        part.txtPiC = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -709,7 +709,7 @@ class WirewoundPrecision(Resistor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtResistance = _widg.make_entry(_width_=entry_width)
+        part.txtResistance = _widg.make_entry(width=entry_width)
         part.txtResistance.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 95)
@@ -734,7 +734,7 @@ class WirewoundPrecision(Resistor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -764,17 +764,17 @@ class WirewoundPrecision(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiC = _widg.make_entry(_width_=entry_width,
+        part.txtPiC = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -1030,7 +1030,7 @@ class WirewoundSemiPrecision(Resistor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtResistance = _widg.make_entry(_width_=entry_width)
+        part.txtResistance = _widg.make_entry(width=entry_width)
         part.txtResistance.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 95)
@@ -1046,7 +1046,7 @@ class WirewoundSemiPrecision(Resistor):
         layout.put(part.cmbSpecSheet, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -1076,12 +1076,12 @@ class WirewoundSemiPrecision(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -1338,7 +1338,7 @@ class NonWirewound(Resistor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtResistance = _widg.make_entry(_width_=entry_width)
+        part.txtResistance = _widg.make_entry(width=entry_width)
         part.txtResistance.connect("focus-out-event",
                                    self.entry_callback,
                                    part, 'float', 95)
@@ -1354,7 +1354,7 @@ class NonWirewound(Resistor):
         layout.put(part.cmbSpecSheet, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -1384,12 +1384,12 @@ class NonWirewound(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -1651,7 +1651,7 @@ class Composition(Resistor):
         layout.put(part.cmbSpecSheet, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -1682,12 +1682,12 @@ class Composition(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 
@@ -1954,7 +1954,7 @@ class VarFilm(Resistor):
         layout.put(part.cmbSpecSheet, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNTaps = _widg.make_entry(_width_=entry_width)
+        part.txtNTaps = _widg.make_entry(width=entry_width)
         part.txtNTaps.connect("focus-out-event",
                               self.entry_callback,
                               part, "float", 57)
@@ -1985,12 +1985,12 @@ class VarFilm(Resistor):
 
         # Create the Pi TAPS results entry.  We use the pi_u field
         # in the program database to the results.
-        part.txtPiTAPS = _widg.make_entry(_width_=entry_width,
+        part.txtPiTAPS = _widg.make_entry(width=entry_width,
                                           editable=False, bold=True)
         layout.put(part.txtPiTAPS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiV = _widg.make_entry(_width_=entry_width,
+        part.txtPiV = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiV, x_pos, y_pos)
 

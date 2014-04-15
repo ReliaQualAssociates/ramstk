@@ -317,7 +317,7 @@ class GaAsMMIC(IntegratedCircuit):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
 

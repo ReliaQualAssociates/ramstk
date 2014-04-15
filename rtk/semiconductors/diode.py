@@ -107,7 +107,7 @@ class LowFrequency(Semiconductor):
         y_pos += 30
 
         # Create the applied voltage entry.
-        part.txtVApplied = _widg.make_entry(_width_=entry_width)
+        part.txtVApplied = _widg.make_entry(width=entry_width)
         part.txtVApplied.connect("focus-out-event",
                                  self.entry_callback,
                                  part, "float", 66)
@@ -115,7 +115,7 @@ class LowFrequency(Semiconductor):
         y_pos += 30
 
         # Create the rated voltage entry.
-        part.txtVRated = _widg.make_entry(_width_=entry_width)
+        part.txtVRated = _widg.make_entry(width=entry_width)
         part.txtVRated.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 94)
@@ -142,12 +142,12 @@ class LowFrequency(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiS = _widg.make_entry(_width_=entry_width,
+        part.txtPiS = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiS, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiC = _widg.make_entry(_width_=entry_width,
+        part.txtPiC = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiC, x_pos, y_pos)
 
@@ -431,7 +431,7 @@ class HighFrequency(Semiconductor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPwrRated = _widg.make_entry(_width_=entry_width)
+        part.txtPwrRated = _widg.make_entry(width=entry_width)
         part.txtPwrRated.connect("focus-out-event",
                                  self.entry_callback,
                                  part, "float", 93)
@@ -458,12 +458,12 @@ class HighFrequency(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiR = _widg.make_entry(_width_=entry_width,
+        part.txtPiR = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiR, x_pos, y_pos)
 

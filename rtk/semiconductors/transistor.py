@@ -88,7 +88,7 @@ class LFBipolar(Semiconductor):
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPrated = _widg.make_entry(_width_=entry_width)
+        part.txtPrated = _widg.make_entry(width=entry_width)
         part.txtPrated.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 93)
@@ -96,7 +96,7 @@ class LFBipolar(Semiconductor):
         y_pos += 30
 
         # Create the applied CE voltage entry.
-        part.txtOpVolts = _widg.make_entry(_width_=entry_width)
+        part.txtOpVolts = _widg.make_entry(width=entry_width)
         part.txtOpVolts.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 66)
@@ -104,7 +104,7 @@ class LFBipolar(Semiconductor):
         y_pos += 30
 
         # Create the rated CE voltage entry.
-        part.txtRatedVolts = _widg.make_entry(_width_=entry_width)
+        part.txtRatedVolts = _widg.make_entry(width=entry_width)
         part.txtRatedVolts.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 94)
@@ -132,17 +132,17 @@ class LFBipolar(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiR = _widg.make_entry(_width_=entry_width,
+        part.txtPiR = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiR, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiS = _widg.make_entry(_width_=entry_width,
+        part.txtPiS = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiS, x_pos, y_pos)
 
@@ -428,7 +428,7 @@ class LFSiFET(Semiconductor):
         layout.put(part.cmbTechnology, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPrated = _widg.make_entry(_width_=entry_width)
+        part.txtPrated = _widg.make_entry(width=entry_width)
         part.txtPrated.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 93)
@@ -456,7 +456,7 @@ class LFSiFET(Semiconductor):
         entry_width = int((int(part.fmt) + 5) * 8)
 
         # Create the current rating correction factor results entry.
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
 
@@ -880,7 +880,7 @@ class HFLNBipolar(Semiconductor):
         entry_width = int((int(part.fmt) + 5) * 8)
 
         # Create the rated power entry.
-        part.txtPrated = _widg.make_entry(_width_=entry_width)
+        part.txtPrated = _widg.make_entry(width=entry_width)
         part.txtPrated.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 93)
@@ -888,7 +888,7 @@ class HFLNBipolar(Semiconductor):
         y_pos += 30
 
         # Create the applied CE voltage entry.
-        part.txtOpVolts = _widg.make_entry(_width_=entry_width)
+        part.txtOpVolts = _widg.make_entry(width=entry_width)
         part.txtOpVolts.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 66)
@@ -896,7 +896,7 @@ class HFLNBipolar(Semiconductor):
         y_pos += 30
 
         # Create the rated CE voltage entry.
-        part.txtRatedVolts = _widg.make_entry(_width_=entry_width)
+        part.txtRatedVolts = _widg.make_entry(width=entry_width)
         part.txtRatedVolts.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 94)
@@ -924,12 +924,12 @@ class HFLNBipolar(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiR = _widg.make_entry(_width_=entry_width,
+        part.txtPiR = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiR, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiS = _widg.make_entry(_width_=entry_width,
+        part.txtPiS = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiS, x_pos, y_pos)
 
@@ -1174,7 +1174,7 @@ class HFHPBipolar(Semiconductor):
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtDutyCycle = _widg.make_entry(_width_=entry_width)
+        part.txtDutyCycle = _widg.make_entry(width=entry_width)
         part.txtDutyCycle.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 19)
@@ -1190,7 +1190,7 @@ class HFHPBipolar(Semiconductor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOpVolts = _widg.make_entry(_width_=entry_width)
+        part.txtOpVolts = _widg.make_entry(width=entry_width)
         part.txtOpVolts.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 66)
@@ -1198,14 +1198,14 @@ class HFHPBipolar(Semiconductor):
         y_pos += 30
 
         # Create the breakdown voltage entry.
-        part.txtBDVolts = _widg.make_entry(_width_=entry_width)
+        part.txtBDVolts = _widg.make_entry(width=entry_width)
         part.txtBDVolts.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 94)
         layout.put(part.txtBDVolts, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOpFreq = _widg.make_entry(_width_=entry_width)
+        part.txtOpFreq = _widg.make_entry(width=entry_width)
         part.txtOpFreq.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 63)
@@ -1244,12 +1244,12 @@ class HFHPBipolar(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiM = _widg.make_entry(_width_=entry_width,
+        part.txtPiM = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiM, x_pos, y_pos)
 
@@ -1535,7 +1535,7 @@ class HFGaAsFET(Semiconductor):
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOpFreq = _widg.make_entry(_width_=entry_width)
+        part.txtOpFreq = _widg.make_entry(width=entry_width)
         part.txtOpFreq.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 63)
@@ -1574,12 +1574,12 @@ class HFGaAsFET(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiM = _widg.make_entry(_width_=entry_width,
+        part.txtPiM = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiM, x_pos, y_pos)
 

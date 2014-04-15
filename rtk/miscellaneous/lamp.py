@@ -115,7 +115,7 @@ class Lamp:
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtVoltage = _widg.make_entry(_width_=entry_width)
+        part.txtVoltage = _widg.make_entry(width=entry_width)
         part.txtVoltage.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 94)
@@ -162,22 +162,22 @@ class Lamp:
             layout.put(label, 5, (i * 30 + y_pos))
 
         y_pos += 30
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiU = _widg.make_entry(_width_=entry_width,
+        part.txtPiU = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiU, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
 

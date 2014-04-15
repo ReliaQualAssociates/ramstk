@@ -361,7 +361,7 @@ class Display(Semiconductor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNumSegments = _widg.make_entry(_width_=entry_width)
+        part.txtNumSegments = _widg.make_entry(width=entry_width)
         part.txtNumSegments.connect("focus-out-event",
                                     self.entry_callback,
                                     part, "float", 58)
@@ -594,7 +594,7 @@ class LaserDiode(Semiconductor):
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtDutyCycle = _widg.make_entry(_width_=entry_width)
+        part.txtDutyCycle = _widg.make_entry(width=entry_width)
         layout.put(part.txtDutyCycle, x_pos, y_pos)
         y_pos += 30
         part.txtDutyCycle.connect("focus-out-event",
@@ -610,7 +610,7 @@ class LaserDiode(Semiconductor):
         layout.put(part.cmbConstruction, x_pos, y_pos)
         y_pos += 30
 
-        part.txtFwdCurrent = _widg.make_entry(_width_=entry_width)
+        part.txtFwdCurrent = _widg.make_entry(width=entry_width)
         part.txtFwdCurrent.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 62)
@@ -619,7 +619,7 @@ class LaserDiode(Semiconductor):
 
         # Create the rated optical power entry.  We store these results
         # in the operating_freq field in the program database.
-        part.txtRatedOptPwr = _widg.make_entry(_width_=entry_width)
+        part.txtRatedOptPwr = _widg.make_entry(width=entry_width)
         part.txtRatedOptPwr.connect("focus-out-event",
                                     self.entry_callback,
                                     part, "float", 63)
@@ -627,7 +627,7 @@ class LaserDiode(Semiconductor):
         y_pos += 30
 
         # Create the required optical power entry.
-        part.txtRqdOptPwr = _widg.make_entry(_width_=entry_width)
+        part.txtRqdOptPwr = _widg.make_entry(width=entry_width)
         part.txtRqdOptPwr.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 93)
@@ -655,17 +655,17 @@ class LaserDiode(Semiconductor):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiI = _widg.make_entry(_width_=entry_width,
+        part.txtPiI = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiI, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiA = _widg.make_entry(_width_=entry_width,
+        part.txtPiA = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiA, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiP = _widg.make_entry(_width_=entry_width,
+        part.txtPiP = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiP, x_pos, y_pos)
 

@@ -150,7 +150,7 @@ class Mechanical:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 35
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -177,21 +177,21 @@ class Mechanical:
         layout.put(part.cmbLoad, x_pos, y_pos)
         y_pos += 35
 
-        part.txtRatedCurrent = _widg.make_entry(_width_=entry_width)
+        part.txtRatedCurrent = _widg.make_entry(width=entry_width)
         part.txtRatedCurrent.connect("focus-out-event",
                                      self.entry_callback,
                                      part, "float", 92)
         layout.put(part.txtRatedCurrent, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOperCurrent = _widg.make_entry(_width_=entry_width)
+        part.txtOperCurrent = _widg.make_entry(width=entry_width)
         part.txtOperCurrent.connect("focus-out-event",
                                     self.entry_callback,
                                     part, "float", 62)
         layout.put(part.txtOperCurrent, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCycleRate = _widg.make_entry(_width_=entry_width)
+        part.txtCycleRate = _widg.make_entry(width=entry_width)
         part.txtCycleRate.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 19)
@@ -285,39 +285,39 @@ class Mechanical:
         #layout.put(part.txtTJunc, 155, 335)
         #part.txtTJunc.set_text(str(part._calc_data[39]))
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
         # Create the Pi L results entry.  We store this in the pi_m field
         # in the program database.
-        part.txtPiL = _widg.make_entry(_width_=entry_width,
+        part.txtPiL = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiL, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiC = _widg.make_entry(_width_=entry_width,
+        part.txtPiC = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiCYC = _widg.make_entry(_width_=entry_width,
+        part.txtPiCYC = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtPiCYC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiF = _widg.make_entry(_width_=entry_width,
+        part.txtPiF = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiF, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
 
@@ -966,7 +966,7 @@ class SolidState:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -1037,17 +1037,17 @@ class SolidState:
         #layout.put(part.txtTJunc, 155, y_pos)
         #y_pos += 30
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
 

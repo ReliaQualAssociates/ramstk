@@ -416,36 +416,36 @@ def make_entry(width=200, height=25, editable=True, bold=False,
 def make_label(text, width=190, height=25, bold=True, wrap=False,
                justify=gtk.JUSTIFY_LEFT):
     """
-    Utility function to create gtk.Label widgets.
+    Utility function to create gtk.Label() widgets.
 
-    Keyword Arguments:
-    text    -- the text to display in the gtk.Label widget.
-    width   -- width of the gtk.Label widget.  Default is 190.
-    height  -- height of the gtk.Label widget.  Default is 25.
-    bold    -- boolean indicating whether text should be bold.  Defaults
-               to True.
-    wrap    -- boolean indicating whether the label should be multi-line or
-               not.
-    justify -- the justification type when the label wraps and contains more
-               than one line.
+    :param string text: the text to display in the gtk.Label() widget.
+    :param integer width: width of the gtk.Label() widget.  Default is 190.
+    :param integer height: height of the gtk.Label() widget.  Default is 25.
+    :param boolean bold: boolean indicating whether text should be bold.
+                         Defaults to True.
+    :param boolean wrap: boolean indicating whether the label text should wrap
+                         or not.  Default to False.
+    :param boolean justify: the justification type when the label wraps and
+                            contains more than one line.
+    :rtype: gtk.Label
     """
 
-    label = gtk.Label()
-    label.set_markup("<span>" + text + "</span>")
-    label.set_line_wrap(wrap)
-    label.set_justify(justify)
-    label.set_alignment(xalign=0.05, yalign=0.5)
-    label.props.width_request = width
-    label.props.height_request = height
+    _label = gtk.Label()
+    _label.set_markup("<span>" + text + "</span>")
+    _label.set_line_wrap(wrap)
+    _label.set_justify(justify)
+    _label.set_alignment(xalign=0.05, yalign=0.5)
+    _label.props.width_request = width
+    _label.props.height_request = height
 
     if not bold:
-        label.modify_font(pango.FontDescription('normal'))
+        _label.modify_font(pango.FontDescription('normal'))
     else:
-        label.modify_font(pango.FontDescription('bold'))
+        _label.modify_font(pango.FontDescription('bold'))
 
-    label.show()
+    _label.show()
 
-    return(label)
+    return(_label)
 
 
 def make_labels(text, container, x_pos, y_pos, y_inc=25):
@@ -458,48 +458,55 @@ def make_labels(text, container, x_pos, y_pos, y_inc=25):
     indicating the placement of each label that is used to place the
     corresponding widget.
 
-    Keyword Arguments:
-    text      -- a list containing the text for each label.
-    container -- the container widget to place the labels on.
-    x_pos     -- the x position in the container for the left edge of all
-                 labels.
-    y_pos     -- the y position in the container of the first label.
-    y_inc     -- the amount to increment the y_pos between each label.
+    :param list text: a list containing the text for each label.
+    :param container: the container widget to place the labels in.
+    :param integer x_pos: the x position in the container for the left edge of
+                          all labels.
+    :param integer y_pos: the y position in the container of the first label.
+    :param integer y_inc: the amount to increment the y_pos between each label.
+    :return integer _int_max_x: the width of the label with the longest text.
+    :return list _lst_y_pos: a list of the y position for each label in the
+                             container.  Use this list to place gtk.Entry(),
+                             gtk.ComboBox(), etc. so they line up with their
+                             associated label.
     """
 
     _int_max_x_ = 0
     _lst_y_pos_ = []
     for i in range(len(text)):
-        label = make_label(text[i], width=-1, height=-1, wrap=True)
-        _int_max_x_ = max(_int_max_x_, label.size_request()[0])
-        container.put(label, x_pos, y_pos)
+        _label = make_label(text[i], width=-1, height=-1, wrap=True)
+        _int_max_x_ = max(_int_max_x_, _label.size_request()[0])
+        container.put(_label, x_pos, y_pos)
         _lst_y_pos_.append(y_pos)
-        y_pos += max(label.size_request()[1], y_inc) + 5
+        y_pos += max(_label.size_request()[1], y_inc) + 5
 
     return(_int_max_x_, _lst_y_pos_)
 
 
-def make_text_view(buffer_=None, width=200, height=100):
+def make_text_view(buffer=None, width=200, height=100):
     """
-    Utility function to create gtk.TextView widgets.
+    Utility function to create gtk.TextView() widgets encapsulated
+    within a gtkScrolledWindow() widget.
 
-    Keyword Arguments:
-    buffer_ -- the TextBuffer to associate with the gtk.TextView.  Default is
-               None.
-    width   -- width of the gtk.TextView widget.  Default is 200.
-    height  -- height of the gtk.TextView widget.  Default is 100.
+    :param buffer: the gtk.TextBuffer() to associate with the gtk.TextView().
+                   Default is None.
+    :type buffer: gtk.TextBuffer
+    :param integer width: width of the gtk.TextView() widget.  Default is 200.
+    :param integer height: height of the gtk.TextView() widget.
+                           Default is 100.
+    :rtype: gtk.ScrolledWindow
     """
 
-    view = gtk.TextView(buffer=buffer_)
-    view.set_wrap_mode(gtk.WRAP_WORD)
+    _view = gtk.TextView(buffer=buffer_)
+    _view.set_wrap_mode(gtk.WRAP_WORD)
 
-    scrollwindow = gtk.ScrolledWindow()
-    scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    scrollwindow.props.width_request = width
-    scrollwindow.props.height_request = height
-    scrollwindow.add_with_viewport(view)
+    _scrollwindow = gtk.ScrolledWindow()
+    _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+    _scrollwindow.props.width_request = width
+    _scrollwindow.props.height_request = height
+    _scrollwindow.add_with_viewport(_view)
 
-    return(scrollwindow)
+    return(_scrollwindow)
 
 
 def make_frame(_label_=""):

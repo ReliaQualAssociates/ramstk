@@ -157,7 +157,7 @@ class FilterIncident:
 # status, criticality, and age of the incident.
         self.cmbCriteriaID = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaID, self._criteria2)
-        self.txtFilterID = _widg.make_entry(_width_=100)
+        self.txtFilterID = _widg.make_entry(width=100)
         self.txtFilterID.set_tooltip_text(_(u"Sets the incident ID filter "
                                             u"criterion."))
 
@@ -210,7 +210,7 @@ class FilterIncident:
 
         self.cmbCriteriaAge = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaAge, self._criteria2)
-        self.txtFilterAge = _widg.make_entry(_width_=100)
+        self.txtFilterAge = _widg.make_entry(width=100)
         self.txtFilterAge.set_tooltip_text(_("Sets the incident age filter criterion."))
 
         self.cmbCriteriaLifeCycle = _widg.make_combo(width=100)
@@ -292,27 +292,27 @@ class FilterIncident:
 # long description, remarks, and analysis of the incident.
         self.cmbCriteriaShortDesc = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaShortDesc, self._criteria1)
-        self.txtFilterShortDesc = _widg.make_entry(_width_=100)
+        self.txtFilterShortDesc = _widg.make_entry(width=100)
         self.txtFilterShortDesc.set_tooltip_text(_(u"Sets the field incident "
                                                    u"short description filter "
                                                    u"criterion."))
 
         self.cmbCriteriaLongDesc = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaLongDesc, self._criteria1)
-        self.txtFilterLongDesc = _widg.make_entry(_width_=100)
+        self.txtFilterLongDesc = _widg.make_entry(width=100)
         self.txtFilterLongDesc.set_tooltip_text(_(u"Sets the incident long "
                                                   u"description filter "
                                                   u"criterion."))
 
         self.cmbCriteriaRemarks = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaRemarks, self._criteria1)
-        self.txtFilterRemarks = _widg.make_entry(_width_=100)
+        self.txtFilterRemarks = _widg.make_entry(width=100)
         self.txtFilterRemarks.set_tooltip_text(_(u"Sets the incident closure "
                                                  u"remarks filter criterion."))
 
         self.cmbCriteriaAnalysis = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaAnalysis, self._criteria1)
-        self.txtFilterAnalysis = _widg.make_entry(_width_=100)
+        self.txtFilterAnalysis = _widg.make_entry(width=100)
         self.txtFilterAnalysis.set_tooltip_text(_(u"Sets the incident "
                                                   u"analysis filter "
                                                   u"criterion."))
@@ -353,13 +353,13 @@ class FilterIncident:
 # that discovered the problem reported in the incident.
         self.cmbCriteriaTest = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaTest, self._criteria1)
-        self.txtFilterTest = _widg.make_entry(_width_=100)
+        self.txtFilterTest = _widg.make_entry(width=100)
         self.txtFilterTest.set_tooltip_text(_(u"Sets the incident test filter "
                                               u"criterion."))
 
         self.cmbCriteriaTestCase = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaTestCase, self._criteria1)
-        self.txtFilterTestCase = _widg.make_entry(_width_=100)
+        self.txtFilterTestCase = _widg.make_entry(width=100)
         self.txtFilterTestCase.set_tooltip_text(_(u"Sets the incident test "
                                                   u"case filter criterion."))
 
@@ -404,7 +404,7 @@ class FilterIncident:
 
         self.cmbCriteriaRequestDate = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaRequestDate, self._criteria2)
-        self.txtFilterRequestDate = _widg.make_entry(_width_=100)
+        self.txtFilterRequestDate = _widg.make_entry(width=100)
         self.txtFilterRequestDate.set_tooltip_text(_("Sets the incident "
                                                      "requested date filter "
                                                      "criterion."))
@@ -419,7 +419,7 @@ class FilterIncident:
 
         self.cmbCriteriaReviewDate = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaReviewDate, self._criteria2)
-        self.txtFilterReviewDate = _widg.make_entry(_width_=100)
+        self.txtFilterReviewDate = _widg.make_entry(width=100)
         self.txtFilterReviewDate.set_tooltip_text(_(u"Sets the incident "
                                                     u"reviewed date filter "
                                                     u"criterion."))
@@ -434,7 +434,7 @@ class FilterIncident:
 
         self.cmbCriteriaApproveDate = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaApproveDate, self._criteria2)
-        self.txtFilterApproveDate = _widg.make_entry(_width_=100)
+        self.txtFilterApproveDate = _widg.make_entry(width=100)
         self.txtFilterApproveDate.set_tooltip_text(_(u"Sets the incident "
                                                      u"approved date filter "
                                                      u"criterion."))
@@ -448,7 +448,7 @@ class FilterIncident:
 
         self.cmbCriteriaCloseDate = _widg.make_combo(width=100)
         _widg.load_combo(self.cmbCriteriaCloseDate, self._criteria2)
-        self.txtFilterCloseDate = _widg.make_entry(_width_=100)
+        self.txtFilterCloseDate = _widg.make_entry(width=100)
         self.txtFilterCloseDate.set_tooltip_text(_(u"Sets the incident closed "
                                                    u"date filter criterion."))
 

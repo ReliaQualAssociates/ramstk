@@ -181,7 +181,7 @@ class AddRevision(object):
         _label = _widg.make_label(_(u"Remarks:"))
         self.txtRemarks = gtk.TextBuffer()
         self.fxdPageSetValues.put(_label, 5, 65)
-        _textview_ = _widg.make_text_view(buffer_=self.txtRemarks,
+        _textview_ = _widg.make_text_view(buffer=self.txtRemarks,
                                           width=300, height=100)
         self.fxdPageSetValues.put(_textview_, 200, 65)
 
@@ -587,7 +587,7 @@ class AddIncident:
         self.fxdPageSWGeneral = gtk.Fixed()
         _text_ = _("Incident Date*:")
         label = _widg.make_label(_text_)
-        self.txtIncidentDate = _widg.make_entry(_width_=100)
+        self.txtIncidentDate = _widg.make_entry(width=100)
         self.txtIncidentDate.set_tooltip_text(_("Enter the date the incident occurred."))
         self.txtIncidentDate.connect('focus_out_event', self._check_ready, 2)
         self.fxdPageSWGeneral.put(label, x_pos, y_pos)
@@ -639,7 +639,7 @@ class AddIncident:
 
         _text_ = _("Description*:")
         label = _widg.make_label(_text_)
-        self.txtDescription = _widg.make_entry(_width_=795)
+        self.txtDescription = _widg.make_entry(width=795)
         self.txtDescription.set_tooltip_text(_("Enter a brief description of the incident being reported."))
         self.txtDescription.connect('focus_out_event', self._check_ready, 2)
         self.fxdPageSWGeneral.put(label, 5, y_pos)
@@ -651,7 +651,7 @@ class AddIncident:
         label = _widg.make_label(_text_)
         self.txtDetails = gtk.TextBuffer()
         self.txtDetails.connect('changed', self._check_ready, None, 2)
-        textview = _widg.make_text_view(buffer_=self.txtDetails, width=795)
+        textview = _widg.make_text_view(buffer=self.txtDetails, width=795)
         textview.set_tooltip_text(_("Describe in detail the incident being reported."))
         self.fxdPageSWGeneral.put(label, 5, y_pos)
         y_pos += 30
@@ -685,7 +685,7 @@ class AddIncident:
         _text_ = _("Remarks:")
         label = _widg.make_label(_text_)
         self.txtRemarks = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer_=self.txtRemarks, width=795)
+        textview = _widg.make_text_view(buffer=self.txtRemarks, width=795)
         textview.set_tooltip_text(_("Enter any remarks related to the incident being reported."))
         self.fxdPageSWGeneral.put(label, 5, y_pos)
         y_pos += 30
@@ -729,7 +729,7 @@ class AddIncident:
         _text_ = _("Effect:")
         label = _widg.make_label(_text_)
         self.txtEffect = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer_=self.txtEffect, width=795)
+        textview = _widg.make_text_view(buffer=self.txtEffect, width=795)
         textview.set_tooltip_text(_("Describe the effect on the system or user of the incident being reported."))
         self.fxdPageSWTest.put(label, 5, y_pos)
         y_pos += 30
@@ -739,7 +739,7 @@ class AddIncident:
         _text_ = _("Recommended Solution:")
         label = _widg.make_label(_text_)
         self.txtSolution = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer_=self.txtSolution, width=795)
+        textview = _widg.make_text_view(buffer=self.txtSolution, width=795)
         textview.set_tooltip_text(_("Describe any recommended solution for the incident being reported."))
         self.fxdPageSWTest.put(label, 5, y_pos)
         y_pos += 30
@@ -1025,11 +1025,11 @@ class AddTestPlan:
         fixed.put(self.cmbTestType, 160, 40)
 
 # Create the gtk.Entry that allow free-form user input.
-        self.txtName = _widg.make_entry(_width_=400)
+        self.txtName = _widg.make_entry(width=400)
         self.txtName.set_tooltip_text(_(u"Enter a brief description or title for the test."))
 
         self.txtDescription = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer_=self.txtDescription,
+        textview = _widg.make_text_view(buffer=self.txtDescription,
                                         width=555)
         textview.set_tooltip_text(_(u"Enter a detailed description of the test."))
 
@@ -1056,10 +1056,10 @@ class AddTestPlan:
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
-        self.txtMTBFI = _widg.make_entry(_width_=50)
-        self.txtMTBFG = _widg.make_entry(_width_=50)
-        self.txtMTBFGP = _widg.make_entry(_width_=50)
-        self.txtTechReq = _widg.make_entry(_width_=50)
+        self.txtMTBFI = _widg.make_entry(width=50)
+        self.txtMTBFG = _widg.make_entry(width=50)
+        self.txtMTBFGP = _widg.make_entry(width=50)
+        self.txtTechReq = _widg.make_entry(width=50)
 
         label = _widg.make_label(self._rg_labels[0], 250, 25)
         fixed.put(label, 5, 5)
@@ -1235,7 +1235,7 @@ class AddRGRecord(gtk.Assistant):
         frame.add(fixed)
 
 # Create the gtk.Combo that allow one of multiple selections.
-        self.txtDate = _widg.make_entry(_width_=100)
+        self.txtDate = _widg.make_entry(width=100)
         self.txtDate.set_tooltip_text(_(u"Date test record was generated.  This is not necessarily the date the record is being added."))
         self.btnDate = _widg.make_button(height=25,
                                          width=25,

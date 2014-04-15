@@ -706,7 +706,7 @@ class Testing(object):
             self.txtName.connect('focus-out-event',
                                  self._callback_entry, 'text', 3)
 
-            _textview_ = _widg.make_text_view(buffer_=self.txtDescription,
+            _textview_ = _widg.make_text_view(buffer=self.txtDescription,
                                               width=555)
             _textview_.set_tooltip_text(_(u"Detailed description of the "
                                           u"selected test."))
@@ -723,7 +723,7 @@ class Testing(object):
 
             _label = _widg.make_label(_(u"Attachments:"), 150, 25)
             _fixed.put(_label, 5, _y_pos[3] + 135)
-            _textview = _widg.make_text_view(buffer_=self.txtAttachment,
+            _textview = _widg.make_text_view(buffer=self.txtAttachment,
                                              width=555)
             _textview.set_tooltip_text(_(u"Displays the URLs to any "
                                          u"attached documents associated "

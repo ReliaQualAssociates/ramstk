@@ -371,7 +371,7 @@ class FilmNetwork(Resistor):
         entry_width = int((int(part.fmt) + 5) * 8)
 
         # Create the number of resistors in the network entry.
-        part.txtNumber = _widg.make_entry(_width_=entry_width)
+        part.txtNumber = _widg.make_entry(width=entry_width)
         part.txtNumber.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 58)
@@ -401,7 +401,7 @@ class FilmNetwork(Resistor):
 
         # Create the pi NR results entry.  This is the same value as the
         # number of elements in the program database.
-        part.txtPiNR = _widg.make_entry(_width_=entry_width,
+        part.txtPiNR = _widg.make_entry(width=entry_width,
                                         editable=False, bold=True)
         layout.put(part.txtPiNR, x_pos, y_pos)
 

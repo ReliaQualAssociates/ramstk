@@ -120,17 +120,17 @@ class Breaker(Switch):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiC = _widg.make_entry(_width_=entry_width,
+        part.txtPiC = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiU = _widg.make_entry(_width_=entry_width,
+        part.txtPiU = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiU, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
 

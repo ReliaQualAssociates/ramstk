@@ -111,7 +111,7 @@ class IntegratedCircuit:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -143,14 +143,14 @@ class IntegratedCircuit:
         layout.put(part.cmbPackage, x_pos, y_pos)
         y_pos += 30
 
-        part.txtNumPins = _widg.make_entry(_width_=entry_width)
+        part.txtNumPins = _widg.make_entry(width=entry_width)
         part.txtNumPins.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "int", 60)
         layout.put(part.txtNumPins, x_pos, y_pos)
         y_pos += 30
 
-        part.txtYears = _widg.make_entry(_width_=entry_width)
+        part.txtYears = _widg.make_entry(width=entry_width)
         part.txtYears.connect("focus-out-event",
                               self.entry_callback,
                               part, "int", 112)
@@ -218,43 +218,43 @@ class IntegratedCircuit:
 
             layout.put(label, 5, (i * 30 + y_pos))
 
-        part.txtTRise = _widg.make_entry(_width_=entry_width,
+        part.txtTRise = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtTRise, x_pos, y_pos)
         y_pos += 30
 
-        part.txtTJunc = _widg.make_entry(_width_=entry_width,
+        part.txtTJunc = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtTJunc, x_pos, y_pos)
         y_pos += 60                         # Increment by 60 to make room to
                                             # display reliability formula.
 
-        part.txtC1 = _widg.make_entry(_width_=entry_width,
+        part.txtC1 = _widg.make_entry(width=entry_width,
                                       editable=False, bold=True)
         layout.put(part.txtC1, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiT = _widg.make_entry(_width_=entry_width,
+        part.txtPiT = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiT, x_pos, y_pos)
         y_pos += 30
 
-        part.txtC2 = _widg.make_entry(_width_=entry_width,
+        part.txtC2 = _widg.make_entry(width=entry_width,
                                       editable=False, bold=True)
         layout.put(part.txtC2, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiL = _widg.make_entry(_width_=entry_width,
+        part.txtPiL = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiL, x_pos, y_pos)
         y_pos += 30

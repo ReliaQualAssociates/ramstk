@@ -107,7 +107,7 @@ class VLSI(IntegratedCircuit):
         y_pos += 30
 
         # Create the Die Area text entry.
-        part.txtArea = _widg.make_entry(_width_=entry_width)
+        part.txtArea = _widg.make_entry(width=entry_width)
         part.txtArea.connect("focus-out-event",
                              self.entry_callback,
                              part, "float", 21)
@@ -115,7 +115,7 @@ class VLSI(IntegratedCircuit):
         y_pos += 30
 
         # Create the ESD Susceptibility text entry.
-        part.txtESD = _widg.make_entry(_width_=entry_width)
+        part.txtESD = _widg.make_entry(width=entry_width)
         part.txtESD.connect("focus-out-event",
                             self.entry_callback,
                             part, "float", 25)
@@ -123,7 +123,7 @@ class VLSI(IntegratedCircuit):
         y_pos += 30
 
         # Create the Die Feature Size text entry.
-        part.txtFeature = _widg.make_entry(_width_=entry_width)
+        part.txtFeature = _widg.make_entry(width=entry_width)
         part.txtFeature.connect("focus-out-event",
                                 self.entry_callback,
                                 part, "float", 29)
@@ -151,27 +151,27 @@ class VLSI(IntegratedCircuit):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiCD = _widg.make_entry(_width_=entry_width,
+        part.txtPiCD = _widg.make_entry(width=entry_width,
                                         editable=False, bold=True)
         layout.put(part.txtPiCD, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiMFG = _widg.make_entry(_width_=entry_width,
+        part.txtPiMFG = _widg.make_entry(width=entry_width,
                                         editable=False, bold=True)
         layout.put(part.txtPiMFG, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiPT = _widg.make_entry(_width_=entry_width,
+        part.txtPiPT = _widg.make_entry(width=entry_width,
                                         editable=False, bold=True)
         layout.put(part.txtPiPT, x_pos, y_pos)
         y_pos += 30
 
-        part.txtLambdaBP = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaBP = _widg.make_entry(width=entry_width,
                                             editable=False, bold=True)
         layout.put(part.txtLambdaBP, x_pos, y_pos)
         y_pos += 30
 
-        part.txtLambdaEOS = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaEOS = _widg.make_entry(width=entry_width,
                                              editable=False, bold=True)
         layout.put(part.txtLambdaEOS, x_pos, y_pos)
 

@@ -450,7 +450,7 @@ class Incident:
         fixed.put(label, 5, y_pos)
         y_pos += 30
 
-        textview = _widg.make_text_view(buffer_=self.txtLongDescription,
+        textview = _widg.make_text_view(buffer=self.txtLongDescription,
                                         width=550, height=200)
         fixed.put(textview, 5, y_pos)
         y_pos += 205
@@ -460,7 +460,7 @@ class Incident:
         fixed.put(label, 5, y_pos)
         y_pos += 30
 
-        textview = _widg.make_text_view(buffer_=self.txtRemarks,
+        textview = _widg.make_text_view(buffer=self.txtRemarks,
                                         width=550, height=200)
         fixed.put(textview, 5, y_pos)
 
@@ -630,7 +630,7 @@ class Incident:
 
         vbox.pack_start(fixed, expand=False)
 
-        textview = _widg.make_text_view(buffer_=self.txtAnalysis,
+        textview = _widg.make_text_view(buffer=self.txtAnalysis,
                                         width=550, height=200)
 
         scrollwindow = gtk.ScrolledWindow()

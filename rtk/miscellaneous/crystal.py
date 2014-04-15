@@ -102,14 +102,14 @@ class Crystal:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
         layout.put(part.txtCommercialPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtFrequency = _widg.make_entry(_width_=entry_width)
+        part.txtFrequency = _widg.make_entry(width=entry_width)
         part.txtFrequency.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 63)
@@ -153,17 +153,17 @@ class Crystal:
             layout.put(label, 5, (i * 30 + y_pos))
 
         y_pos += 30
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
 

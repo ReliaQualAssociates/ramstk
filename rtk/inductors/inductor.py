@@ -94,7 +94,7 @@ class Inductor:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.set_name("TRANSIENT")
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
@@ -112,7 +112,7 @@ class Inductor:
         layout.put(part.cmbInsulation, x_pos, y_pos)
         y_pos += 30
 
-        part.txtOperPwr = _widg.make_entry(_width_=entry_width)
+        part.txtOperPwr = _widg.make_entry(width=entry_width)
         part.txtOperPwr.set_name("TRANSIENT")
         part.txtOperPwr.connect("focus-out-event",
                                 self.entry_callback,
@@ -122,7 +122,7 @@ class Inductor:
 
         # Create the input power entry.  We store this in the rated power
         # field in the program database.
-        part.txtInputPwr = _widg.make_entry(_width_=entry_width)
+        part.txtInputPwr = _widg.make_entry(width=entry_width)
         part.txtInputPwr.set_name("TRANSIENT")
         part.txtInputPwr.connect("focus-out-event",
                                  self.entry_callback,
@@ -132,7 +132,7 @@ class Inductor:
 
         # Create the transformer surface area entry.  We store this in the
         # L1 field in the program database.
-        part.txtArea = _widg.make_entry(_width_=entry_width)
+        part.txtArea = _widg.make_entry(width=entry_width)
         part.txtArea.set_name("TRANSIENT")
         part.txtArea.connect("focus-out-event",
                              self.entry_callback,
@@ -142,7 +142,7 @@ class Inductor:
 
         # Create the transformer weight entry.  We store this in the L2 field
         # in the program database.
-        part.txtWeight = _widg.make_entry(_width_=entry_width)
+        part.txtWeight = _widg.make_entry(width=entry_width)
         part.txtWeight.set_name("TRANSIENT")
         part.txtWeight.connect("focus-out-event",
                                self.entry_callback,
@@ -191,32 +191,32 @@ class Inductor:
             label.set_name("TRANSIENT")
             layout.put(label, 5, (i * 30 + y_pos))
 
-        part.txtTRise = _widg.make_entry(_width_=entry_width,
+        part.txtTRise = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         part.txtTRise.set_name("TRANSIENT")
         layout.put(part.txtTRise, x_pos, y_pos)
         y_pos += 30
 
-        part.txtTJunc = _widg.make_entry(_width_=entry_width,
+        part.txtTJunc = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         part.txtTJunc.set_name("TRANSIENT")
         layout.put(part.txtTJunc, x_pos, y_pos)
         y_pos += 60                         # Increment by 60 to make room to
                                             # display reliability formula.
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         part.txtLambdaB.set_name("TRANSIENT")
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         part.txtPiQ.set_name("TRANSIENT")
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         part.txtPiE.set_name("TRANSIENT")
         layout.put(part.txtPiE, x_pos, y_pos)

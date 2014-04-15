@@ -86,7 +86,7 @@ class Switch:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -102,21 +102,21 @@ class Switch:
         layout.put(part.cmbApplication, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCycleRate = _widg.make_entry(_width_=entry_width)
+        part.txtCycleRate = _widg.make_entry(width=entry_width)
         part.txtCycleRate.connect("focus-out-event",
                                   self.entry_callback,
                                   part, "float", 19)
         layout.put(part.txtCycleRate, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCurrentRated = _widg.make_entry(_width_=entry_width)
+        part.txtCurrentRated = _widg.make_entry(width=entry_width)
         part.txtCurrentRated.connect("focus-out-event",
                                      self.entry_callback,
                                      part, "float", 92)
         layout.put(part.txtCurrentRated, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCurrentOper = _widg.make_entry(_width_=entry_width)
+        part.txtCurrentOper = _widg.make_entry(width=entry_width)
         part.txtCurrentOper.connect("focus-out-event",
                                     self.entry_callback,
                                     part, "float", 62)
@@ -164,12 +164,12 @@ class Switch:
 
         y_pos += 30
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
         y_pos += 30

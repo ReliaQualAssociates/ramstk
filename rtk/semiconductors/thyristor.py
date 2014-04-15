@@ -73,7 +73,7 @@ class Thyristor(Semiconductor):
         entry_width = int((int(part.fmt) + 5) * 8)
 
         # Create the rated forward current entry.
-        part.txtFwdCurrent = _widg.make_entry(_width_=entry_width)
+        part.txtFwdCurrent = _widg.make_entry(width=entry_width)
         part.txtFwdCurrent.connect("focus-out-event",
                                    self.entry_callback,
                                    part, "float", 62)
@@ -81,7 +81,7 @@ class Thyristor(Semiconductor):
         y_pos += 30
 
         # Create the applied voltage entry.
-        part.txtVApplied = _widg.make_entry(_width_=entry_width)
+        part.txtVApplied = _widg.make_entry(width=entry_width)
         part.txtVApplied.connect("focus-out-event",
                                  self.entry_callback,
                                  part, "float", 66)
@@ -89,7 +89,7 @@ class Thyristor(Semiconductor):
         y_pos += 30
 
         # Create the rated voltage entry.
-        part.txtVRated = _widg.make_entry(_width_=entry_width)
+        part.txtVRated = _widg.make_entry(width=entry_width)
         part.txtVRated.connect("focus-out-event",
                                self.entry_callback,
                                part, "float", 94)
@@ -116,13 +116,13 @@ class Thyristor(Semiconductor):
         entry_width = int((int(part.fmt) + 5) * 8)
 
         # Create the current rating correction factor results entry.
-        part.txtPiR = _widg.make_entry(_width_=entry_width,
+        part.txtPiR = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiR, x_pos, y_pos)
         y_pos += 30
 
         # Create the voltage stress correction factor results entry.
-        part.txtPiS = _widg.make_entry(_width_=entry_width,
+        part.txtPiS = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiS, x_pos, y_pos)
 

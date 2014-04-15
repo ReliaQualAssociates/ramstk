@@ -72,7 +72,7 @@ class Sensitive(Switch):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtActiveContacts = _widg.make_entry(_width_=entry_width)
+        part.txtActiveContacts = _widg.make_entry(width=entry_width)
         part.txtActiveContacts.connect("focus-out-event",
                                        self.entry_callback,
                                        part, "int", 57)
@@ -81,7 +81,7 @@ class Sensitive(Switch):
 
         # Create the Actuation Differential Entry.  This is stored in the
         # K1 field in the program database.
-        part.txtActuationDiff = _widg.make_entry(_width_=entry_width)
+        part.txtActuationDiff = _widg.make_entry(width=entry_width)
         part.txtActuationDiff.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 40)
@@ -109,14 +109,14 @@ class Sensitive(Switch):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiCYC = _widg.make_entry(_width_=entry_width,
+        part.txtPiCYC = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtPiCYC, x_pos, y_pos)
         y_pos += 30
 
         # Create the piL Entry.  This value is stored in the pi_u field in the
         # program database.
-        part.txtPiL = _widg.make_entry(_width_=entry_width,
+        part.txtPiL = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiL, x_pos, y_pos)
 

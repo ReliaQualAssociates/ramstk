@@ -382,12 +382,12 @@ class MemoryEEPROM(IntegratedCircuit):
 
         entry_width = int((int(part.fmt) + 5) * 8)
 
-        part.txtPiECC = _widg.make_entry(_width_=entry_width,
+        part.txtPiECC = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtPiECC, x_pos, y_pos)
         y_pos += 30
 
-        part.txtlambdaCYC = _widg.make_entry(_width_=entry_width,
+        part.txtlambdaCYC = _widg.make_entry(width=entry_width,
                                              editable=False, bold=True)
         layout.put(part.txtlambdaCYC, x_pos, y_pos)
 

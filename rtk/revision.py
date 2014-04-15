@@ -317,8 +317,9 @@ class Revision(object):
             self.txtPartCount.set_tooltip_text(_("Displays the total part count for the selected revision."))
             _fxdGeneralData_.put(self.txtPartCount, _x_pos_, _y_pos_[5])
 
-            textview = _widg.make_text_view(buffer_=self.txtRemarks, width=400)
-            textview.set_tooltip_text(_(u"Enter any remarks associated with the selected revision."))
+            textview = _widg.make_text_view(buffer=self.txtRemarks, width=400)
+            textview.set_tooltip_text(_(u"Enter any remarks associated with "
+                                        u"the selected revision."))
             _view_ = textview.get_children()[0].get_children()[0]
             _view_.connect('focus-out-event', self._callback_entry, 20)
             _fxdGeneralData_.put(textview, _x_pos_, _y_pos_[6])
@@ -332,7 +333,8 @@ class Revision(object):
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
             _label_.show_all()
-            _label_.set_tooltip_text(_(u"Displays general information for the selected revision."))
+            _label_.set_tooltip_text(_(u"Displays general information for the "
+                                       u"selected revision."))
             notebook.insert_page(_fraGeneralData_,
                                  tab_label=_label_,
                                  position=-1)

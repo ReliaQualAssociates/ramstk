@@ -90,7 +90,7 @@ class Resistor:
         layout.put(part.cmbQuality, x_pos, y_pos)
         y_pos += 30
 
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
+        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
         part.txtCommercialPiQ.connect("focus-out-event",
                                       self.entry_callback,
                                       part, "float", 79)
@@ -106,7 +106,7 @@ class Resistor:
         layout.put(part.cmbRRange, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPwrRated = _widg.make_entry(_width_=entry_width)
+        part.txtPwrRated = _widg.make_entry(width=entry_width)
         part.txtPwrRated.connect("focus-out-event",
                                  self.entry_callback,
                                  part, "float", 93)
@@ -152,32 +152,32 @@ class Resistor:
                 label = _widg.make_label(self._out_labels[i])
             layout.put(label, 5, (i * 30 + y_pos))
 
-        part.txtTRise = _widg.make_entry(_width_=entry_width,
+        part.txtTRise = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtTRise, x_pos, y_pos)
         y_pos += 30
 
-        part.txtTJunc = _widg.make_entry(_width_=entry_width,
+        part.txtTJunc = _widg.make_entry(width=entry_width,
                                          editable=False, bold=True)
         layout.put(part.txtTJunc, x_pos, y_pos)
         y_pos += 60
 
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
+        part.txtLambdaB = _widg.make_entry(width=entry_width,
                                            editable=False, bold=True)
         layout.put(part.txtLambdaB, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiQ = _widg.make_entry(_width_=entry_width,
+        part.txtPiQ = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiQ, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
+        part.txtPiE = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiE, x_pos, y_pos)
         y_pos += 30
 
-        part.txtPiR = _widg.make_entry(_width_=entry_width,
+        part.txtPiR = _widg.make_entry(width=entry_width,
                                        editable=False, bold=True)
         layout.put(part.txtPiR, x_pos, y_pos)
         y_pos += 30
