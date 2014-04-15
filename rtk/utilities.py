@@ -781,7 +781,8 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     :type _paranet_: gtk.Window
     """
 
-    dialog = _widg.make_dialog(_(u"RTK Error"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = _widg.make_dialog(_(u"RTK Error"),
+                               dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
     hbox = gtk.HBox()
 
@@ -1456,7 +1457,8 @@ def date_select(widget, entry=None):
 
     from datetime import date, datetime
 
-    dialog = _widg.make_dialog(_(u"Select Date"), _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = _widg.make_dialog(_(u"Select Date"),
+                               dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
     calendar = gtk.Calendar()
     dialog.vbox.pack_start(calendar)

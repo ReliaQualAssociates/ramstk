@@ -5517,11 +5517,11 @@ class Hardware(object):
                     _title_ = _(u"RTK Information")
 
                     dialog = _widg.make_dialog(_title_,
-                                               _flags_=(
+                                               dlgflags=(
                                                    gtk.DIALOG_MODAL |
                                                    gtk.DIALOG_DESTROY_WITH_PARENT),
-                                               _buttons_=(gtk.STOCK_OK,
-                                                          gtk.RESPONSE_ACCEPT))
+                                               dlgbuttons=(gtk.STOCK_OK,
+                                                        gtk.RESPONSE_ACCEPT))
 
                     _text_ = _(u"%s model not yet implemented.  Contact "
                                u"andrew.rowland@reliaqual.com if you would "

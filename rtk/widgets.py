@@ -345,33 +345,33 @@ def load_combo(combo, list, simple=True, _index_=0):
     return False
 
 
-def make_dialog(_title_, _parent_=None,
-                _flags_=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
-                _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+def make_dialog(dlgtitle, dlgparent=None,
+                dlgflags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
+                dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                            gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
     """
     Utility function to create gtk.Dialog widgets.
 
-    Keyword Arguments:
-    _title_   -- the title text for the gtk.Dialog.
-    _parent_  -- the parent window to associate the gtk.Dialog with.  Defaults
+    :param string dlgtitle: the title text for the gtk.Dialog.
+    :param dlgparent: the parent window to associate the gtk.Dialog with.  Defaults
                  to None.
-    _flags_   -- the flags that control the operation of the gtk.Dialog.
+    :type dlgparent:
+    :param tuple dlgflags: the flags that control the operation of the gtk.Dialog.
                  Defaults to gtk.DIALOG_MODAL and
                  gtk.DIALOG_DESTROY_WITH_PARENT.
-    _buttons_ -- the buttons to display and their response values.  Defaults to
+    :param tuple dlgbuttons: the buttons to display and their response values.  Defaults to
                  gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT and
                  gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT.
     """
 
-    dialog = gtk.Dialog(title=_title_,
-                        parent=_parent_,
-                        flags=_flags_,
-                        buttons=_buttons_)
+    _dialog = gtk.Dialog(title=dlgtitle,
+                         parent=dlgparent,
+                         flags=dlgflags,
+                         buttons=dlgbuttons)
 
-    dialog.set_has_separator(True)
+    _dialog.set_has_separator(True)
 
-    return(dialog)
+    return(_dialog)
 
 
 def make_entry(width=200, _height_=25,

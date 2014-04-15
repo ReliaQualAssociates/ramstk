@@ -3397,7 +3397,7 @@ class Dataset:
 
             if(_text_ == 7):                # WeiBayes
                 dialog = _widg.make_dialog(_(u"RTK Information"),
-                            _buttons_=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+                            dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
                 fixed = gtk.Fixed()
 
