@@ -706,7 +706,7 @@ class Testing(object):
             self.txtName.connect('focus-out-event',
                                  self._callback_entry, 'text', 3)
 
-            _textview_ = _widg.make_text_view(buffer=self.txtDescription,
+            _textview_ = _widg.make_text_view(txvbuffer=self.txtDescription,
                                               width=555)
             _textview_.set_tooltip_text(_(u"Detailed description of the "
                                           u"selected test."))
@@ -723,7 +723,7 @@ class Testing(object):
 
             _label = _widg.make_label(_(u"Attachments:"), 150, 25)
             _fixed.put(_label, 5, _y_pos[3] + 135)
-            _textview = _widg.make_text_view(buffer=self.txtAttachment,
+            _textview = _widg.make_text_view(txvbuffer=self.txtAttachment,
                                              width=555)
             _textview.set_tooltip_text(_(u"Displays the URLs to any "
                                          u"attached documents associated "
@@ -775,7 +775,7 @@ class Testing(object):
             self.btnFindTTFF.set_tooltip_text(_(u"Launches the time to first "
                                                 u"fix calculator."))
             self.fxdRGPlan.put(self.btnFindTTFF, _x_pos + 125, _y_pos[7])
-            self.btnFindTTFF.connect('released', self._mttff_calculator)
+            self.btnFindTTFF.connect('released', _mttff_calculator)
 
             self.txtMTBFI.set_tooltip_text(_(u"The initial MTBF for the "
                                              u"selected reliability growth "
@@ -1263,8 +1263,8 @@ class Testing(object):
                     _datatype = (i, 'gfloat')
                 else:
                     _datatype = (i, 'gint')
-                _column.set_celldata_func(_cell, _widg.format_cell,
-                                          (i, _datatype))
+                _column.set_cell_data_func(_cell, _widg.format_cell,
+                                           (i, _datatype))
                 _column.connect('notify::width', _widg.resize_wrap, _cell)
 
                 self.tvwTestAssessment.append_column(_column)

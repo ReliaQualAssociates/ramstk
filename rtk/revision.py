@@ -123,8 +123,8 @@ class Revision(object):
 
         # Usage profile tab widgets.
         self.btnAddMission = _widg.make_button(width=40, image='add')
-        self.btnRemoveMission = _widg.make_button(width_=40, image='remove')
-        self.btnAddPhase = _widg.make_button(width_=40, image='add')
+        self.btnRemoveMission = _widg.make_button(width=40, image='remove')
+        self.btnAddPhase = _widg.make_button(width=40, image='add')
         self.btnRemovePhase = _widg.make_button(width=40, image='remove')
         self.btnAddEnvironment = _widg.make_button(width=40, image='add')
         self.btnRemoveEnvironment = _widg.make_button(width=40,
@@ -317,7 +317,7 @@ class Revision(object):
             self.txtPartCount.set_tooltip_text(_("Displays the total part count for the selected revision."))
             _fxdGeneralData_.put(self.txtPartCount, _x_pos_, _y_pos_[5])
 
-            textview = _widg.make_text_view(buffer=self.txtRemarks, width=400)
+            textview = _widg.make_text_view(txvbuffer=self.txtRemarks, width=400)
             textview.set_tooltip_text(_(u"Enter any remarks associated with "
                                         u"the selected revision."))
             _view_ = textview.get_children()[0].get_children()[0]

@@ -181,7 +181,7 @@ class AddRevision(object):
         _label = _widg.make_label(_(u"Remarks:"))
         self.txtRemarks = gtk.TextBuffer()
         self.fxdPageSetValues.put(_label, 5, 65)
-        _textview_ = _widg.make_text_view(buffer=self.txtRemarks,
+        _textview_ = _widg.make_text_view(txvbuffer=self.txtRemarks,
                                           width=300, height=100)
         self.fxdPageSetValues.put(_textview_, 200, 65)
 
@@ -651,7 +651,7 @@ class AddIncident:
         label = _widg.make_label(_text_)
         self.txtDetails = gtk.TextBuffer()
         self.txtDetails.connect('changed', self._check_ready, None, 2)
-        textview = _widg.make_text_view(buffer=self.txtDetails, width=795)
+        textview = _widg.make_text_view(txvbuffer=self.txtDetails, width=795)
         textview.set_tooltip_text(_("Describe in detail the incident being reported."))
         self.fxdPageSWGeneral.put(label, 5, y_pos)
         y_pos += 30
@@ -685,7 +685,7 @@ class AddIncident:
         _text_ = _("Remarks:")
         label = _widg.make_label(_text_)
         self.txtRemarks = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer=self.txtRemarks, width=795)
+        textview = _widg.make_text_view(txvbuffer=self.txtRemarks, width=795)
         textview.set_tooltip_text(_("Enter any remarks related to the incident being reported."))
         self.fxdPageSWGeneral.put(label, 5, y_pos)
         y_pos += 30
@@ -729,7 +729,7 @@ class AddIncident:
         _text_ = _("Effect:")
         label = _widg.make_label(_text_)
         self.txtEffect = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer=self.txtEffect, width=795)
+        textview = _widg.make_text_view(txvbuffer=self.txtEffect, width=795)
         textview.set_tooltip_text(_("Describe the effect on the system or user of the incident being reported."))
         self.fxdPageSWTest.put(label, 5, y_pos)
         y_pos += 30
@@ -739,7 +739,7 @@ class AddIncident:
         _text_ = _("Recommended Solution:")
         label = _widg.make_label(_text_)
         self.txtSolution = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer=self.txtSolution, width=795)
+        textview = _widg.make_text_view(txvbuffer=self.txtSolution, width=795)
         textview.set_tooltip_text(_("Describe any recommended solution for the incident being reported."))
         self.fxdPageSWTest.put(label, 5, y_pos)
         y_pos += 30
@@ -1029,7 +1029,7 @@ class AddTestPlan:
         self.txtName.set_tooltip_text(_(u"Enter a brief description or title for the test."))
 
         self.txtDescription = gtk.TextBuffer()
-        textview = _widg.make_text_view(buffer=self.txtDescription,
+        textview = _widg.make_text_view(txvbuffer=self.txtDescription,
                                         width=555)
         textview.set_tooltip_text(_(u"Enter a detailed description of the test."))
 

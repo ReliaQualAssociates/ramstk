@@ -481,11 +481,11 @@ class Hardware(object):
                                                btnlabel=_labels[5])
         self.optEO = _widg.make_option_button(btngroup=self.optHS,
                                               btnlabel=_labels[6])
-        self.txtFCQ1 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFCQ1 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                             width=400, height=75)
-        self.txtFCQ2 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFCQ2 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                             width=400, height=75)
-        self.txtFCQ3 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFCQ3 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                             width=400, height=75)
 
         # Create the widgets to display the failure mechanism/cause details.
@@ -539,13 +539,13 @@ class Hardware(object):
         self.chkSSI = _widg.make_check_button(label=_labels[4])
         self.chkFSI = _widg.make_check_button(label=_labels[5])
 
-        self.txtFSIQ1 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFSIQ1 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                              width=400, height=75)
-        self.txtFSIQ2 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFSIQ2 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                              width=400, height=75)
-        self.txtFSIQ3 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFSIQ3 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                              width=400, height=75)
-        self.txtFSIQ4 = _widg.make_text_view(buffer=gtk.TextBuffer(),
+        self.txtFSIQ4 = _widg.make_text_view(txvbuffer=gtk.TextBuffer(),
                                              width=400, height=75)
 
         # Put it all together.
@@ -2509,7 +2509,7 @@ class Hardware(object):
             self.fxdCalcResultsQuad4.put(self.chkOverstressed, _x_pos_ + 360,
                                          _y_pos2_[0])
 
-            _textview_ = _widg.make_text_view(buffer=self.txtOSReason,
+            _textview_ = _widg.make_text_view(txvbuffer=self.txtOSReason,
                                               width=250)
             _textview_.set_tooltip_text(_(u"The reason(s) the selected "
                                           u"component is overstressed."))
@@ -2556,7 +2556,7 @@ class Hardware(object):
             _scrollwindow_.add_with_viewport(self.tvwFMECA)
 
             _frame_ = _widg.make_frame(
-                _label_=_(u"Failure Mode, Effects, and Criticality Analysis"))
+                label=_(u"Failure Mode, Effects, and Criticality Analysis"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 

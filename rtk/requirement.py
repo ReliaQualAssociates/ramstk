@@ -462,7 +462,7 @@ class Requirement(object):
 
             label = _widg.make_label(_labels_[1], 150, 25)
             _fxdGeneralData.put(label, 5, 35)
-            textview = _widg.make_text_view(buffer=self.txtRequirement,
+            textview = _widg.make_text_view(txvbuffer=self.txtRequirement,
                                             width=400)
             textview.set_tooltip_text(_(u"Detailed description of the "
                                         u"requirement."))

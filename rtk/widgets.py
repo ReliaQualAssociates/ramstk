@@ -245,7 +245,7 @@ def make_button(height=40, width=200, label="", image='default'):
     _button = gtk.Button(label=label)
 
     if image is not None:
-        if _width >= 32:
+        if width >= 32:
             _file_image = _conf.ICON_DIR + '32x32/' + image + '.png'
         else:
             _file_image = _conf.ICON_DIR + '16x16/' + image + '.png'
@@ -483,7 +483,7 @@ def make_labels(text, container, x_pos, y_pos, y_inc=25):
     return(_int_max_x_, _lst_y_pos_)
 
 
-def make_text_view(buffer=None, width=200, height=100):
+def make_text_view(txvbuffer=None, width=200, height=100):
     """
     Utility function to create gtk.TextView() widgets encapsulated
     within a gtkScrolledWindow() widget.
@@ -497,7 +497,7 @@ def make_text_view(buffer=None, width=200, height=100):
     :rtype: gtk.ScrolledWindow
     """
 
-    _view = gtk.TextView(buffer=buffer_)
+    _view = gtk.TextView(buffer=txvbuffer)
     _view.set_wrap_mode(gtk.WRAP_WORD)
 
     _scrollwindow = gtk.ScrolledWindow()
@@ -541,18 +541,21 @@ def make_fixed():
 
 def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     """
-    Utility function to create gtk.TreeView widgets.
+    Utility function to create gtk.TreeView() widgets.
 
-    Keyword Arguments:
-    name    -- the name of the gtk.TreeView to read formatting information for.
-    fmt_idx -- the index of the format file to use when creating the
-               gtk.TreeView.
-    _app    -- the RTK application.
-    _list   -- the list of items to load into the gtk.CellRendererCombo.
-    bg_col  -- the background color to use for each row.  Defaults to white.
-    fg_col  -- the foreground (text) color to use for each row.  Defaults to
-               black.
-    @rtype : gtk.TreeView()
+    :param string name: the name of the gtk.TreeView() to read formatting
+                        information for.
+    :param integer fmt_idx: the index of the format file to use when creating
+                            the gtk.TreeView().
+    :param app: the RTK application.
+    :param list list: the list of items to load into the
+                      gtk.CellRendererCombo().
+    :param string bg_col: the background color to use for each row.  Defaults
+                          to white.
+    :param string fg_col: the foreground (text) color to use for each row.
+                          Defaults to black.
+    :rtype: gtk.TreeView
+    :rtype: list
     """
 
     from lxml import etree
