@@ -290,8 +290,8 @@ class Hardware(object):
         # Allocation page widgets.
         self.chkApplyResults = _widg.make_check_button(_(u"Apply results to "
                                                          u"hardware"))
-        self.cmbAllocationType = _widg.make_combo(_width_=125)
-        self.cmbRqmtType = _widg.make_combo(_width_=125)
+        self.cmbAllocationType = _widg.make_combo(width=125)
+        self.cmbRqmtType = _widg.make_combo(width=125)
         self.hbxAllocation = gtk.HBox()
         self.lblAllocation = gtk.Label()
         self.tvwAllocation = gtk.TreeView()

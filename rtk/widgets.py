@@ -285,37 +285,35 @@ def make_option_button(btngroup=None, btnlabel=_(u"")):
     return(_optbutton)
 
 
-def make_combo(_width_=200, _height_=30, simple=True):
+def make_combo(width=200, height=30, simple=True):
     """
     Utility function to create gtk.ComboBox widgets.
 
-    Keyword Arguments:
-    _width_  -- width of the gtk.ComboBox widget.  Default is 200.
-    _height_ -- height of the gtk.ComboBox widget.  Default is 30.
-    _simple_ -- boolean indicating whether to create a simple text
-                gtk.ComboBox.  Defaults to True.
+    :param integer width: width of the gtk.ComboBox() widget.  Default is 200.
+    :param integer height: height of the gtk.ComboBox widget.  Default is 30.
+    :param boolean simple: boolean indicating whether to create a simple text
+                           gtk.ComboBox().  Defaults to True.
     """
 
     if simple:
-        #_combo_ = gtk.combo_box_new_text()
-        _list_ = gtk.ListStore(gobject.TYPE_STRING)
-        _combo_ = gtk.ComboBox(_list_)
-        _cell_ = gtk.CellRendererText()
-        _combo_.pack_start(_cell_, True)
-        _combo_.set_attributes(_cell_, text=0)
+        _list = gtk.ListStore(gobject.TYPE_STRING)
+        _combo = gtk.ComboBox(_list)
+        _cell = gtk.CellRendererText()
+        _combo.pack_start(_cell, True)
+        _combo.set_attributes(_cell, text=0)
     else:
-        _list_ = gtk.TreeStore(gobject.TYPE_STRING,
-                               gobject.TYPE_STRING,
-                               gobject.TYPE_STRING)
-        _combo_ = gtk.ComboBox(_list_)
-        _cell_ = gtk.CellRendererText()
-        _combo_.pack_start(_cell_, True)
-        _combo_.set_attributes(_cell_, text=0)
+        _list = gtk.TreeStore(gobject.TYPE_STRING,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_STRING)
+        _combo = gtk.ComboBox(_list)
+        _cell = gtk.CellRendererText()
+        _combo.pack_start(_cell, True)
+        _combo.set_attributes(_cell, text=0)
 
-    _combo_.props.width_request = _width_
-    _combo_.props.height_request = _height_
+    _combo.props.width_request = width
+    _combo.props.height_request = height
 
-    return(_combo_)
+    return(_combo)
 
 
 def load_combo(combo, _list_, simple=True, _index_=0):
