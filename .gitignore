@@ -5,6 +5,7 @@
 *.out
 .Rhistory
 *.swp
+*.idea
 
 # Python specific files to ignore
 *.pyc
