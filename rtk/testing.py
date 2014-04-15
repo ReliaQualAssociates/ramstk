@@ -287,10 +287,14 @@ class Testing(object):
         self.fraPlanDetails = _widg.make_frame(_label_=_(u""))
 
         # Widgets for reliability growth tests.
-        self.btnFindMTBFI = _widg.make_button(_height_=25, _width_=25,
-                                              _label_=u"...", _image_=None)
-        self.btnFindTTFF = _widg.make_button(_height_=25, _width_=25,
-                                             _label_=u"...", _image_=None)
+        self.btnFindMTBFI = _widg.make_button(height=25,
+                                              width=25,
+                                              label=u"...",
+                                              image=None)
+        self.btnFindTTFF = _widg.make_button(height=25,
+                                             width=25,
+                                             label=u"...",
+                                             image=None)
 
         self.chkFixMTBFI = _widg.make_check_button()
         self.chkFixMTBFG = _widg.make_check_button()
@@ -327,36 +331,36 @@ class Testing(object):
         width = (self._app.winWorkBook.width * 0.01) / 2.0
 
         # Widgets for reliability growth test feasibility.
-        self.chkMIMGP = _widg.make_check_button(_label_=_(u"Acceptable "
-                                                          u"MTBF<sub>I</sub> "
-                                                          u"/ MTBF<sub>GP"
-                                                          u"</sub>."))
+        self.chkMIMGP = _widg.make_check_button(label=_(u"Acceptable "
+                                                        u"MTBF<sub>I</sub> "
+                                                        u"/ MTBF<sub>GP"
+                                                        u"</sub>."))
         self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the "
                                          u"initial MTBF to mature MTBF ratio "
                                          u"is within reasonable limits."))
         self.lblMIMGP = _widg.make_label("", width=150)
 
-        self.chkFEF = _widg.make_check_button(_label_=_(u"Acceptable average "
-                                                        u"fix effectiveness "
-                                                        u"factor (FEF)."))
+        self.chkFEF = _widg.make_check_button(label=_(u"Acceptable average "
+                                                      u"fix effectiveness "
+                                                      u"factor (FEF)."))
         self.chkFEF.set_tooltip_text(_(u"Indicates whether or not the average "
                                        u"fix effectiveness factor (FEF) is "
                                        u"within reasonable limits."))
         self.lblFEF = _widg.make_label("", width=150)
 
-        self.chkMGMGP = _widg.make_check_button(_label_=_(u"Acceptable "
-                                                          u"MTBF<sub>G</sub> "
-                                                          u"/ MTBF<sub>GP"
-                                                          u"</sub>."))
+        self.chkMGMGP = _widg.make_check_button(label=_(u"Acceptable "
+                                                        u"MTBF<sub>G</sub> "
+                                                        u"/ MTBF<sub>GP"
+                                                        u"</sub>."))
         self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the goal "
                                          u"MTBF to mature MTBF ratio is "
                                          u"within reasonable limits."))
         self.lblMGMGP = _widg.make_label("", width=150)
 
-        self.chkTRMG = _widg.make_check_button(_label_=_(u"Acceptable "
-                                                         u"MTBF<sub>G</sub> "
-                                                         u"/ MTBF<sub>I"
-                                                         u"</sub>."))
+        self.chkTRMG = _widg.make_check_button(label=_(u"Acceptable "
+                                                       u"MTBF<sub>G</sub> "
+                                                       u"/ MTBF<sub>I"
+                                                       u"</sub>."))
         self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the goal "
                                         u"MTBF to initial MTBF ratio is "
                                         u"within reasonable limits."))

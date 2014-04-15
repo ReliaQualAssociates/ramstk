@@ -411,19 +411,19 @@ class FilterIncident:
         self.cmbCriteriaCloseBy = _widg.make_combo(_width_=100)
         _widg.load_combo(self.cmbCriteriaCloseBy, self._criteria3)
         self.cmbFilterCloseBy = _widg.make_combo(_width_=100)
-        self.cmbFilterCloseBy.set_tooltip_text(_("Sets the incident closed by filter criterion."))
+        self.cmbFilterCloseBy.set_tooltip_text(_(u"Sets the incident closed by filter criterion."))
         _widg.load_combo(self.cmbFilterCloseBy, results, simple=True)
 
         self.cmbCriteriaCloseDate = _widg.make_combo(_width_=100)
         _widg.load_combo(self.cmbCriteriaCloseDate, self._criteria2)
         self.txtFilterCloseDate = _widg.make_entry(_width_=100)
-        self.txtFilterCloseDate.set_tooltip_text(_("Sets the incident closed date filter criterion."))
+        self.txtFilterCloseDate.set_tooltip_text(_(u"Sets the incident closed date filter criterion."))
 
-        self.chkFilterAccepted = _widg.make_check_button(_label_=_("Is Accepted"))
-        self.chkFilterAccepted.set_tooltip_text(_("Only return accepted or unaccepted incidents."))
+        self.chkFilterAccepted = _widg.make_check_button(label=_(u"Is Accepted"))
+        self.chkFilterAccepted.set_tooltip_text(_(u"Only return accepted or unaccepted incidents."))
 
-        self.chkFilterReviewed = _widg.make_check_button(_label_=_("Is Reviewed"))
-        self.chkFilterReviewed.set_tooltip_text(_("Only return reviewed or unreviewed incidents."))
+        self.chkFilterReviewed = _widg.make_check_button(label=_(u"Is Reviewed"))
+        self.chkFilterReviewed.set_tooltip_text(_(u"Only return reviewed or unreviewed incidents."))
 
         fixed = gtk.Fixed()
 

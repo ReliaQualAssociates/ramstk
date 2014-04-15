@@ -173,10 +173,10 @@ class Requirement(object):
                                                                 None)
 
         # General data page widgets.
-        self.btnValidateDate = _widg.make_button(_height_=25,
-                                                 _width_=25,
-                                                 _label_="...",
-                                                 _image_='calendar')
+        self.btnValidateDate = _widg.make_button(height=25,
+                                                 width=25,
+                                                 label="...",
+                                                 image='calendar')
 
         self.chkDerived = _widg.make_check_button()
         self.chkValidated = _widg.make_check_button()

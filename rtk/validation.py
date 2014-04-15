@@ -140,10 +140,14 @@ class Validation(object):
         # Toolbar widgets.
 
         # General Data tab widgets.
-        self.btnEndDate = make_button(_height_=25, _width_=25, _label_="...",
-                                      _image_=None)
-        self.btnStartDate = make_button(_height_=25, _width_=25, _label_="...",
-                                        _image_=None)
+        self.btnEndDate = make_button(height=25,
+                                      width=25,
+                                      label="...",
+                                      image=None)
+        self.btnStartDate = make_button(height=25,
+                                        width=25,
+                                        label="...",
+                                        image=None)
 
         self.cmbTaskType = make_combo()
         self.cmbMeasurementUnit = make_combo()

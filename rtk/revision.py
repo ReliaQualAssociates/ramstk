@@ -122,24 +122,24 @@ class Revision(object):
         self.txtRemarks = gtk.TextBuffer()
 
         # Usage profile tab widgets.
-        self.btnAddMission = _widg.make_button(_width_=40, _image_='add')
-        self.btnRemoveMission = _widg.make_button(_width_=40, _image_='remove')
-        self.btnAddPhase = _widg.make_button(_width_=40, _image_='add')
-        self.btnRemovePhase = _widg.make_button(_width_=40, _image_='remove')
-        self.btnAddEnvironment = _widg.make_button(_width_=40, _image_='add')
-        self.btnRemoveEnvironment = _widg.make_button(_width_=40,
-                                                      _image_='remove')
+        self.btnAddMission = _widg.make_button(width=40, image='add')
+        self.btnRemoveMission = _widg.make_button(width_=40, image='remove')
+        self.btnAddPhase = _widg.make_button(width_=40, image='add')
+        self.btnRemovePhase = _widg.make_button(width=40, image='remove')
+        self.btnAddEnvironment = _widg.make_button(width=40, image='add')
+        self.btnRemoveEnvironment = _widg.make_button(width=40,
+                                                      image='remove')
         self.cmbMission = _widg.make_combo()
-        self.cmbTimeUnit = _widg.make_combo(_width_=100)
+        self.cmbTimeUnit = _widg.make_combo(width=100)
         self.tvwMissionProfile = gtk.TreeView()
         self.tvwEnvironmentProfile = gtk.TreeView()
         self.txtMission = _widg.make_entry()
         self.txtMissionTime = _widg.make_entry(width=90)
 
         # Failure definition tab widgets.
-        self.btnAddDefinition = _widg.make_button(_width_=40, _image_='add')
-        self.btnRemoveDefinition = _widg.make_button(_width_=40,
-                                                     _image_='remove')
+        self.btnAddDefinition = _widg.make_button(width=40, image='add')
+        self.btnRemoveDefinition = _widg.make_button(width=40,
+                                                     image='remove')
         self.tvwFailureDefinitions = gtk.TreeView()
 
         # Assessment results tab widgets.
@@ -207,9 +207,9 @@ class Revision(object):
         # Add revision button.
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Adds a new revision to the RTK Program Database."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        _button_.set_icon_widget(_image_)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        _button_.set_icon_widget(image)
         _button_.connect('clicked', AddRevision, self._app)
         _toolbar_.insert(_button_, _position_)
         _position_ += 1
@@ -217,9 +217,9 @@ class Revision(object):
         # Delete revision button
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Removes the currently selected revision from the RTK Program Database."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        _button_.set_icon_widget(_image_)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        _button_.set_icon_widget(image)
         _button_.connect('clicked', self.delete_revision)
         _toolbar_.insert(_button_, _position_)
         _position_ += 1
@@ -230,9 +230,9 @@ class Revision(object):
         # Calculate revision _button_
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Calculate the currently selected revision."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        _button_.set_icon_widget(_image_)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
+        _button_.set_icon_widget(image)
         _button_.connect('clicked', self.calculate)
         _toolbar_.insert(_button_, _position_)
         _position_ += 1
@@ -243,9 +243,9 @@ class Revision(object):
         # Save revision _button_.
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Saves the currently selected revision to the RTK Program Database."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        _button_.set_icon_widget(_image_)
+        image = gtk.Image()
+        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        _button_.set_icon_widget(image)
         _button_.connect('clicked', self.save_revision)
         _toolbar_.insert(_button_, _position_)
         _position_ += 1

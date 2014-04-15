@@ -128,8 +128,8 @@ class Dataset:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Analyses Input tab widgets.
-        self.chkGroup = _widg.make_check_button(_label_=_(u"Decompose results to children assemblies"))
-        self.chkParts = _widg.make_check_button(_label_=_(u"Decompose results to parts"))
+        self.chkGroup = _widg.make_check_button(label=_(u"Decompose results to children assemblies"))
+        self.chkParts = _widg.make_check_button(label=_(u"Decompose results to parts"))
 
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
@@ -158,10 +158,10 @@ class Dataset:
         self.txtStartDate = _widg.make_entry(width=100)
         self.txtEndDate = _widg.make_entry(width=100)
 
-        self.btnStartDate = _widg.make_button(_height_=25, _width_=25,
-                                              _label_="...", _image_=None)
-        self.btnEndDate = _widg.make_button(_height_=25, _width_=25,
-                                            _label_="...", _image_=None)
+        self.btnStartDate = _widg.make_button(height=25, width=25,
+                                              label="...", image=None)
+        self.btnEndDate = _widg.make_button(height=25, width=25,
+                                            label="...", image=None)
 
         if self._analyses_input_widgets_create():
             self._app.debug_log.error("dataset.py: Failed to create Analysis Input widgets.")
@@ -306,10 +306,10 @@ class Dataset:
         if self._results_breakdown_tab_create():
             self._app.debug_log.error("dataset.py: Failed to create Results Breakdown tab.")
 
-        self.btnAssign = _widg.make_button(_width_=100, _label_="Assign",
-                                           _image_=None)
-        self.btnCancel = _widg.make_button(_width_=100, _label_="Cancel",
-                                           _image_=None)
+        self.btnAssign = _widg.make_button(width=100, label="Assign",
+                                           image=None)
+        self.btnCancel = _widg.make_button(width=100, label="Cancel",
+                                           image=None)
 
         self.vbxDataset = gtk.VBox()
         toolbar = self._toolbar_create()

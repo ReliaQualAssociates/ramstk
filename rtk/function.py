@@ -109,7 +109,7 @@ class Function(object):
         self.btnSave = gtk.ToolButton()
 
         # General data tab widgets.
-        self.chkSafetyCritical = _widg.make_check_button(_label_=_(u"Function is safety critical."))
+        self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function is safety critical."))
         self.txtCode = _widg.make_entry()
         self.txtTotalCost = _widg.make_entry(editable=False, bold=True)
         self.txtName = _widg.make_text_view(width=400)
@@ -119,8 +119,8 @@ class Function(object):
 
         # Functional matrix tab widgets.
 # TODO: Move the functional matrix to the parts window.
-        self.chkParts = _widg.make_check_button(_label_=_(u"Show components."))
-        self.chkAssemblies = _widg.make_check_button(_label_=_(u"Show assemblies."))
+        self.chkParts = _widg.make_check_button(label=_(u"Show components."))
+        self.chkAssemblies = _widg.make_check_button(label=_(u"Show assemblies."))
         self.tvwFunctionMatrix = gtk.TreeView()
 
         # Diagram tab widgets.

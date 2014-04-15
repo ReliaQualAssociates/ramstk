@@ -192,7 +192,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign', _width_=80)
+            button = _widg.make_button(width=80, image='assign')
             button.show()
             hbox.pack_start(button, expand=False)
 
@@ -604,7 +604,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign')
+            button = _widg.make_button(image='assign')
             button.show()
             hbox.pack_start(button)
 
@@ -854,7 +854,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign')
+            button = _widg.make_button(image='assign')
             button.show()
             hbox.pack_start(button)
 

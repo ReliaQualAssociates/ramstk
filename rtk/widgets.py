@@ -50,11 +50,12 @@ class CellRendererML(gtk.CellRendererText):
         gtk.CellRendererText.__init__(self)
 
     def do_get_size(self, widget, cell_area):
-        # We start from the standard dimension...
         size_tuple = gtk.CellRendererText.do_get_size(self, widget, cell_area)
+
         return(size_tuple)
 
-    def do_start_editing(self, event, treeview, path, background_area, cell_area, flags):
+    def do_start_editing(self, event, treeview, path, background_area,
+                         cell_area, flags):
 
         if not self.get_property('editable'):
             return
@@ -67,7 +68,7 @@ class CellRendererML(gtk.CellRendererText):
         self.textedit_window.action_area.hide()
         self.textedit_window.set_decorated(False)
         self.textedit_window.set_property('skip-taskbar-hint', True)
-        self.textedit_window.set_transient_for(None) # cancel the modality of dialog
+        self.textedit_window.set_transient_for(None)
 
         self.textedit = gtk.TextView()
         self.textedit.set_editable(True)
@@ -75,7 +76,6 @@ class CellRendererML(gtk.CellRendererText):
         self.textbuffer = self.textedit.get_buffer()
         self.textbuffer.set_property('text', self.get_property('text'))
 
-        #map key-press-event handler
         self.textedit_window.connect('key-press-event', self._keyhandler)
 
         scrolled_window = gtk.ScrolledWindow()
@@ -87,31 +87,32 @@ class CellRendererML(gtk.CellRendererText):
         self.textedit_window.vbox.add(scrolled_window)
         self.textedit_window.realize()
 
-        # position the popup below the edited cell (and try hard to keep the popup within the toplevel window)
+        # Position the popup below the edited cell (and try hard to keep the
+        # popup within the toplevel window)
 
         (tree_x, tree_y) = treeview.get_bin_window().get_origin()
         (tree_w, tree_h) = treeview.window.get_geometry()[2:4]
         (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]
-        x = tree_x + min(cell_area.x, tree_w - t_w + treeview.get_visible_rect().x)
-        y = tree_y + min(cell_area.y, tree_h - t_h + treeview.get_visible_rect().y)
+        x = tree_x + min(cell_area.x,
+                         tree_w - t_w + treeview.get_visible_rect().x)
+        y = tree_y + min(cell_area.y,
+                         tree_h - t_h + treeview.get_visible_rect().y)
         self.textedit_window.move(x, y)
         self.textedit_window.resize(cell_area.width, cell_area.height)
 
-        #now run dialog, get response by tracking keypresses
+        # Run the dialog, get response by tracking keypresses
         response = self.textedit_window.run()
 
         if response == gtk.RESPONSE_OK:
             self.textedit_window.destroy()
-            #update text and so forth....
+
             (iter_first, iter_last) = self.textbuffer.get_bounds()
             text = self.textbuffer.get_text(iter_first, iter_last)
-            #store the text
-            #self.treestore[path][2] = text
 
-            #set focus back on row
+            # self.treestore[path][2] = text
+
             treeview.set_cursor(path, None, False)
 
-            #propagate edited signal for other handlers...
             self.emit('edited', path, text)
 
         elif response == gtk.RESPONSE_CANCEL:
@@ -121,69 +122,161 @@ class CellRendererML(gtk.CellRendererText):
             self.textedit_window.destroy()
 
     def _keyhandler(self, widget, event):
-        # track keystrokes, look for shift-return or ctrl-return to signal end of cell editing
-        keyname = gtk.gdk.keyval_name(event.keyval)  # @UndefinedVariable
 
-        if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and gtk.gdk.keyval_name(event.keyval) == 'Return':  # @UndefinedVariable
+        keyname = gtk.gdk.keyval_name(event.keyval)
+
+        if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
+                gtk.gdk.keyval_name(event.keyval) == 'Return':
 
             self.textedit_window.response(gtk.RESPONSE_OK)
 
-gobject.type_register(CellRendererML)  # @UndefinedVariable
+
+class CellRendererButton(gtk.CellRendererText):
+
+    __gproperties__ = {"callable": (gobject.TYPE_PYOBJECT,
+                                    "callable property",
+                                    "callable property",
+                                    gobject.PARAM_READWRITE)}
+    _button_width = 40
+    _button_height = 30
+
+    def __init__(self):
+        self.__gobject_init__()
+        gtk.CellRendererText.__init__(self)
+        self.set_property("xalign", 0.5)
+        self.set_property("mode", gtk.CELL_RENDERER_MODE_ACTIVATABLE)
+        self.callable = None
+        self.table = None
+
+    def do_set_property(self, pspec, value):
+        if pspec.name == "callable":
+            if callable(value):
+                self.callable = value
+            else:
+                raise TypeError("callable property must be callable!")
+        else:
+                raise AttributeError("Unknown property %s" % pspec.name)
+
+    def do_get_property(self, pspec):
+        if pspec.name == "callable":
+            return self.callable
+        else:
+            raise AttributeError("Unknown property %s" % pspec.name)
+
+    def do_get_size(self, wid, cell_area):
+        xpad = self.get_property("xpad")
+        ypad = self.get_property("ypad")
+
+        if not cell_area:
+            x, y = 0, 0
+            w = 2 * xpad + self._button_width
+            h = 2 * ypad + self._button_height
+        else:
+            w = 2 * xpad + cell_area.width
+            h = 2 * ypad + cell_area.height
+
+            xalign = self.get_property("xalign")
+            yalign = self.get_property("yalign")
+
+            x = max(0, xalign * (cell_area.width - w))
+            y = max(0, yalign * (cell_area.height - h))
+
+        return(x, y, w, h)
+
+    def do_render(self, window, wid, bg_area, cell_area, expose_area, flags):
+
+        if not window:
+            return
+
+        xpad = self.get_property("xpad")
+        ypad = self.get_property("ypad")
+
+        x, y, w, h = self.get_size(wid, cell_area)
+
+# if flags & gtk.CELL_RENDERER_SELECTED :
+# state = gtk.STATE_ACTIVE
+# shadow = gtk.SHADOW_OUT
+        if flags & gtk.CELL_RENDERER_PRELIT:
+            state = gtk.STATE_PRELIGHT
+            shadow = gtk.SHADOW_ETCHED_OUT
+        else:
+            state = gtk.STATE_NORMAL
+            shadow = gtk.SHADOW_OUT
+
+        wid.get_style().paint_box(window, state, shadow, cell_area,
+                                  wid, "button", cell_area.x + x + xpad,
+                                  cell_area.y + y + ypad,  w - 6, h - 6)
+        flags = flags & ~gtk.STATE_SELECTED
+        gtk.CellRendererText.do_render(self, window, wid, bg_area,
+                                       (cell_area[0], cell_area[1] + ypad,
+                                        cell_area[2], cell_area[3]),
+                                       expose_area, flags)
+
+    def do_activate(self, event, wid, path, bg_area, cell_area, flags):
+        cb = self.get_property("callable")
+        if cb is not None:
+            cb(path)
+        return True
+
+gobject.type_register(CellRendererML)           # @UndefinedVariable
+gobject.type_register(CellRendererButton)       # @UndefinedVariable
 
 
-def make_button(_height_=40, _width_=0, _label_="", _image_='default'):
+def make_button(height=40, width=200, label="", image='default'):
     """
     Utility function to create gtk.Button() widgets.
 
-    Keyword Arguments:
-    _width_ -- the width of the Button widget.
-    _label_ -- the text to display with the Button widget.
-               Default is None.
-    _image_ -- the file image to display on the Button.  Options for this
-               argument are:
-               add
-               assign
-               calculate
-               commit
-    @rtype : gtk.Button()
+    :param integer height: the height of the gtk.Button().
+    :param integer width: the width of the gtk.Button().
+    :param string label: the text to display on the gtk.Button().  Default is
+                         an empty string.
+    :param image: the image to display on the gtk.Button().  Options for this
+                  argument are:
+
+                    - add
+                    - assign
+                    - calculate
+                    - commit
+    :rtype: gtk.Button()
     """
 
-    if(_width_ == 0):
-        _width_ = int((int(_conf.PLACES) + 5) * 8)
+    if width == 0:
+        width = int((int(_conf.PLACES) + 5) * 8)
 
-    button = gtk.Button(label=_label_)
+    _button = gtk.Button(label=label)
 
-    if(_image_ is not None):
-        if(_width_ >= 32):
-            file_image = _conf.ICON_DIR + '32x32/' + _image_ + '.png'
+    if image is not None:
+        if width >= 32:
+            _file_image = _conf.ICON_DIR + '32x32/' + image + '.png'
         else:
-            file_image = _conf.ICON_DIR + '16x16/' + _image_ + '.png'
-        image = gtk.Image()
-        image.set_from_file(file_image)
-        button.set_image(image)
+            _file_image = _conf.ICON_DIR + '16x16/' + image + '.png'
+        _image = gtk.Image()
+        _image.set_from_file(_file_image)
+        _button.set_image(_image)
 
-    button.props.width_request = _width_
-    button.props.height_request = _height_
+    _button.props.width_request = width
+    _button.props.height_request = height
 
-    return(button)
+    return(_button)
 
 
-def make_check_button(_label_=None, width=-1):
+def make_check_button(label="", width=-1):
     """
     Utility function to create CheckButton widgets.
 
-    Keyword Arguments:
-    _label_ -- the text to display with the CheckButton widget.
-               Default is None.
+    :param string label: the text to display with the gtk.CheckButton().
+                         Default is no text.
+    :param integer width: the desired width of the gtk.CheckButton().  Default
+                          is -1 or natural request.
     """
 
-    checkbutton = gtk.CheckButton(_label_, True)
-    if(_label_ is not None):
-        checkbutton.get_child().set_use_markup(True)
-        checkbutton.get_child().set_line_wrap(True)
-        checkbutton.get_child().props.width_request = width
+    _checkbutton = gtk.CheckButton(_label_, True)
 
-    return(checkbutton)
+    _checkbutton.get_child().set_use_markup(True)
+    _checkbutton.get_child().set_line_wrap(True)
+    _checkbutton.get_child().props.width_request = width
+
+    return(_checkbutton)
 
 
 def make_option_button(_group_=None, _label_=_(u"")):

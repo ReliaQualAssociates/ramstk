@@ -471,9 +471,9 @@ class Hardware(object):
                    _(u"Non-Safety Hidden"), _(u"Economic/Operational")]
 
         self.fxdMode = gtk.Fixed()
-        self.chkFCQ1 = _widg.make_check_button(_label_=_labels[0])
-        self.chkFCQ2 = _widg.make_check_button(_label_=_labels[1])
-        self.chkFCQ3 = _widg.make_check_button(_label_=_labels[2])
+        self.chkFCQ1 = _widg.make_check_button(label=_labels[0])
+        self.chkFCQ2 = _widg.make_check_button(label=_labels[1])
+        self.chkFCQ3 = _widg.make_check_button(label=_labels[2])
         self.optHS = _widg.make_option_button(_label_=_labels[3])
         self.optES = _widg.make_option_button(_group_=self.optHS,
                                               _label_=_labels[4])
@@ -532,12 +532,12 @@ class Hardware(object):
                    _(u"This item is Structurally Significant"),
                    _(u"This item is Functionally Significant")]
 
-        self.chkFSIQ1 = _widg.make_check_button(_label_=_labels[0])
-        self.chkFSIQ2 = _widg.make_check_button(_label_=_labels[1])
-        self.chkFSIQ3 = _widg.make_check_button(_label_=_labels[2])
-        self.chkFSIQ4 = _widg.make_check_button(_label_=_labels[3])
-        self.chkSSI = _widg.make_check_button(_label_=_labels[4])
-        self.chkFSI = _widg.make_check_button(_label_=_labels[5])
+        self.chkFSIQ1 = _widg.make_check_button(label=_labels[0])
+        self.chkFSIQ2 = _widg.make_check_button(label=_labels[1])
+        self.chkFSIQ3 = _widg.make_check_button(label=_labels[2])
+        self.chkFSIQ4 = _widg.make_check_button(label=_labels[3])
+        self.chkSSI = _widg.make_check_button(label=_labels[4])
+        self.chkFSI = _widg.make_check_button(label=_labels[5])
 
         self.txtFSIQ1 = _widg.make_text_view(buffer_=gtk.TextBuffer(),
                                              width=400, height=75)

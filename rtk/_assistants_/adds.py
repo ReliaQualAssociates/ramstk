@@ -598,7 +598,10 @@ class AddIncident:
         # Add a calendar widget for date selection if we are on a posix
         # platform.  The calendar widget doesn't work for shit on Windoze.
         if(name == 'posix'):
-            self.btnCalendar = _widg.make_button(25, 25, "...", None)
+            self.btnCalendar = _widg.make_button(height=25,
+                                                 width=25,
+                                                 label="...",
+                                                 image=None)
             self.btnCalendar.set_tooltip_text(_("Launch a calendar to select the incident date"))
             self.btnCalendar.connect('clicked', self._show_calendar)
             self.calIncidentDate = gtk.Calendar()
@@ -1234,8 +1237,10 @@ class AddRGRecord(gtk.Assistant):
 # Create the gtk.Combo that allow one of multiple selections.
         self.txtDate = _widg.make_entry(_width_=100)
         self.txtDate.set_tooltip_text(_(u"Date test record was generated.  This is not necessarily the date the record is being added."))
-        self.btnDate = _widg.make_button(_height_=25, _width_=25,
-                                         _label_="...", _image_=None)
+        self.btnDate = _widg.make_button(height=25,
+                                         width=25,
+                                         label="...",
+                                         image=None)
         self.btnDate.connect('released', _util.date_select,
                              self.txtDate)
         self.txtTime = _widg.make_entry()

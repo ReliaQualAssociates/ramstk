@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-This is the Class that is used to represent and hold information related to 
-Program incidents. 
+This is the Class that is used to represent and hold information related to
+Program incidents.
 """
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
@@ -111,13 +111,13 @@ class Incident:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
 # Create the Program Incident tab.
-        self.btnIncidentDate = _widg.make_button(_height_=25, _width_=25,
-                                                 _label_="...", _image_=None)
-        self.btnClosureDate = _widg.make_button(_height_=25, _width_=25,
-                                                _label_="...", _image_=None)
+        self.btnIncidentDate = _widg.make_button(height=25, width=25,
+                                                 label="...", image=None)
+        self.btnClosureDate = _widg.make_button(height=25, width=25,
+                                                label="...", image=None)
 
-        self.chkAccepted = _widg.make_check_button(_label_=self._fi_tab_labels[0][10])
-        self.chkReviewed = _widg.make_check_button(_label_=self._fi_tab_labels[0][11])
+        self.chkAccepted = _widg.make_check_button(label=self._fi_tab_labels[0][10])
+        self.chkReviewed = _widg.make_check_button(label=self._fi_tab_labels[0][11])
 
         self.cmbHardware = _widg.make_combo()
         self.cmbSoftware = _widg.make_combo()
