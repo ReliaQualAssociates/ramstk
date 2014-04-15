@@ -455,7 +455,7 @@ class Hardware(object):
                 except TypeError:
                     pass
 
-        self.fraFMECADetails = _widg.make_frame(_label_=_(u"Failure Mechanism "
+        self.fraFMECADetails = _widg.make_frame(label=_(u"Failure Mechanism "
                                                           u"Details"))
 
         # Create the widgets to display the failure mode details.
@@ -787,7 +787,7 @@ class Hardware(object):
                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow.add_with_viewport(_fxdGenDataQuad1_)
 
-            _frame = _widg.make_frame(_label_=_(u"General Information"))
+            _frame = _widg.make_frame(label=_(u"General Information"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_scrollwindow)
 
@@ -801,7 +801,7 @@ class Hardware(object):
                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow.add_with_viewport(_fxdGenDataQuad3_)
 
-            _frame = _widg.make_frame(_label_=_(u"Manufacturer Information"))
+            _frame = _widg.make_frame(label=_(u"Manufacturer Information"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_scrollwindow)
 
@@ -819,7 +819,7 @@ class Hardware(object):
                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow.add_with_viewport(_fxdGenDataQuad2_)
 
-            _frame = _widg.make_frame(_label_=_(u"Specification Information"))
+            _frame = _widg.make_frame(label=_(u"Specification Information"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_scrollwindow)
 
@@ -833,7 +833,7 @@ class Hardware(object):
                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow.add_with_viewport(_fxdGenDataQuad4_)
 
-            _frame = _widg.make_frame(_label_=_(u"Miscellaneous Information"))
+            _frame = _widg.make_frame(label=_(u"Miscellaneous Information"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_scrollwindow)
 
@@ -1113,7 +1113,7 @@ class Hardware(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add(self.tvwAllocation)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Allocation Inputs"))
+            _frame_ = _widg.make_frame(label=_(u"Allocation Inputs"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -1121,7 +1121,7 @@ class Hardware(object):
 
             _fixed_ = gtk.Fixed()
 
-            _frame_ = _widg.make_frame(_label_=_(u"Calculations"))
+            _frame_ = _widg.make_frame(label=_(u"Calculations"))
             _frame_.add(_fixed_)
 
             self.hbxAllocation.pack_start(_frame_, expand=False)
@@ -1787,7 +1787,7 @@ class Hardware(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_hbox_)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Reliability Inputs"))
+            _frame_ = _widg.make_frame(label=_(u"Reliability Inputs"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -1803,7 +1803,7 @@ class Hardware(object):
 
             _fxdRelInputQuad2_ = gtk.Fixed()
 
-            _frame_ = _widg.make_frame(_label_=_(u"Maintainability Inputs"))
+            _frame_ = _widg.make_frame(label=_(u"Maintainability Inputs"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_fxdRelInputQuad2_)
 
@@ -1819,7 +1819,7 @@ class Hardware(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_hbox1_)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Miscellaneous Inputs"))
+            _frame_ = _widg.make_frame(label=_(u"Miscellaneous Inputs"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -2289,7 +2289,7 @@ class Hardware(object):
             # Build the quadrant #1 (upper left) containers.
             _fxdCalcResultsQuad1_ = gtk.Fixed()
 
-            _frame = _widg.make_frame(_label_=_(u"Reliability Results"))
+            _frame = _widg.make_frame(label=_(u"Reliability Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_fxdCalcResultsQuad1_)
 
@@ -2303,7 +2303,7 @@ class Hardware(object):
 
             _fxdCalcResultsQuad2_ = gtk.Fixed()
 
-            _frame = _widg.make_frame(_label_=_(u"Maintainability Results"))
+            _frame = _widg.make_frame(label=_(u"Maintainability Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_fxdCalcResultsQuad2_)
 
@@ -2314,7 +2314,7 @@ class Hardware(object):
 
             _hbox1_ = gtk.HBox()
 
-            _frame = _widg.make_frame(_label_=_(u"Miscellaneous Results"))
+            _frame = _widg.make_frame(label=_(u"Miscellaneous Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_hbox1_)
 

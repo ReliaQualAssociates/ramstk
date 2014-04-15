@@ -674,9 +674,9 @@ class Software:
     txtCDRQ57 = _widg.make_entry(width=50)
     txtCDRQ58 = _widg.make_entry(width=50)
 
-    fraCSCICDRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
-    fraCSCICDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
-    fraUnitCDRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
+    fraCSCICDRAM = _widg.make_frame(label=_(u"Anomaly Management"))
+    fraCSCICDRSQ = _widg.make_frame(label=_(u"Software Quality Control"))
+    fraUnitCDRSQ = _widg.make_frame(label=_(u"Software Quality Control"))
     hpnCDR = gtk.HPaned()
     lblCDR = gtk.Label()
 
@@ -726,9 +726,9 @@ class Software:
     txtTRRQ23 = _widg.make_entry(width=50)
     txtTRRQ24 = _widg.make_entry(width=50)
 
-    fraCSCITRRSX = _widg.make_frame(_label_=_(u"Complexity &amp; Modularity"))
-    fraUnitTRRAM = _widg.make_frame(_label_=_(u"Anomaly Management"))
-    fraUnitTRRSQ = _widg.make_frame(_label_=_(u"Software Quality Control"))
+    fraCSCITRRSX = _widg.make_frame(label=_(u"Complexity &amp; Modularity"))
+    fraUnitTRRAM = _widg.make_frame(label=_(u"Anomaly Management"))
+    fraUnitTRRSQ = _widg.make_frame(label=_(u"Software Quality Control"))
     hpnTRR = gtk.HPaned()
     lblTRR = gtk.Label()
 
@@ -980,7 +980,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_(u"General Information"))
+        frame = _widg.make_frame(label=_(u"General Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -1799,7 +1799,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Organization"))
+            frame = _widg.make_frame(label=_(u"Organization"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -1829,7 +1829,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Methods"))
+            frame = _widg.make_frame(label=_(u"Methods"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -1864,7 +1864,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Documentation"))
+            frame = _widg.make_frame(label=_(u"Documentation"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -1901,7 +1901,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Tools &amp; Test Techniques"))
+            frame = _widg.make_frame(label=_(u"Tools &amp; Test Techniques"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -1966,7 +1966,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Anomaly Management"))
+            frame = _widg.make_frame(label=_(u"Anomaly Management"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -2036,7 +2036,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Software Quality Control"))
+            frame = _widg.make_frame(label=_(u"Software Quality Control"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -2129,7 +2129,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Anomaly Management"))
+            frame = _widg.make_frame(label=_(u"Anomaly Management"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -2171,7 +2171,7 @@ class Software:
             scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             scrollwindow.add_with_viewport(table)
 
-            frame = _widg.make_frame(_label_=_(u"Software Quality Control"))
+            frame = _widg.make_frame(label=_(u"Software Quality Control"))
             frame.set_shadow_type(gtk.SHADOW_NONE)
             frame.add(scrollwindow)
 
@@ -2623,7 +2623,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwRiskMap)
 
-        frame = _widg.make_frame(_label_=_(u"Software Risk Map"))
+        frame = _widg.make_frame(label=_(u"Software Risk Map"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -3634,7 +3634,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Test Planning"))
+        frame = _widg.make_frame(label=_("Test Planning"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
         frame.show_all()
@@ -3660,7 +3660,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Test Effort"))
+        frame = _widg.make_frame(label=_("Test Effort"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
         frame.show_all()
@@ -3694,7 +3694,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Test Coverage"))
+        frame = _widg.make_frame(label=_("Test Coverage"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
         frame.show_all()
@@ -3731,7 +3731,7 @@ class Software:
 # Add the test selection matrix gtk.Treeview to the right half.
         self.scwTestSelectionMatrix.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        frame = _widg.make_frame(_label_=_(u"Test Technique Selection"))
+        frame = _widg.make_frame(label=_(u"Test Technique Selection"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(self.scwTestSelectionMatrix)
         frame.show_all()
@@ -3894,7 +3894,7 @@ class Software:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_(u"Reliability Estimation Results"))
+        frame = _widg.make_frame(label=_(u"Reliability Estimation Results"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
         frame.show_all()

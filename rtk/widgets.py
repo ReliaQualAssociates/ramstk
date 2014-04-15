@@ -509,34 +509,34 @@ def make_text_view(buffer=None, width=200, height=100):
     return(_scrollwindow)
 
 
-def make_frame(_label_=""):
+def make_frame(label=""):
     """
-    Utility function to create gtk.Frame widgets.
+    Utility function to create gtk.Frame() widgets.
 
-    Keyword Arguments:
-    _label_ -- the text to display in the gtk.Frame label.
+    :param string label: the text to display in the gtk.Frame() label.
+    :rtype: gtk.Frame
     '"""
 
-    label = gtk.Label()
-    label.set_markup("<span weight='bold'>" +
-                     _label_ +
+    _label = gtk.Label()
+    _label.set_markup("<span weight='bold'>" +
+                     label +
                      "</span>")
-    label.set_justify(gtk.JUSTIFY_LEFT)
-    label.set_alignment(xalign=0.5, yalign=0.5)
-    label.show_all()
+    _label.set_justify(gtk.JUSTIFY_LEFT)
+    _label.set_alignment(xalign=0.5, yalign=0.5)
+    _label.show_all()
 
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    frame.set_label_widget(label)
+    _frame = gtk.Frame()
+    _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+    _frame.set_label_widget(_label)
 
-    return(frame)
+    return(_frame)
 
 
 def make_fixed():
 
-    fixed = gtk.Fixed()
+    _fixed = gtk.Fixed()
 
-    return(fixed)
+    return(_fixed)
 
 
 def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):

@@ -142,7 +142,7 @@ class AssignMTBFResults:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwAssemblies)
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -158,7 +158,7 @@ class AssignMTBFResults:
         self.optSubAssembly = _widg.make_check_button(_(u"Assign decomposed results to subassemblies"))
         fixed.put(self.optSubAssembly, 5, 5)
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 

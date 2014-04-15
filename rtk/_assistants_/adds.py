@@ -995,7 +995,7 @@ class AddTestPlan:
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
@@ -1052,7 +1052,7 @@ class AddTestPlan:
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
@@ -1230,7 +1230,7 @@ class AddRGRecord(gtk.Assistant):
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
@@ -1404,7 +1404,7 @@ class CreateDataSet:
         # Create a page to select where data set should be saved.
         _fixed = gtk.Fixed()
 
-        _frame = _widg.make_frame(_label_=_(""))
+        _frame = _widg.make_frame(label=_(""))
         _frame.set_shadow_type(gtk.SHADOW_NONE)
         _frame.add(_fixed)
 
@@ -1451,7 +1451,7 @@ class CreateDataSet:
         # Create a page to select where data set should be saved.
         _fixed = gtk.Fixed()
 
-        _frame = _widg.make_frame(_label_=_(""))
+        _frame = _widg.make_frame(label=_(""))
         _frame.set_shadow_type(gtk.SHADOW_NONE)
         _frame.add(_fixed)
 
@@ -1898,7 +1898,7 @@ class AddDatasetRecord:
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 

@@ -347,7 +347,7 @@ class Incident:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Field Incident Details"))
+        frame = _widg.make_frame(label=_("Field Incident Details"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -415,7 +415,7 @@ class Incident:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwComponentList)
 
-        frame = _widg.make_frame(_label_=_("Component Information"))
+        frame = _widg.make_frame(label=_("Component Information"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -430,7 +430,7 @@ class Incident:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(fixed)
 
-        frame = _widg.make_frame(_label_=_("Incident Descriptions"))
+        frame = _widg.make_frame(label=_("Incident Descriptions"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
@@ -637,7 +637,7 @@ class Incident:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(textview)
 
-        frame = _widg.make_frame(_label_=_("Incident Analysis"))
+        frame = _widg.make_frame(label=_("Incident Analysis"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 

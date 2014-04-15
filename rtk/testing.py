@@ -283,8 +283,8 @@ class Testing(object):
         self.txtConsumerRisk = _widg.make_entry(width=100)
         self.txtProducerRisk = _widg.make_entry(width=100)
 
-        self.fraPlan = _widg.make_frame(_label_=_(u""))
-        self.fraPlanDetails = _widg.make_frame(_label_=_(u""))
+        self.fraPlan = _widg.make_frame(label=_(u""))
+        self.fraPlanDetails = _widg.make_frame(label=_(u""))
 
         # Widgets for reliability growth tests.
         self.btnFindMTBFI = _widg.make_button(height=25,
@@ -645,7 +645,7 @@ class Testing(object):
             # Populate the left side of the Planning Input page.
             _fixed = gtk.Fixed()
 
-            _frame = _widg.make_frame(_label_=_(u"Planning Inputs"))
+            _frame = _widg.make_frame(label=_(u"Planning Inputs"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_fixed)
 
@@ -1166,7 +1166,7 @@ class Testing(object):
 
             _fxdDataSet_ = gtk.Fixed()
 
-            _frame = _widg.make_frame(_label_=_(u""))
+            _frame = _widg.make_frame(label=_(u""))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_fxdDataSet_)
             _frame.show_all()
@@ -1177,7 +1177,7 @@ class Testing(object):
                                               gtk.POLICY_AUTOMATIC)
             self.scwTestAssessment.add(self.tvwTestAssessment)
 
-            _frame = _widg.make_frame(_label_=_(u"Reliability Test Data"))
+            _frame = _widg.make_frame(label=_(u"Reliability Test Data"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(self.scwTestAssessment)
             _frame.show_all()
@@ -1186,7 +1186,7 @@ class Testing(object):
 
             _fxdNumericalResults_ = gtk.Fixed()
 
-            _frame = _widg.make_frame(_label_=_(u"Estimated Parameters"))
+            _frame = _widg.make_frame(label=_(u"Estimated Parameters"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(_fxdNumericalResults_)
             _frame.show_all()
@@ -1200,7 +1200,7 @@ class Testing(object):
 
             _vbox.pack_start(_fxdGraphicalResults_, expand=False)
 
-            _frame = _widg.make_frame(_label_=_(u"Reliability Test Plot"))
+            _frame = _widg.make_frame(label=_(u"Reliability Test Plot"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame.add(self.pltPlot1)
             _frame.show_all()

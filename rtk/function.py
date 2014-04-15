@@ -285,7 +285,7 @@ class Function(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fixed_)
 
-            _frame_ = _widg.make_frame(_label_=_(u"General Information"))
+            _frame_ = _widg.make_frame(label=_(u"General Information"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -422,7 +422,7 @@ class Function(object):
             _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdLeft_)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Reliability Results"))
+            _frame_ = _widg.make_frame(label=_(u"Reliability Results"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -435,7 +435,7 @@ class Function(object):
             _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdRight_)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Maintainability Results"))
+            _frame_ = _widg.make_frame(label=_(u"Maintainability Results"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -526,7 +526,7 @@ class Function(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add(self.tvwFMECA)
 
-            _frame_ = _widg.make_frame(_label_=_(u"Failure Mode, Effects, and Criticality Analysis"))
+            _frame_ = _widg.make_frame(label=_(u"Failure Mode, Effects, and Criticality Analysis"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 

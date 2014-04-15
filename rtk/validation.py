@@ -320,7 +320,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad1_)
 
-            _frame_ = make_frame(_label_=_(u"Task Description"))
+            _frame_ = make_frame(label=_(u"Task Description"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -336,7 +336,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad2_)
 
-            _frame_ = make_frame(_label_=_(u"Task Effort"))
+            _frame_ = make_frame(label=_(u"Task Effort"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -350,7 +350,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad4_)
 
-            _frame_ = make_frame(_label_=_(u"Project Effort"))
+            _frame_ = make_frame(label=_(u"Project Effort"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -647,7 +647,7 @@ class Validation(object):
 
             _hbox_ = gtk.HBox()
 
-            _frame_ = make_frame(_label_=_(u""))
+            _frame_ = make_frame(label=_(u""))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_hbox_)
             _frame_.show_all()

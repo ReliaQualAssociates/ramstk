@@ -277,7 +277,7 @@ class Revision(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _fraGeneralData_ = _widg.make_frame(_label_=_(u"General Information"))
+            _fraGeneralData_ = _widg.make_frame(label=_(u"General Information"))
             _fraGeneralData_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
             _fxdGeneralData_ = gtk.Fixed()
@@ -507,7 +507,7 @@ class Revision(object):
             _fxdMission_ = gtk.Fixed()
             _vbxMissionInner_.pack_start(_fxdMission_, expand=False)
 
-            _fraMission_ = _widg.make_frame(_label_=_(u"Mission Description"))
+            _fraMission_ = _widg.make_frame(label=_(u"Mission Description"))
             _fraMission_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraMission_.add(_vbxMissionInner_)
 
@@ -525,7 +525,7 @@ class Revision(object):
 
             _vbxMissionProfile_.pack_end(_scwMissionProfile_, expand=True)
 
-            _fraMissionProfile_ = _widg.make_frame(_label_=_(u"Mission Profile"))
+            _fraMissionProfile_ = _widg.make_frame(label=_(u"Mission Profile"))
             _fraMissionProfile_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraMissionProfile_.add(_vbxMissionProfile_)
 
@@ -536,7 +536,7 @@ class Revision(object):
             # Environmental profile containers.
             _vbxEnvironment_ = gtk.VBox()
 
-            _fraEnvironment_ = _widg.make_frame(_label_=_(u"Environmental Profile"))
+            _fraEnvironment_ = _widg.make_frame(label=_(u"Environmental Profile"))
             _fraEnvironment_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraEnvironment_.add(_vbxEnvironment_)
 
@@ -694,7 +694,7 @@ class Revision(object):
             _scwFailureDefs_ = gtk.ScrolledWindow()
             _scwFailureDefs_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-            _fraFailureDefs_ = _widg.make_frame(_label_=_(u"Failure Definitions List"))
+            _fraFailureDefs_ = _widg.make_frame(label=_(u"Failure Definitions List"))
             _fraFailureDefs_.set_shadow_type(gtk.SHADOW_IN)
             _fraFailureDefs_.add(_scwFailureDefs_)
 
@@ -747,7 +747,7 @@ class Revision(object):
             _scwReliability_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scwReliability_.add_with_viewport(_fxdReliability_)
 
-            _fraReliability_ = _widg.make_frame(_label_=_(u"Reliability Results"))
+            _fraReliability_ = _widg.make_frame(label=_(u"Reliability Results"))
             _fraReliability_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraReliability_.add(_scwReliability_)
 
@@ -760,7 +760,7 @@ class Revision(object):
             _scwMaintainability_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scwMaintainability_.add_with_viewport(_fxdMaintainability_)
 
-            _fraMaintainability_ = _widg.make_frame(_label_=_(u"Maintainability Results"))
+            _fraMaintainability_ = _widg.make_frame(label=_(u"Maintainability Results"))
             _fraMaintainability_.set_shadow_type(gtk.SHADOW_NONE)
             _fraMaintainability_.add(_scwMaintainability_)
 

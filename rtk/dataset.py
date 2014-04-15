@@ -138,7 +138,7 @@ class Dataset:
         self.cmbFitMethod = _widg.make_combo()
         self.cmbSource = _widg.make_combo()
 
-        self.fraNevadaChart = _widg.make_frame(_label_=_(u"Nevada Chart"))
+        self.fraNevadaChart = _widg.make_frame(label=_(u"Nevada Chart"))
 
         self.lblFitMethod = _widg.make_label(self._ai_tab_labels[4], 150, 25)
         self.lblConfMethod = _widg.make_label(self._ai_tab_labels[7], 150, 25)
@@ -169,12 +169,12 @@ class Dataset:
             self._app.debug_log.error("dataset.py: Failed to create Analysis Input tab.")
 
 # Create the Analyses Results tab widgets.
-        self.fraSummary = _widg.make_frame(_label_=_(u"Summary"))
-        self.fraNonParEst = _widg.make_frame(_label_=_(u"Non-Parametric Estimates"))
-        self.fraNonParStats = _widg.make_frame(_label_=_(u"Non-Parametric Statistics"))
-        self.fraParEst = _widg.make_frame(_label_=_(u"Parametric Estimates"))
-        self.fraVarCov = _widg.make_frame(_label_=_(u"Covariance Matrix"))
-        self.fraParGOF = _widg.make_frame(_label_=_(u"Parametric GOF Statistics"))
+        self.fraSummary = _widg.make_frame(label=_(u"Summary"))
+        self.fraNonParEst = _widg.make_frame(label=_(u"Non-Parametric Estimates"))
+        self.fraNonParStats = _widg.make_frame(label=_(u"Non-Parametric Statistics"))
+        self.fraParEst = _widg.make_frame(label=_(u"Parametric Estimates"))
+        self.fraVarCov = _widg.make_frame(label=_(u"Covariance Matrix"))
+        self.fraParGOF = _widg.make_frame(label=_(u"Parametric GOF Statistics"))
 
         self.hpnAnalysisResults = gtk.HPaned()
         self.vbxAnalysisResults1 = gtk.VBox()
@@ -295,8 +295,8 @@ class Dataset:
             self._app.debug_log.error("dataset.py: Failed to create Plot tab.")
 
 # Create the analysis results breakdown widgets.
-        self.fraResultsByChildAssembly = _widg.make_frame(_label_=_(u"Summary of Results By Child Assembly"))
-        self.fraResultsByPart = _widg.make_frame(_label_=_(u"Summary of Results By Part"))
+        self.fraResultsByChildAssembly = _widg.make_frame(label=_(u"Summary of Results By Child Assembly"))
+        self.fraResultsByPart = _widg.make_frame(label=_(u"Summary of Results By Part"))
 
         self.hpnResultsBreakdown = gtk.HPaned()
 
@@ -618,7 +618,7 @@ class Dataset:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add(self.tvwDataset)
 
-        frame = _widg.make_frame(_label_=_(u"Dataset"))
+        frame = _widg.make_frame(label=_(u"Dataset"))
         frame.add(scrollwindow)
 
         hbox.pack_start(frame, True, True)
@@ -636,7 +636,7 @@ class Dataset:
 
         fixed = gtk.Fixed()
 
-        frame = _widg.make_frame(_label_=_(u"Analyses Inputs"))
+        frame = _widg.make_frame(label=_(u"Analyses Inputs"))
         frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         frame.add(fixed)
 
@@ -1467,7 +1467,7 @@ class Dataset:
 
         hbox = gtk.HBox()
 
-        frame = _widg.make_frame(_label_=_(u"Survival Analysis Plots"))
+        frame = _widg.make_frame(label=_(u"Survival Analysis Plots"))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(hbox)
         frame.show_all()

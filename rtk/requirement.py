@@ -375,7 +375,7 @@ class Requirement(object):
                                        gtk.POLICY_AUTOMATIC)
             _scwStakeholder.add(self.tvwStakeholderInput)
 
-            _fraStakeholder = _widg.make_frame(_label_=_(u"Stakeholder Inputs"))
+            _fraStakeholder = _widg.make_frame(label=_(u"Stakeholder Inputs"))
             _fraStakeholder.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraStakeholder.add(_scwStakeholder)
 
@@ -435,7 +435,7 @@ class Requirement(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             _fxdGeneralData = gtk.Fixed()
 
-            _fraGeneralData = _widg.make_frame(_label_=_(u"General Information"))
+            _fraGeneralData = _widg.make_frame(label=_(u"General Information"))
             _fraGeneralData.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraGeneralData.add(_fxdGeneralData)
 
@@ -598,7 +598,7 @@ class Requirement(object):
             _scwClear_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scwClear_.add_with_viewport(_fxdClear_)
 
-            _fraClear_ = _widg.make_frame(_label_=_(u"Clarity of Requirement"))
+            _fraClear_ = _widg.make_frame(label=_(u"Clarity of Requirement"))
             _fraClear_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraClear_.add(_scwClear_)
 
@@ -613,7 +613,7 @@ class Requirement(object):
                                      gtk.POLICY_AUTOMATIC)
             _scwComplete_.add_with_viewport(_fxdComplete_)
 
-            _fraComplete_ = _widg.make_frame(_label_=_(u"Completeness of Requirement"))
+            _fraComplete_ = _widg.make_frame(label=_(u"Completeness of Requirement"))
             _fraComplete_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraComplete_.add(_scwComplete_)
 
@@ -631,7 +631,7 @@ class Requirement(object):
                                        gtk.POLICY_AUTOMATIC)
             _scwConsistent_.add_with_viewport(_fxdConsistent_)
 
-            _fraConsistent_ = _widg.make_frame(_label_=_(u"Consistency of Requirement"))
+            _fraConsistent_ = _widg.make_frame(label=_(u"Consistency of Requirement"))
             _fraConsistent_.set_shadow_type(gtk.SHADOW_NONE)
             _fraConsistent_.add(_scwConsistent_)
 
@@ -646,7 +646,7 @@ class Requirement(object):
                                        gtk.POLICY_AUTOMATIC)
             _scwVerifiable_.add_with_viewport(_fxdVerifiable_)
 
-            _fraVerifiable_ = _widg.make_frame(_label_=_(u"Verifiability of Requirement"))
+            _fraVerifiable_ = _widg.make_frame(label=_(u"Verifiability of Requirement"))
             _fraVerifiable_.set_shadow_type(gtk.SHADOW_NONE)
             _fraVerifiable_.add(_scwVerifiable_)
 
