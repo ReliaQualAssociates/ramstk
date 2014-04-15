@@ -316,30 +316,31 @@ def make_combo(width=200, height=30, simple=True):
     return(_combo)
 
 
-def load_combo(combo, _list_, simple=True, _index_=0):
+def load_combo(combo, list, simple=True, _index_=0):
     """
     Utility function to load gtk.ComboBox widgets.
 
-    Keyword Arguments:
-    combo   -- the gtk.ComboBox to load.
-    _list_  -- the information to load into the gtk.ComboBox.
-    simple  -- indicates whether the load is simple (single column) or
-               complex (multiple columns).
-    _index_ -- the index in the list to display.  Only used when doing a
-               simple load.
+    :param combo: the gtk.ComboBox() to load.
+    :type combo: gtk.ComboBox
+    :param list list: the information to load into the gtk.ComboBox().
+    :param boolean simple: indicates whether the load is simple (single column)
+                           or complex (multiple columns).
+    :param integer index: the index in the list to display.  Only used when
+                          doing a simple load.
+    :return: False (successful) or True (error)
     """
 
-    model = combo.get_model()
-    model.clear()
+    _model = combo.get_model()
+    _model.clear()
 
     if simple:
         combo.append_text("")
-        for i in range(len(_list_)):
-            combo.append_text(_list_[i][_index_])
+        for i in range(len(list)):
+            combo.append_text(list[i][_index_])
     else:
-        model.append(None, ["", "", ""])
-        for i in range(len(_list_)):
-            model.append(None, _list_[i])
+        _model.append(None, ["", "", ""])
+        for i in range(len(list)):
+            _model.append(None, list[i])
 
     return False
 
