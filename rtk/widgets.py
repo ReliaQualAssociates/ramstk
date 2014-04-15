@@ -374,43 +374,43 @@ def make_dialog(dlgtitle, dlgparent=None,
     return(_dialog)
 
 
-def make_entry(width=200, _height_=25,
-               editable=True, bold=False,
-               _color_='#BBDDFF'):
+def make_entry(width=200, height=25, editable=True, bold=False,
+               color='#BBDDFF'):
     """
     Utility function to create gtk.Entry widgets.
 
-    Keyword Arguments:
-    width    -- width of the gtk.Entry widget.  Default is 200.
-    eight    -- height of the gtk.Entry widget.  Default is 25.
-    editable -- boolean indicating whether gtk.Entry should be editable.
-                Defaults to True.
-    bold     -- boolean indicating whether text should be bold.  Defaults
-                to False.
-    _color_  -- the hexidecimal color to set the background.  Defaults to
-                #FFF (light grey).
+    :param integer width: width of the gtk.Entry() widget.  Default is 200.
+    :param integer height: height of the gtk.Entry() widget.  Default is 25.
+    :param boolean editable: boolean indicating whether gtk.Entry() should be
+                             editable.  Defaults to True.
+    :param boolean bold: boolean indicating whether text should be bold.
+                         Defaults to False.
+    :param color: the hexidecimal color to set the background when the
+                  gtk.Entry() is not editable.  Defaults to #BBDDFF
+                  (light blue).
+    :rtype: gtk.Entry
     """
 
-    entry = gtk.Entry()
-    entry.props.width_request = width
-    entry.props.height_request = _height_
-    entry.props.editable = editable
+    _entry = gtk.Entry()
+    _entry.props.width_request = width
+    _entry.props.height_request = height
+    _entry.props.editable = editable
 
     if bold:
-        entry.modify_font(pango.FontDescription('bold'))
+        _entry.modify_font(pango.FontDescription('bold'))
 
     if not editable:
-        bg_color = gtk.gdk.Color(_color_)  # @UndefinedVariable
-        entry.modify_base(gtk.STATE_NORMAL, bg_color)
-        entry.modify_base(gtk.STATE_ACTIVE, bg_color)
-        entry.modify_base(gtk.STATE_PRELIGHT, bg_color)
-        entry.modify_base(gtk.STATE_SELECTED, bg_color)
-        entry.modify_base(gtk.STATE_INSENSITIVE, bg_color)
-        entry.modify_font(pango.FontDescription('bold'))
+        _bg_color = gtk.gdk.Color(color)
+        _entry.modify_base(gtk.STATE_NORMAL, _bg_color)
+        _entry.modify_base(gtk.STATE_ACTIVE, _bg_color)
+        _entry.modify_base(gtk.STATE_PRELIGHT, _bg_color)
+        _entry.modify_base(gtk.STATE_SELECTED, _bg_color)
+        _entry.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+        _entry.modify_font(pango.FontDescription('bold'))
 
-    entry.show()
+    _entry.show()
 
-    return(entry)
+    return(_entry)
 
 
 def make_label(text, width=190, height=25, bold=True, wrap=False,
