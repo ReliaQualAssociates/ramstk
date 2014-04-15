@@ -226,13 +226,12 @@ def make_button(height=40, width=200, label="", image='default'):
     """
     Utility function to create gtk.Button() widgets.
 
-    :param integer height: the height of the gtk.Button().
-    :param integer width: the width of the gtk.Button().
+    :param integer height: the height of the gtk.Button().  Default is 40.
+    :param integer width: the width of the gtk.Button().  Default is 200.
     :param string label: the text to display on the gtk.Button().  Default is
                          an empty string.
     :param image: the image to display on the gtk.Button().  Options for this
                   argument are:
-
                     - add
                     - assign
                     - calculate
@@ -241,12 +240,12 @@ def make_button(height=40, width=200, label="", image='default'):
     """
 
     if width == 0:
-        width = int((int(_conf.PLACES) + 5) * 8)
+        _width = int((int(_conf.PLACES) + 5) * 8)
 
     _button = gtk.Button(label=label)
 
     if image is not None:
-        if width >= 32:
+        if _width >= 32:
             _file_image = _conf.ICON_DIR + '32x32/' + image + '.png'
         else:
             _file_image = _conf.ICON_DIR + '16x16/' + image + '.png'
@@ -270,7 +269,7 @@ def make_check_button(label="", width=-1):
                           is -1 or natural request.
     """
 
-    _checkbutton = gtk.CheckButton(_label_, True)
+    _checkbutton = gtk.CheckButton(label, True)
 
     _checkbutton.get_child().set_use_markup(True)
     _checkbutton.get_child().set_line_wrap(True)
@@ -279,11 +278,11 @@ def make_check_button(label="", width=-1):
     return(_checkbutton)
 
 
-def make_option_button(_group_=None, _label_=_(u"")):
+def make_option_button(btngroup=None, btnlabel=_(u"")):
 
-    optbutton = gtk.RadioButton(group=_group_, label=_label_)
+    _optbutton = gtk.RadioButton(group=btngroup, label=btnlabel)
 
-    return(optbutton)
+    return(_optbutton)
 
 
 def make_combo(_width_=200, _height_=30, simple=True):

@@ -474,13 +474,13 @@ class Hardware(object):
         self.chkFCQ1 = _widg.make_check_button(label=_labels[0])
         self.chkFCQ2 = _widg.make_check_button(label=_labels[1])
         self.chkFCQ3 = _widg.make_check_button(label=_labels[2])
-        self.optHS = _widg.make_option_button(_label_=_labels[3])
-        self.optES = _widg.make_option_button(_group_=self.optHS,
-                                              _label_=_labels[4])
-        self.optNSH = _widg.make_option_button(_group_=self.optHS,
-                                               _label_=_labels[5])
-        self.optEO = _widg.make_option_button(_group_=self.optHS,
-                                              _label_=_labels[6])
+        self.optHS = _widg.make_option_button(btnlabel=_labels[3])
+        self.optES = _widg.make_option_button(btngroup=self.optHS,
+                                              btnlabel=_labels[4])
+        self.optNSH = _widg.make_option_button(btngroup=self.optHS,
+                                               btnlabel=_labels[5])
+        self.optEO = _widg.make_option_button(btngroup=self.optHS,
+                                              btnlabel=_labels[6])
         self.txtFCQ1 = _widg.make_text_view(buffer_=gtk.TextBuffer(),
                                             width=400, height=75)
         self.txtFCQ2 = _widg.make_text_view(buffer_=gtk.TextBuffer(),
