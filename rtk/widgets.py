@@ -45,18 +45,43 @@ _ = gettext.gettext
 
 
 class CellRendererML(gtk.CellRendererText):
+    """
+    Class to create a multi-line cell renderer.  It is based on the base class
+    gtk.CellRendererText().
+    """
 
     def __init__(self):
+
         gtk.CellRendererText.__init__(self)
 
+        self.textedit_window = None
+        self.selection = None
+        self.treestore = None
+        self.treeiter = None
+
+        self.textedit = gtk.TextView()
+        self.textbuffer = self.textedit.get_buffer()
+
     def do_get_size(self, widget, cell_area):
+        """
+        Method to get the size of the CellRendererML.
+        """
         size_tuple = gtk.CellRendererText.do_get_size(self, widget, cell_area)
 
-        return(size_tuple)
+        return size_tuple
 
-    def do_start_editing(self, event, treeview, path, background_area,
-                         cell_area, flags):
+    def do_start_editing(self, __event, treeview, path, __background_area,
+                         cell_area, __flags):
+        """
 
+
+        :param __event:
+        :param treeview:
+        :param path:
+        :param __background_area:
+        :param cell_area:
+        :param __flags:
+        """
         if not self.get_property('editable'):
             return
 
@@ -64,16 +89,13 @@ class CellRendererML(gtk.CellRendererText):
         self.treestore, self.treeiter = self.selection.get_selected()
 
         self.textedit_window = gtk.Dialog(parent=treeview.get_toplevel())
-
-        self.textedit_window.action_area.hide()
+        self.textedit_window.action_area.hide()     # pylint: disable=E1101
         self.textedit_window.set_decorated(False)
         self.textedit_window.set_property('skip-taskbar-hint', True)
         self.textedit_window.set_transient_for(None)
 
-        self.textedit = gtk.TextView()
         self.textedit.set_editable(True)
         self.textedit.set_property('visible', True)
-        self.textbuffer = self.textedit.get_buffer()
         self.textbuffer.set_property('text', self.get_property('text'))
 
         self.textedit_window.connect('key-press-event', self._keyhandler)
@@ -84,7 +106,7 @@ class CellRendererML(gtk.CellRendererText):
         #self.textedit_window.vbox.pack_start(scrolled_window)
 
         scrolled_window.add(self.textedit)
-        self.textedit_window.vbox.add(scrolled_window)
+        self.textedit_window.vbox.add(scrolled_window)  # pylint: disable=E1101
         self.textedit_window.realize()
 
         # Position the popup below the edited cell (and try hard to keep the
@@ -92,10 +114,10 @@ class CellRendererML(gtk.CellRendererText):
 
         (tree_x, tree_y) = treeview.get_bin_window().get_origin()
         (tree_w, tree_h) = treeview.window.get_geometry()[2:4]
-        (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]
-        x = tree_x + min(cell_area.x,
+        (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]    # pylint: disable=E1101
+        x = tree_x + min(cell_area.x,           # pylint: disable=C0103
                          tree_w - t_w + treeview.get_visible_rect().x)
-        y = tree_y + min(cell_area.y,
+        y = tree_y + min(cell_area.y,           # pylint: disable=C0103
                          tree_h - t_h + treeview.get_visible_rect().y)
         self.textedit_window.move(x, y)
         self.textedit_window.resize(cell_area.width, cell_area.height)
@@ -121,18 +143,25 @@ class CellRendererML(gtk.CellRendererText):
             print "response %i received" % response
             self.textedit_window.destroy()
 
-    def _keyhandler(self, widget, event):
+    def _keyhandler(self, __widget, event):
+        """
 
-        keyname = gtk.gdk.keyval_name(event.keyval)
+
+        :param __widget:
+        :param event:
+        """
+        _keyname = gtk.gdk.keyval_name(event.keyval)
 
         if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
-                gtk.gdk.keyval_name(event.keyval) == 'Return':
+                _keyname == 'Return':
 
             self.textedit_window.response(gtk.RESPONSE_OK)
 
 
 class CellRendererButton(gtk.CellRendererText):
-
+    """
+    Class to create a CellRenderer with a button in it.
+    """
     __gproperties__ = {"callable": (gobject.TYPE_PYOBJECT,
                                     "callable property",
                                     "callable property",
@@ -149,41 +178,73 @@ class CellRendererButton(gtk.CellRendererText):
         self.table = None
 
     def do_set_property(self, pspec, value):
+        """
+
+        :param pspec:
+        :param value:
+        :return:
+        """
+
         if pspec.name == "callable":
             if callable(value):
                 self.callable = value
             else:
                 raise TypeError("callable property must be callable!")
         else:
-                raise AttributeError("Unknown property %s" % pspec.name)
+            raise AttributeError("Unknown property %s" % pspec.name)
 
     def do_get_property(self, pspec):
+        """
+
+        :param pspec:
+        :return:
+        """
+
         if pspec.name == "callable":
             return self.callable
         else:
             raise AttributeError("Unknown property %s" % pspec.name)
 
-    def do_get_size(self, wid, cell_area):
+    def do_get_size(self, __width, cell_area):
+        """
+
+        :param __width:
+        :param cell_area:
+        :return:
+        """
+
         xpad = self.get_property("xpad")
         ypad = self.get_property("ypad")
 
         if not cell_area:
-            x, y = 0, 0
-            w = 2 * xpad + self._button_width
-            h = 2 * ypad + self._button_height
+            x, y = 0, 0                         # pylint: disable=C0103
+            w = 2 * xpad + self._button_width   # pylint: disable=C0103
+            h = 2 * ypad + self._button_height  # pylint: disable=C0103
         else:
-            w = 2 * xpad + cell_area.width
-            h = 2 * ypad + cell_area.height
+            w = 2 * xpad + cell_area.width      # pylint: disable=C0103
+            h = 2 * ypad + cell_area.height     # pylint: disable=C0103
 
             xalign = self.get_property("xalign")
             yalign = self.get_property("yalign")
 
-            x = max(0, xalign * (cell_area.width - w))
-            y = max(0, yalign * (cell_area.height - h))
+            x = max(0,
+                    xalign * (cell_area.width - w))     # pylint: disable=C0103
+            y = max(0,
+                    yalign * (cell_area.height - h))    # pylint: disable=C0103
 
         return(x, y, w, h)
 
     def do_render(self, window, wid, bg_area, cell_area, expose_area, flags):
+        """
+
+        :param window:
+        :param wid:
+        :param bg_area:
+        :param cell_area:
+        :param expose_area:
+        :param flags:
+        :return:
+        """
 
         if not window:
             return
@@ -191,7 +252,7 @@ class CellRendererButton(gtk.CellRendererText):
         xpad = self.get_property("xpad")
         ypad = self.get_property("ypad")
 
-        x, y, w, h = self.get_size(wid, cell_area)
+        x, y, w, h = self.get_size(wid, cell_area)  # pylint: disable=C0103
 
 # if flags & gtk.CELL_RENDERER_SELECTED :
 # state = gtk.STATE_ACTIVE
@@ -205,14 +266,26 @@ class CellRendererButton(gtk.CellRendererText):
 
         wid.get_style().paint_box(window, state, shadow, cell_area,
                                   wid, "button", cell_area.x + x + xpad,
-                                  cell_area.y + y + ypad,  w - 6, h - 6)
+                                  cell_area.y + y + ypad, w - 6, h - 6)
         flags = flags & ~gtk.STATE_SELECTED
         gtk.CellRendererText.do_render(self, window, wid, bg_area,
                                        (cell_area[0], cell_area[1] + ypad,
                                         cell_area[2], cell_area[3]),
                                        expose_area, flags)
 
-    def do_activate(self, event, wid, path, bg_area, cell_area, flags):
+    def do_activate(self, __event, __wid, path, __bg_area,
+                    __cell_area, __flags):
+        """
+
+        :param __event:
+        :param __wid:
+        :param path:
+        :param __bg_area:
+        :param __cell_area:
+        :param __flags:
+        :return:
+        """
+
         cb = self.get_property("callable")
         if cb is not None:
             cb(path)
@@ -256,7 +329,7 @@ def make_button(height=40, width=200, label="", image='default'):
     _button.props.width_request = width
     _button.props.height_request = height
 
-    return(_button)
+    return _button
 
 
 def make_check_button(label="", width=-1):
@@ -275,14 +348,22 @@ def make_check_button(label="", width=-1):
     _checkbutton.get_child().set_line_wrap(True)
     _checkbutton.get_child().props.width_request = width
 
-    return(_checkbutton)
+    return _checkbutton
 
 
 def make_option_button(btngroup=None, btnlabel=_(u"")):
+    """
+    Utility function to create gtk.RadioButton() widgets.
+
+    :param string btngroup: the group the gtk.RadioButton() belongs to, if any.
+    :param string btnlabel: the text to place in the label on the
+                            gtk.RadioButton().
+    :rtype: gtk.RadioButton
+    """
 
     _optbutton = gtk.RadioButton(group=btngroup, label=btnlabel)
 
-    return(_optbutton)
+    return _optbutton
 
 
 def make_combo(width=200, height=30, simple=True):
@@ -313,16 +394,16 @@ def make_combo(width=200, height=30, simple=True):
     _combo.props.width_request = width
     _combo.props.height_request = height
 
-    return(_combo)
+    return _combo
 
 
-def load_combo(combo, list, simple=True, _index_=0):
+def load_combo(combo, entries, simple=True, index=0):
     """
     Utility function to load gtk.ComboBox widgets.
 
     :param combo: the gtk.ComboBox() to load.
     :type combo: gtk.ComboBox
-    :param list list: the information to load into the gtk.ComboBox().
+    :param list entries: the information to load into the gtk.ComboBox().
     :param boolean simple: indicates whether the load is simple (single column)
                            or complex (multiple columns).
     :param integer index: the index in the list to display.  Only used when
@@ -335,12 +416,12 @@ def load_combo(combo, list, simple=True, _index_=0):
 
     if simple:
         combo.append_text("")
-        for i in range(len(list)):
-            combo.append_text(list[i][_index_])
+        for i in range(len(entries)):
+            combo.append_text(entries[i][index])
     else:
         _model.append(None, ["", "", ""])
-        for i in range(len(list)):
-            _model.append(None, list[i])
+        for i in range(len(entries)):
+            _model.append(None, entries[i])
 
     return False
 
@@ -348,20 +429,21 @@ def load_combo(combo, list, simple=True, _index_=0):
 def make_dialog(dlgtitle, dlgparent=None,
                 dlgflags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                           gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
+                            gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
     """
-    Utility function to create gtk.Dialog widgets.
+    Utility function to create gtk.Dialog() widgets.
 
-    :param string dlgtitle: the title text for the gtk.Dialog.
-    :param dlgparent: the parent window to associate the gtk.Dialog with.  Defaults
-                 to None.
-    :type dlgparent:
-    :param tuple dlgflags: the flags that control the operation of the gtk.Dialog.
-                 Defaults to gtk.DIALOG_MODAL and
-                 gtk.DIALOG_DESTROY_WITH_PARENT.
-    :param tuple dlgbuttons: the buttons to display and their response values.  Defaults to
-                 gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT and
-                 gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT.
+    :param string dlgtitle: the title text for the gtk.Dialog().
+    :param dlgparent: the parent window to associate the gtk.Dialog() with.
+                       Defaults to None.
+    :type dlgparent: gtk.Window
+    :param tuple dlgflags: the flags that control the operation of the
+                           gtk.Dialog().  Defaults to gtk.DIALOG_MODAL and
+                           gtk.DIALOG_DESTROY_WITH_PARENT.
+    :param tuple dlgbuttons: the buttons to display and their response values.
+                             Defaults to:
+                             gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT
+                             gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT
     """
 
     _dialog = gtk.Dialog(title=dlgtitle,
@@ -371,7 +453,7 @@ def make_dialog(dlgtitle, dlgparent=None,
 
     _dialog.set_has_separator(True)
 
-    return(_dialog)
+    return _dialog
 
 
 def make_entry(width=200, height=25, editable=True, bold=False,
@@ -410,7 +492,7 @@ def make_entry(width=200, height=25, editable=True, bold=False,
 
     _entry.show()
 
-    return(_entry)
+    return _entry
 
 
 def make_label(text, width=190, height=25, bold=True, wrap=False,
@@ -445,7 +527,7 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
 
     _label.show()
 
-    return(_label)
+    return _label
 
 
 def make_labels(text, container, x_pos, y_pos, y_inc=25):
@@ -506,7 +588,7 @@ def make_text_view(txvbuffer=None, width=200, height=100):
     _scrollwindow.props.height_request = height
     _scrollwindow.add_with_viewport(_view)
 
-    return(_scrollwindow)
+    return _scrollwindow
 
 
 def make_frame(label=""):
@@ -519,8 +601,8 @@ def make_frame(label=""):
 
     _label = gtk.Label()
     _label.set_markup("<span weight='bold'>" +
-                     label +
-                     "</span>")
+                      label +
+                      "</span>")
     _label.set_justify(gtk.JUSTIFY_LEFT)
     _label.set_alignment(xalign=0.5, yalign=0.5)
     _label.show_all()
@@ -529,14 +611,19 @@ def make_frame(label=""):
     _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
     _frame.set_label_widget(_label)
 
-    return(_frame)
+    return _frame
 
 
 def make_fixed():
+    """
+    Utility function to create gtk.Fixed() containers.
+
+    :rtype: gtk.Fixed
+    """
 
     _fixed = gtk.Fixed()
 
-    return(_fixed)
+    return _fixed
 
 
 def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
@@ -589,26 +676,15 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     for i in range(len(position)):
         types.append(datatype[i].text)
 
-    #if(name == 'Revision'):
-    #    query = "SELECT * FROM tbl_revision_format"
-    #    results = _app.DB.execute_query(query,
-    #                                    None,
-    #                                    _app.ProgCnx)
-    #    _types = []
-    #    for i in range(len(results)):
-    #        _types.append(results[i][3])
-    #    print _types
-    #    print types
-
     gobject_types = []
     gobject_types = [gobject.type_from_name(types[ix])
-         for ix in range(len(types))]
+                     for ix in range(len(types))]
 
 # If this is the Hardware tree, add a column for a pixbuf.
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
-    if(fmt_idx == 3):
+    if fmt_idx == 3:
         gobject_types.append(gtk.gdk.Pixbuf)
-    elif(fmt_idx == 9 or fmt_idx == 18):
+    elif fmt_idx == 9 or fmt_idx == 18:
         gobject_types.append(gobject.TYPE_INT)
         gobject_types.append(gobject.TYPE_STRING)
         gobject_types.append(gobject.TYPE_BOOLEAN)
@@ -624,7 +700,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     for i in range(cols):
         order.append(int(position[i].text))
 
-        if(widget[i].text == 'combo'):
+        if widget[i].text == 'combo':
             cell = gtk.CellRendererCombo()
             cellmodel = gtk.ListStore(gobject.TYPE_STRING)
             cellmodel.append([""])
@@ -638,7 +714,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
-        elif(widget[i].text == 'spin'):
+        elif widget[i].text == 'spin':
             cell = gtk.CellRendererSpin()
             adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
             cell.set_property('adjustment', adjustment)
@@ -648,11 +724,11 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('foreground', fg_col)
             cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
-        elif(widget[i].text == 'toggle'):
+        elif widget[i].text == 'toggle':
             cell = gtk.CellRendererToggle()
             cell.set_property('activatable', int(editable[i].text))
             cell.connect('toggled', cell_toggled, int(position[i].text), model)
-        elif(widget[i].text == 'blob'):
+        elif widget[i].text == 'blob':
             cell = CellRendererML()
             cell.set_property('background', bg_col)
             cell.set_property('editable', int(editable[i].text))
@@ -671,19 +747,19 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
             cell.set_property('yalign', 0.1)
             cell.connect('edited', edit_tree, int(position[i].text), model)
 
-        if(int(editable[i].text) == 0 and widget[i].text != 'toggle'):
+        if int(editable[i].text) == 0 and widget[i].text != 'toggle':
             cell.set_property('background', 'light gray')
 
         column = gtk.TreeViewColumn("")
 
 # If this is the Hardware tree, add a column for a pixbuf.
 # If this is the FMECA tree, add a column for an integer and a pixbuf
-        if(i == 1 and fmt_idx == 3):
+        if i == 1 and fmt_idx == 3:
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
             column.set_attributes(cellpb, pixbuf=cols)
-        elif(i == 0 and fmt_idx == 9):
+        elif i == 0 and fmt_idx == 9:
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
@@ -691,7 +767,7 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
         else:
             column.set_visible(int(visible[i].text))
             column.pack_start(cell, True)
-            if(widget[i].text == 'toggle'):
+            if widget[i].text == 'toggle':
                 column.set_attributes(cell, active=int(position[i].text))
             else:
                 column.set_attributes(cell, text=int(position[i].text))
@@ -711,12 +787,12 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
         column.set_alignment(0.5)
         column.connect('notify::width', resize_wrap, cell)
 
-        if(i > 0):
+        if i > 0:
             column.set_reorderable(True)
 
         treeview.append_column(column)
 
-    if(fmt_idx == 9):
+    if fmt_idx == 9:
         column = gtk.TreeViewColumn("")
         column.set_visible(0)
         cell = gtk.CellRendererText()
@@ -727,27 +803,31 @@ def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
     return(treeview, order)
 
 
-def format_cell(column, cell, model, iter, data_):
+def format_cell(__column, cell, model, row, data):
     """
-    Function to set the formatting of the gtk.Treeview gtk.CellRenderers.
+    Function to set the formatting of the gtk.Treeview() gtk.CellRenderers().
 
-    Keyword Arguments:
-    column -- the gtk.TreeViewColumn containing the gtk.CellRenderer to format.
-    cell   -- the gtk.CellRenderer to format.
-    model  -- the gtk.TreeModel containing the gtk.TreeViewColumn.
-    iter   -- the gtk.TreeIter pointing to the row containing the
-              gtk.CellRenderer to format.
-    data_  -- a tuple containing the position and the data type.
+    :param __column: the gtk.TreeViewColumn() containing the gtk.CellRenderer()
+                     to format.
+    :type __column: gtk.TreeViewColumn
+    :param cell: the gtk.CellRenderer() to format.
+    :type cell: gtk.CellRenderer
+    :param model: the gtk.TreeModel() containing the gtk.TreeViewColumn().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() pointing to the row containing the
+                gtk.CellRenderer() to format.
+    :type row: gtk.TreeIter
+    :param tuple data: a tuple containing the position and the data type.
     """
 
-    if(data_[1] == 'gfloat'):
+    if data[1] == 'gfloat':
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-    elif(data_[1] == 'gint'):
+    elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:
         return
 
-    val = model.get_value(iter, data_[0])
+    val = model.get_value(row, data[0])
     try:
         cell.set_property('text', fmt.format(val))
     except TypeError:                       # It's a gtk.CellRendererToggle
@@ -758,25 +838,29 @@ def format_cell(column, cell, model, iter, data_):
 
 def edit_tree(cell, path, new_text, position, model):
     """
-    Called whenever a TreeView CellRenderer is edited.
+    Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-    Keyword Arguments:
-    cell     -- the CellRenderer that was edited.
-    path     -- the TreeView path of the CellRenderer that was edited.
-    new_text -- the new text in the edited CellRenderer.
-    position -- the column position of the edited CellRenderer.
-    model    -- the TreeModel the CellRenderer belongs to.
+    :param cell: the gtk.CellRenderer() that was edited.
+    :type cell: gtk.CellRenderer
+    :param string path: the gtk.TreeView() path of the gtk.CellRenderer() that
+                        was edited.
+    :param string new_text: the new text in the edited gtk.CellRenderer().
+    :param integer position: the column position of the edited
+                             gtk.CellRenderer().
+    :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+    :type model: gtk.TreeModel
+    :return: False
     """
 
-    _convert_ = gobject.type_name(model.get_column_type(position))
+    _convert = gobject.type_name(model.get_column_type(position))
 
     if new_text is None:
         model[path][position] = not cell.get_active()
-    elif _convert_ == 'gchararray':
+    elif _convert == 'gchararray':
         model[path][position] = str(new_text)
-    elif _convert_ == 'gint':
+    elif _convert == 'gint':
         model[path][position] = int(new_text)
-    elif _convert_ == 'gfloat':
+    elif _convert == 'gfloat':
         model[path][position] = float(new_text)
 
     return False
@@ -784,13 +868,17 @@ def edit_tree(cell, path, new_text, position, model):
 
 def cell_toggled(cell, path, position, model):
     """
-    Called whenever a TreeView CellRenderer is edited.
+    Called whenever a gtk.TreeView() gtk.CellRendererToggle() is edited.
 
-    Keyword Arguments:
-    cell     -- the CellRenderer that was edited.
-    path     -- the TreeView path of the CellRenderer that was edited.
-    position -- the column position of the edited CellRenderer.
-    model    -- the TreeModel the CellRenderer belongs to.
+    :param cell: the gtk.CellRendererToggle() that was edited.
+    :type cell: gtk.CellRendererToggle
+    :param string path: the gtk.TreeView() path of the gtk.CellRendererToggle()
+                        that was edited.
+    :param integer position: the column position of the edited
+                             gtk.CellRendererToggle().
+    :param model: the gtk.TreeModel() the gtk.CellRendererToggle() belongs to.
+    :type model: gtk.TreeModel
+    :return: False
     """
 
     model[path][position] = not cell.get_active()
@@ -798,20 +886,18 @@ def cell_toggled(cell, path, position, model):
     return False
 
 
-def resize_wrap(column, param, cell):
+def resize_wrap(column, __param, cell):
     """
     This function dynamically sets the wrap-width property for the
     gtk.CellRenderers in the gtk.TreeView when the column width is resized.
 
-    Keyword Arguments:
     column -- the column being resized.
-    param  -- the triggering parameter (this is a GParamInt object).
+    __param  -- the triggering parameter (this is a GParamInt object).
     cell   -- the cell that needs to be resized.
     """
 
 # TODO: Adjust the height of the row when the width is adjusted.
     width = column.get_width()
-    tree=column.get_tree_view().get_name()
 
     if width <= 0:
         return
@@ -826,197 +912,201 @@ def resize_wrap(column, param, cell):
     return False
 
 
-def make_column_heading(_heading_=""):
+def make_column_heading(heading=""):
     """
-    This function creates labels to use for gtk.TreeView column headings.
+    This function creates labels to use for gtk.TreeView() column headings.
 
-    Keyword Arguments:
-    _heading_ -- the text to use for the heading.
+    :param string heading: the text to use for the heading.
+    :rtype: gtk.Label
     """
 
-    _heading_ = "<span weight='bold'>%s</span>" % unicode(_heading_)
+    _heading = "<span weight='bold'>%s</span>" % unicode(heading)
 
     label = gtk.Label()
-    label.set_markup(_heading_)
+    label.set_markup(_heading)
     label.set_alignment(xalign=0.5, yalign=0.5)
     label.set_justify(gtk.JUSTIFY_CENTER)
     label.set_line_wrap(True)
     label.show_all()
 
-    return(label)
+    return label
 
 
-def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
+def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: disable=C0103, W0102
               _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1, 1],
               _marker_=['g-', 'r-', 'b-', 'k--']):
-        """
-        Function to load the matplotlib plots.
+    """
+    Function to load the matplotlib plots.
 
-        Keyword Arguments:
-        axis     -- the matplotlib axis object.
-        plot     -- the matplotlib plot object.
-        x        -- the x values to plot.
-        y1       -- the first data set y values to plot.
-        y2       -- the second data set y values to plot.
-        y3       -- the third data set y values to plot.
-        y4       -- the fourth data set y values to plot.
-        _title_  -- the title for the plot.
-        _xlab_   -- the x asis label for the plot.
-        _ylab_   -- the y axis label for the plot.
-        _type_   -- the type of line to plot.
-                    1 = step
-                    2 = plot
-                    3 = histogram
-                    4 = date plot
-        _marker_ -- the marker to use on the plot.
-                    g- = green solid line
-                    r- = red solid line
-                    b- = blue solid line
-                    k- = black dashed line
-        """
+    :param axis: the matplotlib axis object.
+    :param plot: the matplotlib plot object.
+    :param x: the x values to plot.
+    :param y1: the first data set y values to plot.
+    :param y2: the second data set y values to plot.
+    :param y3: the third data set y values to plot.
+    :param y4: the fourth data set y values to plot.
+    :param string title: the title for the plot.
+    :param string xlab: the x axis label for the plot.
+    :param string ylab: the y axis label for the plot.
+    :param integer type: the type of line to plot.
+                         Options are:
+                            1 = step
+                            2 = plot
+                            3 = histogram
+                            4 = date plot
+    :param string marker: the marker to use on the plot.
+                          Options are:
+                            g- = green solid line
+                            r- = red solid line
+                            b- = blue solid line
+                            k- = black dashed line
+    :return:
+    """
 
-        #import numpy
-        #from scipy.interpolate import spline
+    # import numpy
+    # from scipy.interpolate import spline
 
-        n_points = len(x)
+    n_points = len(x)
 
-        axis.cla()
+    axis.cla()
 
-        axis.grid(True, which='both')
+    axis.grid(True, which='both')
 
-        _lst_min_ = []
-        _lst_max_ = []
-        if(y1 is not None):
-            if(_type_[0] == 1):
-                line, = axis.step(x, y1, _marker_[0], where='mid')
-                for i in range(n_points):
-                    line.set_ydata(y1)
-            elif(_type_[0] == 2):
-                line, = axis.plot(x, y1, _marker_[0], linewidth=2)
-                for i in range(n_points):
-                    line.set_ydata(y1)
-            elif(_type_[0] == 3):
-                axis.grid(False, which='both')
-                n, bins, patches = axis.hist(x, bins=y1, color=_marker_[0])
-            elif(_type_[0] == 4):
-                line, = axis.plot_date(x, y1, _marker_[0],
-                                       xdate=True, linewidth=2)
-            _lst_min_.append(min(y1))
-            _lst_max_.append(max(y1))
+    _lst_min_ = []
+    _lst_max_ = []
+    if y1 is not None:
+        if _type_[0] == 1:
+            line, = axis.step(x, y1, _marker_[0], where='mid')
+            for i in range(n_points):           # pylint: disable=W0612
+                line.set_ydata(y1)
+        elif _type_[0] == 2:
+            line, = axis.plot(x, y1, _marker_[0], linewidth=2)
+            for i in range(n_points):
+                line.set_ydata(y1)
+        elif _type_[0] == 3:
+            axis.grid(False, which='both')
+            __n, bins, __patches = axis.hist(x, bins=y1, color=_marker_[0])
+        elif _type_[0] == 4:
+            line, = axis.plot_date(x, y1, _marker_[0],
+                                   xdate=True, linewidth=2)
+        _lst_min_.append(min(y1))
+        _lst_max_.append(max(y1))
 
-        if(y2 is not None):
-            if(_type_[1] == 1):
-                line2, = axis.step(x, y2, _marker_[1], where='mid')
-                for i in range(n_points):
-                    line2.set_ydata(y2)
-            elif(_type_[1] == 2):
-                line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
-                for i in range(n_points):
-                    line2.set_ydata(y2)
-            elif(_type_[1] == 3):
-                axis.grid(False, which='both')
-                n, bins, patches = axis.hist(x, bins=y2, color=_marker_[1])
-                line2, = axis.plot(bins, y2)
-            elif(_type_[1] == 4):
-                line2, = axis.plot_date(x, y2, _marker_[1],
-                                        xdate=True, linewidth=2)
-            _lst_min_.append(min(y2))
-            _lst_max_.append(max(y2))
+    if y2 is not None:
+        if _type_[1] == 1:
+            line2, = axis.step(x, y2, _marker_[1], where='mid')
+            for i in range(n_points):
+                line2.set_ydata(y2)
+        elif _type_[1] == 2:
+            line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
+            for i in range(n_points):
+                line2.set_ydata(y2)
+        elif _type_[1] == 3:
+            axis.grid(False, which='both')
+            __n, bins, __patches = axis.hist(x, bins=y2, color=_marker_[1])
+            line2, = axis.plot(bins, y2)
+        elif _type_[1] == 4:
+            line2, = axis.plot_date(x, y2, _marker_[1],
+                                    xdate=True, linewidth=2)
+        _lst_min_.append(min(y2))
+        _lst_max_.append(max(y2))
 
-        if(y3 is not None):
-            if(_type_[2] == 1):
-                line3, = axis.step(x, y3, _marker_[2], where='mid')
-                for i in range(n_points):
-                    line3.set_ydata(y3)
-            elif(_type_[2] == 2):
-                line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
-                for i in range(n_points):
-                    line3.set_ydata(y3)
-            elif(_type_[2] == 3):
-                axis.grid(False, which='both')
-                n, bins, patches = axis.hist(x, bins=y3, color=_marker_[2])
-                line3, = axis.plot(bins, y3)
-            elif(_type_[2] == 4):
-                line3, = axis.plot_date(x, y3, _marker_[2],
-                                        xdate=True, linewidth=2)
-            _lst_min_.append(min(y3))
-            _lst_max_.append(max(y3))
+    if y3 is not None:
+        if _type_[2] == 1:
+            line3, = axis.step(x, y3, _marker_[2], where='mid')
+            for i in range(n_points):
+                line3.set_ydata(y3)
+        elif _type_[2] == 2:
+            line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
+            for i in range(n_points):
+                line3.set_ydata(y3)
+        elif _type_[2] == 3:
+            axis.grid(False, which='both')
+            __n, bins, __patches = axis.hist(x, bins=y3, color=_marker_[2])
+            line3, = axis.plot(bins, y3)
+        elif _type_[2] == 4:
+            line3, = axis.plot_date(x, y3, _marker_[2],
+                                    xdate=True, linewidth=2)
+        _lst_min_.append(min(y3))
+        _lst_max_.append(max(y3))
 
-        if(y4 is not None):
-            if(_type_[3] == 1):
-                line4, = axis.step(x, y4, _marker_[3], where='mid')
-                for i in range(n_points):
-                    line4.set_ydata(y4)
-            elif(_type_[3] == 2):
-                line4, = axis.plot(x, y4, _marker_[3], linewidth=2)
-                for i in range(n_points):
-                    line4.set_ydata(y4)
-            elif(_type_[3] == 3):
-                axis.grid(False, which='both')
-                n, bins, patches = axis.hist(x, bins=y4, color=_marker_[3])
-                line4, = axis.plot(bins, y4)
-            elif(_type_[3] == 4):
-                line4, = axis.plot_date(x, y4, _marker_[3],
-                                        xdate=True, linewidth=2)
-            _lst_min_.append(min(y4))
-            _lst_max_.append(max(y4))
+    if y4 is not None:
+        if _type_[3] == 1:
+            line4, = axis.step(x, y4, _marker_[3], where='mid')
+            for i in range(n_points):
+                line4.set_ydata(y4)
+        elif _type_[3] == 2:
+            line4, = axis.plot(x, y4, _marker_[3], linewidth=2)
+            for i in range(n_points):
+                line4.set_ydata(y4)
+        elif _type_[3] == 3:
+            axis.grid(False, which='both')
+            __n, bins, __patches = axis.hist(x, bins=y4, color=_marker_[3])
+            line4, = axis.plot(bins, y4)
+        elif _type_[3] == 4:
+            line4, = axis.plot_date(x, y4, _marker_[3],
+                                    xdate=True, linewidth=2)
+        _lst_min_.append(min(y4))
+        _lst_max_.append(max(y4))
 
-        axis.set_title(_title_)
-        axis.set_xlabel(_xlab_)
-        axis.set_ylabel(_ylab_)
+    axis.set_title(_title_)
+    axis.set_xlabel(_xlab_)
+    axis.set_ylabel(_ylab_)
 
-        _min_ = min(_lst_min_)
-        _max_ = max(_lst_max_)
-        axis.set_ybound(_min_, _max_)
+    _min_ = min(_lst_min_)
+    _max_ = max(_lst_max_)
+    axis.set_ybound(_min_, _max_)
 
-        plot.draw()
+    plot.draw()
 
-        return False
+    return False
 
 
-def create_legend(axis, text, _fontsize_='small', _frameon_=False,
-                  _location_='upper right', _ncol_=1, _shadow_=True,
-                  _title_="", _lwd_=0.5):
+def create_legend(axis, text, fontsize='small', legframeon=False,
+                  location='upper right', legncol=1, legshadow=True,
+                  legtitle="", lwd=0.5):
     """
     Function to create legends on matplotlib plots.
 
-    Keyword Arguments:
-    axis       -- the axis object to associate the legend with.
-    text       -- the text to display in the legend.  This is a tuple of strings.
-    _fontsize_ -- the size of the font, in poiunts, to use for the legend.
-                  Options are:
-                    xx-small
-                    x-small
-                    small
-                    medium
-                    large
-                    x-large
-                    xx-large
-    _frameon_  -- whether or not there is a frame around the legend.
-    _location_ -- the location of the legend on the plot.  Options are:
-                    best or 0
-                    upper right or 1
-                    upper left or 2
-                    lower left or 3
-                    lower right or 4
-                    right or 5
-                    center left or 6
-                    center right or 7
-                    lower center or 8
-                    upper center or 9
-                    center or 10
-    _ncol_     -- the number columns in the legend.
-    _shadow_   -- whether or not to display a shadow behind the legend block.
-    _title_    -- the titel of the legend.
-    _lwd_      -- the linewidth of the box around the legend.
+    :param axis: the axis object to associate the legend with.
+    :param tuple text: the text to display in the legend.
+    :param string fontsize: the size of the font to use for the legend.
+                            Options are:
+                                xx-small
+                                x-small
+                                small
+                                medium
+                                large
+                                x-large
+                                xx-large
+    :param boolean legframeon: whether or not there is a frame around the
+                               legend.
+    :param string location: the location of the legend on the plot.
+                            Options are:
+                                best or 0
+                                upper right or 1
+                                upper left or 2
+                                lower left or 3
+                                lower right or 4
+                                right or 5
+                                center left or 6
+                                center right or 7
+                                lower center or 8
+                                upper center or 9
+                                center or 10
+    :param integer legncol: the number columns in the legend.
+    :param boolean legshadow: whether or not to display a shadow behind the
+                              legend block.
+    :param string legtitle: the title of the legend.
+    :param float lwd: the linewidth of the box around the legend.
     """
 
-    leg = axis.legend(text, frameon=_frameon_, loc=_location_, ncol=_ncol_,
-                      shadow=_shadow_, title=_title_)
+    _legend = axis.legend(text, frameon=legframeon, loc=location, ncol=legncol,
+                          shadow=legshadow, title=legtitle)
 
-    for t in leg.get_texts():
-        t.set_fontsize(_fontsize_)
-    for l in leg.get_lines():
-        l.set_linewidth(_lwd_)
+    for _text in _legend.get_texts():
+        _text.set_fontsize(fontsize)
+    for _line in _legend.get_lines():
+        _line.set_linewidth(lwd)
 
     return False

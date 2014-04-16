@@ -983,8 +983,8 @@ class Validation(object):
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),
                  _(u"Minimum Expected Time"), _(u"Actual Remaining Time"))
-        create_legend(self.axAxis1, _text, _fontsize_='medium',
-                      _frameon_=True, _location_='lower left', _shadow_=True)
+        create_legend(self.axAxis1, _text, fontsize='medium',
+                      legframeon=True, location='lower left', legshadow=True)
 
         return False
 

@@ -1457,30 +1457,6 @@ class Testing(object):
 
             return False
 
-        def _load_assessment_tab(self):
-            """
-            Function to load the widgets on the Test Assessment page.
-
-            Keyword Arguments:
-            self -- the current instance of an TESTING class.
-            """
-
-            (_model_, _row_) = self.treeview.get_selection().get_selected()
-
-            _grouped_ = _model_.get_value(_row_, 22)
-            if _grouped_ == 1:
-                self.optGrouped.set_active(True)
-            else:
-                self.optIndividual.set_active(True)
-
-            self.spnConfidence.set_value(_model_.get_value(_row_, 26))
-
-            self.txtGroupInterval.set_text(str(_model_.get_value(_row_, 23)))
-            self.txtCumTestTime.set_text(str(_model_.get_value(_row_, 24)))
-            self.txtCumFailures.set_text(str(_model_.get_value(_row_, 25)))
-
-            return False
-
         def _load_test_assessment_tree(self):
             """
             Function to load the TESTING class test data gtk.TreeView().
@@ -1522,7 +1498,7 @@ class Testing(object):
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         if _row_ is not None:
             _load_planning_tab(self)
-            _load_assessment_tab(self)
+            self.load_assessment_tab()
             _load_test_assessment_tree(self)
 
         if self._app.winWorkBook.get_child() is not None:
@@ -1535,6 +1511,27 @@ class Testing(object):
         self._app.winWorkBook.set_title(_title)
 
         self.notebook.set_current_page(0)
+
+        return False
+
+    def load_assessment_tab(self):
+        """
+        Method to load the widgets on the Test Assessment page.
+        """
+
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+
+        _grouped_ = _model_.get_value(_row_, 22)
+        if _grouped_ == 1:
+            self.optGrouped.set_active(True)
+        else:
+            self.optIndividual.set_active(True)
+
+        self.spnConfidence.set_value(_model_.get_value(_row_, 26))
+
+        self.txtGroupInterval.set_text(str(_model_.get_value(_row_, 23)))
+        self.txtCumTestTime.set_text(str(_model_.get_value(_row_, 24)))
+        self.txtCumFailures.set_text(str(_model_.get_value(_row_, 25)))
 
         return False
 
@@ -2144,11 +2141,11 @@ class Testing(object):
             _mu = []
 
         self._assess_plan_feasibility(TTTi, N)
-        self.load_notebook._load_assessment_tab()
+        self.load_assessment_tab()
         if self.optMTBF.get_active():
-            self._load_rg_plot(TTTi, MTBFAP, _mu, _N_)
+            self._load_rg_plot(TTTi, MTBFAP, _mu, N)
         elif self.optFailureIntensity.get_active():
-            self._load_rg_plot(TTTi, MTBFAP, _rho, _N_)
+            self._load_rg_plot(TTTi, MTBFAP, _rho, N)
 
         return False
 

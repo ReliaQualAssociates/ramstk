@@ -2175,9 +2175,9 @@ class Dataset:
                             _ylab_=_(u"Mean Cumulative Function [mu(t)]"),
                             _marker_=['g-', 'r-', 'b-'])
             _text_ = (u"MCF", u"MCF LCL", u"MCF UCL")
-            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='lower right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis1, _text_, fontsize='medium',
+                                legframeon=True, location='lower right',
+                                legshadow=True)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
@@ -2336,9 +2336,9 @@ class Dataset:
                             _ylab_=_(u"Survival Function [S(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
             _text_ = (u"Survival Function [S(t)]", u"S(t) LCL", u"S(t) UCL")
-            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='upper right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis1, _text_, fontsize='medium',
+                                legframeon=True, location='upper right',
+                                legshadow=True)
 
 # Plot the hazard rate curve with confidence bounds.
             self._load_plot(self.axAxis3, self.pltPlot3,
@@ -2349,9 +2349,9 @@ class Dataset:
                             _ylab_=_(u"Hazard Rate [h(t)] "),
                             _marker_=['g-', 'r-', 'b-'])
             _text_ = (u"Hazard Rate [h(t)]", u"h(t) LCL", u"h(t) UCL")
-            _widg.create_legend(self.axAxis3, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='upper right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis3, _text_, fontsize='medium',
+                                legframeon=True, location='upper right',
+                                legshadow=True)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
@@ -2369,9 +2369,9 @@ class Dataset:
                             _marker_=['g-', 'r-', 'b-'])
             _text_ = (u"Cumulative Hazard Function [H(t)]",
                       u"H(t) LCL", u"H(t) UCL")
-            _widg.create_legend(self.axAxis2, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='upper left',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis2, _text_, fontsize='medium',
+                                legframeon=True, location='upper left',
+                                legshadow=True)
 
 # Plot the log cumulative hazard curve with confidence bounds.
             self._load_plot(self.axAxis4, self.pltPlot4,
@@ -2383,9 +2383,9 @@ class Dataset:
                             _marker_=['g-', 'r-', 'b-'])
             _text_ = (u"Log Cumulative Hazard Function [log H(t)]",
                       u"log H(t) LCL", u"log H(t) UCL")
-            _widg.create_legend(self.axAxis4, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='upper left',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis4, _text_, fontsize='medium',
+                                legframeon=True, location='upper left',
+                                legshadow=True)
 
             for plot in self.vbxPlot2.get_children():
                 self.vbxPlot2.remove(plot)
@@ -2560,9 +2560,9 @@ class Dataset:
 
             _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                       _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
-            _widg.create_legend(self.axAxis1, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='lower right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis1, _text_, fontsize='medium',
+                                legframeon=True, location='lower right',
+                                legshadow=True)
 
             _widg.load_plot(self.axAxis2, self.pltPlot2, x=_dates_,
                             y1=_mtbf_c_plot_, y2=_mtbf_model_,
@@ -2574,9 +2574,9 @@ class Dataset:
 
             _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                       _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
-            _widg.create_legend(self.axAxis2, _text_, _fontsize_='medium',
-                                _frameon_=True, _location_='lower right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis2, _text_, fontsize='medium',
+                                frameon=True, location='lower right',
+                                shadow=True)
 
 # Load the failure intensity versus cumulative operating time.
             _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times_,
@@ -2601,9 +2601,9 @@ class Dataset:
 
             _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
                       _(u"Cum. FI UCL"), _(u"Fitted Model"))
-            _widg.create_legend(self.axAxis3, _text_,  _fontsize_='medium',
-                                _frameon_=True, _location_='upper right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis3, _text_,  fontsize='medium',
+                                legframeon=True, location='upper right',
+                                legshadow=True)
 
 # Load the failure intensity versus calendar time plot.
             _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates_[3:],
@@ -2616,9 +2616,9 @@ class Dataset:
 
             _text_ = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
                       _(u"Cum. FI UCL"), _(u"Fitted Model"))
-            _widg.create_legend(self.axAxis4, _text_,  _fontsize_='medium',
-                                _frameon_=True, _location_='upper right',
-                                _shadow_=True)
+            _widg.create_legend(self.axAxis4, _text_,  fontsize='medium',
+                                legframeon=True, location='upper right',
+                                legshadow=True)
 
             for plot in self.vbxPlot1.get_children():
                 self.vbxPlot1.remove(plot)
