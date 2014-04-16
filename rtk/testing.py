@@ -1383,6 +1383,41 @@ class Testing(object):
 
         return False
 
+    def load_test_assessment_tree(self):
+        """
+        Method to load the TESTING class test data gtk.TreeView().
+        """
+
+        _query = "SELECT fld_record_id, fld_request_date, \
+                         fld_left_interval, fld_right_interval, \
+                         fld_quantity \
+                  FROM tbl_survival_data \
+                  WHERE fld_dataset_id=%d" % self.test_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        try:
+            _n_records = len(_results)
+        except TypeError:
+            _n_records = 0
+
+        _model = self.tvwTestAssessment.get_model()
+        _model.clear()
+        for i in range(_n_records):
+            _date = str(datetime.fromordinal(
+                int(_results[i][1])).strftime('%Y-%m-%d'))
+            _model.append([_results[i][0], _date, _results[i][2],
+                           _results[i][3], _results[i][4]])
+
+        self.tvwTestAssessment.set_cursor('0', None, False)
+        _root = _model.get_iter_root()
+        if _root is not None:
+            _path = _model.get_path(_root)
+            _col = self.tvwRGPlanDetails.get_column(0)
+            self.tvwRGPlanDetails.row_activated(_path, _col)
+
+        return False
+
     def load_notebook(self):
         """
         Method to load the TESTING class gtk.Notebook.
@@ -1457,49 +1492,11 @@ class Testing(object):
 
             return False
 
-        def _load_test_assessment_tree(self):
-            """
-            Function to load the TESTING class test data gtk.TreeView().
-
-            Keyword Arguments:
-            self -- the current instance of an TESTING class.
-            """
-
-            _query_ = "SELECT fld_record_id, fld_request_date, \
-                              fld_left_interval, fld_right_interval, \
-                              fld_quantity \
-                       FROM tbl_survival_data \
-                       WHERE fld_dataset_id=%d" % self.test_id
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx)
-            try:
-                _n_records_ = len(_results_)
-            except TypeError:
-                _n_records_ = 0
-
-            _model_ = self.tvwTestAssessment.get_model()
-            _model_.clear()
-            for i in range(_n_records_):
-                _date = str(datetime.fromordinal(
-                    int(_results_[i][1])).strftime('%Y-%m-%d'))
-                _model_.append([_results_[i][0], _date, _results_[i][2],
-                                _results_[i][3], _results_[i][4]])
-
-            self.tvwTestAssessment.set_cursor('0', None, False)
-            _root_ = _model_.get_iter_root()
-            if _root_ is not None:
-                _path_ = _model_.get_path(_root_)
-                _col_ = self.tvwRGPlanDetails.get_column(0)
-                self.tvwRGPlanDetails.row_activated(_path_, _col_)
-
-            return False
-
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         if _row_ is not None:
             _load_planning_tab(self)
             self.load_assessment_tab()
-            _load_test_assessment_tree(self)
+            self.load_test_assessment_tree()
 
         if self._app.winWorkBook.get_child() is not None:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
@@ -2153,9 +2150,9 @@ class Testing(object):
         """
         Method to assess the feasibility of a test plan.
 
-        Keyword Arguments:
-        TTT -- a list of the test times for each test phase.
-        N   -- a list of the number of failures expected in each test phase.
+        :param list TTT: a list of the test times for each test phase.
+        :param list N: a list of the number of failures expected in each test
+                       phase.
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'

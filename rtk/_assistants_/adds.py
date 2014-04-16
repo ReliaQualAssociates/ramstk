@@ -1346,7 +1346,7 @@ class AddRGRecord(gtk.Assistant):
             self._app.debug_log.error("adds.py: Failed to add new test record to survival data table.")
             return True
 
-        self._app.TESTING._load_test_assessment_tree()
+        self._app.TESTING.load_test_assessment_tree()
 
         return False
 
