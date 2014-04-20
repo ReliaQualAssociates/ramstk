@@ -70,30 +70,30 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
     Function to calculate the idealized growth curve for a reliability growth
     program.
 
-    :param float MTBFI: the starting MTBF.
-    :param float MTBFF: the final MTBF.
-    :param float TTT: the total time on test.  Summed across all phases.
-    :param float AvgGR: the average growth rate for the program.
-    :param float t1: the growth start time.  The time the first fix is
+    @param float MTBFI: the starting MTBF.
+    @param float MTBFF: the final MTBF.
+    @param float TTT: the total time on test.  Summed across all phases.
+    @param float AvgGR: the average growth rate for the program.
+    @param float t1: the growth start time.  The time the first fix is
                      implemented.
-    :param float AvgMS: the average management strategy across the entire
+    @param float AvgMS: the average management strategy across the entire
                         program.
-    :param float Prob: the probability of observing at least one failure.
-    :param float AvgFEF: the average fix effectiveness factor across the
+    @param float Prob: the probability of observing at least one failure.
+    @param float AvgFEF: the average fix effectiveness factor across the
                          program.
-    :param boolean FixProb: indicates whether or not to fix the probability
+    @param boolean FixProb: indicates whether or not to fix the probability
                             value.  Defaults to False.
-    :param boolean FixMS: indicates whether or not to fix the management
+    @param boolean FixMS: indicates whether or not to fix the management
                           strategy value.  Defaults to False.
-    :param boolean FixTTFF: indicates whether or not to fix the time to first
+    @param boolean FixTTFF: indicates whether or not to fix the time to first
                             failure value.  Defaults to False.
-    :param boolean FixTTT: indicates whether or not to fix the total test time
+    @param boolean FixTTT: indicates whether or not to fix the total test time
                            value.  Defaults to False.
-    :param boolean FixMTBFI: indicates whether or not to fix the intial MTBF
+    @param boolean FixMTBFI: indicates whether or not to fix the intial MTBF
                              value.  Defaults to False.
-    :param boolean FixMTBFG: indicates whether or not to fix the goal MTBF
+    @param boolean FixMTBFG: indicates whether or not to fix the goal MTBF
                              value.  Defaults to False.
-    :param boolean FixGR: indicates whether or not to fix the growth rate
+    @param boolean FixGR: indicates whether or not to fix the growth rate
                           value.  Defaults to False.
     """
 
@@ -233,17 +233,17 @@ def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):  #pylint: disable=C01
     growth phase.
 
     Keyword Arguments:
-    :param model: the gtk.TreeModel() containing the RG phase information.
-    :type model: gtk.TreeModel
-    :param row: the selected gtk.Iter() containning the specific RG phase
+    @param model: the gtk.TreeModel() containing the RG phase information.
+    @type model: gtk.TreeModel
+    @param row: the selected gtk.Iter() containning the specific RG phase
                 information.
-    :type row: gtk.Iter
-    :param float MS: the management strategy for this program.
-    :param float FEF: the average FEF for this program.
-    :param float Prob: the probability of seeing one failure.
-    :param float ti: the growth start time; time to first fix for this program.
-    :return float GRi: the required growth rate for phase i.
-    :return float TTTi: the required test time for phase i.
+    @type row: gtk.Iter
+    @param float MS: the management strategy for this program.
+    @param float FEF: the average FEF for this program.
+    @param float Prob: the probability of seeing one failure.
+    @param float ti: the growth start time; time to first fix for this program.
+    @return float GRi: the required growth rate for phase i.
+    @return float TTTi: the required test time for phase i.
     """
 
 # Read the RG phase-specific values.
@@ -302,20 +302,20 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
     Function to estimate the parameters (beta and alpha) of the NHPP power law
     model.
 
-    :param list F: list of failure counts.
-    :param list X: list of individual failures times.
-    :param integer confmeth: the method for calculating confidence bounds.
-    :param integer fitmeth: method used to fit the data
+    @param list F: list of failure counts.
+    @param list X: list of individual failures times.
+    @param integer confmeth: the method for calculating confidence bounds.
+    @param integer fitmeth: method used to fit the data
                             1=MLE
                             2=regression (default)
-    :param integer type: the confidence level type
+    @param integer type: the confidence level type
                          1=lower one-sided
                          2=upper one-sided
                          3=two-sided (default)
-    :param float conf: the confidence level.
-    :param float T_star: the end of the observation period for time terminated, or
+    @param float conf: the confidence level.
+    @param float T_star: the end of the observation period for time terminated, or
                          Type I, tests.
-    :return _power_law_: list of lists with one inner list per observation
+    @return _power_law_: list of lists with one inner list per observation
                          point.  The inner lists are comprised of:
                          _T_
                          _n_
@@ -645,10 +645,10 @@ def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
     continous model using either the Option for Individual Failure Data
     (default) or the Option for Grouped Failure Data.
 
-    :param list F: list of failure counts.
-    :param list X: list of individual failures times.
-    :param float I: the grouping interval width.
-    :param boolean grouped: whether or not to use grouped data.
+    @param list F: list of failure counts.
+    @param list X: list of individual failures times.
+    @param float I: the grouping interval width.
+    @param boolean grouped: whether or not to use grouped data.
     """
 
     # Initialize local variables.

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
-""" widgets contains functions for creating, populating, destroying, and
-    interacting with pyGTK widgets.  Import this module as _widg in other
-    modules that create, populate, destroy, or interact with pyGTK widgets in
-    the RTK application.
+"""
+This module contains functions for creating, populating, destroying, and
+interacting with pyGTK widgets.  Import this module as _widg in other modules
+that create, populate, destroy, or interact with pyGTK widgets in the RTK
+application.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -75,12 +77,12 @@ class CellRendererML(gtk.CellRendererText):
         """
 
 
-        :param __event:
-        :param treeview:
-        :param path:
-        :param __background_area:
-        :param cell_area:
-        :param __flags:
+        @param __event:
+        @param treeview:
+        @param path:
+        @param __background_area:
+        @param cell_area:
+        @param __flags:
         """
         if not self.get_property('editable'):
             return
@@ -147,8 +149,8 @@ class CellRendererML(gtk.CellRendererText):
         """
 
 
-        :param __widget:
-        :param event:
+        @param __widget:
+        @param event:
         """
         _keyname = gtk.gdk.keyval_name(event.keyval)
 
@@ -180,9 +182,9 @@ class CellRendererButton(gtk.CellRendererText):
     def do_set_property(self, pspec, value):
         """
 
-        :param pspec:
-        :param value:
-        :return:
+        @param pspec:
+        @param value:
+        @return:
         """
 
         if pspec.name == "callable":
@@ -196,8 +198,8 @@ class CellRendererButton(gtk.CellRendererText):
     def do_get_property(self, pspec):
         """
 
-        :param pspec:
-        :return:
+        @param pspec:
+        @return:
         """
 
         if pspec.name == "callable":
@@ -208,9 +210,9 @@ class CellRendererButton(gtk.CellRendererText):
     def do_get_size(self, __width, cell_area):
         """
 
-        :param __width:
-        :param cell_area:
-        :return:
+        @param __width:
+        @param cell_area:
+        @return:
         """
 
         xpad = self.get_property("xpad")
@@ -237,13 +239,13 @@ class CellRendererButton(gtk.CellRendererText):
     def do_render(self, window, wid, bg_area, cell_area, expose_area, flags):
         """
 
-        :param window:
-        :param wid:
-        :param bg_area:
-        :param cell_area:
-        :param expose_area:
-        :param flags:
-        :return:
+        @param window:
+        @param wid:
+        @param bg_area:
+        @param cell_area:
+        @param expose_area:
+        @param flags:
+        @return:
         """
 
         if not window:
@@ -277,13 +279,13 @@ class CellRendererButton(gtk.CellRendererText):
                     __cell_area, __flags):
         """
 
-        :param __event:
-        :param __wid:
-        :param path:
-        :param __bg_area:
-        :param __cell_area:
-        :param __flags:
-        :return:
+        @param __event:
+        @param __wid:
+        @param path:
+        @param __bg_area:
+        @param __cell_area:
+        @param __flags:
+        @return:
         """
 
         cb = self.get_property("callable")
@@ -299,17 +301,22 @@ def make_button(height=40, width=200, label="", image='default'):
     """
     Utility function to create gtk.Button() widgets.
 
-    :param integer height: the height of the gtk.Button().  Default is 40.
-    :param integer width: the width of the gtk.Button().  Default is 200.
-    :param string label: the text to display on the gtk.Button().  Default is
-                         an empty string.
-    :param image: the image to display on the gtk.Button().  Options for this
-                  argument are:
-                    - add
-                    - assign
-                    - calculate
-                    - commit
-    :rtype: gtk.Button()
+    @keyword height: the height of the gtk.Button().  Default is 40.
+    @type height: integer
+    @keyword width: the width of the gtk.Button().  Default is 200.
+    @type width: integer
+    @keyword label: the text to display on the gtk.Button().  Default is an
+                    empty string.
+    @keyword image: the image to display on the gtk.Button().  Options for this
+                    argument are:
+                        - add
+                        - assign
+                        - calculate
+                        - commit
+                        - default (default)
+    @type image: string
+    @return: _button
+    @rtype: gtk.Button
     """
 
     if width == 0:
@@ -336,10 +343,14 @@ def make_check_button(label="", width=-1):
     """
     Utility function to create CheckButton widgets.
 
-    :param string label: the text to display with the gtk.CheckButton().
-                         Default is no text.
-    :param integer width: the desired width of the gtk.CheckButton().  Default
-                          is -1 or natural request.
+    @keyword label: the text to display with the gtk.CheckButton().  Default is
+                    an emptry string.
+    @type label: string
+    @keyword width: the desired width of the gtk.CheckButton().  Default is -1
+                    or a natural request.
+    @type width: integer
+    @return: _checkbutton
+    @rtype: gtk.CheckButton
     """
 
     _checkbutton = gtk.CheckButton(label, True)
@@ -355,10 +366,14 @@ def make_option_button(btngroup=None, btnlabel=_(u"")):
     """
     Utility function to create gtk.RadioButton() widgets.
 
-    :param string btngroup: the group the gtk.RadioButton() belongs to, if any.
-    :param string btnlabel: the text to place in the label on the
-                            gtk.RadioButton().
-    :rtype: gtk.RadioButton
+    @keyword btngroup: the group the gtk.RadioButton() belongs to, if any.
+                       Default is None.
+    @type btngroup: string
+    @keyword btnlabel: the text to place in the label on the gtk.RadioButton().
+                       Default is an empty string.
+    @type btnlabel: string
+    @return: _optbutton
+    @rtype: gtk.RadioButton
     """
 
     _optbutton = gtk.RadioButton(group=btngroup, label=btnlabel)
@@ -370,10 +385,15 @@ def make_combo(width=200, height=30, simple=True):
     """
     Utility function to create gtk.ComboBox widgets.
 
-    :param integer width: width of the gtk.ComboBox() widget.  Default is 200.
-    :param integer height: height of the gtk.ComboBox widget.  Default is 30.
-    :param boolean simple: boolean indicating whether to create a simple text
-                           gtk.ComboBox().  Defaults to True.
+    @keyword width: width of the gtk.ComboBox() widget.  Default is 200.
+    @type width: integer
+    @keyword height: height of the gtk.ComboBox widget.  Default is 30.
+    @type height: integer
+    @keyword simple: boolean indicating whether to create a simple text
+                     gtk.ComboBox().  Defaults is True.
+    @type simple: boolean
+    @return: _combo
+    @rtype: gtk.ComboBox
     """
 
     if simple:
@@ -401,14 +421,18 @@ def load_combo(combo, entries, simple=True, index=0):
     """
     Utility function to load gtk.ComboBox widgets.
 
-    :param combo: the gtk.ComboBox() to load.
-    :type combo: gtk.ComboBox
-    :param list entries: the information to load into the gtk.ComboBox().
-    :param boolean simple: indicates whether the load is simple (single column)
-                           or complex (multiple columns).
-    :param integer index: the index in the list to display.  Only used when
-                          doing a simple load.
-    :return: False (successful) or True (error)
+    @param combo: the gtk.ComboBox() to load.
+    @type combo: gtk.ComboBox
+    @param entries: the information to load into the gtk.ComboBox().
+    @type entries: list of strings
+    @keyword simple: indicates whether the load is simple (single column)
+                     or complex (multiple columns).
+    @type simple: boolean
+    @keyword index: the index in the list to display.  Only used when doing a
+                    simple load.  Default is 0.
+    @type index: integer
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
     _model = combo.get_model()
@@ -433,17 +457,23 @@ def make_dialog(dlgtitle, dlgparent=None,
     """
     Utility function to create gtk.Dialog() widgets.
 
-    :param string dlgtitle: the title text for the gtk.Dialog().
-    :param dlgparent: the parent window to associate the gtk.Dialog() with.
-                       Defaults to None.
-    :type dlgparent: gtk.Window
-    :param tuple dlgflags: the flags that control the operation of the
-                           gtk.Dialog().  Defaults to gtk.DIALOG_MODAL and
-                           gtk.DIALOG_DESTROY_WITH_PARENT.
-    :param tuple dlgbuttons: the buttons to display and their response values.
-                             Defaults to:
-                             gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT
-                             gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT
+    @param dlgtitle: the title text for the gtk.Dialog().
+    @type dlgtitle: string
+    @keyword dlgparent: the parent window to associate the gtk.Dialog() with.
+                        Defaults to None.
+    @type dlgparent: gtk.Window
+    @keyword dlgflags: the flags that control the operation of the
+                       gtk.Dialog().  Defaults to gtk.DIALOG_MODAL and
+                       gtk.DIALOG_DESTROY_WITH_PARENT.
+    @type dlgflags: tuple of GTK Dialog Flag Constants
+    @keyword dlgbuttons: the buttons to display and their response values.
+                         Defaults to:
+                         gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT
+                         gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT
+    @type dlgbuttons: tuple of GTK Button Type Constants and GTK Response
+                      Type Constants.
+    @return: _dialog
+    @rtype: gtk.Dialog
     """
 
     _dialog = gtk.Dialog(title=dlgtitle,
@@ -459,18 +489,24 @@ def make_dialog(dlgtitle, dlgparent=None,
 def make_entry(width=200, height=25, editable=True, bold=False,
                color='#BBDDFF'):
     """
-    Utility function to create gtk.Entry widgets.
+    Utility function to create gtk.Entry() widgets.
 
-    :param integer width: width of the gtk.Entry() widget.  Default is 200.
-    :param integer height: height of the gtk.Entry() widget.  Default is 25.
-    :param boolean editable: boolean indicating whether gtk.Entry() should be
-                             editable.  Defaults to True.
-    :param boolean bold: boolean indicating whether text should be bold.
-                         Defaults to False.
-    :param color: the hexidecimal color to set the background when the
-                  gtk.Entry() is not editable.  Defaults to #BBDDFF
-                  (light blue).
-    :rtype: gtk.Entry
+    @keyword width: width of the gtk.Entry() widget.  Default is 200.
+    @type width: integer
+    @keyword height: height of the gtk.Entry() widget.  Default is 25.
+    @type height: integer
+    @keyword editable: boolean indicating whether gtk.Entry() should be
+                       editable.  Defaults to True.
+    @type editable: boolean
+    @keyword bold: boolean indicating whether text should be bold.  Defaults to
+                   False.
+    @type bold: boolean
+    @keyword color: the hexidecimal color to set the background when the
+                    gtk.Entry() is not editable.  Defaults to #BBDDFF
+                    (light blue).
+    @type color: hexadecimal string
+    @return: _entry
+    @rtype: gtk.Entry
     """
 
     _entry = gtk.Entry()
@@ -500,16 +536,23 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
     """
     Utility function to create gtk.Label() widgets.
 
-    :param string text: the text to display in the gtk.Label() widget.
-    :param integer width: width of the gtk.Label() widget.  Default is 190.
-    :param integer height: height of the gtk.Label() widget.  Default is 25.
-    :param boolean bold: boolean indicating whether text should be bold.
-                         Defaults to True.
-    :param boolean wrap: boolean indicating whether the label text should wrap
-                         or not.  Default to False.
-    :param boolean justify: the justification type when the label wraps and
-                            contains more than one line.
-    :rtype: gtk.Label
+    @param text: the text to display in the gtk.Label() widget.
+    @type text: string
+    @keyword width: width of the gtk.Label() widget.  Default is 190.
+    @type width: integer
+    @keyword height: height of the gtk.Label() widget.  Default is 25.
+    @type height: integer
+    @keyword bold: boolean indicating whether text should be bold.  Default is
+                   True.
+    @type bold: boolean
+    @keyword wrap: boolean indicating whether the label text should wrap or
+                   not.  Default is False.
+    @type wrap: boolean
+    @keyword justify: the justification type when the label wraps and contains
+                      more than one line.  Default is gtk.JUSTIFY_LEFT.
+    @type justify: GTK Justification Constant
+    @return: _label
+    @rtype: gtk.Label
     """
 
     _label = gtk.Label()
@@ -540,17 +583,23 @@ def make_labels(text, container, x_pos, y_pos, y_inc=25):
     indicating the placement of each label that is used to place the
     corresponding widget.
 
-    :param list text: a list containing the text for each label.
-    :param container: the container widget to place the labels in.
-    :param integer x_pos: the x position in the container for the left edge of
-                          all labels.
-    :param integer y_pos: the y position in the container of the first label.
-    :param integer y_inc: the amount to increment the y_pos between each label.
-    :return integer _int_max_x: the width of the label with the longest text.
-    :return list _lst_y_pos: a list of the y position for each label in the
-                             container.  Use this list to place gtk.Entry(),
-                             gtk.ComboBox(), etc. so they line up with their
-                             associated label.
+    @param text: a list containing the text for each label.
+    @type text: list of strings
+    @param container: the container widget to place the labels in.
+    @type container: GTK container widget.
+    @param x_pos: the x position in the container for the left edge of all
+                  labels.
+    @type x_pos: integer
+    @param y_pos: the y position in the container of the first label.
+    @type y_pos: integer
+    @param y_inc: the amount to increment the y_pos between each label.
+    @type y_inc: integer
+    @return: (_int_max_x, _lst_y_pos)
+             the width of the label with the longest text and a list of the y
+             position for each label in the container.  Use this list to place
+             gtk.Entry(), gtk.ComboBox(), etc. so they line up with their
+             associated label.
+    @rtype: tuple of (integer, list of integers)
     """
 
     _int_max_x_ = 0
@@ -570,13 +619,15 @@ def make_text_view(txvbuffer=None, width=200, height=100):
     Utility function to create gtk.TextView() widgets encapsulated
     within a gtkScrolledWindow() widget.
 
-    :param buffer: the gtk.TextBuffer() to associate with the gtk.TextView().
-                   Default is None.
-    :type buffer: gtk.TextBuffer
-    :param integer width: width of the gtk.TextView() widget.  Default is 200.
-    :param integer height: height of the gtk.TextView() widget.
-                           Default is 100.
-    :rtype: gtk.ScrolledWindow
+    @keyword buffer: the gtk.TextBuffer() to associate with the gtk.TextView().
+                     Default is None.
+    @type buffer: gtk.TextBuffer
+    @keyword width: width of the gtk.TextView() widget.  Default is 200.
+    @type width: integer
+    @keyword height: height of the gtk.TextView() widget.  Default is 100.
+    @type height: integer
+    @return: _scrollwindow
+    @rtype: gtk.ScrolledWindow
     """
 
     _view = gtk.TextView(buffer=txvbuffer)
@@ -591,13 +642,16 @@ def make_text_view(txvbuffer=None, width=200, height=100):
     return _scrollwindow
 
 
-def make_frame(label=""):
+def make_frame(label=_(u"")):
     """
     Utility function to create gtk.Frame() widgets.
 
-    :param string label: the text to display in the gtk.Frame() label.
-    :rtype: gtk.Frame
-    '"""
+    @keyword label: the text to display in the gtk.Frame() label.  Default is
+                    an empty string.
+    @type label: string
+    @return: _frame
+    @rtype: gtk.Frame
+    """
 
     _label = gtk.Label()
     _label.set_markup("<span weight='bold'>" +
@@ -618,7 +672,8 @@ def make_fixed():
     """
     Utility function to create gtk.Fixed() containers.
 
-    :rtype: gtk.Fixed
+    @return: _fixed
+    @rtype: gtk.Fixed
     """
 
     _fixed = gtk.Fixed()
@@ -626,23 +681,28 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, _app, _list, bg_col='white', fg_col='black'):
+def make_treeview(name, fmt_idx, app, cmblist, bg_col='white', fg_col='black'):
     """
     Utility function to create gtk.TreeView() widgets.
 
-    :param string name: the name of the gtk.TreeView() to read formatting
-                        information for.
-    :param integer fmt_idx: the index of the format file to use when creating
-                            the gtk.TreeView().
-    :param app: the RTK application.
-    :param list list: the list of items to load into the
-                      gtk.CellRendererCombo().
-    :param string bg_col: the background color to use for each row.  Defaults
-                          to white.
-    :param string fg_col: the foreground (text) color to use for each row.
-                          Defaults to black.
-    :rtype: gtk.TreeView
-    :rtype: list
+    @param name: the name of the gtk.TreeView() to read formatting information
+                 for.
+    @type name: string
+    @param fmt_idx: the index of the format file to use when creating the
+                    gtk.TreeView().
+    @type fmt_idx: integer
+    @param app: the RTK application.
+    @param cmblist: the list of items to load into the gtk.CellRendererCombo().
+    @type cmblist: list of strings
+    @keyword bg_col: the background color to use for each row.  Defaults to
+                     white.
+    @type bg_col: string
+    @keyword fg_col: the foreground (text) color to use for each row.  Defaults
+                     to black.
+    @type fg_col: string
+    @return: the gtk.TreeView() created by this method and the order of the
+             gtk.TreeView() columns.
+    @rtype: gtk.TreeView, list
     """
 
     from lxml import etree
@@ -807,17 +867,18 @@ def format_cell(__column, cell, model, row, data):
     """
     Function to set the formatting of the gtk.Treeview() gtk.CellRenderers().
 
-    :param __column: the gtk.TreeViewColumn() containing the gtk.CellRenderer()
+    @param __column: the gtk.TreeViewColumn() containing the gtk.CellRenderer()
                      to format.
-    :type __column: gtk.TreeViewColumn
-    :param cell: the gtk.CellRenderer() to format.
-    :type cell: gtk.CellRenderer
-    :param model: the gtk.TreeModel() containing the gtk.TreeViewColumn().
-    :type model: gtk.TreeModel
-    :param row: the gtk.TreeIter() pointing to the row containing the
+    @type __column: gtk.TreeViewColumn
+    @param cell: the gtk.CellRenderer() to format.
+    @type cell: gtk.CellRenderer
+    @param model: the gtk.TreeModel() containing the gtk.TreeViewColumn().
+    @type model: gtk.TreeModel
+    @param row: the gtk.TreeIter() pointing to the row containing the
                 gtk.CellRenderer() to format.
-    :type row: gtk.TreeIter
-    :param tuple data: a tuple containing the position and the data type.
+    @type row: gtk.TreeIter
+    @param data: a tuple containing the position and the data type.
+    @type data: tuple
     """
 
     if data[1] == 'gfloat':
@@ -840,16 +901,19 @@ def edit_tree(cell, path, new_text, position, model):
     """
     Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-    :param cell: the gtk.CellRenderer() that was edited.
-    :type cell: gtk.CellRenderer
-    :param string path: the gtk.TreeView() path of the gtk.CellRenderer() that
-                        was edited.
-    :param string new_text: the new text in the edited gtk.CellRenderer().
-    :param integer position: the column position of the edited
-                             gtk.CellRenderer().
-    :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-    :type model: gtk.TreeModel
-    :return: False
+    @param cell: the gtk.CellRenderer() that was edited.
+    @type cell: gtk.CellRenderer
+    @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+                 edited.
+    @type path: string
+    @param new_text: the new text in the edited gtk.CellRenderer().
+    @type new_text: string
+    @param position: the column position of the edited gtk.CellRenderer().
+    @type position: integer
+    @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+    @type model: gtk.TreeModel
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
     _convert = gobject.type_name(model.get_column_type(position))
@@ -870,15 +934,18 @@ def cell_toggled(cell, path, position, model):
     """
     Called whenever a gtk.TreeView() gtk.CellRendererToggle() is edited.
 
-    :param cell: the gtk.CellRendererToggle() that was edited.
-    :type cell: gtk.CellRendererToggle
-    :param string path: the gtk.TreeView() path of the gtk.CellRendererToggle()
-                        that was edited.
-    :param integer position: the column position of the edited
-                             gtk.CellRendererToggle().
-    :param model: the gtk.TreeModel() the gtk.CellRendererToggle() belongs to.
-    :type model: gtk.TreeModel
-    :return: False
+    @param cell: the gtk.CellRendererToggle() that was edited.
+    @type cell: gtk.CellRendererToggle
+    @param path: the gtk.TreeView() path of the gtk.CellRendererToggle() that
+                 was edited.
+    @type path: string
+    @param position: the column position of the edited
+                     gtk.CellRendererToggle().
+    @type position: integer
+    @param model: the gtk.TreeModel() the gtk.CellRendererToggle() belongs to.
+    @type model: gtk.TreeModel
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
     model[path][position] = not cell.get_active()
@@ -891,9 +958,14 @@ def resize_wrap(column, __param, cell):
     This function dynamically sets the wrap-width property for the
     gtk.CellRenderers in the gtk.TreeView when the column width is resized.
 
-    column -- the column being resized.
-    __param  -- the triggering parameter (this is a GParamInt object).
-    cell   -- the cell that needs to be resized.
+    @param column: the gtk.TreeViewColumn() being resized.
+    @type column: gtk.TreeViewColumn
+    @param __param: the triggering parameter.
+    @type __param: GParamInt object
+    @param cell: the gtk.CellRenderer() that needs to be resized.
+    @type cell: gtk.CellRenderer
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
 # TODO: Adjust the height of the row when the width is adjusted.
@@ -916,20 +988,22 @@ def make_column_heading(heading=""):
     """
     This function creates labels to use for gtk.TreeView() column headings.
 
-    :param string heading: the text to use for the heading.
-    :rtype: gtk.Label
+    @keyword heading: the text to use for the heading.
+    @type heading: string
+    @return: _label
+    @rtype: gtk.Label
     """
 
     _heading = "<span weight='bold'>%s</span>" % unicode(heading)
 
-    label = gtk.Label()
-    label.set_markup(_heading)
-    label.set_alignment(xalign=0.5, yalign=0.5)
-    label.set_justify(gtk.JUSTIFY_CENTER)
-    label.set_line_wrap(True)
-    label.show_all()
+    _label = gtk.Label()
+    _label.set_markup(_heading)
+    _label.set_alignment(xalign=0.5, yalign=0.5)
+    _label.set_justify(gtk.JUSTIFY_CENTER)
+    _label.set_line_wrap(True)
+    _label.show_all()
 
-    return label
+    return _label
 
 
 def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: disable=C0103, W0102
@@ -938,29 +1012,40 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
     """
     Function to load the matplotlib plots.
 
-    :param axis: the matplotlib axis object.
-    :param plot: the matplotlib plot object.
-    :param x: the x values to plot.
-    :param y1: the first data set y values to plot.
-    :param y2: the second data set y values to plot.
-    :param y3: the third data set y values to plot.
-    :param y4: the fourth data set y values to plot.
-    :param string title: the title for the plot.
-    :param string xlab: the x axis label for the plot.
-    :param string ylab: the y axis label for the plot.
-    :param integer type: the type of line to plot.
-                         Options are:
-                            1 = step
-                            2 = plot
-                            3 = histogram
-                            4 = date plot
-    :param string marker: the marker to use on the plot.
-                          Options are:
-                            g- = green solid line
-                            r- = red solid line
-                            b- = blue solid line
-                            k- = black dashed line
-    :return:
+    @param axis: the matplotlib axis object.
+    @param plot: the matplotlib plot object.
+    @param x: the x values to plot.
+    @type x: list of floats
+    @keyword y1: the first data set y values to plot.
+    @type y1: list of floats
+    @keyword y2: the second data set y values to plot.
+    @type y2: list of floats
+    @keyword y3: the third data set y values to plot.
+    @type y3: list of floats
+    @keyword y4: the fourth data set y values to plot.
+    @type y4: list of floats
+    @keyword title: the title for the plot.
+    @type title: string
+    @keyword xlab: the x axis label for the plot.
+    @type xlab: string
+    @keyword ylab: the y axis label for the plot.
+    @type ylab: string
+    @keyword type: the type of line to plot.
+                   Options are:
+                       - 1 = step
+                       - 2 = plot
+                       - 3 = histogram
+                       - 4 = date plot
+    @type type: list of integers
+    @keyword marker: the marker to use on the plot.
+                     Options are:
+                        - g- = green solid line
+                        - r- = red solid line
+                        - b- = blue solid line
+                        - k- = black dashed line
+    @type marker: list of strings
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
     # import numpy
@@ -1068,37 +1153,45 @@ def create_legend(axis, text, fontsize='small', legframeon=False,
     """
     Function to create legends on matplotlib plots.
 
-    :param axis: the axis object to associate the legend with.
-    :param tuple text: the text to display in the legend.
-    :param string fontsize: the size of the font to use for the legend.
-                            Options are:
-                                xx-small
-                                x-small
-                                small
-                                medium
-                                large
-                                x-large
-                                xx-large
-    :param boolean legframeon: whether or not there is a frame around the
-                               legend.
-    :param string location: the location of the legend on the plot.
-                            Options are:
-                                best or 0
-                                upper right or 1
-                                upper left or 2
-                                lower left or 3
-                                lower right or 4
-                                right or 5
-                                center left or 6
-                                center right or 7
-                                lower center or 8
-                                upper center or 9
-                                center or 10
-    :param integer legncol: the number columns in the legend.
-    :param boolean legshadow: whether or not to display a shadow behind the
-                              legend block.
-    :param string legtitle: the title of the legend.
-    :param float lwd: the linewidth of the box around the legend.
+    @param axis: the axis object to associate the legend with.
+    @param text: the text to display in the legend.
+    @type text: tuple of strings
+    @keyword fontsize: the size of the font to use for the legend.  Options
+                       are:
+                           - xx-small
+                           - x-small
+                           - small (default)
+                           - medium
+                           - large
+                           - x-large
+                           - xx-large
+    @type fontsize: string
+    @keyword legframeon: whether or not there is a frame around the legend.
+    @type legframeon: boolean
+    @keyword location: the location of the legend on the plot.  Options are:
+                           - best
+                           - upper right (default)
+                           - upper left
+                           - lower left
+                           - lower right
+                           - right
+                           - center left
+                           - center right
+                           - lower center
+                           - upper center
+                           - center
+    @type location: string
+    @keyword legncol: the number columns in the legend.  Default is 1.
+    @type legncol: integer
+    @keyword legshadow: whether or not to display a shadow behind the legend
+                        block.  Default is True.
+    @type legshadow: boolean
+    @keyword legtitle: the title of the legend.  Default is an emptry string.
+    @type legtitle: string
+    @keyword lwd: the linewidth of the box around the legend.
+    @type lwd: float
+    @return : False if successful or True if an error is encountered.
+    @rtype : boolean
     """
 
     _legend = axis.legend(text, frameon=legframeon, loc=location, ncol=legncol,

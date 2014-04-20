@@ -773,12 +773,12 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     """
     Dialog to display runtime errors to the user.
 
-    :param _prompt_: the prompt to display in the dialog.
-    :type _prompt_: str
-    :param _image_: the icon to display in the dialog.
-    :type _image_: gtk.Image
-    :param _parent_: the parent gtk.Window(), if any, for the dialog.
-    :type _paranet_: gtk.Window
+    @param _prompt_: the prompt to display in the dialog.
+    @type _prompt_: str
+    @param _image_: the icon to display in the dialog.
+    @type _image_: gtk.Image
+    @param _parent_: the parent gtk.Window(), if any, for the dialog.
+    @type _paranet_: gtk.Window
     """
 
     dialog = _widg.make_dialog(_(u"RTK Error"),

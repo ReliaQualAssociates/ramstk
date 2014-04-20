@@ -6,7 +6,6 @@ Program survival data sets.
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2012 - 2014 Andrew "Weibullguy" Rowland'
-__updated__ = "2014-03-22 17:34"
 
 # -*- coding: utf-8 -*-
 #

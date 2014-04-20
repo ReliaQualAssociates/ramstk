@@ -1,8 +1,11 @@
 #!/usr/bin/env python2
-""" This file contains various calculations used by the RTK Project. """
+"""
+This module contains various calculations used by the RTK Project.
+"""
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -2086,7 +2089,7 @@ def calculate_rgtmc(F, X, I, _grouped=False):
     _rho = []
     _mu = []
 
-    if(not _grouped):
+    if not _grouped:
         for i in range(len(X)):
             try:
                 _iters = int(X[i] - X[i - 1])
@@ -2104,7 +2107,7 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             except ZeroDivisionError:
                 _rho_ = _rho[i - 1]
 
-            if(_rho_ < 0):
+            if _rho_ < 0:
                 _rho_ = 0.0
             _rho.append(_rho_)
 
@@ -2119,7 +2122,7 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             except ZeroDivisionError:
                 _mu_ = _mu[i - 1]
 
-            if(_mu_ < 0.0):
+            if _mu_ < 0.0:
                 _mu_ = 0.0
 
             _mu.append(_mu_)
@@ -2139,16 +2142,17 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             _Cm_ += ((X[i] / TTT)**_beta_bar_ - ((2.0 * i - 1) / (2.0 * FFF)))**2.0
         _Cm_ = _Cm_ / (12 * FFF)
 
-    elif(_grouped):
-# Calculate the number of intervals we need, then create a list of zeros the
-# same length as the number of intervals.
+    elif _grouped:
+        # Calculate the number of intervals we need, then create a list of
+        # zeros the same length as the number of intervals.
         _num_intervals = int(ceil(TTT / I))
         _cum_fails = [0] * _num_intervals
 
-# Iterate through the data and count the nuber of failures in each interval.
+        # Iterate through the data and count the nuber of failures in each
+        # interval.
         for i in range(len(X)):
             for j in range(_num_intervals):
-                if(X[i] > j * I and X[i] <= (j + 1) * I):
+                if X[i] > j * I and X[i] <= (j + 1) * I:
                     _cum_fails[j] += F[i]
 
         f = np.array([0], float)
@@ -2164,14 +2168,14 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             _rho.append(_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0))
             _mu.append(1.0 / (_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0)))
 
-# Calculate the chi-square statistic to test for trend and the chi-square
-# statistic to test model applicability.
+        # Calculate the chi-square statistic to test for trend and the
+        # chi-square statistic to test model applicability.
         _chi_square_ = 0.0
         _Cm_ = 0.0
         for i in range(_num_intervals):
             _NPi_ = sum(_cum_fails) * I / max(X)
             _chi_square_ += (_cum_fails[i] - _NPi_)**2.0 / (_NPi_)
-            if(i < _num_intervals):
+            if i < _num_intervals:
                 _ei_ = _lambda_hat[-1] * ((I * (i + 1))**_beta_hat[-1] - (I * i)**_beta_hat[-1])
             _Cm_ += (_cum_fails[i] - _ei_)**2.0 / _ei_
 
@@ -2556,21 +2560,31 @@ def smooth_curve(x, y, num):
     Function to produce smoothed plots where there are a small number of data
     points in the original data set.
 
-    Keyword Arguments:
-    x   -- a numpy array of the raw x-values.
-    y   -- a numpy array of the raw y-values.
-    num -- the number of points to generate.
+    @param x: a numpy array of the raw x-values.
+    @type x: numpy array
+    @param y: a numpy array of the raw y-values.
+    @type y: numpy array
+    @param integer num: the number of points to generate.
+    @return: _new_x, _new_y
+    @rtype: list
     """
 
     from scipy.interpolate import spline
 
-    _new_x_ = np.linspace(x.min(), x.max(), num)
-    _new_y_ = spline(x, y, _new_x_)
+    _error = False
 
-    _new_x_ = _new_x_.tolist()
-    _new_y_ = _new_y_.tolist()
+    _new_x = np.linspace(x.min(), x.max(), num)
 
-    return(_new_x_, _new_y_)
+    try:
+        _new_y = spline(x, y, _new_x)
+    except ValueError:
+        _error = True
+        _new_y = np.zeros(num)
+
+    _new_x = _new_x.tolist()
+    _new_y = _new_y.tolist()
+
+    return _new_x, _new_y, _error
 
 
 def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):

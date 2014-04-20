@@ -88,7 +88,7 @@ class Validation(object):
         """
         Initializes the VALIDATION class.
 
-        :param application: the RTK application.
+        @param application: the RTK application.
         """
 
         # Define private VALIDATION class attributes.
@@ -302,9 +302,9 @@ class Validation(object):
             Function to create the VALIDATION class gtk.Notebook() page for
             displaying general data about the selected VALIDATION.
 
-            :param self: the current instance of a VALIDATION class.
-            :param notebook: the VALIDATION class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            @param self: the current instance of a VALIDATION class.
+            @param notebook: the VALIDATION class gtk.Notebook() widget.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -808,7 +808,7 @@ class Validation(object):
             Loads the widgets with general information about the VALIDATION
             class.
 
-            :param self: the current instance of the VALIDATION class.
+            @param self: the current instance of the VALIDATION class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -882,7 +882,7 @@ class Validation(object):
         """
         Method to load the VALIDATION class effort progress plot.
 
-        :return: False
+        @return: False
         """
 
         from operator import itemgetter
@@ -992,12 +992,12 @@ class Validation(object):
         """
         Updates the values in the VALIDATION class gtk.Treeview.
 
-        :param columns: a list of integers representing the column numbers to
+        @param columns: a list of integers representing the column numbers to
                         update.
-        :type columns: list of integers
-        :param values: a list of new values for the VALIDATION class
+        @type columns: list of integers
+        @param values: a list of new values for the VALIDATION class
                        gtk.TreeView().
-        :type values: list
+        @type values: list
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1059,15 +1059,15 @@ class Validation(object):
         Method called whenever a VALIDATION class gtk.Treeview()
         gtk.CellRenderer() is edited.
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: gtk.CellRenderer
-        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
+        @param __cell: the gtk.CellRenderer() that was edited.
+        @type __cell: gtk.CellRenderer
+        @param string path: the gtk.TreeView() path of the gtk.CellRenderer()
                             that was edited.
-        :param string new_text: the new text in the edited gtk.CellRenderer().
-        :param integer position: the column position of the edited
+        @param string new_text: the new text in the edited gtk.CellRenderer().
+        @param integer position: the column position of the edited
                                  gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: gtk.TreeModel
+        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        @type model: gtk.TreeModel
         """
 
         # Update the gtk.TreeModel() with the new value.
@@ -1143,9 +1143,9 @@ class Validation(object):
         Adds a new Verfication & Validation activity to the RTK Program's
         MySQL or SQLite3 database.
 
-        :param __widget: the gtk.Widget() that called this function.
-        :type __widget: gtk.Widget
-        :return: False or True
+        @param __widget: the gtk.Widget() that called this function.
+        @type __widget: gtk.Widget
+        @return: False or True
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1180,8 +1180,8 @@ class Validation(object):
         Deletes the currently selected V&V activity from the RTK Program's
         MySQL or SQLite3 database.
 
-        :param __menuitem: the gtk.MenuItem() that called this function.
-        :type __menuitem: gtk.MenuItem
+        @param __menuitem: the gtk.MenuItem() that called this function.
+        @type __menuitem: gtk.MenuItem
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1210,8 +1210,8 @@ class Validation(object):
         Method to save the VALIDATION class gtk.TreeView() information to the
         open RTK Program database.
 
-        :param __widget: the gtk.Widget() that called this function.
-        :type __widget: gtk.Widget
+        @param __widget: the gtk.Widget() that called this function.
+        @type __widget: gtk.Widget
         """
 
         def _save_line_item(model, __path, row, self):
@@ -1219,13 +1219,13 @@ class Validation(object):
             Function to save each row in the VALIDATION class gtk.TreeModel()
             to the open RTK Program's database.
 
-            :param model: the VALIDATION class gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param string __path: the path of the active row in the VALIDATION
+            @param model: the VALIDATION class gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param string __path: the path of the active row in the VALIDATION
                                   class gtk.TreeModel().
-            :param row: the selected row in the VALIDATION class
+            @param row: the selected row in the VALIDATION class
                         gtk.TreeView().
-            :type row: gtk.TreeIter
+            @type row: gtk.TreeIter
             """
 
             _start_ = datetime.strptime(
@@ -1337,12 +1337,12 @@ class Validation(object):
         """
         Callback function to retrieve and save entry changes.
 
-        :param entry: the gtk.Entry() that called the function.
-        :type entry: gtk.Entry
-        :param __event: the gtk.gdk.Event() that called this function.
-        :type __event: gtk.gdk.Event
-        :param string convert: the data type to convert the entry contents to.
-        :param integer index: the position in the VALIDATION class attribute
+        @param entry: the gtk.Entry() that called the function.
+        @type entry: gtk.Entry
+        @param __event: the gtk.gdk.Event() that called this function.
+        @type __event: gtk.gdk.Event
+        @param string convert: the data type to convert the entry contents to.
+        @param integer index: the position in the VALIDATION class attribute
                               list associated with the data from the calling
                               entry.
         """
@@ -1409,10 +1409,10 @@ class Validation(object):
         """
         Callback function to retrieve and save spinbutton changes.
 
-        :param spinbutton: the gtk.SpinButton() that called this function.
-        :type spinbutton: gtk.SpinButton
-        :param string __convert: the data type to convert the entry contents.
-        :param integer index: the position in the VALIDATION class attribute
+        @param spinbutton: the gtk.SpinButton() that called this function.
+        @type spinbutton: gtk.SpinButton
+        @param string __convert: the data type to convert the entry contents.
+        @param integer index: the position in the VALIDATION class attribute
                               list associated with the data from the calling
                               entry.
         """
@@ -1433,8 +1433,8 @@ class Validation(object):
         Method to calculate the expected task time, lower limit, and upper
         limit on task time.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         from operator import itemgetter

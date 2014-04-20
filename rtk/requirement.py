@@ -2011,11 +2011,11 @@ class Requirement(object):
         Called whenever the REQUIREMENT Object's Work Book notebook page is
         changed.
 
-        :param __notebook: the REQUIREMENT class gtk.Notebook() widget.
-        :type __notebook: gtk.Notebook
-        :param __page: the newly selected page's child widget.
-        :type __page: gtk.Widget
-        :param integer page_num: the newly selected page number.
+        @param __notebook: the REQUIREMENT class gtk.Notebook() widget.
+        @type __notebook: gtk.Notebook
+        @param __page: the newly selected page's child widget.
+        @type __page: gtk.Widget
+        @param integer page_num: the newly selected page number.
                                  0 = Stakeholder Input
                                  1 = General Data
                                  2 = Analysis
@@ -2069,8 +2069,8 @@ class Requirement(object):
         """
         Method to reacte to the ASSEMBLY Object toolbar button clicked events.
 
-        :param button: the gtk.ToolButton() that was pressed.
-        :type button: gtk.ToolButton
+        @param button: the gtk.ToolButton() that was pressed.
+        @type button: gtk.ToolButton
         """
 
         _page_ = self.notebook.get_current_page()

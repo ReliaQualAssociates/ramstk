@@ -78,10 +78,10 @@ class AddRevision(object):
         """
         Initialize on instance of the Add Revision Assistant.
 
-        :param __button: the gtk.Button() widget that called the assistant.
-        :type __button: gtk.Button
-        :param app: the instance of the RTK application calling the assistant.
-        :type app: RTK application
+        @param __button: the gtk.Button() widget that called the assistant.
+        @type __button: gtk.Button
+        @param app: the instance of the RTK application calling the assistant.
+        @type app: RTK application
         """
 
         self._app = app
@@ -206,7 +206,7 @@ class AddRevision(object):
         '''
         Method to set the next active page in the assistant.
 
-        :param integer current_page: the currently active page in the
+        @param integer current_page: the currently active page in the
                                      assistant.
         '''
 
@@ -223,7 +223,7 @@ class AddRevision(object):
         """
         Method to add the new revision to the RTK Program database.
 
-        :param __assistant: the current instance of the assistant.
+        @param __assistant: the current instance of the assistant.
         """
 
         # Find out who is logged in and adding this revision.
@@ -517,8 +517,8 @@ class AddRevision(object):
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         self.assistant.destroy()
@@ -1374,10 +1374,10 @@ class CreateDataSet:
         Method to initialize the Dataset Creation Assistant.
 
         Keyword Arguments:
-        :param button: the gtk.Button() that called this method.
-        :type button: gtk.Button
-        :param app: the RTK application.
-        :type app: RTK application
+        @param button: the gtk.Button() that called this method.
+        @type button: gtk.Button
+        @param app: the RTK application.
+        @type app: RTK application
         """
 
         self._app = app

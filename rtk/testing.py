@@ -15,6 +15,7 @@ RTK Program test plans.  This includes the following types of test plans:
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __copyright__ = 'Copyright 2013 - 2014, Andrew "Weibullguy" Rowland'
+#__docformat__ = "restructuredtext en"
 
 # -*- coding: utf-8 -*-
 #
@@ -90,14 +91,14 @@ def _close_plot(__window, __event, plot, parent):
     """
     Function to close the plot and return it to its original parent widget.
 
-    :param __window: the gtk.Window() that is being destroyed.
-    :type __window: gtk.Window
-    :param __event: the gtk.gdk.Event() that called this method.
-    :type __event: gtk.gdk.Event
-    :param plot: the matplotlib FigureCanvas that was expaneded.
-    :type plot: matplotlib.FigureCanvas
-    :param parent: the original parent widget for the plot.
-    :type parent: gtk.Widget
+    @param __window: the gtk.Window() that is being destroyed.
+    @type __window: gtk.Window
+    @param __event: the gtk.gdk.Event() that called this method.
+    @type __event: gtk.gdk.Event
+    @param plot: the matplotlib FigureCanvas that was expaneded.
+    @type plot: matplotlib.FigureCanvas
+    @param parent: the original parent widget for the plot.
+    @type parent: gtk.Widget
     """
 
     plot.reparent(parent)
@@ -111,8 +112,8 @@ def _mttff_calculator(__button):
     """
     Function to launch the mean time to first failure calculator.
 
-    :param __button: the gtk.Button() that called this method.
-    :type __button: gtk.Button
+    @param __button: the gtk.Button() that called this method.
+    @type __button: gtk.Button
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -218,7 +219,7 @@ class Testing(object):
         """
         Initializes the Testing Object.
 
-        :param application: the RTK application.
+        @param application: the RTK application.
         """
 
 # Define private TESTING class attributes.
@@ -632,9 +633,9 @@ class Testing(object):
             Function to create the TESTING class gtk.Notebook() page for
             displaying test planning inputs for the selected test.
 
-            :param self: the current instance of a TESTING class.
-            :param notebook: the TESTING class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            @param self: the current instance of a TESTING class.
+            @param notebook: the TESTING class gtk.Notebook() widget.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1014,8 +1015,9 @@ class Testing(object):
             displaying test feasibility results for the selected test.
 
             Keyword Arguments:
-            self     -- the current instance of a TESTING class.
-            notebook -- the TESTING class gtk.Notebook() widget.
+            @param self: the current instance of a TESTING class.
+            @param notebook: the TESTING class gtk.Notebook() widget.
+            @type notebook: gtk.NoteBook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1129,17 +1131,18 @@ class Testing(object):
                                             self._treeview_clicked, 2)
 
             # Insert the tab.
-            _label_ = gtk.Label()
-            _heading_ = _(u"Test\nFeasibility")
-            _label_.set_markup("<span weight='bold'>" + _heading_ + "</span>")
-            _label_.set_alignment(xalign=0.5, yalign=0.5)
-            _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.show_all()
-            _label_.set_tooltip_text(_(u"Assessment of the feasibility of the "
-                                       u"selected test."))
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"Test\nFeasibility") +
+                              "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Assessment of the feasibility of the "
+                                      u"selected test."))
 
             notebook.insert_page(_hpaned_,
-                                 tab_label=_label_,
+                                 tab_label=_label,
                                  position=-1)
 
             return False
@@ -1149,9 +1152,9 @@ class Testing(object):
             Function to create the TESTING class gtk.Notebook() page for
             displaying test assessment results for the selected test.
 
-            :param self: the current instance of a TESTING class.
-            :param notebook: the TESTING class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            @param self: the current instance of a TESTING class.
+            @param notebook: the TESTING class gtk.Notebook() widget.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1342,7 +1345,7 @@ class Testing(object):
         Method to load the TESTING class gtk.TreeModel() from the RTK program
         database.
 
-        :rtype : bool
+        @rtype : bool
         """
 
         _query_ = "SELECT * FROM tbl_tests \
@@ -1370,7 +1373,7 @@ class Testing(object):
             col = self.treeview.get_column(0)
             self.treeview.row_activated(path, col)
 
-# Load the Assembly combo.
+        # Load the Assembly combo.
         _query_ = "SELECT fld_name, fld_assembly_id, fld_description \
                    FROM tbl_system \
                    WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
@@ -1427,7 +1430,7 @@ class Testing(object):
             """
             Function to load the widgets on the Test Planning page.
 
-            :param self: the current instance of an TESTING class.
+            @param self: the current instance of an TESTING class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1567,21 +1570,21 @@ class Testing(object):
         """
         Loads the Reliability Growth plot.
 
-        :param list TPT: a list of the planned test times for each test phase.
-        :param list MTBFA: a list of planned average MTBF values for each test
+        @param list TPT: a list of the planned test times for each test phase.
+        @param list MTBFA: a list of planned average MTBF values for each test
                            phase.
-        :param list _obs_: a list of observed values for each test phase.
-        :param list _N_: a list of the number of failures in each interval.
-        :return: False or True
-        :rtype : boolean
+        @param list _obs_: a list of observed values for each test phase.
+        @param list _N_: a list of the number of failures in each interval.
+        @return: False or True
+        @rtype : boolean
         """
 
         def _load_idealized(self):
             """
             Function to load the idealized growth curve.
 
-            :param self:
-            :rtype: list
+            @param self:
+            @rtype: list
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1622,12 +1625,12 @@ class Testing(object):
             """
             Funciton to load the planned growth curve.
 
-            :param list MTBFA: a list of planned average MTBF values for each
+            @param list MTBFA: a list of planned average MTBF values for each
                                test phase.
-            :param list TPT: a list of the planned test times for each test
+            @param list TPT: a list of the planned test times for each test
                              phase.
-            :return: _plan
-            :rtype: list
+            @return: _plan
+            @rtype: list
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1665,9 +1668,11 @@ class Testing(object):
             """
             Method to load the observed MTBF values.
 
-            :param list obs: a list of observed values for each test phase.
-            :param list N: a list of the number of failures in each interval.
+            @param list obs: a list of observed values for each test phase.
+            @param list N: a list of the number of failures in each interval.
             """
+
+            _error = [False, False]
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
 
@@ -1689,9 +1694,12 @@ class Testing(object):
             _row_ = _model_.get_iter_root()
             while _row_ is not None:
                 if self.optGrouped.get_active():
-                    _obs_times_.append(_obs_times_[i] + _interval_)
                     _model_.set_value(_row_, 2, _f_time_)
                     _f_time_ = _model_.get_value(_row_, 3)
+                    if _interval_ > 0.0:
+                        _obs_times_.append(_obs_times_[i] + _interval_)
+                    else:
+                        _obs_times_.append(_f_time_)
                     i += 1
                 else:
                     _obs_times_.append(_f_time_)
@@ -1709,7 +1717,7 @@ class Testing(object):
             # Calculate the bounds at each observation point.
             _obsll_ = np.array([], float)       # pylint: disable=E1101
             _obsul_ = np.array([], float)       # pylint: disable=E1101
-            for i in range(len(_obs_)):
+            for i in range(len(obs)):
                 _Cll_ = (1.0 - (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(
                     2.0 * sum(N[:i + 1])))) ** -2.0  # @IgnorePep8
                 _Cul_ = (1.0 + (norm.ppf(0.5 + (_alpha_ / 2.0)) / sqrt(
@@ -1719,12 +1727,23 @@ class Testing(object):
                 _obsul_ = np.append(            # pylint: disable=E1101
                     _obsul_, obs[i] * _Cul_)
 
-            (_new_obs_times_, _obsll_) = _calc.smooth_curve(_obs_times_,
-                                                            _obsll_,
-                                                            50 * len(obs))
-            (_new_obs_times_, _obsul_) = _calc.smooth_curve(_obs_times_,
-                                                            _obsul_,
-                                                            50 * len(obs))
+            (_new_obs_times_,
+             _obsll_, _error[0]) = _calc.smooth_curve(_obs_times_, _obsll_,
+                                                   50 * len(obs))
+            (_new_obs_times_,
+             _obsul_, _error[1]) = _calc.smooth_curve(_obs_times_, _obsul_,
+                                                   50 * len(obs))
+
+            if _error[0] or _error[1]:
+                _util.application_error(_(u"Unable to smooth data points.  "
+                                          u"This is often the result of using "
+                                          u"grouped data with an interval "
+                                          u"width that is too narrow.  "
+                                          u"Increase the interval width and "
+                                          u"try again.  If the problem "
+                                          u"persists, contact "
+                                          u"bugs@reliaqual.com."))
+
             _obs_times_ = _obs_times_.tolist()
 
             return (_obs_times_, _new_obs_times_, _obsll_, _obsul_)
@@ -1762,19 +1781,27 @@ class Testing(object):
             (_obs_times_, _new_obs_times_,
              _obsll_, _obsul_) = _load_observed(self, _obs_, _N_)
 
-            line = matplotlib.lines.Line2D(_obs_times_, _obs_, lw=0.0,
-                                           color='k',
+            if len(_obs_times_) != len(_obs_):
+                _n_obs = min(len(_obs_times_), len(_obs_))
+                _util.application_error(_(u"There are a different number of x "
+                                          u"and y values.  The plotted "
+                                          u"results may be truncated."))
+            else:
+                _n_obs = len(_obs_)
+
+            line = matplotlib.lines.Line2D(_obs_times_[:_n_obs],
+                                           _obs_[:_n_obs], lw=0.0, color='k',
                                            marker='o', markersize=6)
             self.axAxis1.add_line(line)
 
-            line = matplotlib.lines.Line2D(_new_obs_times_, _obsll_, lw=1.5,
-                                           color='k',
-                                           ls='-.')
+            line = matplotlib.lines.Line2D(_new_obs_times_[:_n_obs],
+                                           _obsll_[:_n_obs], lw=1.5,
+                                           color='k', ls='-.')
             self.axAxis1.add_line(line)
 
-            line = matplotlib.lines.Line2D(_new_obs_times_, _obsul_, lw=1.5,
-                                           color='k',
-                                           ls='-.')
+            line = matplotlib.lines.Line2D(_new_obs_times_[:_n_obs],
+                                           _obsul_[:_n_obs], lw=1.5,
+                                           color='k', ls='-.')
             self.axAxis1.add_line(line)
 
             _legend_.append(u"Observed")
@@ -1821,7 +1848,7 @@ class Testing(object):
         """
         Method for creating hyperlinks in the Attachment gtk.TextBuffer().
 
-        :rtype : boolean
+        @rtype : boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1844,11 +1871,11 @@ class Testing(object):
         Attachment gtk.TextBuffer and opening the link in the default
         application.
 
-        :param __tag: the gtk.TextTag() that called this method.
-        :param __widget: the gtk.TextView() that contains the tag calling this
+        @param __tag: the gtk.TextTag() that called this method.
+        @param __widget: the gtk.TextView() that contains the tag calling this
                          method.
-        :param event: the mouse button event calling this method.
-        :param row: the gtk.TextIter that called this method.
+        @param event: the mouse button event calling this method.
+        @param row: the gtk.TextIter that called this method.
         """
 
         import magic
@@ -1956,8 +1983,8 @@ class Testing(object):
         """
         Method to perform calculations for the TESTING Object.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: gtk.ToolButton
+        @param __button: the gtk.ToolButton() that called this method.
+        @type __button: gtk.ToolButton
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2072,12 +2099,12 @@ class Testing(object):
         # F = list of number of failures per interval
         X = []                                  # pylint: disable=C0103
         F = []                                  # pylint: disable=C0103
-        model = self.tvwTestAssessment.get_model()
-        row = model.get_iter_root()
-        while row is not None:
-            X.append(model.get_value(row, 3))
-            F.append(model.get_value(row, 4))
-            row = model.iter_next(row)
+        __model = self.tvwTestAssessment.get_model()
+        __row = __model.get_iter_root()
+        while __row is not None:
+            X.append(__model.get_value(__row, 3))
+            F.append(__model.get_value(__row, 4))
+            __row = __model.iter_next(__row)
 
 # If there is actual test data available, estimate reliability growth model
 # parameters and create a list of observed failure rate and MTBF values to use
@@ -2150,8 +2177,8 @@ class Testing(object):
         """
         Method to assess the feasibility of a test plan.
 
-        :param list TTT: a list of the test times for each test phase.
-        :param list N: a list of the number of failures expected in each test
+        @param list TTT: a list of the test times for each test phase.
+        @param list N: a list of the number of failures expected in each test
                        phase.
         """
 
@@ -2263,9 +2290,9 @@ class Testing(object):
         Saves the TESTING class gtk.TreeView() information to the open RTK
         Program database.
 
-        :param __button: the gtk.Button() widget that called this function.4
-        :type __button: gtk.Button
-        :return: False or True
+        @param __button: the gtk.Button() widget that called this function.4
+        @type __button: gtk.Button
+        @return: False or True
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -2297,12 +2324,12 @@ class Testing(object):
         Saves each row in the TESTING Object treeview model to the RTK's
         Program MySQL or SQLite3 database.
 
-        :param model: the TESTING class gtk.TreeModel().
-        :type modle: gtk.TreeModel
-        :param string __path: the path of the active row in the TESTING
+        @param model: the TESTING class gtk.TreeModel().
+        @type modle: gtk.TreeModel
+        @param string __path: the path of the active row in the TESTING
                               gtk.ListStore().
-        :param row: the selected row in the TESTING gtk.TreeView().
-        :type row: gtk.Iter
+        @param row: the selected row in the TESTING gtk.TreeView().
+        @type row: gtk.Iter
         """
 
         values = (model.get_value(row, self._col_order[1]),
@@ -2362,14 +2389,14 @@ class Testing(object):
         """
         Method to save the reliability growth phase information.
 
-        :param model: the TESTING class reliability growth phase
+        @param model: the TESTING class reliability growth phase
                       gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param string __path: the path of the active row in the TESTING class
+        @type model: gtk.TreeModel
+        @param string __path: the path of the active row in the TESTING class
                               reliability growth phase gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
+        @param row: the gtk.TreeIter() of the active row in the TESTING class
                     reliability growth phase gtk.TreeView().
-        :type row: gtk.TreeIter
+        @type row: gtk.TreeIter
         """
 
         _dt_start = datetime.strptime(model.get_value(row, 2),
@@ -2404,15 +2431,15 @@ class Testing(object):
         Method to save the reliability growth phase feasibility information.
 
         Keyword Arguments:
-        :param model: the TESTING class reliability growth phase feasibility
+        @param model: the TESTING class reliability growth phase feasibility
                       gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param string __path: the path of the active row in the TESTING class
+        @type model: gtk.TreeModel
+        @param string __path: the path of the active row in the TESTING class
                               reliability growth phase feasibility
                               gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
+        @param row: the gtk.TreeIter() of the active row in the TESTING class
                     reliability growth phase feasibility gtk.TreeView().
-        :type row: gtk.TreeIter
+        @type row: gtk.TreeIter
         """
 
         values = (model.get_value(row, 4), model.get_value(row, 5),
@@ -2442,14 +2469,14 @@ class Testing(object):
         """
         Method to save the reliability growth testing field data.
 
-        :param model: the TESTING class reliability growth field data
+        @param model: the TESTING class reliability growth field data
                       gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param string __path: the path of the active row in the TESTING class
+        @type model: gtk.TreeModel
+        @param string __path: the path of the active row in the TESTING class
                               reliability growth field data gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
+        @param row: the gtk.TreeIter() of the active row in the TESTING class
                     reliability growth field data gtk.TreeView().
-        :type row: gtk.TreeIter
+        @type row: gtk.TreeIter
         """
 
         _date_ = datetime.strptime(model.get_value(row, 1),
@@ -2589,15 +2616,15 @@ class Testing(object):
         Callback function to retrieve and save entry changes.
 
         Keyword Arguments:
-        :param entry: the gtk.Entry() that called this method.
-        :type entry: gtk.Entry
-        :param  __event: the gtk.gdk.Event() that called this method.
-        :type __event gtk.gdk.Event
-        :param string convert: the data type to convert the entry contents to.
-        :param integer index: the position in the applicable gtk.TreeView()
+        @param entry: the gtk.Entry() that called this method.
+        @type entry: gtk.Entry
+        @param  __event: the gtk.gdk.Event() that called this method.
+        @type __event gtk.gdk.Event
+        @param string convert: the data type to convert the entry contents to.
+        @param integer index: the position in the applicable gtk.TreeView()
                               associated with the data from the calling
                               gtk.Entry().
-        :return: False or True
+        @return: False or True
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -2731,8 +2758,8 @@ class Testing(object):
         """
         Method to reacte to the SOFTWARE Object toolbar button clicked events.
 
-        :param button: the gtk.ToolButton() that was pressed.
-        :type : gtk.ToolButton
+        @param button: the gtk.ToolButton() that was pressed.
+        @type : gtk.ToolButton
         """
 
         _page = self.notebook.get_current_page()
@@ -2757,13 +2784,13 @@ class Testing(object):
         """
         Called whenever the Work Book gtk.Notebook() page is changed.
 
-        :param __notebook: the Work Book gtk.Notebook().
-        :param __page: the newly selected page widget.
-        :param integer page_num: the newly selected page number.
+        @param __notebook: the Work Book gtk.Notebook().
+        @param __page: the newly selected page widget.
+        @param integer page_num: the newly selected page number.
                                  0 = Planning Inputs
                                  1 = Test Feasibility
                                  2 = Test Assessment
-        :return: False
+        @return: False
         """
 
         if page_num == 0:
@@ -2785,8 +2812,8 @@ class Testing(object):
         """
         Method to load the reliability growth plan details.
 
-        :param integer index: the index of the
-        :return: False
+        @param integer index: the index of the
+        @return: False
         """
         if index == 1:
             # self.fraPlan.add(self.fxdRGPlan)

@@ -57,8 +57,8 @@ class Revision(object):
         """
         Initializes the REVISION class.
 
-        :param application: the current instance of the RTK application.
-        :type application: RTK pa
+        @param application: the current instance of the RTK application.
+        @type application: RTK pa
         """
 
         # Define private REVISION class attributes.
@@ -1191,11 +1191,11 @@ class Revision(object):
         is activated.  It will save the previously selected row in the
         REVISION Object TreeView.
 
-        :param treeview: the Revision classt gtk.TreeView().
-        :type treeview: gtk.TreeView
-        :param string __path: the actived row gtk.TreeView() path.
-        :param __column: the actived gtk.TreeViewColumn().
-        :type __column: gtk.TreeViewColumn
+        @param treeview: the Revision classt gtk.TreeView().
+        @type treeview: gtk.TreeView
+        @param string __path: the actived row gtk.TreeView() path.
+        @param __column: the actived gtk.TreeViewColumn().
+        @type __column: gtk.TreeViewColumn
         """
 
         (_model_, _row_) = treeview.get_selection().get_selected()
@@ -1303,9 +1303,9 @@ class Revision(object):
         """
         Method to add a new phase to the selected mission.
 
-        :param __button: the gtk.Button() widget that called this method.
-        :type __button: gtk.Button
-        :return: False or True
+        @param __button: the gtk.Button() widget that called this method.
+        @type __button: gtk.Button
+        @return: False or True
         """
 
         _mission = self.cmbMission.get_active_text()
@@ -1385,8 +1385,8 @@ class Revision(object):
         Method to add a failure definition to the revision.
 
         Keyword Arguments:
-        :param __button: the gtk.Button() that called this function.
-        :type __button: gtk.Button
+        @param __button: the gtk.Button() that called this function.
+        @type __button: gtk.Button
         """
 
         _query_ = "INSERT INTO tbl_failure_definitions \
@@ -1410,8 +1410,8 @@ class Revision(object):
         Deletes the currently selected Revision from the Program's
         MySQL database.
 
-        :param __menuitem: the gtk.MenuItem() that called this function.
-        :param __event: the gdk.gtk.Event() that called this function.
+        @param __menuitem: the gtk.MenuItem() that called this function.
+        @param __event: the gdk.gtk.Event() that called this function.
         """
 
         # First delete the hardware items associated with the revision.
@@ -1446,9 +1446,9 @@ class Revision(object):
         """
         Method to remove the currently selected mission from the program.
 
-        :param __button: the gtk.Button() widget that called this method.
-        :type __button: gtk.Button
-        :return: True or False
+        @param __button: the gtk.Button() widget that called this method.
+        @type __button: gtk.Button
+        @return: True or False
         """
 
         _mission_ = self.cmbMission.get_active_text()

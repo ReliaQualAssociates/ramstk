@@ -63,11 +63,11 @@ class SQLite3Interface:
         """
         Executes a query on the SQLite database and returns the results.
 
-        :param string query: the query to execute.
-        :param tuple values: a typle containing the values to insert into the
+        @param string query: the query to execute.
+        @param tuple values: a typle containing the values to insert into the
                              query.
-        :param cnx: the connection to use when executing the query.
-        :param boolean commit: whether or not to commit the results.
+        @param cnx: the connection to use when executing the query.
+        @param boolean commit: whether or not to commit the results.
         """
 #TODO: Revise to eliminate the values parameter.
         cur = cnx.cursor()
