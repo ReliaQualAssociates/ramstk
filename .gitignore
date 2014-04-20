@@ -21,3 +21,4 @@ pylintout
 *.log
 *.txt
 *.csv
+docs/generated/
