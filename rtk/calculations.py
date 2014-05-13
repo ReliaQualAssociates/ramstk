@@ -5,6 +5,7 @@ This module contains various calculations used by the RTK Project.
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -14,8 +15,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import gettext
-from math import ceil, exp, floor, log, sqrt
-from os import name
+from math import ceil, exp, log, sqrt
 import sys
 
 import configuration as _conf
@@ -72,7 +72,8 @@ def calculate_project(__button, application, index):
                    3 - roll up all the System hardware.
                    4 - roll up all the System software.
     """
-
+    # TODO: Remove this function from calculation.py and move all calculations
+    # to the appropriate module.
     application.winTree.statusbar.push(2, "Calculating")
 
     if(index == 0):                         # Calculate everything.
@@ -2564,7 +2565,8 @@ def smooth_curve(x, y, num):
     @type x: numpy array
     @param y: a numpy array of the raw y-values.
     @type y: numpy array
-    @param integer num: the number of points to generate.
+    @param num: the number of points to generate.
+    @type num: integer
     @return: _new_x, _new_y
     @rtype: list
     """
@@ -2573,8 +2575,16 @@ def smooth_curve(x, y, num):
 
     _error = False
 
+    # Create a new set of x values to be used for smoothing the data.  The new
+    # x values are in the range of the minimum and maximum x values passed to
+    # the function.  The number of new data points between these values is
+    # determined by the value of parameter num.
     _new_x = np.linspace(x.min(), x.max(), num)
 
+    # Attempt to create a new set of y values using the original x, original y,
+    # and new x values.  If the operation is unsuccessful, create a list of
+    # length num the new y, all set to zero.  Also set the error variable to
+    # True.
     try:
         _new_y = spline(x, y, _new_x)
     except ValueError:
@@ -2585,59 +2595,6 @@ def smooth_curve(x, y, num):
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error
-
-
-def bathtub_filter(_dataset_, _starttime_, _reltime_, _step_):
-    """
-    Function to explore early life to useful life and useful life to wearout
-    transition times.
-
-    Keyword Arguments:
-    _dataset_    -- the dataset to perform the search on.
-    _starttime_ -- the time to start the search.
-    _endtime_   -- the time to end the search.
-    _step_      -- how large the time increment should be.
-    """
-
-# Initialize scalar variables.
-    start = int(_starttime_)
-    end = int(_reltime_)
-
-# Initialize list variables.
-    times = []
-    scale = [0]
-    shape = [0]
-    deltascale = []
-    deltashape = []
-
-    for i in range(start, end, _step_):
-        fit = parametric_fit(_dataset_, i, end, 1, _dist_='weibull')
-
-        if(fit is True):
-            continue
-
-        j = int(((i - _starttime_) / _step_)) + 1
-        try:
-            shape.append(fit[0][0])
-            scale.append(fit[0][1])
-            _deltascale = (scale[j] - scale[j - 1]) / scale[j - 1]
-            _deltashape = (shape[j] - shape[j - 1]) / shape[j - 1]
-        except ZeroDivisionError:
-            try:
-                _deltascale = deltascale[j - 1]
-                _deltashape = deltashape[j - 1]
-            except IndexError:
-                _deltascale = 0.0
-                _deltashape = 0.0
-        except IndexError:
-            _deltascale = 0.0
-            _deltashape = 0.0
-        deltascale.append(_deltascale * 100.0)
-        deltashape.append(_deltashape * 100.0)
-
-        times.append(i)
-
-    return(scale, deltascale, shape, deltashape, times)
 
 
 def theoretical_distribution(_data_, _distr_, _para_):
