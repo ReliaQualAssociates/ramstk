@@ -4,9 +4,10 @@ This is the Class that is used to represent and hold information related to
 Program incidents.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-__updated__ = "2014-03-22 17:34"
 
 # -*- coding: utf-8 -*-
 #
@@ -59,7 +60,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class Incident:
+class Incident(object):
     """
     The Incident class is used to represent the field incidents tasks logged
     against a system being analyzed.

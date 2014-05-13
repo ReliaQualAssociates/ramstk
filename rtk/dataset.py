@@ -2957,8 +2957,8 @@ class Dataset:
                                                _starttime_, _startdate_,
                                                _enddate_)
             _results_ = self._app.DB.execute_query(_query,
-                                                  None,
-                                                  self._app.ProgCnx)
+                                                   None,
+                                                   self._app.ProgCnx)
 
             _model = self.tvwResultsByChildAssembly.get_model()
             _model.clear()

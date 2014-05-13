@@ -978,7 +978,7 @@ class Requirement(object):
             if _results[i][self._lst_col_order[7]] == '-':
                 _piter = None
             else:
-                _piter = _model_.get_iter_from_string(
+                _piter = _model.get_iter_from_string(
                     _results[i][self._lst_col_order[7]])
 
             _model.append(_piter, _results[i])
@@ -1363,11 +1363,10 @@ class Requirement(object):
         """
         Method to add a new Requirement to the RTK Program's database.
 
-        Keyword Arguments:
-        button -- the gtk.ToolButton() that called this function.
-        level  -- the indenture level of the Requirement(s) to add.
-                  0 = sibling
-                  1 = child.
+        @param button: the gtk.ToolButton() that called this function.
+        @param level: the indenture level of the Requirement(s) to add.
+                      0 = sibling
+                      1 = child.
         """
 
         # Find the selected requirement.
@@ -1380,15 +1379,15 @@ class Requirement(object):
                 _prow_ = _model_.iter_parent(_row_)
                 if _prow_ is not None:
                     _parent_ = _model_.get_string_from_iter(_prow_)
-            _title_ = _(u"RTK - Add Derived Requirements")
-            _prompt_ = _(u"How many derived requirements to add?")
+            _title_ = _(u"RTK - Add Sibbling Requirements")
+            _prompt_ = _(u"How many sibling requirements to add?")
 
         elif level == 1:                    # Adding sibling requirements.
             _parent_ = "-"
             if _row_ is not None:
                 _parent_ = _model_.get_string_from_iter(_row_)
-            _title_ = _(u"RTK - Add Sibbling Requirements")
-            _prompt_ = _(u"How many sibling requirements to add?")
+            _title_ = _(u"RTK - Add Derived Requirements")
+            _prompt_ = _(u"How many derived requirements to add?")
 
         _n_requirements_ = _util.add_items(_title_, _prompt_)
 

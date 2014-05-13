@@ -810,9 +810,10 @@ def add_items(title, prompt=""):
     """
     Adds one or more items to a treeview hierarchy.
 
-    Keyword Arguments:
-    title -- the string to put in the title bar of the dialog.
-    prompt -- the prompt to put on the dialog.
+    @param title: the string to put in the title bar of the dialog.
+    @type title: string
+    @param prompt: the prompt to put on the dialog.
+    @type prompt: string
     """
 
     _dialog_ = _widg.make_dialog(title)
