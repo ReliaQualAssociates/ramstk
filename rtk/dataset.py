@@ -4,8 +4,10 @@ This is the Class that is used to represent and hold information related to
 Program survival data sets.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2014 Andrew "Weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -104,7 +106,7 @@ class Dataset:
         """
 
         self._ready = False
-        self._nevada_chart_ = True         # Dataset created from a Nevada chart.
+        self._nevada_chart_ = True      # Dataset created from a Nevada chart.
 
         self._app = application
 
@@ -115,7 +117,7 @@ class Dataset:
         self.n_datasets = 0
         self._col_order = []
 
-# Create the Notebook for the DATASET object.
+        # Create the Notebook for the DATASET object.
         self.notebook = gtk.Notebook()
         if(_conf.TABPOS[2] == 'left'):
             self.notebook.set_tab_pos(gtk.POS_LEFT)
@@ -126,7 +128,7 @@ class Dataset:
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
-# Create the Analyses Input tab widgets.
+        # Create the Analyses Input tab widgets.
         self.chkGroup = _widg.make_check_button(label=_(u"Decompose results to children assemblies"))
         self.chkParts = _widg.make_check_button(label=_(u"Decompose results to parts"))
 
@@ -167,7 +169,7 @@ class Dataset:
         if self._analyses_input_tab_create():
             self._app.debug_log.error("dataset.py: Failed to create Analysis Input tab.")
 
-# Create the Analyses Results tab widgets.
+        # Create the Analyses Results tab widgets.
         self.fraSummary = _widg.make_frame(label=_(u"Summary"))
         self.fraNonParEst = _widg.make_frame(label=_(u"Non-Parametric Estimates"))
         self.fraNonParStats = _widg.make_frame(label=_(u"Non-Parametric Statistics"))
@@ -2507,8 +2509,9 @@ class Dataset:
             _times_ = np.array(_times_[:len(_mtbf_c_plot_ll_)])
 
             (_new_times_,
-             _mtbf_c_plot_ll_) = _calc.smooth_curve(_times_, _mtbf_c_plot_ll_,
-                                                    50 * len(_mtbf_c_plot_ll_))
+             _mtbf_c_plot_ll_,
+             _error) = _calc.smooth_curve(_times_, _mtbf_c_plot_ll_,
+                                          50 * len(_mtbf_c_plot_ll_))
             _mtbf_c_plot_ul_ = _calc.smooth_curve(_times_, _mtbf_c_plot_ul_,
                                                   50 * len(_mtbf_c_plot_ul_))[1]
             _fi_c_plot_ll_ = _calc.smooth_curve(_times_, _fi_c_plot_ll_,
@@ -2517,7 +2520,7 @@ class Dataset:
                                                 50 * len(_fi_c_plot_ul_))[1]
             _times_ = _times_.tolist()
 
-# Display the NHPP Power Law specific results.
+            # Display the NHPP Power Law specific results.
             self.txtMTBFi.set_text(str(fmt.format(MTBFi)))
             self.txtMTBFiLL.set_text(str(fmt.format(MTBFiLL)))
             self.txtMTBFiUL.set_text(str(fmt.format(MTBFiUL)))
@@ -2574,13 +2577,14 @@ class Dataset:
             _text_ = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                       _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
             _widg.create_legend(self.axAxis2, _text_, fontsize='medium',
-                                frameon=True, location='lower right',
-                                shadow=True)
+                                legframeon=True, location='lower right',
+                                legshadow=True)
 
 # Load the failure intensity versus cumulative operating time.
             _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times_,
                             y1=_fi_c_plot_, y2=_fi_model_,
-                            _title_=_(u"Duane Plot of %s Cumulative Failure Intesity") % _name,
+                            _title_=_(u"Duane Plot of %s Cumulative Failure "
+                                      u"Intesity") % _name,
                             _xlab_=_(u"Cumulative Time [hours]"),
                             _ylab_=_(u"Cumulative Failure Intensity "),
                             _marker_=['go', 'k--'],
@@ -2607,7 +2611,8 @@ class Dataset:
 # Load the failure intensity versus calendar time plot.
             _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates_[3:],
                             y1=_fi_c_plot_[3:], y2=_fi_model_[3:],
-                            _title_=_(u"Duane Plot of %s Cumulative Failure Intensity Over Calendar Time") % _name,
+                            _title_=_(u"Duane Plot of %s Cumulative Failure "
+                                      u"Intensity Over Calendar Time") % _name,
                             _xlab_=_(u"Calendar Time"),
                             _ylab_=_(u"Cumulative Failure Intensity "),
                             _marker_=['go', 'k--'],

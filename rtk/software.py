@@ -4,9 +4,10 @@ This is the Class that is used to represent and hold information related to
 the software of the RTK program.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
-__updated__ = "2014-03-22 16:45"
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
