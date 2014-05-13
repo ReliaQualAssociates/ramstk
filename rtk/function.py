@@ -1303,25 +1303,25 @@ class Function(object):
             self   -- the current instance of a FUNCTION class.
             """
 
-            _values_ = (model.get_value(row, self._col_order[2]), \
-                        model.get_value(row, self._col_order[3]), \
-                        model.get_value(row, self._col_order[4]), \
-                        model.get_value(row, self._col_order[5]), \
-                        model.get_value(row, self._col_order[6]), \
-                        model.get_value(row, self._col_order[7]), \
-                        model.get_value(row, self._col_order[8]), \
-                        model.get_value(row, self._col_order[9]), \
-                        model.get_value(row, self._col_order[10]), \
-                        model.get_value(row, self._col_order[11]), \
-                        model.get_value(row, self._col_order[12]), \
-                        model.get_value(row, self._col_order[13]), \
-                        model.get_value(row, self._col_order[14]), \
-                        model.get_value(row, self._col_order[15]), \
-                        model.get_value(row, self._col_order[16]), \
-                        model.get_value(row, self._col_order[17]), \
-                        model.get_value(row, self._col_order[18]), \
-                        model.get_value(row, self._col_order[19]), \
-                        self._app.REVISION.revision_id, \
+            _values_ = (model.get_value(row, self._col_order[2]),
+                        model.get_value(row, self._col_order[3]),
+                        model.get_value(row, self._col_order[4]),
+                        model.get_value(row, self._col_order[5]),
+                        model.get_value(row, self._col_order[6]),
+                        model.get_value(row, self._col_order[7]),
+                        model.get_value(row, self._col_order[8]),
+                        model.get_value(row, self._col_order[9]),
+                        model.get_value(row, self._col_order[10]),
+                        model.get_value(row, self._col_order[11]),
+                        model.get_value(row, self._col_order[12]),
+                        model.get_value(row, self._col_order[13]),
+                        model.get_value(row, self._col_order[14]),
+                        model.get_value(row, self._col_order[15]),
+                        model.get_value(row, self._col_order[16]),
+                        model.get_value(row, self._col_order[17]),
+                        model.get_value(row, self._col_order[18]),
+                        model.get_value(row, self._col_order[19]),
+                        self._app.REVISION.revision_id,
                         model.get_value(row, self._col_order[1]))
 
             _query_ = "UPDATE tbl_functions \
