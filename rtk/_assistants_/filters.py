@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -50,7 +52,7 @@ import gettext
 _ = gettext.gettext
 
 
-class FilterIncident:
+class FilterIncident(object):
     """
     This is the gtk.Assistant that walks the user through the process of
     filtering program incident records in the open RTK Program database.
@@ -457,7 +459,8 @@ class FilterIncident:
                                                   u"unaccepted incidents."))
 
         self.chkFilterReviewed = _widg.make_check_button(label=_(u"Is Reviewed"))
-        self.chkFilterReviewed.set_tooltip_text(_(u"Only return reviewed or unreviewed incidents."))
+        self.chkFilterReviewed.set_tooltip_text(_(u"Only return reviewed or "
+                                                  u"unreviewed incidents."))
 
         fixed = gtk.Fixed()
 
