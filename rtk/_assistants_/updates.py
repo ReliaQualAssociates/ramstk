@@ -203,9 +203,9 @@ class AssignMTBFResults(object):
 
         (model, row) = self.tvwAssemblies.get_selection().get_selected()
 
-        _mtbf_ = float(self._app.DATASET.txtMTBF.get_text())
-        _mtbfll_ = float(self._app.DATASET.txtMTBFLL.get_text())
-        _mtbful_ = float(self._app.DATASET.txtMTBFUL.get_text())
+        _mtbf_ = float(self._app.DATASET.txtMTBFi.get_text())
+        _mtbfll_ = float(self._app.DATASET.txtMTBFiLL.get_text())
+        _mtbful_ = float(self._app.DATASET.txtMTBFiUL.get_text())
         _fr_ = 1.0 / _mtbf_
         _frll_ = 1.0 / _mtbfll_
         _frul_ = 1.0 / _mtbful_

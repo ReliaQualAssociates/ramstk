@@ -2942,26 +2942,26 @@ class Dataset:
 
 # Find the percent of records belonging to each sub-assembly and then allocate
 # this percent of the overall failure rate to each sub-assembly.
-        if(self.chkGroup.get_active()):
-            _query_ = "SELECT t2.fld_name, SUM(t1.fld_quantity), \
-                              t2.fld_assembly_id \
-                       FROM tbl_survival_data AS t1 \
-                       INNER JOIN tbl_system AS t2 \
-                       ON t1.fld_assembly_id=t2.fld_assembly_id \
-                       WHERE t1.fld_dataset_id=%d \
-                       AND t1.fld_right_interval <= %f \
-                       AND t1.fld_right_interval > %f \
-                       AND t1.fld_request_date >= %d \
-                       AND t1.fld_request_date < %d \
-                       GROUP BY t2.fld_name" % (_dataset_, _reltime_,
-                                                _starttime_, _startdate_,
-                                                _enddate_)
-            _results_ = self._app.DB.execute_query(_query_,
+        if self.chkGroup.get_active():
+            _query = "SELECT t2.fld_name, SUM(t1.fld_quantity), \
+                             t2.fld_assembly_id \
+                      FROM tbl_survival_data AS t1 \
+                      INNER JOIN tbl_system AS t2 \
+                      ON t1.fld_assembly_id=t2.fld_assembly_id \
+                      WHERE t1.fld_dataset_id=%d \
+                      AND t1.fld_right_interval <= %f \
+                      AND t1.fld_right_interval > %f \
+                      AND t1.fld_request_date >= %d \
+                      AND t1.fld_request_date < %d \
+                      GROUP BY t2.fld_name" % (_dataset_, _reltime_,
+                                               _starttime_, _startdate_,
+                                               _enddate_)
+            _results_ = self._app.DB.execute_query(_query,
                                                   None,
                                                   self._app.ProgCnx)
 
-            _model_ = self.tvwResultsByChildAssembly.get_model()
-            _model_.clear()
+            _model = self.tvwResultsByChildAssembly.get_model()
+            _model.clear()
             _total_ = float(sum(x[1] for x in _results_))
             for i in range(len(_results_)):
                 if(_results_[i][1] / _total_ >= 0.1):
@@ -2975,7 +2975,7 @@ class Dataset:
                 else:
                     _color_ = 'light gray'
 
-                _values_ = (_results_[i][0], _results_[i][1], _results_[i][2],
+                _values = (_results_[i][0], _results_[i][1], _results_[i][2],
                            (MTBFLL * _total_) / float(_results_[i][1]),
                            (MTBF * _total_) / float(_results_[i][1]),
                            (MTBFUL * _total_) / float(_results_[i][1]),
@@ -2983,7 +2983,9 @@ class Dataset:
                            float(_results_[i][1]) / (MTBF * _total_),
                            float(_results_[i][1]) / (MTBFLL * _total_),
                            _color_)
-                _model_.append(_values_)
+                _model.append(_values)
+
+            self.fraResultsByChildAssembly.show_all()
 
 # Find the percent of records belonging to each component and then allocate
 # this percent of the overall failure rate to each component.
