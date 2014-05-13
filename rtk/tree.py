@@ -117,7 +117,7 @@ class TreeWindow(gtk.Window):
         self.scwHardware = self._app.HARDWARE.create_tree()
         self.scwSoftware = self._app.SOFTWARE.create_tree()
         self.scwTesting = self._app.TESTING.create_tree()
-# TODO: Implement Maintenance Policy tree.
+
         # This is just a placeholder for now.
         # self.scwMaintenance = self._app.MAINTENANCE.create_tree()
         self.scwValidation = self._app.VALIDATION.create_tree()
@@ -254,25 +254,13 @@ class TreeWindow(gtk.Window):
             label.set_tooltip_text(_(u"Displays the system field incidents."))
             self.notebook.insert_page(self.scwIncidents, tab_label=label, position=-1)
 
-            # Find the current revision if using the revision module, otherwise
-            # set this to the default value.
-            if(_conf.RTK_MODULES[0] == 1):
-                values = (self._app.REVISION.revision_id,)
-            else:
-                values = (0, )
-
             # Select all the unaccepted field incidents from the open RTK
             # Program database.
-            if(_conf.BACKEND == 'mysql'):
-                query = "SELECT * FROM tbl_incident \
-                         WHERE fld_revision_id=%d \
-                         ORDER BY fld_incident_id"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT * FROM tbl_incident \
-                         WHERE fld_revision_id=? \
-                         ORDER BY fld_incident_id"
-
-            _app.INCIDENT.load_tree(query, values)
+            _query = "SELECT * FROM tbl_incident \
+                      WHERE fld_revision_id=%d \
+                      ORDER BY fld_incident_id" % \
+                     self._app.REVISION.revision_id
+            _app.INCIDENT.load_tree(_query, None)
 
         # TODO: Add index to RTK_MODULES array for data sets.
         if(_conf.RTK_MODULES[8] == 1):
@@ -527,7 +515,7 @@ class TreeWindow(gtk.Window):
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
-
+# TODO: Add a button to save the entire project.
 # Calculate button
         button = gtk.MenuToolButton(None, label = "")
         button.set_tooltip_text(_(u"Perform various calculations on the system."))
@@ -647,12 +635,12 @@ class TreeWindow(gtk.Window):
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 4):
             try:
                 self._app.SOFTWARE.treeview.grab_focus()
-                model = self._app.SOFTWARE.model
+                _model = self._app.SOFTWARE.treeview.get_model()
                 self._app.winParts.tvwPartsList.set_model(None)
-                path = model.get_path(model.get_iter_root())
-                column = self._app.SOFTWARE.treeview.get_column(0)
-                self._app.SOFTWARE.treeview.row_activated(path, column)
-                self._app.SOFTWARE.load_notebook()
+                _path = _model.get_path(_model.get_iter_root())
+                _column = self._app.SOFTWARE.treeview.get_column(0)
+                self._app.SOFTWARE.treeview.row_activated(_path, _column)
+                #self._app.SOFTWARE.load_notebook()
             except:                         # There are no software modules.
                 pass
         elif(_conf.RTK_PAGE_NUMBER[page_num] == 5):

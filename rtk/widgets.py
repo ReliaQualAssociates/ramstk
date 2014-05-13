@@ -341,10 +341,10 @@ def make_button(height=40, width=200, label="", image='default'):
 
 def make_check_button(label="", width=-1):
     """
-    Utility function to create CheckButton widgets.
+    Utility function to create gtk.CheckButton() widgets.
 
     @keyword label: the text to display with the gtk.CheckButton().  Default is
-                    an emptry string.
+                    an empty string.
     @type label: string
     @keyword width: the desired width of the gtk.CheckButton().  Default is -1
                     or a natural request.

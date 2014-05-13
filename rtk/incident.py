@@ -1197,9 +1197,10 @@ class Incident:
         Loads the Incident treeview model with the list of unaccepted field
         incidents.
 
-        Keyword Arguments:
-        query  -- the SQL query to execute.
-        values -- the values that are used in the SQL query.
+        @param query: the SQL query to execute.
+        @type query: string
+        @param values: the values that are used in the SQL query.
+        @type values: tuple
         """
 
         from datetime import datetime
@@ -1209,12 +1210,13 @@ class Incident:
         results = self._app.DB.execute_query(query,
                                              values,
                                              self._app.ProgCnx)
-
-        if(results == '' or not results):
-            _util.application_error(_(u"There are no incidents matching the specified criteria."))
+        try:
+            self.n_incidents = len(results)
+        except ValueError:
+            _util.application_error(_(u"There are no incidents matching the "
+                                      u"specified criteria."))
             return True
 
-        self.n_incidents = len(results)
         for i in range(self.n_incidents):
             _data = [results[i][0], results[i][1] ,results[i][2],
                      results[i][3], results[i][4], results[i][5],

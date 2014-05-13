@@ -14,8 +14,8 @@ RTK Program test plans.  This includes the following types of test plans:
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
-__copyright__ = 'Copyright 2013 - 2014, Andrew "Weibullguy" Rowland'
-#__docformat__ = "restructuredtext en"
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2013 - 2014, Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -99,6 +99,8 @@ def _close_plot(__window, __event, plot, parent):
     @type plot: matplotlib.FigureCanvas
     @param parent: the original parent widget for the plot.
     @type parent: gtk.Widget
+    @return: False if successful or True if an error is encountered
+    @rtype: boolean
     """
 
     plot.reparent(parent)
@@ -114,6 +116,8 @@ def _mttff_calculator(__button):
 
     @param __button: the gtk.Button() that called this method.
     @type __button: gtk.Button
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -263,17 +267,17 @@ class Testing(object):
         self.treeview = None
         self.n_tests = 0
 
-# Create the main TESTING class treeview.
+        # Create the main TESTING class treeview.
         (self.treeview,
          self._col_order) = _widg.make_treeview('Testing', 11, self._app,
                                                 None, _conf.RTK_COLORS[10],
                                                 _conf.RTK_COLORS[11])
 
-# Toolbar widgets.
+        # Toolbar widgets.
         self.btnAdd = gtk.ToolButton()
         self.btnRemove = gtk.ToolButton()
 
-# Planning Inputs page widgets.
+        # Planning Inputs page widgets.
         # Widgets for multiple test types.
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbTestType = _widg.make_combo()
@@ -1119,11 +1123,11 @@ class Testing(object):
                 column.set_attributes(cell, text=i)
                 column.set_resizable(True)
                 if i > 3:
-                    _datatype_ = (i, 'gfloat')
+                    _datatype = (i, 'gfloat')
                 else:
-                    _datatype_ = (i, 'gint')
+                    _datatype = (i, 'gint')
                 column.set_cell_data_func(cell, _widg.format_cell,
-                                          (i, _datatype_))
+                                          (i, _datatype))
                 column.connect('notify::width', _widg.resize_wrap, cell)
                 self.tvwTestFeasibility.append_column(column)
 
@@ -1345,7 +1349,8 @@ class Testing(object):
         Method to load the TESTING class gtk.TreeModel() from the RTK program
         database.
 
-        @rtype : bool
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _query_ = "SELECT * FROM tbl_tests \
@@ -1539,8 +1544,7 @@ class Testing(object):
         """
         Method to display a plot in it's own window.
 
-        Keyword Arguments:
-        event -- the matplotlib MouseEvent that called this method.
+        @param event: the matplotlib MouseEvent that called this method.
         """
 
         plot = event.canvas
@@ -1570,12 +1574,12 @@ class Testing(object):
         """
         Loads the Reliability Growth plot.
 
-        @param list TPT: a list of the planned test times for each test phase.
-        @param list MTBFA: a list of planned average MTBF values for each test
-                           phase.
-        @param list _obs_: a list of observed values for each test phase.
-        @param list _N_: a list of the number of failures in each interval.
-        @return: False or True
+        @param TPT: a list of the planned test times for each test phase.
+        @param MTBFA: a list of planned average MTBF values for each test
+                      phase.
+        @param _obs_: a list of observed values for each test phase.
+        @param _N_: a list of the number of failures in each interval.
+        @return: False if successful or True if an error is encountered.
         @rtype : boolean
         """
 
@@ -1625,10 +1629,10 @@ class Testing(object):
             """
             Funciton to load the planned growth curve.
 
-            @param list MTBFA: a list of planned average MTBF values for each
-                               test phase.
-            @param list TPT: a list of the planned test times for each test
-                             phase.
+            @param MTBFA: a list of planned average MTBF values for each
+                          test phase.
+            @param TPT: a list of the planned test times for each test
+                        phase.
             @return: _plan
             @rtype: list
             """
@@ -1668,8 +1672,8 @@ class Testing(object):
             """
             Method to load the observed MTBF values.
 
-            @param list obs: a list of observed values for each test phase.
-            @param list N: a list of the number of failures in each interval.
+            @param obs: a list of observed values for each test phase.
+            @param N: a list of the number of failures in each interval.
             """
 
             _error = [False, False]
@@ -1993,7 +1997,7 @@ class Testing(object):
 
         _fix_ = [True, True, True, True, True, True, True]
 
-# Calculate the idealized growth curve.
+        # Calculate the idealized growth curve.
         MTBFI = _model_.get_value(_row_, 6)
         MTBFF = _model_.get_value(_row_, 7)
         TTT = _model_.get_value(_row_, 16)
@@ -2004,7 +2008,7 @@ class Testing(object):
         AvgFEF = _model_.get_value(_row_, 21)
         _alpha_ = self.spnConfidence.get_value() / 100.0
 
-# The following is used to optimize the
+        # The following is used to optimize the reliability growth plan.
         if self.chkFixProgramProb.get_active():
             _fix_[0] = True
 
@@ -2046,7 +2050,7 @@ class Testing(object):
         self.txtProgramProb.set_text(str(fmt.format(Prob)))
         self.txtTTFF.set_text(str(fmt.format(t1)))
 
-# Reliability growth planning phase specific calculations.
+        # Reliability growth planning phase specific calculations.
         model = self.tvwRGPlanDetails.get_model()
         row = model.get_iter_root()
 
@@ -2133,7 +2137,7 @@ class Testing(object):
             _mtbfi = 1.0 / _rhoi
             _mtbfc = _mu[-1]
 
-# Load the results.
+            # Load the results.
             _model_.set_value(_row_, 24, max(X))
             _model_.set_value(_row_, 25, sum(F))
             self.txtScale.set_text(str(fmt.format(_lambda_hat[-1])))
@@ -2177,9 +2181,13 @@ class Testing(object):
         """
         Method to assess the feasibility of a test plan.
 
-        @param list TTT: a list of the test times for each test phase.
-        @param list N: a list of the number of failures expected in each test
-                       phase.
+        @param TTT: a list of the test times for each test phase.
+        @type TTT: list of floats
+        @param N: a list of the number of failures expected in each test
+                  phase.
+        @type N: list of integers
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2434,9 +2442,9 @@ class Testing(object):
         @param model: the TESTING class reliability growth phase feasibility
                       gtk.TreeModel().
         @type model: gtk.TreeModel
-        @param string __path: the path of the active row in the TESTING class
-                              reliability growth phase feasibility
-                              gtk.TreeModel().
+        @param __path: the path of the active row in the TESTING class
+                       reliability growth phase feasibility
+                       gtk.TreeModel().
         @param row: the gtk.TreeIter() of the active row in the TESTING class
                     reliability growth phase feasibility gtk.TreeView().
         @type row: gtk.TreeIter
@@ -2472,8 +2480,8 @@ class Testing(object):
         @param model: the TESTING class reliability growth field data
                       gtk.TreeModel().
         @type model: gtk.TreeModel
-        @param string __path: the path of the active row in the TESTING class
-                              reliability growth field data gtk.TreeModel().
+        @param __path: the path of the active row in the TESTING class
+                       reliability growth field data gtk.TreeModel().
         @param row: the gtk.TreeIter() of the active row in the TESTING class
                     reliability growth field data gtk.TreeView().
         @type row: gtk.TreeIter
@@ -2504,73 +2512,81 @@ class Testing(object):
 
     def _callback_check(self, check, index):
         """
-        Callback function to retrieve and save checkbutton changes.
+        Callback function to retrieve and save gtk.CheckButton() changes for
+        the Testing class.
 
-        Keyword Arguments:
-        check  -- the checkbutton that called the function.
-        index_ -- the position in the Assembly Object _attribute list
-                  associated with the data from the calling checkbutton.
+        @param check: the gtk.CheckButton() that called the function.
+        @type check: gtk.CheckButton
+        @param index: the position in the Testing class gtk.TreeModel()
+                      associated with the data from the calling checkbutton.
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-# Update the Hardware Tree.
+        # Update the Testing Tree.
         if index == 22:
             if self.optIndividual.get_active():
-                _model_.set_value(_row_, index, 0)
+                _model.set_value(_row, index, 0)
             else:
-                _model_.set_value(_row_, index, 1)
+                _model.set_value(_row, index, 1)
 
         else:
-            _model_.set_value(_row_, index, check.get_active())
+            _model.set_value(_row, index, check.get_active())
 
         return False
 
-    def _callback_combo(self, combo, _index_):
+    def _callback_combo(self, combo, index):
         """
-        Callback function to retrieve and save combobox changes.
+        Callback function to retrieve and save gtk.ComboBox changes for the
+        Testing class.
 
-        Keyword Arguments:
-        combo   -- the combobox that called the function.
-        _index_ -- the position in the DATASET Object _attribute list
-                   associated with the data from the calling combobox.
+        @param combo: the gtk.ComboBox() that called the function.
+        @type combo: gtk.ComboBox
+        @param index: the position in the Testing class gtk.TreeModel()
+                      associated with the data from the calling combobox.
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _text_ = combo.get_active()
+        _text = combo.get_active()
 
-        # _index_   Field
+        # index     Field
         #    1      Assembly ID
         #    5      Test Type
         #   12      RG Planning Model
         #   13      RG Assessment Model
-        if _index_ == 1:
+        if index == 1:
             model = combo.get_model()
             row = combo.get_active_iter()
             if row is not None:
                 try:
-                    _text_ = int(model.get_value(row, 1))
+                    _text = int(model.get_value(row, 1))
                 except ValueError:
-                    _text_ = 0
+                    _text = 0
             else:
-                _text_ = 0
+                _text = 0
         else:
-            _text_ = combo.get_active()
+            _text = combo.get_active()
 
-# If we've selected a new type of test, make sure we display the correct
-# detailed planning information.
-        if _index_ == 5:
-            if _text_ == 1:  # HALT
-                _label_ = _(u"Highly Accelerated Life Test Planning Inputs")
-            elif _text_ == 2:  # HASS
-                _label_ = _(u"Highly Accelerated Stress Screening Planning "
-                            u"Inputs")
-            elif _text_ == 3:  # ALT
-                _label_ = _(u"Accelerated Life Test Planning Inputs")
-            elif _text_ == 4:  # ESS
-                _label_ = _(u"Environmental Stress Screening Planning Inputs")
-            elif _text_ == 5:  # Reliability Growth
+        # If we've selected a new type of test, make sure we display the
+        # correct detailed planning information.
+        if index == 5:
+            if _text == 1:  # HALT
+                _label = _(u"Highly Accelerated Life Test Planning Inputs")
+            elif _text == 2:  # HASS
+                _label = _(u"Highly Accelerated Stress Screening Planning "
+                           u"Inputs")
+            elif _text == 3:  # ALT
+                _label = _(u"Accelerated Life Test Planning Inputs")
+            elif _text == 4:  # ESS
+                _label = _(u"Environmental Stress Screening Planning Inputs")
+            elif _text == 5:  # Reliability Growth
                 if self.fraPlan.get_child() is not None:
                     self.fraPlan.remove(self.fraPlan.get_child())
                 self.fraPlan.add(self.fxdRGPlan)
@@ -2596,16 +2612,17 @@ class Testing(object):
                     self.fraOCCurve.hide()
 
                 self._rg_plan_details(1)
-            elif _text_ == 6:  # Reliability Demonstration
-                _label_ = _(u"Reliability Demonstration/Qualification Test "
-                            u"Planning Inputs")
-            elif _text_ == 7:  # PRVT
-                _label_ = _(u"Production Reliability Verification Test "
-                            u"Planning Inputs")
+            elif _text == 6:  # Reliability Demonstration
+                _label = _(u"Reliability Demonstration/Qualification Test "
+                           u"Planning Inputs")
+            elif _text == 7:  # PRVT
+                _label = _(u"Production Reliability Verification Test "
+                           u"Planning Inputs")
 
-# Try to update the gtk.TreeModel.  Just keep going if no row is selected.
+        # Try to update the Testing class gtk.TreeModel().  Just keep going
+        # if no row is selected.
         try:
-            _model_.set_value(_row_, _index_, _text_)
+            _model.set_value(_row, index, _text)
         except TypeError:
             pass
 
@@ -2613,18 +2630,20 @@ class Testing(object):
 
     def _callback_entry(self, entry, __event, convert, index):
         """
-        Callback function to retrieve and save entry changes.
+        Callback function to retrieve and save gtk.Entry() changes for the
+        Testing class.
 
-        Keyword Arguments:
         @param entry: the gtk.Entry() that called this method.
         @type entry: gtk.Entry
         @param  __event: the gtk.gdk.Event() that called this method.
-        @type __event gtk.gdk.Event
-        @param string convert: the data type to convert the entry contents to.
-        @param integer index: the position in the applicable gtk.TreeView()
-                              associated with the data from the calling
-                              gtk.Entry().
-        @return: False or True
+        @type __event: gtk.gdk.Event
+        @param convert: the data type to convert the entry contents to.
+        @type convert: string
+        @param index: the position in the applicable gtk.TreeModel() associated
+                      with the data from the calling gtk.Entry().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -2669,13 +2688,13 @@ class Testing(object):
 
     def _callback_radio(self, button):
         """
-        Callback function to retrieve and save gtk.RadioButton changes for the
-        TESTING Object.
+        Callback function to retrieve and save gtk.RadioButton() changes for
+        the Testing class.
 
-        Keyword Arguments:
-        button  -- the gtk.RadioButton that called the function.
-        _index_ -- the position in the TESTING Object _attribute list
-                   associated with the data from the calling gtk.RadioButton.
+        @param button: the gtk.RadioButton() that called the function.
+        @type button: gtk.RadioButton
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         if button.get_name() == 'linear':
@@ -2689,20 +2708,24 @@ class Testing(object):
 
         return False
 
-    def _callback_spin(self, spin, _index_):
+    def _callback_spin(self, spin, index):
         """
-        Callback function to retrieve and save gtk.SpinButton changes for the
-        TESTING Object.
+        Callback function to retrieve and save gtk.SpinButton() changes for the
+        Testing class.
 
-        Keyword Arguments:
-        spin    -- the gtk.SpinButton that called the function.
-        _index_ -- the position in the YESTING Object _attribute list
-                   associated with the data from the calling gtk.SpinButton.
+        @param spin: the gtk.SpinButton() that called the function.
+        @type spin: gtk.SpinButton
+        @param index: the position in the Testing class gtk.TreeModel()
+                      associated with the data from the calling
+                      gtk.SpinButton().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        _value_ = spin.get_value_as_int()
+        _value = spin.get_value_as_int()
 
-        if _index_ == 14 and self.test_id > 1000:  # Number of RG phases.
+        if index == 14 and self.test_id > 1000:  # Number of RG phases.
             # Find the last number number of existing phases.
             _query = "SELECT MAX(fld_phase_id) \
                       FROM tbl_rel_growth \
@@ -2718,35 +2741,40 @@ class Testing(object):
 
             # If spinning down, delete the phases starting with the last
             # phase.
-            if _value_ < self.n_phases:
-                _diff_ = self.n_phases - _value_
-                for i in range(_diff_):
-                    query = "DELETE FROM tbl_rel_growth \
-                             WHERE fld_test_id=%d \
-                             AND fld_phase_id=%d" % \
-                            (self.test_id, self.n_phases)
-                    self._app.DB.execute_query(query, None, self._app.ProgCnx,
+            if _value < self.n_phases:
+                _diff = self.n_phases - _value
+                for i in range(_diff):
+                    _query = "DELETE FROM tbl_rel_growth \
+                              WHERE fld_test_id=%d \
+                              AND fld_phase_id=%d" % \
+                             (self.test_id, self.n_phases)
+                    self._app.DB.execute_query(_query,
+                                               None,
+                                               self._app.ProgCnx,
                                                commit=True)
 
             # If spinning up, add phases until the number of phases is equal
             # to the spinner value.
-            elif _value_ > self.n_phases:
-                _diff_ = _value_ - self.n_phases
-                for i in range(_diff_):
-                    query = "INSERT INTO tbl_rel_growth \
-                             (fld_test_id, fld_phase_id) \
-                             VALUES(%d, %d)" % \
-                            (self.test_id, i + self.n_phases + 1)
-                    self._app.DB.execute_query(query, None, self._app.ProgCnx,
+            elif _value > self.n_phases:
+                _diff = _value - self.n_phases
+                for i in range(_diff):
+                    _query = "INSERT INTO tbl_rel_growth \
+                              (fld_test_id, fld_phase_id) \
+                              VALUES(%d, %d)" % \
+                              (self.test_id, i + self.n_phases + 1)
+                    self._app.DB.execute_query(_query,
+                                               None,
+                                               self._app.ProgCnx,
                                                commit=True)
 
             self._load_rg_plan_tree()
             self._load_rg_feasibility_tree()
 
-# Try to update the gtk.TreeModel.  Just keep going if no row is selected.
+        # Try to update the gtk.TreeModel.  Just keep going if no row is
+        # selected.
         try:
-            (_model_, _row_) = self.treeview.get_selection().get_selected()
-            _model_.set_value(_row_, _index_, _value_)
+            (_model, _row) = self.treeview.get_selection().get_selected()
+            _model.set_value(_row, index, _value)
         except ValueError:
             pass
         except TypeError:
@@ -2756,10 +2784,12 @@ class Testing(object):
 
     def _toolbutton_pressed(self, button):
         """
-        Method to reacte to the SOFTWARE Object toolbar button clicked events.
+        Method to react to the Testing class toolbar button clicked events.
 
         @param button: the gtk.ToolButton() that was pressed.
         @type : gtk.ToolButton
+        @return: False if successful or True if an error is encountered.
+        @rtype: booelan
         """
 
         _page = self.notebook.get_current_page()
@@ -2790,7 +2820,8 @@ class Testing(object):
                                  0 = Planning Inputs
                                  1 = Test Feasibility
                                  2 = Test Assessment
-        @return: False
+        @return: False if successful or True if an error is encountered.
+        @rtype: booelan
         """
 
         if page_num == 0:
@@ -2812,8 +2843,10 @@ class Testing(object):
         """
         Method to load the reliability growth plan details.
 
-        @param integer index: the index of the
-        @return: False
+        @param index: the index of the
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: booelan
         """
         if index == 1:
             # self.fraPlan.add(self.fxdRGPlan)

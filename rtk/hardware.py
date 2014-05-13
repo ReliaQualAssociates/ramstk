@@ -4,8 +4,10 @@ This is the Class that is used to represent and hold information related to
 the hardware of the Program.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -13,15 +15,42 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
 #
 # All rights reserved.
 
-from datetime import datetime
 import gettext
 import locale
 import sys
 
+from datetime import datetime
 from lxml import etree
+from math import exp, log
+
+# Modules required for the GUI.
+try:
+    import pygtk
+    pygtk.require('2.0')
+except ImportError:
+    sys.exit(1)
+try:
+    import gtk
+except ImportError:
+    sys.exit(1)
+try:
+    import gtk.glade
+except ImportError:
+    sys.exit(1)
+try:
+    import gobject
+except ImportError:
+    sys.exit(1)
+try:
+    import pango
+except ImportError:
+    sys.exit(1)
+
+# Modules required for plotting.
 import matplotlib
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
+matplotlib.use('GTK')
 
 # Import other RTK modules.
 from _assistants_.exports import ExportHardware
@@ -30,35 +59,6 @@ import calculations as _calc
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
-
-# Modules required for the GUI.
-try:
-    import pygtk  # @UnusedImport
-
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk  # @UnusedImport
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade  # @UnusedImport
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject  # @UnusedImport
-except ImportError:
-    sys.exit(1)
-try:
-    import pango  # @UnusedImport
-except ImportError:
-    sys.exit(1)
-
-from math import exp, log
-
-# Modules required for plotting.
-matplotlib.use('GTK')
 
 # Add localization support.
 try:
@@ -71,7 +71,7 @@ _ = gettext.gettext
 
 class Hardware(object):
     """
-    The HARDWARE
+    The Hardware class
     """
 
     # TODO: Write code to update Work Book widgets when editing the
@@ -93,17 +93,17 @@ class Hardware(object):
         self._treepaths = {}
         self._mission = {}
         self._mission_phase = {}
-        self._assembly_risks_ = {}  # Assembly risk matrix values.
-        self._system_risks_ = {}  # System risk matrix values.
+        self._assembly_risks_ = {}          # Assembly risk matrix values.
+        self._system_risks_ = {}            # System risk matrix values.
         self._hrmodel = {}
         self._fmeca = {}
         self._mechanisms = {}
         self._fmeca_controls = {}
         self._fmeca_actions = {}
-        self._CA = {}  # Carries MIL-STD-1629A values.
-        self._ItemCA = {}  # Carries MIL-STD-1629A values.
-        self._rpnsev = {}  # Carries RPN severity values.
-        self._RPN = {}  # Carries RPN and new RPN values.
+        self._CA = {}                       # Carries MIL-STD-1629A values.
+        self._ItemCA = {}                   # Carries MIL-STD-1629A values.
+        self._rpnsev = {}                   # Carries RPN severity values.
+        self._RPN = {}                      # Carries RPN and new RPN values.
 
         # Define private HARDWARE class list attributes.
         self._col_order = []
@@ -244,7 +244,7 @@ class Hardware(object):
                                                 None, _conf.RTK_COLORS[6],
                                                 _conf.RTK_COLORS[7])
 
-        # Toolbar widgets.
+        # Hardware class Work Book toolbar widgets.
         self.btnAddSibling = gtk.ToolButton()
         self.btnAddChild = gtk.ToolButton()
         self.btnRemoveHardware = gtk.ToolButton()
@@ -563,9 +563,12 @@ class Hardware(object):
 
     def create_tree(self):
         """
-        Creates the HARDWARE class gtk.TreeView() and connects it to callback
-        functions to handle editting.  Background and foreground colors can be
-        set using the user-defined values in the RTK configuration file.
+        Creates the Hardware class gtk.TreeView() and connects it to callback
+        functions to handle editing.
+
+        @return _scrollwindow: the gtk.ScrolledWindow() container holding the
+                               Software class gtk.TreeView().
+        @rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
@@ -579,17 +582,17 @@ class Hardware(object):
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
 
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.treeview)
 
-        return _scrollwindow_
+        return _scrollwindow
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the HARDWARE class work book.
+        Method to create the toolbar for the Hardware class work book.
         """
 
-        toolbar = gtk.Toolbar()
+        _toolbar = gtk.Toolbar()
 
         _pos = 0
 
@@ -598,11 +601,11 @@ class Hardware(object):
                                               u"same indenture level as the "
                                               u"selected assembly to the RTK "
                                               u"Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        self.btnAddSibling.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        self.btnAddSibling.set_icon_widget(_image)
         self.btnAddSibling.connect('clicked', self._add_hardware, 0)
-        toolbar.insert(self.btnAddSibling, _pos)
+        _toolbar.insert(self.btnAddSibling, _pos)
         _pos += 1
 
         # Add child assembly button.
@@ -610,11 +613,11 @@ class Hardware(object):
                                             u"indenture level subordinate to "
                                             u"the selected assembly to the "
                                             u"RTK Program Database."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        self.btnAddChild.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+        self.btnAddChild.set_icon_widget(_image)
         self.btnAddChild.connect('clicked', self._add_hardware, 1)
-        toolbar.insert(self.btnAddChild, _pos)
+        _toolbar.insert(self.btnAddChild, _pos)
         _pos += 1
 
         # Delete assembly button
@@ -622,128 +625,128 @@ class Hardware(object):
                                                   u"selected assembly from "
                                                   u"the RTK Program "
                                                   u"Database."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemoveHardware.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemoveHardware.set_icon_widget(_image)
         self.btnRemoveHardware.connect('clicked', self._delete_hardware)
-        toolbar.insert(self.btnRemoveHardware, _pos)
+        _toolbar.insert(self.btnRemoveHardware, _pos)
         _pos += 1
 
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
         # Add item button.  Depending on the notebook page selected will
         # determine what type of item is added.
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        self.btnAddItem.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnAddItem.set_icon_widget(_image)
         self.btnAddItem.set_name('Add')
         self.btnAddItem.connect('clicked', self._toolbutton_pressed)
         self.btnAddItem.set_tooltip_text(_(u"Add components to the currently "
                                            u"selected assembly."))
-        toolbar.insert(self.btnAddItem, _pos)
+        _toolbar.insert(self.btnAddItem, _pos)
         _pos += 1
 
         self.btnFMECAAdd.set_tooltip_text(_(u"Add items to the active "
                                             u"FMEA/FMECA."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        self.btnFMECAAdd.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_(u"Mode"))
-        menu_item.set_tooltip_text(_(u"Add a new failure mode to the "
-                                     u"currently selected assembly."))
-        menu_item.connect('activate', self._toolbutton_pressed)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Mechanism"))
-        menu_item.set_tooltip_text(_(u"Add a new failure mechanism to the "
-                                     u"currently selected failure mode."))
-        menu_item.connect('activate', self._toolbutton_pressed)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Control"))
-        menu_item.set_tooltip_text(_(u"Add a new control to the currently "
-                                     u"selected failure mechanism."))
-        menu_item.connect('activate', self._toolbutton_pressed)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Action"))
-        menu_item.set_tooltip_text(_(u"Add a new action to the currently "
-                                     u"selected failure mechanism."))
-        menu_item.connect('activate', self._toolbutton_pressed)
-        menu.add(menu_item)
-        self.btnFMECAAdd.set_menu(menu)
-        menu.show_all()
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnFMECAAdd.set_icon_widget(_image)
+        _menu = gtk.Menu()
+        _menu_item = gtk.MenuItem(label=_(u"Mode"))
+        _menu_item.set_tooltip_text(_(u"Add a new failure mode to the "
+                                      u"currently selected assembly."))
+        _menu_item.connect('activate', self._toolbutton_pressed)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Mechanism"))
+        _menu_item.set_tooltip_text(_(u"Add a new failure mechanism to the "
+                                      u"currently selected failure mode."))
+        _menu_item.connect('activate', self._toolbutton_pressed)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Control"))
+        _menu_item.set_tooltip_text(_(u"Add a new control to the currently "
+                                      u"selected failure mechanism."))
+        _menu_item.connect('activate', self._toolbutton_pressed)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Action"))
+        _menu_item.set_tooltip_text(_(u"Add a new action to the currently "
+                                      u"selected failure mechanism."))
+        _menu_item.connect('activate', self._toolbutton_pressed)
+        _menu.add(_menu_item)
+        self.btnFMECAAdd.set_menu(_menu)
+        _menu.show_all()
         self.btnFMECAAdd.show()
-        toolbar.insert(self.btnFMECAAdd, _pos)
+        _toolbar.insert(self.btnFMECAAdd, _pos)
         _pos += 1
 
         # Remove item button.  Depending on the notebook page selected will
         # determine what type of item is removed.
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemoveItem.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemoveItem.set_icon_widget(_image)
         self.btnRemoveItem.set_name('Remove')
         self.btnRemoveItem.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnRemoveItem, _pos)
+        _toolbar.insert(self.btnRemoveItem, _pos)
         _pos += 1
 
         # Perform analysis button.  Depending on the notebook page selected
         # will determine which analysis is executed.
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        self.btnAnalyze.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
+        self.btnAnalyze.set_icon_widget(_image)
         self.btnAnalyze.set_name('Analyze')
         self.btnAnalyze.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnAnalyze, _pos)
+        _toolbar.insert(self.btnAnalyze, _pos)
         _pos += 1
 
         # Save results button.  Depending on the notebook page selected will
         # determine which results are saved.
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        self.btnSaveResults.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSaveResults.set_icon_widget(_image)
         self.btnSaveResults.set_name('Save')
         self.btnSaveResults.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnSaveResults, _pos)
+        _toolbar.insert(self.btnSaveResults, _pos)
         _pos += 1
 
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/rollup.png')
-        self.btnRollup.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/rollup.png')
+        self.btnRollup.set_icon_widget(_image)
         self.btnRollup.set_name('Rollup')
         self.btnRollup.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnRollup, _pos)
+        _toolbar.insert(self.btnRollup, _pos)
         _pos += 1
 
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/edit.png')
-        self.btnEdit.set_icon_widget(image)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/edit.png')
+        self.btnEdit.set_icon_widget(_image)
         self.btnEdit.set_name('Edit')
         self.btnEdit.connect('clicked', self._toolbutton_pressed)
-        toolbar.insert(self.btnEdit, _pos)
+        _toolbar.insert(self.btnEdit, _pos)
         _pos += 1
 
         # Create an import button.
-        button = gtk.ToolButton()
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
-        button.set_icon_widget(image)
-        button.set_name('Import')
-        button.connect('clicked', ImportHardware, self._app)
-        button.set_tooltip_text(_(u"Launches the hardware import assistant."))
-        toolbar.insert(button, _pos)
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Import')
+        _button.connect('clicked', ImportHardware, self._app)
+        _button.set_tooltip_text(_(u"Launches the hardware import assistant."))
+        _toolbar.insert(_button, _pos)
         _pos += 1
 
         # Create an export button.
-        button = gtk.ToolButton()
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
-        button.set_icon_widget(image)
-        button.set_name('Export')
-        button.connect('clicked', ExportHardware, self._app)
-        button.set_tooltip_text(_(u"Launches the hardware export assistant."))
-        toolbar.insert(button, _pos)
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Export')
+        _button.connect('clicked', ExportHardware, self._app)
+        _button.set_tooltip_text(_(u"Launches the hardware export assistant."))
+        _toolbar.insert(_button, _pos)
 
-        toolbar.show()
+        _toolbar.show()
 
         self.btnAddItem.show()
         self.btnFMECAAdd.hide()
@@ -753,7 +756,7 @@ class Hardware(object):
         self.btnRollup.hide()
         self.btnEdit.hide()
 
-        return toolbar
+        return _toolbar
 
     def _create_notebook(self):
         """
@@ -4102,9 +4105,9 @@ class Hardware(object):
 
             self._update_attributes()
 
-        if _model_.get_value(_row_, 63) == 0:  # Is an assembly.
+        if _model_.get_value(_row_, 63) == 0:   # Is an assembly.
             _path_ = _model_.get_string_from_iter(_row_)
-        elif _model_.get_value(_row_, 63) == 1:  # Is a component.
+        elif _model_.get_value(_row_, 63) == 1: # Is a component.
             _row_ = _model_.iter_parent(_row_)
             _path_ = _model_.get_string_from_iter(_row_)
 
@@ -4117,7 +4120,7 @@ class Hardware(object):
                     WHERE t2.fld_revision_id=%d \
                     AND t2.fld_parent_assembly='%s'" % \
                    (self._app.REVISION.revision_id, _path_)
-        qryIncidents = "SELECT * FROM tbl_incident\
+        qryIncidents = "SELECT * FROM tbl_incident \
                         WHERE fld_revision_id=%d \
                         AND fld_hardware_id=%d \
                         ORDER BY fld_incident_id" % \
@@ -7229,9 +7232,11 @@ class Hardware(object):
 
     def calculate(self, row):
         """
-        Method to calculate the HARDWARE class.
+        Method to calculate the Hardware class.
 
-        @param row:
+        @param row: the gtk.TreeIter() from the Hardware class gtk.TreeView()
+                    to calculate results for.
+        @type row: gtk.TreeIter
         """
 
         _model_ = self.treeview.get_model()
@@ -7261,9 +7266,7 @@ class Hardware(object):
             _model_.set_value(row, 95, _icon)
 
             # Calculate all the children and the sum of their results.
-            #_n_children_ = _model_.iter_n_children(row)
-            #_row_ = _model_.iter_children(row)
-            for i in range(_n_children_):  # @UnusedVariable
+            for i in range(_n_children_):
                 (_c_, _la_, _ld_, _ls_, _lp_,
                  _n_parts_, _power_) = self.calculate(_row_)
 

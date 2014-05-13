@@ -15,11 +15,6 @@ import sys
 
 import pango
 
-# Import other RTK modules.
-from _assistants_.adds import AddRevision
-import configuration as _conf
-import widgets as _widg
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -38,6 +33,12 @@ try:
     import gobject
 except ImportError:
     sys.exit(1)
+
+# Import other RTK modules.
+from _assistants_.adds import AddRevision
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
 
 # Add localization support.
 try:
@@ -1198,6 +1199,8 @@ class Revision(object):
         @type __column: gtk.TreeViewColumn
         """
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         (_model_, _row_) = treeview.get_selection().get_selected()
 
         # If selecting a revision, load everything associated with
@@ -1234,7 +1237,7 @@ class Revision(object):
                           INNER JOIN tbl_system AS t2 \
                           ON t1.fld_assembly_id=t2.fld_assembly_id \
                           WHERE t2.fld_revision_id=%d" % self.revision_id
-            _qryIncidents_ = "SELECT * FROM tbl_incident\
+            _qryIncidents_ = "SELECT * FROM tbl_incident \
                               WHERE fld_revision_id=%d" % self.revision_id
 
             self._app.REQUIREMENT.save_requirement()
@@ -1245,7 +1248,7 @@ class Revision(object):
             self._app.HARDWARE.save_hardware()
             self._app.HARDWARE.revision_id = self.revision_id
             self._app.HARDWARE.load_tree()
-            self._app.SOFTWARE.software_save()
+            self._app.SOFTWARE.save_software()
             self._app.SOFTWARE.revision_id = self.revision_id
             self._app.SOFTWARE.load_tree()
             #self._app.VALIDATION.validation_save()
@@ -1257,6 +1260,8 @@ class Revision(object):
             #self._app.winParts.load_incident_tree(_qryIncidents_, self.revision_id)
 
             self.load_notebook()
+
+            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -1594,13 +1599,13 @@ class Revision(object):
 
         return False
 
-    def save_revision(self, __button):
+    def save_revision(self, __button=None):
         """
         Saves the REVISION Object gtk.TreeModel information to the
         program's MySQL or SQLite3 database.
 
-        Keyword Argumesnts:
-        __button -- the gtk.Button() that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         def _save_line(model, __path, row, self):

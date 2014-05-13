@@ -576,7 +576,7 @@ def save_project(widget, _app):
     widget -- the widget that is calling this function.
     _app   -- the RTK application.
     """
-
+# TODO: Only save the active module in the Tree Book.
     if not _app.LOADED:
         return True
 
@@ -590,8 +590,8 @@ def save_project(widget, _app):
     _app.REQUIREMENT.save_requirement()
     _app.FUNCTION.save_function()
     _app.HARDWARE.save_hardware()
-    _app.SOFTWARE.software_save()
-    _app.winParts.save_component()
+    _app.SOFTWARE.save_software()
+    #_app.winParts.save_component()
 
 # Update the next ID for each type of object.
     _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
@@ -774,32 +774,34 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     Dialog to display runtime errors to the user.
 
     @param _prompt_: the prompt to display in the dialog.
-    @type _prompt_: str
+    @type _prompt_: string
     @param _image_: the icon to display in the dialog.
     @type _image_: gtk.Image
     @param _parent_: the parent gtk.Window(), if any, for the dialog.
     @type _paranet_: gtk.Window
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
     """
 
-    dialog = _widg.make_dialog(_(u"RTK Error"),
-                               dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    _dialog = _widg.make_dialog(_(u"RTK Error"),
+                                dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-    hbox = gtk.HBox()
+    _hbox = gtk.HBox()
 
-    file_image = _conf.ICON_DIR + '32x32/' + _image_ + '.png'
-    image = gtk.Image()
-    image.set_from_file(file_image)
-    hbox.pack_start(image)
+    _file_image = _conf.ICON_DIR + '32x32/' + _image_ + '.png'
+    _image = gtk.Image()
+    _image.set_from_file(_file_image)
+    _hbox.pack_start(_image)
 
-    label = _widg.make_label(_prompt_, width=400, height=200, wrap=True)
-    label.set_justify(gtk.JUSTIFY_LEFT)
-    hbox.pack_end(label)
-    dialog.vbox.pack_start(hbox)
-    hbox.show_all()
+    _label = _widg.make_label(_prompt_, width=400, height=200, wrap=True)
+    _label.set_justify(gtk.JUSTIFY_LEFT)
+    _hbox.pack_end(_label)
+    _dialog.vbox.pack_start(_hbox)
+    _hbox.show_all()
 
-    dialog.run()
+    _dialog.run()
 
-    dialog.destroy()
+    _dialog.destroy()
 
     return False
 
@@ -1479,65 +1481,64 @@ def date_select(widget, entry=None):
     return(_date_)
 
 
-def set_cursor(_app_, _cursor_):
+def set_cursor(app, cursor):
     """
     Function to set the cursor for a gtk.gdk.Window()
 
-    Keyword Araguments:
-    _app_    -- the running instance of the RTK application.
-    _cursor_ -- the gtk.gdk.Cursor() to set.  Only handles one of the following:
-                gtk.gdk.X_CURSOR
-                gtk.gdk.ARROW
-                gtk.gdk.CENTER_PTR
-                gtk.gdk.CIRCLE
-                gtk.gdk.CROSS
-                gtk.gdk.CROSS_REVERSE
-                gtk.gdk.CROSSHAIR
-                gtk.gdk.DIAMOND_CROSS
-                gtk.gdk.DOUBLE_ARROW
-                gtk.gdk.DRAFT_LARGE
-                gtk.gdk.DRAFT_SMALL
-                gtk.gdk.EXCHANGE
-                gtk.gdk.FLEUR
-                gtk.gdk.GUMBY
-                gtk.gdk.HAND1
-                gtk.gdk.HAND2
-                gtk.gdk.LEFT_PTR - used for non-busy cursor
-                gtk.gdk.PENCIL
-                gtk.gdk.PLUS
-                gtk.gdk.QUESTION_ARROW
-                gtk.gdk.RIGHT_PTR
-                gtk.gdk.SB_DOWN_ARROW
-                gtk.gdk.SB_H_DOUBLE_ARROW
-                gtk.gdk.SB_LEFT_ARROW
-                gtk.gdk.SB_RIGHT_ARROW
-                gtk.gdk.SB_UP_ARROW
-                gtk.gdk.SB_V_DOUBLE_ARROW
-                gtk.gdk.TCROSS
-                gtk.gdk.TOP_LEFT_ARROW
-                gtk.gdk.WATCH - used when application is busy
-                gtk.gdk.XTERM - selection bar
+    @param app: the running instance of the RTK application.
+    @param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
+                   following:
+                   gtk.gdk.X_CURSOR
+                   gtk.gdk.ARROW
+                   gtk.gdk.CENTER_PTR
+                   gtk.gdk.CIRCLE
+                   gtk.gdk.CROSS
+                   gtk.gdk.CROSS_REVERSE
+                   gtk.gdk.CROSSHAIR
+                   gtk.gdk.DIAMOND_CROSS
+                   gtk.gdk.DOUBLE_ARROW
+                   gtk.gdk.DRAFT_LARGE
+                   gtk.gdk.DRAFT_SMALL
+                   gtk.gdk.EXCHANGE
+                   gtk.gdk.FLEUR
+                   gtk.gdk.GUMBY
+                   gtk.gdk.HAND1
+                   gtk.gdk.HAND2
+                   gtk.gdk.LEFT_PTR - used for non-busy cursor
+                   gtk.gdk.PENCIL
+                   gtk.gdk.PLUS
+                   gtk.gdk.QUESTION_ARROW
+                   gtk.gdk.RIGHT_PTR
+                   gtk.gdk.SB_DOWN_ARROW
+                   gtk.gdk.SB_H_DOUBLE_ARROW
+                   gtk.gdk.SB_LEFT_ARROW
+                   gtk.gdk.SB_RIGHT_ARROW
+                   gtk.gdk.SB_UP_ARROW
+                   gtk.gdk.SB_V_DOUBLE_ARROW
+                   gtk.gdk.TCROSS
+                   gtk.gdk.TOP_LEFT_ARROW
+                   gtk.gdk.WATCH - used when application is busy
+                   gtk.gdk.XTERM - selection bar
     """
 
-    _app_.winTree.window.set_cursor(gtk.gdk.Cursor(_cursor_))
-    _app_.winParts.window.set_cursor(gtk.gdk.Cursor(_cursor_))
-    _app_.winWorkBook.window.set_cursor(gtk.gdk.Cursor(_cursor_))
+    app.winTree.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.winParts.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 
     return False
 
-def long_call(_app_):
+def long_call(app):
     """
     Function for restoring the cursor to normal after a long call.
 
-    Keyword Arguments:
-    _app_ -- the running instance of the RTK application.
+    @param app: -- the running instance of the RTK application.
     """
 
-    _app_.winTree.window.set_cursor(None)
-    _app_.winParts.window.set_cursor(None)
-    _app_.winWorkBook.window.set_cursor(None)
+    app.winTree.window.set_cursor(None)
+    app.winParts.window.set_cursor(None)
+    app.winWorkBook.window.set_cursor(None)
 
 
 class Options:

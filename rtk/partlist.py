@@ -446,22 +446,21 @@ class ListWindow(gtk.Window):
 
         return False
 
-    def load_incident_tree(self, _query_, _values_):
+    def load_incident_tree(self, query,  _values_=None):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Assembly.
 
-        Keyword Arguments:
-        _query_  -- the SQL query to execute to retrieve the list of parts
-                    associated with the calling Revision, Assembly, or Software
-                    module.
+        @param query: the SQL query to execute to retrieve the list of parts
+                      associated with the calling Revision, Assembly, or
+                      Software class.
         _values_ -- the tuple of values to pass with the query.
         """
 
         model = self.tvwIncidents.get_model()
         model.clear()
 
-        results = self._app.DB.execute_query(_query_,
+        results = self._app.DB.execute_query(query,
                                              _values_,
                                              self._app.ProgCnx)
 

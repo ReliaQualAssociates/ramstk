@@ -997,10 +997,10 @@ class ImportIncident:
         # Load the INCIDENT treeview with the newly imported records.
         values = (self._app.REVISION.revision_id, )
         if(_conf.BACKEND == 'mysql'):
-            query = "SELECT * FROM tbl_incident\
+            query = "SELECT * FROM tbl_incident \
                      WHERE fld_revision_id=%d"
         elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT * FROM tbl_incident\
+            query = "SELECT * FROM tbl_incident \
                      WHERE fld_revision_id=?"
 
         window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))

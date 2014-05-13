@@ -3,8 +3,10 @@
     database backend.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -40,65 +42,63 @@ class SQLite3Interface:
         self._is_closed = True
 
     def get_connection(self, database):
-
         """
         Opens a connections to a database.
 
-        Keyword Arguments:
-        sqlite_info -- list containing SQLite login information.
-                       [0] -
-                       [1] -
-                       [2] - SQLite3 database
-                       [3] - SQLite3 user
-                       [4] - SQLite3 user password
+        @param database: the absolute path to the database to be opened.
         """
-
+# TODO: Make the connection object an instance attribute.
         cnx = sqlite3.connect(database, isolation_level=None)
 
         self._is_closed = False
 
-        return(cnx)
+        return cnx
 
     def execute_query(self, query, values, cnx, commit=False):
         """
         Executes a query on the SQLite database and returns the results.
 
-        @param string query: the query to execute.
-        @param tuple values: a typle containing the values to insert into the
-                             query.
+        @param query: the query to execute.
+        @type query: string
+        @param values: a typle containing the values to insert into the query.
+        @type values: tuple
         @param cnx: the connection to use when executing the query.
-        @param boolean commit: whether or not to commit the results.
+        @type cnx: SQLite3 connection
+        @param commit: whether or not to commit the results.
+        @type commit: boolean
         """
-#TODO: Revise to eliminate the values parameter.
-        cur = cnx.cursor()
+# TODO: Revise to eliminate the values parameter.
+# TODO: Return the error message and process locally in the calling module.
+        with cnx:
+            cur = cnx.cursor()
 
-        try:
-            if values is None:
-                cur.execute(query)
-            else:
-                cur.execute(query, values)
+            try:
+                if values is None:
+                    cur.execute(query)
+                else:
+                    cur.execute(query, values)
 
-            if not commit:
-                try:
-                    results = cur.fetchall()
-                except sqlite3.Error, e:
-                    self._app.debug_log.error(e)
-                    self._app.debug_log.error(query)
-                    results = False
-            else:
-                try:
-                    cnx.commit()
-                    results = True
-                except sqlite3.Error, e:
-                    self._app.debug_log.error(e)
-                    self._app.debug_log.error(query)
-                    results = False
+                if not commit:
+                    try:
+                        results = cur.fetchall()
+                    except sqlite3.Error, e:
+                        self._app.debug_log.error(e)
+                        self._app.debug_log.error(query)
+                        results = False
+                else:
+                    try:
+                        cnx.commit()
+                        results = True
+                    except sqlite3.Error, e:
+                        self._app.debug_log.error(e.args[0])
+                        self._app.debug_log.error(query)
+                        results = False
 
-        except sqlite3.Error, e:
-            self._app.debug_log.error(e)
-            self._app.debug_log.error(query)
-            results = False
+            except sqlite3.Error, e:
+                self._app.debug_log.error(e)
+                self._app.debug_log.error(query)
+                results = False
 
-        cur.close()
+            cur.close()
 
         return results

@@ -4,7 +4,9 @@ This file contains configuration information and functions for RTK.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2013 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -450,16 +452,16 @@ class RTKConf:
             try:
                 mkdir(self.conf_dir)
                 print _("RTK configuration directory (%s) created.") % \
-                self.conf_dir
+                    self.conf_dir
                 mkdir(self.data_dir)
                 print _("RTK data directory (%s) created.") % \
-                self.data_dir
+                    self.data_dir
                 mkdir(self.log_dir)
                 print _("RTK log file directory (%s) created.") % \
-                self.log_dir
+                    self.log_dir
                 mkdir(self.icon_dir)
                 print _("RTK icon directory (%s) created.") % \
-                self.icon_dir
+                    self.icon_dir
                 self.__init__()
             except EnvironmentError:
                 print _("Could not create RTK default configuration.")
