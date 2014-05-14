@@ -911,11 +911,18 @@ class Validation(object):
 
         # Find the earliest start date, the latest end date, and the total
         # number of hours for minimum, most likely, and maximum task time.
-        _x = [min([_a[0] for _a in _tasks])]
-        _y1 = [sum([_a[2] for _a in _tasks])]
-        _y2 = [sum([_a[3] for _a in _tasks])]
-        _y3 = [sum([_a[4] for _a in _tasks])]
-        _y4 = [sum([_a[3] for _a in _tasks])]
+        try:
+            _x = [min([_a[0] for _a in _tasks])]
+            _y1 = [sum([_a[2] for _a in _tasks])]
+            _y2 = [sum([_a[3] for _a in _tasks])]
+            _y3 = [sum([_a[4] for _a in _tasks])]
+            _y4 = [sum([_a[3] for _a in _tasks])]
+        except ValueError:
+            _x = [719163]
+            _y1 = [0]
+            _y2 = [0]
+            _y3 = [0]
+            _y4 = [0]
 
         # Get a sorted list of unique end dates and then find the total number
         # of hours that should be completed on each unique end date.

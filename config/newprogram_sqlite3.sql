@@ -899,6 +899,19 @@ INSERT INTO "tbl_cdr" VALUES(0, 55, 0, 0);
 INSERT INTO "tbl_cdr" VALUES(0, 56, 0, 0);
 INSERT INTO "tbl_cdr" VALUES(0, 57, 0, 0);
 INSERT INTO "tbl_cdr" VALUES(0, 58, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 59, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 60, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 61, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 62, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 63, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 64, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 65, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 66, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 67, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 68, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 69, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 70, 0, 0);
+INSERT INTO "tbl_cdr" VALUES(0, 71, 0, 0);
 
 CREATE TABLE "tbl_trr" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.

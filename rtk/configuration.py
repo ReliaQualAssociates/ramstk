@@ -50,6 +50,12 @@ CONF_DIR = ''
 # Defaults to C:\\Users\<USER NAME>\config\RTK\logs\ on NT systems.
 LOG_DIR = ''
 
+# Path to the base directory containing RTK Program database files.  This is
+# only used when the backend is SQLit3.  Defaults to $HOME/analyses/rtk on
+# POSIX systems.  Defaults to C:\\Users\<USER NAME>\analyses\rtk\ on NT
+# systems.
+PROG_DIR = ''
+
 # Global list containing the path to the format files to use for various
 # widgets.
 #
@@ -192,7 +198,9 @@ FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
 
 class RTKConf:
-    """ The RTK configuration class. """
+    """
+    The RTK configuration class.
+    """
 
     def __init__(self, level='site'):
         """
@@ -210,6 +218,7 @@ class RTKConf:
             _ICONDIR = '/usr/share/pixmaps/RTK/'
             _LOGDIR = '/var/log/RTK/'
             _HOMEDIR = environ['HOME']
+            _PROGDIR = _HOMEDIR + '/analyses/rtk/'
 
         elif(name == 'nt'):
             self.OS = 'Windows'
@@ -218,6 +227,7 @@ class RTKConf:
             _SITEDIR = _HOMEDIR + '/.config/RTK/'
             _ICONDIR = _HOMEDIR + '/.config/RTK/icons/'
             _LOGDIR = _HOMEDIR + '/.config/RTK/logs/'
+            _PROGDIR = _HOMEDIR + '/analyses/rtk/'
 
         if(level == 'site'):
             if(_util.dir_exists(_SITEDIR)):
@@ -259,6 +269,11 @@ class RTKConf:
                 self.log_dir = _LOGDIR
             else:
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
+
+            if _util.dir_exists(_PROGDIR):
+                self.prog_dir = _PROGDIR
+            else:
+                self.prog_dir = _HOMEDIR
 
             self._conf_file = self.conf_dir + 'RTK.conf'
 

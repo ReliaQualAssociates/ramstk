@@ -5,8 +5,10 @@ application.  Import this module as _util in other modules that need to
 interact with the RTK application.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -15,6 +17,9 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+import os
+import os.path
+from os import environ, name
 
 # Modules required for the GUI.
 try:
@@ -51,6 +56,12 @@ def read_configuration():
     settings for The RTK application.
     """
 
+    if name == 'posix':
+        _homedir = environ['HOME']
+
+    elif name == 'nt':
+        _homedir = environ['USERPROFILE']
+
 # Get a config instance for the site configuration file.
     conf = _conf.RTKConf('site')
 
@@ -77,28 +88,33 @@ def read_configuration():
     _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'user'))
     _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
-# Get directory and file information.
+    # Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')
     datadir = conf.read_configuration().get('Directories', 'datadir')
     logdir = conf.read_configuration().get('Directories', 'logdir')
+    progdir = conf.read_configuration().get('Directories', 'progdir')
 
     _conf.CONF_DIR = conf.conf_dir
-    if(not dir_exists(_conf.CONF_DIR)):
+    if not dir_exists(_conf.CONF_DIR):
         application_error(_("Configuration directory %s does not exist.  Exiting.") % _conf.CONF_DIR)
 
     _conf.ICON_DIR = conf.conf_dir + icondir + '/'
-    if(not dir_exists(_conf.ICON_DIR)):
+    if not dir_exists(_conf.ICON_DIR):
         _conf.ICON_DIR = conf.icon_dir
 
     _conf.DATA_DIR = conf.conf_dir + datadir + '/'
-    if(not dir_exists(_conf.DATA_DIR)):
+    if not dir_exists(_conf.DATA_DIR):
         _conf.DATA_DIR = conf.data_dir
 
     _conf.LOG_DIR = conf.conf_dir + logdir + '/'
-    if(not dir_exists(_conf.LOG_DIR)):
+    if not dir_exists(_conf.LOG_DIR):
         _conf.LOG_DIR = conf.log_dir
 
-# Get list of format files.
+    _conf.PROG_DIR = _homedir + '/' + progdir + '/'
+    if not dir_exists(_conf.PROG_DIR):
+        _conf.PROG_DIR = conf.prog_dir
+
+    # Get list of format files.
     formatfile = conf.read_configuration().get('Files', 'revisionformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'functionformat')
@@ -197,45 +213,48 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
         ch.setFormatter(formatter)
         logger.addHandler(ch)
 
-    return(logger)
+    return logger
 
 
 def parse_config(configfile):
     """
     This function parses the XML configuration file passed as a parameter.
 
-    Keyword Arguments:
-    configfile -- the configuration file that needs to be parsed.
+    @param configfile: the configuration file that needs to be parsed.
     """
 
     from lxml import etree
 
     tree = etree.parse(configfile)
 
-    return(tree)
+    return tree
 
 
 def split_string(string):
     """
     Splits a colon-delimited string into its constituent parts.
 
-    Keyword Arguments:
-    string -- the colon delimited string that needs to be split into a
-              list.
+    @param string: the colon delimited string that needs to be split into a
+                   list.
+    @type string: list of strings
     """
 
     strlist = string.rsplit(':')
 
-    return(strlist)
+    return strlist
 
 
 def none_to_string(string):
-    """ Converts None types to an empty string. """
+    """
+    Converts None types to an empty string.
+
+    @param string: the string to convert.
+    """
 
     if string is None:
-        return('')
+        return ''
     else:
-        return(string)
+        return string
 
 
 def string_to_boolean(string):
@@ -243,8 +262,8 @@ def string_to_boolean(string):
     Converts string representations of TRUE/FALSE to an integer value for use
     in the database.
 
-    Keyword Arguments:
-    string -- the string to convert.
+    @param string: the string to convert.
+    @type string: string
     """
 
     result = 0
@@ -255,133 +274,120 @@ def string_to_boolean(string):
        string.lower() == 't' or string.lower() == 'y'):
         result = 1
 
-    return(result)
+    return result
 
 
 def date_to_ordinal(date):
     """
-    Converts date strings to oridinal dates for use in the database.
+    Converts date strings to ordinal dates for use in the database.
 
-    Keyword Arguments:
-    date -- the date string to convert.
+    @param date: the date string to convert.
+    @type date: string
     """
 
     from dateutil.parser import parse
 
     try:
-        _results_ = parse(str(date)).toordinal()
+        return parse(str(date)).toordinal()
     except ValueError:
-        _results_ = parse('01/01/70').toordinal()
-
-    return(_results_)
+        return parse('01/01/70').toordinal()
 
 
 def ordinal_to_date(ordinal):
     """
     Converts ordinal dates to date strings in ISO 8601 format.
 
-    Keyword Arguments:
-    ordinal -- the ordinal date to convert.
+    @param ordinal: the ordinal date to convert.
+    @type ordinal: date
     """
 
     from datetime import datetime
 
     try:
-        results = str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
     except ValueError:
-        results = str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
-
-    return(results)
+        return str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
 
 
-def tuple_to_list(_tuple_, _list_):
+def tuple_to_list(_tuple, _list):
     """
     Appends a tuple to a list.
 
-    Keyword Arguments:
-    _tuple_ -- the tuple to add to the list.
-    _list_  -- the existing list to add the tuple elements to.
+    @param _tuple: the tuple to add to the list.
+    @param _list: the existing list to add the tuple elements to.
     """
 
-    for i in range(len(_tuple_)):
-        _list_.append(_tuple_[i])
+    for i in range(len(_tuple)):
+        _list.append(_tuple[i])
 
-    return(_list_)
+    return _list
 
 
-def dir_exists(_directory_):
+def dir_exists(directory):
     """
-    Checks for the existence of a directory.
+    Helper function to check if a directory exists.
 
-    Keyword Arguments:
-    directory -- a string representing the directory path to check for.
-    """
-
-    from os import path
-
-    if path.isdir(_directory_):
-        return True
-    else:
-        return False
-
-
-def file_exists(_file_):
-    """
-    Checks if a file exists.
-
-    Keyword Arguments:
-    file -- a string representing the filepath to check for.
+    @param directory: a string representing the directory path to check for.
+    @type directory: string
     """
 
-    from os import path
+    return os.path.isdir(directory)
 
-    if path.isfile(_file_):
-        return True
-    else:
-        return False
+
+def file_exists(_file):
+    """
+    Helper function to check if a file exists.
+
+    @param _file: a string representing the filepath to check for.
+    @type _file: string
+    @return: True if the file exists or False if not.
+    @rtype: boolean
+    """
+
+    return os.path.isfile(_file)
 
 
 def create_project(widget, app):
     """
     Creates a new RTK Project.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
-    app    -- the RTK application.
+    @param widget: the gtk.Widget() that called this function.
+    @type widget: gtk.Widget
+    @param app: the current instance of the RTK application.
+    @return: False if successful or True if an error is encountered.
     """
 
-    if(_conf.BACKEND == 'mysql'):
+    if _conf.BACKEND == 'mysql':
 
         login = _login.Login(_(u"Create a RTK Program Database"))
-        if(login.answer != gtk.RESPONSE_ACCEPT):
+        if login.answer != gtk.RESPONSE_ACCEPT:
             return True
 
         dialog = _widg.make_dialog(_(u"RTK - New Program"))
 
         label = _widg.make_label(_(u"New Program Name"))
         txtProgName = _widg.make_entry()
-        dialog.vbox.pack_start(label)
-        dialog.vbox.pack_start(txtProgName)
+        dialog.vbox.pack_start(label)       # pylint: disable=E1101
+        dialog.vbox.pack_start(txtProgName) # pylint: disable=E1101
         label.show()
         txtProgName.show()
 
         label = _widg.make_label(_(u"Assigned User"))
         txtUser = _widg.make_entry()
-        dialog.vbox.pack_start(label)
-        dialog.vbox.pack_start(txtUser)
+        dialog.vbox.pack_start(label)       # pylint: disable=E1101
+        dialog.vbox.pack_start(txtUser)     # pylint: disable=E1101
         label.show()
         txtUser.show()
 
         label = _widg.make_label(_(u"Using Password"))
         txtPasswd = _widg.make_entry()
         txtPasswd.set_invisible_char("*")
-        dialog.vbox.pack_start(label)
-        dialog.vbox.pack_start(txtPasswd)
+        dialog.vbox.pack_start(label)       # pylint: disable=E1101
+        dialog.vbox.pack_start(txtPasswd)   # pylint: disable=E1101
         label.show()
         txtPasswd.show()
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
             new_program = txtProgName.get_text()
             user = txtUser.get_text()
             passwd = txtPasswd.get_text()
@@ -430,56 +436,81 @@ def create_project(widget, app):
 
         cnx.close()
 
-    elif(_conf.BACKEND == 'sqlite3'):
-        dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program Database"),
+    elif _conf.BACKEND == 'sqlite3':
+        _dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program "
+                                                u"Database"),
                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                       buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT,
-                                                gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+                                       buttons=(gtk.STOCK_NEW,
+                                                gtk.RESPONSE_ACCEPT,
+                                                gtk.STOCK_CANCEL,
+                                                gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(_conf.PROG_DIR)
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
-            new_program = dialog.get_filename()
-            new_program = new_program + '.rfb'
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _new_program = _dialog.get_filename()
+            _new_program = _new_program.rsplit('.')[0]
+            _new_program = _new_program + '.rtk'
 
-            _conf.RTK_PROG_INFO[2] = new_program
-            cnx = app.DB.get_connection(_conf.RTK_PROG_INFO[2])
+            if file_exists(_new_program):
+                _dlgConfirm = _widg.make_dialog(_(u"RTK - Confirm Overwrite"),
+                                                dlgbuttons=(gtk.STOCK_YES,
+                                                            gtk.RESPONSE_YES,
+                                                            gtk.STOCK_NO,
+                                                            gtk.RESPONSE_NO))
 
-            sqlfile = open(_conf.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
-            queries = sqlfile.read().split(';')
+                _label = _widg.make_label(_(u"RTK Program database already "
+                                            u"exists.\n\n%s\n\n"
+                                            u"Overwrite?") %
+                                          _new_program, width=-1, height=-1,
+                                          bold=False, wrap=True)
+                _dlgConfirm.vbox.pack_start(_label)       # pylint: disable=E1101
+                _label.show()
 
-            for i in range(len(queries)):
-                results = app.DB.execute_query(queries[i],
-                                               None,
-                                               cnx,
-                                               commit=True)
+                if _dlgConfirm.run() == gtk.RESPONSE_YES:
+                    _dlgConfirm.destroy()
+                    os.remove(_new_program)
+                else:
+                    _dlgConfirm.destroy()
+                    _dialog.destroy()
+                    return True
 
-            cnx.close()
+            _conf.RTK_PROG_INFO[2] = _new_program
+            _cnx = app.DB.get_connection(_conf.RTK_PROG_INFO[2])
 
-            open_project(widget, app, dlg=0, filename=new_program)
+            _sqlfile = open(_conf.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
+            for _query in _sqlfile.read().split(';'):
+                app.DB.execute_query(_query, None, _cnx, commit=True)
 
-        dialog.destroy()
+            _cnx.close()
+
+            open_project(widget, app, dlg=0, filename=_new_program)
+
+        _dialog.destroy()
 
     return False
 
 
-def open_project(widget, app, dlg=1, filename=''):
+def open_project(__widget, app, dlg=1, filename=''):
     """
     Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
-    app    -- the RTK application.
-    dlg    -- whether or not to display a file chooser dialog.  0=No, 1=Yes.
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
+    @param dlg: whether or not to display a file chooser dialog.
+                0=No
+                1=Yes (default)
+    @type dlg: integer
+    @param filename: the full path to the RTK Program database to open.
+    @type filename: string
     """
 
-    from time import sleep
-
-    if(_conf.BACKEND == 'mysql'):
+    if _conf.BACKEND == 'mysql':
 
         login = _login.Login(_(u"RTK Program Database Login"))
 
-        if(login.answer != gtk.RESPONSE_ACCEPT):
+        if login.answer != gtk.RESPONSE_ACCEPT:
             return True
 
         query = "SHOW DATABASES"
@@ -505,61 +536,57 @@ def open_project(widget, app, dlg=1, filename=''):
         scrollwindow.set_size_request((width / 6), (height / 6))
         scrollwindow.add(treeview)
 
-        numprograms = len(results)
-        for i in range(numprograms):
+        for i in range(len(results)):
             # Don't display the MySQL administrative/test databases.
             if(results[i][0] != 'information_schema' and \
                results[i][0] != 'test' and \
                results[i][0] != 'mysql' and \
                results[i][0] != 'RTKcom' and
                results[i][0] != '#mysql50#lost+found'):
-                iter_ = model.append(None, [results[i][0]])
+                model.append(None, [results[i][0]])
 
-        dialog.vbox.pack_start(scrollwindow)
-        treeview.show()
-        scrollwindow.show()
+        dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
+        scrollwindow.show_all()
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
-            selection = treeview.get_selection()
-            (model, treerow) = selection.get_selected()
-            path = model.get_path(treerow)
-            row = model.get_iter(path)
-            _conf.RTK_PROG_INFO[2] = model.get_value(row, 0)
-            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
+            (_model, _row) = treeview.get_selection().get_selected()
+            _conf.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
+            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH)) # pylint: disable=E1101
             app.load_system()
 
         dialog.destroy()
 
         cnx.close()
 
-    elif(_conf.BACKEND == 'sqlite3'):
+    elif _conf.BACKEND == 'sqlite3':
 
-        if(dlg == 1):
-            dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
-                                           buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                                    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        if dlg == 1:
+            _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
+                                            buttons=(gtk.STOCK_OK,
+                                                     gtk.RESPONSE_ACCEPT,
+                                                     gtk.STOCK_CANCEL,
+                                                     gtk.RESPONSE_REJECT))
+            _dialog.set_current_folder(_conf.PROG_DIR)
 
             # Set some filters to select all files or only some text files.
-            filter = gtk.FileFilter()
-            filter.set_name(_(u"RTK Project Files"))
-            #filter.add_mime_type("text/txt")
-            filter.add_pattern("*.rfb")
-            dialog.add_filter(filter)
+            _filter = gtk.FileFilter()
+            _filter.set_name(_(u"RTK Project Files"))
+            #_filter.add_mime_type("text/txt")
+            _filter.add_pattern("*.rfb")
+            _filter.add_pattern("*.rtk")
+            _dialog.add_filter(_filter)
 
-            filter = gtk.FileFilter()
-            filter.set_name(_(u"All files"))
-            filter.add_pattern("*")
-            dialog.add_filter(filter)
+            _filter = gtk.FileFilter()
+            _filter.set_name(_(u"All files"))
+            _filter.add_pattern("*")
+            _dialog.add_filter(_filter)
 
-            response = dialog.run()
-
-            if(response == gtk.RESPONSE_ACCEPT):
-                _conf.RTK_PROG_INFO[2] = dialog.get_filename()
-                dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            if _dialog.run() == gtk.RESPONSE_ACCEPT:
+                _conf.RTK_PROG_INFO[2] = _dialog.get_filename()
+                _dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))    # pylint: disable=E1101
                 app.load_system()
 
-            dialog.destroy()
+            _dialog.destroy()
 
         else:
             _conf.RTK_PROG_INFO[2] = filename
@@ -568,30 +595,30 @@ def open_project(widget, app, dlg=1, filename=''):
     return False
 
 
-def save_project(widget, _app):
+def save_project(__widget, app):
     """
-    Saves the RTK information to the project's MySQL database.
+    Saves the RTK information to the open RTK Program database.
 
-    Keyword Arguments:
-    widget -- the widget that is calling this function.
-    _app   -- the RTK application.
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 # TODO: Only save the active module in the Tree Book.
-    if not _app.LOADED:
+    if not app.LOADED:
         return True
 
-    _app.winTree.statusbar.push(2, _(u"Saving"))
+    app.winTree.statusbar.push(2, _(u"Saving"))
 
-    _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-    _app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-    _app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+    app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+    app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
-    _app.REVISION.save_revision()
-    _app.REQUIREMENT.save_requirement()
-    _app.FUNCTION.save_function()
-    _app.HARDWARE.save_hardware()
-    _app.SOFTWARE.save_software()
-    #_app.winParts.save_component()
+    app.REVISION.save_revision()
+    app.REQUIREMENT.save_requirement()
+    app.FUNCTION.save_function()
+    app.HARDWARE.save_hardware()
+    app.SOFTWARE.save_software()
+    #app.winParts.save_component()
 
 # Update the next ID for each type of object.
     _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
@@ -608,38 +635,35 @@ def save_project(widget, _app):
                  fld_effect_next_id=%d, fld_cause_next_id=%d, \
                  fld_software_next_id=%d \
              WHERE fld_program_id=%d" % _values
-    results = _app.DB.execute_query(query,
-                                    None,
-                                    _app.ProgCnx,
-                                    commit=True)
+    app.DB.execute_query(query, None, app.ProgCnx, commit=True)
 
-    conf = _conf.RTKConf('user')
+    #conf = _conf.RTKConf('user')
     #conf.write_configuration()
 
-    _app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-    _app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-    _app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
-    _app.winTree.statusbar.pop(2)
+    app.winTree.statusbar.pop(2)
 
     return False
 
 
-def delete_project(widget, _app):
+def delete_project(__widget, app):
     """
     Deletes an existing RTK Project.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
-    _app   -- the RTK application.
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 
-    if(_conf.BACKEND == 'mysql'):
+    if _conf.BACKEND == 'mysql':
         query = "SHOW DATABASES"
-        cnx = _app.DB.get_connection(_conf.RTK_PROG_INFO)
-        results = _app.DB.execute_query(query,
-                                        None,
-                                        cnx)
+        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
+        results = app.DB.execute_query(query,
+                                       None,
+                                       cnx)
 
         dialog = _widg.make_dialog(_("RTK - Delete Program"))
 
@@ -661,28 +685,25 @@ def delete_project(widget, _app):
         numprograms = len(results)
         for i in range(numprograms):
             # Don't display the MySQL administrative/test databases.
-            if(results[i][0] != 'information_schema' and results[i][0] != 'test'):
-                iter_ = model.append(None, [results[i][0]])
+            if(results[i][0] != 'information_schema' and
+               results[i][0] != 'test'):
+                model.append(None, [results[i][0]])
 
-        dialog.vbox.pack_start(scrollwindow)
+        dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
         treeview.show()
         scrollwindow.show()
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
-            selection = treeview.get_selection()
-            (model, treerow) = selection.get_selected()
-            path = model.get_path(treerow)
-            iter = model.get_iter(path)
-            project = model.get_value(iter, 0)
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
+            (_model, _row) = treeview.get_selection().get_selected()
+            project = _model.get_value(_row, 0)
         else:
             dialog.destroy()
 
-        if(confirm_action(_("Really delete %s?") % project, 'question')):
+        if confirm_action(_("Really delete %s?") % project, 'question'):
             query = "DROP DATABASE IF EXISTS %s"
-            results = _app.DB.execute_query(query,
-                                            project,
-                                            cnx)
+            results = app.DB.execute_query(query,
+                                           project,
+                                           cnx)
 
             dialog.destroy()
         else:
@@ -690,18 +711,15 @@ def delete_project(widget, _app):
 
         cnx.close()
 
-    elif(_conf.BACKEND == 'sqlite3'):
+    elif _conf.BACKEND == 'sqlite3':
 
-        import os
-
-        dialog = gtk.FileChooserDialog(_("RTK - Delete Program"),
+        dialog = gtk.FileChooserDialog(_(u"RTK - Delete Program"),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                         gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
             project = dialog.get_filename()
         else:
             dialog.destroy()
@@ -713,27 +731,28 @@ def delete_project(widget, _app):
             dialog.destroy()
 
 
-def import_project(widget, app):
+def import_project(__widget, app):
     """
     Imports project information from external files such as Excel, CVS, other
     delimited text files, etc.
 
-    Keyword Arguments:
-    widget -- the GTK widget that called the function.
-    app    -- the RTK application object.
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 
 # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
-    _dialog_ = gtk.FileChooserDialog(_("Select Project to Import"), None,
-                                     gtk.FILE_CHOOSER_ACTION_OPEN,
-                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                                      gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    _dialog = gtk.FileChooserDialog(_(u"Select Project to Import"), None,
+                                    gtk.FILE_CHOOSER_ACTION_OPEN,
+                                    (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                                     gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-    _response_ = _dialog_.run()
-    if(_response_ == gtk.RESPONSE_ACCEPT):
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
         print "Importing project."
 
-    _dialog_.destroy()
+    _dialog.destroy()
+
+    return False
 
 
 def confirm_action(_prompt_, _image_='default', _parent_=None):
@@ -757,11 +776,10 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
 
     label = _widg.make_label(_prompt_)
     hbox.pack_end(label)
-    dialog.vbox.pack_start(hbox)
+    dialog.vbox.pack_start(hbox)            # pylint: disable=E1101
     hbox.show_all()
 
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
+    if dialog.run() == gtk.RESPONSE_ACCEPT:
         dialog.destroy()
         return True
     else:
@@ -796,7 +814,7 @@ def application_error(_prompt_, _image_='important', _parent_=None):
     _label = _widg.make_label(_prompt_, width=400, height=200, wrap=True)
     _label.set_justify(gtk.JUSTIFY_LEFT)
     _hbox.pack_end(_label)
-    _dialog.vbox.pack_start(_hbox)
+    _dialog.vbox.pack_start(_hbox)          # pylint: disable=E1101
     _hbox.show_all()
 
     _dialog.run()
@@ -816,53 +834,53 @@ def add_items(title, prompt=""):
     @type prompt: string
     """
 
-    _dialog_ = _widg.make_dialog(title)
+    _dialog = _widg.make_dialog(title)
 
-    _fixed_ = gtk.Fixed()
-    _fixed_.set_size_request(600, 80)
+    _fixed = gtk.Fixed()
+    _fixed.set_size_request(600, 80)
 
-    _label_ = _widg.make_label(prompt, -1, -1)
-    _x_pos_ = _label_.size_request()[0] + 50
+    _label = _widg.make_label(prompt, -1, -1)
+    _x_pos = _label.size_request()[0] + 50
     txtQuantity = _widg.make_entry(width=50)
     txtQuantity.set_text("1")
 
-    _fixed_.put(_label_, 5, 10)
-    _fixed_.put(txtQuantity, _x_pos_, 10)
-    _fixed_.show_all()
+    _fixed.put(_label, 5, 10)
+    _fixed.put(txtQuantity, _x_pos, 10)
+    _fixed.show_all()
 
-    _dialog_.vbox.pack_start(_fixed_)
+    _dialog.vbox.pack_start(_fixed)         # pylint: disable=E1101
 
-    _response_ = _dialog_.run()
+    _n_items = 0
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _n_items = int(txtQuantity.get_text())
 
-    if(_response_ == gtk.RESPONSE_ACCEPT):
-        _numitems_ = int(txtQuantity.get_text())
-    else:
-        _numitems_ = 0
+    _dialog.destroy()
 
-    _dialog_.destroy()
-
-    return(_numitems_)
+    return _n_items
 
 
-def cut_copy_paste(widget, action):
+def cut_copy_paste(__widget, action):
     """
     Cuts, copies, and pastes.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
-    action -- whether to cut (0), copy (1), or paste (2).
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param action: whether to cut, copy, or paste
+                   0 = cut
+                   1 = copy
+                   2 = paste
     """
 
     # TODO: Write code to cut/copy/paste.
     clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(),
                               "CLIPBOARD")
 
-    if(action == 0):
+    if action == 0:
         print "Cutting."
-    elif(action == 1):
+    elif action == 1:
         print clipboard.set_text("I copied this.")
         print "Copying."
-    elif(action == 2):
+    elif action == 2:
         clipboard.request_text(paste)
 
     return False
@@ -907,22 +925,24 @@ def find(widget, action):
     return False
 
 
-def find_all_in_list(list, value, start=0):
+def find_all_in_list(_list, value, start=0):
     """
     Finds all instances of value in the list starting at position start.
 
-    Keyword Arguments:
-    list  -- the list to search.
-    value -- the value to search for.
-    start -- the position in the list to start the search.
+    @param _list: the list to search.
+    @type _list: list
+    @param value: the value to search for in the list.
+    @type value: any of same type found in list
+    @param start: the position in the list to start the search.
+    @type start: integer
     """
 
     positions = []
     i = start - 1
     try:
-        i = list.index(value, i+1)
+        i = _list.index(value, i+1)
         positions.append(i)
-        return(positions)
+        return positions
     except ValueError:
         pass
 
@@ -943,455 +963,459 @@ def redo():
     return False
 
 
-def create_comp_ref_des(widget, app):
+def create_comp_ref_des(__widget, app):
     """
     Iterively creates composite reference designators.
 
-    Keyword Arguments:
-    widget -- the GTK widget that called the function.
-    app    -- the RTK application object.
+    @param __widget: the gtk.Widget() that called this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 
-    treemodel = app.HARDWARE.model
-    row = treemodel.get_iter_root()
+    _model = app.HARDWARE.treeview.get_model()
+    _model.foreach(build_comp_ref_des)
 
-    build_comp_ref_des(treemodel, row)
+    return False
 
-
-def build_comp_ref_des(treemodel, row):
+def build_comp_ref_des(model, __path, row):
     """
     Creates the composite reference designator for the currently selected row
     in the System gtk.Treemodel.
 
-    Keyword Arguments:
-    treemodel -- the HARDWARE gtk.Treemodel.
-    row       -- the currently selected row in the HARDWARE gtk.Treemodel.
+    @param model: the Hardware class gtk.TreeModel().
+    @type model: gtk.TreeModel
+    @param __path: the path of the currently selected gtk.TreeIter() in the
+                   Hardware class gtk.TreeModel().
+    @param __path: tuple
+    @param row: the currently selected gtk.TreeIter() in the Hardware class
+                gtk.TreeModel().
+    @type row: gtk.TreeIter
     """
 
-    ref_des = treemodel.get_value(row, 68)
+    _ref_des = model.get_value(row, 68)
 
-    if(treemodel.iter_has_child(row)):
-        for i in range(treemodel.iter_n_children(row)):
-            build_comp_ref_des(treemodel, treemodel.iter_nth_child(row, i))
-
-        if(not treemodel.iter_parent(row)):
-            comp_ref_des = ref_des
-        else:
-            p_row = treemodel.iter_parent(row)
-            p_comp_ref_des = treemodel.get_value(p_row, 12)
-            comp_ref_des = p_comp_ref_des + ":" + ref_des
-
+    # If the currently selected row has no parent, the composite reference
+    # designator is the same as the reference designator.  Otherwise, build the
+    # composite reference designator by appending the current row's reference
+    # designator to the parent's composite reference designator.
+    if not model.iter_parent(row):
+        _comp_ref_des = _ref_des
     else:
-        p_row = treemodel.iter_parent(row)
-        p_comp_ref_des = treemodel.get_value(p_row, 12)
-        comp_ref_des = p_comp_ref_des + ":" + ref_des
+        _p_row = model.iter_parent(row)
+        _p_comp_ref_des = model.get_value(_p_row, 12)
+        _comp_ref_des = _p_comp_ref_des + ":" + _ref_des
 
-    treemodel.set_value(row, 12, comp_ref_des)
+    model.set_value(row, 12, _comp_ref_des)
 
     return False
 
 
-def add_parts_system_hierarchy(widget, app):
+def add_parts_system_hierarchy(__widget, app):
     """
     This function adds parts from the incident reports to the system hierarchy.
-    The higher level structure (e.g., sub-systesm, assemblies, etc.) must
+    The higher level structure (e.g., sub-systems, assemblies, etc.) must
     already exist.  This function will populate the hierarchy with the parts
     in the program incident data.
 
-    Keyword Arguments:
-    widget -- the GTK widget that called the function.
-    app    -- the RTK application object.
+    @param __widget: the gtk.Widget() that called the function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 
-# Find the revision id.
-    if(_conf.RTK_MODULES[0] == 1):
-        _revision_id_ = app.REVISION.revision_id
+    # Find the revision id.
+    if _conf.RTK_MODULES[0] == 1:
+        _revision_id = app.REVISION.revision_id
     else:
-        _revision_id_ = 0
+        _revision_id = 0
 
-# Find the last assembly id being used and increment it by one as the starting
-# assembly id.
-    _query_ = "SELECT MAX(fld_assembly_id) FROM tbl_system"
-    _assembly_id_ = app.DB.execute_query(_query_,
-                                         None,
-                                         app.ProgCnx)
-    _assembly_id_ = _assembly_id_[0][0] + 1
+    # Find the last assembly id being used and increment it by one as the
+    # starting assembly id.
+    _query = "SELECT MAX(fld_assembly_id) FROM tbl_system"
+    _assembly_id = app.DB.execute_query(_query,
+                                        None,
+                                        app.ProgCnx)
+    _assembly_id = _assembly_id[0][0] + 1
 
-# Get the list of part numbers to add to the system hierarchy and their
-# associated hardware id's from the incident reports.
-    _query_ = "SELECT DISTINCT(t1.fld_part_num), t2.fld_hardware_id \
-               FROM tbl_incident_detail AS t1 \
-               INNER JOIN tbl_incident AS t2 \
-               ON t1.fld_incident_id=t2.fld_incident_id \
-               WHERE t2.fld_revision_id=%d \
-               ORDER BY t2.fld_hardware_id" % _revision_id_
-    _results_ = app.DB.execute_query(_query_,
-                                     None,
-                                     app.ProgCnx)
+    # Get the list of part numbers to add to the system hierarchy and their
+    # associated hardware id's from the incident reports.
+    _query = "SELECT DISTINCT(t1.fld_part_num), t2.fld_hardware_id \
+              FROM tbl_incident_detail AS t1 \
+              INNER JOIN tbl_incident AS t2 \
+              ON t1.fld_incident_id=t2.fld_incident_id \
+              WHERE t2.fld_revision_id=%d \
+              ORDER BY t2.fld_hardware_id" % _revision_id
+    _results = app.DB.execute_query(_query,
+                                    None,
+                                    app.ProgCnx)
 
-    _n_added_ = 0
-    for i in range(len(_results_)):
-        _tmp_ = app.HARDWARE.dicHARDWARE[_results_[i][1]]
+    _n_added = 0
+    for i in range(len(_results)):
+        _tmp = app.HARDWARE.dicHARDWARE[_results[i][1]]
 
-# Create a description from the part prefix and part index.
-        _part_name_ = str(_conf.RTK_PREFIX[6]) + ' ' + \
-                      str(_conf.RTK_PREFIX[7])
+        # Create a description from the part prefix and part index.
+        _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + \
+                     str(_conf.RTK_PREFIX[7])
 
-# Create a tuple of values to pass to the component_add queries.  The values
-# are:
-#   Revision ID
-#   Assembly ID
-#   Name
-#   Part?
-#   Parent Assembly
-#   Part Number
-        _values_ = (_revision_id_, _assembly_id_, _part_name_, 1,
-                    _tmp_[len(_tmp_) - 1], _results_[i][0])
+        # Create a tuple of values to pass to the component_add queries.  The
+        # values are:
+        #   Revision ID
+        #   Assembly ID
+        #   Name
+        #   Part?
+        #   Parent Assembly
+        #   Part Number
+        _values = (_revision_id, _assembly_id, _part_name, 1,
+                   _tmp[len(_tmp) - 1], _results[i][0])
 
-# Add the new component to each table needing a new entry and increment the
-# count of components added.
-        _added_ = component_add(app, _values_)
+        # Add the new component to each table needing a new entry and increment
+        # the count of components added.
+        _added = component_add(app, _values)
 
-        if not _added_:
-            _n_added_ += 1
+        if not _added:
+            _n_added += 1
 
-# Increment the part index and assembly id.
+        # Increment the part index and assembly id.
         _conf.RTK_PREFIX[7] = _conf.RTK_PREFIX[7] + 1
-        _assembly_id_ += 1
+        _assembly_id += 1
 
-    if _n_added_ != len(_results_):
-        application_error(_(u"There was an error adding one or more components to the database.  Check the RTK error log for more details."))
+    if _n_added != len(_results):
+        application_error(_(u"There was an error adding one or more "
+                            u"components to the database.  Check the RTK "
+                            u"error log for more details."))
 
-    app.REVISION.load_tree
+    app.REVISION.load_tree()
     #TODO: Need to find and select the previously selected revision before loading the hardware tree.
-    app.HARDWARE.load_tree
+    app.HARDWARE.load_tree()
 
     return False
 
 
-def component_add(app, _values_):
+def component_add(app, values):
     """
     Function to add a component to the RTK Program database.
 
     Keyword Arguments:
     app     -- the running instances of the RTK application.
-    _values -- tuple containing the values to pass to the queries.
+    values -- tuple containing the values to pass to the queries.
     """
 
-# Insert the new part into tbl_system.
-    _query_ = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
-                                       fld_name, fld_part, \
-                                       fld_parent_assembly, \
-                                       fld_part_number) \
-               VALUES (%d, %d, '%s', %d, '%s', '%s')" % _values_
-    _inserted_ = app.DB.execute_query(_query_,
-                                      None,
-                                      app.ProgCnx,
-                                      commit=True)
+    # Insert the new part into tbl_system.
+    _query = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
+                                      fld_name, fld_part, \
+                                      fld_parent_assembly, \
+                                      fld_part_number) \
+              VALUES (%d, %d, '%s', %d, '%s', '%s')" % values
+    _inserted = app.DB.execute_query(_query,
+                                     None,
+                                     app.ProgCnx,
+                                     commit=True)
 
-    if not _inserted_:
-        app.debug_log.error("utilities.py:component_add - Failed to add new component to system table.")
-        pass
+    if not _inserted:
+        app.debug_log.error("utilities.py:component_add - Failed to add new "
+                            "component to system table.")
 
-# Insert the new component into tbl_prediction.
+    # Insert the new component into tbl_prediction.
     _query = "INSERT INTO tbl_prediction \
               (fld_revision_id, fld_assembly_id) \
-              VALUES (%d, %d)" % (_values[0], _values[1])
+              VALUES (%d, %d)" % (values[0], values[1])
     _inserted = app.DB.execute_query(_query,
                                      None,
                                      app.ProgCnx,
                                      commit=True)
     if not _inserted:
-        app.debug_log.error("utilities.py:component_add - Failed to add new component to prediction table.")
-        pass
+        app.debug_log.error("utilities.py:component_add - Failed to add new "
+                            "component to prediction table.")
 
-# Insert the new component into tbl_fmeca.
+    # Insert the new component into tbl_fmeca.
     _query = "INSERT INTO tbl_fmeca \
               (fld_assembly_id) \
-              VALUES (%d)" % _values[1]
+              VALUES (%d)" % values[1]
     _inserted = app.DB.execute_query(_query,
                                      None,
                                      app.ProgCnx,
                                      commit=True)
     if not _inserted:
-        app.debug_log.error("utilities.py:component_add - Failed to add new component to FMECA table.")
-        pass
+        app.debug_log.error("utilities.py:component_add - Failed to add new "
+                            "component to FMECA table.")
 
     return False
 
 
 def set_part_model(category, subcategory):
     """
-    This functions sets the COMPONENT part model based on the category
+    This functions sets the Component class part model based on the category
     and subcategory.
 
-    Keyword Arguments:
-    category    --
-    subcategory --
+    @param category: the component category for part.
+    @type category: integer
+    @param subcategory: the component sub-category for the part.
+    @type subcategory: integer
+    @return: _part
+    @rtype: Component class instance
     """
 
-    if(category == 0 or subcategory == 0):  # No category or subcategory
-        part = None
+    if category == 0 or subcategory == 0:  # No category or subcategory
+        _part = None
 
-    elif(category == 1):                    # Capacitor
-        if(subcategory == 1):
+    elif category == 1:                    # Capacitor
+        if subcategory == 1:
             from capacitors.fixed import CeramicGeneral
-            part = CeramicGeneral()
-        elif(subcategory == 2):
+            _part = CeramicGeneral()
+        elif subcategory == 2:
             from capacitors.fixed import CeramicChip
-            part = CeramicChip()
-        elif(subcategory == 3):
+            _part = CeramicChip()
+        elif subcategory == 3:
             from capacitors.electrolytic import AluminumDry
-            part = AluminumDry()
-        elif(subcategory == 4):
+            _part = AluminumDry()
+        elif subcategory == 4:
             from capacitors.electrolytic import Aluminum
-            part = Aluminum()
-        elif(subcategory == 5):
+            _part = Aluminum()
+        elif subcategory == 5:
             from capacitors.electrolytic import TantalumNonSolid
-            part = TantalumNonSolid()
-        elif(subcategory == 6):
+            _part = TantalumNonSolid()
+        elif subcategory == 6:
             from capacitors.electrolytic import TantalumSolid
-            part = TantalumSolid()
-        elif(subcategory == 7):
+            _part = TantalumSolid()
+        elif subcategory == 7:
             from capacitors.fixed import PaperFeedthrough
-            part = PaperFeedthrough()
-        elif(subcategory == 8):
+            _part = PaperFeedthrough()
+        elif subcategory == 8:
             from capacitors.fixed import Glass
-            part = Glass()
-        elif(subcategory == 9):
+            _part = Glass()
+        elif subcategory == 9:
             from capacitors.fixed import MetallizedPaper
-            part = MetallizedPaper()
-        elif(subcategory == 10):
+            _part = MetallizedPaper()
+        elif subcategory == 10:
             from capacitors.fixed import Mica
-            part = Mica()
-        elif(subcategory == 11):
+            _part = Mica()
+        elif subcategory == 11:
             from capacitors.fixed import MicaButton
-            part = MicaButton()
-        elif(subcategory == 12):
+            _part = MicaButton()
+        elif subcategory == 12:
             from capacitors.fixed import PlasticFilm
-            part = PlasticFilm()
-        elif(subcategory == 13):
+            _part = PlasticFilm()
+        elif subcategory == 13:
             from capacitors.fixed import PaperBypass
-            part = PaperBypass()
-        elif(subcategory == 14):
+            _part = PaperBypass()
+        elif subcategory == 14:
             from capacitors.fixed import Plastic
-            part = Plastic()
-        elif(subcategory == 15):
+            _part = Plastic()
+        elif subcategory == 15:
             from capacitors.fixed import SuperMetallizedPlastic
-            part = SuperMetallizedPlastic()
-        elif(subcategory == 16):
+            _part = SuperMetallizedPlastic()
+        elif subcategory == 16:
             from capacitors.variable import Gas
-            part = Gas()
-        elif(subcategory == 17):
+            _part = Gas()
+        elif subcategory == 17:
             from capacitors.variable import AirTrimmer
-            part = AirTrimmer()
-        elif(subcategory == 18):
+            _part = AirTrimmer()
+        elif subcategory == 18:
             from capacitors.variable import Ceramic
-            part = Ceramic()
-        elif(subcategory == 19):
+            _part = Ceramic()
+        elif subcategory == 19:
             from capacitors.variable import Piston
-            part = Piston()
-    elif(category == 2):                    # Connection
-        if(subcategory == 4):
+            _part = Piston()
+    elif category == 2:                    # Connection
+        if subcategory == 4:
             from connections.socket import ICSocket
-            part = ICSocket()
-        elif(subcategory == 5):
+            _part = ICSocket()
+        elif subcategory == 5:
             from connections.multipin import Multipin
-            part = Multipin()
-        elif(subcategory == 6):
+            _part = Multipin()
+        elif subcategory == 6:
             from connections.pcb import PCBEdge
-            part = PCBEdge()
-        elif(subcategory == 7):
+            _part = PCBEdge()
+        elif subcategory == 7:
             from connections.solder import PTH
-            part = PTH()
+            _part = PTH()
         else:
             from connections.solder import Solder
-            part = Solder(subcategory)
-    elif(category == 3):                    # Inductive Device
-        if(subcategory == 1):
+            _part = Solder(subcategory)
+    elif category == 3:                    # Inductive Device
+        if subcategory == 1:
             from inductors.coil import Coil
-            part = Coil()
-        elif(subcategory == 2):
+            _part = Coil()
+        elif subcategory == 2:
             from inductors.transformer import Audio
-            part = Audio()
-        elif(subcategory == 3):
+            _part = Audio()
+        elif subcategory == 3:
             from inductors.transformer import Power
-            part = Power()
-        elif(subcategory == 4):
+            _part = Power()
+        elif subcategory == 4:
             from inductors.transformer import LowPowerPulse
-            part = LowPowerPulse()
-        elif(subcategory == 5):
+            _part = LowPowerPulse()
+        elif subcategory == 5:
             from inductors.transformer import RF
-            part = RF()
+            _part = RF()
 
-    elif(category == 4):                    # Integrated circuit
-        if(subcategory == 1):
+    elif category == 4:                    # Integrated circuit
+        if subcategory == 1:
             from integrated_circuits.gaas import GaAsDigital
-            part = GaAsDigital()
-        elif(subcategory == 2):
+            _part = GaAsDigital()
+        elif subcategory == 2:
             from integrated_circuits.gaas import GaAsMMIC
-            part = GaAsMMIC()
-        elif(subcategory == 3):
+            _part = GaAsMMIC()
+        elif subcategory == 3:
             from integrated_circuits.linear import Linear
-            part = Linear()
-        elif(subcategory == 4):
+            _part = Linear()
+        elif subcategory == 4:
             from integrated_circuits.logic import Logic
-            part = Logic()
-        elif(subcategory == 5):
+            _part = Logic()
+        elif subcategory == 5:
             from integrated_circuits.memory import MemoryDRAM
-            part = MemoryDRAM()
-        elif(subcategory == 6):
+            _part = MemoryDRAM()
+        elif subcategory == 6:
             from integrated_circuits.memory import MemoryEEPROM
-            part = MemoryEEPROM()
-        elif(subcategory == 7):
+            _part = MemoryEEPROM()
+        elif subcategory == 7:
             from integrated_circuits.memory import MemoryROM
-            part = MemoryROM()
-        elif(subcategory == 8):
+            _part = MemoryROM()
+        elif subcategory == 8:
             from integrated_circuits.memory import MemorySRAM
-            part = MemorySRAM()
-        elif(subcategory == 9):
+            _part = MemorySRAM()
+        elif subcategory == 9:
             from integrated_circuits.microprocessor import Microprocessor
-            part = Microprocessor()
-        elif(subcategory == 10):
+            _part = Microprocessor()
+        elif subcategory == 10:
             from integrated_circuits.palpla import PALPLA
-            part = PALPLA()
-        elif(subcategory == 11):
+            _part = PALPLA()
+        elif subcategory == 11:
             from integrated_circuits.vlsi import VLSI
-            part = VLSI()
+            _part = VLSI()
 
-    elif(category == 5):              # Meter
-        if(subcategory == 1):
+    elif category == 5:              # Meter
+        if subcategory == 1:
             from meters.meter import ElapsedTime
-            part = ElapsedTime()
-        elif(subcategory == 2):
+            _part = ElapsedTime()
+        elif subcategory == 2:
             from meters.meter import Panel
-            part = Panel()
+            _part = Panel()
 
-    elif(category == 6):              # Miscellaneous
-        if(subcategory == 1):
+    elif category == 6:              # Miscellaneous
+        if subcategory == 1:
             from miscellaneous.crystal import Crystal
-            part = Crystal()
-        elif(subcategory == 2):
+            _part = Crystal()
+        elif subcategory == 2:
             from miscellaneous.fuse import Fuse
-            part = Fuse()
-        elif(subcategory == 3):
+            _part = Fuse()
+        elif subcategory == 3:
             from miscellaneous.lamp import Lamp
-            part = Lamp()
+            _part = Lamp()
 
-    elif(category == 7):              # Relay
-        if(subcategory == 1):
+    elif category == 7:              # Relay
+        if subcategory == 1:
             from relays.relay import Mechanical
-            part = Mechanical()
-        elif(subcategory == 2):
+            _part = Mechanical()
+        elif subcategory == 2:
             from relays.relay import SolidState
-            part = SolidState()
+            _part = SolidState()
 
-    elif(category == 8):              # Resistor
-        if(subcategory == 1):
+    elif category == 8:              # Resistor
+        if subcategory == 1:
             from resistors.fixed import Composition
-            part = Composition()
-        elif(subcategory == 2):
+            _part = Composition()
+        elif subcategory == 2:
             from resistors.fixed import Film
-            part = Film()
-        elif(subcategory == 3):
+            _part = Film()
+        elif subcategory == 3:
             from resistors.fixed import FilmNetwork
-            part = FilmNetwork()
-        elif(subcategory == 4):
+            _part = FilmNetwork()
+        elif subcategory == 4:
             from resistors.fixed import FilmPower
-            part = FilmPower()
-        elif(subcategory == 5):
+            _part = FilmPower()
+        elif subcategory == 5:
             from resistors.fixed import Wirewound
-            part = Wirewound()
-        elif(subcategory == 6):
+            _part = Wirewound()
+        elif subcategory == 6:
             from resistors.fixed import WirewoundPower
-            part = WirewoundPower()
-        elif(subcategory == 7):
+            _part = WirewoundPower()
+        elif subcategory == 7:
             from resistors.fixed import WirewoundPowerChassis
-            part = WirewoundPowerChassis()
-        elif(subcategory == 8):
+            _part = WirewoundPowerChassis()
+        elif subcategory == 8:
             from resistors.thermistor import Thermistor
-            part = Thermistor()
-        elif(subcategory == 9):
+            _part = Thermistor()
+        elif subcategory == 9:
             from resistors.variable import Composition
-            part = Composition()
-        elif(subcategory == 10):
+            _part = Composition()
+        elif subcategory == 10:
             from resistors.variable import NonWirewound
-            part = NonWirewound()
-        elif(subcategory == 11):
+            _part = NonWirewound()
+        elif subcategory == 11:
             from resistors.variable import VarFilm
-            part = VarFilm()
-        elif(subcategory == 12):
+            _part = VarFilm()
+        elif subcategory == 12:
             from resistors.variable import VarWirewound
-            part = VarWirewound()
-        elif(subcategory == 13):
+            _part = VarWirewound()
+        elif subcategory == 13:
             from resistors.variable import VarWirewoundPower
-            part = VarWirewoundPower()
-        elif(subcategory == 14):
+            _part = VarWirewoundPower()
+        elif subcategory == 14:
             from resistors.variable import WirewoundPrecision
-            part = WirewoundPrecision()
-        elif(subcategory == 15):
+            _part = WirewoundPrecision()
+        elif subcategory == 15:
             from resistors.variable import WirewoundSemiPrecision
-            part = WirewoundSemiPrecision()
+            _part = WirewoundSemiPrecision()
 
-    elif(category == 9):              # Semiconductor
-        if(subcategory == 1):
+    elif category == 9:              # Semiconductor
+        if subcategory == 1:
             from semiconductors.diode import HighFrequency
-            part = HighFrequency()
-        elif(subcategory == 2):
+            _part = HighFrequency()
+        elif subcategory == 2:
             from semiconductors.diode import LowFrequency
-            part = LowFrequency()
-        elif(subcategory == 3):
+            _part = LowFrequency()
+        elif subcategory == 3:
             from semiconductors.optoelectronics import Display
-            part = Display()
-        elif(subcategory == 4):
+            _part = Display()
+        elif subcategory == 4:
             from semiconductors.optoelectronics import Detector
-            part = Detector()
-        elif(subcategory == 5):
+            _part = Detector()
+        elif subcategory == 5:
             from semiconductors.optoelectronics import LaserDiode
-            part = LaserDiode()
-        elif(subcategory == 6):
+            _part = LaserDiode()
+        elif subcategory == 6:
             from semiconductors.thyristor import Thyristor
-            part = Thyristor()
-        elif(subcategory == 7):
+            _part = Thyristor()
+        elif subcategory == 7:
             from semiconductors.transistor import HFGaAsFET
-            part = HFGaAsFET()
-        elif(subcategory == 8):
+            _part = HFGaAsFET()
+        elif subcategory == 8:
             from semiconductors.transistor import HFHPBipolar
-            part = HFHPBipolar()
-        elif(subcategory == 9):
+            _part = HFHPBipolar()
+        elif subcategory == 9:
             from semiconductors.transistor import HFLNBipolar
-            part = HFLNBipolar()
-        elif(subcategory == 10):
+            _part = HFLNBipolar()
+        elif subcategory == 10:
             from semiconductors.transistor import HFSiFET
-            part = HFSiFET()
-        elif(subcategory == 11):
+            _part = HFSiFET()
+        elif subcategory == 11:
             from semiconductors.transistor import LFBipolar
-            part = LFBipolar()
-        elif(subcategory == 12):
+            _part = LFBipolar()
+        elif subcategory == 12:
             from semiconductors.transistor import LFSiFET
-            part = LFSiFET()
-        elif(subcategory == 13):
+            _part = LFSiFET()
+        elif subcategory == 13:
             from semiconductors.transistor import Unijunction
-            part = Unijunction()
+            _part = Unijunction()
 
-    elif(category == 10):             # Switching Device
-        if(subcategory == 1):
+    elif category == 10:             # Switching Device
+        if subcategory == 1:
             from switches.breaker import Breaker
-            part = Breaker()
-        elif(subcategory == 2):
+            _part = Breaker()
+        elif subcategory == 2:
             from switches.rotary import Rotary
-            part = Rotary()
-        elif(subcategory == 3):
+            _part = Rotary()
+        elif subcategory == 3:
             from switches.sensitive import Sensitive
-            part = Sensitive()
-        elif(subcategory == 4):
+            _part = Sensitive()
+        elif subcategory == 4:
             from switches.thumbwheel import Thumbwheel
-            part = Thumbwheel()
-        elif(subcategory == 5):
+            _part = Thumbwheel()
+        elif subcategory == 5:
             from switches.toggle import Toggle
-            part = Toggle()
+            _part = Toggle()
 
-    return(part)
+    return _part
 
 
 def calculate_max_text_width(text, font):
@@ -1399,17 +1423,20 @@ def calculate_max_text_width(text, font):
     Function to calculate the maximum width of the text string that is using a
     particular font.
 
-    Keyword Arguments:
-    text -- the text string to calculate.
-    font -- the font being used.
+    @param text: the text string to calculate.
+    @type text: string
+    @param font: the font being used.
+    @type font: string
+    @return: _max
+    @rtype: integer
     """
 
-    max_ = 0
-    lines = text.split('\n')
-    for line in lines:
-        max_ = max(max_, font.width(line))
+    _max = 0
+    _lines = text.split('\n')
+    for _line in _lines:
+        _max = max(_max, font.width(_line))
 
-    return max_ + 50
+    return _max + 50
 
 
 def trickledown(model, row, index_, value_):
@@ -1431,55 +1458,56 @@ def trickledown(model, row, index_, value_):
     for i in range(_n_children):
         chrow = model.iter_nth_child(row, i)
         model.set_value(chrow, index_, value_)
-        if(model.iter_has_child(chrow)):
+        if model.iter_has_child(chrow):
             trickledown(model, chrow, index_, value_)
 
     return False
 
 
-def options(widget, _app):
+def options(__widget, app):
     """
     Function to launch the user options configuration assistant.
 
-    Keyword Arguments:
-    widget -- the pyGTK widget calling this function.
-    _app   -- the RTK application.
+    @param __widget: the gtk.Widget() calling this function.
+    @type __widget: gtk.Widget
+    @param app: the current instance of the RTK application.
     """
 
-    opts = Options(_app)
+    Options(app)
 
 
-def date_select(widget, entry=None):
+def date_select(__widget, entry=None):
     """
     Function to select a date from a calendar widget.
 
-    Keyword Arguments:
-    widget -- the pyGTK widget calling this function.
-    entry  -- the gtk.Entry() widget to display the date.
+    @param __widget: the gtk.Widget() calling this function.
+    @type __widget: gtk.Widget
+    @param entry: the gtk.Entry() widget in which to display the date.
+    @type entry: gtk.Entry
     """
 
-    from datetime import date, datetime
+    from datetime import datetime
 
-    dialog = _widg.make_dialog(_(u"Select Date"),
-                               dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    _dialog = _widg.make_dialog(_(u"Select Date"),
+                                dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-    calendar = gtk.Calendar()
-    dialog.vbox.pack_start(calendar)
-    dialog.vbox.show_all()
+    _calendar = gtk.Calendar()
+    _dialog.vbox.pack_start(_calendar)      # pylint: disable=E1101
+    _dialog.vbox.show_all()                 # pylint: disable=E1101
 
-    response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
-        _date_ = calendar.get_date()
-        _date_ = datetime(_date_[0], _date_[1] + 1, _date_[2]).date().strftime("%Y-%m-%d")
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _date = _calendar.get_date()
+        _date = datetime(_date[0], _date[1] + 1,
+                         _date[2]).date().strftime("%Y-%m-%d")
     else:
-        _date_ = "1970-01-01"
+        _date = "1970-01-01"
 
-    dialog.destroy()
+    _dialog.destroy()
 
-    if(entry is not None):
-        entry.set_text(_date_)
+    if entry is not None:
+        entry.set_text(_date)
 
-    return(_date_)
+    return _date
 
 
 def set_cursor(app, cursor):
@@ -1534,7 +1562,7 @@ def long_call(app):
     """
     Function for restoring the cursor to normal after a long call.
 
-    @param app: -- the running instance of the RTK application.
+    @param app: the running instance of the RTK application.
     """
 
     app.winTree.window.set_cursor(None)
@@ -1542,11 +1570,10 @@ def long_call(app):
     app.winWorkBook.window.set_cursor(None)
 
 
-class Options:
-
-    _edit_tree_labels = [_(u"Default\nTitle"), _(u"User\nTitle"),
-                         _(u"Column\nPosition"), _(u"Can\nEdit?"),
-                         _(u"Is\nVisible?")]
+class Options(object):
+    """
+    An assistant to provide a GUI to the various configuration files for RTK.
+    """
 
     def __init__(self, _app):
         """
@@ -1566,7 +1593,7 @@ class Options:
         notebook = gtk.Notebook()
 
         # ----- ----- ----- -- RTK module options - ----- ----- ----- #
-        if(_conf.RTK_PROG_INFO[2] != ''):
+        if _conf.RTK_PROG_INFO[2] != '':
             fixed = gtk.Fixed()
 
             self.chkRevisions = _widg.make_check_button(_(u"Revisions"))
@@ -1685,6 +1712,10 @@ class Options:
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- Create tree edit gtk.TreeView ----- ----- ----- #
+        _labels = [_(u"Default\nTitle"), _(u"User\nTitle"),
+                   _(u"Column\nPosition"), _(u"Can\nEdit?"),
+                   _(u"Is\nVisible?")]
+
         vbox = gtk.VBox()
 
         self.tvwEditTree = gtk.TreeView()
@@ -1696,14 +1727,14 @@ class Options:
 
         for i in range(5):
 
-            if(i == 0):
+            if i == 0:
                 cell = gtk.CellRendererText()
                 cell.set_property('background', 'light gray')
                 cell.set_property('editable', 0)
                 cell.set_property('foreground', '#000000')
                 cell.set_property('wrap-width', 250)
                 cell.set_property('wrap-mode', pango.WRAP_WORD)
-            elif(i > 0 and i < 3):
+            elif i > 0 and i < 3:
                 cell = gtk.CellRendererText()
                 cell.set_property('background', '#FFFFFF')
                 cell.set_property('editable', 1)
@@ -1711,7 +1742,7 @@ class Options:
                 cell.set_property('wrap-width', 250)
                 cell.set_property('wrap-mode', pango.WRAP_WORD)
                 cell.connect('edited', self._cell_edit, i, model)
-            elif(i > 4):
+            elif i > 4:
                 cell = gtk.CellRendererText()
                 cell.set_property('editable', 0)
             else:
@@ -1723,17 +1754,16 @@ class Options:
             label.set_line_wrap(True)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_markup("<span weight='bold'>" +
-                             self._edit_tree_labels[i] + "</span>")
+            label.set_markup("<span weight='bold'>" + _labels[i] + "</span>")
             label.show_all()
 
             column = gtk.TreeViewColumn()
             column.set_widget(label)
             column.set_alignment(0.5)
             column.pack_start(cell, True)
-            if(i < 3):
+            if i < 3:
                 column.set_attributes(cell, text=i)
-            elif(i > 4):
+            elif i > 4:
                 column.set_visible(0)
             else:
                 column.set_attributes(cell, active=i)
@@ -1765,40 +1795,43 @@ class Options:
         self.winOptions.add(notebook)
         self.winOptions.show_all()
 
-    def _edit_tree(self, button):
+    def _edit_tree(self, __button):
         """
-        Method to edit gtk.TreeView layouts
+        Method to edit gtk.TreeView() layouts.
+
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button()
         """
 
         from lxml import etree
 
         (_name, _fmt_idx) = self._get_format_info()
 
-# Retrieve the default heading text from the format file.
+        # Retrieve the default heading text from the format file.
         path = "/root/tree[@name='%s']/column/defaulttitle" % _name
         default = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve the default heading text from the format file.
+        # Retrieve the default heading text from the format file.
         path = "/root/tree[@name='%s']/column/usertitle" % _name
         user = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve the column position from the format file.
+        # Retrieve the column position from the format file.
         path = "/root/tree[@name='%s']/column/position" % _name
         position = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve whether or not the column is editable from the format file.
+        # Retrieve whether or not the column is editable from the format file.
         path = "/root/tree[@name='%s']/column/editable" % _name
         editable = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve whether or not the column is visible from the format file.
+        # Retrieve whether or not the column is visible from the format file.
         path = "/root/tree[@name='%s']/column/visible" % _name
         visible = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve datatypes from the format file.
+        # Retrieve datatypes from the format file.
         path = "/root/tree[@name='%s']/column/datatype" % _name
         datatype = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
-# Retrieve widget types from the format file.
+        # Retrieve widget types from the format file.
         path = "/root/tree[@name='%s']/column/widget" % _name
         widget = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
 
@@ -1818,25 +1851,30 @@ class Options:
 
         return False
 
-    def _cell_edit(self, cell, path, new_text, position, model):
+    def _cell_edit(self, __cell, path, new_text, position, model):
         """
-        Called whenever a TreeView CellRenderer is edited.
+        Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-        Keyword Arguments:
-        cell     -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        new_text -- the new text in the edited CellRenderer.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
+        @param __cell: the gtk.CellRenderer() that was edited.
+        @type __cell: gtk.CellRenderer
+        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+                     edited.
+        @type path: string
+        @param new_text: the new text in the edited gtk.CellRenderer().
+        @type new_text: string
+        @param position: the column position of the edited gtk.CellRenderer().
+        @type position: integer
+        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        @type model: gtk.TreeModel
         """
 
-        type = gobject.type_name(model.get_column_type(position))
+        _type = gobject.type_name(model.get_column_type(position))
 
-        if(type == 'gchararray'):
+        if _type == 'gchararray':
             model[path][position] = str(new_text)
-        elif(type == 'gint'):
+        elif _type == 'gint':
             model[path][position] = int(new_text)
-        elif(type == 'gfloat'):
+        elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
         return False
@@ -1856,16 +1894,14 @@ class Options:
 
         return False
 
-    def _save_tree_layout(self, button):
+    def _save_tree_layout(self, __button):
         """
         Method for saving the gtk.TreeView layout file.
 
-        Keyword Arguments:
-        button --
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
-        import os
-        from lxml import etree
         from shutil import copyfile
 
         (_name, _fmt_idx) = self._get_format_info()
@@ -1877,40 +1913,43 @@ class Options:
 # Make a copy of the original format file.
         copyfile(_format_file, _format_file + '.bak')
 
-# Open the format file for writing.
-        f = open(_format_file, 'w')
+        # Open the format file for writing.
+        _file = open(_format_file, 'w')
 
 # Create the new format file.
-        f.write("<!--\n")
-        f.write("-*- coding: utf-8 -*-\n\n")
-        f.write("%s is part of the RTK Project\n\n" % _basename)
-        f.write('Copyright 2011-2013 Andrew "Weibullguy" Rowland <andrew DOT rowland AT reliaqual DOT com>\n\n')
-        f.write("All rights reserved.-->\n\n")
-        f.write("<!-- This file contains information used by the RTK application to draw\n")
-        f.write("various widgets.  These values can be changed by the user to personalize\n")
-        f.write("their experience. -->\n\n")
+        _file.write("<!--\n")
+        _file.write("-*- coding: utf-8 -*-\n\n")
+        _file.write("%s is part of the RTK Project\n\n" % _basename)
+        _file.write('Copyright 2011-2014 Andrew "Weibullguy" Rowland '
+                    '<andrew DOT rowland AT reliaqual DOT com>\n\n')
+        _file.write("All rights reserved.-->\n\n")
+        _file.write("<!-- This file contains information used by the RTK "
+                    "application to draw\n")
+        _file.write("various widgets.  These values can be changed by the "
+                    "user to personalize\n")
+        _file.write("their experience. -->\n\n")
 
-        f.write("<root>\n")
-        f.write('\t<tree name="%s">\n' % _name)
+        _file.write("<root>\n")
+        _file.write('\t<tree name="%s">\n' % _name)
 
         model = self.tvwEditTree.get_model()
         row = model.get_iter_first()
         while row is not None:
-            f.write("\t\t<column>\n")
-            f.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" % model.get_value(row, 0))
-            f.write("\t\t\t<usertitle>%s</usertitle>\n"% model.get_value(row, 1))
-            f.write("\t\t\t<datatype>%s</datatype>\n" % model.get_value(row, 5))
-            f.write('\t\t\t<position>%d</position>\n' % model.get_value(row, 2))
-            f.write("\t\t\t<widget>%s</widget>\n" % model.get_value(row, 6))
-            f.write("\t\t\t<editable>%d</editable>\n" % model.get_value(row, 3))
-            f.write("\t\t\t<visible>%d</visible>\n" % model.get_value(row, 4))
-            f.write("\t\t</column>\n")
+            _file.write("\t\t<column>\n")
+            _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" % model.get_value(row, 0))
+            _file.write("\t\t\t<usertitle>%s</usertitle>\n"% model.get_value(row, 1))
+            _file.write("\t\t\t<datatype>%s</datatype>\n" % model.get_value(row, 5))
+            _file.write('\t\t\t<position>%d</position>\n' % model.get_value(row, 2))
+            _file.write("\t\t\t<widget>%s</widget>\n" % model.get_value(row, 6))
+            _file.write("\t\t\t<editable>%d</editable>\n" % model.get_value(row, 3))
+            _file.write("\t\t\t<visible>%d</visible>\n" % model.get_value(row, 4))
+            _file.write("\t\t</column>\n")
 
             row = model.iter_next(row)
 
-        f.write("\t</tree>\n")
-        f.write("</root>")
-        f.close()
+        _file.write("\t</tree>\n")
+        _file.write("</root>")
+        _file.close()
 
         self.winOptions.destroy()
 
@@ -1921,77 +1960,87 @@ class Options:
         Method to retrieve the name and index of the selected format file.
         """
 
-        if(self.rdoRevision.get_active()):
+        if self.rdoRevision.get_active():
             _name = 'Revision'
             _fmt_idx = 0
-        elif(self.rdoFunction.get_active()):
+        elif self.rdoFunction.get_active():
             _name = 'Function'
             _fmt_idx = 1
-        elif(self.rdoRequirement.get_active()):
+        elif self.rdoRequirement.get_active():
             _name = 'Requirement'
             _fmt_idx = 2
-        elif(self.rdoHardware.get_active()):
+        elif self.rdoHardware.get_active():
             _name = 'Hardware'
             _fmt_idx = 3
-        elif(self.rdoSoftware.get_active()):
+        elif self.rdoSoftware.get_active():
             _name = 'Software'
             _fmt_idx = 15
-        elif(self.rdoValidation.get_active()):
+        elif self.rdoValidation.get_active():
             _name = 'Validation'
             _fmt_idx = 4
-        elif(self.rdoTesting.get_active()):
+        elif self.rdoTesting.get_active():
             _name = 'Testing'
             _fmt_idx = 11
-        elif(self.rdoIncident.get_active()):
+        elif self.rdoIncident.get_active():
             _name = 'Incidents'
             _fmt_idx = 14
-        elif(self.rdoSurvival.get_active()):
+        elif self.rdoSurvival.get_active():
             _name = 'Dataset'
             _fmt_idx = 16
-        elif(self.rdoPart.get_active()):
+        elif self.rdoPart.get_active():
             _name = 'Parts'
             _fmt_idx = 7
-        elif(self.rdoRiskAnalysis.get_active()):
+        elif self.rdoRiskAnalysis.get_active():
             _name = 'Risk'
             _fmt_idx = 17
-        elif(self.rdoSimilarItem.get_active()):
+        elif self.rdoSimilarItem.get_active():
             _name = 'SIA'
             _fmt_idx = 8
-        elif(self.rdoFMECA.get_active()):
+        elif self.rdoFMECA.get_active():
             _name = 'FMECA'
             _fmt_idx = 9
 
-        return(_name, _fmt_idx)
+        return _name, _fmt_idx
 
-    def save_options(self, button):
+    def save_options(self, __button):
+        """
+        Method to save the configuration changes made by the user.
 
-        _values_ = (self.chkRevisions.get_active(),
-                    self.chkFunctions.get_active(),
-                    self.chkRequirements.get_active(),
-                    self.chkSoftware.get_active(),
-                    self.chkValidation.get_active(),
-                    self.chkRG.get_active(),
-                    0,
-                    self.chkIncidents.get_active(),
-                    0, 0, 0, 0)
-
-        _query_ = "UPDATE tbl_program_info \
-                   SET fld_revision_active=%d, fld_function_active=%d, \
-                       fld_requirement_active=%d, fld_software_active=%d, \
-                       fld_vandv_active=%d, fld_testing_active=%d, \
-                       fld_rcm_active=%d, fld_fraca_active=%d, \
-                       fld_fmeca_active=%d, fld_survival_active=%d, \
-                       fld_rbd_active=%d, fld_fta_active=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=False)
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        """
 
         self.winOptions.destroy()
 
+        _values = (self.chkRevisions.get_active(),
+                   self.chkFunctions.get_active(),
+                   self.chkRequirements.get_active(),
+                   self.chkSoftware.get_active(),
+                   self.chkValidation.get_active(),
+                   self.chkRG.get_active(),
+                   0,
+                   self.chkIncidents.get_active(),
+                   0, 0, 0, 0)
+
+        _query = "UPDATE tbl_program_info \
+                  SET fld_revision_active=%d, fld_function_active=%d, \
+                      fld_requirement_active=%d, fld_software_active=%d, \
+                      fld_vandv_active=%d, fld_testing_active=%d, \
+                      fld_rcm_active=%d, fld_fraca_active=%d, \
+                      fld_fmeca_active=%d, fld_survival_active=%d, \
+                      fld_rbd_active=%d, fld_fta_active=%d" % _values
+        return self._app.DB.execute_query(_query, None,
+                                          self._app.ProgCnx, commit=True)
+
+    def edit_lists(self, __button):
+        """
+
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return:
+        """
+
+        #if self.rdoMeasurement.get_active():
+        #    assistant = gtk.Assistant()
         return False
-
-    def edit_lists(self, button):
-
-        if(self.rdoMeasurement.get_active()):
-            assistant = _widg.Assistant()
