@@ -3914,7 +3914,7 @@ class Software(object):
             # Populate the test readiness review risk dictionary.  If the input
             # is a numerical input, assign the value of the third response
             # field returned from the database.
-            for i in range(0, _n_trr, 23):
+            for i in range(0, _n_trr, 24):
                 _list = [y[2] for y in _results if y[0] == _results[i][0]]
                 for j in [0, 1, 2, 3, 4, 5, 6]:
                     _list[j] = _results[i+j][3]
