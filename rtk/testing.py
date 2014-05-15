@@ -108,8 +108,7 @@ def _close_plot(__window, __event, plot, parent):
     return False
 
 
-# TODO: Create calculator module for small pop-up calculators and move the
-# TODO: _mttff_calculator to that module.
+# TODO: Create calculator module for small pop-up calculators and move the _mttff_calculator to that module.
 def _mttff_calculator(__button):
     """
     Function to launch the mean time to first failure calculator.
@@ -226,18 +225,18 @@ class Testing(object):
         @param application: the RTK application.
         """
 
-# Define private TESTING class attributes.
+        # Define private TESTING class attributes.
         self._app = application
         self._int_mission_id = -1
 
-# Define private TESTING class dictionary attributes.
+        # Define private TESTING class dictionary attributes.
         self._dic_assemblies = {}           # List of assemblies.
         self._dic_rg_plan = {}              # RG plan details.
 
-# Define private TESTING class list attributes.
+        # Define private TESTING class list attributes.
         self._col_order = []
 
-# Define public TESTING class attributes.
+        # Define public TESTING class attributes.
         self.assembly_id = 0
         self.test_id = 0
         self.test_name = ''
@@ -1018,7 +1017,6 @@ class Testing(object):
             Function to create the TESTING class gtk.Notebook() page for
             displaying test feasibility results for the selected test.
 
-            Keyword Arguments:
             @param self: the current instance of a TESTING class.
             @param notebook: the TESTING class gtk.Notebook() widget.
             @type notebook: gtk.NoteBook
@@ -2992,25 +2990,28 @@ class Testing(object):
         details gtk.TreeView()
         """
 
-        _model_ = self.tvwRGPlanDetails.get_model()
-        _row_ = _model_.get_iter_from_string(path)
+        _model = self.tvwRGPlanDetails.get_model()
+        _row = _model.get_iter_from_string(path)
 
-        _widg.edit_tree(cell, path, new_text, position, _model_)
+        _widg.edit_tree(cell, path, new_text, position, _model)
 
-# Update the dictionary containing the RG Plan details.
-        if _row_ is not None:
-            _phase_id_ = _model_.get_value(_row_, 0)
-            self._dic_rg_plan[_phase_id_][0] = _model_.get_value(_row_, 1)
-            self._dic_rg_plan[_phase_id_][3] = _model_.get_value(_row_, 4)
-            self._dic_rg_plan[_phase_id_][4] = _model_.get_value(_row_, 5)
-            self._dic_rg_plan[_phase_id_][5] = _model_.get_value(_row_, 6)
-            self._dic_rg_plan[_phase_id_][6] = _model_.get_value(_row_, 7)
+        # Update the dictionary containing the RG Plan details.
+        if _row is not None:
+            _phase_id = _model.get_value(_row, 0)
+            self._dic_rg_plan[_phase_id][0] = _model.get_value(_row, 1)
+            self._dic_rg_plan[_phase_id][1] = _model.get_value(_row, 2)
+            self._dic_rg_plan[_phase_id][2] = _model.get_value(_row, 3)
+            self._dic_rg_plan[_phase_id][3] = _model.get_value(_row, 4)
+            self._dic_rg_plan[_phase_id][4] = _model.get_value(_row, 5)
+            self._dic_rg_plan[_phase_id][5] = _model.get_value(_row, 6)
+            self._dic_rg_plan[_phase_id][6] = _model.get_value(_row, 7)
 
-# Now update the RG plan feasibility gtk.Treeview().
-            _model_ = self.tvwTestFeasibility.get_model()
-            _path_ = self._dic_rg_plan[_phase_id_][9]
-            _row_ = _model_.get_iter_from_string(_path_)
-            _model_.set_value(_row_, 1, self._dic_rg_plan[_phase_id_][0])
+            # Now update the RG plan feasibility gtk.TreeModel().
+            _model = self.tvwTestFeasibility.get_model()
+            _row = _model.get_iter_from_string(self._dic_rg_plan[_phase_id][9])
+            _model.set_value(_row, 1, self._dic_rg_plan[_phase_id][0])
+            _model.set_value(_row, 2, self._dic_rg_plan[_phase_id][1])
+            _model.set_value(_row, 3, self._dic_rg_plan[_phase_id][2])
 
         return False
 
@@ -3020,21 +3021,24 @@ class Testing(object):
         details gtk.TreeView()
         """
 
-        _model_ = self.tvwTestFeasibility.get_model()
-        _row_ = _model_.get_iter_from_string(path)
+        _model = self.tvwTestFeasibility.get_model()
+        _row = _model.get_iter_from_string(path)
 
-        _widg.edit_tree(cell, path, new_text, position, _model_)
+        _widg.edit_tree(cell, path, new_text, position, _model)
 
-# Update the dictionary containing the RG Plan details.
-        if _row_ is not None:
-            _phase_id_ = _model_.get_value(_row_, 0)
-            self._dic_rg_plan[_phase_id_][0] = _model_.get_value(_row_, 1)
+        # Update the dictionary containing the RG Plan details.
+        if _row is not None:
+            _phase_id = _model.get_value(_row, 0)
+            self._dic_rg_plan[_phase_id][0] = _model.get_value(_row, 1)
+            self._dic_rg_plan[_phase_id][1] = _model.get_value(_row, 2)
+            self._dic_rg_plan[_phase_id][2] = _model.get_value(_row, 3)
 
-# Now update the RG plan details gtk.Treeview().
-            _model_ = self.tvwRGPlanDetails.get_model()
-            _path_ = self._dic_rg_plan[_phase_id_][8]
-            _row_ = _model_.get_iter_from_string(_path_)
-            _model_.set_value(_row_, 1, self._dic_rg_plan[_phase_id_][0])
+            # Now update the RG plan details gtk.TreeModel().
+            _model = self.tvwRGPlanDetails.get_model()
+            _row = _model.get_iter_from_string(self._dic_rg_plan[_phase_id][8])
+            _model.set_value(_row, 1, self._dic_rg_plan[_phase_id][0])
+            _model.set_value(_row, 2, self._dic_rg_plan[_phase_id][1])
+            _model.set_value(_row, 3, self._dic_rg_plan[_phase_id][2])
 
         return False
 

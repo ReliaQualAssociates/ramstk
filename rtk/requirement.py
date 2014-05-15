@@ -53,14 +53,14 @@ _ = gettext.gettext
 
 def _vandv_tree_edit(__cell, path, new_text, position, model):
     """
-    Function called whenever a gtk.CellRenderer is edited in teh V&V task list.
+    Function called whenever a gtk.CellRenderer() is edited in the V&V task
+    list.
 
-    Keyword Arguments:
-    __cell   -- the CellRenderer that was edited.
-    path     -- the TreeView path of the CellRenderer that was edited.
-    new_text -- the new text in the edited CellRenderer.
-    position -- the column position of the edited CellRenderer.
-    model    -- the TreeModel the CellRenderer belongs to.
+    @param __cell: the gtk.CellRenderer() that was edited.
+    @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was edited.
+    @param new_text: the new text in the edited gtk.CellRenderer().
+    @param position: the column position of the edited gtk.CellRenderer().
+    @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
     """
 
     if position == 4:
