@@ -3604,8 +3604,11 @@ class Hardware(object):
         try:
             _n_phases_ = len(_results_)
         except TypeError:
-            _util.application_error(_(
-                u"There was a problem loading the mission phase list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK program database is corrupt."))
+            _util.application_error(_(u"There was a problem loading the "
+                                      u"mission phase list in the Assembly "
+                                      u"Work Book FMEA/FMECA tab.  This may "
+                                      u"indicate your RTK program database is "
+                                      u"corrupt."))
             _n_phases_ = 0
 
         _cellmodel_.append([""])
@@ -3621,13 +3624,15 @@ class Hardware(object):
                           t1.fld_detection_method, t1.fld_other_indications, \
                           t1.fld_isolation_method, t1.fld_design_provisions, \
                           t1.fld_operator_actions, t1.fld_severity_class, \
-                          t1.fld_hazard_rate_source, t1.fld_failure_probability, \
+                          t1.fld_hazard_rate_source, \
+                          t1.fld_failure_probability, \
                           t1.fld_effect_probability, t1.fld_mode_ratio, \
                           t1.fld_mode_failure_rate, t1.fld_mode_op_time, \
                           t1.fld_mode_criticality, t1.fld_rpn_severity, \
                           t1.fld_rpn_severity_new, t1.fld_critical_item, \
                           t1.fld_single_point, t1.fld_remarks, \
-                          t2.fld_failure_rate_active, t2.fld_assembly_criticality \
+                          t2.fld_failure_rate_active, \
+                          t2.fld_assembly_criticality \
                    FROM tbl_fmeca AS t1 \
                    INNER JOIN tbl_system AS t2 \
                    ON t2.fld_assembly_id=t1.fld_assembly_id \
@@ -3643,8 +3648,7 @@ class Hardware(object):
             _n_modes_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16,
-                                                      16)  # @UndefinedVariable
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_modes_):
             self._CA[_results_[i][0]] = [_results_[i][14],
                                          _results_[i][15],
@@ -3704,9 +3708,8 @@ class Hardware(object):
             try:
                 _model_.append(None, _data_)
             except TypeError:
-                _util.application_error(_(
-                    u"Failed to load FMEA/FMECA failure mode %d" %
-                    _results_[i][2]))
+                _util.application_error(_(u"Failed to load FMEA/FMECA failure "
+                                          u"mode %d" % _results_[i][2]))
 
             # Load the FMECA dictionary with the data.
             self._fmeca[_results_[i][self._FMECA_col_order[0]]] = _data_[1:25]
@@ -3801,8 +3804,7 @@ class Hardware(object):
             _n_actions_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/action.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16,
-                                                      16)  # @UndefinedVariable
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_actions_):
             _piter_ = _model_.get_iter_from_string(_results_[i][14])
             self._fmeca_actions[_results_[i][3]] = [_results_[i][4],
@@ -3842,8 +3844,7 @@ class Hardware(object):
             _n_controls_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/control.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16,
-                                                      16)  # @UndefinedVariable
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_controls_):
             try:
                 _piter_ = _model_.get_iter_from_string(_results_[i][6])
@@ -4249,9 +4250,9 @@ class Hardware(object):
         @param __button: the gtk.Button() that called this method.
         @type __button: gtk.Button
         @param kind: the kind of Assembly to add.
-                      0 = sibling assembly
-                      1 = child assembly
-                      2 = component
+                     0 = sibling assembly
+                     1 = child assembly
+                     2 = component
         @type kind: integer
         @return: False or True
         """
@@ -4259,9 +4260,10 @@ class Hardware(object):
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if self.part and (kind == 0 or kind == 1):
-            _util.application_error(_(
-                u"An assembly can not be added as a child of a component.  "
-                u"Please select an assembly to create a child assembly."))
+            _util.application_error(_(u"An assembly can not be added as a "
+                                      u"child of a component.  Please select "
+                                      u"an assembly to create a child "
+                                      u"assembly."))
             return True
 
         if kind == 0:
@@ -4269,9 +4271,8 @@ class Hardware(object):
             try:
                 _parent_ = _model_.get_string_from_iter(_iter)
             except TypeError:
-                _util.application_error(_(
-                    u"A sibling assembly can not be added to the top-level "
-                    u"assembly."))
+                _util.application_error(_(u"A sibling assembly can not be "
+                                          u"added to the top-level assembly."))
                 return True
 
             _title_ = _(u"RTK - Add Sibling Assemblies")
@@ -4342,23 +4343,20 @@ class Hardware(object):
                       (fld_revision_id, fld_assembly_id) \
                       VALUES({0:d}, {1:d})".format(self.revision_id,
                                                    _assembly_id_)
-            if self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                          commit=True):
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                             commit=True):
                 self._app.debug_log.error("assembly.py: Failed to add new "
                                           "assembly to risk matrix table.")
                 return True
 
             _query_ = "INSERT INTO tbl_similar_item \
                        (fld_revision_id, fld_assembly_id) \
-                       VALUES (%d, %d)" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error(
-                    "assembly.py: Failed to add new assembly to similar items table.")
+                       VALUES ({0:d}, {1:d})".format(self.revision_id,
+                                                     _assembly_id_)
+            if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                              commit=True):
+                self._app.debug_log.error("assembly.py: Failed to add new "
+                                          "assembly to similar items table.")
                 return True
 
             # Retrieve the list of function id's in the open RTK program
@@ -4376,8 +4374,8 @@ class Hardware(object):
                 _values_ = (self.revision_id, _functions_[j][0], _assembly_id_)
                 _query_ = "INSERT INTO tbl_functional_matrix \
                            (fld_revision_id, fld_function_id, \
-                            fld_assembly_id) \
-                           VALUES(%d, %d, %d)" % _values_
+                            fld_assembly_id, fld_relationship) \
+                           VALUES(%d, %d, %d, '')" % _values_
                 _results_ = self._app.DB.execute_query(_query_,
                                                        None,
                                                        self._app.ProgCnx,
@@ -6295,7 +6293,7 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 5:  # Assessment results tab.
+        elif _page_ == 5:                   # Assessment results tab.
             if button.get_name() == 'Add':
                 self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -6303,37 +6301,37 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 6:  # FMEA/FMECA tab.
+        elif _page_ == 6:                   # FMEA/FMECA tab.
             if button.get_label() == 'Mode':
                 # Find the id of the next failure mode.
-                _query_ = "SELECT seq FROM sqlite_sequence \
-                           WHERE name='tbl_fmeca'"
-                _last_id_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx)
+                _query = "SELECT seq FROM sqlite_sequence \
+                          WHERE name='tbl_fmeca'"
+                _last_id = self._app.DB.execute_query(_query,
+                                                      None,
+                                                      self._app.ProgCnx)
 
                 try:
-                    _last_id_ = _last_id_[0][0] + 1
-                except TypeError:
-                    _last_id_ = 0
+                    _last_id = _last_id[0][0] + 1
+                except TypeError or IndexError:
+                    _last_id = 0
 
                 # Insert the new failure mode.
-                _query_ = "INSERT INTO tbl_fmeca \
-                           (fld_assembly_id, fld_function_id, fld_mode_id) \
-                           VALUES (%d, 0, %d)" % (self.assembly_id, _last_id_)
-                self._app.DB.execute_query(_query_,
+                _query = "INSERT INTO tbl_fmeca \
+                          (fld_assembly_id, fld_function_id, fld_mode_id) \
+                          VALUES (%d, 0, %d)" % (self.assembly_id, _last_id)
+                self._app.DB.execute_query(_query,
                                            None,
                                            self._app.ProgCnx,
-                                           True)
+                                           commit=True)
 
                 # Insert a new line in the failure consequence table.
                 _query_ = "INSERT INTO tbl_failure_consequences \
                            (fld_assembly_id, fld_mode_id) \
-                           VALUES (%d, %d)" % (self.assembly_id, _last_id_)
+                           VALUES (%d, %d)" % (self.assembly_id, _last_id)
                 self._app.DB.execute_query(_query_,
                                            None,
                                            self._app.ProgCnx,
-                                           True)
+                                           commit=True)
 
                 self._load_fmeca_tab()
 
