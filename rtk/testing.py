@@ -1995,6 +1995,8 @@ class Testing(object):
 
         _fix_ = [True, True, True, True, True, True, True]
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         # Calculate the idealized growth curve.
         MTBFI = _model_.get_value(_row_, 6)
         MTBFF = _model_.get_value(_row_, 7)
@@ -2172,6 +2174,8 @@ class Testing(object):
             self._load_rg_plot(TTTi, MTBFAP, _mu, N)
         elif self.optFailureIntensity.get_active():
             self._load_rg_plot(TTTi, MTBFAP, _rho, N)
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -2554,7 +2558,7 @@ class Testing(object):
 
         _text = combo.get_active()
 
-        # index     Field
+        # Index     Field
         #    1      Assembly ID
         #    5      Test Type
         #   12      RG Planning Model

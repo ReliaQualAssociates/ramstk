@@ -20,22 +20,6 @@ import locale
 from os import name
 import sys
 
-import matplotlib
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-import numpy
-
-from _assistants_.adds import AddDatasetRecord
-from _assistants_.updates import AssignMTBFResults
-from _calculations_.growth import power_law, loglinear, crow_amsaa_continuous
-from _calculations_.survival import *
-import calculations as _calc
-import configuration as _conf
-import imports as _impt
-import utilities as _util
-import widgets as _widg
-
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -55,6 +39,7 @@ try:
 except ImportError:
     sys.exit(1)
 
+import numpy
 
 # Import R library.
 try:
@@ -68,10 +53,19 @@ except ImportError:
     __USE_RPY2__ = False
 
 # Import other RTK modules.
+import calculations as _calc
+import configuration as _conf
+import imports as _impt
+import utilities as _util
+import widgets as _widg
 
 # Import other RTK classes.
+from _assistants_.adds import AddDatasetRecord
+from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
+from _calculations_.growth import power_law, loglinear, crow_amsaa_continuous
+from _calculations_.survival import *
 
 # Add localization support.
 try:
@@ -82,10 +76,13 @@ except locale.Error:
 _ = gettext.gettext
 
 # Plotting package.
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
 matplotlib.use('GTK')
 
 
-class Dataset:
+class Dataset(object):
     """
     The Dataset class is used to represent the survival data sets associated
     with the system being analyzed.
@@ -371,7 +368,7 @@ class Dataset:
 
         _pos = 0
 
-# Add record button.
+        # Add record button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
@@ -382,29 +379,31 @@ class Dataset:
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Remove record button.
+        # Remove record button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         button.set_icon_widget(image)
         button.set_name('Remove')
         button.connect('clicked', self._record_remove)
-        button.set_tooltip_text(_(u"Removes the selected record from the data set."))
+        button.set_tooltip_text(_(u"Removes the selected record from the data "
+                                  u"set."))
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Consolidate results.
+        # Consolidate results.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/insert-assembly.png')
         button.set_icon_widget(image)
         button.set_name('Assign')
         button.connect('clicked', self._consolidate_dataset)
-        button.set_tooltip_text(_(u"Consolidates the records in the selected data set."))
+        button.set_tooltip_text(_(u"Consolidates the records in the selected "
+                                  u"data set."))
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Calculate button.
+        # Calculate button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
@@ -415,7 +414,7 @@ class Dataset:
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Save button.
+        # Save button.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
@@ -426,16 +425,16 @@ class Dataset:
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Assign results to affected assembly.
+        # Assign results to affected assembly.
         button = gtk.ToolButton()
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         button.set_icon_widget(image)
         button.set_name('Assign')
         button.connect('clicked', AssignMTBFResults, self._app)
-        button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to the selected assembly."))
+        button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to "
+                                  u"the selected assembly."))
         toolbar.insert(button, _pos)
-        _pos += 1
 
         toolbar.show()
 
@@ -1915,6 +1914,8 @@ class Dataset:
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         _RELTIME_ = False
         _dataset_ = self.model.get_value(self.selected_row, 0)  # Dataset ID.
         _name = self.model.get_value(self.selected_row, 2)      # Dataset name.
@@ -3151,6 +3152,8 @@ class Dataset:
         self.lblZLPResult.set_markup(_text[1])
         self.lblZLRResult.set_markup(_text[2])
 
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
         return False
 
     def _consolidate_dataset(self, _button_):
@@ -3386,7 +3389,7 @@ class Dataset:
             _text_ = combo.get_active()
 
         if(_index_ == 4):                   # Statistical distribution.
-            if(_text_ == 1 or _text_ == 2 or _text_ == 3):  # MCF, Kaplan-Meier, or NHPP - Power Law
+            if _text_ == 1 or _text_ == 2:  # MCF or Kaplan-Meier
                 self.chkGroup.show()
                 self.chkParts.show()
                 self.cmbFitMethod.hide()

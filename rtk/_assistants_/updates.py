@@ -177,7 +177,7 @@ class AssignMTBFResults(object):
         self.assistant.set_page_title(frame, _(u"Assign SubAssembly Results"))
         self.assistant.set_page_complete(frame, True)
 
-# Create the page to assign the results.
+        # Create the page to assign the results.
         fixed = gtk.Fixed()
         _text_ = _(u"Press 'Apply' to assign the results to the selected "
                    u"assembly or 'Cancel' to quit the assistant.")
