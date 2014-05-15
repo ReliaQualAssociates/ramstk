@@ -6002,7 +6002,7 @@ class Hardware(object):
     def _trickle_down_risk(self):
         """
         Method to 'trickle down' the higher level Hazard Analysis potential
-        hazards to an assemblies immediate children.
+        hazards to an assembly's immediate children.
         """
 
         # Retrieve the currently selected assembly potential hazards to
@@ -6083,7 +6083,7 @@ class Hardware(object):
             self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
                                                    u"results for the selected "
                                                    u"assembly."))
-        elif page_num == 2:  # Hazard analysis tab
+        elif page_num == 2:                 # Hazard analysis tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6103,7 +6103,7 @@ class Hardware(object):
                                               u"risk analyses."))
             self.btnEdit.set_tooltip_text(_(u"Create/edit current risk "
                                             u"analysis functions."))
-        elif page_num == 3:  # Similar items tab
+        elif page_num == 3:                 # Similar items tab
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6240,12 +6240,12 @@ class Hardware(object):
         # assembly-specific code.  Otherwise, add 3 to the page number to
         # account for the missing assembly-specific pages in the notebook.
         if not self.part:
-            if _page_ == 1:  # Allocation tab.
+            if _page_ == 1:                 # Allocation tab.
                 if button.get_name() == 'Analyze':
                     self._allocate()
                 elif button.get_name() == 'Save':
                     self._save_allocation()
-            elif _page_ == 2:  # Hazard analysis tab.
+            elif _page_ == 2:               # Hazard analysis tab.
                 if button.get_name() == 'Add':
                     _query_ = "INSERT INTO tbl_risk_analysis \
                                (fld_revision_id, fld_assembly_id) \
