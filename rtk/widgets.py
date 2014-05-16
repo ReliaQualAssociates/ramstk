@@ -681,7 +681,7 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, app, cmblist, bg_col='white', fg_col='black'):
+def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white', fg_col='black'):
     """
     Utility function to create gtk.TreeView() widgets.
 
@@ -736,7 +736,6 @@ def make_treeview(name, fmt_idx, app, cmblist, bg_col='white', fg_col='black'):
     for i in range(len(position)):
         types.append(datatype[i].text)
 
-    gobject_types = []
     gobject_types = [gobject.type_from_name(types[ix])
                      for ix in range(len(types))]
 

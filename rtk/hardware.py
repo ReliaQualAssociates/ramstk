@@ -74,8 +74,7 @@ class Hardware(object):
     The Hardware class
     """
 
-    # TODO: Write code to update Work Book widgets when editing the
-    # Module Book.
+    # TODO: Write code to update Work Book widgets when editing the Module Book.
 
     def __init__(self, application):
         """
@@ -236,12 +235,12 @@ class Hardware(object):
         self.case_temp = 0.0
 
         # Define public HARDWARE class dictionary attributes.
-        #        self.dicHARDWARE = {}
+        # self.dicHARDWARE = {}
 
         # Create the main HARDWARE class treeview.
         (self.treeview,
          self._col_order) = _widg.make_treeview('Hardware', 3, self._app,
-                                                None, _conf.RTK_COLORS[6],
+                                                [''], _conf.RTK_COLORS[6],
                                                 _conf.RTK_COLORS[7])
 
         # Hardware class Work Book toolbar widgets.
@@ -285,7 +284,7 @@ class Hardware(object):
         self.txtRemarks = _widg.make_text_view(width=400)
 
         # Diagrams page widgets.
-        # TODO: Implement Diagram Worksheet for HARDWARE.
+        # TODO: Implement Diagram Worksheet for the Hardware class.
 
         # Allocation page widgets.
         self.chkApplyResults = _widg.make_check_button(_(u"Apply results to "
