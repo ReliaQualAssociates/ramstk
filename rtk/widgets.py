@@ -164,6 +164,7 @@ class CellRendererButton(gtk.CellRendererText):
     """
     Class to create a CellRenderer with a button in it.
     """
+
     __gproperties__ = {"callable": (gobject.TYPE_PYOBJECT,
                                     "callable property",
                                     "callable property",

@@ -4,9 +4,10 @@ This is the Class that is used to represent and hold information related to
 the requirements of the Program.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-__updated__ = "2014-03-22 17:53"
 
 # -*- coding: utf-8 -*-
 #
@@ -57,7 +58,8 @@ def _vandv_tree_edit(__cell, path, new_text, position, model):
     list.
 
     @param __cell: the gtk.CellRenderer() that was edited.
-    @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was edited.
+    @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+                 edited.
     @param new_text: the new text in the edited gtk.CellRenderer().
     @param position: the column position of the edited gtk.CellRenderer().
     @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
@@ -78,19 +80,17 @@ class Requirement(object):
     """
 
 # TODO: Write code to update notebook widgets when editing the Requirements treeview.
-# TODO: Add tooltips to all widgets.
-
     def __init__(self, application):
         """
-        Initializes the REQUIREMENT class.
+        Initializes the Requirement class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        @param application: the RTK application.
         """
 
         # Define private REQUIREMENT class attributes.
         self._ready = False
         self._app = application
+        self._selected_tab = 1
 
         # Define private REQUIREMENT class dictionary attributes.
         self._dic_owners = {}
@@ -150,6 +150,7 @@ class Requirement(object):
         self.verifiable_q4 = 0
         self.verifiable_q5 = 0
         self.verifiable_q6 = 0
+        self.priority = 1
 
         # Create the main REQUIREMENT class treeview.
         (self.treeview,
@@ -183,6 +184,7 @@ class Requirement(object):
 
         self.cmbOwner = _widg.make_combo(simple=False)
         self.cmbRqmtType = _widg.make_combo(simple=False)
+        self.cmbPriority = _widg.make_combo(width=50, simple=True)
 
         self.txtCode = _widg.make_entry(width=100, editable=False)
         self.txtFigureNumber = _widg.make_entry()
@@ -243,30 +245,36 @@ class Requirement(object):
         self.vbxRequirement.pack_end(self.notebook)
 
         self.notebook.connect('switch-page', self._notebook_page_switched)
+        self.notebook.connect('select-page', self._notebook_page_switched)
 
     def create_tree(self):
         """
-        Creates the REQUIREMENT gtk.TreeView() and connects it to callback
-        functions to handle editting.  Background and foreground colors can be
-        set using the user-defined values in the RTK configuration file.
+        Creates the Requirement class gtk.TreeView() and connects it to
+        callback functions to handle editing.  Background and foreground colors
+        can be set using the user-defined values in the RTK configuration file.
+
+        @return: _scrollwindow
+        @rtype: gtk.ScrolledWindow
         """
 
-        #TODO: Load requirement type CellRendererCombo
-        #TODO: Load requiquirement owner CellRendererCombo
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of program requirements."))
+        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+                                         u"of program requirements."))
         self.treeview.set_enable_tree_lines(True)
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
-            None, None)
+                              None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
 
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.treeview)
 
-        return _scrollwindow_
+        return _scrollwindow
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the REQUIREMENT class work book.
+        Method to create the toolbar for the Requirement class work book.
+
+        @return: _toolbar
+        @rtype: gtk.ToolBar
         """
 
         _toolbar_ = gtk.Toolbar()
@@ -274,7 +282,9 @@ class Requirement(object):
         _position_ = 0
 
         # Add sibling requirement button.
-        self.btnAddSibling.set_tooltip_text(_(u"Adds a new requirement at the same level as the selected requirement."))
+        self.btnAddSibling.set_tooltip_text(_(u"Adds a new requirement at the "
+                                              u"same level as the selected "
+                                              u"requirement."))
         _image_ = gtk.Image()
         _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         self.btnAddSibling.set_icon_widget(_image_)
@@ -359,10 +369,9 @@ class Requirement(object):
 
         def _create_stakeholder_input_tab(self, notebook):
             """
-            Function to create the Stakeholder Input gtk.Notebook tab and populate it
-            with the appropriate widgets.
+            Function to create the Stakeholder Input gtk.Notebook tab and
+            populate it with the appropriate widgets.
 
-            Keyword Arguments:
             self     -- the current instance of a REQUIREMENT class.
             notebook -- the gtk.Notebook() to add the general data tab.
             """
@@ -422,12 +431,12 @@ class Requirement(object):
 
         def _create_general_data_tab(self, notebook):
             """
-            Function to create the REQUIREMENT class gtk.Notebook() page for
-            displaying general data about the selected REQUIREMENT.
+            Function to create the Requirement class gtk.Notebook() page for
+            displaying general data about the selected Requirement.
 
-            Keyword Arguments:
-            self     -- the current instance of a REQUIREMENT class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Requirement class.
+            @param notebook: the gtk.Notebook() to add the general data tab.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -446,14 +455,15 @@ class Requirement(object):
                         _(u"Requirement Type:"), _(u"Specification:"),
                         _(u"Page Number:"), _(u"Figure Number:"),
                         _(u"Derived:"), _(u"Validated:"), _(u"Owner:"),
-                        _(u"Validated Date:")]
+                        _(u"Priority:"), _(u"Validated Date:")]
             _max1_ = 0
             _max2_ = 0
-            (_max1_, _y_pos_) = _widg.make_labels(_labels_[2:9],
+            (_max1_, _y_pos_) = _widg.make_labels(_labels_[2:10],
                                                   _fxdGeneralData, 5, 140)
             _x_pos_ = max(_max1_, _max2_) + 20
 
-            self.txtCode.set_tooltip_text(_(u"Displays the unique code for the selected requirement."))
+            self.txtCode.set_tooltip_text(_(u"Displays the unique code for "
+                                            u"the selected requirement."))
             self.txtCode.connect('focus-out-event',
                                  self._callback_entry, 'text', 5)
             label = _widg.make_label(_labels_[0], 150, 25)
@@ -475,7 +485,9 @@ class Requirement(object):
             # requirement types.  The dictionary uses the noun name of the
             # requirement type as the key and the index in the gtk.ComboBox as
             # the value.
-            self.cmbRqmtType.set_tooltip_text(_(u"Selects and displays the type of requirement for the selected requirement."))
+            self.cmbRqmtType.set_tooltip_text(_(u"Selects and displays the "
+                                                u"type of requirement for the "
+                                                u"selected requirement."))
             _query_ = "SELECT fld_requirement_type_desc, \
                               fld_requirement_type_code, \
                               fld_requirement_type_id \
@@ -493,43 +505,66 @@ class Requirement(object):
             self.cmbRqmtType.connect('changed', self._callback_combo, 4)
             _fxdGeneralData.put(self.cmbRqmtType, _x_pos_, _y_pos_[0])
 
-            self.txtSpecification.set_tooltip_text(_(u"Displays the internal or industry specification associated with the selected requirement."))
+            self.txtSpecification.set_tooltip_text(_(u"Displays the internal "
+                                                     u"or industry "
+                                                     u"specification "
+                                                     u"associated with the "
+                                                     u"selected requirement."))
             self.txtSpecification.connect('focus-out-event',
                                           self._callback_entry, 'text', 11)
             _fxdGeneralData.put(self.txtSpecification, _x_pos_, _y_pos_[1])
 
-            self.txtPageNumber.set_tooltip_text(_(u"Displays the specification page number associated with the selected requirement."))
+            self.txtPageNumber.set_tooltip_text(_(u"Displays the "
+                                                  u"specification page number "
+                                                  u"associated with the "
+                                                  u"selected requirement."))
             self.txtPageNumber.connect('focus-out-event',
                                        self._callback_entry, 'text', 12)
             _fxdGeneralData.put(self.txtPageNumber, _x_pos_, _y_pos_[2])
 
-            self.txtFigureNumber.set_tooltip_text(_(u"Displays the specification figure number associated with the selected requirement."))
+            self.txtFigureNumber.set_tooltip_text(_(u"Displays the "
+                                                    u"specification figure "
+                                                    u"number associated with "
+                                                    u"the selected "
+                                                    u"requirement."))
             self.txtFigureNumber.connect('focus-out-event',
                                          self._callback_entry, 'text', 13)
             _fxdGeneralData.put(self.txtFigureNumber, _x_pos_, _y_pos_[3])
 
-            self.chkDerived.set_tooltip_text(_(u"Whether or not the selected requirement is derived."))
+            self.chkDerived.set_tooltip_text(_(u"Whether or not the selected "
+                                               u"requirement is derived."))
             self.chkDerived.connect('toggled', self._callback_check, 6)
             _fxdGeneralData.put(self.chkDerived, _x_pos_, _y_pos_[4])
 
-            self.chkValidated.set_tooltip_text(_(u"Whether or not the selected requirement has been verified and validated."))
+            self.chkValidated.set_tooltip_text(_(u"Whether or not the "
+                                                 u"selected requirement has "
+                                                 u"been verified and "
+                                                 u"validated."))
             self.chkValidated.connect('toggled', self._callback_check, 8)
             _fxdGeneralData.put(self.chkValidated, _x_pos_, _y_pos_[5])
 
-            label = _widg.make_label(_labels_[9],
+            label = _widg.make_label(_labels_[10],
                                      150, 25)
             _fxdGeneralData.put(label, _x_pos_ + 25, _y_pos_[5])
-            self.txtValidatedDate.set_tooltip_text(_(u"Displays the date the selected requirement was verified and validated."))
+            self.txtValidatedDate.set_tooltip_text(_(u"Displays the date the "
+                                                     u"selected requirement "
+                                                     u"was verified and "
+                                                     u"validated."))
             self.txtValidatedDate.connect('focus-out-event',
                                           self._callback_entry, 'text', 9)
             _fxdGeneralData.put(self.txtValidatedDate, _x_pos_ + 200, _y_pos_[5])
 
-            self.btnValidateDate.set_tooltip_text(_(u"Launches the calendar to select the date the requirement was validated."))
+            self.btnValidateDate.set_tooltip_text(_(u"Launches the calendar "
+                                                    u"to select the date the "
+                                                    u"requirement was "
+                                                    u"validated."))
             self.btnValidateDate.connect('released', _util.date_select,
                                          self.txtValidatedDate)
             _fxdGeneralData.put(self.btnValidateDate, _x_pos_ + 305, _y_pos_[5])
 
-            self.cmbOwner.set_tooltip_text(_(u"Displays the responsible organization or individual for the selected requirement."))
+            self.cmbOwner.set_tooltip_text(_(u"Displays the responsible "
+                                             u"organization or individual for "
+                                             u"the selected requirement."))
             _query_ = "SELECT fld_group_name, fld_group_id FROM tbl_groups"
             _results_ = self._app.COMDB.execute_query(_query_,
                                                       None,
@@ -555,6 +590,14 @@ class Requirement(object):
             self.cmbOwner.connect('changed', self._callback_combo, 10)
             _fxdGeneralData.put(self.cmbOwner, _x_pos_, _y_pos_[6])
 
+            _results = [['1'], ['2'], ['3'], ['4'], ['5']]
+            _widg.load_combo(self.cmbPriority, _results)
+            self.cmbPriority.set_tooltip_text(_(u"Selects and displays the "
+                                                u"priority of the selected "
+                                                u"requirement."))
+            _fxdGeneralData.put(self.cmbPriority, _x_pos_, _y_pos_[7])
+            self.cmbPriority.connect('changed', self._callback_combo, 52)
+
             _fxdGeneralData.show_all()
 
             # Insert the tab.
@@ -564,7 +607,8 @@ class Requirement(object):
                              "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_tooltip_text(_(u"Displays general information about the selected requirement."))
+            label.set_tooltip_text(_(u"Displays general information about the "
+                                     u"selected requirement."))
             label.show_all()
             notebook.insert_page(_fraGeneralData,
                                  tab_label=label,
@@ -857,68 +901,55 @@ class Requirement(object):
             _scwVandV.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
             _scwVandV.add_with_viewport(self.tvwValidation)
 
-            _fraVandV = _widg.make_frame(_(u"Verification and Validation Task List"))
+            _fraVandV = _widg.make_frame(_(u"Verification and Validation Task "
+                                           u"List"))
             _fraVandV.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraVandV.add(_scwVandV)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display V&V task information.       #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            _labels = [_(u"Task ID"), _(u"Task Description"),
+                       _(u"Start Date"), _(u"Due Date"), _(u"% Complete")]
             _model_ = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                     gobject.TYPE_STRING, gobject.TYPE_STRING,
                                     gobject.TYPE_FLOAT)
             self.tvwValidation.set_model(_model_)
-            self.tvwValidation.set_tooltip_text(_(u"Provides read-only list of basic information for Verfication and Validation (V&V) tasks associated with the selected Requirement."))
+            self.tvwValidation.set_tooltip_text(_(u"Provides read-only list "
+                                                  u"of basic information for "
+                                                  u"Verification and "
+                                                  u"Validation (V&V) tasks "
+                                                  u"associated with the "
+                                                  u"selected Requirement."))
 
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            column = gtk.TreeViewColumn(_(u"Task ID"))
-            column.set_visible(0)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=0)
-            self.tvwValidation.append_column(column)
+            for i in range(len(_labels)):
+                _cell = gtk.CellRendererText()
+                _label = gtk.Label()
+                _label.set_alignment(xalign=0.5, yalign=0.5)
+                _label.set_justify(gtk.JUSTIFY_CENTER)
+                _label.set_line_wrap(True)
+                _label.set_markup("<span weight='bold'>" +
+                                  _labels[i] + "</span>")
+                _label.set_use_markup(True)
+                _label.show_all()
 
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            cell.connect('edited', _vandv_tree_edit, 1,
-                         self.tvwValidation.get_model())
-            column = gtk.TreeViewColumn(_(u"Task Description"))
-            column.set_visible(1)
-            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            column.set_resizable(True)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=1)
-            self.tvwValidation.append_column(column)
+                _column = gtk.TreeViewColumn()
+                _column.set_resizable(True)
+                _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+                _column.set_visible(1)
+                _column.set_widget(_label)
+                _column.pack_start(_cell, True)
+                _column.set_attributes(_cell, text=i)
 
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            cell.connect('edited', _vandv_tree_edit, 2,
-                         self.tvwValidation.get_model())
-            column = gtk.TreeViewColumn(_(u"Start Date"))
-            column.set_visible(1)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=2)
-            self.tvwValidation.append_column(column)
+                if i == 1:
+                    _cell.set_property('editable', 1)
+                    _cell.connect('edited', _vandv_tree_edit, i,
+                                  self.tvwValidation.get_model())
+                else:
+                    _cell.set_property('editable', 0)
+                    _cell.set_property('cell-background', '#BFBFBF')
 
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            cell.connect('edited', _vandv_tree_edit, 3,
-                         self.tvwValidation.get_model())
-            column = gtk.TreeViewColumn(_(u"Due Date"))
-            column.set_visible(1)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=3)
-            self.tvwValidation.append_column(column)
-
-            cell = gtk.CellRendererText()
-            cell.set_property('editable', 0)
-            cell.connect('edited', _vandv_tree_edit, 4,
-                         self.tvwValidation.get_model())
-            column = gtk.TreeViewColumn(_(u"% Complete"))
-            column.set_visible(1)
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=4)
-            self.tvwValidation.append_column(column)
+                self.tvwValidation.append_column(_column)
 
             # Insert the tab.
             label = gtk.Label()
@@ -956,7 +987,7 @@ class Requirement(object):
 
     def load_tree(self):
         """
-        Method to load the REQUIREMENT class gtk.TreeView().
+        Method to load the Requirement class gtk.TreeView().
         """
 
         # Select everything from the requirements table.
@@ -1088,76 +1119,80 @@ class Requirement(object):
         """
         Method to load the Requirement/Validation task relationship
         matrix.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _values_ = (_model_.get_value(_row_, self._lst_col_order[0]),
-                    _model_.get_value(_row_, self._lst_col_order[1]))
-        _query_ = "SELECT t1.fld_validation_id, t1.fld_task_desc, \
-                          t1.fld_start_date, t1.fld_end_date, t1.fld_status \
-                   FROM tbl_validation AS t1 \
-                   INNER JOIN tbl_validation_matrix AS t2 \
-                   ON t2.fld_validation_id=t1.fld_validation_id \
-                   WHERE t1.fld_revision_id=%d \
-                   AND t2.fld_requirement_id=%d \
-                   GROUP BY t1.fld_validation_id" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT t1.fld_validation_id, t1.fld_task_desc, \
+                         t1.fld_start_date, t1.fld_end_date, t1.fld_status \
+                  FROM tbl_validation AS t1 \
+                  INNER JOIN tbl_validation_matrix AS t2 \
+                  ON t2.fld_validation_id=t1.fld_validation_id \
+                  WHERE t1.fld_revision_id=%d \
+                  AND t2.fld_requirement_id=%d \
+                  GROUP BY t1.fld_validation_id" % \
+                 (_model.get_value(_row, self._lst_col_order[0]),
+                  _model.get_value(_row, self._lst_col_order[1]))
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_tasks_ = len(_results_)
+            _n_tasks = len(_results)
         except TypeError:
-            _n_tasks_ = 0
+            _n_tasks = 0
 
-        _model_ = self.tvwValidation.get_model()
-        _model_.clear()
-        for i in range(_n_tasks_):
-            _model_.append(None, _results_[i])
+        _model = self.tvwValidation.get_model()
+        _model.clear()
+        for i in range(_n_tasks):
+            _model.append(None, [_results[i][0], _results[i][1],
+                                 _util.ordinal_to_date(_results[i][2]),
+                                 _util.ordinal_to_date(_results[i][3]),
+                                 _results[i][4]])
 
-        _root_ = _model_.get_iter_root()
-        if _root_ is not None:
-            _path_ = _model_.get_path(_root_)
+        _root = _model.get_iter_root()
+        if _root is not None:
+            _path = _model.get_path(_root)
             self.tvwValidation.expand_all()
             self.tvwValidation.set_cursor('0', None, False)
-            _col_ = self.tvwValidation.get_column(0)
-            self.tvwValidation.row_activated(_path_, _col_)
+            _col = self.tvwValidation.get_column(0)
+            self.tvwValidation.row_activated(_path, _col)
 
         # Load the list of V&V task to the gtk.ComboBox used to associate
         # existing V&V tasks with requirements.
-        _query_ = "SELECT DISTINCT(fld_validation_id), \
-                          fld_task_desc, fld_task_type \
-                   FROM tbl_validation \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT DISTINCT(fld_validation_id), fld_task_desc, \
+                         fld_task_type \
+                  FROM tbl_validation \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_tasks_ = len(_results_)
+            _n_tasks = len(_results)
         except TypeError:
-            _n_tasks_ = 0
+            _n_tasks = 0
 
-        _tasks_ = []
-        for i in range(_n_tasks_):
-            _tasks_.append((_results_[i][1], _results_[i][0], _results_[i][2]))
+        _tasks = []
+        for i in range(_n_tasks):
+            _tasks.append((_results[i][1], _results[i][0], _results[i][2]))
 
-        _widg.load_combo(self.cmbVandVTasks, _tasks_, simple=False)
+        _widg.load_combo(self.cmbVandVTasks, _tasks, simple=False)
 
         return False
 
     def load_notebook(self):
         """
-        Method to load the REQUIREMENT class gtk.Notebook().
+        Method to load the Requirement class gtk.Notebook().
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _load_general_data_tab(self):
             """
             Function to load the widgets on the General Data tab.
 
-            Keyword Arguments:
-            self -- the current instance of a REQUIREMENT class.
+            @param self: the current instance of a Requirement class.
             """
 
             try:
@@ -1181,6 +1216,7 @@ class Requirement(object):
             self.txtRequirement.set_text(self.requirement_desc)
             self.txtSpecification.set_text(self.specification)
             self.txtValidatedDate.set_text(self.validated_date)
+            self.cmbPriority.set_active(self.priority)
 
             return False
 
@@ -1237,8 +1273,8 @@ class Requirement(object):
         self._app.winWorkBook.add(self.vbxRequirement)
         self._app.winWorkBook.show_all()
 
-        (__model__, _row_) = self.treeview.get_selection().get_selected()
-        if _row_ is not None:
+        (__model, _row) = self.treeview.get_selection().get_selected()
+        if _row is not None:
             self._load_stakeholder_inputs()
             _load_general_data_tab(self)
             _load_analysis_tab(self)
@@ -1246,10 +1282,13 @@ class Requirement(object):
 
         self._app.winWorkBook.set_title(_(u"RTK Work Book: Requirements"))
 
-        self.notebook.set_page(1)
-
-        self.btnAssign.hide()
-        self.cmbVandVTasks.hide()
+        self.notebook.set_current_page(self._selected_tab)
+        if self._selected_tab == 3:
+            self.btnAssign.show()
+            self.cmbVandVTasks.show()
+        else:
+            self.btnAssign.hide()
+            self.cmbVandVTasks.hide()
 
         return False
 
@@ -1354,6 +1393,7 @@ class Requirement(object):
             self.verifiable_q4 = _model_.get_value(_row_, 49)
             self.verifiable_q5 = _model_.get_value(_row_, 50)
             self.verifiable_q6 = _model_.get_value(_row_, 51)
+            self.priority = _model_.get_value(_row_, 52)
 
             self.load_notebook()
 
@@ -1400,8 +1440,8 @@ class Requirement(object):
                         fld_requirement_desc, fld_parent_requirement) \
                        VALUES (%d, %d, '%s', '%s')" % \
                        (self._app.REVISION.revision_id,
-                       self._app.HARDWARE.assembly_id, _requirement_name_,
-                       _parent_)
+                        self._app.HARDWARE.assembly_id, _requirement_name_,
+                        _parent_)
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx,
@@ -1454,88 +1494,91 @@ class Requirement(object):
 
         return False
 
-    def _add_vandv_task(self, type_=0):
+    def _add_vandv_task(self, _type=0):
         """
         Adds a new Verification and Validation task to the selected
         Requirement to the Program's MySQL or SQLite3 database.
 
-        Keyword Arguments:
-        type_  -- type of add; 0 = add new task, 1 = assign existing task
+        @param _type: the type of task to add.
+                      0 = add new task (default)
+                      1 = assign existing task
+        @type _type: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        if _type == 0:
+            _task_name = _(u"New V & V Task")
 
-        if type_ == 0:
-            _task_name_ = _(u"New V & V Task")
-
-            if _conf.RTK_MODULES[0] == 1:
-                _values_ = (self._app.REVISION.revision_id, _task_name_)
-            else:
-                _values_ = (0, _task_name_)
-
-            _query_ = "INSERT INTO tbl_validation \
-                       (fld_revision_id, fld_task_desc) \
-                       VALUES (%d, '%s')" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("requirement.py: Failed to add V&V task.")
+            _query = "INSERT INTO tbl_validation \
+                      (fld_revision_id, fld_task_desc) \
+                      VALUES (%d, '%s')" % (self._app.REVISION.revision_id,
+                                            _task_name)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.application_error(_(u"Failed to add new V&V task to "
+                                          u"requirement %d.  Check the error "
+                                          u"log at %s.  If the problem "
+                                          u"persists, contact "
+                                          u"bugs@reliaqual.com with the error "
+                                          u"log attached.") %
+                                        (self.requirement_id,
+                                         _conf.LOG_DIR + "RTK_error.log"))
                 return True
 
             if _conf.BACKEND == 'mysql':
-                _query_ = "SELECT LAST_INSERT_ID()"
+                _query = "SELECT LAST_INSERT_ID()"
             elif _conf.BACKEND == 'sqlite3':
-                _query_ = "SELECT seq \
-                           FROM sqlite_sequence \
-                           WHERE name='tbl_validation'"
-            _task_id_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx)
+                _query = "SELECT seq \
+                          FROM sqlite_sequence \
+                          WHERE name='tbl_validation'"
+            _task_id = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
 
-            if _conf.RTK_MODULES[0] == 1:
-                _values_ = (self._app.REVISION.revision_id, _task_id_[0][0],
-                            self.requirement_id)
-            else:
-                _values_ = (0, _task_id_[0][0], self.requirement_id)
-
-            _query_ = "INSERT INTO tbl_validation_matrix \
-                       (fld_revision_id, fld_validation_id, \
-                        fld_requirement_id) \
-                       VALUES (%d, %d, %d)" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("requirement.py: Failed to add V&V task.")
+            _query = "INSERT INTO tbl_validation_matrix \
+                      (fld_revision_id, fld_validation_id, \
+                       fld_requirement_id) \
+                      VALUES (%d, %d, %d)" % \
+                     (self._app.REVISION.revision_id, _task_id[0][0],
+                      self.requirement_id)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.application_error(_(u"Failed to add new V&V task %d to "
+                                          u"the validation matrix.  Check the "
+                                          u"error log at %s.  If the problem "
+                                          u"persists, contact "
+                                          u"bugs@reliaqual.com with the error "
+                                          u"log attached.") %
+                                        (_task_id[0][0],
+                                         _conf.LOG_DIR + "RTK_error.log"))
                 return True
 
+# FIXME: This seems a kludgy way to do this.  Try to make it more efficient.
             self._app.VALIDATION.load_tree()
+            self.load_notebook()
+            self.btnAssign.show()
+            self.cmbVandVTasks.show()
 
-        elif type_ == 1:
-            _model_ = self.cmbVandVTasks.get_model()
-            _row_ = self.cmbVandVTasks.get_active_iter()
-            _task_id_ = int(_model_.get_value(_row_, 1))
+        elif _type == 1:
+            _model = self.cmbVandVTasks.get_model()
+            _row = self.cmbVandVTasks.get_active_iter()
+            _task_id = int(_model.get_value(_row, 1))
 
-            if _conf.RTK_MODULES[0] == 1:
-                _values_ = (self._app.REVISION.revision_id, _task_id_,
-                            self.requirement_id)
-            else:
-                _values_ = (0, _task_id_, self.requirement_id)
-
-            _query_ = "INSERT INTO tbl_validation_matrix \
-                       (fld_revision_id, fld_validation_id, \
-                        fld_requirement_id) \
-                       VALUES (%d, %d, %d)" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("requirement.py: Failed to associate V&V task.")
+            _query = "INSERT INTO tbl_validation_matrix \
+                      (fld_revision_id, fld_validation_id, \
+                       fld_requirement_id) \
+                      VALUES (%d, %d, %d)" % (self._app.REVISION.revision_id,
+                                              _task_id, self.requirement_id)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.application_error(_(u"Failed to add new V&V task %d to "
+                                          u"the validation matrix.  Check the "
+                                          u"error log at %s.  If the problem "
+                                          u"persists, contact "
+                                          u"bugs@reliaqual.com with the error "
+                                          u"log attached.") %
+                                        (_task_id[0][0],
+                                         _conf.LOG_DIR + "RTK_error.log"))
                 return True
 
         self._load_vandv_tasks()
@@ -1544,7 +1587,7 @@ class Requirement(object):
 
     def _delete_requirement(self):
         """
-        Deletes the currently selected Requirement from the RTK Program
+        Deletes the currently selected requirement from the RTK Program
         database.
         """
 
@@ -1609,122 +1652,133 @@ class Requirement(object):
 
     def save_requirement(self, __button=None):
         """
-        Saves the REQUIREMENT class information to the open RTK Program
+        Saves the Requirement class information to the open RTK Program
         database.
 
-        Keyword Arguments:
-        __button -- the gtk.Button() that called this function.
+        @param __button: the gtk.Button() that called this function.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves a single row in the REQUIREMENT class gtk.TreeModel() to the
+            Saves a single row in the Requirement class gtk.TreeModel() to the
             open RTK Program database.
 
-            Keyword Arguments:
-            model  -- the REQUIREMENT class gtk.TreeModel().
-            __path -- the path of the selected row in the Requirement class
-                      gtk.TreeModel().
-            row    -- the selected row in the Requirement class gtk.TreeView().
+            @param model: the Requirement class gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path the path of the selected row in the Requirement class
+                          gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Requirement class
+                        gtk.TreeView().
+            @type row: gtk.TreeIter
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
-            _date_ = _util.date_to_ordinal(model.get_value(row,
-                self._lst_col_order[9]))
+            _date = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[9]))
 
-            _values_ = (model.get_value(row, self._lst_col_order[2]),
-                        model.get_value(row, self._lst_col_order[3]),
-                        model.get_value(row, self._lst_col_order[4]),
-                        model.get_value(row, self._lst_col_order[5]),
-                        model.get_value(row, self._lst_col_order[6]),
-                        model.get_value(row, self._lst_col_order[7]),
-                        model.get_value(row, self._lst_col_order[8]),
-                        _date_,
-                        model.get_value(row, self._lst_col_order[10]),
-                        model.get_value(row, self._lst_col_order[11]),
-                        model.get_value(row, self._lst_col_order[12]),
-                        model.get_value(row, self._lst_col_order[13]),
-                        model.get_value(row, self._lst_col_order[14]),
-                        model.get_value(row, self._lst_col_order[15]),
-                        model.get_value(row, self._lst_col_order[16]),
-                        model.get_value(row, self._lst_col_order[17]),
-                        model.get_value(row, self._lst_col_order[18]),
-                        model.get_value(row, self._lst_col_order[19]),
-                        model.get_value(row, self._lst_col_order[20]),
-                        model.get_value(row, self._lst_col_order[21]),
-                        model.get_value(row, self._lst_col_order[22]),
-                        model.get_value(row, self._lst_col_order[23]),
-                        model.get_value(row, self._lst_col_order[24]),
-                        model.get_value(row, self._lst_col_order[25]),
-                        model.get_value(row, self._lst_col_order[26]),
-                        model.get_value(row, self._lst_col_order[27]),
-                        model.get_value(row, self._lst_col_order[28]),
-                        model.get_value(row, self._lst_col_order[29]),
-                        model.get_value(row, self._lst_col_order[30]),
-                        model.get_value(row, self._lst_col_order[31]),
-                        model.get_value(row, self._lst_col_order[32]),
-                        model.get_value(row, self._lst_col_order[33]),
-                        model.get_value(row, self._lst_col_order[34]),
-                        model.get_value(row, self._lst_col_order[35]),
-                        model.get_value(row, self._lst_col_order[36]),
-                        model.get_value(row, self._lst_col_order[37]),
-                        model.get_value(row, self._lst_col_order[38]),
-                        model.get_value(row, self._lst_col_order[39]),
-                        model.get_value(row, self._lst_col_order[40]),
-                        model.get_value(row, self._lst_col_order[41]),
-                        model.get_value(row, self._lst_col_order[42]),
-                        model.get_value(row, self._lst_col_order[43]),
-                        model.get_value(row, self._lst_col_order[44]),
-                        model.get_value(row, self._lst_col_order[45]),
-                        model.get_value(row, self._lst_col_order[46]),
-                        model.get_value(row, self._lst_col_order[47]),
-                        model.get_value(row, self._lst_col_order[48]),
-                        model.get_value(row, self._lst_col_order[49]),
-                        model.get_value(row, self._lst_col_order[50]),
-                        model.get_value(row, self._lst_col_order[51]),
-                        model.get_value(row, self._lst_col_order[0]),
-                        model.get_value(row, self._lst_col_order[1]))
+            _values = (model.get_value(row, self._lst_col_order[2]),
+                       model.get_value(row, self._lst_col_order[3]),
+                       model.get_value(row, self._lst_col_order[4]),
+                       model.get_value(row, self._lst_col_order[5]),
+                       model.get_value(row, self._lst_col_order[6]),
+                       model.get_value(row, self._lst_col_order[7]),
+                       model.get_value(row, self._lst_col_order[8]),
+                       _date,
+                       model.get_value(row, self._lst_col_order[10]),
+                       model.get_value(row, self._lst_col_order[11]),
+                       model.get_value(row, self._lst_col_order[12]),
+                       model.get_value(row, self._lst_col_order[13]),
+                       model.get_value(row, self._lst_col_order[14]),
+                       model.get_value(row, self._lst_col_order[15]),
+                       model.get_value(row, self._lst_col_order[16]),
+                       model.get_value(row, self._lst_col_order[17]),
+                       model.get_value(row, self._lst_col_order[18]),
+                       model.get_value(row, self._lst_col_order[19]),
+                       model.get_value(row, self._lst_col_order[20]),
+                       model.get_value(row, self._lst_col_order[21]),
+                       model.get_value(row, self._lst_col_order[22]),
+                       model.get_value(row, self._lst_col_order[23]),
+                       model.get_value(row, self._lst_col_order[24]),
+                       model.get_value(row, self._lst_col_order[25]),
+                       model.get_value(row, self._lst_col_order[26]),
+                       model.get_value(row, self._lst_col_order[27]),
+                       model.get_value(row, self._lst_col_order[28]),
+                       model.get_value(row, self._lst_col_order[29]),
+                       model.get_value(row, self._lst_col_order[30]),
+                       model.get_value(row, self._lst_col_order[31]),
+                       model.get_value(row, self._lst_col_order[32]),
+                       model.get_value(row, self._lst_col_order[33]),
+                       model.get_value(row, self._lst_col_order[34]),
+                       model.get_value(row, self._lst_col_order[35]),
+                       model.get_value(row, self._lst_col_order[36]),
+                       model.get_value(row, self._lst_col_order[37]),
+                       model.get_value(row, self._lst_col_order[38]),
+                       model.get_value(row, self._lst_col_order[39]),
+                       model.get_value(row, self._lst_col_order[40]),
+                       model.get_value(row, self._lst_col_order[41]),
+                       model.get_value(row, self._lst_col_order[42]),
+                       model.get_value(row, self._lst_col_order[43]),
+                       model.get_value(row, self._lst_col_order[44]),
+                       model.get_value(row, self._lst_col_order[45]),
+                       model.get_value(row, self._lst_col_order[46]),
+                       model.get_value(row, self._lst_col_order[47]),
+                       model.get_value(row, self._lst_col_order[48]),
+                       model.get_value(row, self._lst_col_order[49]),
+                       model.get_value(row, self._lst_col_order[50]),
+                       model.get_value(row, self._lst_col_order[51]),
+                       model.get_value(row, self._lst_col_order[52]),
+                       model.get_value(row, self._lst_col_order[0]),
+                       model.get_value(row, self._lst_col_order[1]))
 
-            _query_ = "UPDATE tbl_requirements \
-                       SET fld_assembly_id=%d, fld_requirement_desc='%s', \
-                           fld_requirement_type='%s', \
-                           fld_requirement_code='%s', fld_derived=%d, \
-                           fld_parent_requirement='%s', fld_validated=%d, \
-                           fld_validated_date=%d, fld_owner='%s', \
-                           fld_specification='%s', fld_page_number='%s', \
-                           fld_figure_number='%s', fld_parent_id=%d, \
-                           fld_software_id=%d, fld_clear_q1=%d, \
-                           fld_clear_q2=%d, fld_clear_q3=%d, fld_clear_q4=%d, \
-                           fld_clear_q5=%d, fld_clear_q6=%d, fld_clear_q7=%d, \
-                           fld_clear_q8=%d, fld_clear_q9=%d, \
-                           fld_clear_q10=%d, fld_complete_q1=%d, \
-                           fld_complete_q2=%d, fld_complete_q3=%d, \
-                           fld_complete_q4=%d, fld_complete_q5=%d, \
-                           fld_complete_q6=%d, fld_complete_q7=%d, \
-                           fld_complete_q8=%d, fld_complete_q9=%d, \
-                           fld_complete_q10=%d, fld_consistent_q1=%d, \
-                           fld_consistent_q2=%d, fld_consistent_q3=%d, \
-                           fld_consistent_q4=%d, fld_consistent_q5=%d, \
-                           fld_consistent_q6=%d, fld_consistent_q7=%d, \
-                           fld_consistent_q8=%d, fld_consistent_q9=%d, \
-                           fld_consistent_q10=%d, fld_verifiable_q1=%d, \
-                           fld_verifiable_q2=%d, fld_verifiable_q3=%d, \
-                           fld_verifiable_q4=%d, fld_verifiable_q5=%d, \
-                           fld_verifiable_q6=%d \
-                       WHERE fld_revision_id=%d \
-                       AND fld_requirement_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("requirement.py: Failed to save requirement %d." % model.get_value(row, self._lst_col_order[1]))
+            _query = "UPDATE tbl_requirements \
+                      SET fld_assembly_id=%d, fld_requirement_desc='%s', \
+                          fld_requirement_type='%s', \
+                          fld_requirement_code='%s', fld_derived=%d, \
+                          fld_parent_requirement='%s', fld_validated=%d, \
+                          fld_validated_date=%d, fld_owner='%s', \
+                          fld_specification='%s', fld_page_number='%s', \
+                          fld_figure_number='%s', fld_parent_id=%d, \
+                          fld_software_id=%d, fld_clear_q1=%d, \
+                          fld_clear_q2=%d, fld_clear_q3=%d, fld_clear_q4=%d, \
+                          fld_clear_q5=%d, fld_clear_q6=%d, fld_clear_q7=%d, \
+                          fld_clear_q8=%d, fld_clear_q9=%d, \
+                          fld_clear_q10=%d, fld_complete_q1=%d, \
+                          fld_complete_q2=%d, fld_complete_q3=%d, \
+                          fld_complete_q4=%d, fld_complete_q5=%d, \
+                          fld_complete_q6=%d, fld_complete_q7=%d, \
+                          fld_complete_q8=%d, fld_complete_q9=%d, \
+                          fld_complete_q10=%d, fld_consistent_q1=%d, \
+                          fld_consistent_q2=%d, fld_consistent_q3=%d, \
+                          fld_consistent_q4=%d, fld_consistent_q5=%d, \
+                          fld_consistent_q6=%d, fld_consistent_q7=%d, \
+                          fld_consistent_q8=%d, fld_consistent_q9=%d, \
+                          fld_consistent_q10=%d, fld_verifiable_q1=%d, \
+                          fld_verifiable_q2=%d, fld_verifiable_q3=%d, \
+                          fld_verifiable_q4=%d, fld_verifiable_q5=%d, \
+                          fld_verifiable_q6=%d, fld_priority=%d \
+                      WHERE fld_revision_id=%d \
+                      AND fld_requirement_id=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.application_error(_(u"Error saving requirement %d.  "
+                                          u"Check the error log at %s.  "
+                                          u"E-mail bugs@reliaqual.com with "
+                                          u"the error log attached if the "
+                                          u"problem persists.") %
+                                        (model.get_value(
+                                            row, self._lst_col_order[1]),
+                                         _conf.LOG_DIR + "RTK_error.log"))
                 return True
 
             return False
 
-        _model_ = self.treeview.get_model()
-        _model_.foreach(_save_line, self)
+        _model = self.treeview.get_model()
+        _model.foreach(_save_line, self)
 
         self._save_stakeholder_inputs()
         self._save_vandv_tasks()
@@ -1751,22 +1805,22 @@ class Requirement(object):
 
             _user_def_ = []
 
-            _priority_ = model.get_value(row,
-                self._lst_stakeholder_col_order[4])
-            _current_sat_ = model.get_value(row,
-                self._lst_stakeholder_col_order[5])
-            _planned_sat_ = model.get_value(row,
-                self._lst_stakeholder_col_order[6])
-            _user_def_.append(max(1.0, model.get_value(row,
-                self._lst_stakeholder_col_order[10])))
-            _user_def_.append(max(1.0, model.get_value(row,
-                self._lst_stakeholder_col_order[11])))
-            _user_def_.append(max(1.0, model.get_value(row,
-                self._lst_stakeholder_col_order[12])))
-            _user_def_.append(max(1.0, model.get_value(row,
-                self._lst_stakeholder_col_order[13])))
-            _user_def_.append(max(1.0, model.get_value(row,
-                self._lst_stakeholder_col_order[14])))
+            _priority_ = model.get_value(
+                row, self._lst_stakeholder_col_order[4])
+            _current_sat_ = model.get_value(
+                row, self._lst_stakeholder_col_order[5])
+            _planned_sat_ = model.get_value(
+                row, self._lst_stakeholder_col_order[6])
+            _user_def_.append(max(1.0, model.get_value(
+                row, self._lst_stakeholder_col_order[10])))
+            _user_def_.append(max(1.0, model.get_value(
+                row, self._lst_stakeholder_col_order[11])))
+            _user_def_.append(max(1.0, model.get_value(
+                row, self._lst_stakeholder_col_order[12])))
+            _user_def_.append(max(1.0, model.get_value(
+                row, self._lst_stakeholder_col_order[13])))
+            _user_def_.append(max(1.0, model.get_value(
+                row, self._lst_stakeholder_col_order[14])))
 
             _improvement_ = 1.0 + 0.2 * (_planned_sat_ - _current_sat_)
             _overall_ = _priority_ * _improvement_ * _user_def_[0] * \
@@ -1778,38 +1832,34 @@ class Requirement(object):
             model.set_value(row, self._lst_stakeholder_col_order[8],
                             _overall_)
 
-            _values_ = (model.get_value(row, self._lst_stakeholder_col_order[1]),
-                        model.get_value(row, self._lst_stakeholder_col_order[2]),
-                        model.get_value(row, self._lst_stakeholder_col_order[3]),
-                        model.get_value(row, self._lst_stakeholder_col_order[4]),
-                        model.get_value(row, self._lst_stakeholder_col_order[5]),
-                        model.get_value(row, self._lst_stakeholder_col_order[6]),
-                        model.get_value(row, self._lst_stakeholder_col_order[7]),
-                        model.get_value(row, self._lst_stakeholder_col_order[8]),
-                        model.get_value(row, self._lst_stakeholder_col_order[9]),
-                        model.get_value(row, self._lst_stakeholder_col_order[10]),
-                        model.get_value(row, self._lst_stakeholder_col_order[11]),
-                        model.get_value(row, self._lst_stakeholder_col_order[12]),
-                        model.get_value(row, self._lst_stakeholder_col_order[13]),
-                        model.get_value(row, self._lst_stakeholder_col_order[14]),
-                        self._app.REVISION.revision_id,
-                        model.get_value(row, self._lst_stakeholder_col_order[0]))
-            _query_ = "UPDATE tbl_stakeholder_input \
-                       SET fld_stakeholder='%s', fld_description='%s', \
-                           fld_group='%s', fld_priority=%d, \
-                           fld_customer_rank=%d, fld_planned_rank=%d, \
-                           fld_improvement=%f, fld_overall_weight=%f, \
-                           fld_requirement_code='%s', fld_user_float_1=%f, \
-                           fld_user_float_2=%f, fld_user_float_3=%f, \
-                           fld_user_float_4=%f, fld_user_float_5=%f \
-                       WHERE fld_revision_id=%d \
-                       AND fld_input_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if not _results_:
+            _values = (model.get_value(row, self._lst_stakeholder_col_order[1]),
+                       model.get_value(row, self._lst_stakeholder_col_order[2]),
+                       model.get_value(row, self._lst_stakeholder_col_order[3]),
+                       model.get_value(row, self._lst_stakeholder_col_order[4]),
+                       model.get_value(row, self._lst_stakeholder_col_order[5]),
+                       model.get_value(row, self._lst_stakeholder_col_order[6]),
+                       model.get_value(row, self._lst_stakeholder_col_order[7]),
+                       model.get_value(row, self._lst_stakeholder_col_order[8]),
+                       model.get_value(row, self._lst_stakeholder_col_order[9]),
+                       model.get_value(row, self._lst_stakeholder_col_order[10]),
+                       model.get_value(row, self._lst_stakeholder_col_order[11]),
+                       model.get_value(row, self._lst_stakeholder_col_order[12]),
+                       model.get_value(row, self._lst_stakeholder_col_order[13]),
+                       model.get_value(row, self._lst_stakeholder_col_order[14]),
+                       self._app.REVISION.revision_id,
+                       model.get_value(row, self._lst_stakeholder_col_order[0]))
+            _query = "UPDATE tbl_stakeholder_input \
+                      SET fld_stakeholder='%s', fld_description='%s', \
+                          fld_group='%s', fld_priority=%d, \
+                          fld_customer_rank=%d, fld_planned_rank=%d, \
+                          fld_improvement=%f, fld_overall_weight=%f, \
+                          fld_requirement_code='%s', fld_user_float_1=%f, \
+                          fld_user_float_2=%f, fld_user_float_3=%f, \
+                          fld_user_float_4=%f, fld_user_float_5=%f \
+                      WHERE fld_revision_id=%d \
+                      AND fld_input_id=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
                 self._app.debug_log.error("requirement.py: Failed to save stakeholder inputs.")
                 return True
 
@@ -1832,36 +1882,44 @@ class Requirement(object):
             Saves each task associated with the selected Requirement to the RTK
             Program database.
 
-            Keyword Arguments:
-            model  -- the Validation Task list treemodel.
-            __path -- the path of the active row in the Validation Task list
-                     treemodel.
-            row    -- the selected row in the Validation Task list treeview.
-            self   -- the REQUIREMENT object.
+            @param model: the Requirement class V&V task list gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path: the path of the active row in the Requirement class
+                           V&V task list gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Requirement class
+                        V&V task list gtk.TreeView().
+            @type row: gtk.TreeIter
+            @param self: the current instance of the Requirement class.
+            @type self: Requirement
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
-            _values_ = (model.get_value(row, self._lst_col_order[1]),
-                        model.get_value(row, self._lst_col_order[2]),
-                        model.get_value(row, self._lst_col_order[3]),
-                        model.get_value(row, self._lst_col_order[4]),
-                        model.get_value(row, self._lst_col_order[0]))
-            _query_ = "UPDATE tbl_validation \
-                       SET fld_task_desc='%s', fld_start_date='%s', \
-                           fld_end_date='%s', fld_status=%f \
-                       WHERE fld_validation_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
+            _start = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[2]))
+            _end = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[3]))
+            _query = "UPDATE tbl_validation \
+                      SET fld_task_desc='%s', fld_start_date=%d, \
+                          fld_end_date=%d, fld_status=%f \
+                      WHERE fld_validation_id=%d" % \
+                     (model.get_value(row, self._lst_col_order[1]), _start,
+                      _end, model.get_value(row, self._lst_col_order[4]),
+                      model.get_value(row, self._lst_col_order[0]))
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
                 self._app.debug_log.error("requirement.py: Failed to save V&V task %d." % model.get_value(row, self._lst_col_order[0]))
                 return True
 
             return False
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         _model_ = self.tvwValidation.get_model()
         _model_.foreach(_save_line, self)
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -1973,44 +2031,44 @@ class Requirement(object):
         Method for calculating the overall weighting of a stakeholder input.
         """
 
-        (_model_,
-         _row_) = self.tvwStakeholderInput.get_selection().get_selected()
+        (_model,
+         _row) = self.tvwStakeholderInput.get_selection().get_selected()
 
         try:
-            _priority_ = _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[4])
-            _current_sat_ = _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[5])
-            _planned_sat_ = _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[6])
-            _user_def_1_ = max(1.0, _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[10]))
-            _user_def_2_ = max(1.0, _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[11]))
-            _user_def_3_ = max(1.0, _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[12]))
-            _user_def_4_ = max(1.0, _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[13]))
-            _user_def_5_ = max(1.0, _model_.get_value(_row_,
-                self._lst_stakeholder_col_order[14]))
+            _priority = _model.get_value(
+                _row, self._lst_stakeholder_col_order[4])
+            _current_sat = _model.get_value(
+                _row, self._lst_stakeholder_col_order[5])
+            _planned_sat = _model.get_value(
+                _row, self._lst_stakeholder_col_order[6])
+            _user_def_1 = max(1.0, _model.get_value(
+                _row, self._lst_stakeholder_col_order[10]))
+            _user_def_2 = max(1.0, _model.get_value(
+                _row, self._lst_stakeholder_col_order[11]))
+            _user_def_3 = max(1.0, _model.get_value(
+                _row, self._lst_stakeholder_col_order[12]))
+            _user_def_4 = max(1.0, _model.get_value(
+                _row, self._lst_stakeholder_col_order[13]))
+            _user_def_5 = max(1.0, _model.get_value(
+                _row, self._lst_stakeholder_col_order[14]))
         except TypeError:
             return True
 
-        _improvement_ = 1.0 + 0.2 * (_planned_sat_ - _current_sat_)
-        _overall_ = _priority_ * _improvement_ * _user_def_1_ * _user_def_2_ * \
-                    _user_def_3_ * _user_def_4_ * _user_def_5_
+        _improvement = 1.0 + 0.2 * (_planned_sat - _current_sat)
+        _overall = _priority * _improvement * _user_def_1 * _user_def_2 * \
+                   _user_def_3 * _user_def_4 * _user_def_5
 
-        _model_.set_value(_row_, self._lst_stakeholder_col_order[7], _improvement_)
-        _model_.set_value(_row_, self._lst_stakeholder_col_order[8], _overall_)
+        _model.set_value(_row, self._lst_stakeholder_col_order[7], _improvement)
+        _model.set_value(_row, self._lst_stakeholder_col_order[8], _overall)
 
         return False
 
     def _notebook_page_switched(self, __notebook, __page, page_num):
         """
-        Called whenever the REQUIREMENT Object's Work Book notebook page is
+        Called whenever the Requirement class Work Book notebook page is
         changed.
 
-        @param __notebook: the REQUIREMENT class gtk.Notebook() widget.
+        @param __notebook: the Requirement class gtk.Notebook() widget.
         @type __notebook: gtk.Notebook
         @param __page: the newly selected page's child widget.
         @type __page: gtk.Widget
@@ -2019,12 +2077,20 @@ class Requirement(object):
                                  1 = General Data
                                  2 = Analysis
                                  3 = V & V Tasks
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         if page_num == 0:
-            self.btnAdd.set_tooltip_text(_(u"Adds one or more new stakeholder inputs to the RTK Program Database."))
-            self.btnRemove.set_tooltip_text(_(u"Removes the selected stakeholder input from the RTK Program Database."))
-            self.btnSave.set_tooltip_text(_(u"Saves the selected stakeholder input to the RTK Program Database."))
+            self.btnAdd.set_tooltip_text(_(u"Adds one or more new stakeholder "
+                                           u"inputs to the open RTK Program "
+                                           u"database."))
+            self.btnRemove.set_tooltip_text(_(u"Removes the selected "
+                                              u"stakeholder input from the "
+                                              u"open RTK Program database."))
+            self.btnSave.set_tooltip_text(_(u"Saves the selected stakeholder "
+                                            u"input to the open RTK Program "
+                                            u"database."))
             self.btnAdd.show()
             self.btnAddChild.hide()
             self.btnAddSibling.hide()
@@ -2033,8 +2099,12 @@ class Requirement(object):
             self.btnAssign.hide()
             self.cmbVandVTasks.hide()
         elif page_num == 1:
-            self.btnRemove.set_tooltip_text(_(u"Removes the selected requirement from the RTK Program Database."))
-            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement to the RTK Program Database."))
+            self.btnRemove.set_tooltip_text(_(u"Removes the selected "
+                                              u"requirement from the open RTK "
+                                              u"Program database."))
+            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement "
+                                            u"to the open RTK Program "
+                                            u"database."))
             self.btnAdd.hide()
             self.btnAddChild.show()
             self.btnAddSibling.show()
@@ -2043,8 +2113,12 @@ class Requirement(object):
             self.btnAssign.hide()
             self.cmbVandVTasks.hide()
         elif page_num == 2:
-            self.btnRemove.set_tooltip_text(_(u"Removes the selected requirement from the RTK Program Database."))
-            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement to the RTK Program Database."))
+            self.btnRemove.set_tooltip_text(_(u"Removes the selected "
+                                              u"requirement from the open RTK "
+                                              u"Program database."))
+            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement "
+                                            u"to the open RTK Program "
+                                            u"database."))
             self.btnAdd.hide()
             self.btnAddChild.show()
             self.btnAddSibling.show()
@@ -2053,9 +2127,15 @@ class Requirement(object):
             self.btnAssign.hide()
             self.cmbVandVTasks.hide()
         elif page_num == 3:
-            self.btnAdd.set_tooltip_text(_(u"Adds one or more new V&V tasks to the RTK Program Database and assignes them to the selected requirement."))
-            self.btnRemove.set_tooltip_text(_(u"Removes the selected V&V task from the requirement."))
-            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement to the RTK Program Database."))
+            self.btnAdd.set_tooltip_text(_(u"Adds one or more new V&V tasks "
+                                           u"to the open RTK Program database "
+                                           u"and assigns them to the selected "
+                                           u"requirement."))
+            self.btnRemove.set_tooltip_text(_(u"Removes the selected V&V task "
+                                              u"from the requirement."))
+            self.btnSave.set_tooltip_text(_(u"Saves the selected requirement "
+                                            u"to the open RTK Program "
+                                            u"database."))
             self.btnAdd.show()
             self.btnAddChild.show()
             self.btnAddSibling.show()
@@ -2064,9 +2144,14 @@ class Requirement(object):
             self.btnAssign.show()
             self.cmbVandVTasks.show()
 
+        self._selected_tab = page_num
+
+        return False
+
     def _toolbutton_pressed(self, button):
         """
-        Method to reacte to the ASSEMBLY Object toolbar button clicked events.
+        Method to react to the Requirement class gtk.ToolButton() clicked
+        events.
 
         @param button: the gtk.ToolButton() that was pressed.
         @type button: gtk.ToolButton
@@ -2092,6 +2177,7 @@ class Requirement(object):
             elif button.get_name() == 'Assign':
                 self._add_vandv_task(1)
             elif button.get_name() == 'Remove':
+# TODO: Write method to remove V&V task from a requirement.
                 print "Lets remove this validation task"
             elif button.get_name() == 'Save':
                 self._save_vandv_tasks()

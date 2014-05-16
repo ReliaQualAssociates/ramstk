@@ -252,7 +252,8 @@ CREATE TABLE "tbl_requirements" (
     "fld_verifiable_q3" TINYINT DEFAULT(0),
     "fld_verifiable_q4" TINYINT DEFAULT(0),
     "fld_verifiable_q5" TINYINT DEFAULT(0),
-    "fld_verifiable_q6" TINYINT DEFAULT(0)
+    "fld_verifiable_q6" TINYINT DEFAULT(0),
+    "fld_priority" INTEGER DEFAULT(1)
 );
 
 

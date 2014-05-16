@@ -736,10 +736,8 @@ class Validation(object):
         _total_time = 0.0
         _first_start = datetime.today().toordinal()
         for i in range(_n_tasks):
-            _start = str(datetime.fromordinal(int(_results[i][10])).strftime(
-                '%Y-%m-%d'))
-            _end = str(datetime.fromordinal(int(_results[i][11])).strftime(
-                '%Y-%m-%d'))
+            _start = _util.ordinal_to_date(_results[i][10])
+            _end = _util.ordinal_to_date(_results[i][11])
             _model.append(None, [_results[i][0], _results[i][1],
                                  _results[i][2], _results[i][3],
                                  _results[i][4], _results[i][5],
@@ -1235,12 +1233,16 @@ class Validation(object):
             @type row: gtk.TreeIter
             """
 
-            _start_ = datetime.strptime(
-                model.get_value(row, self._lst_col_order[10]),
-                '%Y-%m-%d').toordinal()
-            _end_ = datetime.strptime(
-                model.get_value(row, self._lst_col_order[11]),
-                '%Y-%m-%d').toordinal()
+            #_start_ = datetime.strptime(
+            #    model.get_value(row, self._lst_col_order[10]),
+            #    '%Y-%m-%d').toordinal()
+            _start = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[10]))
+            #_end_ = datetime.strptime(
+            #    model.get_value(row, self._lst_col_order[11]),
+            #    '%Y-%m-%d').toordinal()
+            _end = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[11]))
             _values_ = (model.get_value(row, self._lst_col_order[2]),
                         model.get_value(row, self._lst_col_order[3]),
                         model.get_value(row, self._lst_col_order[4]),
@@ -1249,7 +1251,7 @@ class Validation(object):
                         model.get_value(row, self._lst_col_order[7]),
                         model.get_value(row, self._lst_col_order[8]),
                         model.get_value(row, self._lst_col_order[9]),
-                        _start_, _end_,
+                        _start, _end,
                         model.get_value(row, self._lst_col_order[12]),
                         model.get_value(row, self._lst_col_order[13]),
                         model.get_value(row, self._lst_col_order[14]),
