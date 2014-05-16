@@ -109,12 +109,17 @@ class Function(object):
         self.btnSave = gtk.ToolButton()
 
         # General data tab widgets.
-        self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function is safety critical."))
+        self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function "
+                                                                 u"is safety "
+                                                                 u"critical."))
         self.txtCode = _widg.make_entry()
-        self.txtTotalCost = _widg.make_entry(editable=False, bold=True)
+        self.txtTotalCost = _widg.make_entry(width=75, editable=False,
+                                             bold=True)
         self.txtName = _widg.make_text_view(width=400)
-        self.txtModeCount = _widg.make_entry(editable=False, bold=True)
-        self.txtPartCount = _widg.make_entry(editable=False, bold=True)
+        self.txtModeCount = _widg.make_entry(width=75, editable=False,
+                                             bold=True)
+        self.txtPartCount = _widg.make_entry(width=75, editable=False,
+                                             bold=True)
         self.txtRemarks = _widg.make_text_view(width=400)
 
         # Functional matrix tab widgets.
@@ -270,9 +275,11 @@ class Function(object):
             Function to create the FUNCTION class gtk.Notebook() page for
             displaying general data about the selected FUNCTION.
 
-            Keyword Arguments:
-            self     -- the current instance of a FUNCTION class.
-            notebook -- the gtk.Notebook() to add the page.
+            @param self: the current instance of a Function class.
+            @param notebook: the gtk.Notebook() to add the page.
+            @type notebook: gtk.Notebook
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -280,68 +287,83 @@ class Function(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             _fixed_ = gtk.Fixed()
 
-            _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
-                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow_.add_with_viewport(_fixed_)
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fixed_)
 
-            _frame_ = _widg.make_frame(label=_(u"General Information"))
-            _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame_.add(_scrollwindow_)
+            _frame = _widg.make_frame(label=_(u"General Information"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display general information about   #
             # the function.                                                 #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _labels_ = [_(u"Function Code:"), _(u"Function Name:"),
-                        _(u"Total Cost:"), _(u"Total Mode Count:"),
-                        _(u"Total Part Count:"), _(u"Remarks:")]
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_, _y_pos_) = _widg.make_labels(_labels_, _fixed_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 20
+            _labels = [_(u"Function Code:"), _(u"Function Name:")]
+            (_max1, _y_pos1) = _widg.make_labels(_labels, _fixed_, 5, 5)
 
-            self.txtCode.set_tooltip_text(_(u"Enter a unique code for the selected function."))
+            _labels = [_(u"Total Cost:"), _(u"Total Mode Count:"),
+                       _(u"Total Part Count:"), _(u"Remarks:")]
+            _y_start = self.txtName.size_request()[1] + _y_pos1[1] + 5
+            (_max2, _y_pos2) = _widg.make_labels(_labels, _fixed_, 5, _y_start)
+            _x_pos = max(_max1, _max2) + 20
+
+            self.txtCode.set_tooltip_text(_(u"Enter a unique code for the "
+                                            u"selected function."))
             self.txtCode.connect('focus-out-event',
                                  self._callback_entry, 'text', 4)
-            _fixed_.put(self.txtCode, _x_pos_, _y_pos_[0])
+            _fixed_.put(self.txtCode, _x_pos, _y_pos1[0])
 
-            self.txtName.set_tooltip_text(_(u"Enter the name of the selected function."))
+            self.txtName.set_tooltip_text(_(u"Enter the name of the selected "
+                                            u"function."))
             self.txtName.get_child().get_child().connect('focus-out-event',
                                                          self._callback_entry,
                                                          'text', 14)
-            _fixed_.put(self.txtName, _x_pos_, _y_pos_[1])
+            _fixed_.put(self.txtName, _x_pos, _y_pos1[1])
 
-            self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of the selected function."))
-            _fixed_.put(self.txtTotalCost, _x_pos_, _y_pos_[2] + 110)
+            self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of "
+                                                 u"the selected function."))
+            _fixed_.put(self.txtTotalCost, _x_pos, _y_pos2[0])
 
-            self.txtModeCount.set_tooltip_text(_(u"Displays the total number of failure modes associated with the selected function."))
-            _fixed_.put(self.txtModeCount, _x_pos_, _y_pos_[3] + 110)
+            self.txtModeCount.set_tooltip_text(_(u"Displays the total number "
+                                                 u"of failure modes "
+                                                 u"associated with the "
+                                                 u"selected function."))
+            _fixed_.put(self.txtModeCount, _x_pos, _y_pos2[1])
 
-            self.txtPartCount.set_tooltip_text(_(u"Displays the total number of components associated with the selected function."))
-            _fixed_.put(self.txtPartCount, _x_pos_, _y_pos_[4] + 110)
+            self.txtPartCount.set_tooltip_text(_(u"Displays the total number "
+                                                 u"of components associated "
+                                                 u"with the selected "
+                                                 u"function."))
+            _fixed_.put(self.txtPartCount, _x_pos, _y_pos2[2])
 
-            self.txtRemarks.set_tooltip_text(_(u"Enter any remarks related to the selected function."))
-            self.txtRemarks.get_child().get_child().connect('focus-out-event',
-                                                            self._callback_entry,
-                                                            'text', 15)
-            _fixed_.put(self.txtRemarks, _x_pos_, _y_pos_[5] + 110)
+            self.txtRemarks.set_tooltip_text(_(u"Enter any remarks related to "
+                                               u"the selected function."))
+            _textbuffer = self.txtRemarks.get_child().get_child()
+            _textbuffer.connect('focus-out-event', self._callback_entry,
+                                'text', 15)
+            _fixed_.put(self.txtRemarks, _x_pos, _y_pos2[3])
 
-            self.chkSafetyCritical.set_tooltip_text(_(u"Indicates whether or not the selected function is safety critical."))
-            _fixed_.put(self.chkSafetyCritical, 5, _y_pos_[5] + 220)
+            self.chkSafetyCritical.set_tooltip_text(_(u"Indicates whether or "
+                                                      u"not the selected "
+                                                      u"function is safety "
+                                                      u"critical."))
+            _fixed_.put(self.chkSafetyCritical, 5, _y_pos2[3] + 110)
 
             _fixed_.show_all()
 
             # Insert the tab.
-            _label_ = gtk.Label()
-            _label_.set_markup("<span weight='bold'>" +
-                               _(u"General\nData") +
-                               "</span>")
-            _label_.set_alignment(xalign=0.5, yalign=0.5)
-            _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.set_tooltip_text(_(u"Displays general information for the selected function."))
-            _label_.show_all()
-            notebook.insert_page(_frame_, tab_label=_label_, position=-1)
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"General\nData") +
+                              "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.set_tooltip_text(_(u"Displays general information for the "
+                                      u"selected function."))
+            _label.show_all()
+            notebook.insert_page(_frame, tab_label=_label, position=-1)
 
             return False
 
@@ -771,7 +793,7 @@ class Function(object):
             _cell_.set_property('xalign', 0.5)
             _cell_.set_property('yalign', 0.5)
             _cell_.connect('edited', self._edit_functional_matrix, i + 2,
-                _dic_functions_)
+                           _dic_functions_)
             _column_ = gtk.TreeViewColumn()
             _column_.set_resizable(True)
             _column_.pack_end(_cell_)
@@ -780,7 +802,7 @@ class Function(object):
             _label_.set_property('angle', 90)
             _label_.set_tooltip_text(_functions_[i][2])
             _label_.set_markup("<span weight='bold'>" +
-                _functions_[i][1] + "</span>")
+                               _functions_[i][1] + "</span>")
             _label_.show_all()
             _column_.set_widget(_label_)
             _column_.connect('notify::width', _widg.resize_wrap, _cell_)
@@ -940,7 +962,8 @@ class Function(object):
             try:
                 _model_.append(None, _data_)
             except TypeError:
-                _util.application_error(_(u"Failed to load FMEA/FMECA failure mode %d" % _results_[i][0]))
+                _util.application_error(_(u"Failed to load FMEA/FMECA failure "
+                                          u"mode %d" % _results_[i][0]))
 
         return False
 
@@ -1177,7 +1200,9 @@ class Function(object):
                                                            self._app.ProgCnx,
                                                            commit=True)
             except TypeError:
-                self._app.debug_log.error("function.py: Failed to add new function %d to the functional matrix." % _function_id_[0][0])
+                self._app.debug_log.error("function.py: Failed to add new "
+                                          "function %d to the functional "
+                                          "matrix." % _function_id_[0][0])
 
         #self._app.REVISION.load_tree()
         self.load_tree()
@@ -1190,33 +1215,39 @@ class Function(object):
         Method to add a failure mode to the FMEA/FMECA for the selected
         function.
 
-        Keyword Arguments:
-        __button -- the gtk.ToolButton() that called this function.
+        @param __button: the gtk.ToolButton() that called this function.
+        @type __button: gtk.ToolButton
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+        # Save any changes that have been made recently.
+        self._save_fmeca()
+
         # Find the id of the next failure mode.
-        _query_ = "SELECT seq FROM sqlite_sequence \
-                   WHERE name='tbl_fmeca'"
-        _last_id_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT seq FROM sqlite_sequence \
+                  WHERE name='tbl_fmeca'"
+        _last_id = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _last_id_ = _last_id_[0][0] + 1
+            _last_id = _last_id[0][0] + 1
         except IndexError:
-            _last_id_ = 0
+            _last_id = 0
 
         # Insert the new failure mode.
-        _query_ = "INSERT INTO tbl_fmeca \
-                   (fld_revision_id, fld_assembly_id, \
-                    fld_function_id, fld_mode_id) \
-                   VALUES (%d, 0, %d, %d)" % \
-                   (self._app.REVISION.revision_id,
-                    self.function_id, _last_id_)
-        self._app.DB.execute_query(_query_,
-                                   None,
-                                   self._app.ProgCnx,
-                                   commit=True)
+        _query = "INSERT INTO tbl_fmeca \
+                  (fld_revision_id, fld_assembly_id, \
+                   fld_function_id, fld_mode_id) \
+                  VALUES (%d, 0, %d, %d)" % \
+                  (self._app.REVISION.revision_id,
+                   self.function_id, _last_id)
+        if self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                      commit=True):
+            self._load_fmeca()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -1266,21 +1297,27 @@ class Function(object):
         Method to delete the currently selected failure mode from the
         FMEA/FMECA for the selected function.
 
-        Keyword Arguments:
-        __button -- the gtk.ToolButton() that called this function.
+        @param __button: the gtk.ToolButton() that called this function.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.tvwFMECA.get_selection().get_selected()
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        _mode_id_ = _model_.get_value(_row_, 0)
+        (_model, _row) = self.tvwFMECA.get_selection().get_selected()
 
-        _query_ = "DELETE FROM tbl_fmeca \
-                   WHERE fld_function_id=%d \
-                   AND fld_mode_id=%d" % (self.function_id, _mode_id_)
-        self._app.DB.execute_query(_query_,
-                                   None,
-                                   self._app.ProgCnx,
-                                   commit=True)
+        _mode_id = _model.get_value(_row, 0)
+
+        _query = "DELETE FROM tbl_fmeca \
+                  WHERE fld_function_id=%d \
+                  AND fld_mode_id=%d" % (self.function_id, _mode_id)
+        if self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                      commit=True):
+            self._save_fmeca()
+            self._load_fmeca()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -1595,7 +1632,8 @@ class Function(object):
                 self.calculate(None)
         else:
             if _conf.MODE == 'developer':
-                _results_ = ([29.32, 0.000147762, 0.00014542, 5, 0.05, 0.4762, 0.41667, 0.08929],)
+                _results_ = ([29.32, 0.000147762, 0.00014542, 5, 0.05,
+                              0.4762, 0.41667, 0.08929],)
             else:
                 _values_ = (_model_.get_value(_row_, 1),)
                 _query_ = "SELECT SUM(t2.fld_cost), \

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-""" Provides the class and methods for interfacing with a SQLite3
-    database backend.
+"""
+Provides the class and methods for interfacing with a SQLite3 database backend.
 """
 
 __author__ = 'Andrew Rowland'
-__email = 'andrew.rowland@reliaqual.com'
+__email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
@@ -21,20 +21,17 @@ except ImportError:
     HASSQLITE3 = False
 
 
-class SQLite3Interface:
-
+class SQLite3Interface(object):
     """
     The SQLite3Interface class is used to represent an SQLite3 database
     connection.
     """
 
     def __init__(self, application):
-
         """
         Initializes the SQLite3 interface class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        @param application: the current instance of the RTK application.
         """
 
         self._version = None
@@ -46,6 +43,7 @@ class SQLite3Interface:
         Opens a connections to a database.
 
         @param database: the absolute path to the database to be opened.
+        @type database: string
         """
 # TODO: Make the connection object an instance attribute.
         cnx = sqlite3.connect(database, isolation_level=None)
@@ -66,6 +64,9 @@ class SQLite3Interface:
         @type cnx: SQLite3 connection
         @param commit: whether or not to commit the results.
         @type commit: boolean
+        @return: results of the query, True if a commit query, and False if an
+                 error is encountered.
+        @rtype: list of tuples or boolean
         """
 # TODO: Revise to eliminate the values parameter.
 # TODO: Return the error message and process locally in the calling module.
@@ -81,7 +82,7 @@ class SQLite3Interface:
                 if not commit:
                     try:
                         results = cur.fetchall()
-                    except sqlite3.Error, e:
+                    except sqlite3.Error, e:    # pylint: disable=C0103
                         self._app.debug_log.error(e)
                         self._app.debug_log.error(query)
                         results = False
@@ -89,12 +90,12 @@ class SQLite3Interface:
                     try:
                         cnx.commit()
                         results = True
-                    except sqlite3.Error, e:
+                    except sqlite3.Error, e:    # pylint: disable=C0103
                         self._app.debug_log.error(e.args[0])
                         self._app.debug_log.error(query)
                         results = False
 
-            except sqlite3.Error, e:
+            except sqlite3.Error, e:            # pylint: disable=C0103
                 self._app.debug_log.error(e)
                 self._app.debug_log.error(query)
                 results = False
