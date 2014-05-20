@@ -6147,18 +6147,20 @@ class Hardware(object):
         """
         Called whenever the Work Book notebook page is changed.
 
-        Keyword Arguments:
-        __notebook -- the Tree Book notebook widget.
-        __page     -- the newly selected page widget.
-        page_num   -- the newly selected page number.
-                      0 = General Data
-                      1 = Allocation
-                      2 = Hazard Analysis
-                      3 = Similar Items Analysis
-                      4 = Assessment Inputs
-                      5 = Assessment Results
-                      6 = FMEA
-                      7 = Maintenance Planning
+        @param __notebook: the Hardware class gtk.Notebook().
+        @type __notebook: gtk.Notebook
+        @param __page: the newly selected page widget.
+        @type __page: gtk.Widget
+        @param page_num: the newly selected page number.
+                         0 = General Data
+                         1 = Allocation
+                         2 = Hazard Analysis
+                         3 = Similar Items Analysis
+                         4 = Assessment Inputs
+                         5 = Assessment Results
+                         6 = FMEA
+                         7 = Maintenance Planning
+        @type page_num: integer
         """
 
         if page_num == 0:                   # General data tab.
@@ -6191,13 +6193,15 @@ class Hardware(object):
         elif page_num == 2:                 # Hazard analysis tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
-            self.btnRemoveItem.hide()
+            self.btnRemoveItem.show()
             self.btnAnalyze.show()
             self.btnSaveResults.show()
             self.btnRollup.show()
             self.btnEdit.show()
             self.btnAddItem.set_tooltip_text(_(u"Adds a hazard to the "
                                                u"selected assembly."))
+            self.btnRemoveItem.set_tooltip_text(_(u"Remove the currently "
+                                                  u"selected hazard."))
             self.btnAnalyze.set_tooltip_text(_(u"Performs a risk analysis of "
                                                u"changes to the selected "
                                                u"assembly."))
@@ -6283,39 +6287,6 @@ class Hardware(object):
             # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
             #                                        u"results for the "
             #                                        u"selected assembly."))
-        elif page_num == 8:                 # RG planning tab
-            self.btnAddItem.hide()
-            self.btnFMECAAdd.hide()
-            self.btnRemoveItem.show()
-            self.btnAnalyze.show()
-            self.btnSaveResults.show()
-            self.btnRollup.hide()
-            self.btnEdit.hide()
-            self.btnAddItem.set_tooltip_text(_(u"Add a new reliability "
-                                               u"growth plan."))
-            self.btnRemoveItem.set_tooltip_text(_(u"Remove the currently "
-                                                  u"selected reliability "
-                                                  u"growth plan."))
-            # self.btnAnalyze.set_tooltip_text(_(u"Calculates the selected "
-            #                                    u"allocation method."))
-            # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
-            #                                        u"results for the "
-            #                                        u"selected assembly."))
-        elif page_num == 9:                 # RG tracking tab
-            self.btnAddItem.show()
-            self.btnFMECAAdd.hide()
-            self.btnRemoveItem.show()
-            self.btnAnalyze.show()
-            self.btnSaveResults.show()
-            self.btnRollup.hide()
-            self.btnEdit.hide()
-            self.btnAddItem.set_tooltip_text(_(u"Add a new relibility growth "
-                                               u"incident."))
-            # self.btnAnalyze.set_tooltip_text(_(u"Calculates the selected "
-            #                                    u"allocation method."))
-            # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
-            #                                        u"results for the "
-            #                                        u"selected assembly."))
         else:
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
@@ -6333,8 +6304,10 @@ class Hardware(object):
         """
         Method to react to the HARDWARE class gtk.ToolButton() clicked events.
 
-        Keyword Arguments:
-        button -- the gtk.ToolButton() that was pressed.
+        @param button:the gtk.ToolButton() that was pressed.
+        @type button: gtk.Toolbutton
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _page_ = self.notebook.get_current_page()
@@ -6352,16 +6325,46 @@ class Hardware(object):
                     self._save_allocation()
             elif _page_ == 2:               # Hazard analysis tab.
                 if button.get_name() == 'Add':
-                    _query_ = "INSERT INTO tbl_risk_analysis \
-                               (fld_revision_id, fld_assembly_id) \
-                               VALUES (%d, %d)" % \
-                              (self._app.REVISION.revision_id,
-                               self.assembly_id)
-                    _results_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
-                    self.load_notebook()
+                    _query = "INSERT INTO tbl_risk_analysis \
+                              (fld_revision_id, fld_assembly_id) \
+                              VALUES (%d, %d)" % \
+                             (self._app.REVISION.revision_id,
+                              self.assembly_id)
+                    if not self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx,
+                                                      commit=True):
+                        _util.rtk_error(_(u"Error adding new hazard.  Check "
+                                          u"the error log %s for additional "
+                                          u"information (if any).  You may "
+                                          u"e-mail bugs@reliaqual.com with "
+                                          u"the error log attached if the "
+                                          u"problem persists.") %
+                                        (_conf.LOG_DIR + 'RTK_error.log'))
+                        return True
+                    else:
+                        self.load_notebook()
+                elif button.get_name() == 'Remove':
+                    (_model,
+                     _row) = self.tvwRisk.get_selection().get_selected()
+                    _risk_id = _model.get_value(_row, 0)
+                    _query = "DELETE FROM tbl_risk_analysis \
+                              WHERE fld_assembly_id=%d \
+                              AND fld_risk_id=%d" % \
+                             (self.assembly_id, _risk_id)
+                    if not self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx,
+                                                      commit=True):
+                        _util.rtk_error(_(u"Error removing hazard %d.  Check "
+                                          u"the error log %s for additional "
+                                          u"information (if any).  You may "
+                                          u"e-mail bugs@reliaqual.com with "
+                                          u"the error log attached if the "
+                                          u"problem persists.") %
+                                        (_risk_id,
+                                         _conf.LOG_DIR + 'RTK_error.log'))
+                        return True
+                    else:
+                        self.load_notebook()
                 elif button.get_name() == 'Analyze':
                     self._calculate_risk()
                 elif button.get_name() == 'Save':
