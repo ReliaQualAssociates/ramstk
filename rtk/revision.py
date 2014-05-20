@@ -181,8 +181,11 @@ class Revision(object):
 
     def create_tree(self):
         """
-        Method to create the REVISION class gtk.TreeView() and connects it to
+        Method to create the Revision class gtk.TreeView() and connects it to
         callback functions to handle editing.
+
+        @return: _scrollwindow
+        @rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
@@ -268,12 +271,14 @@ class Revision(object):
 
         def _create_general_data_tab(self, notebook):
             """
-            Function to create the REVISION class gtk.Notebook() page for
-            displaying general data about the selected REVISION.
+            Function to create the Revision class gtk.Notebook() page for
+            displaying general data about the selected Revision.
 
-            Keyword Arguments:
-            self     -- the current instance of a REVISION class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Revision class.
+            @param notebook: the gtk.Notebook() to add the general data tab.
+            @type notebook: gtk.Notebook
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _labels_ = [_(u"Revision Code:"), _(u"Revision Name:"),
@@ -1441,7 +1446,7 @@ class Revision(object):
                   VALUES (%d, %d, 0.0, 0.0, '', '')" % (_mission_id, _phase_id)
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"There was a problem adding the new "
+            _util.rtk_error(_(u"There was a problem adding the new "
                                       u"mission phase.  Check the error log "
                                       u"in the RTK configuration directory.  "
                                       u"Report to bugs@reliaqual.com if the "
@@ -1486,7 +1491,7 @@ class Revision(object):
 
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"Failed to add environmental "
+            _util.rtk_error(_(u"Failed to add environmental "
                                       u"condition.  Check the error log in "
                                       u"the RTK configuration directory.  "
                                       u"Report to bugs@reliaqual.com if the "
@@ -1512,7 +1517,7 @@ class Revision(object):
                   VALUES (%d, '')" % self.revision_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"An error was encountered when "
+            _util.rtk_error(_(u"An error was encountered when "
                                       u"attempting to add the failure "
                                       u"definition.  Check the error log %s.  "
                                       u"Report to bugs@reliaqual.com if the "
@@ -1582,7 +1587,7 @@ class Revision(object):
                   WHERE fld_mission_id=%d" % _mission_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"Error removing one or more "
+            _util.rtk_error(_(u"Error removing one or more "
                                       u"environments from mission.  Check the "
                                       u"error log %s.  Report to "
                                       u"bugs@reliaqual.com if the problem "
@@ -1594,7 +1599,7 @@ class Revision(object):
                   WHERE fld_mission_id=%d" % _mission_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"Error removing one or more phase from "
+            _util.rtk_error(_(u"Error removing one or more phase from "
                                       u"mission.  Check the error log %s.  "
                                       u"Report to bugs@reliaqual.com if the "
                                       u"problem persists." %
@@ -1605,7 +1610,7 @@ class Revision(object):
                   WHERE fld_mission_id=%d" % _mission_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.application_error(_(u"Error removing mission.  Check the "
+            _util.rtk_error(_(u"Error removing mission.  Check the "
                                       u"error log %s.  Report to "
                                       u"bugs@reliaqual.com if the problem "
                                       u"persists." %

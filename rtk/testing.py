@@ -1737,7 +1737,7 @@ class Testing(object):
                                                    50 * len(obs))
 
             if _error[0] or _error[1]:
-                _util.application_error(_(u"Unable to smooth data points.  "
+                _util.rtk_error(_(u"Unable to smooth data points.  "
                                           u"This is often the result of using "
                                           u"grouped data with an interval "
                                           u"width that is too narrow.  "
@@ -1785,7 +1785,7 @@ class Testing(object):
 
             if len(_obs_times_) != len(_obs_):
                 _n_obs = min(len(_obs_times_), len(_obs_))
-                _util.application_error(_(u"There are a different number of x "
+                _util.rtk_error(_(u"There are a different number of x "
                                           u"and y values.  The plotted "
                                           u"results may be truncated."))
             else:
@@ -1894,7 +1894,7 @@ class Testing(object):
             try:
                 print mime.from_file(_text_)
             except IOError:
-                _util.application_error(_(u"File %s does not exist" % _text_))
+                _util.rtk_error(_(u"File %s does not exist" % _text_))
 
         return False
 

@@ -105,7 +105,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             Prob = 1.0 - exp(-1.0 * (t1 * AvgMS / MTBFI))
         except(ValueError, ZeroDivisionError):
             Prob = 0.0
-            _util.application_error(_(u"To calculate the probability of "
+            _util.rtk_error(_(u"To calculate the probability of "
                                       u"observing a failure, you must provide "
                                       u"the following inputs with values "
                                       u"greater than zero: "
@@ -120,7 +120,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             AvgMS = log(1.0 - Prob) * MTBFI / (-1.0 * t1)
         except(ValueError, ZeroDivisionError):
             AvgMS = 0.0
-            _util.application_error(_(u"To calculate the required management"
+            _util.rtk_error(_(u"To calculate the required management"
                                       u"strategy, you must provide the "
                                       u"following inputs with values greater "
                                       u"than zero: "
@@ -136,7 +136,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             t1 = log(1.0 - Prob) * MTBFI / (-1.0 * AvgMS)
         except(ValueError, ZeroDivisionError):
             t1 = 0.0
-            _util.application_error(_(u"To calculate the growth start time, "
+            _util.rtk_error(_(u"To calculate the growth start time, "
                                       u"you must provide the following inputs "
                                       u"with values greater than zero: "
                                       u"1. Average management strategy "
@@ -152,7 +152,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             TTT = exp(log(t1) + 1.0 / AvgGR * (log(MTBFF /MTBFI) + log(1.0 - AvgGR)))
         except(ValueError, ZeroDivisionError):
             TTT = 0.0
-            _util.application_error(_(u"To calculate the required test time "
+            _util.rtk_error(_(u"To calculate the required test time "
                                       u"for a test phse, you must provide the "
                                       u"following inputs with values greater "
                                       u"than zero: "
@@ -167,7 +167,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
         try:
             MTBFI = (-1.0 * t1 * AvgMS) / log(1.0 - Prob)
         except (ValueError, ZeroDivisionError):
-            _util.application_error(_(u"To calculate the minimum inital "
+            _util.rtk_error(_(u"To calculate the minimum inital "
                                       u"MTBF, you must provide the following "
                                       u"inputs with values greater than zero: "
                                       u"1. Growth start time (ti): %f"
@@ -180,7 +180,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
                 MTBFI = MTBFF / exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
             except (ValueError, ZeroDivisionError):
                 MTBFI = 0.0
-                _util.application_error(_(u"To calculate the minimum inital "
+                _util.rtk_error(_(u"To calculate the minimum inital "
                                           u"MTBF, you must provide the "
                                           u"following inputs with values "
                                           u"greater than zero: "
@@ -200,7 +200,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             MTBFF = MTBFI * exp(AvgGR * (0.5 * AvgGR + log(TTT / t1) + 1.0))
         except(ValueError, ZeroDivisionError):
             MTBFF = 0.0
-            _util.application_error(_(u"To calculate the final phase MTBF, "
+            _util.rtk_error(_(u"To calculate the final phase MTBF, "
                                       u"you must provide the following inputs "
                                       u"with values greater than zero: "
                                       u"1. Growth start time (ti): %f"
@@ -215,7 +215,7 @@ def idealized_growth_curve(MTBFI, MTBFF, TTT, t1, AvgMS, AvgGR=0.3, Prob=0.8,   
             AvgGR = -log(TTT / t1) - 1.0 + sqrt((1.0 + log(TTT / t1))**2.0 + 2.0 * log(MTBFF / MTBFI))
         except(ValueError, ZeroDivisionError):
             AvgGR = 0.0
-            _util.application_error(_(u"To calculate the minimum phase growth "
+            _util.rtk_error(_(u"To calculate the minimum phase growth "
                                       u"rate, you must provide the following "
                                       u"inputs with values greater than zero: "
                                       u"1. Growth start time (ti): %f"

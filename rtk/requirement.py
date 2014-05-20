@@ -1516,7 +1516,7 @@ class Requirement(object):
                                             _task_name)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Failed to add new V&V task to "
+                _util.rtk_error(_(u"Failed to add new V&V task to "
                                           u"requirement %d.  Check the error "
                                           u"log at %s.  If the problem "
                                           u"persists, contact "
@@ -1543,7 +1543,7 @@ class Requirement(object):
                       self.requirement_id)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Failed to add new V&V task %d to "
+                _util.rtk_error(_(u"Failed to add new V&V task %d to "
                                           u"the validation matrix.  Check the "
                                           u"error log at %s.  If the problem "
                                           u"persists, contact "
@@ -1571,7 +1571,7 @@ class Requirement(object):
                                               _task_id, self.requirement_id)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Failed to add new V&V task %d to "
+                _util.rtk_error(_(u"Failed to add new V&V task %d to "
                                           u"the validation matrix.  Check the "
                                           u"error log at %s.  If the problem "
                                           u"persists, contact "
@@ -1765,7 +1765,7 @@ class Requirement(object):
                       AND fld_requirement_id=%d" % _values
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Error saving requirement %d.  "
+                _util.rtk_error(_(u"Error saving requirement %d.  "
                                           u"Check the error log at %s.  "
                                           u"E-mail bugs@reliaqual.com with "
                                           u"the error log attached if the "

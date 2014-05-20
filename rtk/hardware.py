@@ -99,10 +99,35 @@ class Hardware(object):
         self._mechanisms = {}
         self._fmeca_controls = {}
         self._fmeca_actions = {}
-        self._CA = {}                       # Carries MIL-STD-1629A values.
-        self._ItemCA = {}                   # Carries MIL-STD-1629A values.
+
+        self._dicModeCA = {}
+        """Dictionary to carry MIL-STD-1629A failure mode values.  Key is the
+        mode ID; value is a list with the following:\n
+        | 0 | Effect probability\n
+        | 1 | Mode ratio\n
+        | 2 | Item hazard rate\n
+        | 3 | Mode operating time\n
+        | 4 | Severity classification\n
+        | 5 | Mode criticality\n
+        | 6 | Mode hazard rate"""
+        self._ItemCA = {}
+        """Dictionary to carry MIL-STD-1629A hardware item values.  Key is the
+        hardware ID; value is a list with the following:\n
+        | 0 | Failure mode ID\n
+        | 1 | Severity classification\n
+        | 2 | Item criticality"""
         self._rpnsev = {}                   # Carries RPN severity values.
-        self._RPN = {}                      # Carries RPN and new RPN values.
+        self._RPN = {}
+        """Dictionary to carry RPN hardware item values.  Key is the failure
+        mechanism ID; value is a list with the following:\n
+        | 0 | Severity rating\n
+        | 1 | Occurrence rating\n
+        | 2 | Detection rating\n
+        | 3 | RPN\n
+        | 4 | Severity rating after taking action\n
+        | 5 | Occurrence rating after taking action\n
+        | 6 | Detection rating after taking action\n
+        | 7 | RPN after taking action"""
 
         # Define private HARDWARE class list attributes.
         self._col_order = []
@@ -258,11 +283,14 @@ class Hardware(object):
         # General Data page widgets.
         self.chkRepairable = _widg.make_check_button()
         self.chkTagged = _widg.make_check_button()
+
         self.cmbCategory = _widg.make_combo(simple=False)
         self.cmbManufacturer = _widg.make_combo(simple=False)
         self.cmbSubcategory = _widg.make_combo(simple=False)
+
         self.lblCategory = _widg.make_label(_(u"Category:"))
         self.lblSubcategory = _widg.make_label(_(u"Subcategory:"))
+
         self.txtName = _widg.make_entry()
         self.txtPartNum = _widg.make_entry()
         self.txtAltPartNum = _widg.make_entry()
@@ -289,11 +317,16 @@ class Hardware(object):
         # Allocation page widgets.
         self.chkApplyResults = _widg.make_check_button(_(u"Apply results to "
                                                          u"hardware"))
+
         self.cmbAllocationType = _widg.make_combo(width=125)
         self.cmbRqmtType = _widg.make_combo(width=125)
+
         self.hbxAllocation = gtk.HBox()
+
         self.lblAllocation = gtk.Label()
+
         self.tvwAllocation = gtk.TreeView()
+
         self.txtReliabilityGoal = _widg.make_entry(width=125)
         self.txtMTBFGoal = _widg.make_entry(width=125)
         self.txtFailureRateGoal = _widg.make_entry(width=125)
@@ -304,13 +337,17 @@ class Hardware(object):
 
         # Hazard Analysis page widgets.
         self.hpnHazardAnalysis = gtk.HPaned()
+
         self.lblHazardAnalysis = gtk.Label()
+
         self.tvwRisk = gtk.TreeView()
         self.tvwRiskMap = gtk.TreeView()
 
         # Similar Item Analysis page widgets.
         self.fraSIA = _widg.make_frame()
+
         self.lblSIA = gtk.Label()
+
         self.tvwSIA = gtk.TreeView()
 
         # Assessment Input page widgets.
@@ -322,12 +359,14 @@ class Hardware(object):
         self.cmbMTTRType = _widg.make_combo()
         self.cmbRepairDist = _widg.make_combo()
         self.cmbCostType = _widg.make_combo(200, 30)
+
         self.lblNoCategory = _widg.make_label(_(u"No category selected for "
                                                 u"this part."),
                                               width=400)
         self.lblNoSubCategory = _widg.make_label(_(u"No subcategory selected "
                                                    u"for this part."),
                                                  width=400)
+
         self.txtSpecifiedHt = _widg.make_entry()
         self.txtSpecifiedMTBF = _widg.make_entry()
         self.txtSoftwareHt = _widg.make_entry()
@@ -354,6 +393,7 @@ class Hardware(object):
         # Component-specific input widgets.
         self.fxdRelInputQuad1 = gtk.Fixed()
         self.fxdRelInputQuad4 = gtk.Fixed()
+
         self.txtBurnInTemp = _widg.make_entry(width=100)
         self.txtBurnInTime = _widg.make_entry(width=100)
         self.txtLabDevices = _widg.make_entry(width=100)
@@ -407,10 +447,15 @@ class Hardware(object):
 
         # Component-specific results widgets.
         self.chkOverstressed = _widg.make_check_button()
+
         self.figDerate = Figure(figsize=(6, 4))
+
         self.fraDerate = gtk.Frame()
+
         self.fxdCalcResultsQuad4 = gtk.Fixed()
+
         self.pltDerate = FigureCanvas(self.figDerate)
+
         self.txtAssemblyCrit = _widg.make_entry(editable=False, bold=True)
         self.txtPartCount = _widg.make_entry(width=100, editable=False,
                                              bold=True)
@@ -455,7 +500,7 @@ class Hardware(object):
                     pass
 
         self.fraFMECADetails = _widg.make_frame(label=_(u"Failure Mechanism "
-                                                          u"Details"))
+                                                        u"Details"))
 
         # Create the widgets to display the failure mode details.
         _labels = [_(u"This failure mode is evident to the operating "
@@ -2539,12 +2584,12 @@ class Hardware(object):
 
         def _create_fmeca_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
+            Function to create the Hardware class gtk.Notebook() page for
             displaying the FMEA/FMECA for the selected HARDWARE.
 
-            Keyword Arguments:
-            self     -- the current instance of a HARDWARE class.
-            notebook -- the HARDWARE class gtk.Notebook() widget.
+            @param self: the current instance of a Hardware class.
+            @param notebook: the Hardware class gtk.Notebook() widget.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2571,8 +2616,11 @@ class Hardware(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display the FMEA/FMECA.             #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            self.tvwFMECA.set_tooltip_text(_(
-                u"Displays the failure mode, effects, and criticality analysis (FMECA) for the selected assembly."))
+            self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode, "
+                                             u"effects, and criticality "
+                                             u"analysis (FMECA) for the "
+                                             u"selected assembly or "
+                                             u"component."))
             self.tvwFMECA.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
             # Load the severity classification gtk.CellRendererCombo().
@@ -2590,8 +2638,11 @@ class Hardware(object):
             try:
                 _n_phases_ = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the failure criticality list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
+                _util.rtk_error(_(u"There was a problem loading the failure "
+                                  u"criticality list in the Assembly Work "
+                                  u"Book FMEA/FMECA tab.  This may indicate "
+                                  u"your RTK common database is corrupt or "
+                                  u"out of date."))
                 _n_phases_ = 0
 
             _cellmodel_.append([""])
@@ -2611,8 +2662,11 @@ class Hardware(object):
             try:
                 _n_probs_ = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the failure probability list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
+                _util.rtk_error(_(u"There was a problem loading the failure "
+                                  u"probability list in the Assembly Work "
+                                  u"Book FMEA/FMECA tab.  This may indicate "
+                                  u"your RTK common database is corrupt or "
+                                  u"out of date."))
                 _n_probs_ = 0
 
             _cellmodel_.append([""])
@@ -2641,15 +2695,18 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_probs = len(_results_)
+                _n_sev = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the RPN Severity list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_probs_ = 0
+                _util.rtk_error(_(u"There was a problem loading the RPN "
+                                  u"Severity list in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_sev = 0
 
             _cellmodel1_.append([""])
             _cellmodel2_.append([""])
-            for i in range(_n_probs_):
+            for i in range(_n_sev):
                 self._rpnsev[_results_[i][0]] = i
                 _cellmodel1_.append([_results_[i][0]])
                 _cellmodel2_.append([_results_[i][0]])
@@ -2667,15 +2724,18 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_probs = len(_results_)
+                _n_occ = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the RPN Occurrence list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_probs_ = 0
+                _util.rtk_error(_(u"There was a problem loading the RPN "
+                                  u"Occurrence list in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_occ = 0
 
             _cellmodel1_.append([""])
             _cellmodel2_.append([""])
-            for i in range(_n_probs_):
+            for i in range(_n_occ):
                 _cellmodel1_.append([_results_[i][0]])
                 _cellmodel2_.append([_results_[i][0]])
 
@@ -2692,15 +2752,18 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_probs = len(_results_)
+                _n_det = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the RPN Detection list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_probs_ = 0
+                _util.rtk_error(_(u"There was a problem loading the RPN "
+                                  u"Detection list in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_det = 0
 
             _cellmodel1_.append([""])
             _cellmodel2_.append([""])
-            for i in range(_n_probs_):
+            for i in range(_n_det):
                 _cellmodel1_.append([_results_[i][0]])
                 _cellmodel2_.append([_results_[i][0]])
 
@@ -2717,14 +2780,17 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_actions_ = len(_results_)
+                _n_actions = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the action category list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_actions_ = 0
+                _util.rtk_error(_(u"There was a problem loading the action "
+                                  u"category list in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_actions = 0
 
             self.cmbActionCategory.append_text("")
-            for i in range(_n_actions_):
+            for i in range(_n_actions):
                 self.cmbActionCategory.append_text(_results_[i][0])
 
             # Load the FMECA action status gtk.Combo.
@@ -2735,14 +2801,17 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_actions_ = len(_results_)
+                _n_actions = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the action status list in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_actions_ = 0
+                _util.rtk_error(_(u"There was a problem loading the action "
+                                  u"status list in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_actions = 0
 
             self.cmbActionStatus.append_text("")
-            for i in range(_n_actions_):
+            for i in range(_n_actions):
                 self.cmbActionStatus.append_text(_results_[i][0])
 
             # Load the FMECA user list gtk.Combos.
@@ -2753,16 +2822,19 @@ class Hardware(object):
                                                       self._app.ComCnx)
 
             try:
-                _n_actions_ = len(_results_)
+                _n_users = len(_results_)
             except TypeError:
-                _util.application_error(_(
-                    u"There was a problem loading the user lists in the Assembly Work Book FMEA/FMECA tab.  This may indicate your RTK common database is corrupt or out of date."))
-                _n_actions_ = 0
+                _util.rtk_error(_(u"There was a problem loading the user "
+                                  u"lists in the Assembly Work Book "
+                                  u"FMEA/FMECA tab.  This may indicate your "
+                                  u"RTK common database is corrupt or out of "
+                                  u"date."))
+                _n_users = 0
 
             self.cmbActionResponsible.append_text("")
             self.cmbActionApproved.append_text("")
             self.cmbActionClosed.append_text("")
-            for i in range(_n_actions_):
+            for i in range(_n_users):
                 _user_ = _results_[i][0] + ", " + _results_[i][1]
                 self.cmbActionResponsible.append_text(_user_)
                 self.cmbActionApproved.append_text(_user_)
@@ -2801,112 +2873,138 @@ class Hardware(object):
                         _(u"New Occurence:"), _(u"New Detection:"),
                         _(u"New RPN:")]
 
-            (_x_pos_,
-             _y_pos_) = _widg.make_labels(_labels_, self.fxdMechanism, 5, 5)
+            (_x_pos,
+             _y_pos) = _widg.make_labels(_labels_, self.fxdMechanism, 5, 5)
+            _x_pos += 20
 
-            self.fxdMechanism.put(self.txtMechanismID, _x_pos_, _y_pos_[0])
-            self.fxdMechanism.put(self.txtMechanismDescription, _x_pos_,
-                                  _y_pos_[1])
+            self.fxdMechanism.put(self.txtMechanismID, _x_pos, _y_pos[0])
+            self.fxdMechanism.put(self.txtMechanismDescription, _x_pos,
+                                  _y_pos[1])
             self.txtMechanismDescription.connect('focus-out-event',
                                                  self._callback_entry, 'text',
                                                  1000)
 
-            self.fxdMechanism.put(self.cmbOccurenceI, _x_pos_, _y_pos_[2])
+            self.fxdMechanism.put(self.cmbOccurenceI, _x_pos, _y_pos[2])
             self.cmbOccurenceI.connect('changed', self._callback_combo, 1001)
 
-            self.fxdMechanism.put(self.cmbDetectionI, _x_pos_, _y_pos_[3])
+            self.fxdMechanism.put(self.cmbDetectionI, _x_pos, _y_pos[3])
             self.cmbDetectionI.connect('changed', self._callback_combo, 1002)
 
-            self.fxdMechanism.put(self.txtRPNI, _x_pos_, _y_pos_[4])
+            self.fxdMechanism.put(self.txtRPNI, _x_pos, _y_pos[4])
 
-            self.fxdMechanism.put(self.cmbOccurrenceN, _x_pos_, _y_pos_[5])
+            self.fxdMechanism.put(self.cmbOccurrenceN, _x_pos, _y_pos[5])
             self.cmbOccurrenceN.connect('changed', self._callback_combo, 1004)
 
-            self.fxdMechanism.put(self.cmbDetectionN, _x_pos_, _y_pos_[6])
+            self.fxdMechanism.put(self.cmbDetectionN, _x_pos, _y_pos[6])
             self.cmbDetectionN.connect('changed', self._callback_combo, 1005)
 
-            self.fxdMechanism.put(self.txtRPNN, _x_pos_, _y_pos_[7])
+            self.fxdMechanism.put(self.txtRPNN, _x_pos, _y_pos[7])
 
             # Create the detailed information gtk.Fixed() widget for current
             # controls.
             _labels_ = [_(u"Control ID:"), _(u"Control:"), _(u"Control Type:")]
 
-            (_x_pos_,
-             _y_pos_) = _widg.make_labels(_labels_, self.fxdControl, 5, 5)
+            (_x_pos,
+             _y_pos) = _widg.make_labels(_labels_, self.fxdControl, 5, 5)
+            _x_pos += 20
 
-            self.fxdControl.put(self.txtControlID, _x_pos_, _y_pos_[0])
+            self.fxdControl.put(self.txtControlID, _x_pos, _y_pos[0])
 
-            self.fxdControl.put(self.txtControlDescription, _x_pos_,
-                                _y_pos_[1])
+            self.fxdControl.put(self.txtControlDescription, _x_pos,
+                                _y_pos[1])
             self.txtControlDescription.connect('focus-out-event',
                                                self._callback_entry, 'text',
                                                1000)
 
-            self.fxdControl.put(self.cmbControlType, _x_pos_, _y_pos_[2])
+            self.fxdControl.put(self.cmbControlType, _x_pos, _y_pos[2])
             self.cmbControlType.connect('changed', self._callback_combo, 1001)
 
             # Create the detailed information gtk.Fixed widget for recommended
             # actions.
-            _labels_ = [_(u"Action ID:"), _(u"Recommended Action:"),
-                        _(u"Action Category:"), _(u"Action Owner:"),
-                        _(u"Due Date:"), _(u"Status:"), _(u"Action Taken:"),
-                        _(u"Approved By:"), _(u"Approval Date:"),
+            _labels_ = [_(u"Action ID:"), _(u"Recommended Action:")]
+
+            (_max1,
+             _y_pos1) = _widg.make_labels(_labels_, self.fxdAction, 5, 5)
+
+            _labels_ = [_(u"Action Category:"), _(u"Action Owner:"),
+                        _(u"Due Date:"), _(u"Status:"), _(u"Action Taken:")]
+            _y_inc = self.txtActionRecommended.size_request()[1]
+
+            (_max2,
+             _y_pos2) = _widg.make_labels(_labels_, self.fxdAction, 5,
+                                          _y_pos1[1] + _y_inc)
+            _max1 = max(_max1, _max2)
+            _y_inc = self.txtActionTaken.size_request()[1]
+
+            _labels_ = [_(u"Approved By:"), _(u"Approval Date:"),
                         _(u"Closed By:"), _(u"Closure Date:")]
+            (_x_pos,
+             _y_pos3) = _widg.make_labels(_labels_, self.fxdAction, 5,
+                                          _y_pos2[4] + _y_inc)
+            _x_pos = max(_max1, _x_pos) + 20
 
-            (_x_pos_,
-             _y_pos_) = _widg.make_labels(_labels_, self.fxdAction, 5, 5)
+            self.fxdAction.put(self.txtActionID, _x_pos, _y_pos1[0])
+            self.fxdAction.put(self.txtActionRecommended, _x_pos, _y_pos1[1])
+            self.fxdAction.put(self.cmbActionCategory, _x_pos, _y_pos2[0])
+            self.fxdAction.put(self.cmbActionResponsible, _x_pos, _y_pos2[1])
 
-            self.fxdAction.put(self.txtActionID, 205, _y_pos_[0])
+            _button = _widg.make_button(height=25, width=25, label="...",
+                                        image=None)
+            _button.connect('released', _util.date_select,
+                            self.txtActionDueDate)
+            self.fxdAction.put(self.txtActionDueDate, _x_pos, _y_pos2[2])
+            self.fxdAction.put(_button, _x_pos + 105, _y_pos2[2])
 
-            self.fxdAction.put(self.txtActionRecommended, _x_pos_, _y_pos_[1])
-            self.txtActionRecommended.connect('focus-out-event',
-                                              self._callback_entry, 'text',
-                                              1000)
+            self.fxdAction.put(self.cmbActionStatus, _x_pos, _y_pos2[3])
+            self.fxdAction.put(self.txtActionTaken, _x_pos, _y_pos2[4])
+            self.fxdAction.put(self.cmbActionApproved, _x_pos, _y_pos3[0])
 
-            self.fxdAction.put(self.cmbActionCategory, _x_pos_, _y_pos_[2])
+            _button = _widg.make_button(height=25, width=25, label="...",
+                                        image=None)
+            _button.connect('released', _util.date_select,
+                            self.txtActionApproveDate)
+            self.fxdAction.put(self.txtActionApproveDate, _x_pos, _y_pos3[1])
+            self.fxdAction.put(_button, _x_pos + 105, _y_pos3[1])
+
+            _button = _widg.make_button(height=25, width=25, label="...",
+                                        image=None)
+            _button.connect('released', _util.date_select,
+                            self.txtActionCloseDate)
+            self.fxdAction.put(self.txtActionCloseDate, _x_pos, _y_pos3[3])
+            self.fxdAction.put(_button, _x_pos + 105, _y_pos3[3])
+
+            # Connect FMEA/FMECA action widgets to callbacks.
+            self.txtActionRecommended.get_child().get_child().connect(
+                'focus-out-event', self._callback_entry, 'text', 1000)
+
+            self.fxdAction.put(self.cmbActionClosed, _x_pos, _y_pos3[2])
             self.cmbActionCategory.connect('changed', self._callback_combo,
                                            1001)
-
-            self.fxdAction.put(self.cmbActionResponsible, _x_pos_, _y_pos_[3])
             self.cmbActionResponsible.connect('changed', self._callback_combo,
                                               1002)
-
-            self.fxdAction.put(self.txtActionDueDate, _x_pos_, _y_pos_[4])
             self.txtActionDueDate.connect('focus-out-event',
                                           self._callback_entry, 'date', 1003)
-
-            self.fxdAction.put(self.cmbActionStatus, _x_pos_, _y_pos_[5])
             self.cmbActionStatus.connect('changed', self._callback_combo, 1004)
-
-            self.fxdAction.put(self.txtActionTaken, _x_pos_, _y_pos_[6])
-            self.txtActionTaken.connect('focus-out-event',
-                                        self._callback_entry, 'text',
-                                        1005)
-
-            self.fxdAction.put(self.cmbActionApproved, _x_pos_, _y_pos_[7])
+            self.txtActionTaken.get_child().get_child().connect(
+                'focus-out-event', self._callback_entry, 'text', 1005)
             self.cmbActionApproved.connect('changed', self._callback_combo,
                                            1006)
-
-            self.fxdAction.put(self.txtActionApproveDate, _x_pos_, _y_pos_[8])
             self.txtActionApproveDate.connect('focus-out-event',
                                               self._callback_entry, 'date',
                                               1007)
-
-            self.fxdAction.put(self.cmbActionClosed, _x_pos_, _y_pos_[9])
             self.cmbActionClosed.connect('changed', self._callback_combo, 1008)
-
-            self.fxdAction.put(self.txtActionCloseDate, _x_pos_, _y_pos_[10])
             self.txtActionCloseDate.connect('focus-out-event',
                                             self._callback_entry, 'date', 1009)
 
             _label_ = gtk.Label()
-            _heading_ = _(u"FMEA/FMECA\nWorksheet")
-            _label_.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+            _label_.set_markup("<span weight='bold'>" +
+                               _(u"FMEA/FMECA\nWorksheet") + "</span>")
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
             _label_.show_all()
-            _label_.set_tooltip_text(_(
-                u"Failure mode, effects, and criticality analysis (FMECA) for the selected assembly."))
+            _label_.set_tooltip_text(_(u"Failure mode, effects, and "
+                                       u"criticality analysis (FMECA) for the "
+                                       u"selected assembly."))
 
             notebook.insert_page(_hpaned_,
                                  tab_label=_label_,
@@ -3603,7 +3701,7 @@ class Hardware(object):
         try:
             _n_phases_ = len(_results_)
         except TypeError:
-            _util.application_error(_(u"There was a problem loading the "
+            _util.rtk_error(_(u"There was a problem loading the "
                                       u"mission phase list in the Assembly "
                                       u"Work Book FMEA/FMECA tab.  This may "
                                       u"indicate your RTK program database is "
@@ -3649,7 +3747,7 @@ class Hardware(object):
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
         _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_modes_):
-            self._CA[_results_[i][0]] = [_results_[i][14],
+            self._dicModeCA[_results_[i][0]] = [_results_[i][14],
                                          _results_[i][15],
                                          _results_[i][24],
                                          _results_[i][17],
@@ -3707,7 +3805,7 @@ class Hardware(object):
             try:
                 _model_.append(None, _data_)
             except TypeError:
-                _util.application_error(_(u"Failed to load FMEA/FMECA failure "
+                _util.rtk_error(_(u"Failed to load FMEA/FMECA failure "
                                           u"mode %d" % _results_[i][2]))
 
             # Load the FMECA dictionary with the data.
@@ -3745,7 +3843,8 @@ class Hardware(object):
                           t1.fld_parent, t2.fld_rpn_severity, \
                           t2.fld_rpn_severity_new \
                    FROM tbl_fmeca_mechanisms AS t1 \
-                   INNER JOIN tbl_fmeca AS t2 ON t2.fld_mode_id=t1.fld_mode_id \
+                   INNER JOIN tbl_fmeca AS t2 \
+                   ON t2.fld_mode_id=t1.fld_mode_id \
                    WHERE t1.fld_assembly_id=%d" % self.assembly_id
         _results_ = self._app.DB.execute_query(_query_,
                                                None,
@@ -3756,9 +3855,8 @@ class Hardware(object):
         except TypeError:
             _n_mechanisms_ = 0
 
-        _icon_ = _conf.ICON_DIR + '32x32/mechanism.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16,
-                                                      16)  # @UndefinedVariable
+        _icon = _conf.ICON_DIR + '32x32/mechanism.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
         for i in range(_n_mechanisms_):
             _piter_ = _model_.get_iter_from_string(_results_[i][10])
             self._mechanisms[_results_[i][2]] = [_results_[i][3],
@@ -3781,12 +3879,12 @@ class Hardware(object):
                       _util.none_to_string(_results_[i][3]), "", "", "",
                       "", "", "", "", "", "", "", "", "", "", "", "", "",
                       "", "", "", "", 0, 0, "", 1, '#D3D3D3', False,
-                      _icon_]
+                      _icon]
 
             try:
                 _model_.insert(_piter_, i, _data_)
             except TypeError:
-                _util.application_error(_(
+                _util.rtk_error(_(
                     u"Failed to load FMEA/FMECA failure mechanism %d" %
                     _results_[i][2]))
 
@@ -3826,7 +3924,7 @@ class Hardware(object):
             try:
                 _model_.insert(_piter_, i, _data_)
             except TypeError:
-                _util.application_error(_(
+                _util.rtk_error(_(
                     u"Failed to load FMEA/FMECA action %d" % _results_[i][3]))
 
         # Load the controls to the gtk.TreeView.
@@ -3861,8 +3959,8 @@ class Hardware(object):
             try:
                 _model_.insert(_piter_, i, _data_)
             except TypeError:
-                _util.application_error(_(
-                    u"Failed to load FMEA/FMECA control %d" % _results_[i][3]))
+                _util.rtk_error(_(u"Failed to load FMEA/FMECA control %d" %
+                                  _results_[i][3]))
 
         # Fully expand the FMECA gtk.TreeView.
         _root_ = _model_.get_iter_root()
@@ -4153,10 +4251,14 @@ class Hardware(object):
         Method to load the correct gtk.Fixed() when changing rows in the FMECA
         gtk.TreeView().
 
-        Keyword Arguments:
-        __treeview -- the HARDWARE class FMECA gtk.TreeView.
-        __path     -- the actived row gtk.TreeView path.
-        __column   -- the actived gtk.TreeViewColumn.
+        @param __treeview: the Hardware class FMECA gtk.TreeView().
+        @type __treeview: gtk.TreeView
+        @param __path: the activated row gtk.TreeView() path.
+        @type __path: string
+        @param __column: the activated gtk.TreeViewColumn().
+        @type __column: gtk.TreeViewColumn
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Remove the existing gtk.Fixed() widget.
@@ -4168,14 +4270,14 @@ class Hardware(object):
         _fmeca_len_ = len(self._FMECA_col_order)
         _type_ = _model_.get_value(_row_, _fmeca_len_)
 
-        if _type_ == 0:  # Failure mode.
+        if _type_ == 0:                     # Failure mode.
             self.fraFMECADetails.add(self.fxdMode)
 
             _label_ = self.fraFMECADetails.get_label_widget()
-            _label_.set_markup(
-                "<span weight='bold'>Failure Mode Consequence</span>")
+            _label_.set_markup("<span weight='bold'>Failure Mode "
+                               "Consequence</span>")
 
-        elif _type_ == 1:  # Failure mechanism.
+        elif _type_ == 1:                   # Failure mechanism.
             _id_ = _model_.get_value(_row_, 0)
             self.txtMechanismID.set_text(str(_id_))
             self.txtMechanismDescription.set_text(_model_.get_value(_row_, 1))
@@ -4188,10 +4290,10 @@ class Hardware(object):
 
             self.fraFMECADetails.add(self.fxdMechanism)
             _label_ = self.fraFMECADetails.get_label_widget()
-            _label_.set_markup(
-                "<span weight='bold'>Failure Mechanism/Cause</span>")
+            _label_.set_markup("<span weight='bold'>Failure "
+                               "Mechanism/Cause</span>")
 
-        elif _type_ == 2:  # Control
+        elif _type_ == 2:                   # Control
             _id_ = _model_.get_value(_row_, 0)
             self.txtControlID.set_text(str(_id_))
             self.txtControlDescription.set_text(
@@ -4200,10 +4302,10 @@ class Hardware(object):
 
             self.fraFMECADetails.add(self.fxdControl)
             _label_ = self.fraFMECADetails.get_label_widget()
-            _label_.set_markup(
-                "<span weight='bold'>Failure Mechanism/Cause Control</span>")
+            _label_.set_markup("<span weight='bold'>Failure Mechanism/Cause "
+                               "Control</span>")
 
-        elif _type_ == 3:  # Action
+        elif _type_ == 3:                   # Action
             _id_ = _model_.get_value(_row_, 0)
             self.txtActionID.set_text(str(_id_))
             _buffer = \
@@ -4225,18 +4327,18 @@ class Hardware(object):
                 _util.none_to_string(self._fmeca_actions[_id_][5]))
             self.cmbActionApproved.set_active(
                 int(self._fmeca_actions[_id_][6]))
-            _date_ = str(datetime.fromordinal(
+            _date = str(datetime.fromordinal(
                 int(self._fmeca_actions[_id_][7])).strftime('%Y-%m-%d'))
-            self.txtActionApproveDate.set_text(_date_)
+            self.txtActionApproveDate.set_text(_date)
             self.cmbActionClosed.set_active(int(self._fmeca_actions[_id_][8]))
-            _dte = str(datetime.fromordinal(
+            _date = str(datetime.fromordinal(
                 int(self._fmeca_actions[_id_][9])).strftime('%Y-%m-%d'))
-            self.txtActionCloseDate.set_text(_date_)
+            self.txtActionCloseDate.set_text(_date)
 
             self.fraFMECADetails.add(self.fxdAction)
             _label_ = self.fraFMECADetails.get_label_widget()
-            _label_.set_markup(
-                "<span weight='bold'>Failure Mechanism/Cause Action Details</span>")
+            _label_.set_markup("<span weight='bold'>Failure Mechanism/Cause "
+                               "Action Details</span>")
 
         self.fraFMECADetails.show_all()
 
@@ -4253,16 +4355,16 @@ class Hardware(object):
                      1 = child assembly
                      2 = component
         @type kind: integer
-        @return: False or True
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if self.part and (kind == 0 or kind == 1):
-            _util.application_error(_(u"An assembly can not be added as a "
-                                      u"child of a component.  Please select "
-                                      u"an assembly to create a child "
-                                      u"assembly."))
+            _util.rtk_information(_(u"An assembly can not be added as the "
+                                    u"child of a component.  Please select an "
+                                    u"assembly to create a child assembly."))
             return True
 
         if kind == 0:
@@ -4270,8 +4372,8 @@ class Hardware(object):
             try:
                 _parent_ = _model_.get_string_from_iter(_iter)
             except TypeError:
-                _util.application_error(_(u"A sibling assembly can not be "
-                                          u"added to the top-level assembly."))
+                _util.rtk_information(_(u"A sibling assembly can not be added "
+                                        u"to the top-level assembly."))
                 return True
 
             _title_ = _(u"RTK - Add Sibling Assemblies")
@@ -4343,7 +4445,7 @@ class Hardware(object):
                       VALUES({0:d}, {1:d})".format(self.revision_id,
                                                    _assembly_id_)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                             commit=True):
+                                              commit=True):
                 self._app.debug_log.error("assembly.py: Failed to add new "
                                           "assembly to risk matrix table.")
                 return True
@@ -4774,7 +4876,7 @@ class Hardware(object):
                           fld_mtbf_alloc={12:f} \
                       WHERE fld_revision_id={13:d} \
                       AND fld_assembly_id={14:d}".format(
-                model.get_value(row, 3), model.get_value(row, 4),
+                     model.get_value(row, 3), model.get_value(row, 4),
                 model.get_value(row, 5), model.get_value(row, 12),
                 model.get_value(row, 13), model.get_value(row, 8),
                 model.get_value(row, 9), model.get_value(row, 10),
@@ -5209,24 +5311,26 @@ class Hardware(object):
                             int(model.get_value(row,
                                                 self._FMECA_col_order[0])))
 
-                _query_ = "UPDATE tbl_fmeca \
-                           SET fld_mode_description='%s', fld_mission_phase='%s', \
-                               fld_local_effect='%s', fld_next_effect='%s', \
-                               fld_end_effect='%s', fld_detection_method='%s', \
-                               fld_other_indications='%s', \
-                               fld_isolation_method='%s', \
-                               fld_design_provisions='%s', \
-                               fld_operator_actions='%s', \
-                               fld_severity_class='%s', \
-                               fld_hazard_rate_source='%s', \
-                               fld_failure_probability='%s', \
-                               fld_effect_probability=%f, \
-                               fld_mode_ratio=%f, fld_mode_failure_rate=%f, \
-                               fld_mode_op_time=%f, fld_mode_criticality=%f, \
-                               fld_rpn_severity='%s', fld_rpn_severity_new='%s', \
-                               fld_critical_item=%d, fld_single_point=%d, \
-                               fld_remarks='%s' \
-                           WHERE fld_mode_id=%d" % _values_
+                _query = "UPDATE tbl_fmeca \
+                          SET fld_mode_description='%s', \
+                              fld_mission_phase='%s', \
+                              fld_local_effect='%s', fld_next_effect='%s', \
+                              fld_end_effect='%s', fld_detection_method='%s', \
+                              fld_other_indications='%s', \
+                              fld_isolation_method='%s', \
+                              fld_design_provisions='%s', \
+                              fld_operator_actions='%s', \
+                              fld_severity_class='%s', \
+                              fld_hazard_rate_source='%s', \
+                              fld_failure_probability='%s', \
+                              fld_effect_probability=%f, \
+                              fld_mode_ratio=%f, fld_mode_failure_rate=%f, \
+                              fld_mode_op_time=%f, fld_mode_criticality=%f, \
+                              fld_rpn_severity='%s', \
+                              fld_rpn_severity_new='%s', \
+                              fld_critical_item=%d, fld_single_point=%d, \
+                              fld_remarks='%s' \
+                          WHERE fld_mode_id=%d" % _values_
 
             elif _type_ == 1:  # Failure mechanism.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
@@ -5239,13 +5343,13 @@ class Hardware(object):
                             self._mechanisms[model.get_value(row, 0)][6],
                             _parent_, model.get_value(row, 0))
 
-                _query_ = "UPDATE tbl_fmeca_mechanisms \
-                           SET fld_mechanism_description='%s', \
-                               fld_rpn_occurrence=%d, fld_rpn_detection=%d, \
-                               fld_rpn=%d, fld_rpn_occurrence_new=%d, \
-                               fld_rpn_detection_new=%d, fld_rpn_new=%d, \
-                               fld_parent='%s' \
-                           WHERE fld_mechanism_id=%d" % _values_
+                _query = "UPDATE tbl_fmeca_mechanisms \
+                          SET fld_mechanism_description='%s', \
+                              fld_rpn_occurrence=%d, fld_rpn_detection=%d, \
+                              fld_rpn=%d, fld_rpn_occurrence_new=%d, \
+                              fld_rpn_detection_new=%d, fld_rpn_new=%d, \
+                              fld_parent='%s' \
+                          WHERE fld_mechanism_id=%d" % _values_
 
             elif _type_ == 2:  # Control.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
@@ -5253,27 +5357,27 @@ class Hardware(object):
                             self._fmeca_controls[model.get_value(row, 0)][1], \
                             _parent_, model.get_value(row, 0))
 
-                _query_ = "UPDATE tbl_fmeca_controls \
-                           SET fld_control_description='%s', \
-                               fld_control_type=%d, fld_parent='%s' \
-                           WHERE fld_control_id=%d" % _values_
+                _query = "UPDATE tbl_fmeca_controls \
+                          SET fld_control_description='%s', \
+                              fld_control_type=%d, fld_parent='%s' \
+                          WHERE fld_control_id=%d" % _values_
 
             elif _type_ == 3:  # Action.
                 _parent = model.get_string_from_iter(model.iter_parent(row))
                 _query = "UPDATE tbl_fmeca_actions \
                           SET fld_action_recommended='{0:s}', \
-                              fld_action_category='{1:s}', \
-                              fld_action_owner='{2:s}', \
+                              fld_action_category={1:d}, \
+                              fld_action_owner={2:d}, \
                               fld_action_due_date={3:d}, \
-                              fld_action_status='{4:s}', \
+                              fld_action_status={4:d}, \
                               fld_action_taken='{5:s}', \
-                              fld_action_approved='{6:s}', \
+                              fld_action_approved={6:d}, \
                               fld_action_approve_date={7:d}, \
-                              fld_action_closed='{8:s}', \
+                              fld_action_closed={8:d}, \
                               fld_action_close_date={9:d}, \
                               fld_parent='{10:s}' \
                           WHERE fld_action_id={11:d}".format(
-                    model.get_value(row, 1), \
+                    model.get_value(row, 1),
                     self._fmeca_actions[model.get_value(row, 0)][1],
                     self._fmeca_actions[model.get_value(row, 0)][2],
                     self._fmeca_actions[model.get_value(row, 0)][3],
@@ -5302,10 +5406,11 @@ class Hardware(object):
         Method to edit the Hazard Analysis or the Similar Item Analysis
         functions.
 
-        @param integer index: the index indicating whether to edit a Hazard
-                              Analysis or a Similar Item Analysis function.
-                              0 = hazard analysis
-                              1 = similar item analysis
+        @param index: the index indicating whether to edit a Hazard Analysis or
+                      a Similar Item Analysis function.
+                      0 = hazard analysis
+                      1 = similar item analysis
+        @type index: integer
         @returns: False or True
         @rtype: boolean
         """
@@ -5419,7 +5524,7 @@ class Hardware(object):
 
         _fixed_.show_all()
 
-        _dialog_.vbox.pack_start(_fixed_)  #pylint: disable=E1101
+        _dialog_.vbox.pack_start(_fixed_)  # pylint: disable=E1101
 
         if _dialog_.run() == gtk.RESPONSE_ACCEPT:
             if index == 0:
@@ -5521,14 +5626,14 @@ class Hardware(object):
                                                    gtk.DIALOG_MODAL |
                                                    gtk.DIALOG_DESTROY_WITH_PARENT),
                                                dlgbuttons=(gtk.STOCK_OK,
-                                                        gtk.RESPONSE_ACCEPT))
+                                                           gtk.RESPONSE_ACCEPT))
 
                     _text_ = _(u"%s model not yet implemented.  Contact "
                                u"andrew.rowland@reliaqual.com if you would "
                                u"like to help." % combo.get_active_text())
                     label = _widg.make_label(_text_,
                                              width=250, height=75)
-                    dialog.vbox.pack_start(label)  #pylint: disable=E1101
+                    dialog.vbox.pack_start(label)  # pylint: disable=E1101
                     label.show()
 
                     dialog.run()
@@ -5718,7 +5823,7 @@ class Hardware(object):
                       FROM tbl_subcategory \
                       WHERE fld_category_id=%d \
                       ORDER BY fld_subcategory_noun ASC".format(
-                (_model.get_value(_row, 1)))
+                      (_model.get_value(_row, 1)))
             _results = self._app.COMDB.execute_query(_query, None,
                                                      self._app.ComCnx)
 
@@ -5793,6 +5898,12 @@ class Hardware(object):
             if index == 71:
                 _textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
                 _text_ = _textbuffer.get_text(*_textbuffer.get_bounds())
+            elif index == 1000:
+                _textbuffer = self.txtActionRecommended.get_child().get_child().get_buffer()
+                _text_ = _textbuffer.get_text(*_textbuffer.get_bounds())
+            elif index == 1005:
+                _textbuffer = self.txtActionTaken.get_child().get_child().get_buffer()
+                _text_ = _textbuffer.get_text(*_textbuffer.get_bounds())
             else:
                 _text_ = entry.get_text()
 
@@ -5806,7 +5917,7 @@ class Hardware(object):
             _text_ = datetime.strptime(entry.get_text(),
                                        '%Y-%m-%d').toordinal()
 
-        if index < 200:  # Hardware information.
+        if index < 200:                     # Hardware information.
             # Get the Hardware Tree model and selected row.
             (_model_, _row_) = self.treeview.get_selection().get_selected()
 
@@ -5820,7 +5931,7 @@ class Hardware(object):
                 # temperature, or vibration
                 self._trickledown(_model_, _row_, index, _text_)
 
-            elif index == 34:  # Specified hazard rate
+            elif index == 34:               # Specified hazard rate
                 # Set predicted failure rate to specified value if the
                 # hazard rate type is selected as allocated or hazard rate
                 # specified.
@@ -5833,7 +5944,7 @@ class Hardware(object):
 
                     _model_.set_value(_row_, 51, self.mtbf_specified)
 
-            elif index == 51:  # Specified MTBF
+            elif index == 51:               # Specified MTBF
                 # Set predicted MTBF to specified value if the hazard rate type
                 # is selected as allocated or MTBFspecified.
                 self.mtbf_specified = _text_
@@ -5845,7 +5956,7 @@ class Hardware(object):
 
                     _model_.set_value(_row_, 28, self.failure_rate_specified)
 
-            elif index == 80:  # Active Temperature
+            elif index == 80:               # Active Temperature
                 # Number of children.
                 _n_children_ = _model_.iter_n_children(_row_)
 
@@ -5860,8 +5971,8 @@ class Hardware(object):
                     # partrow = self._app.COMPONENT.selected_row
                     # partmodel.set_value(partrow, 103, _text_)
 
-            if self.part:  # Update the Parts List.
-                # TODO: Need code to update the parts list.
+            if self.part:                   # Update the Parts List.
+# TODO: Need code to update the parts list.
                 # self.model.set_value(self.selected_row, _index_, _text_)
                 print "TODO: Write code to update parts list."
 
@@ -5870,7 +5981,7 @@ class Hardware(object):
         elif index >= 200 and index < 500:  # Component specific information.
             index -= 200
 
-        elif index >= 500 and index < 1000:  # Allocation goals.
+        elif index >= 500 and index < 1000: # Allocation goals.
             if index == 500:
                 (MTBFg, FRg) = self._calculate_goals(500)
 
@@ -5889,27 +6000,22 @@ class Hardware(object):
                 self.txtReliabilityGoal.set_text(str(fmt.format(Rg)))
                 self.txtMTBFGoal.set_text(str(fmt.format(MTBFg)))
 
-        elif index >= 1000:  # FMECA information.
-            selection = self.tvwFMECA.get_selection()
-            (model, row) = selection.get_selected()
-            _id = model.get_value(row, 0)
-            _type = model.get_value(row, len(self._FMECA_col_order))
+        elif index >= 1000:                 # FMECA information.
+            (_model, _row) = self.tvwFMECA.get_selection().get_selected()
+            _id = _model.get_value(_row, 0)
+            _type = _model.get_value(_row, len(self._FMECA_col_order))
 
             _index = index - 1000
 
-            if _type == 1:  # Failure mechanism
+            if _type == 1:                  # Failure mechanism
                 self._mechanisms[_id][_index] = _text_
-            elif _type == 2:  # Control
+            elif _type == 2:                # Control
                 self._fmeca_controls[_id][_index] = _text_
-            elif _type == 3:  # Action
+            elif _type == 3:                # Action
                 if _index == 0:
-                    _textbuffer = self.txtActionRecommended.get_child().get_child().get_buffer()
-                    _text = _textbuffer.get_text(*_textbuffer.get_bounds())
-                elif _index == 5:
-                    _textbuffer = self.txtActionTaken.get_child().get_child().get_buffer()
-                    _text = _textbuffer.get_text(*_textbuffer.get_bounds())
+                    _model.set_value(_row, self._FMECA_col_order[1], _text_)
 
-                self._fmeca_actions[_id][_index] = _text
+                self._fmeca_actions[_id][_index] = _text_
 
         return False
 
@@ -6055,7 +6161,7 @@ class Hardware(object):
                       7 = Maintenance Planning
         """
 
-        if page_num == 0:  # General data tab.
+        if page_num == 0:                   # General data tab.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6066,7 +6172,7 @@ class Hardware(object):
             self.btnAddItem.set_tooltip_text(_(u"Add components to the "
                                                u"currently selected "
                                                u"assembly."))
-        elif page_num == 1:  # Allocation tab
+        elif page_num == 1:                 # Allocation tab
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6119,7 +6225,7 @@ class Hardware(object):
                                               u"similar item analyses."))
             self.btnEdit.set_tooltip_text(_(u"Create/edit current similar "
                                             u"item analysis functions."))
-        elif page_num == 4:  # Assessment inputs tab
+        elif page_num == 4:                 # Assessment inputs tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6133,7 +6239,7 @@ class Hardware(object):
             self.btnAnalyze.set_tooltip_text(_(u"Calculate the hardware "
                                                u"metrics in the open RTK "
                                                u"Program Database."))
-        elif page_num == 5:  # Assessment results tab
+        elif page_num == 5:                 # Assessment results tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6141,7 +6247,7 @@ class Hardware(object):
             self.btnSaveResults.show()
             self.btnRollup.hide()
             self.btnEdit.hide()
-        elif page_num == 6:  # FMEA/FMECA tab
+        elif page_num == 6:                 # FMEA/FMECA tab
             self.btnAddItem.hide()
             self.btnFMECAAdd.show()
             self.btnRemoveItem.show()
@@ -6159,7 +6265,7 @@ class Hardware(object):
                                                    u"the selected assembly."))
             self.btnRollup.set_tooltip_text(_(u"Summarizes the lower level "
                                               u"FMEA/FMECA results."))
-        elif page_num == 7:  # Maintenance planning tab
+        elif page_num == 7:                 # Maintenance planning tab
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
@@ -6177,7 +6283,7 @@ class Hardware(object):
             # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
             #                                        u"results for the "
             #                                        u"selected assembly."))
-        elif page_num == 8:  # RG planning tab
+        elif page_num == 8:                 # RG planning tab
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
@@ -6195,7 +6301,7 @@ class Hardware(object):
             # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
             #                                        u"results for the "
             #                                        u"selected assembly."))
-        elif page_num == 9:  # RG tracking tab
+        elif page_num == 9:                 # RG tracking tab
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
@@ -6264,7 +6370,7 @@ class Hardware(object):
                     self._trickle_down_risk()
                 elif button.get_name() == 'Edit':
                     self._edit_function(index=0)
-            elif _page_ == 3:  # Similar item analysis tab.
+            elif _page_ == 3:               # Similar item analysis tab.
                 if button.get_name() == 'Analyze':
                     self._calculate_sia()
                 elif button.get_name() == 'Save':
@@ -6276,7 +6382,7 @@ class Hardware(object):
         else:
             _page_ += 3
 
-        if _page_ == 0:  # General data tab.
+        if _page_ == 0:                     # General data tab.
             if button.get_name() == 'Add':
                 self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -6284,7 +6390,7 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 4:  # Assessment inputs tab.
+        elif _page_ == 4:                   # Assessment inputs tab.
             if button.get_name() == 'Add':
                 self._add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -6303,8 +6409,8 @@ class Hardware(object):
         elif _page_ == 6:                   # FMEA/FMECA tab.
             if button.get_label() == 'Mode':
                 # Find the id of the next failure mode.
-                _query = "SELECT seq FROM sqlite_sequence \
-                          WHERE name='tbl_fmeca'"
+                _query = "SELECT MAX(fld_mode_id) \
+                          FROM tbl_fmeca"
                 _last_id = self._app.DB.execute_query(_query,
                                                       None,
                                                       self._app.ProgCnx)
@@ -6318,151 +6424,177 @@ class Hardware(object):
                 _query = "INSERT INTO tbl_fmeca \
                           (fld_assembly_id, fld_function_id, fld_mode_id) \
                           VALUES (%d, 0, %d)" % (self.assembly_id, _last_id)
-                self._app.DB.execute_query(_query,
-                                           None,
-                                           self._app.ProgCnx,
-                                           commit=True)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure mode to the "
+                                      u"open RTK Program database.  Check the "
+                                      u"error log %s for additional "
+                                      u"information (if any).  You may e-mail "
+                                      u"bugs@reliaqual.com with the error log "
+                                      u"attached if the problem persists.") %
+                                      _conf.LOG_DIR + 'RTK_error.log')
+                    return True
 
                 # Insert a new line in the failure consequence table.
                 _query_ = "INSERT INTO tbl_failure_consequences \
                            (fld_assembly_id, fld_mode_id) \
                            VALUES (%d, %d)" % (self.assembly_id, _last_id)
-                self._app.DB.execute_query(_query_,
-                                           None,
-                                           self._app.ProgCnx,
-                                           commit=True)
-
-                self._load_fmeca_tab()
+                if not self._app.DB.execute_query(_query_, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure mode to the "
+                                      u"open RTK Program database.  Check the "
+                                      u"error log %s for additional "
+                                      u"information (if any).  You may e-mail "
+                                      u"bugs@reliaqual.com with the error log "
+                                      u"attached if the problem persists.") %
+                                      _conf.LOG_DIR + 'RTK_error.log')
+                else:
+                    self._load_fmeca_tab()
 
             elif button.get_label() == 'Mechanism':
                 # Find the id and gtk.TreeIter of the parent failure mode.
-                (model, row) = self.tvwFMECA.get_selection().get_selected()
-                _mode_id_ = model.get_value(row, 0)
-                _parent_ = model.get_string_from_iter(row)
+                (_model, _row) = self.tvwFMECA.get_selection().get_selected()
+                _mode_id = _model.get_value(_row, 0)
+                _parent = _model.get_string_from_iter(_row)
 
-                if _parent_.count(':') != 0:
-                    _util.application_error(_(u"A failure mechanism can only "
-                                              u"be the child of a failure "
-                                              u"mode, not another failure "
-                                              u"mechanism, control, or "
-                                              u"action."))
+                if _parent.count(':') != 0:
+                    _util.rtk_information(_(u"A failure mechanism can only be "
+                                            u"the child of a failure mode, "
+                                            u"not another failure mechanism, "
+                                            u"control, or action."))
                     return True
 
                 # Find the id of the next failure mechanism.
-                _query_ = "SELECT seq FROM sqlite_sequence \
-                           WHERE name='tbl_fmeca_mechanisms'"
-                _next_id_ = self._app.DB.execute_query(_query_,
+                _query = "SELECT MAX(fld_mechanism_id) \
+                          FROM tbl_fmeca_mechanisms"
+                _next_id = self._app.DB.execute_query(_query,
                                                        None,
                                                        self._app.ProgCnx)
 
                 try:
-                    _next_id_ = _next_id_[0][0] + 1
-                except TypeError:
-                    _next_id_ = 0
+                    _next_id = _next_id[0][0] + 1
+                except TypeError or IndexError:
+                    _next_id = 0
 
                 # Insert the new failure mechanism.
-                _query_ = "INSERT INTO tbl_fmeca_mechanisms \
-                           (fld_assembly_id, fld_mode_id, \
-                            fld_mechanism_id, fld_parent) \
-                           VALUES (%d, %d, %d, '%s')" % (self.assembly_id,
-                                                         _mode_id_, _next_id_,
-                                                         _parent_)
-                self._app.DB.execute_query(_query_,
-                                           None,
-                                           self._app.ProgCnx,
-                                           True)
-
-                self._load_fmeca_tab()
+                _query = "INSERT INTO tbl_fmeca_mechanisms \
+                          (fld_assembly_id, fld_mode_id, \
+                           fld_mechanism_id, fld_parent) \
+                          VALUES (%d, %d, %d, '%s')" % (self.assembly_id,
+                                                        _mode_id, _next_id,
+                                                        _parent)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure mechanism to "
+                                      u"the open RTK Program database.  Check "
+                                      u"the error log %s for additional "
+                                      u"information (if any).  You may e-mail "
+                                      u"bugs@reliaqual.com with the error log "
+                                      u"attached if the problem persists.") %
+                                      _conf.LOG_DIR + 'RTK_error.log')
+                else:
+                    self._load_fmeca_tab()
 
             elif button.get_label() == 'Control':
                 # Find the id and gtk.TreeIter of the parent failure mechanism.
-                (model, row) = self.tvwFMECA.get_selection().get_selected()
-                _mechanism_id_ = model.get_value(row, 0)
-                _parent_ = model.get_string_from_iter(row)
+                (_model, _row) = self.tvwFMECA.get_selection().get_selected()
+                _mechanism_id = _model.get_value(_row, 0)
+                _parent = _model.get_string_from_iter(_row)
 
-                if _parent_.count(':') != 1:
-                    _util.application_error(_(u"A control can only be the "
-                                              u"child of a failure mechanism, "
-                                              u"not another control, failure "
-                                              u"mode, or action."))
+                if _parent.count(':') != 1:
+                    _util.rtk_information(_(u"A control can only be the child "
+                                            u"of a failure mechanism, not "
+                                            u"another control, failure mode, "
+                                            u"or action."))
                     return True
 
                 # Find the id of the grand-parent failure mode.
-                row = model.iter_parent(row)
-                _mode_id_ = model.get_value(row, 0)
+                _row = _model.iter_parent(_row)
+                _mode_id = _model.get_value(_row, 0)
 
                 # Find the id of the next control.
-                _query_ = "SELECT seq FROM sqlite_sequence \
-                           WHERE name='tbl_fmeca_controls'"
-                _next_id_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx)
+                _query = "SELECT MAX(fld_control_id) \
+                          FROM tbl_fmeca_controls"
+                _next_id = self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx)
 
                 try:
-                    _next_id_ = _next_id_[0][0] + 1
-                except TypeError:
-                    _next_id_ = 0
+                    _next_id = _next_id[0][0] + 1
+                except TypeError or IndexError:
+                    _next_id = 0
 
                 # Insert the new control.
-                _query_ = "INSERT INTO tbl_fmeca_controls \
-                           (fld_assembly_id, fld_mode_id, \
-                            fld_mechanism_id, fld_control_id, fld_parent) \
-                           VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
-                                                             _mode_id_,
-                                                             _mechanism_id_,
-                                                             _next_id_,
-                                                             _parent_)
-                self._app.DB.execute_query(_query_,
-                                           None,
-                                           self._app.ProgCnx,
-                                           True)
-
-                self._load_fmeca_tab()
+                _query = "INSERT INTO tbl_fmeca_controls \
+                          (fld_assembly_id, fld_mode_id, \
+                           fld_mechanism_id, fld_control_id, fld_parent) \
+                          VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                            _mode_id,
+                                                            _mechanism_id,
+                                                            _next_id, _parent)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure control to "
+                                      u"the open RTK Program database.  Check "
+                                      u"the error log %s for additional "
+                                      u"information (if any).  You may e-mail "
+                                      u"bugs@reliaqual.com with the error log "
+                                      u"attached if the problem persists.") %
+                                      _conf.LOG_DIR + 'RTK_error.log')
+                else:
+                    self._load_fmeca_tab()
 
             elif button.get_label() == 'Action':
                 # Find the id and gtk.TreeIter of the parent failure mechanism.
-                (model, row) = self.tvwFMECA.get_selection().get_selected()
-                _mechanism_id_ = model.get_value(row, 0)
-                _parent_ = model.get_string_from_iter(row)
+                (_model, _row) = self.tvwFMECA.get_selection().get_selected()
+                _mechanism_id = _model.get_value(_row, 0)
+                _parent = _model.get_string_from_iter(_row)
 
-                if _parent_.count(':') != 1:
-                    _util.application_error(_(u"An action can only be the "
-                                              u"child of a failure mechanism, "
-                                              u"not another action, failure "
-                                              u"mode, or control."))
+                if _parent.count(':') != 1:
+                    _util.rtk_information(_(u"An action can only be the child "
+                                            u"of a failure mechanism, not "
+                                            u"another action, failure mode, "
+                                            u"or control."))
                     return True
 
                 # Find the id of the grand-parent failure mode.
-                row = model.iter_parent(row)
-                _mode_id_ = model.get_value(row, 0)
+                _row = _model.iter_parent(_row)
+                _mode_id = _model.get_value(_row, 0)
 
                 # Find the id of the next control.
-                _query_ = "SELECT seq FROM sqlite_sequence \
-                           WHERE name='tbl_fmeca_actions'"
-                _next_id_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx)
+                _query = "SELECT MAX(fld_action_id) \
+                          FROM tbl_fmeca_actions"
+                _next_id = self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx)
 
                 try:
-                    _next_id_ = _next_id_[0][0] + 1
-                except TypeError:
-                    _next_id_ = 0
+                    _next_id = _next_id[0][0] + 1
+                except TypeError or IndexError:
+                    _next_id = 0
 
                 # Insert the new action.
-                _query_ = "INSERT INTO tbl_fmeca_actions \
-                           (fld_assembly_id, fld_mode_id, \
-                            fld_mechanism_id, fld_action_id, fld_parent) \
-                           VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
-                                                             _mode_id_,
-                                                             _mechanism_id_,
-                                                             _next_id_,
-                                                             _parent_)
-                self._app.DB.execute_query(_query_,
-                                           None,
-                                           self._app.ProgCnx,
-                                           True)
-
-                self._load_fmeca_tab()
+                _query = "INSERT INTO tbl_fmeca_actions \
+                          (fld_assembly_id, fld_mode_id, \
+                           fld_mechanism_id, fld_action_id, fld_parent) \
+                          VALUES (%d, %d, %d, %d, '%s')" % (self.assembly_id,
+                                                            _mode_id,
+                                                            _mechanism_id,
+                                                            _next_id, _parent)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new FMEA/FMECA action to "
+                                      u"the open RTK Program database.  Check "
+                                      u"the error log %s for additional "
+                                      u"information (if any).  You may e-mail "
+                                      u"bugs@reliaqual.com with the error log "
+                                      u"attached if the problem persists.") %
+                                      _conf.LOG_DIR + 'RTK_error.log')
+                else:
+                    self._load_fmeca_tab()
 
             elif button.get_name() == 'Remove':
                 (model, row) = self.tvwFMECA.get_selection().get_selected()
@@ -6544,46 +6676,46 @@ class Hardware(object):
 
             elif button.get_name() == 'Analyze':
                 # Calculate the MIL-STD-1629A and automotive RPN criticalities.
-                (self._CA,
+                (self._dicModeCA,
                  self._ItemCA,
-                 self._RPN) = _calc.criticality_analysis(self._CA,
+                 self._RPN) = _calc.criticality_analysis(self._dicModeCA,
                                                          self._ItemCA,
                                                          self._RPN)
 
+                #print self._ItemCA
                 # Update the RTK program database with the MIL-STD-1629A
                 # results.
-                _query_ = "UPDATE tbl_fmeca \
-                           SET fld_mode_criticality=%g, \
-                               fld_mode_failure_rate=%g \
-                           WHERE fld_mode_id=%d"
-
-                _keys_ = self._CA.keys()
-                for i in range(len(_keys_)):
-                    _values_ = (self._CA[_keys_[i]][4], self._CA[_keys_[i]][5],
-                                _keys_[i])
-                    _query_ = _query_ % _values_
-
-                    _results_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
+                _keys = self._dicModeCA.keys()
+                for i in range(len(_keys)):
+                    _query = "UPDATE tbl_fmeca \
+                              SET fld_mode_criticality=%g, \
+                                  fld_mode_failure_rate=%g \
+                              WHERE fld_mode_id=%d" % \
+                             (self._dicModeCA[_keys[i]][4],
+                              self._dicModeCA[_keys[i]][5], _keys[i])
+                    if not self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx,
+                                                      commit=True):
+                        _util.rtk_error(_(u"Error updating the RTK Program "
+                                          u"database for failure mode %d.  "
+                                          u"Check the error log %s for more "
+                                          u"information (if any).  You may "
+                                          u"e-mail bugs@reliaqual.com with "
+                                          u"the error log attached if the "
+                                          u"problem persists.") % (_keys[i],
+                                          _conf.LOG_DIR + "RTK_error.log"))
 
                 # Update the RTK program database with the automotive RPN
                 # results.
-                _query_ = "UPDATE tbl_fmeca_mechanisms \
-                           SET fld_rpn=%d, fld_rpn_new=%d \
-                           WHERE fld_mechanism_id=%d"
-
-                _keys_ = self._RPN.keys()
-                for i in range(len(_keys_)):
-                    _values_ = (self._RPN[_keys_[i]][3],
-                                self._RPN[_keys_[i]][7],
-                                _keys_[i])
-                    _query_ = _query_ % _values_
-                    _results_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
+                _keys = self._RPN.keys()
+                for i in range(len(_keys)):
+                    _query = "UPDATE tbl_fmeca_mechanisms \
+                              SET fld_rpn=%d, fld_rpn_new=%d \
+                              WHERE fld_mechanism_id=%d" % \
+                             (self._RPN[_keys[i]][3], self._RPN[_keys[i]][7],
+                              _keys[i])
+                    self._app.DB.execute_query(_query, None,
+                                               self._app.ProgCnx, commit=True)
 
                 # Update the RTK program database with the MIL-STD-1629A item
                 # criticality.
@@ -6595,10 +6727,8 @@ class Hardware(object):
                 for i in range(len(_keys_)):
                     _values_ = (self._ItemCA[_keys_[i]][-1], _keys_[i])
                     _query_ = _query_ % _values_
-                    _results_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
+                    self._app.DB.execute_query(_query_, None,
+                                               self._app.ProgCnx, commit=True)
 
                 self._load_fmeca_tab()
 
@@ -6808,14 +6938,14 @@ class Hardware(object):
         try:
             _Rs_ = float(self.txtReliabilityGoal.get_text())
         except ValueError:
-            _util.application_error(_(u"Missing required input: Reliability "
+            _util.rtk_error(_(u"Missing required input: Reliability "
                                       u"goal.\nPlease provide and try again."))
             return True
 
         try:
             _lambdas_ = float(self.txtFailureRateGoal.get_text())
         except ValueError:
-            _util.application_error(_(u"Missing required input: Failure "
+            _util.rtk_error(_(u"Missing required input: Failure "
                                       u"rate goal.\nPlease provide and try "
                                       u"again."))
             return True
@@ -6823,7 +6953,7 @@ class Hardware(object):
         try:
             _Ts_ = float(self.txtOperTime.get_text())
         except ValueError:
-            _util.application_error(_(u"Missing required input: Operating "
+            _util.rtk_error(_(u"Missing required input: Operating "
                                       u"time.\nPlease provide and try again."))
             return True
 
@@ -6837,7 +6967,7 @@ class Hardware(object):
         # methodology.  Raise an application error if unsuccessful.
         if self.cmbAllocationType.get_active() == 1 and \
                 equal_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.application_error(_(u"Unable to allocate reliability "
+            _util.rtk_error(_(u"Unable to allocate reliability "
                                       u"requirement.  Check your input values "
                                       u"and try again.  If allocation "
                                       u"continues to fail, please report the "
@@ -6845,7 +6975,7 @@ class Hardware(object):
 
         elif self.cmbAllocationType.get_active() == 2 and \
                 agree_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.application_error(_(u"Unable to allocate reliability "
+            _util.rtk_error(_(u"Unable to allocate reliability "
                                       u"requirement.  Check your input values "
                                       u"and try again.  If allocation "
                                       u"continues to fail, please report the "
@@ -6853,7 +6983,7 @@ class Hardware(object):
 
         elif self.cmbAllocationType.get_active() == 3 and \
                 arinc_apportionment(_model_, _Ts_, _lambdas_):
-            _util.application_error(_(u"Unable to allocate reliability "
+            _util.rtk_error(_(u"Unable to allocate reliability "
                                       u"requirement.  Check your input values "
                                       u"and try again.  If allocation "
                                       u"continues to fail, please report the "
@@ -6861,7 +6991,7 @@ class Hardware(object):
 
         elif self.cmbAllocationType.get_active() == 4 and \
                 foo_apportionment(_model_, _Ts_, _lambdas_):
-            _util.application_error(_(u"Unable to allocate reliability "
+            _util.rtk_error(_(u"Unable to allocate reliability "
                                       u"requirement.  Check your input values "
                                       u"and try again.  If allocation "
                                       u"continues to fail, please report the "
@@ -6869,7 +6999,7 @@ class Hardware(object):
 
         elif self.cmbAllocationType.get_active() < 1 or \
                 self.cmbAllocationType.get_active() > 4:
-            _util.application_error(_(u"No allocation method selected.  "
+            _util.rtk_error(_(u"No allocation method selected.  "
                                       u"Please select an allocation method "
                                       u"and try again."))
 
@@ -7095,7 +7225,7 @@ class Hardware(object):
             # the remaining risk calculations.  If not, notify the user and
             # exit this function.
             # if _calculations_['hr_sys'] <= 0.0:
-            #     _util.application_error(_(u"The System failure intensity is "
+            #     _util.rtk_error(_(u"The System failure intensity is "
             #                               u"0.  This will likely cause "
             #                               u"erroneous results if used in "
             #                               u"calculations.  You should "

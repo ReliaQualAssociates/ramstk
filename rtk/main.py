@@ -159,7 +159,7 @@ class RTK:
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            _util.application_error(_(u"Cannot find your license file in %s.  If your license file is elsewhere, please place it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
+            _util.rtk_error(_(u"Cannot find your license file in %s.  If your license file is elsewhere, please place it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
             quit()
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -171,12 +171,12 @@ class RTK:
                                             None,
                                             self.ComCnx)
         if(_license_key != _results[0][0]):
-            _util.application_error(_(u"Invalid license (Invalid key).  Your license key is incorrect.  Closing RTK application."))
+            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license key is incorrect.  Closing RTK application."))
             quit()
 
         if(datetime.datetime.today().toordinal() > _results[0][1]):
             _expire_date = str(datetime.datetime.fromordinal(int(_results[0][1])).strftime('%Y-%m-%d'))
-            _util.application_error(_(u"Invalid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
+            _util.rtk_error(_(u"Invalid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
             quit()
 
 # Get a connection to the program database.
