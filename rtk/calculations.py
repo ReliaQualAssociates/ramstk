@@ -15,12 +15,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import gettext
-from math import ceil, exp, log, sqrt
 import sys
-
-import configuration as _conf
-import numpy as np
-import utilities as _util
 
 # Modules required for the GUI.
 try:
@@ -57,6 +52,11 @@ except ImportError:
     __USE_RPY__ = False
     __USE_RPY2__ = False
 
+import numpy as np
+from math import ceil, exp, log, sqrt
+
+import configuration as _conf
+import utilities as _util
 
 def calculate_project(__button, application, index):
     """
@@ -237,31 +237,31 @@ def calculate_hardware(treemodel, row, application):
                         # TODO: Implement MIL-HDBK-217FN1 part stress model.
                         application.user_log.info(_("MIL-HDBK-217FN1 models not yet implemented.\n \
                                                   Contact weibullguy@gmail.com if you would like to help."))
-                        _util.application_error(_("MIL-HDBK-217FN1 models not yet implemented.\n \
+                        _util.rtk_error(_("MIL-HDBK-217FN1 models not yet implemented.\n \
                                                 Contact weibullguy@gmail.com if you would like to help."))
                     elif(idx == 4):         # MIL-HDBK-217FN1 Part Count
                         # TODO: Implement MIL-HDBK-217FN1 part count model.
                         application.user_log.info(_("MIL-HDBK-217FN1 models not yet implemented.\n \
                                                   Contact weibullguy@gmail.com if you would like to help."))
-                        _util.application_error(_("MIL-HDBK-217FN1 models not yet implemented.\n \
+                        _util.rtk_error(_("MIL-HDBK-217FN1 models not yet implemented.\n \
                                                Contact weibullguy@gmail.com if you would like to help."))
                     elif(idx == 5):         # MIL-HDBK-217FN2 Part Stress
                         # TODO: Implement MIL-HDBK-217FN2 part stress model.
                         application.user_log.info(_("MIL-HDBK-217FN2 models not yet implemented.\n \
                                                   Contact weibullguy@gmail.com if you would like to help."))
-                        _util.application_error(_("MIL-HDBK-217FN2 models not yet implemented.\n \
+                        _util.rtk_error(_("MIL-HDBK-217FN2 models not yet implemented.\n \
                                                 Contact weibullguy@gmail.com if you would like to help."))
                     elif(idx == 6):         # MIL-HDBK-217FN2 Part Count
                         # TODO: Implement MIL-HDBK-217FN2 part count model.
                         application.user_log.info(_("MIL-HDBK-217FN2 models not yet implemented.\n \
                                                   Contact weibullguy@gmail.com if you would like to help."))
-                        _util.application_error(_("MIL-HDBK-217FN2 models not yet implemented.\n \
+                        _util.rtk_error(_("MIL-HDBK-217FN2 models not yet implemented.\n \
                                                 Contact weibullguy@gmail.com if you would like to help."))
                     elif(idx == 7):         # NSWC Mechanical
                         # TODO: Implement NSWC-07 model.
                         application.user_log.info(_("NSWC-07 Mechanical models not yet implemented.\n \
                                                   Contact weibullguy@gmail.com if you would like to help."))
-                        _util.application_error(_("NSWC-07 Mechanical models not yet implemented.\n \
+                        _util.rtk_error(_("NSWC-07 Mechanical models not yet implemented.\n \
                                                 Contact weibullguy@gmail.com if you would like to help."))
 
                     lambdaa = treemodel.get_value(row, 28)
@@ -1554,52 +1554,60 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     return(lambdad)
 
 
-def criticality_analysis(_CA_, _ItemCA_, _RPN_):
+def criticality_analysis(ModeCA, ItemCA, RPN):
     """
     Function to perform criticality calculations for FMECA.
 
-    Keyword Arguments:
-    _CA_     -- list containing inputs for the MIL-STD-1629A mode criticality
+    @param ModeCA: list containing inputs for the MIL-STD-1629A mode
+                   criticality calculation.
+    @type ModeCA: list of mixed types
+    @param ItemCA: list containing inputs for the MIL-STD-1629A item
+                   criticality calculation.
+    @type ItemCA: list of mixed types
+    @param RPN: list containing inputs for the automotive criticality
                 calculation.
-    _ItemCA_ -- list containing inputs for the MIL-STD-1629A item criticality
-                calculation.
-    _RPN_    -- list containing inputs for the automotive criticality
-                calculation.
+    @type RPN: list of mixed types
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
     _item_crit = u''
 
-# First, calculate the mode criticality and assign result to position 4.
-# Second, calculate the mode failure rate and assign result to position 5.
-# Third, calculate the item criticality and assign result to position 6.
-    _keys = _CA_.keys()
+    # First, calculate the mode criticality and assign result to position 4.
+    # Second, calculate the mode failure rate and assign result to position 5.
+    # Third, calculate the item criticality and assign result to position 6.
+    _keys = ModeCA.keys()
     for i in range(len(_keys)):
-        _CA_[_keys[i]][4] = _CA_[_keys[i]][0] * _CA_[_keys[i]][1] * _CA_[_keys[i]][2] * _CA_[_keys[i]][3]
-        _CA_[_keys[i]][5] = _CA_[_keys[i]][1] * _CA_[_keys[i]][2]
+        ModeCA[_keys[i]][4] = ModeCA[_keys[i]][0] * ModeCA[_keys[i]][1] * \
+                              ModeCA[_keys[i]][2] * ModeCA[_keys[i]][3]
+        ModeCA[_keys[i]][5] = ModeCA[_keys[i]][1] * ModeCA[_keys[i]][2]
 
-# Now calculate the item criticality in accordance with MIL-STD-1629A.
-    _keys = _ItemCA_.keys()
+    # Now calculate the item criticality in accordance with MIL-STD-1629A.
+    _keys = ItemCA.keys()
     for i in range(len(_keys)):
-        _cats = sorted(list(set([j[1] for j in _ItemCA_[_keys[i]]])))
+        _cats = sorted(list(set([j[1] for j in ItemCA[_keys[i]]])))
         for k in range(len(_cats)):
             _crit = 0.0
-            _modes = [j[0] for j in _ItemCA_[_keys[i]] if j[1] == _cats[k]]
+            _modes = [j[0] for j in ItemCA[_keys[i]] if j[1] == _cats[k]]
             for l in range(len(_modes)):
-                _crit += _CA_[_modes[l]][4]
+                _crit += ModeCA[_modes[l]][4]
 
-            _item_crit = _item_crit + _cats[k] + ": " + str(fmt.format(_crit)) + "\n"
+            if _cats[k] is not None and _cats[k] != '' and \
+               _crit is not None and _crit != '':
+                _item_crit = _item_crit + _util.none_to_string(_cats[k]) + \
+                             ": " + \
+                             str(fmt.format(_util.none_to_string(_crit))) + \
+                             "\n"
 
-        _ItemCA_[_keys[i]].append(_item_crit)
+        ItemCA[_keys[i]].append(_item_crit)
 
-# Now calculate the RPN criticality.
-    _keys = _RPN_.keys()
+    # Now calculate the RPN criticality.
+    _keys = RPN.keys()
     for i in range(len(_keys)):
-        _RPN_[_keys[i]][3] = _RPN_[_keys[i]][0] * _RPN_[_keys[i]][1] * _RPN_[_keys[i]][2]
-        _RPN_[_keys[i]][7] = _RPN_[_keys[i]][4] * _RPN_[_keys[i]][5] * _RPN_[_keys[i]][6]
+        RPN[_keys[i]][3] = RPN[_keys[i]][0] * RPN[_keys[i]][1] * RPN[_keys[i]][2]
+        RPN[_keys[i]][7] = RPN[_keys[i]][4] * RPN[_keys[i]][5] * RPN[_keys[i]][6]
 
-    return(_CA_, _ItemCA_, _RPN_)
+    return ModeCA, ItemCA, RPN
 
 
 def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
