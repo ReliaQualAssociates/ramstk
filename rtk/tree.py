@@ -704,7 +704,7 @@ class TreeWindow(gtk.Window):
         """
 
         if(_conf.RTK_PROG_INFO[2] == ''):
-            _util.application_error(_("There is no active RTK Project.  You must open a Project before importing data."),
+            _util.rtk_error(_("There is no active RTK Project.  You must open a Project before importing data."),
                                     _image_='warning')
             return True
         else:

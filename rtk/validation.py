@@ -1169,7 +1169,7 @@ class Validation(object):
 
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Failed to add V&V task to "
+                _util.rtk_error(_(u"Failed to add V&V task to "
                                           u"revision %d") %
                                         self._app.REVISION.revision_id)
                 self._app.user_log.error(

@@ -338,7 +338,7 @@ def _calculate_srr_risk(model, row, risk):
         if risk[_software_id][6] / risk[_software_id][5] == 1:
             _ratios[2] = 1
     except ZeroDivisionError:
-        _util.application_error(_(u"Attempted to divide by zero when "
+        _util.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the anomaly management risk "
                                   u"for %s.  Perhaps you forgot to answer one "
                                   u"or more questions.  If the problem "
@@ -369,7 +369,7 @@ def _calculate_srr_risk(model, row, risk):
         if risk[_software_id][11] / risk[_software_id][10] == 1:
             _ratios[1] = 1
     except ZeroDivisionError:
-        _util.application_error(_(u"Attempted to divide by zero when "
+        _util.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the software quality risk for "
                                   u"%s.  Perhaps you forgot to answer one or "
                                   u"more questions.  If the problem persists, "
@@ -461,7 +461,7 @@ def _calculate_pdr_risk(model, row, risk):
         if risk[_software_id][38] / risk[_software_id][37] > 0.75:
             _ratios[4] = 1
     except ZeroDivisionError:
-        _util.application_error(_(u"Attempted to divide by zero when "
+        _util.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the software quality risk for "
                                   u"%s.  Perhaps you forgot to answer one or "
                                   u"more questions.  If the problem persists, "
@@ -577,7 +577,7 @@ def _calculate_cdr_risk(model, row, risk):
             if risk[_software_id][34] / risk[_software_id][10] > 0.5:
                 _ratios[17] = 1
         except ZeroDivisionError:
-            _util.application_error(_(u"Attempted to divide by zero when "
+            _util.rtk_error(_(u"Attempted to divide by zero when "
                                       u"calculating the software quality risk "
                                       u"for %s.  Perhaps you forgot to answer "
                                       u"one or more questions.  If the "
@@ -602,7 +602,7 @@ def _calculate_cdr_risk(model, row, risk):
             if risk[_software_id][57] / risk[_software_id][56] > 0.75:
                 _ratios[6] = 1
         except ZeroDivisionError:
-            _util.application_error(_(u"Attempted to divide by zero when "
+            _util.rtk_error(_(u"Attempted to divide by zero when "
                                       u"calculating the software quality risk "
                                       u"for %s.  Perhaps you forgot to answer "
                                       u"one or more questions.  If the "
@@ -711,7 +711,7 @@ def _calculate_trr_risk(model, row, risk):
     try:
         _SL = (_HLOC / _SLOC) + (1.4 * _ALOC / _SLOC)
     except ZeroDivisionError:
-        _util.application_error(_(u"Attempted to divide by zero when "
+        _util.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the software language risk "
                                   u"for %s.  Perhaps you forgot to answer one "
                                   u"or more questions.  If the problem "
@@ -730,7 +730,7 @@ def _calculate_trr_risk(model, row, risk):
         try:
             _SX = (1.5 * _ax + _bx + 0.8 * _cx) / _NM
         except ZeroDivisionError:
-            _util.application_error(_(u"Attempted to divide by zero when "
+            _util.rtk_error(_(u"Attempted to divide by zero when "
                                       u"calculating the software complexity "
                                       u"risk for %s.  Perhaps you forgot to "
                                       u"answer one or more questions.  If the "
@@ -747,7 +747,7 @@ def _calculate_trr_risk(model, row, risk):
         try:
             _SM = (0.9 * _um + _wm + 2.0 * _xm) / _NM
         except ZeroDivisionError:
-            _util.application_error(_(u"Attempted to divide by zero when "
+            _util.rtk_error(_(u"Attempted to divide by zero when "
                                       u"calculating the software modularity "
                                       u"risk for %s.  Perhaps you forgot to "
                                       u"answer one or more questions.  If the "
@@ -4156,7 +4156,7 @@ class Software(object):
             self.chkTRRUnitQCQ14.set_active(self._dic_trr[_software_id][22])
 
             if _error:
-                _util.application_error(_(u"Unable to retrieve all risk "
+                _util.rtk_error(_(u"Unable to retrieve all risk "
                                           u"analysis information for "
                                           u"software module '%s'.") %
                                         self.description)
@@ -5054,7 +5054,7 @@ class Software(object):
                                                   commit=True)
 
             if not _results:
-                _util.application_error(_(u"Failed to save information for "
+                _util.rtk_error(_(u"Failed to save information for "
                                           u"software module %s.  If the "
                                           u"problem persists you can report "
                                           u"it to bugs@reliaqual.com.") %
@@ -5321,7 +5321,7 @@ class Software(object):
                                               commit=True)
 
         if not _results:
-            _util.application_error(_(u"Failed to save test selection "
+            _util.rtk_error(_(u"Failed to save test selection "
                                       u"information to the open RTK program "
                                       u"database."))
             return True

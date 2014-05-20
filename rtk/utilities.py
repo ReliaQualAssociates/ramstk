@@ -96,7 +96,7 @@ def read_configuration():
 
     _conf.CONF_DIR = conf.conf_dir
     if not dir_exists(_conf.CONF_DIR):
-        application_error(_("Configuration directory %s does not exist.  Exiting.") % _conf.CONF_DIR)
+        rtk_error(_("Configuration directory %s does not exist.  Exiting.") % _conf.CONF_DIR)
 
     _conf.ICON_DIR = conf.conf_dir + icondir + '/'
     if not dir_exists(_conf.ICON_DIR):
@@ -787,41 +787,76 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
         return False
 
 
-def application_error(_prompt_, _image_='important', _parent_=None):
+def rtk_error(prompt, _parent=None):
     """
     Dialog to display runtime errors to the user.
 
-    @param _prompt_: the prompt to display in the dialog.
-    @type _prompt_: string
-    @param _image_: the icon to display in the dialog.
-    @type _image_: gtk.Image
-    @param _parent_: the parent gtk.Window(), if any, for the dialog.
-    @type _paranet_: gtk.Window
-    @return: False if successful or True if an error is encountered.
-    @rtype: boolean
+    @param prompt: the prompt to display in the dialog.
+    @type prompt: string
+    @param _parent: the parent gtk.Window(), if any, for the dialog.
+    @type _parent: gtk.Window
     """
 
-    _dialog = _widg.make_dialog(_(u"RTK Error"),
-                                dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-    _hbox = gtk.HBox()
-
-    _file_image = _conf.ICON_DIR + '32x32/' + _image_ + '.png'
-    _image = gtk.Image()
-    _image.set_from_file(_file_image)
-    _hbox.pack_start(_image)
-
-    _label = _widg.make_label(_prompt_, width=400, height=200, wrap=True)
-    _label.set_justify(gtk.JUSTIFY_LEFT)
-    _hbox.pack_end(_label)
-    _dialog.vbox.pack_start(_hbox)          # pylint: disable=E1101
-    _hbox.show_all()
-
+    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
+                                message_format=prompt)
     _dialog.run()
-
     _dialog.destroy()
 
-    return False
+
+def rtk_information(prompt, _parent=None):
+    """
+    Dialog to display runtime information to the user.
+
+    @param prompt: the prompt to display in the dialog.
+    @type prompt: string
+    @param _parent: the parent gtk.Window(), if any, for the dialog.
+    @type _parent: gtk.Window
+    """
+
+    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE,
+                                message_format=prompt)
+    _dialog.run()
+    _dialog.destroy()
+
+
+def rtk_question(prompt, _parent=None):
+    """
+    Dialog to display runtime questions to the user.
+
+    @param prompt: the prompt to display in the dialog.
+    @type prompt: string
+    @param _parent: the parent gtk.Window(), if any, for the dialog.
+    @type _parent: gtk.Window
+    @return: gtk.RESPONSE_YES or gtk.RESPONSE_NO
+    @rtype: GTK response type
+    """
+
+    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO,
+                                message_format=prompt)
+    _response = _dialog.run()
+    _dialog.destroy()
+
+    return _response
+
+
+def rtk_warning(prompt, _parent=None):
+    """
+    Dialog to display runtime warnings to the user.
+
+    @param prompt: the prompt to display in the dialog.
+    @type prompt: string
+    @param _parent: the parent gtk.Window(), if any, for the dialog.
+    @type _parent: gtk.Window
+    """
+
+    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE,
+                                message_format=prompt)
+    _dialog.run()
+    _dialog.destroy()
 
 
 def add_items(title, prompt=""):
@@ -1079,7 +1114,7 @@ def add_parts_system_hierarchy(__widget, app):
         _assembly_id += 1
 
     if _n_added != len(_results):
-        application_error(_(u"There was an error adding one or more "
+        rtk_error(_(u"There was an error adding one or more "
                             u"components to the database.  Check the RTK "
                             u"error log for more details."))
 
@@ -1484,6 +1519,8 @@ def date_select(__widget, entry=None):
     @type __widget: gtk.Widget
     @param entry: the gtk.Entry() widget in which to display the date.
     @type entry: gtk.Entry
+    @return: _date
+    @rtype: date string (YYYY-MM-DD)
     """
 
     from datetime import datetime
@@ -1506,6 +1543,7 @@ def date_select(__widget, entry=None):
 
     if entry is not None:
         entry.set_text(_date)
+        entry.grab_focus()
 
     return _date
 

@@ -962,7 +962,7 @@ class Function(object):
             try:
                 _model_.append(None, _data_)
             except TypeError:
-                _util.application_error(_(u"Failed to load FMEA/FMECA failure "
+                _util.rtk_error(_(u"Failed to load FMEA/FMECA failure "
                                           u"mode %d" % _results_[i][0]))
 
         return False

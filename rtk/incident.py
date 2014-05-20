@@ -1214,7 +1214,7 @@ class Incident(object):
         try:
             self.n_incidents = len(results)
         except ValueError:
-            _util.application_error(_(u"There are no incidents matching the "
+            _util.rtk_error(_(u"There are no incidents matching the "
                                       u"specified criteria."))
             return True
 

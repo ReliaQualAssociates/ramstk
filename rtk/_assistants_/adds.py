@@ -1808,7 +1808,7 @@ class CreateDataSet:
 
         if(_n_inconsistent_ > 0):
             _prompt_ = _(u"There were %d records with inconsistent information.  These were not used in the creation of the dataset. Please see file '%s' for details." % (_n_inconsistent_, _conf.LOG_DIR + 'RTK_import.log'))
-            _util.application_error(_prompt_)
+            _util.rtk_error(_prompt_)
 
 # Load the dataset gtk.TreeView with the newly created dataset if it was
 # created in teh RTK Program database.

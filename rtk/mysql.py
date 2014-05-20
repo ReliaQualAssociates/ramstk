@@ -143,7 +143,7 @@ class MySQLInterface:
                 except:
                     self._app._log.error("mysql.py: MySQL error:")
                     self._app._log.error(repr(e))
-                    _util.application_error(repr(e[1]))
+                    _util.rtk_error(repr(e[1]))
                     results = False
             else:
                 try:
@@ -152,28 +152,28 @@ class MySQLInterface:
                 except:
                     self._app._log.error("mysql.py: MySQL error:")
                     self._app._log.error(repr(e))
-                    _util.application_error(repr(e[1]))
+                    _util.rtk_error(repr(e[1]))
                     results = False
 
         except MySQLdb.IntegrityError, e:
             self._app._log.error("mysql.py: MySQL integrity error:")
             self._app._log.error(repr(e))
-            _util.application_error(repr(e[1]))
+            _util.rtk_error(repr(e[1]))
             results = False
         except MySQLdb.OperationalError, e:
             self._app._log.error("mysql.py: MySQL operational error:")
             self._app._log.error(repr(e))
-            _util.application_error(repr(e[1]))
+            _util.rtk_error(repr(e[1]))
             results = False
         except MySQLdb.Error, e:
             self._app._log.error("mysql.py: MySQL error:")
             self._app._log.error(repr(e))
-            _util.application_error(repr(e[1]))
+            _util.rtk_error(repr(e[1]))
             results = False
         except MySQLdb.Warning, e:
             self._app._log.error("mysql.py: MySQL warning:")
             self._app._log.error(repr(e))
-            _util.application_error(repr(e[1]))
+            _util.rtk_error(repr(e[1]))
             results = False
 
         cur.close()
