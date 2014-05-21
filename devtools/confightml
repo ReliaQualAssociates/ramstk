@@ -3,14 +3,14 @@
 # The list of objects to document.  Objects can be named using
 # dotted names, module filenames, or package directory names.
 # Alases for this option include "objects" and "values".
-modules: reliafree/*.py reliafree/capacitors/*.py reliafree/connections/*.py reliafree/inductors/*.py reliafree/integrated_circuits/*.py reliafree/meters/*.py reliafree/miscellaneous/*.py reliafree/relays/*.py reliafree/resistors/*.py reliafree/semiconductors/*.py reliafree/switches/*.py
+modules: rtk/*.py rtk/capacitors/*.py rtk/connections/*.py rtk/inductors/*.py rtk/integrated_circuits/*.py rtk/meters/*.py rtk/miscellaneous/*.py rtk/relays/*.py rtk/resistors/*.py rtk/semiconductors/*.py rtk/switches/*.py
 
 # The type of output that should be generated.  Should be one
 # of: html, text, latex, dvi, ps, pdf.
 output: html
 
 # The path to the output directory.  May be relative or absolute.
-target: docs/developer/html/
+target: docs/generated
 
 # An integer indicating how verbose epydoc should be.  The default
 # value is 0; negative values will supress warnings and errors;
@@ -73,14 +73,14 @@ include-log: no
 ### Output options
 
 # The documented project's name.
-name: RelKit
+name: RTK
 
 # The CSS stylesheet for HTML output.  Can be the name of a builtin
 # stylesheet, or the name of a file.
 #css: white
 
 # The documented project's URL.
-url: https://sourceforge.net/apps/trac/reliafree/wiki
+url: https://rtk.reliaqual.com
 
 # HTML code for the project link in the navigation bar.  If left
 # unspecified, the project link will be generated based on the
