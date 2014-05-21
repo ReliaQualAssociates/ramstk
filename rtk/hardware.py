@@ -71,16 +71,17 @@ _ = gettext.gettext
 
 class Hardware(object):
     """
-    The Hardware class
+    The Hardware class represents the hardware items (assemblies and
+    components) in the system being analyzed.
     """
 
-    # TODO: Write code to update Work Book widgets when editing the Module Book.
+# TODO: Write code to update Work Book widgets when editing the Module Book.
 
     def __init__(self, application):
         """
-        Initializes the HARDWARE class.
+        Initializes the Hardware class.
 
-        @param application: the RTK application.
+        @param application: the current instance of the RTK application.
         """
 
         # Define private HARDWARE class scalar attributes.
@@ -1628,7 +1629,7 @@ class Hardware(object):
                     if _risk <= _conf.RTK_RISK_POINTS[0]:
                         _color_ = '#90EE90'  # Green
                     elif _risk > _conf.RTK_RISK_POINTS[0] and \
-                                    _risk <= _conf.RTK_RISK_POINTS[1]:
+                         _risk <= _conf.RTK_RISK_POINTS[1]:
                         _color_ = '#FFFF79'  # Yellow
                     else:
                         _color_ = '#FFC0CB'  # Red
@@ -1669,9 +1670,9 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the similar item analysis for the selected HARDWARE.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: Hardware object
-            @param notebook: the HARDWARE class gtk.Notebook() widget.
+            @param self: the current instance of a Hardware class.
+            @type self: the current instance of the Hardware class
+            @param notebook: the Hardware class gtk.Notebook() widget.
             @type notebook: gtk.Notebook
             """
 
@@ -1792,8 +1793,9 @@ class Hardware(object):
 
                 self.tvwSIA.append_column(_column_)
 
-            self.tvwSIA.set_tooltip_text(_(
-                u"Displays the similar items analysis for the selected Assembly."))
+            self.tvwSIA.set_tooltip_text(_(u"Displays the similar items "
+                                           u"analysis for the selected "
+                                           u"assembly."))
             self.tvwSIA.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
             _heading_ = _(u"Similar Item\nAnalysis")
@@ -1802,8 +1804,9 @@ class Hardware(object):
             self.lblSIA.set_alignment(xalign=0.5, yalign=0.5)
             self.lblSIA.set_justify(gtk.JUSTIFY_CENTER)
             self.lblSIA.show_all()
-            self.lblSIA.set_tooltip_text(_(
-                u"Displays the similar item analysis for the selected Assembly."))
+            self.lblSIA.set_tooltip_text(_(u"Displays the similar item "
+                                           u"analysis for the selected "
+                                           u"assembly."))
 
             notebook.insert_page(self.fraSIA,
                                  tab_label=self.lblSIA,
@@ -1816,9 +1819,10 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the assessment inputs for the selected HARDWARE.
 
-            Keyword Arguments:
-            self     -- the current instance of a HARDWARE class.
-            notebook -- the HARDWARE class gtk.Notebook() widget.
+            @param self: the current instance of a Hardware class.
+            @type self: the current instance of the Hardware class
+            @param notebook: the Hardware class gtk.Notebook() widget.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1878,241 +1882,262 @@ class Hardware(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display the assessment inputs.      #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            # Create the labels for quadrant #1.
-            _labels_ = [_(u"Failure Rate [h(t)] Type:"),
-                        _(u"Calculation Model:"),
-                        _(u"Specified h(t):"), _(u"Specified MTBF:"),
-                        _(u"Software h(t):"), _(u"Additive Adj:"),
-                        _(u"Multiplicative Adj:"), _(u"Allocation Weight:"),
-                        _(u"Failure Distribution:"), _(u"Scale:"),
-                        _(u"Shape:"),
-                        _(u"Location:"), _(u"Active Environ:"),
-                        _(u"Active Temp:"), _(u"Dormant Environ:"),
-                        _(u"Dormant Temp:"), _(u"Duty Cycle:"),
-                        _(u"Humidity:"),
-                        _(u"Vibration:"), _(u"RPM:"), _(u"Weibull File:")]
+            # Load all the gtk.ComboBox() widgets.
+            _query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbHRType, _results)
 
-            (_x_pos_,
-             _y_pos_) = _widg.make_labels(_labels_, _fxdRelInputQuad1_, 5, 5)
-            _x_pos_ += 30
+            _query = "SELECT fld_model_noun FROM tbl_calculation_model"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbCalcModel, _results)
+
+            _query = "SELECT fld_distribution_noun FROM tbl_distributions"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbFailDist, _results)
+
+            _query = "SELECT fld_active_environ_code, fld_active_environ_noun \
+                      FROM tbl_active_environs"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _model = self.cmbActEnviron.get_model()
+            _model.clear()
+            self.cmbActEnviron.append_text('')
+            for i in range(len(_results)):
+                self.cmbActEnviron.append_text(_results[i][0] + ' - ' +
+                                               _results[i][1])
+
+            _query = "SELECT fld_dormant_environ_noun \
+                      FROM tbl_dormant_environs"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbDormantEnviron, _results)
+
+            # Create the labels for quadrant #1.
+            _labels = [_(u"Failure Rate [h(t)] Type:"),
+                       _(u"Calculation Model:"),
+                       _(u"Specified h(t):"), _(u"Specified MTBF:"),
+                       _(u"Software h(t):"), _(u"Additive Adj:"),
+                       _(u"Multiplicative Adj:"), _(u"Allocation Weight:"),
+                       _(u"Failure Distribution:"), _(u"Scale:"), _(u"Shape:"),
+                       _(u"Location:"), _(u"Active Environ:"),
+                       _(u"Active Temp:"), _(u"Dormant Environ:"),
+                       _(u"Dormant Temp:"), _(u"Duty Cycle:"),
+                       _(u"Humidity:"), _(u"Vibration:"), _(u"RPM:"),
+                       _(u"Weibull File:")]
+
+            (_x_pos,
+             _y_pos) = _widg.make_labels(_labels, _fxdRelInputQuad1_, 5, 5)
+            _x_pos += 30
 
             if not self.part:
-                _labels_ = [_(u"Burn-In Temp:"), _(u"Burn-In Time:"),
-                            _(u"# of Lab Devices:"), _(u"Lab Test Time:"),
-                            _(u"Lab Test Temp:"), _(u"# of Lab Failures:"),
-                            _(u"Field Op Time:"), _(u"# of Field Failures:")]
-                (_x_pos_r_,
-                 _y_pos_r_) = _widg.make_labels(_labels_,
-                                                self.fxdRelInputQuad1, 5, 5)
-                _x_pos_r_ += 30
+                _labels = [_(u"Burn-In Temp:"), _(u"Burn-In Time:"),
+                           _(u"# of Lab Devices:"), _(u"Lab Test Time:"),
+                           _(u"Lab Test Temp:"), _(u"# of Lab Failures:"),
+                           _(u"Field Op Time:"), _(u"# of Field Failures:")]
+                (_x_pos_r,
+                 _y_pos_r) = _widg.make_labels(_labels,
+                                               self.fxdRelInputQuad1, 5, 5)
+                _x_pos_r += 30
 
             # Place the quadrant #1 widgets.
-            self.cmbHRType.set_tooltip_text(_(
-                u"Selects the method of assessing the failure intensity for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.cmbHRType, _x_pos_, _y_pos_[0])
-            _query_ = "SELECT fld_hr_type_noun FROM tbl_hr_type"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbHRType, _results_)
+            self.cmbHRType.set_tooltip_text(_(u"Selects the method of "
+                                              u"assessing the failure "
+                                              u"intensity for the selected "
+                                              u"assembly."))
+            self.cmbCalcModel.set_tooltip_text(_(u"Selects the reliability "
+                                                 u"prediction model for the "
+                                                 u"selected assembly."))
+            self.txtSpecifiedHt.set_tooltip_text(_(u"Displays the specified "
+                                                   u"failure intensity for "
+                                                   u"the selected assembly."))
+            self.txtSpecifiedMTBF.set_tooltip_text(_(u"Displays the specified "
+                                                     u"mean time between "
+                                                     u"failure (MTBF) for the "
+                                                     u"selected assembly."))
+            self.txtSoftwareHt.set_tooltip_text(_(u"Displays the software "
+                                                  u"failure rate for the "
+                                                  u"selected assembly."))
+            self.txtAddAdj.set_tooltip_text(_(u"Displays any reliability "
+                                              u"assessment additive "
+                                              u"adjustment factor for the "
+                                              u"selected assembly."))
+            self.txtMultAdj.set_tooltip_text(_(u"Displays any reliability "
+                                               u"assessment multiplicative "
+                                               u"adjustment factor for the "
+                                               u"selected assembly."))
+            self.txtAllocationWF.set_tooltip_text(_(u"Displays the "
+                                                    u"reliability allocation "
+                                                    u"weighting factor for "
+                                                    u"the selected assembly."))
+            self.cmbFailDist.set_tooltip_text(_(u"Selects the distribution of "
+                                                u"times to failure for the "
+                                                u"selected assembly."))
+            self.txtFailScale.set_tooltip_text(_(u"Displays the time to "
+                                                 u"failure distribution scale "
+                                                 u"factor."))
+            self.txtFailShape.set_tooltip_text(_(u"Displays the time to "
+                                                 u"failure distribution shape "
+                                                 u"factor."))
+            self.txtFailLoc.set_tooltip_text(_(u"Displays the time to failure "
+                                               u"distribution location "
+                                               u"factor."))
+            self.cmbActEnviron.set_tooltip_text(_(u"Selects the active "
+                                                  u"operating environment for "
+                                                  u"the selected assembly."))
+            self.txtActTemp.set_tooltip_text(_(u"Displays the active "
+                                               u"environment operating "
+                                               u"temperature for the selected "
+                                               u"assembly."))
+            self.cmbDormantEnviron.set_tooltip_text(_(u"Selects the dormant "
+                                                      u"environment for the "
+                                                      u"selected assembly."))
+            self.txtDormantTemp.set_tooltip_text(_(u"Displays the dormant "
+                                                   u"environment temperature "
+                                                   u"for the selected "
+                                                   u"assembly."))
+            self.txtDutyCycle.set_tooltip_text(_(u"Displays the operating "
+                                                 u"duty cycle for the "
+                                                 u"selected assembly."))
+            self.txtHumidity.set_tooltip_text(_(u"Displays the active "
+                                                u"environment operating "
+                                                u"humidity for the selected "
+                                                u"assembly."))
+            self.txtVibration.set_tooltip_text(_(u"Displays the active "
+                                                 u"environment operating "
+                                                 u"vibration level for the "
+                                                 u"selected assembly."))
+            self.txtRPM.set_tooltip_text(_(u"Displays the active environment "
+                                           u"operating RPM for the selected "
+                                           u"assembly."))
+            self.txtWeibullFile.set_tooltip_text(_(u"Displays the URL to a "
+                                                   u"survival analysis file "
+                                                   u"for the selected "
+                                                   u"assembly."))
+
+            _fxdRelInputQuad1_.put(self.cmbHRType, _x_pos, _y_pos[0])
+            _fxdRelInputQuad1_.put(self.cmbCalcModel, _x_pos, _y_pos[1])
+            _fxdRelInputQuad1_.put(self.txtSpecifiedHt, _x_pos, _y_pos[2])
+            _fxdRelInputQuad1_.put(self.txtSpecifiedMTBF, _x_pos, _y_pos[3])
+            _fxdRelInputQuad1_.put(self.txtSoftwareHt, _x_pos, _y_pos[4])
+            _fxdRelInputQuad1_.put(self.txtAddAdj, _x_pos, _y_pos[5])
+            _fxdRelInputQuad1_.put(self.txtMultAdj, _x_pos, _y_pos[6])
+            _fxdRelInputQuad1_.put(self.txtAllocationWF, _x_pos, _y_pos[7])
+            _fxdRelInputQuad1_.put(self.cmbFailDist, _x_pos, _y_pos[8])
+            _fxdRelInputQuad1_.put(self.txtFailScale, _x_pos, _y_pos[9])
+            _fxdRelInputQuad1_.put(self.txtFailShape, _x_pos, _y_pos[10])
+            _fxdRelInputQuad1_.put(self.txtFailLoc, _x_pos, _y_pos[11])
+            _fxdRelInputQuad1_.put(self.cmbActEnviron, _x_pos, _y_pos[12])
+            _fxdRelInputQuad1_.put(self.txtActTemp, _x_pos, _y_pos[13])
+            _fxdRelInputQuad1_.put(self.cmbDormantEnviron, _x_pos, _y_pos[14])
+            _fxdRelInputQuad1_.put(self.txtDormantTemp, _x_pos, _y_pos[15])
+            _fxdRelInputQuad1_.put(self.txtDutyCycle, _x_pos, _y_pos[16])
+            _fxdRelInputQuad1_.put(self.txtHumidity, _x_pos, _y_pos[17])
+            _fxdRelInputQuad1_.put(self.txtVibration, _x_pos, _y_pos[18])
+            _fxdRelInputQuad1_.put(self.txtRPM, _x_pos, _y_pos[19])
+            _fxdRelInputQuad1_.put(self.txtWeibullFile, _x_pos, _y_pos[20])
+
             self.cmbHRType.connect('changed', self._callback_combo, 35)
-
-            self.cmbCalcModel.set_tooltip_text(_(
-                u"Selects the reliability prediction model for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.cmbCalcModel, _x_pos_, _y_pos_[1])
-            _query_ = "SELECT fld_model_noun FROM tbl_calculation_model"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbCalcModel, _results_)
             self.cmbCalcModel.connect('changed', self._callback_combo, 10)
-
-            self.txtSpecifiedHt.set_tooltip_text(_(
-                u"Displays the specified failure intensity for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtSpecifiedHt, _x_pos_, _y_pos_[2])
             self.txtSpecifiedHt.connect('focus-out-event',
                                         self._callback_entry, 'float', 34)
-
-            self.txtSpecifiedMTBF.set_tooltip_text(_(
-                u"Displays the specified mean time between failure (MTBF) for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtSpecifiedMTBF, _x_pos_, _y_pos_[3])
             self.txtSpecifiedMTBF.connect('focus-out-event',
                                           self._callback_entry, 'float', 51)
-
-            self.txtSoftwareHt.set_tooltip_text(_(
-                u"Displays the software failure rate for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtSoftwareHt, _x_pos_, _y_pos_[4])
             self.txtSoftwareHt.connect('focus-out-event',
                                        self._callback_entry, 'float', 33)
-
-            self.txtAddAdj.set_tooltip_text(_(
-                u"Displays any reliability assessment additive adjustment factor for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtAddAdj, _x_pos_, _y_pos_[5])
             self.txtAddAdj.connect('focus-out-event',
                                    self._callback_entry, 'float', 2)
-
-            self.txtMultAdj.set_tooltip_text(_(
-                u"Displays any reliability assessment multiplicative adjustment factor for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtMultAdj, _x_pos_, _y_pos_[6])
             self.txtMultAdj.connect('focus-out-event',
                                     self._callback_entry, 'float', 57)
-
-            self.txtAllocationWF.set_tooltip_text(_(
-                u"Displays the reliability allocation weighting factor for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtAllocationWF, _x_pos_, _y_pos_[7])
             self.txtAllocationWF.connect('focus-out-event',
                                          self._callback_entry, 'float', 3)
-
-            self.cmbFailDist.set_tooltip_text(_(
-                u"Selects the distribution of times to failure for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.cmbFailDist, _x_pos_, _y_pos_[8])
-            _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbFailDist, _results_)
             self.cmbFailDist.connect('changed', self._callback_combo, 24)
-
-            self.txtFailScale.set_tooltip_text(
-                _(u"Displays the time to failure distribution scale factor."))
-            _fxdRelInputQuad1_.put(self.txtFailScale, _x_pos_, _y_pos_[9])
             self.txtFailScale.connect('focus-out-event',
                                       self._callback_entry, 'float', 25)
-
-            self.txtFailShape.set_tooltip_text(
-                _(u"Displays the time to failure distribution shape factor."))
-            _fxdRelInputQuad1_.put(self.txtFailShape, _x_pos_, _y_pos_[10])
             self.txtFailShape.connect('focus-out-event',
                                       self._callback_entry, 'float', 26)
-
-            self.txtFailLoc.set_tooltip_text(_(
-                u"Displays the time to failure distribution location factor."))
-            _fxdRelInputQuad1_.put(self.txtFailLoc, _x_pos_, _y_pos_[11])
             self.txtFailLoc.connect('focus-out-event',
                                     self._callback_entry, 'float', 27)
-
-            self.cmbActEnviron.set_tooltip_text(_(
-                u"Selects the active operating environment for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.cmbActEnviron, _x_pos_, _y_pos_[12])
             self.cmbActEnviron.connect('changed', self._callback_combo, 22)
-            _query_ = "SELECT fld_active_environ_code, fld_active_environ_noun \
-                       FROM tbl_active_environs"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _model_ = self.cmbActEnviron.get_model()
-            _model_.clear()
-            self.cmbActEnviron.append_text('')
-            for i in range(len(_results_)):
-                self.cmbActEnviron.append_text(_results_[i][0] + ' - ' +
-                                               _results_[i][1])
-
-            self.txtActTemp.set_tooltip_text(_(
-                u"Displays the active environment operating temperature for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtActTemp, _x_pos_, _y_pos_[13])
             self.txtActTemp.connect('focus-out-event',
                                     self._callback_entry, 'float', 80)
-
-            self.cmbDormantEnviron.set_tooltip_text(_(
-                u"Selects the dormant environment for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.cmbDormantEnviron, _x_pos_,
-                                   _y_pos_[14])
-            _query_ = "SELECT fld_dormant_environ_noun \
-                       FROM tbl_dormant_environs"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbDormantEnviron, _results_)
             self.cmbDormantEnviron.connect('changed', self._callback_combo, 23)
-
-            self.txtDormantTemp.set_tooltip_text(_(
-                u"Displays the dormant environment temperature for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtDormantTemp, _x_pos_, _y_pos_[15])
             self.txtDormantTemp.connect('focus-out-event',
                                         self._callback_entry, 'float', 81)
-
-            self.txtDutyCycle.set_tooltip_text(_(
-                u"Displays the operating duty cycle for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtDutyCycle, _x_pos_, _y_pos_[16])
             self.txtDutyCycle.connect('focus-out-event',
                                       self._callback_entry, 'float', 20)
-
-            self.txtHumidity.set_tooltip_text(_(
-                u"Displays the active environment operating humidity for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtHumidity, _x_pos_, _y_pos_[17])
             self.txtHumidity.connect('focus-out-event',
                                      self._callback_entry, 'float', 37)
-
-            self.txtVibration.set_tooltip_text(_(
-                u"Displays the active environment operating vibration level for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtVibration, _x_pos_, _y_pos_[18])
             self.txtVibration.connect('focus-out-event',
                                       self._callback_entry, 'float', 84)
-
-            self.txtRPM.set_tooltip_text(_(
-                u"Displays the active environment operating RPM for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtRPM, _x_pos_, _y_pos_[19])
             self.txtRPM.connect('focus-out-event',
                                 self._callback_entry, 'float', 76)
-
-            self.txtWeibullFile.set_tooltip_text(_(
-                u"Displays the URL to a survival analysis file for the selected assembly."))
-            _fxdRelInputQuad1_.put(self.txtWeibullFile, _x_pos_, _y_pos_[20])
             self.txtWeibullFile.connect('focus-out-event',
                                         self._callback_entry, 'text', 86)
 
             # Place the right column of widgets.
-            self.txtBurnInTemp.set_tooltip_text(_(
-                u"Enter the temperature that the selected component will be burned-in."))
-            self.fxdRelInputQuad1.put(self.txtBurnInTemp, _x_pos_r_,
-                                      _y_pos_r_[0])
+            self.txtBurnInTemp.set_tooltip_text(_(u"Enter the temperature "
+                                                  u"that the selected "
+                                                  u"component will be "
+                                                  u"burned-in."))
+            self.txtBurnInTime.set_tooltip_text(_(u"Enter the total time the "
+                                                  u"selected component will "
+                                                  u"be burned-in."))
+            self.txtLabDevices.set_tooltip_text(_(u"The total number of units "
+                                                  u"that will be included in "
+                                                  u"life testing in the "
+                                                  u"laboratory."))
+            self.txtLabTime.set_tooltip_text(_(u"The total time the units "
+                                               u"will undergo life testing in "
+                                               u"the laboratory."))
+            self.txtLabTemp.set_tooltip_text(_(u"The temperature the selected "
+                                               u"component will be exposed to "
+                                               u"during life testing in the "
+                                               u"laboratory."))
+            self.txtLabFailures.set_tooltip_text(_(u"The total number of "
+                                                   u"failure observed during "
+                                                   u"life testing in the "
+                                                   u"laboratory."))
+            self.txtFieldTime.set_tooltip_text(_(u"The total time that the "
+                                                 u"selected component has "
+                                                 u"been fielded."))
+            self.txtFieldFailures.set_tooltip_text(_(u"The total number of "
+                                                     u"failures of the "
+                                                     u"selected component "
+                                                     u"that have been "
+                                                     u"observed in the "
+                                                     u"field."))
+
+            self.fxdRelInputQuad1.put(self.txtBurnInTemp, _x_pos_r,
+                                      _y_pos_r[0])
+            self.fxdRelInputQuad1.put(self.txtBurnInTime, _x_pos_r,
+                                      _y_pos_r[1])
+            self.fxdRelInputQuad1.put(self.txtLabDevices, _x_pos_r,
+                                      _y_pos_r[2])
+            self.fxdRelInputQuad1.put(self.txtLabTime, _x_pos_r, _y_pos_r[3])
+            self.fxdRelInputQuad1.put(self.txtLabTemp, _x_pos_r, _y_pos_r[4])
+            self.fxdRelInputQuad1.put(self.txtLabFailures, _x_pos_r,
+                                      _y_pos_r[5])
+            self.fxdRelInputQuad1.put(self.txtFieldTime, _x_pos_r, _y_pos_r[6])
+            self.fxdRelInputQuad1.put(self.txtFieldFailures, _x_pos_r,
+                                      _y_pos_r[7])
+
             self.txtBurnInTemp.connect('focus-out-event',
                                        self._callback_entry, 'float', 206)
-
-            self.txtBurnInTime.set_tooltip_text(_(
-                u"Enter the total time the selected component will be burned-in."))
-            self.fxdRelInputQuad1.put(self.txtBurnInTime, _x_pos_r_,
-                                      _y_pos_r_[1])
             self.txtBurnInTime.connect('focus-out-event',
                                        self._callback_entry, 'float', 207)
-
-            self.txtLabDevices.set_tooltip_text(_(
-                u"The total number of units that will be included in life testing in the laboratory."))
-            self.fxdRelInputQuad1.put(self.txtLabDevices, _x_pos_r_,
-                                      _y_pos_r_[2])
             self.txtLabDevices.connect('focus-out-event',
                                        self._callback_entry, "int", 220)
-
-            self.txtLabTime.set_tooltip_text(_(
-                u"The total time the units will undergo life testing in the laboratory."))
-            self.fxdRelInputQuad1.put(self.txtLabTime, _x_pos_r_, _y_pos_r_[3])
             self.txtLabTime.connect('focus-out-event',
                                     self._callback_entry, 'float', 308)
-
-            self.txtLabTemp.set_tooltip_text(_(
-                u"The temperature the selected component will be exposed to during life testing in the laboratory."))
-            self.fxdRelInputQuad1.put(self.txtLabTemp, _x_pos_r_, _y_pos_r_[4])
             self.txtLabTemp.connect('focus-out-event',
                                     self._callback_entry, 'float', 306)
-
-            self.txtLabFailures.set_tooltip_text(_(
-                u"The total number of failure observed during life testing in the laboratory."))
-            self.fxdRelInputQuad1.put(self.txtLabFailures, _x_pos_r_,
-                                      _y_pos_r_[5])
             self.txtLabFailures.connect('focus-out-event',
                                         self._callback_entry, "int", 227)
-
-            self.txtFieldTime.set_tooltip_text(
-                _(u"The total time that selected component has been fielded."))
-            self.fxdRelInputQuad1.put(self.txtFieldTime, _x_pos_r_,
-                                      _y_pos_r_[6])
             self.txtFieldTime.connect('focus-out-event',
                                       self._callback_entry, 'float', 265)
-
-            self.txtFieldFailures.set_tooltip_text(_(
-                u"The total number of failure of the selected component that have been observed in the field."))
-            self.fxdRelInputQuad1.put(self.txtFieldFailures, _x_pos_r_,
-                                      _y_pos_r_[7])
             self.txtFieldFailures.connect('focus-out-event',
                                           self._callback_entry, "int", 226)
 
@@ -2124,16 +2149,14 @@ class Hardware(object):
                         _(u"Additive Adj:"), _(u"Multiplicative Adj:"),
                         _(u"Repair Distribution:"), _(u"Scale:"), _(u"Shape:")]
 
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_,
+            (_max1,
              _y_pos1_) = _widg.make_labels(_labels_, _fxdRelInputQuad2_, 5, 5)
 
             # Create the labels for quadrant #4.
             _labels_ = [_(u"Cost Type:"), _(u"Unit Cost:")]
-            (_max2_,
+            (_max2,
              _y_pos2_) = _widg.make_labels(_labels_, _fxdRelInputQuad4_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 20
+            _x_pos_ = max(_max1, _max2) + 20
 
             if not self.part:
                 _labels_ = [_(u"Min Rated Temp:"), _(u"Knee Temp:"),
@@ -2148,8 +2171,10 @@ class Hardware(object):
                 _x_pos_r_ += 30
 
             # Place the quadrant #2 widgets.
-            self.cmbMTTRType.set_tooltip_text(_(
-                u"Selects the method of assessing the mean time to repair (MTTR) for the selected assembly."))
+            self.cmbMTTRType.set_tooltip_text(_(u"Selects the method of "
+                                                u"assessing the mean time to "
+                                                u"repair (MTTR) for the "
+                                                u"selected assembly."))
             _fxdRelInputQuad2_.put(self.cmbMTTRType, _x_pos_, _y_pos1_[0])
             _query_ = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
             _results_ = self._app.COMDB.execute_query(_query_,
@@ -4974,20 +4999,20 @@ class Hardware(object):
 
     def _save_hazard_analysis(self):
         """
-        Saves the HARDWARE clss risk analysis information to the open RKT
+        Saves the Hardware class risk analysis information to the open RKT
         Program database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the HARDWARE class risk analysis gtk.TreeModel
+            Saves each row in the Hardware class risk analysis gtk.TreeModel
             to the open RTK Program database.
 
             Keyword Arguments:
-            model  -- the HARDWARE class hazard analysis gtk.TreeModel().
-            __path -- the path of the selected row in the HARDWARE class hazard
+            model  -- the Hardware class hazard analysis gtk.TreeModel().
+            __path -- the path of the selected row in the Hardware class hazard
                        analysis gtk.TreeModel().
-            row    -- the selected row in the HARDWARE class hazard analysis
+            row    -- the selected row in the Hardware class hazard analysis
                       gtk.TreeView().
             """
 
@@ -5009,89 +5034,82 @@ class Hardware(object):
                 _equation4_ = model.get_value(row, self._risk_col_order[25])
                 _equation5_ = model.get_value(row, self._risk_col_order[26])
 
-            _values_ = (model.get_value(row, self._risk_col_order[3]), \
-                        model.get_value(row, self._risk_col_order[4]), \
-                        model.get_value(row, self._risk_col_order[5]), \
-                        model.get_value(row, self._risk_col_order[6]), \
-                        model.get_value(row, self._risk_col_order[7]), \
-                        model.get_value(row, self._risk_col_order[8]), \
-                        model.get_value(row, self._risk_col_order[9]), \
-                        model.get_value(row, self._risk_col_order[10]), \
-                        model.get_value(row, self._risk_col_order[11]), \
-                        model.get_value(row, self._risk_col_order[12]), \
-                        model.get_value(row, self._risk_col_order[13]), \
-                        model.get_value(row, self._risk_col_order[14]), \
-                        model.get_value(row, self._risk_col_order[15]), \
-                        model.get_value(row, self._risk_col_order[16]), \
-                        model.get_value(row, self._risk_col_order[17]), \
-                        model.get_value(row, self._risk_col_order[18]), \
-                        model.get_value(row, self._risk_col_order[19]), \
-                        model.get_value(row, self._risk_col_order[20]), \
-                        model.get_value(row, self._risk_col_order[21]), \
-                        _equation1_, \
-                        _equation2_, \
-                        _equation3_, \
-                        _equation4_, \
-                        _equation5_, \
-                        model.get_value(row, self._risk_col_order[27]),
-                        model.get_value(row, self._risk_col_order[28]),
-                        model.get_value(row, self._risk_col_order[29]),
-                        model.get_value(row, self._risk_col_order[30]),
-                        model.get_value(row, self._risk_col_order[31]),
-                        model.get_value(row, self._risk_col_order[32]),
-                        model.get_value(row, self._risk_col_order[33]),
-                        model.get_value(row, self._risk_col_order[34]),
-                        model.get_value(row, self._risk_col_order[35]),
-                        model.get_value(row, self._risk_col_order[36]),
-                        model.get_value(row, self._risk_col_order[37]),
-                        model.get_value(row, self._risk_col_order[38]),
-                        model.get_value(row, self._risk_col_order[39]),
-                        model.get_value(row, self._risk_col_order[40]),
-                        self.revision_id,
-                        model.get_value(row, self._risk_col_order[0]))
+            _values = (model.get_value(row, self._risk_col_order[3]),
+                       model.get_value(row, self._risk_col_order[4]),
+                       model.get_value(row, self._risk_col_order[5]),
+                       model.get_value(row, self._risk_col_order[6]),
+                       model.get_value(row, self._risk_col_order[7]),
+                       model.get_value(row, self._risk_col_order[8]),
+                       model.get_value(row, self._risk_col_order[9]),
+                       model.get_value(row, self._risk_col_order[10]),
+                       model.get_value(row, self._risk_col_order[11]),
+                       model.get_value(row, self._risk_col_order[12]),
+                       model.get_value(row, self._risk_col_order[13]),
+                       model.get_value(row, self._risk_col_order[14]),
+                       model.get_value(row, self._risk_col_order[15]),
+                       model.get_value(row, self._risk_col_order[16]),
+                       model.get_value(row, self._risk_col_order[17]),
+                       model.get_value(row, self._risk_col_order[18]),
+                       model.get_value(row, self._risk_col_order[19]),
+                       model.get_value(row, self._risk_col_order[20]),
+                       model.get_value(row, self._risk_col_order[21]),
+                       _equation1_, _equation2_, _equation3_, _equation4_,
+                       _equation5_,
+                       model.get_value(row, self._risk_col_order[27]),
+                       model.get_value(row, self._risk_col_order[28]),
+                       model.get_value(row, self._risk_col_order[29]),
+                       model.get_value(row, self._risk_col_order[30]),
+                       model.get_value(row, self._risk_col_order[31]),
+                       model.get_value(row, self._risk_col_order[32]),
+                       model.get_value(row, self._risk_col_order[33]),
+                       model.get_value(row, self._risk_col_order[34]),
+                       model.get_value(row, self._risk_col_order[35]),
+                       model.get_value(row, self._risk_col_order[36]),
+                       model.get_value(row, self._risk_col_order[37]),
+                       model.get_value(row, self._risk_col_order[38]),
+                       model.get_value(row, self._risk_col_order[39]),
+                       model.get_value(row, self._risk_col_order[40]),
+                       self.revision_id,
+                       model.get_value(row, self._risk_col_order[0]))
 
-            _query_ = "UPDATE tbl_risk_analysis \
-                       SET fld_potential_hazard='%s', \
-                           fld_potential_cause='%s', \
-                           fld_assembly_effect='%s', \
-                           fld_assembly_severity='%s', \
-                           fld_assembly_probability='%s', \
-                           fld_assembly_hri=%d, \
-                           fld_assembly_mitigation='%s', \
-                           fld_assembly_severity_f='%s', \
-                           fld_assembly_probability_f='%s', \
-                           fld_assembly_hri_f=%d, \
-                           fld_system_effect='%s', \
-                           fld_system_severity='%s', \
-                           fld_system_probability='%s', \
-                           fld_system_hri=%d, \
-                           fld_system_mitigation='%s', \
-                           fld_system_severity_f='%s', \
-                           fld_system_probability_f='%s', \
-                           fld_system_hri_f=%d, \
-                           fld_remarks='%s', \
-                           fld_function_1='%s', \
-                           fld_function_2='%s', \
-                           fld_function_3='%s', \
-                           fld_function_4='%s', \
-                           fld_function_5='%s', \
-                           fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
-                           fld_result_4=%f, fld_result_5=%f, \
-                           fld_user_blob_1='%s', fld_user_blob_2='%s', \
-                           fld_user_blob_3='%s', fld_user_float_1=%f, \
-                           fld_user_float_2=%f, fld_user_float_3=%f, \
-                           fld_user_int_1=%d, fld_user_int_2=%d, \
-                           fld_user_int_3=%d \
-                       WHERE fld_revision_id=%d \
-                       AND fld_risk_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _query = "UPDATE tbl_risk_analysis \
+                      SET fld_potential_hazard='%s', \
+                          fld_potential_cause='%s', \
+                          fld_assembly_effect='%s', \
+                          fld_assembly_severity='%s', \
+                          fld_assembly_probability='%s', \
+                          fld_assembly_hri=%d, \
+                          fld_assembly_mitigation='%s', \
+                          fld_assembly_severity_f='%s', \
+                          fld_assembly_probability_f='%s', \
+                          fld_assembly_hri_f=%d, \
+                          fld_system_effect='%s', \
+                          fld_system_severity='%s', \
+                          fld_system_probability='%s', \
+                          fld_system_hri=%d, \
+                          fld_system_mitigation='%s', \
+                          fld_system_severity_f='%s', \
+                          fld_system_probability_f='%s', \
+                          fld_system_hri_f=%d, \
+                          fld_remarks='%s', \
+                          fld_function_1='%s', \
+                          fld_function_2='%s', \
+                          fld_function_3='%s', \
+                          fld_function_4='%s', \
+                          fld_function_5='%s', \
+                          fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
+                          fld_result_4=%f, fld_result_5=%f, \
+                          fld_user_blob_1='%s', fld_user_blob_2='%s', \
+                          fld_user_blob_3='%s', fld_user_float_1=%f, \
+                          fld_user_float_2=%f, fld_user_float_3=%f, \
+                          fld_user_int_1=%d, fld_user_int_2=%d, \
+                          fld_user_int_3=%d \
+                      WHERE fld_revision_id=%d \
+                      AND fld_risk_id=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
 
-            if not _results_:
-                self._app.debug_log.error("assembly.py: Failed to save "
-                                          "assembly to risk analysis table.")
+                _util.rtkerror("Error saving to risk analysis table.")
                 return True
 
         def _risk_map_save_line(model, __path, row, self):
