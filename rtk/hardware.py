@@ -5411,148 +5411,148 @@ class Hardware(object):
                       0 = hazard analysis
                       1 = similar item analysis
         @type index: integer
-        @returns: False or True
+        @returns: False if successful or True if an error is encountered.
         @rtype: boolean
         """
 
         if index == 0:
-            (_model_, _row_) = self.tvwRisk.get_selection().get_selected()
-            _title_ = _(u"RTK - Edit Hazard Analysis Functions")
-            _label_ = _widg.make_label(_(u"You can define up to five "
-                                         u"functions.  You can use the system "
-                                         u"failure rate, selected assembly "
-                                         u"failure rate, the user float, the "
-                                         u"user integer values, and results "
-                                         u"of other functions.\n\n \
+            (_model, _row) = self.tvwRisk.get_selection().get_selected()
+            _title = _(u"RTK - Edit Hazard Analysis Functions")
+            _label = _widg.make_label(_(u"You can define up to five "
+                                        u"functions.  You can use the system "
+                                        u"failure rate, selected assembly "
+                                        u"failure rate, the user float, the "
+                                        u"user integer values, and results "
+                                        u"of other functions.\n\n \
             System hazard rate is hr_sys\n \
             Assembly hazard rate is hr\n \
             User float is uf[1-3]\n \
             User integer is ui[1-3]\n \
             Function result is res[1-5]"), width=600, height=-1, wrap=True)
-            _label2_ = _widg.make_label(_(u"For example, hr*uf1+ui2, "
-                                          u"multiplies the assembly failure "
-                                          u"rate and the user float value "
-                                          u"then adds the product to the "
-                                          u"second user integer value."),
-                                        width=600,
-                                        height=-1, wrap=True)
+            _label2 = _widg.make_label(_(u"For example, hr*uf1+ui2, "
+                                         u"multiplies the assembly failure "
+                                         u"rate and the user float value "
+                                         u"then adds the product to the "
+                                         u"second user integer value."),
+                                       width=600,
+                                       height=-1, wrap=True)
         elif index == 1:
-            (_model_, _row_) = self.tvwSIA.get_selection().get_selected()
-            _title_ = _(u"RTK - Edit Similar Item Analysis Functions")
-            _label_ = _widg.make_label(_(u"You can define up to five "
-                                         u"functions.  You can use the system "
-                                         u"failure rate, selected assembly "
-                                         u"failure rate, the change factor, "
-                                         u"the user float, the user integer "
-                                         u"values, and results of other "
-                                         u"functions.\n\n \
+            (_model, _row) = self.tvwSIA.get_selection().get_selected()
+            _title = _(u"RTK - Edit Similar Item Analysis Functions")
+            _label = _widg.make_label(_(u"You can define up to five "
+                                        u"functions.  You can use the system "
+                                        u"failure rate, selected assembly "
+                                        u"failure rate, the change factor, "
+                                        u"the user float, the user integer "
+                                        u"values, and results of other "
+                                        u"functions.\n\n \
             System hazard rate is hr_sys\n \
             Assembly hazard rate is hr\n \
             Change factor is pi[1-8]\n \
             User float is uf[1-3]\n \
             User integer is ui[1-3]\n \
             Function result is res[1-5]"), width=600, height=-1, wrap=True)
-            _label2_ = _widg.make_label(_(u"For example, pi1*pi2+pi3, "
-                                          u"multiplies the first two change "
-                                          u"factors and adds the value to the "
-                                          u"third change factor."),
-                                        width=600, height=-1, wrap=True)
+            _label2 = _widg.make_label(_(u"For example, pi1*pi2+pi3, "
+                                         u"multiplies the first two change "
+                                         u"factors and adds the value to the "
+                                         u"third change factor."),
+                                       width=600, height=-1, wrap=True)
 
-        _dialog_ = _widg.make_dialog(_title_, self._app.winWorkBook)
+        _dialog = _widg.make_dialog(_title, self._app.winWorkBook)
 
-        _fixed_ = gtk.Fixed()
+        _fixed = gtk.Fixed()
 
-        _y_pos_ = 10
-        _fixed_.put(_label_, 5, _y_pos_)
-        _y_pos_ += _label_.size_request()[1] + 10
-        _fixed_.put(_label2_, 5, _y_pos_)
-        _y_pos_ += _label2_.size_request()[1] + 10
+        _y_pos = 10
+        _fixed.put(_label, 5, _y_pos)
+        _y_pos += _label.size_request()[1] + 10
+        _fixed.put(_label2, 5, _y_pos)
+        _y_pos += _label2.size_request()[1] + 10
 
-        _label_ = _widg.make_label(_(u"User function 1:"))
-        _txtFunction1_ = _widg.make_entry()
+        _label = _widg.make_label(_(u"User function 1:"))
+        _txtFunction1 = _widg.make_entry()
         if index == 0:
-            _txtFunction1_.set_text(_model_.get_value(_row_, 22))
+            _txtFunction1.set_text(_model.get_value(_row, 22))
         elif index == 1:
-            _txtFunction1_.set_text(_model_.get_value(_row_, 19))
+            _txtFunction1.set_text(_model.get_value(_row, 19))
 
-        _fixed_.put(_label_, 5, _y_pos_)
-        _fixed_.put(_txtFunction1_, 195, _y_pos_)
-        _y_pos_ += 30
+        _fixed.put(_label, 5, _y_pos)
+        _fixed.put(_txtFunction1, 195, _y_pos)
+        _y_pos += 30
 
-        _label_ = _widg.make_label(_(u"User function 2:"))
-        _txtFunction2_ = _widg.make_entry()
+        _label = _widg.make_label(_(u"User function 2:"))
+        _txtFunction2 = _widg.make_entry()
         if index == 0:
-            _txtFunction2_.set_text(_model_.get_value(_row_, 23))
+            _txtFunction2.set_text(_model.get_value(_row, 23))
         elif index == 1:
-            _txtFunction2_.set_text(_model_.get_value(_row_, 20))
-        _fixed_.put(_label_, 5, _y_pos_)
-        _fixed_.put(_txtFunction2_, 195, _y_pos_)
-        _y_pos_ += 30
+            _txtFunction2.set_text(_model.get_value(_row, 20))
+        _fixed.put(_label, 5, _y_pos)
+        _fixed.put(_txtFunction2, 195, _y_pos)
+        _y_pos += 30
 
-        _label_ = _widg.make_label(_(u"User function 3:"))
-        _txtFunction3_ = _widg.make_entry()
+        _label = _widg.make_label(_(u"User function 3:"))
+        _txtFunction3 = _widg.make_entry()
         if index == 0:
-            _txtFunction3_.set_text(_model_.get_value(_row_, 24))
+            _txtFunction3.set_text(_model.get_value(_row, 24))
         elif index == 1:
-            _txtFunction3_.set_text(_model_.get_value(_row_, 21))
-        _fixed_.put(_label_, 5, _y_pos_)
-        _fixed_.put(_txtFunction3_, 195, _y_pos_)
-        _y_pos_ += 30
+            _txtFunction3.set_text(_model.get_value(_row, 21))
+        _fixed.put(_label, 5, _y_pos)
+        _fixed.put(_txtFunction3, 195, _y_pos)
+        _y_pos += 30
 
-        _label_ = _widg.make_label(_(u"User function 4:"))
-        _txtFunction4_ = _widg.make_entry()
+        _label = _widg.make_label(_(u"User function 4:"))
+        _txtFunction4 = _widg.make_entry()
         if index == 0:
-            _txtFunction4_.set_text(_model_.get_value(_row_, 25))
+            _txtFunction4.set_text(_model.get_value(_row, 25))
         elif index == 1:
-            _txtFunction4_.set_text(_model_.get_value(_row_, 22))
-        _fixed_.put(_label_, 5, _y_pos_)
-        _fixed_.put(_txtFunction4_, 195, _y_pos_)
-        _y_pos_ += 30
+            _txtFunction4.set_text(_model.get_value(_row, 22))
+        _fixed.put(_label, 5, _y_pos)
+        _fixed.put(_txtFunction4, 195, _y_pos)
+        _y_pos += 30
 
-        _label_ = _widg.make_label(_(u"User function 5:"))
-        _txtFunction5_ = _widg.make_entry()
+        _label = _widg.make_label(_(u"User function 5:"))
+        _txtFunction5 = _widg.make_entry()
         if index == 0:
-            _txtFunction5_.set_text(_model_.get_value(_row_, 26))
+            _txtFunction5.set_text(_model.get_value(_row, 26))
         elif index == 1:
-            _txtFunction5_.set_text(_model_.get_value(_row_, 23))
-        _fixed_.put(_label_, 5, _y_pos_)
-        _fixed_.put(_txtFunction5_, 195, _y_pos_)
-        _y_pos_ += 30
+            _txtFunction5.set_text(_model.get_value(_row, 23))
+        _fixed.put(_label, 5, _y_pos)
+        _fixed.put(_txtFunction5, 195, _y_pos)
+        _y_pos += 30
 
-        _chkApplyAll_ = gtk.CheckButton(label=_(u"Apply to all assemblies."))
-        _fixed_.put(_chkApplyAll_, 5, _y_pos_)
+        _chkApplyAll = gtk.CheckButton(label=_(u"Apply to all assemblies."))
+        _fixed.put(_chkApplyAll, 5, _y_pos)
 
-        _fixed_.show_all()
+        _fixed.show_all()
 
-        _dialog_.vbox.pack_start(_fixed_)  # pylint: disable=E1101
+        _dialog.vbox.pack_start(_fixed)     # pylint: disable=E1101
 
-        if _dialog_.run() == gtk.RESPONSE_ACCEPT:
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _util.set_cursor(self._app, gtk.gdk.WATCH)
+
             if index == 0:
-                _cols_ = [35, 36, 37, 38, 39]
+                _cols = [35, 36, 37, 38, 39]
             elif index == 1:
-                _cols_ = [19, 20, 21, 22, 23]
+                _cols = [19, 20, 21, 22, 23]
 
-            if _chkApplyAll_.get_active():
-                while _row_ is not None:
-                    _model_.set_value(_row_, _cols_[0],
-                                      _txtFunction1_.get_text())
-                    _model_.set_value(_row_, _cols_[1],
-                                      _txtFunction2_.get_text())
-                    _model_.set_value(_row_, _cols_[2],
-                                      _txtFunction3_.get_text())
-                    _model_.set_value(_row_, _cols_[3],
-                                      _txtFunction4_.get_text())
-                    _model_.set_value(_row_, _cols_[4],
-                                      _txtFunction5_.get_text())
-                    _row_ = _model_.iter_next(_row_)
+            if _chkApplyAll.get_active():
+                _row = _model.get_iter_root()
+                while _row is not None:
+                    _model.set_value(_row, _cols[0], _txtFunction1.get_text())
+                    _model.set_value(_row, _cols[1], _txtFunction2.get_text())
+                    _model.set_value(_row, _cols[2], _txtFunction3.get_text())
+                    _model.set_value(_row, _cols[3], _txtFunction4.get_text())
+                    _model.set_value(_row, _cols[4], _txtFunction5.get_text())
+                    _row = _model.iter_next(_row)
             else:
-                _model_.set_value(_row_, _cols_[0], _txtFunction1_.get_text())
-                _model_.set_value(_row_, _cols_[1], _txtFunction2_.get_text())
-                _model_.set_value(_row_, _cols_[2], _txtFunction3_.get_text())
-                _model_.set_value(_row_, _cols_[3], _txtFunction4_.get_text())
-                _model_.set_value(_row_, _cols_[4], _txtFunction5_.get_text())
+                _model.set_value(_row, _cols[0], _txtFunction1.get_text())
+                _model.set_value(_row, _cols[1], _txtFunction2.get_text())
+                _model.set_value(_row, _cols[2], _txtFunction3.get_text())
+                _model.set_value(_row, _cols[3], _txtFunction4.get_text())
+                _model.set_value(_row, _cols[4], _txtFunction5.get_text())
 
-        _dialog_.destroy()
+            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        _dialog.destroy()
 
         return False
 
