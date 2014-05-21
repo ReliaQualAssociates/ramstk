@@ -4899,6 +4899,7 @@ class Hardware(object):
                 if self.chkApplyResults.get_active():
 
                     _measure = self.cmbRqmtType.get_active()
+                    _operating_time = float(self.txtOperTime.get_text())
                     if _measure == 1:       # Expressed as reliability.
                         _value = model.get_value(row, 19)
                     elif _measure == 2:     # Expressed as an MTBF.
@@ -4912,6 +4913,7 @@ class Hardware(object):
                               SET fld_failure_rate_active=%f, \
                                   fld_failure_rate_predicted=%f, \
                                   fld_failure_rate_specified=%f, \
+                                  fld_mission_time=%f, \
                                   fld_mtbf_predicted=%f, \
                                   fld_mtbf_specified=%f, \
                                   fld_failure_rate_type=%d, \
@@ -4921,7 +4923,7 @@ class Hardware(object):
                               AND fld_assembly_id=%d" % \
                              (model.get_value(row, 15),
                               model.get_value(row, 15),
-                              model.get_value(row, 15),
+                              model.get_value(row, 15), _operating_time,
                               model.get_value(row, 17),
                               model.get_value(row, 17), 3, _measure, _value,
                               model.get_value(row, 0), model.get_value(row, 1))
@@ -4938,6 +4940,8 @@ class Hardware(object):
 
         # Update the HARDWARE class gtk.TreeView() with the reliability goals.
         _measure = self.cmbRqmtType.get_active()
+        i = self.cmbAllocationType.get_active()
+        _operating_time = float(self.txtOperTime.get_text())
         if _measure == 1:
             _value = float(self.txtReliabilityGoal.get_text())
         elif _measure == 2:
@@ -4948,11 +4952,11 @@ class Hardware(object):
             _value = 1.0
 
         # Update the allocation method.
-        i = self.cmbAllocationType.get_active()
         (_model, _row) = self.treeview.get_selection().get_selected()
-        _model.set_value(_row, 3, i)
-        _model.set_value(_row, 89, _measure)
-        _model.set_value(_row, 90, _value)
+        _model.set_value(_row, self._col_order[3], i)
+        _model.set_value(_row, self._col_order[45], _operating_time)
+        _model.set_value(_row, self._col_order[89], _measure)
+        _model.set_value(_row, self._col_order[90], _value)
 
         # Save the results.
         self.save_hardware()
