@@ -797,6 +797,12 @@ def rtk_error(prompt, _parent=None):
     @type _parent: gtk.Window
     """
 
+    prompt = prompt + u"  Check the error log %s for additional information " \
+                      u"(if any).  Please e-mail bugs@reliaqual.com with a " \
+                      u"description of the problem, the workflow you are " \
+                      u"using and the error log attached if the problem " \
+                      u"persists." % (_conf.LOG_DIR + 'RTK_error.log')
+
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
                                 message_format=prompt)

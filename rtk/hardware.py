@@ -4843,21 +4843,25 @@ class Hardware(object):
 
     def _save_allocation(self):
         """
-        Saves the HARDWARE class allocation analysis information to the open
+        Saves the Hardware class allocation analysis information to the open
         RTK Program database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves a single row in the HARDWARE class allocation gtk.TreeModel()
+            Saves a single row in the Hardware class allocation gtk.TreeModel()
             to the open RTK Program database.
 
-            Keyword Arguments:
-            model  -- the HARDWARE class allocation gtk.TreeModel().
-            __path -- the path of the selected row in the HARDWARE class
-                       allocation gtk.TreeModel().
-            row    -- the selected row in the HARDWARE class allocation
-                      gtk.TreeView().
+            @param model: the Hardware class allocation gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path: the path of the selected row in the Hardware class
+                           allocation gtk.TreeModel().
+            @type __path: string
+            @param row: the selected row in the Hardware class allocation
+                        gtk.TreeView().
+            @type row: gtk.TreeIter
+            @return False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _query = "UPDATE tbl_allocation \
@@ -4884,76 +4888,83 @@ class Hardware(object):
                 model.get_value(row, 19), model.get_value(row, 15),
                 model.get_value(row, 17), model.get_value(row, 0),
                 model.get_value(row, 1))
-            _results_ = self._app.DB.execute_query(_query,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
 
-            # Trickle down the reliability goals.
-            if self.chkApplyResults.get_active():
-
-                _measure_ = self.cmbRqmtType.get_active()
-                if _measure_ == 1:  # Expressed as reliability.
-                    _value_ = model.get_value(row, 19)
-                elif _measure_ == 2:  # Expressed as an MTBF.
-                    _value_ = model.get_value(row, 17)
-                elif _measure_ == 3:  # Expressed as a failure rate.
-                    _value_ = model.get_value(row, 15)
-                else:
-                    _value_ = 1.0
-
-                _values_ = (model.get_value(row, 15), \
-                            model.get_value(row, 17), 3, _measure_, _value_, \
-                            model.get_value(row, 0), model.get_value(row, 1))
-
-                _query_ = "UPDATE tbl_system \
-                           SET fld_failure_rate_specified=%f, \
-                               fld_mtbf_specified=%f, \
-                               fld_failure_rate_type=%d, \
-                               fld_reliability_goal_measure=%d, \
-                               fld_reliability_goal=%f \
-                           WHERE fld_revision_id=%d \
-                           AND fld_assembly_id=%d" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
-
-            if not _results_:
-                self._app.debug_log.error("assembly.py: Failed to update "
-                                          "system table with allocation "
-                                          "results.")
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error updating reliability allocation "
+                                  u"table."))
                 return True
+            else:
+                # Trickle down the reliability goals.
+                if self.chkApplyResults.get_active():
+
+                    _measure = self.cmbRqmtType.get_active()
+                    if _measure == 1:       # Expressed as reliability.
+                        _value = model.get_value(row, 19)
+                    elif _measure == 2:     # Expressed as an MTBF.
+                        _value = model.get_value(row, 17)
+                    elif _measure == 3:     # Expressed as a failure rate.
+                        _value = model.get_value(row, 15)
+                    else:
+                        _value = 1.0
+
+                    _query = "UPDATE tbl_system \
+                              SET fld_failure_rate_active=%f, \
+                                  fld_failure_rate_predicted=%f, \
+                                  fld_failure_rate_specified=%f, \
+                                  fld_mtbf_predicted=%f, \
+                                  fld_mtbf_specified=%f, \
+                                  fld_failure_rate_type=%d, \
+                                  fld_reliability_goal_measure=%d, \
+                                  fld_reliability_goal=%f \
+                              WHERE fld_revision_id=%d \
+                              AND fld_assembly_id=%d" % \
+                             (model.get_value(row, 15),
+                              model.get_value(row, 15),
+                              model.get_value(row, 15),
+                              model.get_value(row, 17),
+                              model.get_value(row, 17), 3, _measure, _value,
+                              model.get_value(row, 0), model.get_value(row, 1))
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error updating system table with "
+                                      u"allocation results."))
+                    return True
 
             return False
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         # Update the HARDWARE class gtk.TreeView() with the reliability goals.
-        _measure_ = self.cmbRqmtType.get_active()
-        if _measure_ == 1:
-            _value_ = float(self.txtReliabilityGoal.get_text())
-        elif _measure_ == 2:
-            _value_ = float(self.txtMTBFGoal.get_text())
-        elif _measure_ == 3:
-            _value_ = float(self.txtFailureRateGoal.get_text())
+        _measure = self.cmbRqmtType.get_active()
+        if _measure == 1:
+            _value = float(self.txtReliabilityGoal.get_text())
+        elif _measure == 2:
+            _value = float(self.txtMTBFGoal.get_text())
+        elif _measure == 3:
+            _value = float(self.txtFailureRateGoal.get_text())
         else:
-            _value_ = 1.0
+            _value = 1.0
 
         # Update the allocation method.
         i = self.cmbAllocationType.get_active()
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
-        _model_.set_value(_row_, 3, i)
-        _model_.set_value(_row_, 89, _measure_)
-        _model_.set_value(_row_, 90, _value_)
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model.set_value(_row, 3, i)
+        _model.set_value(_row, 89, _measure)
+        _model.set_value(_row, 90, _value)
 
         # Save the results.
         self.save_hardware()
 
         # Save each of the lines in the allocation analysis table.
-        _model_ = self.tvwAllocation.get_model()
-        _model_.foreach(_save_line, self)
+        _model = self.tvwAllocation.get_model()
+        _model.foreach(_save_line, self)
 
         if self.chkApplyResults.get_active():
             self.load_tree()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -5458,6 +5469,7 @@ class Hardware(object):
                                          u"third change factor."),
                                        width=600, height=-1, wrap=True)
 
+        # Build the dialog assistant.
         _dialog = _widg.make_dialog(_title, self._app.winWorkBook)
 
         _fixed = gtk.Fixed()
@@ -5526,6 +5538,7 @@ class Hardware(object):
 
         _dialog.vbox.pack_start(_fixed)     # pylint: disable=E1101
 
+        # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _util.set_cursor(self._app, gtk.gdk.WATCH)
 
