@@ -3625,11 +3625,10 @@ class Dataset(object):
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
-
-        if(results == '' or not results):
-            return True
-
-        self.n_datasets = len(results)
+        try:
+            self.n_datasets = len(results)
+        except TypeError:
+            self.n_datasets = 0
 
         self.model.clear()
 
@@ -3656,25 +3655,29 @@ class Dataset(object):
         return False
 
     def load_notebook(self):
-        """ Method to load the DATASET Object gtk.Notebook. """
+        """
+        Method to load the Dataset class gtk.Notebook().
+        """
 
-        if self.selected_row is not None:
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        if _row is not None:
             self._analyses_input_tab_load()
             self._analyses_results_tab_load()
             #self._load_component_list()
 
-        if(self._app.winWorkBook.get_child() is not None):
+        if self._app.winWorkBook.get_child() is not None:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxDataset)
         self._app.winWorkBook.show_all()
 
-        if(self._nevada_chart_):
+        if self._nevada_chart_:
             self.fraNevadaChart.show_all()
         else:
             self.fraNevadaChart.hide_all()
 
-        _title = _(u"RTK Work Book: Program Survival Analyses (%d Datasets)") % \
-                   self.n_datasets
+        _title = _(u"RTK Work Book: Program Survival Analyses "
+                   u"(%d Datasets)") % self.n_datasets
         self._app.winWorkBook.set_title(_title)
 
         self.notebook.set_current_page(0)

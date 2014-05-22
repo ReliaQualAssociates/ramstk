@@ -3726,11 +3726,10 @@ class Hardware(object):
         try:
             _n_phases_ = len(_results_)
         except TypeError:
-            _util.rtk_error(_(u"There was a problem loading the "
-                                      u"mission phase list in the Assembly "
-                                      u"Work Book FMEA/FMECA tab.  This may "
-                                      u"indicate your RTK program database is "
-                                      u"corrupt."))
+            _util.rtk_error(_(u"There was a problem loading the mission phase "
+                              u"list in the Assembly Work Book FMEA/FMECA "
+                              u"tab.  This may indicate your RTK program "
+                              u"database is corrupt."))
             _n_phases_ = 0
 
         _cellmodel_.append([""])

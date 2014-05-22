@@ -19,15 +19,6 @@ import gettext
 import locale
 import sys
 
-from _assistants_.adds import AddIncident, CreateDataSet
-from _assistants_.filters import FilterIncident
-from _assistants_.imports import ImportIncident
-import configuration as _conf
-import imports as _impt
-import utilities as _util
-import widgets as _widg
-
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -48,8 +39,13 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-
+from _assistants_.adds import AddIncident, CreateDataSet
+from _assistants_.filters import FilterIncident
+from _assistants_.imports import ImportIncident
 #from _assistants_.exports import ExportIncident
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
 
 # Add localization support.
 try:
@@ -66,8 +62,7 @@ class Incident(object):
     against a system being analyzed.
     """
 
-    # TODO: Write code to update notebook widgets when editing the Validation treeview.
-    # TODO: Add tooltips to all widgets.
+# TODO: Add tooltips to all widgets.
     _fi_tab_labels = [[_("Incident ID:"), _("Incident Category:"),
                        _("Incident Type:"), _("Incident Criticality:"),
                        _("Life Cycle:"), _("Date Opened:"),
@@ -85,8 +80,7 @@ class Incident(object):
         """
         Initializes the Incident Object.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        @param application: the current instance of the RTK application.
         """
 
         self._ready = False
@@ -102,11 +96,11 @@ class Incident(object):
 
 # Create the Notebook for the SOFTWARE object.
         self.notebook = gtk.Notebook()
-        if(_conf.TABPOS[2] == 'left'):
+        if _conf.TABPOS[2] == 'left':
             self.notebook.set_tab_pos(gtk.POS_LEFT)
-        elif(_conf.TABPOS[2] == 'right'):
+        elif _conf.TABPOS[2] == 'right':
             self.notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif(_conf.TABPOS[2] == 'top'):
+        elif _conf.TABPOS[2] == 'top':
             self.notebook.set_tab_pos(gtk.POS_TOP)
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -171,7 +165,7 @@ class Incident(object):
 
     def _toolbar_create(self):
         """
-        Method to create the toolbar for the INCIDENT Object work book.
+        Method to create the toolbar for the Incident class Work Book.
         """
 
         toolbar = gtk.Toolbar()
@@ -233,7 +227,8 @@ class Incident(object):
         button.set_icon_widget(image)
         button.set_name('Export')
         #button.connect('clicked', ExportIncident, self._app)
-        button.set_tooltip_text(_("Launches the Program Incident export assistant."))
+        button.set_tooltip_text(_(u"Launches the Program Incident export "
+                                  u"assistant."))
         toolbar.insert(button, 5)
 
 # Create a data set creation button.
@@ -243,15 +238,18 @@ class Incident(object):
         button.set_icon_widget(image)
         button.set_name('Data Set')
         button.connect('clicked', CreateDataSet, self._app)
-        button.set_tooltip_text(_("Launches the Data Set creation assistant."))
+        button.set_tooltip_text(_(u"Launches the Data Set creation "
+                                  u"assistant."))
         toolbar.insert(button, 6)
 
         toolbar.show()
 
-        return(toolbar)
+        return toolbar
 
     def _field_incident_widgets_create(self):
-        """ Method to create the Field Incident widgets. """
+        """
+        Method to create the Field Incident widgets.
+        """
 
         # Quadrant 1 (upper left) widgets.
         self.txtID.set_tooltip_text(_("Displays the unique code for the selected incident."))
@@ -484,12 +482,10 @@ class Incident(object):
 
     def _field_incident_tab_load(self):
         """
-        Loads the widgets with general information about the INCIDENT Object.
+        Loads the widgets with general information about the Incident class.
         """
 
-        from datetime import datetime
-
-        if(self.selected_row is None):
+        if self.selected_row is None:
             return True
 
         # Load the hardware combo with a list of the assemblies in the system.
@@ -522,57 +518,41 @@ class Incident(object):
 # Set dates.  If there is no date or the date is invalid, set it to
 # January 1, 1970 as the default.
         dt = self.model.get_value(self.selected_row, 19)
-        if(dt is not None and dt != '' and dt >= 1):
+        if dt is not None and dt != '' and dt >= 1:
             self.txtRequestDate.set_text(str(dt))
         else:
             self.txtRequestDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 22)
-        if(dt is not None and dt != '' and dt >= 1):
+        if dt is not None and dt != '' and dt >= 1:
             self.txtReviewDate.set_text(str(dt))
         else:
             self.txtReviewDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 25)
-        if(dt is not None and dt != '' and dt >= 1):
+        if dt is not None and dt != '' and dt >= 1:
             self.txtApproveDate.set_text(str(dt))
         else:
             self.txtApproveDate.set_text('')
 
         dt = self.model.get_value(self.selected_row, 28)
-        if(dt is not None and dt != '' and dt >= 1):
+        if dt is not None and dt != '' and dt >= 1:
             self.txtCloseDate.set_text(str(dt))
         else:
             self.txtCloseDate.set_text('')
 
-        values = (str(self.model.get_value(self.selected_row, 0)),)
-
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT t2.fld_ref_des, t2.fld_name, \
-                            t1.fld_initial_installation, t1.fld_failure, \
-                            t1.fld_suspension, t1.fld_occ_fault, \
-                            t1.fld_cnd_nff, t1.fld_interval_censored, \
-                            t1.fld_use_op_time, t1.fld_use_cal_time, \
-                            t1.fld_ttf, t1.fld_age_at_incident \
-                     FROM tbl_incident_detail AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_part_num=t2.fld_ref_des \
-                     WHERE t2.fld_incident_id='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT t2.fld_ref_des, t2.fld_name, \
-                            t1.fld_initial_installation, t1.fld_failure, \
-                            t1.fld_suspension, t1.fld_occ_fault, \
-                            t1.fld_cnd_nff, t1.fld_interval_censored, \
-                            t1.fld_use_op_time, t1.fld_use_cal_time, \
-                            t1.fld_ttf, t1.fld_age_at_incident \
-                     FROM tbl_incident_detail AS t1 \
-                     INNER JOIN tbl_system AS t2 \
-                     ON t1.fld_part_num=t2.fld_ref_des \
-                     WHERE t1.fld_incident_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx)
+        _query = "SELECT t2.fld_ref_des, t2.fld_name, \
+                         t1.fld_initial_installation, t1.fld_failure, \
+                         t1.fld_suspension, t1.fld_occ_fault, \
+                         t1.fld_cnd_nff, t1.fld_interval_censored, \
+                         t1.fld_use_op_time, t1.fld_use_cal_time, \
+                         t1.fld_ttf, t1.fld_age_at_incident \
+                  FROM tbl_incident_detail AS t1 \
+                  INNER JOIN tbl_system AS t2 \
+                  ON t1.fld_part_num=t2.fld_ref_des \
+                  WHERE t1.fld_incident_id='%s'" % \
+                 str(self.model.get_value(self.selected_row, 0))
+        results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         model = self.tvwComponentList.get_model()
         model.clear()
@@ -591,7 +571,9 @@ class Incident(object):
         return False
 
     def _incident_analysis_widgets_create(self):
-        """ Method to create the Incident Analysis widgets. """
+        """
+        Method to create the Incident Analysis widgets.
+        """
 
         self.cmbReviewBy.set_tooltip_text(_("Displays the name of the individual who reviewed the analysis."))
         query = "SELECT fld_user_lname || ', ' || fld_user_fname \
@@ -614,7 +596,7 @@ class Incident(object):
 
     def _incident_analysis_tab_create(self):
         """
-        Method to create the Incident Analysis gtk.Notebook tab and populate
+        Method to create the Incident Analysis gtk.Notebook() tab and populate
         it with the appropriate widgets.
         """
 
@@ -682,9 +664,7 @@ class Incident(object):
         Loads the widgets with analysis information about the INCIDENT Object.
         """
 
-        from datetime import datetime
-
-        if(self.selected_row is None):
+        if self.selected_row is None:
             return True
 
         self.txtTest.set_text(self.model.get_value(self.selected_row, 10))
@@ -697,13 +677,13 @@ class Incident(object):
         self.cmbApproveBy.set_active(self.model.get_value(self.selected_row, 24))
 
         dt = self.model.get_value(self.selected_row, 22)
-        if(dt is not None and dt != ''):
+        if dt is not None and dt != '':
             self.txtReviewDate.set_text(str(dt))
         else:
             self.txtReviewDate.set_text("")
 
         dt = self.model.get_value(self.selected_row, 25)
-        if(dt is not None and dt != ''):
+        if dt is not None and dt != '':
             self.txtApproveDate.set_text(str(dt))
         else:
             self.txtApproveDate.set_text("")
@@ -838,43 +818,50 @@ class Incident(object):
 
     def _treeview_clicked(self, treeview, event):
         """
-        Callback function for handling mouse clicks on the Validation Object
+        Callback function for handling mouse clicks on the Incident class
         treeview.
 
-        Keyword Arguments:
-        treeview -- the Validation Object treeview.
-        event    -- a gtk.gdk.Event that called this function (the
-                    important attribute is which mouse button was clicked).
-                    1 = left
-                    2 = scrollwheel
-                    3 = right
-                    4 = forward
-                    5 = backward
-                    8 =
-                    9 =
+        @param treeview: the Incident class gtk.TreeView().
+        @type treeview: gtk.TreeView
+        @param event: a gtk.gdk.Event() that called this function (the
+                      important attribute is which mouse button was clicked).
+                      1 = left
+                      2 = scrollwheel
+                      3 = right
+                      4 = forward
+                      5 = backward
+                      8 =
+                      9 =
+        @type event: gtk.gdk.Event
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        if(event.button == 1):
+        if event.button == 1:
             self._treeview_row_changed(treeview, None, 0)
-        elif(event.button == 3):
+        elif event.button == 3:
             print "Pop-up a menu!"
 
         return False
 
-    def _treeview_row_changed(self, treeview, path, column):
+    def _treeview_row_changed(self, __treeview, __path, __column):
         """
-        Callback function to handle events for the INCIDENT Object
-        gtk.Treeview.  It is called whenever the Incident Object treeview is
-        clicked or a row is activated.
+        Callback function to handle events for the Incident class
+        gtk.Treeview().  It is called whenever the Incident class
+        gtk.TreeView() is clicked or a row is activated.
 
-        Keyword Arguments:
-        treeview -- the Incident Object gtk.TreeView.
-        path     -- the actived row gtk.TreeView path.
-        column   -- the actived gtk.TreeViewColumn.
+        @param __treeview: the Incident class gtk.TreeView().
+        @type __treeview: gtk.TreeView
+        @param __path: the path of the activated gtk.TreeIter() in the Incident
+                       class gtk.TreeView().
+        @type __path: string
+        @param __column: the activated gtk.TreeViewColumn().
+        @type __column: gtk.TreeViewColumn
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        selection = self.treeview.get_selection()
-        (self.model, self.selected_row) = selection.get_selected()
+        (self.model, self.selected_row) = self.treeview.get_selection().get_selected()
 
         if self.selected_row is not None:
             self.load_notebook()
@@ -882,156 +869,155 @@ class Incident(object):
         else:
             return True
 
-    def _component_list_edit(self, cell, path, new_text, position, model):
+    def _component_list_edit(self, cell, path, __new_text, position, model):
         """
-        Called whenever a component list gtk.TreeView gtk.CellRenderer is
-        edited.
+        Method to respond to component list gtk.TreeView() gtk.CellRenderer()
+        editing.
 
-        Keyword Arguments:
-        cell     -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        new_text -- the new text in the edited CellRenderer.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
+        @param cell: the gtk.CellRenderer() that was edited.
+        @type cell: gtk.CellRenderer
+        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that
+                     was edited.
+        @type path: string
+        @param __new_text: the new text in the edited gtk.CellRenderer().
+        @type __new_text: string
+        @param position: the column position of the edited gtk.CellRenderer().
+        @type position: integer
+        @param model: the gtk.TreeModel() the edited gtk.CellRenderer() belongs
+                      to.
+        @type model: gtk.TreeModel
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         value = not cell.get_active()
         model[path][position] = value
 
-        if(position == 1):                   # Initial installation.
+        if position == 1:                   # Initial installation.
             model[path][2] = 0
             model[path][3] = 0
             model[path][4] = 0
             model[path][5] = 0
             model[path][6] = 0
-        elif(position == 2):                 # Failure.
+        elif position == 2:                 # Failure.
             model[path][1] = 0
             model[path][3] = 0
             model[path][4] = 0
             model[path][5] = 0
             model[path][6] = 0
-        elif(position == 3):                 # Suspension (right).
+        elif position == 3:                 # Suspension (right).
             model[path][1] = 0
             model[path][2] = 0
             model[path][4] = 0
             model[path][5] = 0
             model[path][6] = 0
-        elif(position == 4):                 # OCC fault.
+        elif position == 4:                 # OCC fault.
             model[path][1] = 0
             model[path][2] = 0
             model[path][3] = 0
             model[path][5] = 0
             model[path][6] = 0
-        elif(position == 5):                 # CND/NFF fault.
+        elif position == 5:                 # CND/NFF fault.
             model[path][1] = 0
             model[path][2] = 0
             model[path][3] = 0
             model[path][4] = 0
             model[path][6] = 0
-        elif(position == 6):                 # Interval censored.
+        elif position == 6:                 # Interval censored.
             model[path][1] = 0
             model[path][2] = 0
             model[path][3] = 0
             model[path][4] = 0
             model[path][5] = 0
-        elif(position == 7):                 # Use operating time.
+        elif position == 7:                 # Use operating time.
             model[path][8] = 0
-        elif(position == 8):                 # Use calendar time.
+        elif position == 8:                 # Use calendar time.
             model[path][7] = 0
 
         return False
 
-    def _component_add(self, widget):
+    def _component_add(self, __widget):
         """
         Adds a new hardware item to the selected field incident.
 
-        Keyword Arguments:
-        widget -- the widget that called this function.
+        @param __widget: the gtk.Widget() that called this function.
+        @type __widget: gtk.Widget
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        n_tasks = _util.add_items(title=_(u"RTK - Add Components to Program Incident"),
-                                  prompt=_(u"How many components to add to the selected program incident?"))
+        _n_tasks = _util.add_items(title=_(u"RTK - Add Components to Program "
+                                           u"Incident"),
+                                   prompt=_(u"How many components to add to "
+                                            u"the selected program incident?"))
 
-        if(n_tasks < 1):
+        if _n_tasks < 1:
             return True
 
-        if(_conf.RTK_MODULES[0] == 1):
+        if _conf.RTK_MODULES[0] == 1:
             _revision_id = self._app.REVISION.revision_id
         else:
             _revision_id = 0
 
         _incident_id = self.model.get_value(self.selected_row, 0)
 
-        for i in range(n_tasks):
-            component_name = "Component " + str(i)
-            values = (_revision_id, _incident_id, component_name)
+        for i in range(_n_tasks):
+            _component_name = "Component " + str(i)
 
-            if(_conf.BACKEND == 'mysql'):
-                query = "INSERT INTO tbl_incident_detail \
-                         (fld_revision_id, fld_incident_id, fld_part_num) \
-                         VALUES (%d, '%s', '%s')"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "INSERT INTO tbl_incident_detail \
-                         (fld_revision_id, fld_incident_id, fld_part_num) \
-                         VALUES (?, ?, ?)"
+            _query = "INSERT INTO tbl_incident_detail \
+                      (fld_revision_id, fld_incident_id, fld_part_num) \
+                      VALUES (%d, '%s', '%s')" % \
+                     (_revision_id, _incident_id, _component_name)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
 
-            results = self._app.DB.execute_query(query,
-                                                 values,
-                                                 self._app.ProgCnx,
-                                                 commit=True)
-
-            if(results == '' or not results):
-                self._app.user_log.error("incident.py: Failed to add component to field incident.")
+                _util.rtk_error(_(u"Error adding component to field "
+                                  u"incident %d.") % _incident_id)
                 return True
 
         self._field_incident_tab_load()
 
         return False
 
-    def _component_delete(self, button):
+    def _component_delete(self, __button):
         """
-        Deletes the currently selected component from the RTK Program's
-        MySQL or SQLite3 database.
+        Deletes the currently selected component from the open RTK Program
+        database.
 
-        Keyword Arguments:
-        menuitem -- the gtk.MenuItem that called this function.
+        @param __button: the gtk.ToolButton() that called this function.
+        @type __button: gtk.ToolButton
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        selection = self.tvwComponentList.get_selection()
-        (model, row) = selection.get_selected()
+        (_model, _row) = self.tvwComponentList.get_selection().get_selected()
 
-        values = (self.model.get_value(self.selected_row, 0), \
-                  model.get_value(row, 0))
-
-        if(_conf.BACKEND == 'mysql'):
-            query = "DELETE FROM tbl_incident_detail \
-                     WHERE fld_incident_id='%s' \
-                     AND fld_part_num='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "DELETE FROM tbl_incident_detail \
-                     WHERE fld_incident_id=? \
-                     AND fld_part_num=?"
-        print query, values
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
-            self._app.user_log.error("incident.py: Failed to delete component from field incident.")
+        _query = "DELETE FROM tbl_incident_detail \
+                  WHERE fld_incident_id='%s' \
+                  AND fld_part_num='%s'" % \
+                 (self.model.get_value(self.selected_row, 0),
+                  _model.get_value(_row, 0))
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Failed to delete component %s from field "
+                              u"incident %d.") %
+                            (_model.get_value(_row, 0),
+                             self.model.get_value(self.selected_row, 0)))
             return True
 
-        self.load_field_incident_tab()
+        self._field_incident_tab_load()
 
         return False
 
-    def _component_save(self, widget):
+    def _component_save(self, __widget):
         """
-        Saves the Validation Object treeview information to the Program's
-        MySQL or SQLite3 database.
+        Saves the Incident class gtk.TreeView() information to the open RTK
+        Program database.
 
-        Keyword Arguments:
-        widget -- the widget that called this function.
+        @param __widget: the gtk.Widget() that called this method.
+        @type __widget: gtk.Widget
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         model = self.tvwComponentList.get_model()
@@ -1039,113 +1025,96 @@ class Incident(object):
 
         return False
 
-    def _save_line_item(self, model, path_, row):
+    def _save_line_item(self, model, __path, row):
         """
-        Saves each row in the Incident Object treeview model to the RTK's
-        Program MySQL or SQLite3 database.
+        Saves each row in the Incident class gtk.TreeModel() to the open RTK
+        Program database.
 
-        Keyword Arguments:
-        model -- the Field Incident component list treemodel.
-        path_ -- the path of the active row in the Field Incident
-                 component list treemodel.
-        row   -- the selected row in the Field Incident component list
-                 treeview.
+        @param model: the Incident class component list gtk.TreeModel().
+        @type model: gtk.TreeModel
+        @param __path: the path of the active row in the Incident class
+                       component list gtk.TreeModel().
+        @type __path: string
+        @param row: the selected gtk.TreeIter() in the Incident class component
+                    list gtk.TreeView().
+        @type row: gtk.TreeIter
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         #datetime.strptime(dt,"%Y-%m-%d").toordinal()
-
-        values = (model.get_value(row, 2), \
-                  model.get_value(row, 3), \
-                  model.get_value(row, 4), \
-                  model.get_value(row, 5), \
-                  model.get_value(row, 6), \
-                  model.get_value(row, 7), \
-                  model.get_value(row, 8), \
-                  model.get_value(row, 9), \
-                  model.get_value(row, 10), \
+        _query = "UPDATE tbl_incident_detail \
+                  SET fld_initial_installation=%d, \
+                      fld_failure=%d, fld_suspension=%d, \
+                      fld_occ_fault=%d, fld_cnd_nff=%d, \
+                      fld_interval_censored=%d, \
+                      fld_use_op_time=%d, fld_use_cal_time=%d, \
+                      fld_ttf=%f \
+                  WHERE fld_incident_id='%s'" % \
+                 (model.get_value(row, 2), model.get_value(row, 3),
+                  model.get_value(row, 4), model.get_value(row, 5),
+                  model.get_value(row, 6), model.get_value(row, 7),
+                  model.get_value(row, 8), model.get_value(row, 9),
+                  model.get_value(row, 10),
                   self.model.get_value(self.selected_row, 0))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_incident_detail \
-                     SET fld_initial_installation=%d, \
-                         fld_failure=%d, fld_suspension=%d, \
-                         fld_occ_fault=%d, fld_cnd_nff=%d, \
-                         fld_interval_censored=%d, \
-                         fld_use_op_time=%d, fld_use_cal_time=%d, \
-                         fld_ttf=%f \
-                     WHERE fld_incident_id='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_incident_detail \
-                     SET fld_initial_installation=?, \
-                         fld_failure=?, fld_suspension=?, \
-                         fld_occ_fault=?, fld_cnd_nff=?, \
-                         fld_interval_censored=?, \
-                         fld_use_op_time=?, fld_use_cal_time=?, \
-                         fld_ttf=? \
-                     WHERE fld_incident_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
-            self._app.debug_log.error("incident.py: Failed to save field incident component list.")
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error saving field incident component list."))
             return True
 
-        values = (self.model.get_value(self.selected_row, 10),
+        _query = "UPDATE tbl_incident \
+                  SET fld_reviewed=%d \
+                  WHERE fld_incident_id='%s'" % \
+                 (self.model.get_value(self.selected_row, 10),
                   self.model.get_value(self.selected_row, 0))
 
-        if(_conf.BACKEND == 'mysql'):
-            query = "UPDATE tbl_incident \
-                     SET fld_reviewed=%d \
-                     WHERE fld_incident_id='%s'"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "UPDATE tbl_incident \
-                     SET fld_reviewed=? \
-                     WHERE fld_incident_id=?"
-
-        results = self._app.DB.execute_query(query,
-                                             values,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
-            self._app.debug_log.error("incident.py: Failed to save field incident.")
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error saving field incident %d.") %
+                            self.model.get_value(self.selected_row, 0))
             return True
 
         return False
 
-    def _callback_check(self, check, _index_):
+    def _callback_check(self, check, index):
         """
-        Callback function to retrieve and save checkbutton changes.
+        Callback function to retrieve and save Incident class gtk.CheckButton()
+        changes.
 
-        Keyword Arguments:
-        check   -- the checkbutton that called the function.
-        _index_ -- the position in the component list model.
+        @param check: the gtk.CheckButton() that called this method.
+        @type check: gtk.CheckButton
+        @param index: the position in the Incident class component list
+                      gtk.TreeModel().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        if(check.get_active()):
+        if check.get_active():
             value = 1
         else:
             value = 0
 
         # Update the Incident Component List Tree.
-        self.model.set_value(self.selected_row, _index_, value)
+        self.model.set_value(self.selected_row, index, value)
 
         return False
 
-    def _callback_combo(self, combo, _index_):
+    def _callback_combo(self, combo, index):
         """
-        Callback function to retrieve and save combobox changes.
+        Callback function to retrieve and save gtk.ComboBox() changes.
 
-        Keyword Arguments:
-        combo   -- the combobox that called the function.
-        _index_ -- the position in the INCIDENT Object _attribute list
-                   associated with the data from the calling combobox.
+        @param combo: the gtk.ComboBox() that called this method.
+        @type combo: gtk.ComboBox
+        @param index: the position in the Incident class component list
+                      gtk.TreeModel().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        # _index_   Field
+        # Index     Field
         #   2       Incident ID
         #   3       Incident Category
         #   4       Incident Type
@@ -1156,15 +1125,14 @@ class Incident(object):
         #  21       Reviewed By
         #  24       Approved By
         #  27       Complete By
-        _text_ = combo.get_active()
-        self.model.set_value(self.selected_row, _index_, _text_)
+        self.model.set_value(self.selected_row, index, combo.get_active())
 
         return False
 
     def create_tree(self):
         """
-        Creates the Field Incident TreeView and connects it to callback
-        functions to handle editting.  Background and foreground colors can be
+        Creates the Incident class gtk.TreeView() and connects it to callback
+        functions to handle editing.  Background and foreground colors can be
         set using the user-defined values in the RTK configuration file.
         """
 
@@ -1191,7 +1159,7 @@ class Incident(object):
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
 
-        return(scrollwindow)
+        return scrollwindow
 
     def load_tree(self, query, values):
         """
@@ -1202,6 +1170,8 @@ class Incident(object):
         @type query: string
         @param values: the values that are used in the SQL query.
         @type values: tuple
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         from datetime import datetime
@@ -1214,12 +1184,12 @@ class Incident(object):
         try:
             self.n_incidents = len(results)
         except ValueError:
-            _util.rtk_error(_(u"There are no incidents matching the "
-                                      u"specified criteria."))
+            _util.rtk_information(_(u"There are no incidents matching the "
+                                    u"specified criteria."))
             return True
 
         for i in range(self.n_incidents):
-            _data = [results[i][0], results[i][1] ,results[i][2],
+            _data = [results[i][0], results[i][1], results[i][2],
                      results[i][3], results[i][4], results[i][5],
                      results[i][6], results[i][7], results[i][8],
                      results[i][9], results[i][10], results[i][11],
@@ -1259,7 +1229,9 @@ class Incident(object):
         return False
 
     def _load_component_list(self):
-        """ Method to load the component list. """
+        """
+        Method to load the component list.
+        """
 
         selection = self.treeview.get_selection()
         (model, row) = selection.get_selected()
@@ -1268,18 +1240,18 @@ class Incident(object):
         model = self.tvwComponentList.get_model()
         model.clear()
 
-        query="SELECT fld_part_num, fld_initial_installation, \
-                      fld_failure, fld_suspension, fld_occ_fault, \
-                      fld_cnd_nff, fld_interval_censored, fld_use_op_time, \
-                      fld_use_cal_time, fld_ttf, fld_age_at_incident \
-                FROM tbl_incident_detail \
-                WHERE fld_incident_id=%d" % _incident_id
+        query = "SELECT fld_part_num, fld_initial_installation, \
+                        fld_failure, fld_suspension, fld_occ_fault, \
+                        fld_cnd_nff, fld_interval_censored, fld_use_op_time, \
+                        fld_use_cal_time, fld_ttf, fld_age_at_incident \
+                  FROM tbl_incident_detail \
+                  WHERE fld_incident_id=%d" % _incident_id
 
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
 
-        if(results == '' or not results):
+        if results == '' or not results:
             self._app.debug_log.error("incident.py: Failed to load component list.")
             return True
 
@@ -1290,19 +1262,21 @@ class Incident(object):
         return False
 
     def load_notebook(self):
-        """ Method to load the INCIDENT Object gtk.Notebook. """
+        """
+        Method to load the Incident class gtk.Notebook().
+        """
 
         if self.selected_row is not None:
             self._field_incident_tab_load()
             self._incident_analysis_tab_load()
             self._load_component_list()
 
-        if(self._app.winWorkBook.get_child() is not None):
+        if self._app.winWorkBook.get_child() is not None:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxIncident)
         self._app.winWorkBook.show_all()
 
-        _title = _("RTK Work Book: Program Incident (%d Incidents)") % \
+        _title = _("RTK Work Book: Program Incidents (%d Incidents)") % \
                    self.n_incidents
         self._app.winWorkBook.set_title(_title)
 

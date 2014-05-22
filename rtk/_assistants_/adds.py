@@ -49,13 +49,13 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import rtk.configuration as _conf       #pylint: disable=F0401
-    import rtk.utilities as _util           #pylint: disable=F0401
-    import rtk.widgets as _widg             #pylint: disable=F0401
+    import rtk.configuration as _conf       # pylint: disable=F0401
+    import rtk.utilities as _util           # pylint: disable=F0401
+    import rtk.widgets as _widg             # pylint: disable=F0401
 except ImportError:
-    import configuration as _conf           #pylint: disable=F0401
-    import utilities as _util               #pylint: disable=F0401
-    import widgets as _widg                 #pylint: disable=F0401
+    import configuration as _conf           # pylint: disable=F0401
+    import utilities as _util               # pylint: disable=F0401
+    import widgets as _widg                 # pylint: disable=F0401
 
 # Add localization support.
 import locale
@@ -261,8 +261,8 @@ class AddRevision(object):
         _query = "INSERT INTO tbl_revisions (fld_revision_id, fld_name, \
                                              fld_remarks, fld_revision_code) \
                   VALUES ({0:d}, '{1:s}', '{2:s}', '{3:s}')".format(
-                  _revision_id, _revision_name, _revision_remarks,
-                  _revision_code)
+                 _revision_id, _revision_name, _revision_remarks,
+                 _revision_code)
         self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                    commit=True)
 
@@ -597,7 +597,7 @@ class AddIncident:
 
         # Add a calendar widget for date selection if we are on a posix
         # platform.  The calendar widget doesn't work for shit on Windoze.
-        if(name == 'posix'):
+        if name == 'posix':
             self.btnCalendar = _widg.make_button(height=25,
                                                  width=25,
                                                  label="...",
@@ -611,7 +611,7 @@ class AddIncident:
             x_pos += 100
             _who = environ['USER']
 
-        elif(name == 'nt'):
+        elif name == 'nt':
             _who = environ['USERNAME']
 
         _text_ = _("Reported By*:")
@@ -761,16 +761,16 @@ class AddIncident:
 
     def _forward_page_select(self, current_page):
 
-        if(current_page == 0):
+        if current_page == 0:
             self.assistant.set_current_page(1)
 
-        elif(current_page == 1):
-            if(self.rdoHardware.get_active()):
+        elif current_page == 1:
+            if self.rdoHardware.get_active():
                 print "Going to page 2 hardware"
-            elif(self.rdoSoftware.get_active()):
+            elif self.rdoSoftware.get_active():
                 self.assistant.set_current_page(2)
 
-        elif(current_page == 2):
+        elif current_page == 2:
             self.assistant.set_current_page(3)
 
     def _show_calendar(self, button):
@@ -1362,9 +1362,9 @@ class AddRGRecord(gtk.Assistant):
         self.destroy()
 
 
-class CreateDataSet:
+class CreateDataSet(object):
     """
-    This is the gtk.Assistant that walks the user through the process of
+    This is the gtk.Assistant() that walks the user through the process of
     creating a datset for survival analysis from the Field Incident records
     in the open RTK Program database.
     """
@@ -1373,7 +1373,6 @@ class CreateDataSet:
         """
         Method to initialize the Dataset Creation Assistant.
 
-        Keyword Arguments:
         @param button: the gtk.Button() that called this method.
         @type button: gtk.Button
         @param app: the RTK application.
@@ -1390,11 +1389,11 @@ class CreateDataSet:
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _text = _(u"This is the RTK survival data set assistant.  It will\n"
-                  u"help you create a data set for survival (Weibull)\n"
-                  u"analysis from the Program Incidents.  Press 'Forward'\n"
-                  u"to continue or 'Cancel' to quit the assistant.")
-        _label = _widg.make_label(_text, width=-1, height=150)
+        _text = _(u"This is the RTK survival data set assistant.  It will "
+                  u"help you create a data set for survival (Weibull) "
+                  u"analysis from the Program Incidents.  Press 'Forward' to "
+                  u"continue or 'Cancel' to quit the assistant.")
+        _label = _widg.make_label(_text, width=600, height=150, wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1413,8 +1412,9 @@ class CreateDataSet:
                                                    u"Database"))
         self.optFile = gtk.RadioButton(group=self.optDatabase,
                                        label=_(u"Save Data Set to File"))
-        self.chkNevadaChart = _widg.make_check_button(
-                              _label_=_(u"Create Nevada chart from data."))
+        self.chkNevadaChart = _widg.make_check_button(label=_(u"Create Nevada "
+                                                              u"chart from "
+                                                              u"data."))
 
         _fixed.put(self.optDatabase, 5, 5)
         _fixed.put(self.optFile, 5, 35)
@@ -1436,16 +1436,17 @@ class CreateDataSet:
         _fixed.put(self.optMTBF, 5, 165)
 
         # Create the checkbutton to include or exclude zero hour failures.
-        self.chkIncludeZeroHour = _widg.make_check_button(
-                                  _label_=_(u"Include zero hour failures."))
+        self.chkIncludeZeroHour = _widg.make_check_button(label=_(u"Include "
+                                                                  u"zero hour "
+                                                                  u"failures."))
         self.chkIncludeZeroHour.set_active(True)
 
         _fixed.put(self.chkIncludeZeroHour, 5, 205)
 
         self.assistant.append_page(_frame)
         self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_frame,
-                                      _(u"Select Where to Save Data Set"))
+        self.assistant.set_page_title(_frame, _(u"Select Where to Save Data "
+                                                u"Set"))
         self.assistant.set_page_complete(_frame, True)
 
         # Create a page to select where data set should be saved.
@@ -1488,9 +1489,9 @@ class CreateDataSet:
 
         # Create the page to apply the import criteria.
         _fixed = gtk.Fixed()
-        _text = _(u"Press 'Apply' to create the requested data set or "
-                  u"'Cancel' to quit the assistant.")
-        _label = _widg.make_label(_text, width=600, height=150)
+        _label = _widg.make_label(_(u"Press 'Apply' to create the requested "
+                                    u"data set or 'Cancel' to quit the "
+                                    u"assistant."), width=600, height=150)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed,
@@ -1504,8 +1505,8 @@ class CreateDataSet:
         """
         Method to create the desired data set.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param button: the gtk.Button() that called this method.
+        @type button: gtk.Button
         """
 
         _window_ = self.assistant.get_root_window()
@@ -1523,36 +1524,35 @@ class CreateDataSet:
         _confidence_ = float(self.txtConfidence.get_text())
         _description_ = self.txtDescription.get_text()
 
-# First create a new dataset in the RTK Program database or create a new file
-# to output the results to.
-        if(self.optDatabase.get_active()):
-            if(_conf.BACKEND == 'mysql'):
+        # First create a new dataset in the RTK Program database or create a
+        # new file to output the results to.
+        if self.optDatabase.get_active():
+            if _conf.BACKEND == 'mysql':
                 _query_ = "INSERT INTO tbl_dataset (fld_assembly_id, \
                                                     fld_description, \
                                                     fld_confidence) \
                            VALUES (%d, '%s', %f)" % \
                            (_assembly_id_, _description_, _confidence_)
 
-            elif(_conf.BACKEND == 'sqlite3'):
+            elif _conf.BACKEND == 'sqlite3':
                 # First find the last dataset id in the table.
                 _query_ = "SELECT MAX(fld_dataset_id) \
                            FROM tbl_dataset"
-                _dataset_id_ = self._app.DB.execute_query(_query_,
-                                                          None,
-                                                          self._app.ProgCnx)
-                _dataset_id_ = _dataset_id_[0][0]
-                if(_dataset_id_ is None or not _dataset_id_ or
-                   _dataset_id_ == ''):
-                    _dataset_id_ = 1
+                _dataset_id = self._app.DB.execute_query(_query_,
+                                                         None,
+                                                         self._app.ProgCnx)
+                _dataset_id = _dataset_id[0][0]
+                if _dataset_id is None or not _dataset_id or _dataset_id == '':
+                    _dataset_id = 1
                 else:
-                    _dataset_id_ += 1
+                    _dataset_id += 1
 
                 _query_ = "INSERT INTO tbl_dataset (fld_dataset_id, \
                                                     fld_assembly_id, \
                                                     fld_description, \
                                                     fld_confidence) \
                            VALUES (%d, %d, '%s', %f)" % \
-                           (_dataset_id_, _assembly_id_, _description_,
+                           (_dataset_id, _assembly_id_, _description_,
                             _confidence_)
 
             _results_ = self._app.DB.execute_query(_query_,
@@ -1560,15 +1560,15 @@ class CreateDataSet:
                                                    self._app.ProgCnx,
                                                    commit=True)
 
-# Find the ID of the last dataset to be created if using the MySQL backend.
-# This is the value that will be written to the fld_dataset_id field in the
-# tbl_survival_data table.
-            if(_conf.BACKEND == 'mysql'):
+            # Find the ID of the last dataset to be created if using the MySQL
+            # backend.  This is the value that will be written to
+            # fld_dataset_id in tbl_survival_data.
+            if _conf.BACKEND == 'mysql':
                 _query_ = "SELECT LAST_INSERT_ID()"
-                _dataset_id_ = self._app.DB.execute_query(_query_,
-                                                          None,
-                                                          self._app.ProgCnx)
-                _dataset_id_ = _dataset_id_[0][0]
+                _dataset_id = self._app.DB.execute_query(_query_,
+                                                         None,
+                                                         self._app.ProgCnx)
+                _dataset_id = _dataset_id[0][0]
         else:
             _dialog_ = gtk.FileChooserDialog(_("RTK: Save Data Set to File ..."),
                                              None,
@@ -1577,12 +1577,12 @@ class CreateDataSet:
                                               gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
             _dialog_.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
             _response_ = _dialog_.run()
-            if(_response_ == gtk.RESPONSE_ACCEPT):
+            if _response_ == gtk.RESPONSE_ACCEPT:
                 _filename_ = _dialog_.get_filename()
 
             _dialog_.destroy()
 
-            _dataset_id_ = 0
+            _dataset_id = 0
 
             _file_ = open(_filename_, 'w')
             _file_.write("Data Set Description: " + self.txtDescription.get_text() + "\n")
@@ -1590,22 +1590,22 @@ class CreateDataSet:
             _file_.write("Record_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\tRequest_Date\tAssembly_ID\n")
 
         _starttime_ = 0.01
-        if(self.chkIncludeZeroHour.get_active()):
+        if self.chkIncludeZeroHour.get_active():
             _starttime_ = 0.0
 
-# Select everything from the incident detail table in the Program database.
-#   Index       Field
-#     0      Unit
-#     1      Incident ID
-#     2      Part Number
-#     3      Age at Incident
-#     4      Failure
-#     5      Suspension
-#     6      CND/NFF
-#     7      OCC
-#     8      Initial Installation
-#     9      Interval Censored
-        if(self.optMTTF.get_active()):
+        # Select everything from the incident detail table in the Program database.
+        #   Index    Field
+        #     0      Unit
+        #     1      Incident ID
+        #     2      Part Number
+        #     3      Age at Incident
+        #     4      Failure
+        #     5      Suspension
+        #     6      CND/NFF
+        #     7      OCC
+        #     8      Initial Installation
+        #     9      Interval Censored
+        if self.optMTTF.get_active():
             _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
                               t1.fld_part_num, t1.fld_age_at_incident, \
                               t1.fld_failure, t1.fld_suspension, \
@@ -1631,7 +1631,7 @@ class CreateDataSet:
                                                    None,
                                                    self._app.ProgCnx)
 
-        elif(self.optMTBBD.get_active()):
+        elif self.optMTBBD.get_active():
             _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
                               t1.fld_part_num, t1.fld_age_at_incident, \
                               t1.fld_failure, t1.fld_suspension, \
@@ -1657,7 +1657,7 @@ class CreateDataSet:
                                                    None,
                                                    self._app.ProgCnx)
 
-        elif(self.optMTBF.get_active()):
+        elif self.optMTBF.get_active():
             _query_ = "SELECT t2.fld_unit, t1.fld_incident_id, \
                               t1.fld_part_num, t1.fld_age_at_incident, \
                               t1.fld_failure, t1.fld_suspension, \
@@ -1678,9 +1678,9 @@ class CreateDataSet:
 
         _n_records_ = len(_results_)
 
-# Load the results into the survival data table in the RTK Program database
-# or write the results to the open file.
-        if(self.optDatabase.get_active()):
+        # Load the results into the survival data table in the RTK Program
+        # database or write the results to the open file.
+        if self.optDatabase.get_active():
             # Add the first record to the survival data table in the open
             # RTK Program database.
             _base_query_ = "INSERT INTO tbl_survival_data \
@@ -1689,7 +1689,7 @@ class CreateDataSet:
                              fld_status, fld_quantity, fld_unit, fld_tbf, \
                              fld_assembly_id, fld_request_date) \
                             VALUES (%d, %d, %f, %f, '%s', %d, '%s', %f, %d, %d)"
-            _values_ = (0, _dataset_id_, 0.0, float(_results_[0][3]),
+            _values_ = (0, _dataset_id, 0.0, float(_results_[0][3]),
                         "Interval Censored", 1, _results_[0][0],
                         float(_results_[0][3]), _results_[0][11],
                         _results_[0][10])
@@ -1702,7 +1702,7 @@ class CreateDataSet:
             for i in range(1, _n_records_):
                 # If the current record passed the consistency check with the
                 # previous record, then add it to the database.
-                if(_add_):
+                if _add_:
                     _query_ = _base_query_ % _values_
                     _inserts_ = self._app.DB.execute_query(_query_,
                                                            None,
@@ -1711,18 +1711,19 @@ class CreateDataSet:
 
                 # Create the next set of values to insert to the RTK
                 # Program database if it passes the consistency check.
-                if(_results_[i][0] == _results_[i - n][0]): # Same unit.
-                    if(not self._consistency_check(_results_[i - n],
-                                                   _results_[i])):
+                if _results_[i][0] == _results_[i - n][0]:  # Same unit.
+                    if not self._consistency_check(_results_[i - n],
+                                                   _results_[i]):
 
-                        if(_results_[i][3] == _results_[i - n][3]): # Failures occurred at same time.
+                        # Failures occurred at same time.
+                        if _results_[i][3] == _results_[i - n][3]:
                             _left_ = float(_values_[2])
                         else:
                             _left_ = float(_results_[i - n][3])
 
                         _right_ = float(_results_[i][3])
                         _tbf_ = _right_ - _left_
-                        _values_ = (i, _dataset_id_, _left_, _right_,
+                        _values_ = (i, _dataset_id, _left_, _right_,
                                     'Interval Censored', 1, _results_[i][0],
                                     _tbf_, _results_[i][11], _results_[i][10])
                         _add_ = True
@@ -1734,12 +1735,12 @@ class CreateDataSet:
                         _n_inconsistent_ += 1
 
                 else:                                       # Different unit.
-                    if(i < _n_records_ - 1):
-                        if(_results_[i][3] <= _results_[i + 1][3]):
+                    if i < _n_records_ - 1:
+                        if _results_[i][3] <= _results_[i + 1][3]:
                             _left_ = 0.0
                             _right_ = float(_results_[i][3])
                             _tbf_ = _right_ - _left_
-                            _values_ = (i, _dataset_id_, _left_, _right_,
+                            _values_ = (i, _dataset_id, _left_, _right_,
                                         'Interval Censored', 1,
                                         _results_[i][0], _tbf_,
                                         _results_[i][11], _results_[i][10])
@@ -1753,7 +1754,7 @@ class CreateDataSet:
                         _left_ = 0.0
                         _right_ = float(_results_[i][3])
                         _tbf_ = _right_ - _left_
-                        _values_ = (i, _dataset_id_, _left_, _right_,
+                        _values_ = (i, _dataset_id, _left_, _right_,
                                     'Interval Censored', 1,
                                     _results_[i][0], _tbf_, _results_[i][11],
                                     _results_[i][10])
@@ -1773,11 +1774,11 @@ class CreateDataSet:
                 # Write the next record to the open file if it passes the
                 # consistency check.
                 n = 1
-                if(_results_[i][0] == _results_[i - 1][0]): # Same unit.
-                    if(not self._consistency_check(_results_[i - 1],
-                                                   _results_[i])):
+                if _results_[i][0] == _results_[i - 1][0]: # Same unit.
+                    if not self._consistency_check(_results_[i - 1],
+                                                   _results_[i]):
 
-                        if(_results_[i][3] == _results_[i - n][3]): # Failures occurred at same time.
+                        if _results_[i][3] == _results_[i - n][3]: # Failures occurred at same time.
                             _left_ = float(_results_[i][3])
                         else:
                             _left_ = float(_results_[i - n][3])
@@ -1806,48 +1807,62 @@ class CreateDataSet:
 
         _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
-        if(_n_inconsistent_ > 0):
-            _prompt_ = _(u"There were %d records with inconsistent information.  These were not used in the creation of the dataset. Please see file '%s' for details." % (_n_inconsistent_, _conf.LOG_DIR + 'RTK_import.log'))
-            _util.rtk_error(_prompt_)
+        if _n_inconsistent_ > 0:
+            _prompt_ = _(u"There were %d records with inconsistent "
+                         u"information.  These were not used in the creation "
+                         u"of the dataset. Please see file '%s' for "
+                         u"details." %
+                         (_n_inconsistent_, _conf.LOG_DIR + 'RTK_import.log'))
+            _util.rtk_information(_prompt_)
 
-# Load the dataset gtk.TreeView with the newly created dataset if it was
-# created in teh RTK Program database.
-        if(self.optDatabase.get_active()):
-            self._app.DATASET.load_tree
+        # Load the dataset gtk.TreeView with the newly created dataset if it
+        # was created in the RTK Program database.
+        if self.optDatabase.get_active():
+            self._app.DATASET.load_tree()
+            self._app.DATASET.load_notebook()
             _page_ = sum(_conf.RTK_MODULES[:11])
             self._app.winTree.notebook.set_current_page(_page_ - 1)
 
         return False
 
-    def _consistency_check(self, _results1_, _results2_):
+    def _consistency_check(self, results1, results2):
         """
         Function to check the consistency of the data records.
 
-        Keyword Arguments:
-        _results1_ -- the previous record in the data set.
-        _results2_ -- the current record in the data set.
+        @param results1: the previous record in the data set.
+        @type results1: list
+        @param results2: the current record in the data set.
+        @type results2: list
+        @return: False if records are consistent or True if not.
+        @rtype: boolean
         """
 
-        _err_ = False
+        _err = False
 
-        if(_results2_[3] < _results1_[3]):      # Failure times are descending.
-            #_previous_date_ = _util.ordinal_to_date(_results1_[10])
-            #_current_date_ = _util.ordinal_to_date(_results2_[10])
-            #_errmsg_ = "The failure time of record #%d, which occurred on '%s' on unit '%s', is earlier than the failure time of record #%d, which occurred on '%s' on unit '%s'.  Failure times should not decrease over time." % (int(_results2_[1]), _current_date_, _results2_[0], int(_results1_[1]), _previous_date_, _results2_[0])
-            _err_ = True
+        if results2[3] < results1[3]:       # Failure times are descending.
+            _previous_date = _util.ordinal_to_date(results1[10])
+            _current_date = _util.ordinal_to_date(results2[10])
+            _errmsg = _(u"The failure time of record #%d, which occurred on "
+                        u"'%s' on unit '%s', is earlier than the failure time "
+                        u"of record #%d, which occurred on '%s' on unit "
+                        u"'%s'.  Failure times should not decrease over "
+                        u"time." % (int(results2[1]), _current_date,
+                                    results2[0], int(results1[1]),
+                                    _previous_date, results2[0]))
+            _err = True
 
-        #if(_err_):
-        #    self._app.import_log.error(_errmsg_)
+        if(_err):
+            self._app.import_log.error(_errmsg)
 
-        return(_err_)
+        return _err
 
-    def _cancel(self, button):
+    def _cancel(self, __button):
         """
-        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         self.assistant.destroy()
