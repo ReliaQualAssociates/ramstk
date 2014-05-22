@@ -4,10 +4,16 @@ This is the Class that is used to represent and hold information related
 to the revision of the Program.
 """
 
-# -*- coding: utf-8 -*-
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
-__copyright__ = 'Copyright 2007 - 2014 Andrew Rowland'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
+# -*- coding: utf-8 -*-
+#
+#       revision.py is part of The RTK Project
+#
+# All rights reserved.
 
 import gettext
 import locale
@@ -51,13 +57,14 @@ _ = gettext.gettext
 
 class Revision(object):
     """
-    This is the REVISION Class for the RTK Project.
+    This is the Class that is used to represent and hold information related
+    to a revision of the open RTK Program.
     """
 
 # TODO: Replace error log entries with application error dialogs.
     def __init__(self, application):
         """
-        Initializes the REVISION class.
+        Initializes the Revision class.
 
         @param application: the current instance of the RTK application.
         """
@@ -204,7 +211,7 @@ class Revision(object):
         Method to create the gtk.ToolBar() for the Revision class work book.
 
         @return: _toolbar
-        @rtpye gtk.ToolBar
+        @rtype: gtk.ToolBar
         """
 
         _toolbar_ = gtk.Toolbar()
@@ -267,6 +274,9 @@ class Revision(object):
     def _create_notebook(self):
         """
         Method to create the Revision class gtk.Notebook().
+
+        @return: _notebook
+        @rtype: gtk.Notebook
         """
 
         def _create_general_data_tab(self, notebook):
@@ -367,12 +377,14 @@ class Revision(object):
 
         def _create_usage_profile_tab(self, notebook):
             """
-            Function to create the REVISION class gtk.Notebook() page for
-            displaying usage profiles for the selected REVISION.
+            Function to create the Revision class gtk.Notebook() page for
+            displaying usage profiles for the selected Revision.
 
-            Keyword Arguments:
-            self     -- the current instance of a REVISION class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Revision class.
+            @param notebook: the gtk.Notebook() to add the page to.
+            @type notebook: gtk.Notebook
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _labels_ = [_(u"Mission:"), _(u"Mission Time:")]
@@ -686,12 +698,13 @@ class Revision(object):
 
         def _create_failure_definition_tab(self, notebook):
             """
-            Function to create the REVISION class gtk.Notebook() page for
-            displaying failure definitions for the selected REVISION.
+            Function to create the Revision class gtk.Notebook() page for
+            displaying failure definitions for the selected Revision.
 
-            Keyword Arguments:
-            self     -- the current instance of a REVISION class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Revision class.
+            @param notebook: the gtk.Notebook() to add the page to.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING)
@@ -796,8 +809,13 @@ class Revision(object):
 
         def _create_assessment_results_tab(self, notebook):
             """
-            Method to create the Assessment Results gtk.Notebook tab and
-            populate is with the appropriate widgets for the REVISION object.
+            Funciton to create the Revision class gtk.Notebook() page for
+            displaying assessment results for the selected Revision.
+
+            @param self: the current instance of a Revision class.
+            @param notebook: the gtk.Notebook() to add the page to.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -991,37 +1009,37 @@ class Revision(object):
 
     def load_tree(self):
         """
-        Loads the REVISION Object gtk.TreeModel with revision information.
-        This information can be stored either in a MySQL or SQLite3
-        database.
+        Method to load the Revision class gtk.TreeModel() with revision
+        information.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _query_ = "SELECT * FROM tbl_revisions"
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_revisions"
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            return True
+        try:
+            _n_records = len(_results)
+        except TypeError:
+            _n_records = 0
 
-        _n_records_ = len(_results_)
-
-        _model_.clear()
-        for i in range(_n_records_):
-            _model_.append(None, _results_[i])
+        _model.clear()
+        for i in range(_n_records):
+            _model.append(None, _results[i])
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        if _model_.get_iter_root() is not None:
-            _path_ = _model_.get_path(_model_.get_iter_root())
-            _column_ = self.treeview.get_column(0)
-            self.treeview.row_activated(_path_, _column_)
+        if _model.get_iter_root() is not None:
+            _path = _model.get_path(_model.get_iter_root())
+            _column = self.treeview.get_column(0)
+            self.treeview.row_activated(_path, _column)
 
         # Try to retrieve the Revision ID attribute.
         try:
-            self.revision_id = _model_.get_value(_row_, 0)
+            self.revision_id = _model.get_value(_row, 0)
         except TypeError:
             self.revision_id = 0
 
@@ -1030,6 +1048,9 @@ class Revision(object):
     def _load_mission_profile(self):
         """
         Method to load the mission profile gtk.TreeView().
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Load the mission profile tree.
@@ -1073,6 +1094,9 @@ class Revision(object):
     def _load_environmental_profile(self):
         """
         Method to load the environmental profile gtk.TreeView().
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Load the mission phase gtk.CellRendererCombo in the environmental
@@ -1142,10 +1166,11 @@ class Revision(object):
 
     def _load_failure_definitions(self):
         """
-        Function to load the widgets on the Failure Definition tab.
+        Function to load the widgets on the Failure Definition page.
 
-        Keyword Arguments:
-        self -- the current instance of a REVISION class.
+        @param self: the current instance of a Revision class.
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _query = "SELECT fld_definition_id, fld_definition \
@@ -1169,15 +1194,19 @@ class Revision(object):
 
     def load_notebook(self):
         """
-        Method to load the REVISION Object gtk.Notebook.
+        Method to load the Revision class gtk.Notebook() widgets.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _load_general_data_tab(self):
             """
-            Function to load the widgets on the General Data tab.
+            Function to load the widgets on the General Data page.
 
-            Keyword Arguments:
-            self -- the current instance of a REVISION class.
+            @param self: the current instance of a Revision class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             self.txtTotalCost.set_text(str(locale.currency(self.cost)))
@@ -1193,11 +1222,13 @@ class Revision(object):
 
         def _load_assessment_results_tab(self):
             """
-            Function to load the widgets on the Assessment Results tab.
+            Function to load the widgets on the Assessment Results page.
 
-            Keyword Arguments:
-            self -- the current instance of a REVISION class.
+            @param self: the current instance of a Revision class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
+
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
             self.txtAvailability.set_text(str(fmt.format(self.availability)))
@@ -1271,20 +1302,23 @@ class Revision(object):
 
     def _treeview_clicked(self, treeview, event):
         """
-        Callback function for handling mouse clicks on the REVISION Object
-        treeview.
+        Callback function for handling mouse clicks on the Revision class
+        gtk.TreeView().
 
-        Keyword Arguments:
-        treeview -- the Hardware Object treeview.
-        event    -- a gtk.gdk.Event that called this function (the
-                    important attribute is which mouse button was clicked).
-                    1 = left
-                    2 = scrollwheel
-                    3 = right
-                    4 = forward
-                    5 = backward
-                    8 =
-                    9 =
+        @param treeview: the Revision class gtk.TreeView().
+        @type treeview: gtk.TreeView
+        @param event: the gtk.gdk.Event() that called this method (the
+                      important attribute is which mouse button was clicked).
+                      1 = left
+                      2 = scrollwheel
+                      3 = right
+                      4 = forward
+                      5 = backward
+                      8 =
+                      9 =
+        @type event: gtk.gdk.Event
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         if event.button == 1:
@@ -1296,16 +1330,17 @@ class Revision(object):
 
     def _treeview_row_changed(self, treeview, __path, __column):
         """
-        Callback function to handle events for the REVISION Object
-        TreeView.  It is called whenever the REVISION Object TreeView row
-        is activated.  It will save the previously selected row in the
-        REVISION Object TreeView.
+        Callback function to handle events for the Revision class
+        gtk.TreeView().  It is called whenever the Revision class
+        gtk.TreeView() row is activated.
 
         @param treeview: the Revision classt gtk.TreeView().
         @type treeview: gtk.TreeView
         @param string __path: the actived row gtk.TreeView() path.
         @param __column: the actived gtk.TreeViewColumn().
         @type __column: gtk.TreeViewColumn
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -1379,8 +1414,10 @@ class Revision(object):
         """
         Method to add a new mission to the open program.
 
-        Keyword Arguments
-        __button -- the gtk.Button widget that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Find the largest mission id already in the database and then
@@ -1504,7 +1541,7 @@ class Revision(object):
 
     def _add_failure_definition(self, __button):
         """
-        Method to add a failure definition to the revision.
+        Method to add a failure definition to the Revision.
 
         @param __button: the gtk.Button() that called this function.
         @type __button: gtk.Button
@@ -1531,8 +1568,8 @@ class Revision(object):
 
     def delete_revision(self, __menuitem, __event):
         """
-        Deletes the currently selected Revision from the Program's
-        MySQL database.
+        Deletes the currently selected Revision from the open RTK Program
+        database.
 
         @param __menuitem: the gtk.MenuItem() that called this function.
         @param __event: the gdk.gtk.Event() that called this function.
@@ -1572,7 +1609,8 @@ class Revision(object):
 
     def _delete_mission(self, __button):
         """
-        Method to remove the currently selected mission from the program.
+        Method to remove the currently selected mission from the open RTK
+        Program database.
 
         @param __button: the gtk.Button() widget that called this method.
         @type __button: gtk.Button
@@ -1625,8 +1663,10 @@ class Revision(object):
         """
         Method to remove the currently selected phase from the mission.
 
-        Keyword Arguments
-        __button -- the gtk.Button widget that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _mission_ = self.cmbMission.get_active_text()
@@ -1673,8 +1713,10 @@ class Revision(object):
         Method to remove the selected environmental condition from the
         environmental profile.
 
-        Keyword Arguments:
-        __button -- the gtk.Button() that called this function.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _mission_ = self.cmbMission.get_active_text()
@@ -1704,10 +1746,12 @@ class Revision(object):
 
     def _delete_failure_definition(self, __button):
         """
-        Method to the currently selected failure definition from the revision.
+        Method to the currently selected failure definition from the Revision.
 
-        Keyword Arguments:
-        __button -- the gtk.Button() that called this function.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Find the currently selected definition id.
@@ -1735,23 +1779,30 @@ class Revision(object):
 
     def save_revision(self, __button=None):
         """
-        Saves the REVISION Object gtk.TreeModel information to the
-        program's MySQL or SQLite3 database.
+        Saves the Revision class gtk.TreeModel() information to the open RTK
+        Program database.
 
         @param __button: the gtk.Button() that called this method.
         @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the REVISION Object gtk.TreeModel to the
-            program's MySQL or SQLite3 database.
+            Saves each row in the Revision Object gtk.TreeModel() to the open
+            RTK Program database.
 
-            Keyword Arguments:
-            model   -- the REVISION Object gtk.TreeModel.
-            __path  -- the path of the active row in the REVISION Object
-                       gtk.TreeModel.
-            row     -- the selected row in the REVISION Object gtk.TreeModel.
+            @param model: the Revision class gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path: the path of the active row in the Revision class
+                           gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Revision class
+                        gtk.TreeModel().
+            @type row: gtk.TreeIter
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _values_ = (model.get_value(row, self._lst_col_order[1]),
@@ -1812,17 +1863,27 @@ class Revision(object):
         """
         Method to save the mission, mission phase, and environmental profile
         information.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _save_mission_phase(model, __path, row, self):
             """
-            Method to save each line item in the mission profile gtk.TreeBiew()
+            Function to save each line item in the mission profile
+            gtk.TreeView().
 
-            Keyword Arguments:
-            model  -- the Mission Profile gtk.TreeModel().
-            __path -- the selected path in the Mission Profile gtk.TreeModel().
-            row    -- the selected row in the Mission Profile gtk.TreeModel().
-            self   -- the current REVISION object.
+            @param model: the Mission Profile gtk.TreeModel().
+            @type mode: gtk.TreeModel
+            @param __path: the selected path in the Mission Profile
+                           gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Mission Profile
+                        gtk.TreeModel().
+            @type row: gtk.TreeIter
+            @param self: the current instance of the Revision class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _mission_ = self.cmbMission.get_active_text()
@@ -1846,15 +1907,19 @@ class Revision(object):
         def _save_environment_profile(model, __path, row, self):
             """
             Method to save each line item in the environmental profile
-            gtk.TreeBiew()
+            gtk.TreeView()
 
-            Keyword Arguments:
-            model  -- the Environmental Profile gtk.TreeModel().
-            __path -- the selected path in the Environmental Profile
-                      gtk.TreeModel().
-            row    -- the selected row in the Environmental Profile
-                      gtk.TreeModel().
-            self   -- the current REVISION object.
+            @param model: the Environmental Profile gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path: the selected path in the Environmental Profile
+                           gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Environmental
+                        Profile gtk.TreeModel().
+            @type row: gtk.TreeIter
+            @param self: the current instance of the Revision class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 # [Condition ID, Phase Name, Measurement Units, Minimum Value,
 #  Maximum Value, Mean Value, Variance]
@@ -1883,21 +1948,17 @@ class Revision(object):
         # Save the currently selected mission.
         _mission_ = self.cmbMission.get_active_text()
         try:
-            _values_ = (self._dic_missions[_mission_][1],
-                        self._dic_missions[_mission_][2],
-                        _mission_,
-                        self._dic_missions[_mission_][0])
-            _query_ = "UPDATE tbl_missions \
-                       SET fld_mission_time=%f, fld_mission_units=%d, \
-                           fld_mission_description='%s' \
-                       WHERE fld_mission_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if not _results_:
-                self._app.debug_log.error("revision.py: Failed to save mission.")
+            _query = "UPDATE tbl_missions \
+                      SET fld_mission_time=%f, fld_mission_units=%d, \
+                          fld_mission_description='%s' \
+                      WHERE fld_mission_id=%d" % \
+                     (self._dic_missions[_mission_][1],
+                      self._dic_missions[_mission_][2], _mission_,
+                      self._dic_missions[_mission_][0])
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving mission %d.") %
+                                self._dic_missions[_mission_][0])
         except KeyError:
             pass
 
@@ -1915,6 +1976,9 @@ class Revision(object):
     def _save_failure_definition(self):
         """
         Method to save the failure definitions.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -1922,13 +1986,17 @@ class Revision(object):
             Method to save each line item in the failure definition
             gtk.TreeView()
 
-            Keyword Arguments:
-            model   -- the Failure Definition gtk.TreeModel().
-            __path  -- the selected path in the Failure Definition
-                       gtk.TreeModel().
-            row     -- the selected row in the Failure Definition
-                       gtk.TreeModel().
-            self    -- the current REVISION object.
+            @param model: the Failure Definition gtk.TreeModel().
+            @type model: gtk.TreeModel
+            @param __path: the selected path in the Failure Definition
+                           gtk.TreeModel().
+            @type __path: string
+            @param row: the selected gtk.TreeIter() in the Failure Definition
+                        gtk.TreeModel().
+            @type row: gtk.TreeIter
+            @param self: the current instance of the Revision class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _values_ = (model.get_value(row, 1), self.revision_id,
@@ -1952,12 +2020,15 @@ class Revision(object):
 
     def _callback_combo(self, combo, index):
         """
-        Callback function to retrieve and save combobox changes.
+        Callback function to retrieve and save gtk.ComboBox() changes.
 
-        Keyword Arguments:
-        combo -- the gtk.Combo that called the function.
-        index -- the position in the applicable treeview associated with the
-                 data from the calling gtk.Combo.
+        @param combo: the gtk.ComboBox() that called this method.
+        @type combo: gtk.ComboBox
+        @param index: the position in the Revision class gtk.TreeView()
+                      associated with the data from the calling gtk.ComboBox().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         i = combo.get_active()
@@ -1977,13 +2048,17 @@ class Revision(object):
 
     def _callback_entry(self, entry, __event, index):
         """
-        Callback function to retrieve and save entry changes.
+        Callback function to retrieve and save gtk.Entry() changes.
 
-        Keyword Arguments:
-        entry     -- the entry that called the function.
-        __event   -- the gtk.gdk.Event that called this function.
-        index     -- the position in the REVISION Object gtk.TreeModel
-                     associated with the data from the calling entry.
+        @param entry: the gtk.Entry() that called the method.
+        @type entry: gtk.Entry
+        @param __event: the gtk.gdk.Event() that called this method.
+        @type __event: gtk.gdk.Event
+        @param index: the position in the Revision class gtk.TreeModel()
+                       associated with the data from the calling gtk.Entry().
+        @type index: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -2023,14 +2098,21 @@ class Revision(object):
 
     def _callback_edit_tree(self, __cell, path, new_text, position, model):
         """
-        Called whenever a TreeView CellRenderer is edited.
+        Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-        Keyword Arguments:
-        __cell   -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        new_text -- the new text in the edited CellRenderer.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
+        @param __cell: the gtk.CellRenderer() that was edited.
+        @type __cell: gtk.CellRenderer
+        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+                     edited.
+        @type path: string
+        @param new_text: the new text in the edited gtk.CellRenderer().
+        @type new_text: string
+        @param position: the column position of the edited gtk.CellRenderer().
+        @type position: integer
+        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        @type model: gtk.TreeModel
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _type_ = gobject.type_name(model.get_column_type(position))

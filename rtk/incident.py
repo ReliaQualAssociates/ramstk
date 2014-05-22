@@ -575,7 +575,9 @@ class Incident(object):
         Method to create the Incident Analysis widgets.
         """
 
-        self.cmbReviewBy.set_tooltip_text(_("Displays the name of the individual who reviewed the analysis."))
+        self.cmbReviewBy.set_tooltip_text(_(u"Displays the name of the "
+                                            u"individual who reviewed the "
+                                            u"analysis."))
         query = "SELECT fld_user_lname || ', ' || fld_user_fname \
                  FROM tbl_users ORDER BY fld_user_lname ASC"
         results = self._app.COMDB.execute_query(query,
@@ -584,13 +586,17 @@ class Incident(object):
         _widg.load_combo(self.cmbReviewBy, results)
         self.cmbReviewBy.connect('changed', self._callback_combo, 21)
 
-        self.txtReviewDate.set_tooltip_text(_("Displays the date the analysis was reviewed."))
+        self.txtReviewDate.set_tooltip_text(_(u"Displays the date the "
+                                              u"analysis was reviewed."))
 
-        self.cmbApproveBy.set_tooltip_text(_("Displays the name of the individual who approved the analysis."))
+        self.cmbApproveBy.set_tooltip_text(_(u"Displays the name of the "
+                                             u"individual who approved the "
+                                             u"analysis."))
         _widg.load_combo(self.cmbApproveBy, results)
         self.cmbApproveBy.connect('changed', self._callback_combo, 24)
 
-        self.txtApproveDate.set_tooltip_text(_("Displays the date the analysis was approved."))
+        self.txtApproveDate.set_tooltip_text(_(u"Displays the date the "
+                                               u"analysis was approved."))
 
         return False
 
