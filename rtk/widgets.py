@@ -1030,26 +1030,21 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
     @type xlab: string
     @keyword ylab: the y axis label for the plot.
     @type ylab: string
-    @keyword type: the type of line to plot.
-                   Options are:
-                       - 1 = step
-                       - 2 = plot
-                       - 3 = histogram
-                       - 4 = date plot
+    @keyword type: the type of line to plot. Options are:
+                   1 = step
+                   2 = plot
+                   3 = histogram
+                   4 = date plot
     @type type: list of integers
-    @keyword marker: the marker to use on the plot.
-                     Options are:
-                        - g- = green solid line
-                        - r- = red solid line
-                        - b- = blue solid line
-                        - k- = black dashed line
+    @keyword marker: the marker to use on the plot. Options are:
+                     g- = green solid line
+                     r- = red solid line
+                     b- = blue solid line
+                     k- = black dashed line
     @type marker: list of strings
     @return: False if successful or True if an error is encountered.
     @rtype: boolean
     """
-
-    # import numpy
-    # from scipy.interpolate import spline
 
     n_points = len(x)
 
@@ -1201,5 +1196,58 @@ def create_legend(axis, text, fontsize='small', legframeon=False,
         _text.set_fontsize(fontsize)
     for _line in _legend.get_lines():
         _line.set_linewidth(lwd)
+
+    return False
+
+def expand_plot(event):
+    """
+    Method to display a plot in it's own window.
+
+    @param event: the matplotlib MouseEvent() that called this method.
+    @type event: matplotlib.MouseEvent
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
+    """
+
+    _plot = event.canvas
+    _parent = _plot.get_parent()
+
+    _height = int(_parent.get_size_request()[0]),
+    _width = int(_parent.get_size_request()[1] / 2.0)
+
+    if event.button == 3:                   # Right click.
+        _window = gtk.Window()
+        _window.set_skip_pager_hint(True)
+        _window.set_skip_taskbar_hint(True)
+        _window.set_default_size(_width, _height)
+        _window.set_border_width(5)
+        _window.set_position(gtk.WIN_POS_NONE)
+        _window.set_title(_(u"RTK Plot"))
+
+        _window.connect('delete_event', close_plot, _plot, _parent)
+
+        _plot.reparent(_window)
+
+        _window.show_all()
+
+    return False
+
+def close_plot(__window, __event, plot, parent):
+    """
+    Method to close the plot.
+
+    @param __window: the gtk.Window() that is being destroyed.
+    @type __window: gtk.Window
+    @param __event: the gtk.gdk.Event() that called this method.
+    @type __event: gtk.gdk.Event
+    @param plot: the matplotlib.FigureCanvas() that was expaneded.
+    @type plot: matplotlib.FigureCanvas
+    @param parent: the original parent gtk.Widget() for the plot.
+    @type parent: gtk.Widget
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
+    """
+
+    plot.reparent(parent)
 
     return False
