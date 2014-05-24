@@ -84,12 +84,12 @@ class Hardware(object):
         @param application: the current instance of the RTK application.
         """
 
-        # Define private HARDWARE class scalar attributes.
+        # Define private Hardware class scalar attributes.
         self._app = application
         self._component = None
         self._system_ht = 1.0
 
-        # Define private HARDWARE class dictionary attributes.
+        # Define private Hardware class dictionary attributes.
         self._treepaths = {}
         self._mission = {}
         self._mission_phase = {}
@@ -130,12 +130,12 @@ class Hardware(object):
         | 6 | Detection rating after taking action\n
         | 7 | RPN after taking action"""
 
-        # Define private HARDWARE class list attributes.
+        # Define private Hardware class list attributes.
         self._col_order = []
         self._risk_col_order = []
         self._sia_col_order = []
 
-        # Define public HARDWARE class scalar attributes.
+        # Define public Hardware class scalar attributes.
         self.revision_id = 0
         self.assembly_id = 0
         self._add_adj_factor = 0.0
@@ -260,7 +260,7 @@ class Hardware(object):
         self.temp_rise = 0.0
         self.case_temp = 0.0
 
-        # Define public HARDWARE class dictionary attributes.
+        # Define public Hardware class dictionary attributes.
         # self.dicHARDWARE = {}
 
         # Create the main HARDWARE class treeview.
@@ -612,14 +612,13 @@ class Hardware(object):
         functions to handle editing.
 
         @return _scrollwindow: the gtk.ScrolledWindow() container holding the
-                               Software class gtk.TreeView().
+                               Hardware class gtk.TreeView().
         @rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
                                          u"of hardware."))
         self.treeview.set_enable_tree_lines(True)
-
         self.treeview.set_search_column(0)
         self.treeview.set_reorderable(True)
 
@@ -634,7 +633,10 @@ class Hardware(object):
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the Hardware class work book.
+        Method to create the toolbar for the Hardware class Work Book.
+
+        @return: _toolbar
+        @rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -805,15 +807,16 @@ class Hardware(object):
 
     def _create_notebook(self):
         """
-        Method to create the HARDWARE class gtk.Notebook().
+        Method to create the Hardware class gtk.Notebook().
 
+        @return: _notebook
         @rtype : gtk.Notebook
         """
 
         def _create_general_data_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
-            displaying general data about the selected HARDWARE.
+            Function to create the Hardware class gtk.Notebook() page for
+            displaying general data about the selected Hardware.
 
             @param self: the current instance of a HARDWARE class.
             @type self: Hardware object
@@ -3061,7 +3064,7 @@ class Hardware(object):
 
     def load_tree(self):
         """
-        Method to load the HARDWARE class gtk.TreeView() model with system
+        Method to load the Hardware class gtk.TreeView() model with system
         information.
         """
 
@@ -3130,7 +3133,7 @@ class Hardware(object):
 
     def load_notebook(self):
         """
-        Method to load the HARDWARE class gtk.Notebook().
+        Method to load the Hardware class gtk.Notebook().
         """
 
         def _load_general_data_tab(self):
@@ -4016,7 +4019,7 @@ class Hardware(object):
 
     def _update_attributes(self):
         """
-        Method to update the HARDWARE class attributes.
+        Method to update the Hardware class attributes.
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()

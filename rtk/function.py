@@ -1462,7 +1462,8 @@ class Function(object):
 
         return False
 
-    def _edit_functional_matrix(self, __cell, __path, new_text, column, functions):
+    def _edit_functional_matrix(self, __cell, __path, new_text, column,
+                                functions):
         """
         Callback function to save changes made to the functional matrix
         TreeView.
