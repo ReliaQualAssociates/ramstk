@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-""" Contains functions for performing non-parametric and parametric
-    survival analyses. """
+"""
+Contains functions for performing non-parametric and parametric survival
+analyses.
+"""
 
 __author__ = 'Andrew Rowland <darowland@ieee.org>'
 __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
@@ -515,7 +517,10 @@ def turnbull(_dataset_, _reltime_, _conf_=0.75, eps=1E-13, iter_max=200):
         _C_ = _A_ * _p_
         _invC_ = matrix([1.0 / i for i in array(_C_)])
         x = (_A_.T * _invC_) / _n_
-        _p_ = _p_ * x
+        try:
+            _p_ = _p_ * x
+        except ValueError:
+            print i, len(_p_), len(x)
 
     #surv = round(c(1, 1-cumsum(_p_)), digits=5)
     #right = data$right

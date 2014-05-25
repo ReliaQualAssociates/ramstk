@@ -2637,8 +2637,13 @@ class Dataset(object):
             _dates = []
             _denominator = 0.0
             for i in range(_n_records):
-                self.mhb += log(times[i] / ta)
-                _denominator += log(ta / times[i])
+                try:
+                    self.mhb += log(times[i] / ta)
+                    _denominator += log(ta / times[i])
+                except ValueError or ZeroDivisionError:
+                    print i, times[i], ta
+
+
                 self.lp += times[i] / ta
                 _tbf.append(_results[i][1])
                 _failnum.append(i)
@@ -2729,17 +2734,23 @@ class Dataset(object):
             self.txtRhoNorm.set_text(str(fmt.format(_z_norm)))
 
             if self.mhb > _chisq:
-                _text[0] = _(u"<span foreground='red'>Nonconstant</span>")
+                self.lblMHBResult.set_markup(
+                    _(u"<span foreground='red'>Nonconstant</span>"))
             else:
-                _text[0] = _(u"<span foreground='green'>Constant</span>")
+                self.lblMHBResult.set_markup(
+                    _(u"<span foreground='green'>Constant</span>"))
             if fabs(self.lp) > _z_norm:
-                _text[1] = _(u"<span foreground='red'>Nonconstant</span>")
+                self.lblZLPResult.set_markup(
+                    _(u"<span foreground='red'>Nonconstant</span>"))
             else:
-                _text[1] = _(u"<span foreground='green'>Constant</span>")
+                self.lblZLPResult.set_markup(
+                    _(u"<span foreground='green'>Constant</span>"))
             if fabs(self.lr) > _z_norm:
-                _text[2] = _(u"<span foreground='red'>Nonconstant</span>")
+                self.lblZLRResult.set_markup(
+                    _(u"<span foreground='red'>Nonconstant</span>"))
             else:
-                _text[2] = _(u"<span foreground='green'>Constant</span>")
+                self.lblZLRResult.set_markup(
+                    _(u"<span foreground='green'>Constant</span>"))
 
         # =================================================================== #
         # Perform a Kaplan-Meier analysis.
@@ -3596,10 +3607,6 @@ class Dataset(object):
         self.txtZLPPValue.set_text(str(fmt.format(_p_value[1])))
         self.txtZLRPValue.set_text(str(fmt.format(_p_value[2])))
         self.txtRhoPValue.set_text(str(fmt.format(_p_value[3])))
-
-        self.lblMHBResult.set_markup(_text[0])
-        self.lblZLPResult.set_markup(_text[1])
-        self.lblZLRResult.set_markup(_text[2])
 
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 

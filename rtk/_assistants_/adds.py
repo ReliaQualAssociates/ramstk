@@ -1389,11 +1389,13 @@ class CreateDataSet(object):
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _text = _(u"This is the RTK survival data set assistant.  It will "
-                  u"help you create a data set for survival (Weibull) "
-                  u"analysis from the Program Incidents.  Press 'Forward' to "
-                  u"continue or 'Cancel' to quit the assistant.")
-        _label = _widg.make_label(_text, width=600, height=150, wrap=True)
+        _label = _widg.make_label(_(u"This is the RTK survival data set "
+                                    u"assistant.  It will help you create a "
+                                    u"data set for survival (Weibull) "
+                                    u"analysis from the Program Incidents.  "
+                                    u"Press 'Forward' to continue or 'Cancel' "
+                                    u"to quit the assistant."),
+                                  width=600, height=150, wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1436,9 +1438,8 @@ class CreateDataSet(object):
         _fixed.put(self.optMTBF, 5, 165)
 
         # Create the checkbutton to include or exclude zero hour failures.
-        self.chkIncludeZeroHour = _widg.make_check_button(label=_(u"Include "
-                                                                  u"zero hour "
-                                                                  u"failures."))
+        self.chkIncludeZeroHour = _widg.make_check_button(
+            label=_(u"Include zero hour failures."))
         self.chkIncludeZeroHour.set_active(True)
 
         _fixed.put(self.chkIncludeZeroHour, 5, 205)
@@ -1512,8 +1513,8 @@ class CreateDataSet(object):
         _window_ = self.assistant.get_root_window()
         _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
-        _records_ = {}
-        _data_set_ = []
+        _records = {}
+        _data_set = []
 
         model = self.cmbAssembly.get_model()
         row = self.cmbAssembly.get_active_iter()
@@ -1808,20 +1809,20 @@ class CreateDataSet(object):
         _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
         if _n_inconsistent_ > 0:
-            _prompt_ = _(u"There were %d records with inconsistent "
-                         u"information.  These were not used in the creation "
-                         u"of the dataset. Please see file '%s' for "
-                         u"details." %
-                         (_n_inconsistent_, _conf.LOG_DIR + 'RTK_import.log'))
-            _util.rtk_information(_prompt_)
+            _util.rtk_information(_(u"There were %d records with inconsistent "
+                                    u"information.  These were not used in "
+                                    u"the creation of the dataset. Please see "
+                                    u"file '%s' for details." %
+                                    (_n_inconsistent_,
+                                     _conf.LOG_DIR + 'RTK_import.log')))
 
         # Load the dataset gtk.TreeView with the newly created dataset if it
         # was created in the RTK Program database.
         if self.optDatabase.get_active():
             self._app.DATASET.load_tree()
             self._app.DATASET.load_notebook()
-            _page_ = sum(_conf.RTK_MODULES[:11])
-            self._app.winTree.notebook.set_current_page(_page_ - 1)
+            _page = sum(_conf.RTK_MODULES[:11])
+            self._app.winTree.notebook.set_current_page(_page - 1)
 
         return False
 
@@ -1851,7 +1852,7 @@ class CreateDataSet(object):
                                     _previous_date, results2[0]))
             _err = True
 
-        if(_err):
+        if _err:
             self._app.import_log.error(_errmsg)
 
         return _err
@@ -1882,10 +1883,6 @@ class AddDatasetRecord:
     def __init__(self, app):
         """
         Method to initialize the Reliability Growth Record Add Assistant.
-
-        Keyword Arguments:
-        button -- the gtk.ToolButton that called this assistant.
-        app    -- the RTK application.
         """
 
         gtk.Assistant.__init__(self)
