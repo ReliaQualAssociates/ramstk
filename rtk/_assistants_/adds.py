@@ -1365,7 +1365,7 @@ class AddRGRecord(gtk.Assistant):
 class CreateDataSet(object):
     """
     This is the gtk.Assistant() that walks the user through the process of
-    creating a datset for survival analysis from the Field Incident records
+    creating a data set for survival analysis from the Field Incident records
     in the open RTK Program database.
     """
 
@@ -1869,91 +1869,315 @@ class CreateDataSet(object):
         self.assistant.destroy()
 
 
-class AddDatasetRecord:
+class AddDataset(object):
     """
-    This is the gtk.Assistant that walks the user through the process of
-    adding a record to the currently selected survival dataset in the open
+    This is the gtk.Assistant() that guides the user through the process of
+    creating a new data set in the open RTK Program database.
+    """
+
+    def __init__(self, __button, app):
+        """
+        Method to initialize the blank data set creation assistant.
+
+        @param __button: the gtk.Button() that called this assistant.
+        @type __button: gtk.Button
+        @param app: the RTK application.
+        @type app: RTK application
+        """
+
+        self._app = app
+        self._assembly = ''
+
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_(u"RTK Survival Analysis Data Set "
+                                   u"Assistant"))
+        self.assistant.connect('apply', self._add_data_set)
+        self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
+
+        # Create the introduction page.
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"This is the RTK Survival Analysis Data "
+                                    u"Set Assistant.  It will help you add a "
+                                    u"data set to the open RTK Program "
+                                    u"database.  Press 'Forward' to continue "
+                                    u"or 'Cancel' to quit the assistant."),
+                                  width=-1, height=-1, wrap=True)
+        _fixed.put(_label, 5, 5)
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(_fixed, _(u"Introduction"))
+        self.assistant.set_page_complete(_fixed, True)
+
+        # Create the page to gather the necessary inputs.
+        _fixed = gtk.Fixed()
+
+        _frame = _widg.make_frame(label=_(""))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_fixed)
+
+        # Create the gtk.Widgets() for entering information about the new
+        # data set.
+        self.cmbAssembly = _widg.make_combo(simple=False)
+        self.txtDescription = _widg.make_entry(width=400)
+        self.cmbSource = _widg.make_combo()
+        self.cmbDistribution = _widg.make_combo()
+        self.txtConfidence = _widg.make_entry(width=50)
+        self.cmbConfidenceType = _widg.make_combo()
+        self.cmbFitMethod = _widg.make_combo()
+        self.chkNevadaChart = _widg.make_check_button(label=_(u"Use Nevada "
+                                                              u"Chart"))
+
+        # Load the gtk.ComboBox() widgets.
+        _query = "SELECT fld_name, fld_assembly_id, fld_description \
+                  FROM tbl_system"
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
+        _widg.load_combo(self.cmbAssembly, _results, simple=False)
+        _results = [["ALT"], [_(u"Reliability Growth")],
+                    [_(u"Reliability Demonstration")], [_(u"Field")]]
+        _widg.load_combo(self.cmbSource, _results)
+        _results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")],
+                    [u"NHPP - Loglinear"], [_(u"Exponential")],
+                    [_(u"Lognormal")], [_(u"Normal")], [u"Weibull"],
+                    ["WeiBayes"]]
+        _widg.load_combo(self.cmbDistribution, _results)
+        _results = [["Lower One-Sided"], ["Upper One-Sided"], ["Two-Sided"]]
+        _widg.load_combo(self.cmbConfidenceType, _results)
+        _results = [["MLE"], ["Rank Regression"]]
+        _widg.load_combo(self.cmbFitMethod, _results)
+
+        # Create and place the labels.
+        _labels = [_(u"Assembly:"), _(u"Description:"), _(u"Data Source:"),
+                   _(u"Distribution:"), _(u"Confidence:"),
+                   _(u"Confidence Type:"), _(u"Fit Method:"), _("")]
+        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+        _x_pos += 35
+
+        # Create the tooltip text for the gtk.Widgets()
+        self.cmbAssembly.set_tooltip_markup(_(u"Selects the hardware assembly "
+                                              u"to associate the data set "
+                                              u"with."))
+        self.txtDescription.set_tooltip_markup(_(u"Describe the data set to "
+                                                 u"be added."))
+        self.cmbSource.set_tooltip_markup(_(u"Select the source of the "
+                                            u"records in the data set."))
+        self.cmbDistribution.set_tooltip_markup(_(u"Select the s-distribution "
+                                                  u"to fit the data set."))
+        self.txtConfidence.set_tooltip_markup(_(u"Set the s-confidence level "
+                                                u"for analysis of the data "
+                                                u"set."))
+        self.cmbConfidenceType.set_tooltip_markup(_(u"Select the type of "
+                                                    u"confidence bounds to "
+                                                    u"apply."))
+        self.cmbFitMethod.set_tooltip_markup(_(u"Select the method to use for "
+                                               u"fitting the data set to the "
+                                               u"selected distribution."))
+        self.chkNevadaChart.set_tooltip_markup(_(u"Selects whether or not to "
+                                                 u"use a Nevada Chart for "
+                                                 u"entering the data."))
+
+        # Place the input gtk.Widgets()
+        _fixed.put(self.cmbAssembly, _x_pos, _y_pos[0])
+        _fixed.put(self.txtDescription, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbSource, _x_pos, _y_pos[2])
+        _fixed.put(self.cmbDistribution, _x_pos, _y_pos[3])
+        _fixed.put(self.txtConfidence, _x_pos, _y_pos[4])
+        _fixed.put(self.cmbConfidenceType, _x_pos, _y_pos[5])
+        _fixed.put(self.cmbFitMethod, _x_pos, _y_pos[6])
+        _fixed.put(self.chkNevadaChart, _x_pos, _y_pos[7])
+
+        self.assistant.append_page(_frame)
+        self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(_frame, _(u"Enter Information for the "
+                                                u"New Data Set"))
+        self.assistant.set_page_complete(_frame, True)
+
+        # Create the page to apply the import criteria.
+        _fixed = gtk.Fixed()
+
+        _label = _widg.make_label(_(u"Press 'Apply' to create the requested "
+                                    u"data set or 'Cancel' to quit the "
+                                    u"assistant."), width=-1, height=-1,
+                                  wrap=True)
+        _fixed.put(_label, 5, _y_pos[0] + 35)
+
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(_fixed, _(u"Create Data Set"))
+        self.assistant.set_page_complete(_fixed, True)
+
+        self.assistant.show_all()
+
+    def _add_data_set(self, __button):
+        """
+        Method to create the new data set and add it to the open RTK Program
+        database.
+
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
+        """
+
+        _query = "SELECT MAX(fld_dataset_id) FROM tbl_dataset"
+        _dataset_id = self._app.DB.execute_query(_query, None,
+                                                 self._app.ProgCnx)
+        try:
+            _dataset_id = _dataset_id[0][0] + 1
+        except TypeError:
+            _dataset_id = 0
+
+        # Retrieve the inputs provided by the user.
+        _model = self.cmbAssembly.get_model()
+        _row = self.cmbAssembly.get_active_iter()
+        _assembly_id = int(_model.get_value(_row, 1))
+        _description = self.txtDescription.get_text()
+        _source = self.cmbSource.get_active()
+        _distribution = self.cmbDistribution.get_active()
+        _confidence = float(self.txtConfidence.get_text())
+        _conf_type = self.cmbConfidenceType.get_active()
+        _fit_method = self.cmbFitMethod.get_active()
+        _nevada = _util.string_to_boolean(self.chkNevadaChart.get_active())
+
+        _query = "INSERT INTO tbl_dataset \
+                  (fld_dataset_id, fld_assembly_id, fld_description, \
+                   fld_source, fld_distribution_id, fld_confidence, \
+                   fld_confidence_type, fld_fit_method, fld_nevada_chart) \
+                 VALUES(%d, %d, '%s', %d, %d, %f, %d, %d, %d)" % \
+                 (_dataset_id, _assembly_id, _description, _source,
+                  _distribution, _confidence, _conf_type, _fit_method, _nevada)
+
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error adding new data set."))
+            return True
+        else:
+            _util.rtk_information(_(u"Added data set %s to the open RTK "
+                                    u"Program database.") % _description)
+
+            # Re-load the Dataset class gtk.TreeView() to show the newly added
+            # data set.
+            self._app.DATASET.load_tree()
+
+            return False
+
+    def _cancel(self, __button):
+        """
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
+        pressed.
+
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        """
+
+        self.assistant.destroy()
+
+        return True
+
+
+class AddDatasetRecord(object):
+    """
+    This is the gtk.Assistant() that walks the user through the process of
+    adding a record to the currently selected survival data set in the open
     RTK Program database.
     """
 
-    _labels = [_(u"Left:"), _(u"Right:"), _(u"Status:"), _(u"Quantity:"),
-               _(u"Affected Unit:"), _(u"Part Number:"), _(u"Market:"),
-               _(u"Model:"), _(u"Assembly:")]
-
-    def __init__(self, app):
+    def __init__(self, _button, app):
         """
-        Method to initialize the Reliability Growth Record Add Assistant.
-        """
+        Method to initialize the survival data set record addition assistant.
 
-        gtk.Assistant.__init__(self)
-        self.set_title(_(u"RTK Survival Analysis Record Assistant"))
-        #self.connect('apply', self._test_record_add)
-        #self.connect('cancel', self._cancel)
-        #self.connect('close', self._cancel)
+        @param __button: the gtk.Button() that called this assistant.
+        @type __button: gtk.Button
+        @param app: the RTK application.
+        @type app: RTK application
+        """
 
         self._app = app
 
-# --------------------------------------------------------------------------- #
-# Create the introduction page.
-# --------------------------------------------------------------------------- #
-        fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK survival analysis record assistant.  It will help you add a record to the currently selected survival dataset.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
-        fixed.put(label, 5, 5)
-        self.append_page(fixed)
-        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.set_page_title(fixed, _(u"Introduction"))
-        self.set_page_complete(fixed, True)
+        self.assistant = gtk.Assistant()
+        self.assistant.set_title(_(_(u"RTK Survival Analysis Record "
+                                     u"Assistant")))
+        #self.assistant.connect('apply', self._add_record)
+        self.assistant.connect('cancel', self._cancel)
+        self.assistant.connect('close', self._cancel)
 
-# --------------------------------------------------------------------------- #
-# Create the page to gather the necessary failure time inputs.
-# --------------------------------------------------------------------------- #
-        fixed = gtk.Fixed()
+        # Create the introduction page.
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"This is the RTK survival analysis "
+                                    u"record assistant.  It will help you add "
+                                    u"a record to the currently selected "
+                                    u"survival data set.  Press 'Forward' to "
+                                    u"continue or 'Cancel' to quit the "
+                                    u"assistant."), width=-1, height=-1,
+                                  wrap=True)
+        _fixed.put(_label, 5, 5)
 
-        frame = _widg.make_frame(label=_(""))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(fixed)
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.assistant.set_page_title(_fixed, _(u"Introduction"))
+        self.assistant.set_page_complete(_fixed, True)
 
-# Create the gtk.Combo that allow one of multiple selections.
+        # Create the page to gather the necessary failure time inputs.
+        _fixed = gtk.Fixed()
+
+        _frame = _widg.make_frame(label=_(""))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_fixed)
+
         self.txtLeft = _widg.make_entry()
-        self.txtLeft.set_tooltip_text(_(u"Left of the interval.  If failure time is exact, set this equal to the failure time."))
         self.txtRight = _widg.make_entry()
-        self.txtRight.set_tooltip_text(_(u"Left of the interval.  If failure time is exact, set this equal to the failure time."))
         self.txtQuantity = _widg.make_entry()
-        self.txtQuantity.set_tooltip_text(_(u"Number of failures observed during interval or at failure time."))
+
+        _labels = [_(u"Left:"), _(u"Right:"), _(u"Status:"), _(u"Quantity:"),
+                   _(u"Affected Unit:"), _(u"Part Number:"), _(u"Market:"),
+                   _(u"Model:"), _(u"Assembly:")]
+        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+
+        self.txtLeft.set_tooltip_markup(_(u"Left of the interval.  If failure "
+                                          u"time is exact, set this equal to "
+                                          u"the failure time."))
+        self.txtRight.set_tooltip_text(_(u"Right of the interval.  If failure "
+                                         u"time is exact, set this equal to "
+                                         u"the failure time."))
+        self.txtQuantity.set_tooltip_text(_(u"Number of failures observed "
+                                            u"during interval or at failure "
+                                            u"time."))
         self.txtQuantity.set_text("1")
 
-        label = _widg.make_label(self._labels[0], 150, 25)
-        fixed.put(label, 5, 5)
-        fixed.put(self.txtLeft, 160, 5)
+        _fixed.put(self.txtLeft, _x_pos, _y_pos[0])
+        _fixed.put(self.txtRight, _x_pos, _y_pos[1])
+        _fixed.put(self.txtQuantity, _x_pos, _y_pos[2])
 
-        label = _widg.make_label(self._labels[1], 150, 25)
-        fixed.put(label, 5, 40)
-        fixed.put(self.txtRight, 160, 40)
+        self.assistant.append_page(_frame)
+        self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
+        self.assistant.set_page_title(_frame, _(u"Enter Failure Time Data"))
+        self.assistant.set_page_complete(_frame, True)
 
-        label = _widg.make_label(self._labels[2], 150, 25)
-        fixed.put(label, 5, 75)
-        fixed.put(self.txtQuantity, 160, 75)
+        # Create the page to add the record.
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"Press 'Apply' to add the record to the "
+                                    u"selected survival data set or 'Cancel' "
+                                    u"to quit the assistant without adding "
+                                    u"the record."), width=-1, height=-1,
+                                  wrap=True)
+        _fixed.put(_label, 5, 5)
 
-        self.append_page(frame)
-        self.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.set_page_title(frame, _(u"Enter Failure Time Data"))
-        self.set_page_complete(frame, True)
+        self.assistant.append_page(_fixed)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(_fixed, _(u"Add Survival Data Record"))
+        self.assistant.set_page_complete(_fixed, True)
 
-# --------------------------------------------------------------------------- #
-# Create the page to gather details regarding the failed item(s).
-# --------------------------------------------------------------------------- #
+        self.assistant.show_all()
 
-# --------------------------------------------------------------------------- #
-# Create the page to apply the import criteria.
-# --------------------------------------------------------------------------- #
-        fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to add the record to the selected survival data set or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
-        fixed.put(label, 5, 5)
-        self.append_page(fixed)
-        self.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
-        self.set_page_title(fixed, _(u"Add Survival Data Record"))
-        self.set_page_complete(fixed, True)
+    def _cancel(self, __button):
+        """
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
+        pressed.
 
-        self.show_all()
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        """
+
+        self.assistant.destroy()
+
+        return True

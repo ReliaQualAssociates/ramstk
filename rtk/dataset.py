@@ -65,7 +65,7 @@ import utilities as _util
 import widgets as _widg
 
 # Import other RTK classes.
-from _assistants_.adds import AddDatasetRecord
+from _assistants_.adds import AddDataset, AddDatasetRecord
 from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
@@ -409,12 +409,12 @@ class Dataset(object):
         _menu_item = gtk.MenuItem(label=_(u"Dataset"))
         _menu_item.set_tooltip_text(_(u"Add a new data set to the open RTK "
                                       u"Program database."))
-        #_menu_item.connect('activate', self._add_dataset)
+        _menu_item.connect('activate', AddDataset, self._app)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"Records"))
-        _menu_item.set_tooltip_text(_(u"Add one or more records to the "
-                                      u"selected data set."))
-        _menu_item.connect('activate', self._add_record)
+        _menu_item.set_tooltip_text(_(u"Add a record to the selected data "
+                                      u"set."))
+        _menu_item.connect('activate', AddDatasetRecord, self._app)
         _menu.add(_menu_item)
         _button.set_menu(_menu)
         _menu.show_all()
