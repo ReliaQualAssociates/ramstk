@@ -296,7 +296,7 @@ def calculate_rg_phase(model, row, GR, MS, FEF, Prob, ti):  #pylint: disable=C01
     return(GRi, TTTi)
 
 
-def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C0103
+def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  # pylint: disable=C0103
               _conf_=0.75, _T_star_=0.0):
     """
     Function to estimate the parameters (beta and alpha) of the NHPP power law
@@ -394,7 +394,14 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
             _logTlogM_ = 0.0
 
         # Calculate the Power Law parameters.
-        if _fitmeth_ == 1:                 # MLE
+        if _fitmeth_ == 1:                  # MLE
+            if _confmeth_ not in [1, 3, 5]:
+                _util.rtk_information(_(u"Selected confidence method is "
+                                        u"incompatible with NHPP analysis.  "
+                                        u"Select from Crow, Fisher, or "
+                                        u"Bootstrap methods and try again."))
+                return _power_law_
+
             try:
                 _beta_hat_ = (_n_ - 1.0) / (_n_ * log(_T_star_) - _logT_)
             except ZeroDivisionError:
@@ -406,7 +413,7 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
 
             # Calculate the lower and upper bound bounds on the Duane
             # parameters.
-            if _confmeth_ == 1:            # Fisher bounds.
+            if _confmeth_ == 3:             # Fisher bounds.
                 try:
                     _del_lambda_ = -_n_ / _lambda_hat_**2.0
                 except ZeroDivisionError:
@@ -419,7 +426,7 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
 
                 _del_beta_lambda_ = -_T_**_beta_hat_ * log(_T_)
                 _fisher_ = inv(np.array([[-_del_lambda_, -_del_beta_lambda_],
-                                         [-_del_beta_lambda_, -_del_beta_]]))   #pylint disable=E1101
+                                         [-_del_beta_lambda_, -_del_beta_]]))   # pylint: disable=E1101
 
                 _lambda_ll_ = _lambda_hat_ * exp(-_z_norm_ * sqrt(_fisher_[0][0]) / _lambda_hat_)
                 _lambda_ul_ = _lambda_hat_ * exp(_z_norm_ * sqrt(_fisher_[0][0]) / _lambda_hat_)
@@ -433,7 +440,7 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
                 except ValueError:
                     _beta_ul_ = _beta_hat_
 
-            elif _confmeth_ == 2:          # Crow bounds.
+            elif _confmeth_ == 1:          # Crow bounds.
                 _lambda_ul_ = chi2.ppf(_conf_, 2*_n_) / (2.0 * _T_**_beta_hat_)
                 _lambda_ll_ = chi2.ppf(1.0-_conf_, 2*_n_) / (2.0 * _T_**_beta_hat_)
 
@@ -454,6 +461,13 @@ def power_law(_F_, _X_, _confmeth_, _fitmeth_=2, _type_=3,  #pylint: disable=C01
             _mul_ = (_n_ * (_n_ - 1.0)) / ((_n_ - _z_norm_ * sqrt(_n_ / 2.0))**2.0)
 
         elif _fitmeth_ == 2:               # Regression
+            if _confmeth_ != 2:
+                _util.rtk_information(_(u"Selected confidence method is "
+                                        u"incompatible with NHPP analysis.  "
+                                        u"Select the Duane method and try "
+                                        u"again."))
+                return _power_law_
+
             try:
                 _alpha_hat_ = (_n_ * _logTlogM_ - _logT_ * _logM_) / (_n_ * _logT2_ - _logT_**2.0)
             except ZeroDivisionError:
@@ -729,7 +743,7 @@ def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
 # Calculate the number of intervals we need, then create a list of zeros the
 # same length as the number of intervals.
         _num_intervals_ = int(ceil(TTT / I))
-        _cum_fails_ = [0] * _num_intervals_
+        _cum_fails = [0] * _num_intervals_
 
 # Iterate through the data and count the nuber of failures in each interval.
         for i in range(len(X)):
@@ -766,9 +780,9 @@ def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
             t.append(X[i])
             logt.append(log(X[i]))
 
-        f = np.array(f)                     #pylint: disable=E1101
-        t = np.array(t)                     #pylint: disable=E1101
-        logt = np.array(logt)               #pylint: disable=E1101
+        f = np.array(f)                     # pylint: disable=E1101
+        t = np.array(t)                     # pylint: disable=E1101
+        logt = np.array(logt)               # pylint: disable=E1101
 
         _beta_hat = fsolve(_beta, 1.0, args=(f, t, logt))[0]
         _lambda_hat = FFF / TTT**_beta_hat
@@ -777,7 +791,7 @@ def crow_amsaa_continuous(_F_, _X_, _I_, _grouped_=False):
     # have the same length as everything else being plotted.
     if len(_rho) < int(TTT):
         for j in range(int(TTT) - len(_rho)):
-            _rho.append(np.nan)             #pylint: disable=E1101
-            _mu.append(np.nan)              #pylint: disable=E1101
+            _rho.append(np.nan)             # pylint: disable=E1101
+            _mu.append(np.nan)              # pylint: disable=E1101
 
     return(_beta_hat, _lambda_hat, _rho, _mu)

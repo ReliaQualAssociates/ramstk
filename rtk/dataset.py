@@ -414,7 +414,7 @@ class Dataset(object):
         _menu_item = gtk.MenuItem(label=_(u"Records"))
         _menu_item.set_tooltip_text(_(u"Add a record to the selected data "
                                       u"set."))
-        _menu_item.connect('activate', AddDatasetRecord, self._app)
+        _menu_item.connect('activate', self._add_record)
         _menu.add(_menu_item)
         _button.set_menu(_menu)
         _menu.show_all()
@@ -431,7 +431,7 @@ class Dataset(object):
         _menu_item = gtk.MenuItem(label=_(u"Dataset"))
         _menu_item.set_tooltip_text(_(u"Removes the selected data set from "
                                       u"the open RTK Program database."))
-        #_menu_item.connect('activate', self._remove_dataset)
+        _menu_item.connect('activate', self._delete_data_set)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"Records"))
         _menu_item.set_tooltip_text(_(u"Removes the selected record from the "
@@ -563,7 +563,9 @@ class Dataset(object):
             _results = [["Lower One-Sided"], ["Upper One-Sided"],
                         ["Two-Sided"]]
             _widg.load_combo(self.cmbConfType, _results)
-            _results = [["Fisher Matrix"], ["Likelihood"], ["Bootstrap"]]
+            _results = [[_(u"Crow (NHPP Only)")], [_(u"Duane (NHPP Only)")],
+                        [_(u"Fisher Matrix")], [_(u"Likelihood")],
+                        [_(u"Bootstrap")]]
             _widg.load_combo(self.cmbConfMethod, _results)
             _results = [["MLE"], ["Rank Regression"]]
             _widg.load_combo(self.cmbFitMethod, _results)
@@ -593,14 +595,14 @@ class Dataset(object):
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
                 _cell.set_property('background', 'white')
-                _cell.connect('edited', self._callback_entry_cell, i,
+                _cell.connect('edited', self._callback_entry_cell, i+1,
                               _types[i])
                 _column = gtk.TreeViewColumn()
                 _label = _widg.make_column_heading(_labels[i])
                 _column.set_widget(_label)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i+1)
-                _column.set_sort_column_id(i)
+                _column.set_sort_column_id(i+1)
                 self.tvwDataset.append_column(_column)
 
             _cell = gtk.CellRendererCombo()
@@ -1382,7 +1384,7 @@ class Dataset(object):
             _model = self.cmbAssembly.get_model()
             _row = _model.get_iter_root()
             while _row is not None:
-                if _model.get_value(_row, 1) == self.assembly_id:
+                if _model.get_value(_row, 1) == str(self.assembly_id):
                     break
                 else:
                     _row = _model.iter_next(_row)
@@ -1395,18 +1397,6 @@ class Dataset(object):
             else:
                 self.chkGroup.hide()
                 self.chkParts.hide()
-
-            # Load the remaining input values.
-            if self.distribution_id == 3:   # NHPP - Power Law
-                if self.fit_method == 2:    # Regression
-                    _results = [[_(u"Duane")], [_(u"Bootstrap")]]
-                else:                       # MLE
-                    _results = [[_(u"Fisher Matrix")], [_(u"Crow")],
-                                [_(u"Bootstrap")]]
-            else:
-                _results = [[_(u"Fisher Matrix")], [_(u"Likelihood")],
-                            [_(u"Bootstrap")]]
-            _widg.load_combo(self.cmbConfMethod, _results)
 
             self.cmbSource.set_active(self.source)
             self.cmbDistribution.set_active(self.distribution_id)
@@ -1927,7 +1917,7 @@ class Dataset(object):
         self.mle = _model.get_value(_row, self._col_order[33])
         self.start_time = _model.get_value(_row, self._col_order[34])
 # TODO: Add end time attribute.
-        #self.start_time = _model.get_value(_row, self._col_order[35])
+        #self.end_time = _model.get_value(_row, self._col_order[35])
         self.start_date = _model.get_value(_row, self._col_order[35])
         self.end_date = _model.get_value(_row, self._col_order[36])
         self._nevada_chart = _model.get_value(_row, self._col_order[37])
@@ -2000,7 +1990,8 @@ class Dataset(object):
 
     def _add_record(self, __button):
         """
-        Method to add a record to the selected survival analysis data set.
+        Method to add one or more record to the selected survival analysis
+        data set.
 
         @param __button: the gtk.ToolButton() that called this method.
         @type __button: gtk.ToolButton
@@ -2008,26 +1999,69 @@ class Dataset(object):
         @rtype: boolean
         """
 
+        _n_new_records = _util.add_items(_(u"RTK - Add Data Set Records"),
+                                         _(u"How many records to add?"))
+
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+# TODO: Add dialog to select the number of records to add and then re-write below to iterate.
         # Find the maximum record ID for the selected data set.
         _query = "SELECT MAX(fld_record_id) \
                   FROM tbl_survival_data \
                   WHERE fld_dataset_id=%d" % self.dataset_id
-        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
-
+        _next_record = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
         try:
-            _values = (_results[0][0] + 1, self.dataset_id, self.assembly_id)
+            _next_record = _next_record[0][0] + 1
         except TypeError:
-            _values = (0, self.dataset_id, self.assembly_id)
+            _next_record = 0
 
-        _query = "INSERT INTO tbl_survival_data \
-                  (fld_record_id, fld_dataset_id, fld_assembly_id) \
-                  VALUES (%d, %d, %d)" % _values
-        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                          commit=True):
-            _util.rtk_error(_(u"Error adding survival record."))
+        # Add the records.
+        _error = False
+        for i in range(_n_new_records):
+            _query = "INSERT INTO tbl_survival_data \
+                      (fld_record_id, fld_dataset_id, fld_assembly_id) \
+                      VALUES (%d, %d, %d)" % \
+                     (_next_record, self.dataset_id, self.assembly_id)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _error = True
+
+            _next_record += 1
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        if _error:
+            _util.rtk_error(_(u"Error adding one ore more survival records."))
             return True
 
         self._load_dataset_tree()
+
+        return False
+
+    def _delete_data_set(self, __button):
+        """
+        Method to remove the selected data set from the open RTK Program
+        database.
+
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
+        """
+
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+        print "Fuck it"
+        _query = "DELETE FROM tbl_dataset \
+                  WHERE fld_dataset_id=%d" % self.dataset_id
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error deleting data set."))
+            return True
+
+        self.load_tree()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -2042,7 +2076,9 @@ class Dataset(object):
         @rtype: boolean
         """
 
-        (_model, _paths) = self.tvwDataset.get_selected_rows()
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+        (_model, _paths) = self.tvwDataset.get_selection().get_selected_rows()
 
         _records = []
         for i in range(len(_paths)):
@@ -2057,7 +2093,7 @@ class Dataset(object):
 
         _label = _widg.make_label(_(u"Are you sure you want to delete the "
                                     u"selected survival data record(s)."),
-                                  600, 250)
+                                  width=600, height=250, wrap=True)
         _fixed.put(_label, 5, _y_pos)
 
         _fixed.show_all()
@@ -2077,6 +2113,8 @@ class Dataset(object):
         _dialog.destroy()
 
         self._load_dataset_tree()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -2186,11 +2224,15 @@ class Dataset(object):
 
             return False
 
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         _model = self.treeview.get_model()
         _model.foreach(_save_line_item, self)
 
         _model = self.tvwDataset.get_model()
         _model.foreach(_save_survival_record, self)
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -2217,7 +2259,10 @@ class Dataset(object):
             _model = combo.get_model()
             _row = combo.get_active_iter()
             if _row is not None:
-                _text = int(_model.get_value(_row, 1))
+                try:
+                    _text = int(_model.get_value(_row, 1))
+                except ValueError:
+                    _text = 0
             else:
                 _text = 0
         else:
@@ -2226,10 +2271,17 @@ class Dataset(object):
         if index == 4:                      # Statistical distribution.
             self.distribution_id = _text
 
-            self.hpnAnalysisResults.remove(
-                self.hpnAnalysisResults.get_child2())
-            self.vpnAnalysisResults.remove(
-                self.vpnAnalysisResults.get_child2())
+            try:
+                self.hpnAnalysisResults.remove(
+                    self.hpnAnalysisResults.get_child2())
+            except TypeError:
+                pass
+
+            try:
+                self.vpnAnalysisResults.remove(
+                    self.vpnAnalysisResults.get_child2())
+            except TypeError:
+                pass
 
             if self.distribution_id in [1, 2]:  # MCF or Kaplan-Meier
                 self.chkGroup.show()
@@ -2270,20 +2322,9 @@ class Dataset(object):
 
         elif index == 7:                    # Confidence method
             self.confidence_method = _text
-        elif index == 8:                    # Fit method.
-            (_model, _row) = self.treeview.get_selection().get_selected()
-            if self.cmbDistribution.get_active() == 3:  # NHPP.
-                if _text == 1:              # MLE
-                    _results = [[_(u"Fisher Matrix")], [_(u"Crow")],
-                                [_(u"Bootstrap")]]
-                else:                       # Regression
-                    _results = [[_(u"Duane")], [_(u"Bootstrap")]]
-            else:
-                _results = [[_(u"Fisher Matrix")], [_(u"Likelihood")],
-                            [_(u"Bootstrap")]]
-            _widg.load_combo(self.cmbConfMethod, _results)
-            self.cmbConfMethod.set_active(_model.get_value(_row,
-                                                           self._col_order[7]))
+
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model.set_value(_row, index, _text)
 
         return False
 
@@ -2974,6 +3015,9 @@ class Dataset(object):
             _power_law = power_law(_F_, _X_, self.confidence_method,
                                    self.fit_method, self.confidence_type,
                                    _confidence, _T_)
+            if len(_power_law) == 0:
+                _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+                return True
 
             # Load the non-parametric results gtk.TreeView
             _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
