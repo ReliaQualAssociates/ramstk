@@ -136,6 +136,11 @@ class Validation(object):
          self._lst_col_order) = make_treeview('Validation', 4,
                                               self._app, None,
                                               bg_color, fg_color)
+        _cell = self.treeview.get_column(
+            self._lst_col_order[12]).get_cell_renderers()[0]
+        _cell.set_property('digits', 0)
+        _adjustment = _cell.get_property('adjustment')
+        _adjustment.configure(0, 0, 100, 1, 0, 0)
 
         # Toolbar widgets.
 
@@ -798,15 +803,15 @@ class Validation(object):
 
     def load_notebook(self):
         """
-        Method to load the VALIDATION class gtk.Notebook.
+        Method to load the Validation class gtk.Notebook.
         """
 
         def _load_general_data_tab(self):
             """
-            Loads the widgets with general information about the VALIDATION
+            Loads the widgets with general information about the Validation
             class.
 
-            @param self: the current instance of the VALIDATION class.
+            @param self: the current instance of the Validation class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1090,10 +1095,10 @@ class Validation(object):
         # new value.  We block and unblock the signal handlers for the widgets
         # so a race condition does not ensue.
         if self._lst_col_order[position] == 2:
-            _buffer_ = self.txtTask.get_child().get_child().get_buffer()
-            _buffer_.handler_block(self._lst_handler_id[0])
-            _buffer_.set_text(str(new_text))
-            _buffer_.handler_unblock(self._lst_handler_id[0])
+            _buffer = self.txtTask.get_child().get_child().get_buffer()
+            _buffer.handler_block(self._lst_handler_id[0])
+            _buffer.set_text(str(new_text))
+            _buffer.handler_unblock(self._lst_handler_id[0])
         elif self._lst_col_order[position] == 3:
             try:
                 _index_ = self._dic_types[new_text]
@@ -1136,8 +1141,8 @@ class Validation(object):
             self.txtEndDate.handler_unblock(self._lst_handler_id[9])
         elif self._lst_col_order[position] == 12:
             self.spnStatus.handler_block(self._lst_handler_id[10])
-            _adjustment_ = self.spnStatus.get_adjustment()
-            _adjustment_.set_value(float(new_text))
+            _adjustment = self.spnStatus.get_adjustment()
+            _adjustment.set_value(float(new_text))
             self.spnStatus.update()
             self.spnStatus.handler_unblock(self._lst_handler_id[10])
 
