@@ -149,10 +149,10 @@ class TreeWindow(gtk.Window):
         active for the project being opened.
         """
 
-        if(_conf.RTK_MODULES[0] == 1):
+        if _conf.RTK_MODULES[0] == 1:
             label = gtk.Label()
-            _heading = _(u"Revisions")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Revisions") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
@@ -162,120 +162,109 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.REVISION.load_tree()
 
-        if(_conf.RTK_MODULES[1] == 1):
+        if _conf.RTK_MODULES[1] == 1:
             label = gtk.Label()
-            _heading = _(u"Functions")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Functions") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system functional hierarchy."))
-            self.notebook.insert_page(self.scwFunction,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system functional "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwFunction, tab_label=label,
                                       position=-1)
             _app.FUNCTION.load_tree()
 
-        if(_conf.RTK_MODULES[2] == 1):
+        if _conf.RTK_MODULES[2] == 1:
             label = gtk.Label()
-            _heading = _(u"Requirements")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Requirements") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system requirement hierarchy."))
-            self.notebook.insert_page(self.scwRequirement,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system requirement "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwRequirement, tab_label=label,
                                       position=-1)
             _app.REQUIREMENT.load_tree()
 
-        if(_conf.RTK_MODULES[3] == 1):
+        if _conf.RTK_MODULES[3] == 1:
             label = gtk.Label()
-            _heading = _(u"Hardware")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Hardware") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system hardware hierarchy."))
-            self.notebook.insert_page(self.scwHardware,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system hardware "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwHardware, tab_label=label,
                                       position=-1)
             _app.HARDWARE.load_tree()
 
-        if(_conf.RTK_MODULES[4] == 1):
+        if _conf.RTK_MODULES[4] == 1:
             label = gtk.Label()
-            _heading = _(u"Software")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Software") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system software hierarchy."))
-            self.notebook.insert_page(self.scwSoftware,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system software "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwSoftware, tab_label=label,
                                       position=-1)
             _app.SOFTWARE.load_tree()
 
-        if(_conf.RTK_MODULES[5] == 1):
+        if _conf.RTK_MODULES[5] == 1:
             label = gtk.Label()
-            _heading = _(u"V &amp; V Tasks")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"V &amp; V Tasks") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system verification and validation activities."))
-            self.notebook.insert_page(self.scwValidation,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system verification and "
+                                     u"validation activities."))
+            self.notebook.insert_page(self.scwValidation, tab_label=label,
                                       position=-1)
 
-        if(_conf.RTK_MODULES[6] == 1):
+        if _conf.RTK_MODULES[6] == 1:
             label = gtk.Label()
-            _heading = _(u"Reliability\nTesting")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Reliability\nTesting") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system reliability testing plans and results."))
-            self.notebook.insert_page(self.scwTesting,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system reliability "
+                                     u"testing plans and results."))
+            self.notebook.insert_page(self.scwTesting, tab_label=label,
                                       position=-1)
             _app.TESTING.load_tree()
 
-            #if(_conf.RTK_MODULES[7] == 1):
-            #label = gtk.Label(_("Maintenance Analysis"))
-            #label.set_tooltip_text(_("Displays the system maintenance packages."))
-            #self.notebook.insert_page(scrollwindow, tab_label=label, position=-1)
+        if _conf.RTK_MODULES[7] == 1:
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"Program\nIncidents") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Displays the system field incidents."))
+            self.notebook.insert_page(self.scwIncidents, tab_label=_label,
+                                      position=-1)
+            _app.INCIDENT.load_tree()
 
-        if(_conf.RTK_MODULES[8] == 1):
-            label = gtk.Label()
-            _heading = _(u"Program\nIncidents")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_(u"Displays the system field incidents."))
-            self.notebook.insert_page(self.scwIncidents, tab_label=label, position=-1)
-
-            # Select all the unaccepted field incidents from the open RTK
-            # Program database.
-            _query = "SELECT * FROM tbl_incident \
-                      WHERE fld_revision_id=%d \
-                      ORDER BY fld_incident_id" % \
-                     self._app.REVISION.revision_id
-            _app.INCIDENT.load_tree(_query, None)
-
-        # TODO: Add index to RTK_MODULES array for data sets.
-        if(_conf.RTK_MODULES[8] == 1):
-            label = gtk.Label()
-            _heading = _(u"Survival\nAnalyses")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_(u"Displays the program survival data sets."))
-            self.notebook.insert_page(self.scwDatasets, tab_label=label,
+        if _conf.RTK_MODULES[8] == 1:
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"Survival\nAnalyses") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Displays the program survival data "
+                                      u"sets."))
+            self.notebook.insert_page(self.scwDatasets, tab_label=_label,
                                       position=-1)
             _app.DATASET.load_tree()
 
-            #if(_conf.RTK_MODULES[9] == 1):
+        #if(_conf.RTK_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
             # and hardware.
 
