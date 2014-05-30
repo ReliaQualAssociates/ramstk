@@ -3,7 +3,7 @@
 
       incident_format.xml is part of the RTK Project
 
-      Copyright 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2007-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
       All rights reserved.
 -->
@@ -35,7 +35,7 @@ experience. -->
         <column>
             <defaulttitle>Incident Category</defaulttitle>
             <usertitle>Incident Category</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>2</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -44,7 +44,7 @@ experience. -->
         <column>
             <defaulttitle>Incident Type</defaulttitle>
             <usertitle>Incident Type</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>3</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -71,7 +71,7 @@ experience. -->
         <column>
             <defaulttitle>Criticality</defaulttitle>
             <usertitle>Criticality</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>6</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -98,7 +98,7 @@ experience. -->
         <column>
             <defaulttitle>Status</defaulttitle>
             <usertitle>Status</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>9</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -106,7 +106,7 @@ experience. -->
         </column>
         <column>
             <defaulttitle>Found During Test</defaulttitle>
-            <usertitle>Foudn During Test</usertitle>
+            <usertitle>Found During Test</usertitle>
             <datatype>gchararray</datatype>
             <position>10</position>
             <widget>text</widget>
@@ -179,7 +179,7 @@ experience. -->
         <column>
             <defaulttitle>Requested By</defaulttitle>
             <usertitle>Requested By</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>18</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -206,7 +206,7 @@ experience. -->
         <column>
             <defaulttitle>Reviewed By</defaulttitle>
             <usertitle>Reviewed By</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>21</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -233,7 +233,7 @@ experience. -->
         <column>
             <defaulttitle>Approved By</defaulttitle>
             <usertitle>Approved By</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>24</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -260,7 +260,7 @@ experience. -->
         <column>
             <defaulttitle>Closed By</defaulttitle>
             <usertitle>Closed By</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>27</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -278,7 +278,7 @@ experience. -->
         <column>
             <defaulttitle>Life Cycle</defaulttitle>
             <usertitle>Life Cycle</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>29</position>
             <widget>text</widget>
             <editable>0</editable>

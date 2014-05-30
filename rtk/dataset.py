@@ -65,7 +65,7 @@ import utilities as _util
 import widgets as _widg
 
 # Import other RTK classes.
-from _assistants_.adds import AddDataset, AddDatasetRecord
+from _assistants_.adds import AddDataset
 from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
@@ -313,21 +313,21 @@ class Dataset(object):
         self.tvwNonParResults = gtk.TreeView()
 
         # Create the Plot tab widgets.
-        height = (self._app.winWorkBook.height * 0.01) / 2.0
-        width = (self._app.winWorkBook.width * 0.01) / 2.0
-        self.figFigure1 = Figure(figsize=(width, height))
+        _height = (self._app.winWorkBook.height * 0.01) / 2.0
+        _width = (self._app.winWorkBook.width * 0.01) / 2.0
+        self.figFigure1 = Figure(figsize=(_width, _height))
         self.pltPlot1 = FigureCanvas(self.figFigure1)
         self.pltPlot1.mpl_connect('button_press_event', _widg.expand_plot)
         self.axAxis1 = self.figFigure1.add_subplot(111)
-        self.figFigure2 = Figure(figsize=(width, height))
+        self.figFigure2 = Figure(figsize=(_width, _height))
         self.pltPlot2 = FigureCanvas(self.figFigure2)
         self.pltPlot2.mpl_connect('button_press_event', _widg.expand_plot)
         self.axAxis2 = self.figFigure2.add_subplot(111)
-        self.figFigure3 = Figure(figsize=(width, height))
+        self.figFigure3 = Figure(figsize=(_width, _height))
         self.pltPlot3 = FigureCanvas(self.figFigure3)
         self.pltPlot3.mpl_connect('button_press_event', _widg.expand_plot)
         self.axAxis3 = self.figFigure3.add_subplot(111)
-        self.figFigure4 = Figure(figsize=(width, height))
+        self.figFigure4 = Figure(figsize=(_width, _height))
         self.pltPlot4 = FigureCanvas(self.figFigure4)
         self.pltPlot4.mpl_connect('button_press_event', _widg.expand_plot)
         self.axAxis4 = self.figFigure4.add_subplot(111)
@@ -391,7 +391,7 @@ class Dataset(object):
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the Dataset class Work Book.
+        Method to create the gtk.Toolbar() for the Dataset class Work Book.
 
         @return: _toolbar
         @rtype: gtk.Toolbar
@@ -2004,7 +2004,6 @@ class Dataset(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-# TODO: Add dialog to select the number of records to add and then re-write below to iterate.
         # Find the maximum record ID for the selected data set.
         _query = "SELECT MAX(fld_record_id) \
                   FROM tbl_survival_data \
@@ -2551,7 +2550,6 @@ class Dataset(object):
                      (self.dataset_id, self.rel_time, self.start_time)
             _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
-
             try:
                 _n_units = len(_results)
             except TypeError:

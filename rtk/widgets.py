@@ -620,9 +620,9 @@ def make_text_view(txvbuffer=None, width=200, height=100):
     Utility function to create gtk.TextView() widgets encapsulated
     within a gtkScrolledWindow() widget.
 
-    @keyword buffer: the gtk.TextBuffer() to associate with the gtk.TextView().
-                     Default is None.
-    @type buffer: gtk.TextBuffer
+    @keyword txvbuffer: the gtk.TextBuffer() to associate with the
+                        gtk.TextView().  Default is None.
+    @type txvbuffer: gtk.TextBuffer
     @keyword width: width of the gtk.TextView() widget.  Default is 200.
     @type width: integer
     @keyword height: height of the gtk.TextView() widget.  Default is 100.
@@ -750,7 +750,7 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white', fg_col='blac
         gobject_types.append(gobject.TYPE_BOOLEAN)
         gobject_types.append(gtk.gdk.Pixbuf)
 
-# Create the model and treeview.
+    # Create the model and treeview.
     model = gtk.TreeStore(*gobject_types)
     treeview = gtk.TreeView(model)
     treeview.set_name(name)
