@@ -950,13 +950,7 @@ INSERT INTO "tbl_trr" VALUES(0, 23, 0, 0);
 CREATE TABLE "tbl_software_tests" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),
     "fld_technique_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_tcl" VARCHAR(4) DEFAULT ('L'),
-    "fld_effectiveness_single" TINYINT DEFAULT (0),
-    "fld_effectiveness_paired" TINYINT DEFAULT (0),
-    "fld_coverage_single" TINYINT DEFAULT (0),
-    "fld_coverage_paired" TINYINT DEFAULT (0),
-    "fld_error_cat" TINYINT DEFAULT (0),
-    "fld_remarks" BLOB,
+    "fld_recommended" TINYINT DEFAULT (0),
     "fld_used" TINYINT DEFAULT (0),
     PRIMARY KEY("fld_software_id", "fld_technique_id")
 );

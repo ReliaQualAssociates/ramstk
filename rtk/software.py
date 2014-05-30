@@ -1844,7 +1844,7 @@ class Software(object):
                                            self._callback_entry, 'int', 54)
 
             _fxdbottomleft.show_all()
-
+# TODO: Include recommended and selected columns in test matrices.
             # Create and load the Test Matrix for CSCI-level testing.
             _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
                                    gobject.TYPE_INT, gobject.TYPE_INT,
@@ -1931,7 +1931,6 @@ class Software(object):
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
-# TODO: Make the "Recommended" column visible and load it when a software module is selected.
             _column.set_visible(False)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=12)
@@ -1956,7 +1955,6 @@ class Software(object):
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
-# TODO: Make the "Selected" column visible and load it when a software module is selected.
             _column.set_visible(False)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=13)
@@ -1966,7 +1964,7 @@ class Software(object):
             _column.set_widget(_label)
             self.tvwCSCITestSelectionMatrix.append_column(_column)
             _cell.connect('toggled', _test_selection_tree_edit, 13, _model)
-
+# TODO: Append recommended and selected values from database for display.
             for i in range(len(self._csci_test_rankings)):
                 _model.append(self._csci_test_rankings[i])
 
@@ -2063,6 +2061,7 @@ class Software(object):
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
+            _column.set_visible(False)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=22)
             _column.set_clickable(True)
@@ -2083,6 +2082,7 @@ class Software(object):
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
+            _column.set_visible(False)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=23)
             _column.set_clickable(True)
@@ -5325,9 +5325,8 @@ class Software(object):
                                       u"information to the open RTK program "
                                       u"database."))
             return True
-
-        _model = self.tvwCSCITestSelectionMatrix.get_model()
-
+# TODO: Save recommended and selected values to database.
+        #_model = self.tvwCSCITestSelectionMatrix.get_model()
 
         return False
 
