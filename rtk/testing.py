@@ -225,18 +225,17 @@ class Testing(object):
         @param application: the RTK application.
         """
 
-        # Define private TESTING class attributes.
+        # Define private Testing class attributes.
         self._app = application
         self._int_mission_id = -1
 
-        # Define private TESTING class dictionary attributes.
+        # Define private Testing class dictionary attributes.
         self._dic_assemblies = {}           # List of assemblies.
         self._dic_rg_plan = {}              # RG plan details.
 
-        # Define private TESTING class list attributes.
-        self._col_order = []
+        # Define private Testing class list attributes.
 
-        # Define public TESTING class attributes.
+        # Define public Testing class attributes.
         self.assembly_id = 0
         self.test_id = 0
         self.test_name = ''
@@ -263,7 +262,6 @@ class Testing(object):
         self.cum_time = 0.0
         self.cum_failures = 0.0
         self.confidence = 0.75
-        self.treeview = None
         self.n_tests = 0
 
         # Create the main TESTING class treeview.
@@ -281,14 +279,14 @@ class Testing(object):
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbTestType = _widg.make_combo()
 
+        self.fraPlan = _widg.make_frame(label=_(u""))
+        self.fraPlanDetails = _widg.make_frame(label=_(u""))
+
         self.txtName = _widg.make_entry(width=400)
         self.txtDescription = gtk.TextBuffer()
         self.txtAttachment = gtk.TextBuffer()
         self.txtConsumerRisk = _widg.make_entry(width=100)
         self.txtProducerRisk = _widg.make_entry(width=100)
-
-        self.fraPlan = _widg.make_frame(label=_(u""))
-        self.fraPlanDetails = _widg.make_frame(label=_(u""))
 
         # Widgets for reliability growth tests.
         self.btnFindMTBFI = _widg.make_button(height=25,
@@ -330,7 +328,7 @@ class Testing(object):
         self.txtProgramProb = _widg.make_entry(width=100)
         self.txtTTFF = _widg.make_entry(width=100)
 
-# Test Feasibility page widgets.
+        # Test Feasibility page widgets.
         height = (self._app.winWorkBook.height * 0.01) / 2.0
         width = (self._app.winWorkBook.width * 0.01) / 2.0
 
@@ -342,16 +340,12 @@ class Testing(object):
         self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the "
                                          u"initial MTBF to mature MTBF ratio "
                                          u"is within reasonable limits."))
-        self.lblMIMGP = _widg.make_label("", width=150)
-
         self.chkFEF = _widg.make_check_button(label=_(u"Acceptable average "
                                                       u"fix effectiveness "
                                                       u"factor (FEF)."))
         self.chkFEF.set_tooltip_text(_(u"Indicates whether or not the average "
                                        u"fix effectiveness factor (FEF) is "
                                        u"within reasonable limits."))
-        self.lblFEF = _widg.make_label("", width=150)
-
         self.chkMGMGP = _widg.make_check_button(label=_(u"Acceptable "
                                                         u"MTBF<sub>G</sub> "
                                                         u"/ MTBF<sub>GP"
@@ -359,8 +353,6 @@ class Testing(object):
         self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the goal "
                                          u"MTBF to mature MTBF ratio is "
                                          u"within reasonable limits."))
-        self.lblMGMGP = _widg.make_label("", width=150)
-
         self.chkTRMG = _widg.make_check_button(label=_(u"Acceptable "
                                                        u"MTBF<sub>G</sub> "
                                                        u"/ MTBF<sub>I"
@@ -368,7 +360,6 @@ class Testing(object):
         self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the goal "
                                         u"MTBF to initial MTBF ratio is "
                                         u"within reasonable limits."))
-        self.lblMGMI = _widg.make_label("", width=150)
 
         self.figFigureOC = Figure(figsize=(width, height))
 
@@ -377,6 +368,11 @@ class Testing(object):
         self.fraOCCurve = _widg.make_frame()
 
         self.fxdRGRisk = gtk.Fixed()
+
+        self.lblMIMGP = _widg.make_label("", width=150)
+        self.lblFEF = _widg.make_label("", width=150)
+        self.lblMGMGP = _widg.make_label("", width=150)
+        self.lblMGMI = _widg.make_label("", width=150)
 
         self.pltPlotOC = FigureCanvas(self.figFigureOC)
         self.pltPlotOC.mpl_connect('button_press_event', self._expand_plot)
@@ -395,7 +391,7 @@ class Testing(object):
         self.txtMGMGP = _widg.make_entry(width=75)
         self.txtTRMG = _widg.make_entry(width=75)
 
-# Test Assessment page widgets.
+        # Test Assessment page widgets.
         # Widgets to enter and display the observed data.
         self.optIndividual = gtk.RadioButton(label=_(u"Individual Failure "
                                                      u"Time Data"))
@@ -534,13 +530,13 @@ class Testing(object):
 
         self.vbxPlot1 = gtk.VBox()
 
-# Put it all together.
-        _toolbar_ = self._create_toolbar()
+        # Put it all together.
+        _toolbar = self._create_toolbar()
 
         self.notebook = self._create_notebook()
 
         self.vbxTesting = gtk.VBox()
-        self.vbxTesting.pack_start(_toolbar_, expand=False)
+        self.vbxTesting.pack_start(_toolbar, expand=False)
         self.vbxTesting.pack_start(self.notebook)
 
         self.notebook.connect('switch-page', self._notebook_page_switched)
@@ -1433,66 +1429,38 @@ class Testing(object):
             """
             Function to load the widgets on the Test Planning page.
 
-            @param self: the current instance of an TESTING class.
+            @param self: the current instance of an Testing class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-            (_model_, _row_) = self.treeview.get_selection().get_selected()
-
-            self.test_id = _model_.get_value(_row_, 2)
-
-            _assembly_id = _model_.get_value(_row_,
-                                             self._col_order[1])
             try:
-                _index_ = self._dic_assemblies[_assembly_id]
+                _index_ = self._dic_assemblies[self.assembly_id]
             except KeyError:
                 _index_ = 0
             self.cmbAssembly.set_active(_index_)
-
-            _test_type = _model_.get_value(_row_, self._col_order[5])
-            self.cmbTestType.set_active(_test_type)
-
-            self.cmbPlanModel.set_active(
-                _model_.get_value(_row_, self._col_order[12]))
-            self.cmbAssessModel.set_active(
-                _model_.get_value(_row_, self._col_order[13]))
-
-            self.txtName.set_text(
-                str(_model_.get_value(_row_, self._col_order[3])))
-            self.txtDescription.set_text(
-                str(_model_.get_value(_row_, self._col_order[4])))
-            self.txtMTBFI.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[6]))))
-            self.txtMTBFG.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[7]))))
-            self.txtMTBFGP.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[8]))))
-            self.txtTechReq.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[9]))))
-            self.txtConsumerRisk.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[10]))))
-            self.txtProducerRisk.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[11]))))
-            self.spnNumPhases.set_value(
-                _model_.get_value(_row_, self._col_order[14]))
-            self.txtAttachment.set_text(
-                str(_model_.get_value(_row_, self._col_order[15])))
+            self.cmbTestType.set_active(self.test_type)
+            self.cmbPlanModel.set_active(self.rg_plan_model)
+            self.cmbAssessModel.set_active(self.rg_assess_model)
+            self.txtName.set_text(self.test_name)
+            self.txtDescription.set_text(self.test_description)
+            self.txtMTBFI.set_text(str(fmt.format(self.mi)))
+            self.txtMTBFG.set_text(str(fmt.format(self.mg)))
+            self.txtMTBFGP.set_text(str(fmt.format(self.mgp)))
+            self.txtTechReq.set_text(str(fmt.format(self.tr)))
+            self.txtConsumerRisk.set_text(str(fmt.format(self.consumer_risk)))
+            self.txtProducerRisk.set_text(str(fmt.format(self.producer_risk)))
+            self.spnNumPhases.set_value(self.n_phases)
+            self.txtAttachment.set_text(str(self.attachment))
             self._load_hyperlinks()
-            self.txtTTT.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[16]))))
-            self.txtAverageGR.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[17]))))
-            self.txtProgramMS.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[18]))))
-            self.txtProgramProb.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[19]))))
-            self.txtTTFF.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[20]))))
-            self.txtAverageFEF.set_text(
-                str(fmt.format(_model_.get_value(_row_, self._col_order[21]))))
+            self.txtTTT.set_text(str(fmt.format(self.ttt)))
+            self.txtAverageGR.set_text(str(fmt.format(self.avg_growth)))
+            self.txtProgramMS.set_text(str(fmt.format(self.avg_ms)))
+            self.txtProgramProb.set_text(str(fmt.format(self.probability)))
+            self.txtTTFF.set_text(str(fmt.format(self.ttff)))
+            self.txtAverageFEF.set_text(str(fmt.format(self.avg_fef)))
 
-            if _test_type == 5:                 # Reliability growth
+            if self.test_type == 5:                 # Reliability growth
                 self._rg_plan_details(1)
                 self._rg_plan_details(2)
 
@@ -1513,6 +1481,12 @@ class Testing(object):
                    u"(%d Tests)") % self.n_tests
         self._app.winWorkBook.set_title(_title)
 
+        # only show the OC curve if the RG planning model is SPLAN or SSPLAN.
+        if self.rg_plan_model < 2:
+            self.fraOCCurve.hide()
+        else:
+            self.fraOCCurve.show()
+
         self.notebook.set_current_page(0)
 
         return False
@@ -1522,19 +1496,53 @@ class Testing(object):
         Method to load the widgets on the Test Assessment page.
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
-
-        _grouped_ = _model_.get_value(_row_, 22)
-        if _grouped_ == 1:
+        if self.grouped == 1:
             self.optGrouped.set_active(True)
         else:
             self.optIndividual.set_active(True)
 
-        self.spnConfidence.set_value(_model_.get_value(_row_, 26))
+        self.spnConfidence.set_value(self.confidence)
 
-        self.txtGroupInterval.set_text(str(_model_.get_value(_row_, 23)))
-        self.txtCumTestTime.set_text(str(_model_.get_value(_row_, 24)))
-        self.txtCumFailures.set_text(str(_model_.get_value(_row_, 25)))
+        self.txtGroupInterval.set_text(str(self.group_interval))
+        self.txtCumTestTime.set_text(str(self.cum_time))
+        self.txtCumFailures.set_text(str(self.cum_failures))
+
+        return False
+
+    def _update_attributes(self):
+        """
+        Method to update the Testing class attributes.
+        """
+
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        if _row is not None:
+            self.assembly_id = _model.get_value(_row, 1)
+            self.test_id = _model.get_value(_row, 2)
+            self.test_name = _model.get_value(_row, 3)
+            self.test_description = _model.get_value(_row, 4)
+            self.test_type = _model.get_value(_row, 5)
+            self.mi = _model.get_value(_row, 6)
+            self.mg = _model.get_value(_row, 7)
+            self.mgp = _model.get_value(_row, 8)
+            self.tr = _model.get_value(_row, 9)
+            self.consumer_risk = _model.get_value(_row, 10)
+            self.producer_risk = _model.get_value(_row, 11)
+            self.rg_plan_model = _model.get_value(_row, 12)
+            self.rg_assess_model = _model.get_value(_row, 13)
+            self.n_phases = _model.get_value(_row, 14)
+            self.attachment = _model.get_value(_row, 15)
+            self.ttt = _model.get_value(_row, 16)
+            self.avg_growth = _model.get_value(_row, 17)
+            self.avg_ms = _model.get_value(_row, 18)
+            self.probability = _model.get_value(_row, 19)
+            self.ttff = _model.get_value(_row, 20)
+            self.avg_fef = _model.get_value(_row, 21)
+            self.grouped = _model.get_value(_row, 22)
+            self.group_interval = _model.get_value(_row, 23)
+            self.cum_time = _model.get_value(_row, 24)
+            self.cum_failures = _model.get_value(_row, 25)
+            self.confidence = _model.get_value(_row, 26)
 
         return False
 
@@ -2538,6 +2546,8 @@ class Testing(object):
         else:
             _model.set_value(_row, index, check.get_active())
 
+        self._update_attributes()
+
         return False
 
     def _callback_combo(self, combo, index):
@@ -2579,16 +2589,16 @@ class Testing(object):
         # If we've selected a new type of test, make sure we display the
         # correct detailed planning information.
         if index == 5:
-            if _text == 1:  # HALT
+            if _text == 1:                  # HALT
                 _label = _(u"Highly Accelerated Life Test Planning Inputs")
-            elif _text == 2:  # HASS
+            elif _text == 2:                # HASS
                 _label = _(u"Highly Accelerated Stress Screening Planning "
                            u"Inputs")
-            elif _text == 3:  # ALT
+            elif _text == 3:                # ALT
                 _label = _(u"Accelerated Life Test Planning Inputs")
-            elif _text == 4:  # ESS
+            elif _text == 4:                # ESS
                 _label = _(u"Environmental Stress Screening Planning Inputs")
-            elif _text == 5:  # Reliability Growth
+            elif _text == 5:                # Reliability Growth
                 if self.fraPlan.get_child() is not None:
                     self.fraPlan.remove(self.fraPlan.get_child())
                 self.fraPlan.add(self.fxdRGPlan)
@@ -2614,12 +2624,17 @@ class Testing(object):
                     self.fraOCCurve.hide()
 
                 self._rg_plan_details(1)
-            elif _text == 6:  # Reliability Demonstration
+            elif _text == 6:                # Reliability Demonstration
                 _label = _(u"Reliability Demonstration/Qualification Test "
                            u"Planning Inputs")
-            elif _text == 7:  # PRVT
+            elif _text == 7:                # PRVT
                 _label = _(u"Production Reliability Verification Test "
                            u"Planning Inputs")
+        elif index == 12:                   # RG planning model
+            if _text < 2:
+                self.fraOCCurve.hide()
+            else:
+                self.fraOCCurve.show()
 
         # Try to update the Testing class gtk.TreeModel().  Just keep going
         # if no row is selected.
@@ -2627,6 +2642,8 @@ class Testing(object):
             _model.set_value(_row, index, _text)
         except TypeError:
             pass
+
+        self._update_attributes()
 
         return False
 
@@ -2686,6 +2703,8 @@ class Testing(object):
         if index == 13:
             self._rg_plan_details(2)
 
+        self._update_attributes()
+
         return False
 
     def _callback_radio(self, button):
@@ -2707,6 +2726,8 @@ class Testing(object):
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
             self.pltPlot1.draw()
+
+        self._update_attributes()
 
         return False
 
@@ -2781,6 +2802,8 @@ class Testing(object):
             pass
         except TypeError:
             pass
+
+        self._update_attributes()
 
         return False
 
@@ -2980,8 +3003,7 @@ class Testing(object):
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         if _row_ is not None:
-            self.test_id = _model_.get_value(_row_, 1)
-            self.n_phases = _model_.get_value(_row_, 13)
+            self._update_attributes()
             self.load_notebook()
 
             return False
