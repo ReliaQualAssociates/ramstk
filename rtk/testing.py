@@ -1224,8 +1224,9 @@ class Testing(object):
                                           self._callback_entry, 'float', 23)
             _y_pos += 25
 
-            _adjustment_ = gtk.Adjustment(0, 0, 100, 0.5, 1)
-            self.spnConfidence.set_adjustment(_adjustment_)
+            _adjustment = gtk.Adjustment(0, 0, 100, 0.2, 0, 0)
+            self.spnConfidence.set_adjustment(_adjustment)
+            self.spnConfidence.set_digits(1)
 
             _label = _widg.make_label(_(u"Confidence:"))
             _fxdDataSet_.put(_label, 5, _y_pos)
@@ -2746,9 +2747,9 @@ class Testing(object):
         @rtype: boolean
         """
 
-        _value = spin.get_value_as_int()
-
         if index == 14 and self.test_id > 1000:  # Number of RG phases.
+            _value = spin.get_value_as_int()
+
             # Find the last number number of existing phases.
             _query = "SELECT MAX(fld_phase_id) \
                       FROM tbl_rel_growth \
@@ -2792,6 +2793,9 @@ class Testing(object):
 
             self._load_rg_plan_tree()
             self._load_rg_feasibility_tree()
+
+        else:
+            _value = spin.get_value()
 
         # Try to update the gtk.TreeModel.  Just keep going if no row is
         # selected.
