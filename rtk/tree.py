@@ -495,7 +495,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Save button
+        # Save button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Save the currently open RTK Program Database."))
         image = gtk.Image()
@@ -507,29 +507,33 @@ class TreeWindow(gtk.Window):
 
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
-# TODO: Add a button to save the entire project.
-# Calculate button
+
+# TODO: Connect callback to approriate class' calculate method.
+        # Calculate button
         button = gtk.MenuToolButton(None, label = "")
-        button.set_tooltip_text(_(u"Perform various calculations on the system."))
+        button.set_tooltip_text(_(u"Perform various calculations on the "
+                                  u"system."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_(u"Project"))
-        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK project."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 0)
+        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK "
+                                     u"project."))
+        #menu_item.connect('activate', _calc.calculate_project, self._app, 0)
         menu.add(menu_item)
         menu_item = gtk.MenuItem(label=_(u"Revision"))
         menu_item.set_tooltip_text(_(u"Calculate the revisions only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 1)
+        #menu_item.connect('activate', _calc.calculate_project, self._app, 1)
         menu.add(menu_item)
         menu_item = gtk.MenuItem(label=_(u"Function"))
         menu_item.set_tooltip_text(_(u"Calculate the functions only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 2)
+        #menu_item.connect('activate', _calc.calculate_project, self._app, 2)
         menu.add(menu_item)
         menu_item = gtk.MenuItem(label=_(u"System"))
-        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 3)
+        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies "
+                                     u"only."))
+        #menu_item.connect('activate', _calc.calculate_project, self._app, 3)
         menu.add(menu_item)
         button.set_menu(menu)
         menu.show_all()
@@ -540,9 +544,10 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-# Save and quit button
+        # Save and quit button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Save the currently open RTK Program Database then quit"))
+        button.set_tooltip_text(_(u"Save the currently open RTK Program "
+                                  u"Database then quits."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
@@ -551,9 +556,10 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Quit without saving button
+        # Quit without saving button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Quit without saving the currently open RTK Program Database"))
+        button.set_tooltip_text(_(u"Quits without saving the currently open "
+                                  u"RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
@@ -563,7 +569,7 @@ class TreeWindow(gtk.Window):
 
         toolbar.show()
 
-        return(toolbar)
+        return toolbar
 
     def _notebook_page_switched(self, notebook, page, page_num):
         """

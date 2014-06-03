@@ -560,7 +560,12 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
     _label.set_markup("<span>" + text + "</span>")
     _label.set_line_wrap(wrap)
     _label.set_justify(justify)
-    _label.set_alignment(xalign=0.05, yalign=0.5)
+    if justify == gtk.JUSTIFY_CENTER:
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+    elif justify == gtk.JUSTIFY_LEFT:
+        _label.set_alignment(xalign=0.05, yalign=0.5)
+    else:
+        _label.set_alignment(xalign=0.95, yalign=0.5)
     _label.props.width_request = width
     _label.props.height_request = height
 
