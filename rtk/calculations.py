@@ -1440,12 +1440,11 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     Calculates the dormant hazard rate based on active environment, dormant
     environment, and component category.
 
-    Keyword Arguments:
-    category    -- the component category index.
-    subcategory -- the component subcategory index.
-    active_env  -- the active environment index.
-    dormant_env -- the dormant environment index.
-    lambdaa     -- the active hazard rate of the component.
+    @param category: the component category index.
+    @param subcategory: the component subcategory index.
+    @param active_env: the active environment index.
+    @param dormant_env: the dormant environment index.
+    @param lambdaa: the active hazard rate of the component.
 
     All conversion factors come from Reliability Toolkit: Commercial
     Practices Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below).
@@ -1615,17 +1614,16 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     Function to calculate the values for an individual reliability growth
     phase.
 
-    Keyword Arguments:
-    T1    -- the length of the first test phase.
-    MTBFi -- the inital MTBF for the test phase.
-    MTBFf -- the final MTBF for the test phase.
-    MTBFa -- the average MTBF for the test phase.
-    GR    -- the average growth rate across the entire test program.
-    MS    -- the management strategy for this program.
-    FEF   -- the average FEF for this program.
-    Prob  -- the probability of seeing one failure.
-    ti    -- the growth start time; time to first fix for this program.
-    fix   -- list of True/False indicating which parameters are fixed when
+    @param T1: the length of the first test phase.
+    @param MTBFi: the inital MTBF for the test phase.
+    @param MTBFf: the final MTBF for the test phase.
+    @param MTBFa: the average MTBF for the test phase.
+    @param GR: the average growth rate across the entire test program.
+    @param MS: the management strategy for this program.
+    @param FEF: the average FEF for this program.
+    @param Prob: the probability of seeing one failure.
+    @param ti: the growth start time; time to first fix for this program.
+    @param fix: list of True/False indicating which parameters are fixed when
              calculating results for each test phase.
              0 = Program probability
              1 = Management strategy
@@ -1666,7 +1664,7 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
             MTBFf = 0.0
 
 # Calculate total test time for the phase.
-    if(not fix[3]):
+    if not fix[3]:
         try:
             T1 = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
         except(ValueError, ZeroDivisionError):
@@ -1675,36 +1673,77 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     return(GRi, T1, MTBFi, MTBFf)
 
 
-def calculate_rgtmc(F, X, I, _grouped=False):
+def crow_amsaa(F, X, alpha, _grouped=False):
     """
-    Function to estimate the parameters (beta and lambda) of the AMSAA-Crow
-    continous model using either the Option for Individual Failure Data
+    Function to estimate the parameters (beta and lambda) of the Crow-AMSAA
+    continuous model using either the Option for Individual Failure Data
     (default) or the Option for Grouped Failure Data.
 
-    Keyword Arguments:
-    F -- list of failure counts.
-    X -- list of failures times.
-    I -- the grouping interval width.
-    _grouped -- whether or not to use grouped data.
+    Calculates the following:
+     - Instantaneous failure intensity: FIi = lambda * beta * T^(beta - 1)
+     - Cumulative failure intensity: FIc = lambda * T^(beta - 1)
+
+    Exact Data Example (90% Fisher Matrix Bounds):\n
+     - Beta\t[]\n
+     - Lambda\t[]\n
+     - FIi\t[]\n
+     - FIc\t[]\n
+     - MTBFi\t[]\n
+     - MTBFc\t[]\n
+     - Chi Square\n
+     - Cramer-von Mises\n\n
+
+    Grouped Data Example (90% Fisher Matrix Bounds):\n
+     - Beta\t[0.6546, 0.81361, 1.0112]\n
+     - Lambda\t[0.1459, 0.44585, 1.3621]\n
+     - FIi\t[0.0863, 0.11390, 0.1504]\n
+     - FIc\t[0.1150, 0.14000, 0.1704]\n
+     - MTBFi\t[6.6483, 8.77963, 11.5932]\n
+     - MTBFc\t[5.8680, 7.14286, 8.6947]\n
+     - Chi Square\n
+     - Cramer-von Mises
+
+    @param F: list of failure counts.
+    @type F: list of integers.
+    @param X: list of failures times.
+    @type X: list of floats.
+    @param alpha: the confidence level for calculations.
+    @type alpha: float
+    @param _grouped: indicates whether or not to use grouped data.
+    @type _grouped: boolean
+    @return: (_beta_hat, _lambda_hat, _rhoc_hat, _rhoi_hat, _muc_hat, _mui_hat)
+             where each returned variable is a list of lists.  There is an
+             internal list for each failure time passed to the function.  These
+             internal lists = [Lower Bound, Point, Upper Bound] for each
+             variable.
+    @rtype: mixed tuple
     """
 
+    from numpy import matrix
     from scipy.optimize import fsolve
-    from scipy.stats import chi2
+    from scipy.stats import norm
 
-# Define the function that will be set equal to zero and solved for beta.
+    # Define the function that will be set equal to zero and solved for beta.
     def _beta(b, f, t, logt):
-        """ Function for estimating the beta value from grouped data. """
+        """
+        Function for estimating the beta value from grouped data.
+        """
 
         return(sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) / (t[1:]**b - t[:-1]**b) - log(max(t)))))
 
-# Find the total time on test.
+    # Find the total time on test.
     TTT = X[len(X) - 1:][0]
     FFF = sum(F)
 
     _beta_hat = []
     _lambda_hat = []
-    _rho = []
-    _mu = []
+    _rhoc_hat = []
+    _rhoi_hat = []
+    _muc_hat = []
+    _mui_hat = []
+
+    # Get the standard normal value for the desired confidence.
+    _z_norm = abs(norm.ppf(alpha))
 
     if not _grouped:
         for i in range(len(X)):
@@ -1713,9 +1752,9 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             except IndexError:
                 _iters = int(X[i])
 
-# Estimate the failure rate of this interval.
+            # Estimate the failure rate of this interval.
             for j in range(_iters - 1):
-                _rho.append(np.nan)
+                _rho_hat.append(np.nan)
 
             try:
                 _rho_ = F[i] / (X[i] - X[i - 1])
@@ -1726,11 +1765,11 @@ def calculate_rgtmc(F, X, I, _grouped=False):
 
             if _rho_ < 0:
                 _rho_ = 0.0
-            _rho.append(_rho_)
+            _rho_hat.append(_rho_)
 
-# Estimate the MTBF of this interval.
+            # Estimate the MTBF of this interval.
             for j in range(_iters - 1):
-                _mu.append(np.nan)
+                _mu_hat.append(np.nan)
 
             try:
                 _mu_ = (X[i] - X[i - 1]) / F[i]
@@ -1742,70 +1781,159 @@ def calculate_rgtmc(F, X, I, _grouped=False):
             if _mu_ < 0.0:
                 _mu_ = 0.0
 
-            _mu.append(_mu_)
+            _mu_hat.append(_mu_)
 
         logX = [log(x) for x in X]
 
         _beta_hat = (FFF / (FFF * log(TTT) - sum(logX)))
         _lambda_hat = FFF / TTT**_beta_hat
 
-# Calcualte the chi square statistic for trend.
-        _chi_square_ = 2.0 * FFF / _beta_hat
+        # Calcualte the chi square statistic for trend.
+        _chi_square = 2.0 * FFF / _beta_hat
 
-# Calculate the Cramer-von Mises statistic for fit to the AMSAA-Crow model.
+        # Calculate the Cramer-von Mises statistic for fit to the AMSAA-Crow
+        # model.
         _beta_bar_ = (FFF - 1) * _beta_hat / FFF
-        _Cm_ = 0.0
+        _Cm = 0.0
         for i in range(len(X)):
-            _Cm_ += ((X[i] / TTT)**_beta_bar_ - ((2.0 * i - 1) / (2.0 * FFF)))**2.0
-        _Cm_ = _Cm_ / (12 * FFF)
+            _Cm += ((X[i] / TTT)**_beta_bar_ - ((2.0 * i - 1) / (2.0 * FFF)))**2.0
+        _Cm = _Cm / (12 * FFF)
 
     elif _grouped:
-        # Calculate the number of intervals we need, then create a list of
-        # zeros the same length as the number of intervals.
-        _num_intervals = int(ceil(TTT / I))
-        _cum_fails = [0] * _num_intervals
+        _failures = np.array([0], float)
+        _times = np.array([0], float)
+        _logt = np.array([0], float)
 
-        # Iterate through the data and count the nuber of failures in each
-        # interval.
-        for i in range(len(X)):
-            for j in range(_num_intervals):
-                if X[i] > j * I and X[i] <= (j + 1) * I:
-                    _cum_fails[j] += F[i]
+        for i in range(len(F)):
+            __beta = [0.0, 0.0, 0.0]
+            __lambda = [0.0, 0.0, 0.0]
+            __rhoi = [0.0, 0.0, 0.0]
+            __rhoc = [0.0, 0.0, 0.0]
+            __muc = [0.0, 0.0, 0.0]
+            __mui = [0.0, 0.0, 0.0]
+            __var = [[0.0, 0.0], [0.0, 0.0]]
 
-        f = np.array([0], float)
-        t = np.array([0], float)
-        logt = np.array([0], float)
-        for i in range(len(_cum_fails)):
-            f = np.append(f, [_cum_fails[i]])
-            t = np.append(t, [(i + 1) * I])
-            logt = np.append(logt, [log((i + 1) * I)])
+            _failures = np.append(_failures, F[i])
+            _times = np.append(_times, X[i])
+            _logt = np.append(_logt, log(X[i]))
 
-            _beta_hat.append(fsolve(_beta, 1.0, args=(f, t, logt))[0])
-            _lambda_hat.append(sum(_cum_fails[:i + 1]) / ((i + 1) * I)**_beta_hat[i])
-            _rho.append(_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0))
-            _mu.append(1.0 / (_lambda_hat[i] * _beta_hat[i] * ((i + 1) * I)**(_beta_hat[i] - 1.0)))
+            # Estimate the value of beta.
+            __beta[1] = fsolve(_beta, 1.0, args=(_failures, _times, _logt))[0]
+
+            # Using this estimated beta, estimate the value of lambda.
+            __lambda[1] = (sum(F[:i+1]) / (X[:i+1])**__beta[1]).tolist()[-1]
+
+            # Calculate the variance-covariance matrix for the model
+            # parameters.  The matrix is a list of lists:
+            #
+            #       __var = [[Var Lambda, Cov], [Cov, Var Beta]]
+            __var[0][0] = sum(F[:i+1]) / __lambda[1]**2.0
+            __var[1][1] = (sum(F[:i+1]) / __beta[1]**2.0) + \
+                          __lambda[1] * X[i]**__beta[1] * log(X[i])**2.0
+            __var[0][1] = X[i]**__beta[1] * log(X[i])
+            __var[1][0] = __var[0][1]
+            __var = matrix(__var).I.tolist()
+
+            # Calculate the Fisher matrix bounds on each AMSAA parameter.
+            __lambda[0] = __lambda[1] * exp(-_z_norm * sqrt(__var[0][0]) /
+                                            __lambda[1])
+            __lambda[2] = __lambda[1] * exp(_z_norm * sqrt(__var[0][0]) /
+                                            __lambda[1])
+
+            __beta[0] = __beta[1] * exp(-_z_norm * sqrt(__var[1][1]) /
+                                        __beta[1])
+            __beta[2] = __beta[1] * exp(_z_norm * sqrt(__var[1][1]) /
+                                        __beta[1])
+
+            _beta_hat.append(__beta)
+            _lambda_hat.append(__lambda)
+
+            # Calculate the instantaneous failure intensity at time T.
+            __rhoi[1] = __lambda[1] * __beta[1] * X[i]**(__beta[1] - 1.0)
+
+            # Calculate the Fisher matrix bounds on the instantaneous failure
+            # intensity.
+            _del_beta = __lambda[1] * X[i]**(__beta[1] - 1.0) + \
+                        __rhoi[1] * log(X[i])
+            _del_lambda = __beta[1] * X[i]**(__beta[1] - 1.0)
+            _var = _del_beta**2.0 * __var[1][1] + \
+                   _del_lambda**2.0 * __var[0][0] + \
+                   2.0 * _del_beta * _del_lambda * __var[0][1]
+
+            __rhoi[0] = __rhoi[1] * exp(-_z_norm * sqrt(_var) / __rhoi[1])
+            __rhoi[2] = __rhoi[1] * exp(_z_norm * sqrt(_var) / __rhoi[1])
+
+            _rhoi_hat.append(__rhoi)
+
+            # Calculate the cumulative failure intensity at time T.
+            __rhoc[1] = __lambda[1] * (X[i])**(__beta[1] - 1.0)
+
+            # Calculate the Fisher matrix bounds on the cumulative failure
+            # intensity.
+            _del_beta = __lambda[1] * X[i]**(__beta[1] - 1.0) * log(X[i])
+            _del_lambda = X[i]**(__beta[1] - 1.0)
+            _var = _del_beta**2.0 * __var[1][1] + \
+                   _del_lambda**2.0 * __var[0][0] + \
+                   2.0 * _del_beta * _del_lambda * __var[0][1]
+
+            __rhoc[0] = __rhoc[1] * exp(-_z_norm * sqrt(_var) / __rhoc[1])
+            __rhoc[2] = __rhoc[1] * exp(_z_norm * sqrt(_var) / __rhoc[1])
+
+            _rhoc_hat.append(__rhoc)
+
+            # Calculate the instantaneous MTBF at time T.
+            __mui[1] = X[i]**(1.0 - __beta[1]) / (__lambda[1] * __beta[1])
+
+            # Calculate the Fisher matrix bounds on the instantaneous  MTBF.
+            _del_lambda = -(X[i]**(1.0 - __beta[1]) / __lambda[1] *
+                            __beta[1]**2.0)
+            _del_beta = _del_lambda + _del_lambda * log(X[i])
+            _var = _del_beta**2.0 * __var[1][1] + \
+                   _del_lambda**2.0 * __var[0][0] + \
+                   2.0 * _del_beta * _del_lambda * __var[0][1]
+
+            __mui[0] = __mui[1] * exp(-_z_norm * sqrt(_var) / __mui[1])
+            __mui[2] = __mui[1] * exp(_z_norm * sqrt(_var) / __mui[1])
+
+            _mui_hat.append(__mui)
+
+            # Calculate the cumulative MTBF at time T.
+            __muc[1] = X[i]**(1.0 - __beta[1]) / __lambda[1]
+
+            # Calculate the Fisher matrix bounds on the cumulative MTBF.
+            _del_beta = (-1.0 / __lambda[1]) * \
+                        X[i]**(1.0 - __beta[1]) * log(X[i])
+            _del_lambda = (-1.0 / __lambda[1]**2.0) * X[i]**(1.0 - __beta[1])
+            _var = _del_beta**2.0 * __var[1][1] + \
+                   _del_lambda**2.0 * __var[0][0] + \
+                   2.0 * _del_beta * _del_lambda * __var[0][1]
+
+            __muc[0] = __muc[1] * exp(-_z_norm * sqrt(_var) / __muc[1])
+            __muc[2] = __muc[1] * exp(_z_norm * sqrt(_var) / __muc[1])
+
+            _muc_hat.append(__muc)
 
         # Calculate the chi-square statistic to test for trend and the
         # chi-square statistic to test model applicability.
-        _chi_square_ = 0.0
-        _Cm_ = 0.0
-        for i in range(_num_intervals):
-            _NPi_ = sum(_cum_fails) * I / max(X)
-            _chi_square_ += (_cum_fails[i] - _NPi_)**2.0 / (_NPi_)
-            if i < _num_intervals:
-                _ei_ = _lambda_hat[-1] * ((I * (i + 1))**_beta_hat[-1] - (I * i)**_beta_hat[-1])
-            _Cm_ += (_cum_fails[i] - _ei_)**2.0 / _ei_
+        _chi_square = 0.0
+        _Cm = 0.0
+        for i in range(len(F) - 1):
+            _NPi = sum(F[:i+1]) / max(X)
+            _chi_square += (sum(F[:i+1]) - _NPi)**2.0 / (_NPi)
+            if i < len(X):
+                _ei = __lambda[1] * (X[i + 1]**__beta[1] - X[i]**__beta[1])
+            _Cm += (sum(F[:i+1]) - _ei)**2.0 / _ei
 
-    return(_beta_hat, _lambda_hat, _rho, _mu, _cum_fails, _chi_square_, _Cm_)
+    return(_beta_hat, _lambda_hat, _rhoc_hat, _rhoi_hat, _muc_hat, _mui_hat,
+           _chi_square, _Cm)
 
 
 def moving_average(_data_, n=3):
     """
     Function to calculate the moving average of a dataset.
 
-    Keyword Arguments:
-    _data_ -- the dataset for which to find the moving average.
-    n      -- the desired period.
+    @param _data_: the dataset for which to find the moving average.
+    @param n: the desired period.
     """
 
     _cumsum_ = np.cumsum(_data_, dtype=float)
@@ -1817,8 +1945,7 @@ def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
-    Keyword Arguments:
-    _dates_ -- tuple containing start and end date for calculating
+    @param _dates_: tuple containing start and end date for calculating
                time to failure.
     """
 
@@ -1835,18 +1962,17 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
-    Keyword Arguments:
-    _dataset_  -- list of tuples where each tuple is in the form of:
+    @param _dataset_: list of tuples where each tuple is in the form of:
                   (Left of Interval, Right of Interval, Event Status) and
                   event status are:
                   0 = right censored
                   1 = event at time
                   2 = left censored
                   3 = interval censored
-    _reltime_  -- time at which to stop analysis (helps eliminate stretched
+    @param _reltime_: time at which to stop analysis (helps eliminate stretched
                   plots due to small number of events at high hours).
-    _conf_     -- the confidence level of the KM estimates (default is 75%).
-    _type_     -- the confidence interval type for the KM estimates.
+    @param _conf_: the confidence level of the KM estimates (default is 75%).
+    @param _type_: the confidence interval type for the KM estimates.
     """
 
     from scipy.stats import norm
@@ -1979,15 +2105,14 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     """ This function estimates the mean cumulative function for a population
         of items.
 
-        Keyword Argumesnts:
-        units  -- list of unique unit ID's in the dataset.
-        times  -- list of unique failure times in the dataset.
-        data   -- a data.frame or matrix where:
+    @param units: list of unique unit ID's in the dataset.
+    @param times: list of unique failure times in the dataset.
+    @param data: a data.frame or matrix where:
                   Column 0 is the failed unit id.
                   Column 1 is the left of the interval.
                   Column 2 is the right of the interval.
                   Column 3 is the interarrival time.
-        _conf_ -- the confidence level of the KM estimates (default is 75%).
+    @param _conf_: the confidence level of the KM estimates (default is 75%).
     """
 
     from scipy.stats import norm
@@ -2074,17 +2199,17 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
 
 def parametric_fit(_dataset_, _starttime_, _reltime_,
                    _fitmeth_, _dist_='exponential'):
-    """ Function to fit data to a parametric distribution and estimate the
-        parameters.
+    """
+    Function to fit data to a parametric distribution and estimate the
+    parameters.
 
-        Keyword Arguments:
-        _dataset_ -- the dataset to fit.  This is a
-        _reltime_ -- the maximum time to include in the fit.  Used to exclude
+    @param _dataset_: the dataset to fit.  This is a
+    @param _reltime_: the maximum time to include in the fit.  Used to exclude
                      outliers.
-        _fitmeth_ -- method used to fit data to the selected distribution.
+    @param _fitmeth_: method used to fit data to the selected distribution.
                      1 = rank regression
                      2 = maximum likelihood estimation (MLE)
-        _dist_    -- the noun name of the distribution to fit.  Defaults to
+    @param _dist_: the noun name of the distribution to fit.  Defaults to
                      the exponential distribution.
     """
 
