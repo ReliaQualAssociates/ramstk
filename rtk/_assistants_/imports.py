@@ -51,9 +51,9 @@ import gettext
 _ = gettext.gettext
 
 
-class ImportHardware:
+class ImportHardware(object):
     """
-    This is the gtk.Assistant that walks the user through the process of
+    This is the gtk.Assistant() that walks the user through the process of
     importing Hardware records to the open RTK Program database.
     """
 
@@ -61,9 +61,9 @@ class ImportHardware:
         """
         Initialize an instance of the Import Hardware Assistant.
 
-        Keyword Arguments:
-        button -- the gtk.Button widget that calling this Assistant.
-        app    -- the instance of the RelKit application calling the Assistant.
+        @param button: the gtk.Button() that called this gtk.Assistant().
+        @type button: gtk.Button
+        @param app: the current instance of the RTK application.
         """
         self._app = app
 
@@ -73,20 +73,23 @@ class ImportHardware:
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
-# Initialize some variables.
+        # Initialize some variables.
         self._file_index = [-1] * 96
 
-# Create the introduction page.
+        # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RelKit hardware import assistant.  It will help you import system hardware information to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=600, height=150)
+        _text_ = _(u"This is the RelKit hardware import assistant.  It will "
+                   u"help you import system hardware information to the "
+                   u"database from external files.  Press 'Forward' to "
+                   u"continue or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=600, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
         self.assistant.set_page_title(fixed, _(u"Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-# Create the age to map input file fields to database fields.
+        # Create the age to map input file fields to database fields.
         model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                               gobject.TYPE_STRING)
         self.tvwFileFields = gtk.TreeView(model)
@@ -115,7 +118,8 @@ class ImportHardware:
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup(u"<span weight='bold'>%s</span>" % _("Database\nField"))
+        label.set_markup(u"<span weight='bold'>%s</span>" %
+                         _("Database\nField"))
         label.show_all()
         column.set_widget(label)
         self.tvwFileFields.append_column(column)
@@ -193,14 +197,15 @@ class ImportHardware:
 
         self.assistant.append_page(scrollwindow)
         self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(scrollwindow,
-                                      _(u"Select Fields to Import"))
+        self.assistant.set_page_title(scrollwindow, _(u"Select Fields to "
+                                                      u"Import"))
         self.assistant.set_page_complete(scrollwindow, True)
 
-# Create the page to apply the import criteria.
+        # Create the page to apply the import criteria.
         fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' "
+                   u"to quit the assistant.")
+        label = _widg.make_label(_text_, width=600, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
@@ -227,37 +232,36 @@ class ImportHardware:
                      gtk.TreeView.
         """
 
-        model = cell.get_property('model')
-        _text = model.get_value(row, 0)
-        _index  = model.get_value(row, 1)
+        _model = cell.get_property('model')
+        _text = _model.get_value(row, 0)
+        _index  = _model.get_value(row, 1)
 
-        treerow = treemodel.get_iter(path)
+        _treerow = treemodel.get_iter(path)
 
-        _position = treemodel.get_value(treerow, 0)
-        self._file_index.insert(_position, _index)
+        _position = treemodel.get_value(_treerow, 0)
+        self._file_index[_position] = _index
 
-        treemodel.set_value(treerow, position, _text)
+        treemodel.set_value(_treerow, position, _text)
 
         return False
 
     def _forward_page_select(self, current_page):
 
-        if(current_page == 0):
+        if current_page == 0:
             self._select_source_file()
         else:
             self.assistant.set_current_page(current_page + 1)
 
     def _select_source_file(self):
 
-        import os
-
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_(u"RelKit: Import Hardware from File ..."),
+        dialog = gtk.FileChooserDialog(_(u"RTK: Import Hardware from File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                         gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
         dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+        dialog.set_current_folder(_conf.PROG_DIR)
 
         # Set some filters to select all files or only some text files.
         filter = gtk.FileFilter()
@@ -277,11 +281,8 @@ class ImportHardware:
 
         # Run the dialog and write the file.
         _contents = []
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
             _filename = dialog.get_filename()
-            (name, extension) = os.path.splitext(_filename)
-
             _file = open(_filename, 'r')
 
             for _line in _file:
@@ -290,12 +291,14 @@ class ImportHardware:
             _headers = str(_contents[0][0]).rsplit('\t')
             for i in range(len(_contents) - 1):
                 _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+
+            dialog.destroy()
+
+            return _headers, _contents
+
         else:
-            _headers = []
-
-        dialog.destroy()
-
-        return(_headers, _contents)
+            dialog.destroy()
+            self.assistant.destroy()
 
     def _import(self, button):
         """
@@ -305,23 +308,21 @@ class ImportHardware:
         button -- the gtk.Button widget that called this method.
         """
 
-        from datetime import datetime
+        _model = self.tvwFileFields.get_model()
+        row = _model.get_iter_root()
 
-        model = self.tvwFileFields.get_model()
-        row = model.get_iter_root()
+        # Find the number of existing hardware items.
+        if _conf.BACKEND == 'mysql':
+            _query = "SELECT COUNT(*) FROM tbl_system"
+        elif _conf.BACKEND == 'sqlite3':
+            _query = "SELECT COALESCE(MAX(fld_assembly_id)+1, 0) \
+                      FROM tbl_system"
 
-# Find the number of existing hardware items.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT COUNT(*) FROM tbl_system"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT COALESCE(MAX(fld_assembly_id)+1, 0) FROM tbl_system"
-
-        num_assemblies = self._app.DB.execute_query(query,
+        num_assemblies = self._app.DB.execute_query(_query,
                                                     None,
                                                     self._app.ProgCnx)
 
-        contents = []
-
+        _contents = []
         for i in range(len(self._file_contents) - 1):
             _temp = []
             for j in range(len(self._file_index)):
@@ -360,284 +361,293 @@ class ImportHardware:
             for i in [19, 20, 45]:
                 _temp[i] = self._missing_to_default(_temp[i], 100.0)
 
-            contents.append(_temp)
+            _contents.append(_temp)
 
-# Find the top-level assembly and use it to update the top-level record in the
-# database.
-        _root = [assembly for assembly in contents if assembly[62] == '-'][0]
+        # Find the top-level assembly and use it to update the top-level record
+        # in the database.
+        _root = [assembly for assembly in _contents if assembly[62] == '-'][0]
 
-        _values_ = (int(_root[0]), 0, float(_root[2]), int(_root[3]),
-                    str(_root[4]), str(_root[5]), str(_root[6]),
-                    float(_root[7]), float(_root[8]), str(_root[9]),
-                    int(_root[10]), int(_root[11]), str(_root[12]),
-                    float(_root[13]), float(_root[14]), float(_root[15]),
-                    int(_root[16]), str(_root[17]), float(_root[18]),
-                    float(_root[19]), float(_root[20]), str(_root[21]),
-                    int(_root[22]), int(_root[23]), int(_root[24]),
-                    float(_root[25]), float(_root[26]), float(_root[27]),
-                    float(_root[28]), float(_root[29]), float(_root[30]),
-                    float(_root[31]), float(_root[32]), float(_root[33]),
-                    float(_root[34]), int(_root[35]), str(_root[36]),
-                    float(_root[37]), str(_root[38]), float(_root[39]),
-                    float(_root[40]), str(_root[41]), int(_root[42]),
-                    int(_root[43]), float(_root[44]), float(_root[45]),
-                    float(_root[46]), str(_root[47]), float(_root[48]),
-                    float(_root[49]), float(_root[50]), float(_root[51]),
-                    float(_root[52]), float(_root[53]), float(_root[54]),
-                    float(_root[55]), int(_root[56]), float(_root[57]),
-                    str(_root[58]), str(_root[59]), int(_root[60]),
-                    str(_root[61]), str(_root[62]), int(_root[63]),
-                    str(_root[64]), float(_root[65]), float(_root[66]),
-                    int(_root[67]), str(_root[68]), float(_root[69]),
-                    float(_root[70]), str(_root[71]), int(_root[72]),
-                    float(_root[73]), float(_root[74]), int(_root[75]),
-                    float(_root[76]), str(_root[77]), int(_root[78]),
-                    int(_root[79]), float(_root[80]), float(_root[81]),
-                    int(_root[82]), float(_root[83]), float(_root[84]),
-                    int(_root[85]), str(_root[86]), int(_root[87]),
-                    str(_root[88]), int(_root[89]), float(_root[90]),
-                    float(_root[91]), float(_root[92]), float(_root[93]),
-                    float(_root[94]))
+        _values = (int(_root[0]), 0, float(_root[2]), int(_root[3]),
+                   str(_root[4]), str(_root[5]), str(_root[6]),
+                   float(_root[7]), float(_root[8]), str(_root[9]),
+                   int(_root[10]), int(_root[11]), str(_root[12]),
+                   float(_root[13]), float(_root[14]), float(_root[15]),
+                   int(_root[16]), str(_root[17]), float(_root[18]),
+                   float(_root[19]), float(_root[20]), str(_root[21]),
+                   int(_root[22]), int(_root[23]), int(_root[24]),
+                   float(_root[25]), float(_root[26]), float(_root[27]),
+                   float(_root[28]), float(_root[29]), float(_root[30]),
+                   float(_root[31]), float(_root[32]), float(_root[33]),
+                   float(_root[34]), int(_root[35]), str(_root[36]),
+                   float(_root[37]), str(_root[38]), float(_root[39]),
+                   float(_root[40]), str(_root[41]), int(_root[42]),
+                   int(_root[43]), float(_root[44]), float(_root[45]),
+                   float(_root[46]), str(_root[47]), float(_root[48]),
+                   float(_root[49]), float(_root[50]), float(_root[51]),
+                   float(_root[52]), float(_root[53]), float(_root[54]),
+                   float(_root[55]), int(_root[56]), float(_root[57]),
+                   str(_root[58]), str(_root[59]), int(_root[60]),
+                   str(_root[61]), str(_root[62]), int(_root[63]),
+                   str(_root[64]), float(_root[65]), float(_root[66]),
+                   int(_root[67]), str(_root[68]), float(_root[69]),
+                   float(_root[70]), str(_root[71]), int(_root[72]),
+                   float(_root[73]), float(_root[74]), int(_root[75]),
+                   float(_root[76]), str(_root[77]), int(_root[78]),
+                   int(_root[79]), float(_root[80]), float(_root[81]),
+                   int(_root[82]), float(_root[83]), float(_root[84]),
+                   int(_root[85]), str(_root[86]), int(_root[87]),
+                   str(_root[88]), int(_root[89]), float(_root[90]),
+                   float(_root[91]), float(_root[92]), float(_root[93]),
+                   float(_root[94]))
 
-        _query_ = "UPDATE tbl_system \
-                   SET fld_revision_id=%d, fld_assembly_id=%d, \
-                       fld_add_adj_factor=%f, fld_allocation_type=%d, \
-                       fld_alt_part_number='%s', \
-                       fld_assembly_criticality='%s', \
-                       fld_attachments='%s', fld_availability=%f, \
-                       fld_availability_mission=%f, fld_cage_code='%s', \
-                       fld_calculation_model=%d, fld_category_id=%d, \
-                       fld_comp_ref_des='%s',fld_cost=%f,  \
-                       fld_cost_failure=%f, fld_cost_hour=%f, \
-                       fld_cost_type=%d, fld_description='%s', \
-                       fld_detection_fr=%f, fld_detection_percent=%f, \
-                       fld_duty_cycle=%f, fld_entered_by='%s', \
-                       fld_environment_active=%d, fld_environment_dormant=%d, \
-                       fld_failure_dist=%d, fld_failure_parameter_1=%f, \
-                       fld_failure_parameter_2=%f, \
-                       fld_failure_parameter_3=%f, \
-                       fld_failure_rate_active=%f, \
-                       fld_failure_rate_dormant=%f, \
-                       fld_failure_rate_mission=%f, \
-                       fld_failure_rate_percent=%f, \
-                       fld_failure_rate_predicted=%f, \
-                       fld_failure_rate_software=%f, \
-                       fld_failure_rate_specified=%f, \
-                       fld_failure_rate_type=%d, fld_figure_number='%s', \
-                       fld_humidity=%f, fld_image_file='%s', \
-                       fld_isolation_fr=%f, fld_isolation_percent=%f, \
-                       fld_lcn='%s', fld_level=%d, fld_manufacturer=%d, \
-                       fld_mcmt=%f, fld_mission_time=%f, fld_mmt=%f, \
-                       fld_modified_by='%s', fld_mpmt=%f, \
-                       fld_mtbf_mission=%f, fld_mtbf_predicted=%f, \
-                       fld_mtbf_specified=%f, fld_mttr=%f, \
-                       fld_mttr_add_adj_factor=%f, \
-                       fld_mttr_mult_adj_factor=%f, \
-                       fld_mttr_specified=%f, fld_mttr_type=%d, \
-                       fld_mult_adj_factor=%f, fld_name='%s', \
-                       fld_nsn='%s', fld_overstress=%d, \
-                       fld_page_number='%s', fld_parent_assembly='%s', \
-                       fld_part=%d, fld_part_number='%s', \
-                       fld_percent_isolation_group_ri=%f, \
-                       fld_percent_isolation_single_ri=%f, \
-                       fld_quantity=%d, fld_ref_des='%s', \
-                       fld_reliability_mission=%f, \
-                       fld_reliability_predicted=%f, fld_remarks='%s', \
-                       fld_repair_dist=%d, fld_repair_parameter_1=%f, \
-                       fld_repair_parameter_2=%f, fld_repairable=%d, \
-                       fld_rpm=%f, fld_specification_number='%s', \
-                       fld_subcategory_id=%d, fld_tagged_part=%d, \
-                       fld_temperature_active=%f, \
-                       fld_temperature_dormant=%f, \
-                       fld_total_part_quantity=%d, \
-                       fld_total_power_dissipation=%f, fld_vibration=%f, \
-                       fld_weibull_data_set=%d, fld_weibull_file='%s', \
-                       fld_year_of_manufacture=%d, fld_ht_model='%s', \
-                       fld_reliability_goal_measure=%d, \
-                       fld_reliability_goal=%f, fld_mtbf_lcl=%f, \
-                       fld_mtbf_ucl=%f, fld_failure_rate_lcl=%f, \
-                       fld_failure_rate_ucl=%f \
-                   WHERE fld_parent_assembly='-'" % _values_
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
+        _query = "UPDATE tbl_system \
+                  SET fld_revision_id=%d, fld_assembly_id=%d, \
+                      fld_add_adj_factor=%f, fld_allocation_type=%d, \
+                      fld_alt_part_number='%s', \
+                      fld_assembly_criticality='%s', \
+                      fld_attachments='%s', fld_availability=%f, \
+                      fld_availability_mission=%f, fld_cage_code='%s', \
+                      fld_calculation_model=%d, fld_category_id=%d, \
+                      fld_comp_ref_des='%s',fld_cost=%f,  \
+                      fld_cost_failure=%f, fld_cost_hour=%f, \
+                      fld_cost_type=%d, fld_description='%s', \
+                      fld_detection_fr=%f, fld_detection_percent=%f, \
+                      fld_duty_cycle=%f, fld_entered_by='%s', \
+                      fld_environment_active=%d, fld_environment_dormant=%d, \
+                      fld_failure_dist=%d, fld_failure_parameter_1=%f, \
+                      fld_failure_parameter_2=%f, \
+                      fld_failure_parameter_3=%f, \
+                      fld_failure_rate_active=%f, \
+                      fld_failure_rate_dormant=%f, \
+                      fld_failure_rate_mission=%f, \
+                      fld_failure_rate_percent=%f, \
+                      fld_failure_rate_predicted=%f, \
+                      fld_failure_rate_software=%f, \
+                      fld_failure_rate_specified=%f, \
+                      fld_failure_rate_type=%d, fld_figure_number='%s', \
+                      fld_humidity=%f, fld_image_file='%s', \
+                      fld_isolation_fr=%f, fld_isolation_percent=%f, \
+                      fld_lcn='%s', fld_level=%d, fld_manufacturer=%d, \
+                      fld_mcmt=%f, fld_mission_time=%f, fld_mmt=%f, \
+                      fld_modified_by='%s', fld_mpmt=%f, \
+                      fld_mtbf_mission=%f, fld_mtbf_predicted=%f, \
+                      fld_mtbf_specified=%f, fld_mttr=%f, \
+                      fld_mttr_add_adj_factor=%f, \
+                      fld_mttr_mult_adj_factor=%f, \
+                      fld_mttr_specified=%f, fld_mttr_type=%d, \
+                      fld_mult_adj_factor=%f, fld_name='%s', \
+                      fld_nsn='%s', fld_overstress=%d, \
+                      fld_page_number='%s', fld_parent_assembly='%s', \
+                      fld_part=%d, fld_part_number='%s', \
+                      fld_percent_isolation_group_ri=%f, \
+                      fld_percent_isolation_single_ri=%f, \
+                      fld_quantity=%d, fld_ref_des='%s', \
+                      fld_reliability_mission=%f, \
+                      fld_reliability_predicted=%f, fld_remarks='%s', \
+                      fld_repair_dist=%d, fld_repair_parameter_1=%f, \
+                      fld_repair_parameter_2=%f, fld_repairable=%d, \
+                      fld_rpm=%f, fld_specification_number='%s', \
+                      fld_subcategory_id=%d, fld_tagged_part=%d, \
+                      fld_temperature_active=%f, \
+                      fld_temperature_dormant=%f, \
+                      fld_total_part_quantity=%d, \
+                      fld_total_power_dissipation=%f, fld_vibration=%f, \
+                      fld_weibull_data_set=%d, fld_weibull_file='%s', \
+                      fld_year_of_manufacture=%d, fld_ht_model='%s', \
+                      fld_reliability_goal_measure=%d, \
+                      fld_reliability_goal=%f, fld_mtbf_lcl=%f, \
+                      fld_mtbf_ucl=%f, fld_failure_rate_lcl=%f, \
+                      fld_failure_rate_ucl=%f \
+                  WHERE fld_parent_assembly='-'" % _values
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error importing hardware information to the "
+                              u"open RTK Program database."))
+            return True
 
-        # Now find all the children of the top-level assembly.
-        _iter_ = {0:'-'}
-        j = 0
-        _root = [child for child in contents if child[62] == str(j)]
-        _iter_ = self._add_children(_root, _iter_, contents)
+        else:
+            # Find all the children of the top-level assembly.
+            _iter = {0:'-'}
+            j = 0
+            _root = [child for child in _contents if child[62] == str(j)]
+            self._add_children(_root, _iter, _contents)
 
-        self._app.HARDWARE.load_tree
+            self._app.HARDWARE.load_tree()
 
-        return False
+            return False
 
-    def _add_children(self, _root, _iter_, contents):
+    def _add_children(self, root, _iter_, contents):
         """
-        Method to add all children assemblies to the RTK Program database.
+        Method to add all children assemblies to the open RTK Program database.
 
-        Keyword Arguments:
-        _root    -- the list of children assemblies to add.
-        _iter_   -- a dictionary with assembly id as the key and the string
-                    representation of the gtk.Iter() as the value.
-        contents -- the contents of the file which is being imported.
+        @param root: the list of children assemblies to add.
+        @param iter: a dictionary with assembly id as the key and the string
+                     representation of the gtk.Iter() as the value.
+        @param contents: the contents of the file which is being imported.
         """
 
-        for i in range(len(_root)):
+        for i in range(len(root)):
 
             # Build the string representation of the assembly's iter.
-            _parent_id_ = int(_root[i][62])
-            if(str(_iter_[_parent_id_]) == '-'):
-                _iter_[int(_root[i][1])] = '0:' + str(i)
-                _root[i][62] = '0'
+            _parent_id = int(root[i][62])
+            if(str(_iter_[_parent_id]) == '-'):
+                _iter_[int(root[i][1])] = '0:' + str(i)
+                root[i][62] = '0'
             else:
-                _iter_[int(_root[i][1])] = str(_iter_[_parent_id_]) + ':' + str(i)
-                _root[i][62] = str(_iter_[_parent_id_])
+                _iter_[int(root[i][1])] = str(_iter_[_parent_id]) + ':' + str(i)
+                root[i][62] = str(_iter_[_parent_id])
 
-            try:
-                _values_ = (int(_root[i][0]), int(_root[i][1]),
-                            float(_root[i][2]), int(_root[i][3]),
-                            str(_root[i][4]), float(_root[i][5]),
-                            str(_root[i][6]), float(_root[i][7]),
-                            float(_root[i][8]), str(_root[i][9]),
-                            int(_root[i][10]), int(_root[i][11]),
-                            str(_root[i][12]), float(_root[i][13]),
-                            float(_root[i][14]), float(_root[i][15]),
-                            int(_root[i][16]), str(_root[i][17]),
-                            float(_root[i][18]), float(_root[i][19]),
-                            float(_root[i][20]), str(_root[i][21]),
-                            int(_root[i][22]), int(_root[i][23]),
-                            int(_root[i][24]), float(_root[i][25]),
-                            float(_root[i][26]), float(_root[i][27]),
-                            float(_root[i][28]), float(_root[i][29]),
-                            float(_root[i][30]), float(_root[i][31]),
-                            float(_root[i][32]), float(_root[i][33]),
-                            float(_root[i][34]), int(_root[i][35]),
-                            str(_root[i][36]), float(_root[i][37]),
-                            str(_root[i][38]), float(_root[i][39]),
-                            float(_root[i][40]), str(_root[i][41]),
-                            int(_root[i][42]), int(_root[i][43]),
-                            float(_root[i][44]), float(_root[i][45]),
-                            float(_root[i][46]), str(_root[i][47]),
-                            float(_root[i][48]), float(_root[i][49]),
-                            float(_root[i][50]), float(_root[i][51]),
-                            float(_root[i][52]), float(_root[i][53]),
-                            float(_root[i][54]), float(_root[i][55]),
-                            int(_root[i][56]), float(_root[i][57]),
-                            str(_root[i][58]), str(_root[i][59]),
-                            int(_root[i][60]), str(_root[i][61]),
-                            str(_root[i][62]), int(_root[i][63]),
-                            str(_root[i][64]), float(_root[i][65]),
-                            float(_root[i][66]), int(_root[i][67]),
-                            str(_root[i][68]), float(_root[i][69]),
-                            float(_root[i][70]), str(_root[i][71]),
-                            int(_root[i][72]), float(_root[i][73]),
-                            float(_root[i][74]), int(_root[i][75]),
-                            float(_root[i][76]), str(_root[i][77]),
-                            int(_root[i][78]), int(_root[i][79]),
-                            float(_root[i][80]), float(_root[i][81]),
-                            int(_root[i][82]), float(_root[i][83]),
-                            float(_root[i][84]), int(_root[i][85]),
-                            str(_root[i][86]), int(_root[i][87]),
-                            str(_root[i][88]), int(_root[i][89]),
-                            float(_root[i][90]), float(_root[i][91]),
-                            float(_root[i][92]), float(_root[i][93]),
-                            float(_root[i][94]))
+            _values = (int(root[i][0]), int(root[i][1]),
+                       float(root[i][2]), int(root[i][3]),
+                       str(root[i][4]), float(root[i][5]),
+                       str(root[i][6]), float(root[i][7]),
+                       float(root[i][8]), str(root[i][9]),
+                       int(root[i][10]), int(root[i][11]),
+                       str(root[i][12]), float(root[i][13]),
+                       float(root[i][14]), float(root[i][15]),
+                       int(root[i][16]), str(root[i][17]),
+                       float(root[i][18]), float(root[i][19]),
+                       float(root[i][20]), str(root[i][21]),
+                       int(root[i][22]), int(root[i][23]),
+                       int(root[i][24]), float(root[i][25]),
+                       float(root[i][26]), float(root[i][27]),
+                       float(root[i][28]), float(root[i][29]),
+                       float(root[i][30]), float(root[i][31]),
+                       float(root[i][32]), float(root[i][33]),
+                       float(root[i][34]), int(root[i][35]),
+                       str(root[i][36]), float(root[i][37]),
+                       str(root[i][38]), float(root[i][39]),
+                       float(root[i][40]), str(root[i][41]),
+                       int(root[i][42]), int(root[i][43]),
+                       float(root[i][44]), float(root[i][45]),
+                       float(root[i][46]), str(root[i][47]),
+                       float(root[i][48]), float(root[i][49]),
+                       float(root[i][50]), float(root[i][51]),
+                       float(root[i][52]), float(root[i][53]),
+                       float(root[i][54]), float(root[i][55]),
+                       int(root[i][56]), float(root[i][57]),
+                       str(root[i][58]), str(root[i][59]),
+                       int(root[i][60]), str(root[i][61]),
+                       str(root[i][62]), int(root[i][63]),
+                       str(root[i][64]), float(root[i][65]),
+                       float(root[i][66]), int(root[i][67]),
+                       str(root[i][68]), float(root[i][69]),
+                       float(root[i][70]), str(root[i][71]),
+                       int(root[i][72]), float(root[i][73]),
+                       float(root[i][74]), int(root[i][75]),
+                       float(root[i][76]), str(root[i][77]),
+                       int(root[i][78]), int(root[i][79]),
+                       float(root[i][80]), float(root[i][81]),
+                       int(root[i][82]), float(root[i][83]),
+                       float(root[i][84]), int(root[i][85]),
+                       str(root[i][86]), int(root[i][87]),
+                       str(root[i][88]), int(root[i][89]),
+                       float(root[i][90]), float(root[i][91]),
+                       float(root[i][92]), float(root[i][93]),
+                       float(root[i][94]))
 
-                _query_ = "INSERT INTO tbl_system \
-                           VALUES (%d, %d, %f, %d, '%s', %f, '%s', %f, \
-                                   %f, '%s', %d, %d, '%s', %f, %f, %f, \
-                                   %d, '%s', %f, %f, %f, '%s', %d, %d, \
-                                   %d, %f, %f, %f, %f, %f, %f, %f, %f, \
-                                   %f, %f, %d, '%s', %f, '%s', %f, %f, \
-                                   '%s', %d, %d, %f, %f, %f, '%s', %f, \
-                                   %f, %f, %f, %f, %f, %f, %f, %d, %f, \
-                                   '%s', '%s', %d, '%s', '%s', %d, '%s', \
-                                   %f, %f, %d, '%s', %f, %f, '%s', %d, \
-                                   %f, %f, %d, %f, '%s', %d, %d, %f, %f, \
-                                   %d, %f, %f, %d, '%s', %d, '%s', %d, \
-                                   %f, %f, %f, %f, %f)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+            _query = "INSERT INTO tbl_system \
+                      VALUES (%d, %d, %f, %d, '%s', %f, '%s', %f, \
+                              %f, '%s', %d, %d, '%s', %f, %f, %f, \
+                              %d, '%s', %f, %f, %f, '%s', %d, %d, \
+                              %d, %f, %f, %f, %f, %f, %f, %f, %f, \
+                              %f, %f, %d, '%s', %f, '%s', %f, %f, \
+                              '%s', %d, %d, %f, %f, %f, '%s', %f, \
+                              %f, %f, %f, %f, %f, %f, %f, %d, %f, \
+                              '%s', '%s', %d, '%s', '%s', %d, '%s', \
+                              %f, %f, %d, '%s', %f, %f, '%s', %d, \
+                              %f, %f, %d, %f, '%s', %d, %d, %f, %f, \
+                              %d, %f, %f, %d, '%s', %d, '%s', %d, \
+                              %f, %f, %f, %f, %f)" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error importing hardware information to "
+                                  u"the open RTK Program database."))
+                self._app.import_log.error("Failed to import record: %d" %
+                                           root[i][1])
+                return True
 
-            except:
-                # If there is a problem with the input data, don't import
-                # the record.
-                self._app.import_log.error("Failed to import record: %d" % _root[i][1])
+            else:
+                # Add the new hardware to the allocation table, the risk
+                # analysis table, the similar items table, the FMECA table and
+                # the functional matrix table.
+                _values = (int(root[i][0]), int(root[i][1]))
+                _query = "INSERT INTO tbl_allocation \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.import_log.error("Failed to import record: %d "
+                                               "to the Allocation Table" %
+                                               root[i][1])
+                    _error = True
 
-            # Now add the new hardware to the allocation table, the risk
-            # analysis table, the similar items table, the FMECA table and
-            # the functional matrix table.
-            try:
-                _values_ = (int(_root[i][0]), int(_root[i][1]))
-                _query_ = "INSERT INTO tbl_allocation \
-                           (fld_revision_id, fld_assembly_id) \
-                           VALUES (%d, %d)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                _query = "INSERT INTO tbl_risk_analysis \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.import_log.error("Failed to import record: %d "
+                                               "to the Risk Analysis Table" %
+                                               root[i][1])
+                    _error = True
 
-                _query_ = "INSERT INTO tbl_risk_analysis \
-                           (fld_revision_id, fld_assembly_id) \
-                           VALUES (%d, %d)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                _query = "INSERT INTO tbl_similar_item \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.import_log.error("Failed to import record: %d "
+                                               "to the Similar Item Table" %
+                                               root[i][1])
+                    _error = True
 
-                _query_ = "INSERT INTO tbl_similar_item \
-                           (fld_revision_id, fld_assembly_id) \
-                           VALUES (%d, %d)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                _query = "INSERT INTO tbl_fmeca \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.import_log.error("Failed to import record: %d "
+                                               "to the FMECA Table" %
+                                               root[i][1])
+                    _error = True
 
-                _query_ = "INSERT INTO tbl_fmeca \
-                           (fld_revision_id, fld_assembly_id) \
-                           VALUES (%d, %d)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                _query = "INSERT INTO tbl_functional_matrix \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES(%d, %d)" % _values
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.import_log.error("Failed to import record: %d "
+                                               "to the Functional Matrix "
+                                               "Table" % root[i][1])
+                    _error = True
 
-                _query_ = "INSERT INTO tbl_functional_matrix \
-                           (fld_revision_id, fld_assembly_id) \
-                           VALUES(%d, %d)" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
 
-            except ValueError:
-            # If there is a problem with the input data, don't import the
-            # record.
-                self._app.import_log.error("Failed to import record: %d to the Allocation, Risk Analysis, or Similar Item Table" % _root[i][1])
+            _children = [child for child in contents if child[62] == root[i][1]]
+            if len(_children) > 0:
+                _iter_ = self._add_children(_children, _iter_, contents)
 
-            _children_ = [child for child in contents if child[62] == _root[i][1]]
-            if(len(_children_) > 0):
-                _iter_ = self._add_children(_children_, _iter_, contents)
-
-        return(_iter_)
+        return _iter_
 
     def _missing_to_default(self, field, default_value):
 
-        if(field == ''):
+        if field == '':
             field = default_value
 
-        return(field)
+        return field
 
-    def _cancel(self, button):
+    def _cancel(self, __button):
         """
-        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         self.assistant.destroy()
