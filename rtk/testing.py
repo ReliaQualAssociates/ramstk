@@ -1154,7 +1154,7 @@ class Testing(object):
             _fxdDataSet_.put(self.optGrouped, 5, _y_pos)
             _y_pos += 25
 
-            _adjustment = gtk.Adjustment(0, 0, 100, 0.2, 0, 0)
+            _adjustment = gtk.Adjustment(75.0, 50.0, 100.0, 0.5, 0, 0)
             self.spnConfidence.set_adjustment(_adjustment)
             self.spnConfidence.set_digits(1)
 
@@ -1210,15 +1210,19 @@ class Testing(object):
 
             # Place the widgets use to display the numerical results of the
             # test data assessment.
-            _labels = [_(u"Cum. Test Time:"), _(u"Cum. Failures:"),
-                       _(u"Lambda:"), _(u"Beta:"), _(u"Observed Growth Rate:"),
+            _labels = [_(u"Cum. Test Time:"), _(u"Cum. Failures:")]
+            (_x_max, _y_pos1) = _widg.make_labels(_labels,
+                                                  _fxdNumericalResults_, 5, 5)
+            _labels = [_(u"Lambda:"), _(u"Beta:"), _(u"Observed Growth Rate:"),
                        _(u"Instantaneous Failure Rate:"),
                        _(u"Cumulative Failure Rate:"),
                        _(u"Instantaneous MTBF:"), _(u"Cumulative MTBF:"),
                        _(u"GoF for Trend:"), _(u"GoF for Model:")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels,
-                                                 _fxdNumericalResults_, 5, 5)
-            _x_pos += 20
+            (_x_pos, _y_pos2) = _widg.make_labels(_labels,
+                                                  _fxdNumericalResults_, 5,
+                                                  _y_pos1[1] + 70)
+            _x_pos = max(_x_max, _x_pos) + 20
+            _y_pos = _y_pos1 + _y_pos2
 
             self.txtCumTestTime.set_tooltip_text(_(u"Displays the cumulative "
                                                    u"test time to date for "
@@ -1312,6 +1316,16 @@ class Testing(object):
 
             _fxdNumericalResults_.put(self.txtCumTestTime, _x_pos, _y_pos[0])
             _fxdNumericalResults_.put(self.txtCumFailures, _x_pos, _y_pos[1])
+
+            _label = _widg.make_label(_(u"Lower\nBound"), height=-1, wrap=True,
+                                      justify=gtk.JUSTIFY_CENTER)
+            _fxdNumericalResults_.put(_label, _x_pos + 5, _y_pos[1] + 35)
+            _label = _widg.make_label(_(u"\nEstimate"), height=-1, wrap=True,
+                                      justify=gtk.JUSTIFY_CENTER)
+            _fxdNumericalResults_.put(_label, _x_pos + 105, _y_pos[1] + 35)
+            _label = _widg.make_label(_(u"Upper\nBound"), height=-1, wrap=True,
+                                      justify=gtk.JUSTIFY_CENTER)
+            _fxdNumericalResults_.put(_label, _x_pos + 205, _y_pos[1] + 35)
             _fxdNumericalResults_.put(self.txtScalell, _x_pos, _y_pos[2])
             _fxdNumericalResults_.put(self.txtScale, _x_pos + 100, _y_pos[2])
             _fxdNumericalResults_.put(self.txtScaleul, _x_pos + 200, _y_pos[2])
@@ -1458,7 +1472,7 @@ class Testing(object):
 
     def load_test_assessment_tree(self):
         """
-        Method to load the TESTING class test data gtk.TreeView().
+        Method to load the Testing class test data gtk.TreeView().
         """
 
         _query = "SELECT fld_record_id, fld_request_date, \
@@ -1538,8 +1552,8 @@ class Testing(object):
 
             return False
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
-        if _row_ is not None:
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        if _row is not None:
             _load_planning_tab(self)
             self.load_assessment_tab()
             self.load_test_assessment_tree()
@@ -1655,7 +1669,8 @@ class Testing(object):
                       phase.
         @param obs: a list of lists of observed values for each test phase.
                     The inner lists contain [Lower Bound, Point, Upper Bound]
-                    for the MTBF at each failure time.
+                    for the instantaneous failure intensity or instantaneous
+                    MTBF at each failure time.
         @return: False if successful or True if an error is encountered.
         @rtype : boolean
         """
@@ -1790,9 +1805,9 @@ class Testing(object):
                     _f_time = _model.get_value(_row, 3)
                     _obs_times.append(_f_time)
                 else:
-                    _obs_times.append(_f_time)
                     _f_time = _model.get_value(_row, 3)
                     _model.set_value(_row, 2, _f_time)
+                    _obs_times.append(_f_time)
 
                 _row = _model.iter_next(_row)
 
@@ -1806,6 +1821,29 @@ class Testing(object):
             # each observation.
             self.axAxis1.errorbar(_obs_times, _obspt, yerr=[_obsll, _obsul],
                                   fmt='o', ecolor='k', color='k')
+
+            # Create the legend text.
+            _legend = tuple([_(u"Observed w/ {0:0.1f}% Error "
+                               u"Bars".format(_alpha)),
+                             _(u"Idealized Growth Curve"),
+                             _(u"Planned Growth Curve"), _(u"Target Values")])
+
+            # Find the maximum y-value.
+            if max([y[2] for y in obs]) > 1.1 * max(_obspt):
+                _y_max = max(max(_targets), max(_obspt), max(_ideal),
+                             max(_plan))
+            else:
+                _y_max = max(max(_targets), max(_obspt),
+                             max([y[0] for y in obs]),
+                             max([y[2] for y in obs]), max(_ideal), max(_plan))
+
+        else:
+            # Create the legend text.
+            _legend = tuple([_(u"Idealized Growth Curve"),
+                             _(u"Planned Growth Curve"), _(u"Target Values")])
+
+            # Find the mximum y-value.
+            _y_max = max(max(_targets), max(_ideal), max(_plan))
 
         # Add the idealized growth curve.
         _line = matplotlib.lines.Line2D(_times, _ideal,
@@ -1848,9 +1886,6 @@ class Testing(object):
                                       relpos=(0.5, 0.5)))
 
         # Create and place the legend.
-        _legend = tuple([_(u"Observed w/ {0:0.1f}% Error Bars".format(_alpha)),
-                         _(u"Idealized Growth Curve"),
-                         _(u"Planned Growth Curve")])
         _leg = self.axAxis1.legend(_legend, 'upper left', shadow=True)
         for _text in _leg.get_texts():
             _text.set_fontsize('small')
@@ -1864,10 +1899,7 @@ class Testing(object):
         elif self.optFailureIntensity.get_active():
             self.axAxis1.set_ylabel(_(u"Failure Intensity"))
         self.axAxis1.set_xlim(right=1.1 * _TTT)
-        self.axAxis1.set_ylim(top=1.05 * max(max(_targets), max(_obspt),
-                                             max([y[0] for y in obs]),
-                                             max([y[2] for y in obs]),
-                                             max(_ideal), max(_plan)))
+        self.axAxis1.set_ylim(top=1.05 *_y_max)
 
         self.pltPlot1.draw()
 
@@ -2035,6 +2067,7 @@ class Testing(object):
         Prob = _model.get_value(_row, 19)
         AvgFEF = _model.get_value(_row, 21)
         _alpha = self.spnConfidence.get_value() / 100.0
+        _alpha_half = (1.0 - _alpha) / 2.0
 
         # The following is used to optimize the reliability growth plan.
         if not self.chkFixProgramProb.get_active():
@@ -2097,7 +2130,6 @@ class Testing(object):
              MTBFi, MTBFf) = _calc.calculate_rg_phase(_T1, MTBFi, MTBFf,
                                                       MTBFa, AvgGR, AvgMS,
                                                       AvgFEF, Prob, t1, _fix)
-
             # Update the Tree Book.
             __model.set_value(__row, 4, T)
             __model.set_value(__row, 5, GR)
@@ -2151,8 +2183,9 @@ class Testing(object):
                  _rhoc_hat, _rhoi_hat, _muc_hat, _mui_hat,
                  _chi_square, _Cm) = _calc.crow_amsaa(_F, _X, _alpha, True)
 
-                _crit_vals.append(chi2.ppf(_alpha, (len(_X) - 1)))
-                _crit_vals.append(chi2.ppf(_alpha, sum(_F) - 2))
+            _crit_vals.append(chi2.ppf(_alpha_half, 2 * sum(_F)))
+            _crit_vals.append(chi2.ppf(_alpha + _alpha_half, 2 * sum(_F)))
+            _crit_vals.append(chi2.ppf(_alpha, sum(_F) - 2))
 
             # Calculate the growth rate and it's bounds.
             _gr[0] = 1.0 - _beta_hat[-1][2]
@@ -2186,14 +2219,14 @@ class Testing(object):
             self.txtGoFTrend.set_text(str(fmt.format(_chi_square)))
             self.txtGoFModel.set_text(str(fmt.format(_Cm)))
 
-            if _chi_square > _crit_vals[0]:
+            if _chi_square < _crit_vals[0] or _chi_square > _crit_vals[1]:
                 self.lblGoFTrend.set_markup(_(u"<span foreground='green'>"
                                               u"Trend</span>"))
             else:
                 self.lblGoFTrend.set_markup(_(u"<span foreground='red'>"
                                               u"No Trend</span>"))
 
-            if _Cm < _crit_vals[1]:
+            if _Cm < _crit_vals[2]:
                 self.lblGoFModel.set_markup(_(u"<span foreground='green'>"
                                               u"Good Fit</span>"))
             else:
@@ -2333,7 +2366,7 @@ class Testing(object):
 
     def test_plan_save(self, __button):
         """
-        Saves the TESTING class gtk.TreeView() information to the open RTK
+        Saves the Testing class gtk.TreeView() information to the open RTK
         Program database.
 
         @param __button: the gtk.Button() widget that called this function.4
@@ -2435,12 +2468,12 @@ class Testing(object):
         """
         Method to save the reliability growth phase information.
 
-        @param model: the TESTING class reliability growth phase
+        @param model: the Testing class reliability growth phase
                       gtk.TreeModel().
         @type model: gtk.TreeModel
-        @param string __path: the path of the active row in the TESTING class
+        @param string __path: the path of the active row in the Testing class
                               reliability growth phase gtk.TreeModel().
-        @param row: the gtk.TreeIter() of the active row in the TESTING class
+        @param row: the gtk.TreeIter() of the active row in the Testing class
                     reliability growth phase gtk.TreeView().
         @type row: gtk.TreeIter
         """
@@ -2902,9 +2935,8 @@ class Testing(object):
         @return: False if successful or True if an error is encountered.
         @rtype: booelan
         """
-        if index == 1:
-            # self.fraPlan.add(self.fxdRGPlan)
 
+        if index == 1:
             if self.fraPlanDetails.get_child() is not None:
                 self.fraPlanDetails.remove(self.fraPlanDetails.get_child())
 
@@ -2912,6 +2944,9 @@ class Testing(object):
             self.fraPlanDetails.show_all()
 
             label = self.fraPlanDetails.get_label_widget()
+
+            self._load_rg_plan_tree()
+            self._load_rg_feasibility_tree()
 
         # elif _index_ == 2:
         #    if self.fraPlanDetails2.get_child() is not None:
@@ -3023,15 +3058,14 @@ class Testing(object):
         gtk.Treeview.  It is called whenever the Incident Object treeview is
         clicked or a row is activated.
 
-        Keyword Arguments:
-        __treeview -- the Incident Object gtk.TreeView.
-        __path     -- the actived row gtk.TreeView path.
-        __column   -- the actived gtk.TreeViewColumn.
-        __index
+        @param __treeview: the Testing class gtk.TreeView().
+        @param __path: the selected row gtk.TreeView() path.
+        @param __column: the selected gtk.TreeViewColumn().
+        @param __index:
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
-        if _row_ is not None:
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        if _row is not None:
             self._update_attributes()
             self.load_notebook()
 
@@ -3099,54 +3133,53 @@ class Testing(object):
 
     def _load_rg_plan_tree(self):
         """
-        Method to load the TESTING Object reliability growth detailed plan
-        gtk.TreeView.
+        Method to load the Testing class reliability growth detailed plan
+        gtk.TreeView().
         """
 
-        query = "SELECT fld_phase_id, fld_test_units, fld_start_date, \
-                        fld_end_date, fld_test_time, fld_growth_rate, fld_mi, \
-                        fld_mf, fld_ma \
-                 FROM tbl_rel_growth \
-                 WHERE fld_test_id=%d" % self.test_id
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
-        if results == '' or not results:
-            return True
+        _query = "SELECT fld_phase_id, fld_test_units, fld_start_date, \
+                         fld_end_date, fld_test_time, fld_growth_rate, fld_mi, \
+                         fld_mf, fld_ma \
+                  FROM tbl_rel_growth \
+                  WHERE fld_test_id=%d" % self.test_id
+        _results = self._app.DB.execute_query(_query,
+                                              None,
+                                              self._app.ProgCnx)
+        try:
+            self.n_phases = len(_results)
+        except TypeError:
+            self.n_phases = 0
 
-        self.n_phases = len(results)
-
-        model = self.tvwRGPlanDetails.get_model()
-        model.clear()
+        _model = self.tvwRGPlanDetails.get_model()
+        _model.clear()
         for i in range(self.n_phases):
             try:
                 _dt_start = str(datetime.fromordinal(
-                    int(results[i][2])).strftime('%Y-%m-%d'))
+                    int(_results[i][2])).strftime('%Y-%m-%d'))
             except TypeError:
                 _dt_start = datetime.today().strftime('%Y-%m-%d')
             try:
                 _dt_end = str(datetime.fromordinal(
-                    int(results[i][3])).strftime('%Y-%m-%d'))
+                    int(_results[i][3])).strftime('%Y-%m-%d'))
             except TypeError:
                 _dt_end = datetime.today().strftime('%Y-%m-%d')
-            _data = [results[i][0], results[i][1], _dt_start, _dt_end,
-                     results[i][4], results[i][5], results[i][6],
-                     results[i][7], results[i][8]]
-            _row_ = model.append(_data)
-            _path_ = model.get_string_from_iter(_row_)
-            self._dic_rg_plan[results[i][0]] = [results[i][1], _dt_start,
-                                                _dt_end, results[i][4],
-                                                results[i][5], results[i][6],
-                                                results[i][7], results[i][8],
-                                                _path_, '0']
+            _data = [_results[i][0], _results[i][1], _dt_start, _dt_end,
+                     _results[i][4], _results[i][5], _results[i][6],
+                     _results[i][7], _results[i][8]]
+            _row = _model.append(_data)
+            _path = _model.get_string_from_iter(_row)
+            self._dic_rg_plan[_results[i][0]] = [_results[i][1], _dt_start,
+                                                _dt_end, _results[i][4],
+                                                _results[i][5], _results[i][6],
+                                                _results[i][7], _results[i][8],
+                                                _path, '0']
 
         self.tvwRGPlanDetails.expand_all()
         self.tvwRGPlanDetails.set_cursor('0', None, False)
-        root = model.get_iter_root()
-        if root is not None:
-            path = model.get_path(root)
-            col = self.tvwRGPlanDetails.get_column(0)
-            self.tvwRGPlanDetails.row_activated(path, col)
+        if _model.get_iter_root() is not None:
+            _path = _model.get_path(_model.get_iter_root())
+            _col = self.tvwRGPlanDetails.get_column(0)
+            self.tvwRGPlanDetails.row_activated(_path, _col)
 
         return False
 
