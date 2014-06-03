@@ -247,19 +247,21 @@ class RTK:
 
         _conf.RTK_PREFIX = [_element_ for _element_ in _results_[0]]
 
-# Find which modules are active in this project.
-        _query_ = "SELECT fld_revision_active, fld_function_active, \
-                          fld_requirement_active, fld_hardware_active, \
-                          fld_software_active, fld_vandv_active, \
-                          fld_testing_active, fld_rcm_active, \
-                          fld_fraca_active, fld_survival_active \
-                   FROM tbl_program_info"
-        _results_ = self.DB.execute_query(_query_, None, self.ProgCnx)[0]
+        # Find which modules are active in this project.
+        _query = "SELECT fld_revision_active, fld_function_active, \
+                         fld_requirement_active, fld_hardware_active, \
+                         fld_software_active, fld_vandv_active, \
+                         fld_testing_active, fld_fraca_active, \
+                         fld_survival_active, fld_rcm_active, \
+                         fld_rbd_active, fld_fta_active\
+                  FROM tbl_program_info"
+        _results = self.DB.execute_query(_query, None, self.ProgCnx)[0]
 
-        for i in range(len(_results_)):
-            _conf.RTK_MODULES.append(_results_[i])
-            if _results_[i] == 1:
+        for i in range(len(_results)):
+            _conf.RTK_MODULES.append(_results[i])
+            if _results[i] == 1:
                 _conf.RTK_PAGE_NUMBER.append(i)
+
 
         _conf.METHOD = results[0][36]
 
@@ -273,24 +275,24 @@ class RTK:
 
         self.winTree.load_trees(self)
 
-        if(_conf.RTK_MODULES[0] == 1):    # Revisions
+        if _conf.RTK_MODULES[0] == 1:       # Revisions
             self.REVISION.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[1] == 1):  # Functions
+        elif _conf.RTK_MODULES[1] == 1:     # Functions
             self.FUNCTION.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[2] == 1):  # Requirements
+        elif _conf.RTK_MODULES[2] == 1:     # Requirements
             self.REQUIREMENT.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[3] == 1):  # Hardware
+        elif _conf.RTK_MODULES[3] == 1:     # Hardware
             self.HARDWARE.load_tree()
-        elif(_conf.RTK_MODULES[4] == 1):  # Software
+        elif _conf.RTK_MODULES[4] == 1:     # Software
             self.SOFTWARE.load_tree()
-        elif(_conf.RTK_MODULES[5] == 1):  # V&V Tracking
+        elif _conf.RTK_MODULES[5] == 1:     # V&V Tracking
             self.VALIDATION.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[6] == 1):  # Reliability Testing
+        elif _conf.RTK_MODULES[6] == 1:     # Reliability Testing
             self.TESTING.treeview.grab_focus()
-        #elif(_conf.RTK_MODULES[7] == 1):  # Maintenance Policy
-        #    self.MAINTENANCE.treeview.grab_focus()
-        elif(_conf.RTK_MODULES[8] == 1):  # Field incident tracking
+        elif _conf.RTK_MODULES[7] == 1:     # Field incident tracking
             self.INCIDENT.treeview.grab_focus()
+        elif _conf.RTK_MODULES[8] == 1:     # Survival analysis
+            self.DATASET.treeview.grab_focus()
 
         self.LOADED = True
 

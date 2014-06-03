@@ -59,7 +59,7 @@ class WorkBookWindow(gtk.Window):
 
         self.VISIBLE_PAGE = 0
 
-# Create a new window and set its properties.
+        # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
         self.set_deletable(False)
@@ -71,11 +71,11 @@ class WorkBookWindow(gtk.Window):
         width = gtk.gdk.screen_width() / n_screens
         height = gtk.gdk.screen_height()
 
-# On a 1268x1024 screen, the size will be 845x640.
-        if(_conf.OS == 'Linux'):
+        # On a 1268x1024 screen, the size will be 845x640.
+        if _conf.OS == 'Linux':
             self.width = width - 20
             self.height = (5 * height / 8)
-        elif(_conf.OS == 'Windows'):
+        elif _conf.OS == 'Windows':
             self.width = width - 20
             self.height = (5 * height / 8) - 40
 

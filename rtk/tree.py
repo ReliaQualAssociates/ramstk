@@ -577,24 +577,24 @@ class TreeWindow(gtk.Window):
                     4 = Software Tree
                     5 = Validation Tree
                     6 = Reliability Testing Tree
-                    7 = Maintenance Policy Tree
-                    8 = Field Incident Tree
-                    9 = Survival Analyses Tree
+                    7 = Field Incident Tree
+                    8 = Survival Analyses Tree
         """
 
         button = self.toolbar.get_nth_item(4)
 
-        if(_conf.RTK_PAGE_NUMBER[page_num] == 0):
+        if _conf.RTK_PAGE_NUMBER[page_num] == 0:
             try:
                 self._app.REVISION.treeview.grab_focus()
                 (_model_, _row_) = self._app.REVISION.treeview.get_selection().get_selected()
                 _path_ = _model_.get_path(_model_.get_iter_root())
                 _column_ = self._app.REVISION.treeview.get_column(0)
                 self._app.REVISION.treeview.row_activated(_path_, _column_)
-                button.set_tooltip_text(_(u"Add a new revision to the current RTK Program."))
+                button.set_tooltip_text(_(u"Add a new revision to the current "
+                                          u"RTK Program."))
             except TypeError:               # There are no revisions.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 1:
             try:
                 self._app.FUNCTION.treeview.grab_focus()
                 model = self._app.FUNCTION.treeview.get_model()
@@ -603,7 +603,7 @@ class TreeWindow(gtk.Window):
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
                 self._app.FUNCTION.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 2:
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
                 model = self._app.REQUIREMENT.treeview.get_model()
@@ -612,7 +612,7 @@ class TreeWindow(gtk.Window):
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
                 self._app.REQUIREMENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 3:
             try:
                 self._app.HARDWARE.treeview.grab_focus()
                 model = self._app.HARDWARE.treeview.get_model()
@@ -621,7 +621,7 @@ class TreeWindow(gtk.Window):
                 self._app.HARDWARE.treeview.row_activated(path, column)
             except TypeError:               # There is no hardware.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 4):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 4:
             try:
                 self._app.SOFTWARE.treeview.grab_focus()
                 _model = self._app.SOFTWARE.treeview.get_model()
@@ -629,10 +629,9 @@ class TreeWindow(gtk.Window):
                 _path = _model.get_path(_model.get_iter_root())
                 _column = self._app.SOFTWARE.treeview.get_column(0)
                 self._app.SOFTWARE.treeview.row_activated(_path, _column)
-                #self._app.SOFTWARE.load_notebook()
             except:                         # There are no software modules.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 5):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 5:
             try:
                 self._app.VALIDATION.treeview.grab_focus()
                 model = self._app.VALIDATION.model
@@ -640,10 +639,12 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new verification and validation task to the current RTK Program."))
+                button.set_tooltip_text(_(u"Add a new verification and "
+                                          u"validation task to the current "
+                                          u"RTK Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 6):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 6:
             try:
                 self._app.TESTING.treeview.grab_focus()
                 model = self._app.TESTING.model
@@ -651,15 +652,11 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.TESTING.treeview.get_column(0)
                 self._app.TESTING.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new test plan to the current RTK Program."))
+                button.set_tooltip_text(_(u"Add a new test plan to the "
+                                          u"current RTK Program."))
             except:
                 self._app.TESTING.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 7):
-            try:
-                print "You selected Maintenance Policy"
-            except:
-                pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 8):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 7:
             try:
                 self._app.INCIDENT.treeview.grab_focus()
                 model = self._app.INCIDENT.model
@@ -667,10 +664,11 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
+                button.set_tooltip_text(_(u"Add a new incident to the current "
+                                          u"RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 9):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 8:
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model
@@ -678,7 +676,8 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new dataset to the current RTK Program."))
+                button.set_tooltip_text(_(u"Add a new dataset to the current "
+                                          u"RTK Program."))
             except:                         # There are no datasets.
                 self._app.DATASET.load_notebook()
 

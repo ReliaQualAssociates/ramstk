@@ -147,7 +147,10 @@ Position    Module Status\n
     6       Testing\n
     7       Incidents\n
     8       Dataset\n
-    9       FMECA"""
+    9       FMECA\n
+   10       RCM\n
+   11       RBD\n
+   12       FTA"""
 
 RTK_PAGE_NUMBER = []
 
