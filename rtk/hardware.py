@@ -651,7 +651,7 @@ class Hardware(object):
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         self.btnAddSibling.set_icon_widget(_image)
-        self.btnAddSibling.connect('clicked', self._add_hardware, 0)
+        self.btnAddSibling.connect('clicked', self.add_hardware, 0)
         _toolbar.insert(self.btnAddSibling, _pos)
         _pos += 1
 
@@ -663,7 +663,7 @@ class Hardware(object):
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         self.btnAddChild.set_icon_widget(_image)
-        self.btnAddChild.connect('clicked', self._add_hardware, 1)
+        self.btnAddChild.connect('clicked', self.add_hardware, 1)
         _toolbar.insert(self.btnAddChild, _pos)
         _pos += 1
 
@@ -4371,7 +4371,7 @@ class Hardware(object):
 
         return False
 
-    def _add_hardware(self, __button, kind):
+    def add_hardware(self, __button, kind):
         """
         Method to add a new hardware item to the open RTK program database.
 
@@ -6424,7 +6424,7 @@ class Hardware(object):
 
         if _page_ == 0:                     # General data tab.
             if button.get_name() == 'Add':
-                self._add_hardware(button, 2)
+                self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
                 _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)
@@ -6432,7 +6432,7 @@ class Hardware(object):
                 self.save_hardware()
         elif _page_ == 4:                   # Assessment inputs tab.
             if button.get_name() == 'Add':
-                self._add_hardware(button, 2)
+                self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
                 _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)
@@ -6440,7 +6440,7 @@ class Hardware(object):
                 self.save_hardware()
         elif _page_ == 5:                   # Assessment results tab.
             if button.get_name() == 'Add':
-                self._add_hardware(button, 2)
+                self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
                 _row_ = self.treeview.get_model().get_iter_root()
                 self.calculate(_row_)

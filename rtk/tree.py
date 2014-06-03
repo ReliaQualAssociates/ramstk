@@ -293,36 +293,36 @@ class TreeWindow(gtk.Window):
         menu_item.connect('activate', _util.create_project, self)
         menu2.append(menu_item)
 
-# Add assembly entry.
+        # Add assembly entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert-sibling.png')
+        image.set_from_file(_conf.ICON_DIR + '16x16/insert_sibling.png')
         menu_item.set_label(_(u"Sibling Assembly"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
         menu2.append(menu_item)
 
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert-child.png')
+        image.set_from_file(_conf.ICON_DIR + '16x16/insert_child.png')
         menu_item.set_label(_(u"Child Assembly"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
         menu2.append(menu_item)
 
-# Add component entry.
+        # Add component entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
         image.set_from_file(_conf.ICON_DIR + '16x16/part.png')
         menu_item.set_label(_(u"Component"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
         menu2.append(menu_item)
 
-# Add New menu.
+        # Add New menu.
         mnuNew = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -341,6 +341,7 @@ class TreeWindow(gtk.Window):
         menu_item.set_image(image)
         menu_item.connect('activate', _util.open_project, self._app)
         menu.append(menu_item)
+
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -349,12 +350,14 @@ class TreeWindow(gtk.Window):
         menu_item.set_image(image)
         menu_item.connect('activate', _util.save_project, self._app)
         menu.append(menu_item)
+
         menu_item = gtk.MenuItem(label=_("Save _As"), use_underline=True)
         menu_item.connect('activate', _util.save_project, self._app)
         menu.append(menu_item)
         #menu_item = gtk.MenuItem(label=_("_Close"), use_underline=True)
         #menu_item.connect('activate', _util.close)
         #menu.append(menu_item)
+
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
