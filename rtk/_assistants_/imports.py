@@ -1,6 +1,16 @@
 #!/usr/bin/env python
+"""
+This module contains classes (gtk.Assistants) used to import data from external
+files into the open RTK Program database.  Currently the following import
+assistants are implemented:
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
+ - Hardware
+ - Program Incidents
+"""
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -9,12 +19,7 @@ __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
-import os
 import sys
-import pango
-
-from os import environ, name
-from datetime import datetime
 
 # Modules required for the GUI.
 try:
@@ -35,299 +40,357 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
-
 # Add localization support.
 import locale
+import gettext
+
+# Import other RTK modules.
+import configuration as _conf               # pylint: disable=F0401
+import utilities as _util                   # pylint: disable=F0401
+import widgets as _widg                     # pylint: disable=F0401
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except:
+except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
-import gettext
 _ = gettext.gettext
 
 
-class ImportHardware(object):
+def _missing_to_default(field, default):
+    """
+    Function to convert missing values from the external file into default
+    values before loading into the open RTK Program database.
+
+    @param field: the original, missing, value.
+    @type field: any
+    @param default: the new, default, value.
+    @type default: any
+    @return: field; the new value if field is an emtpy string, the old value
+             otherwise.
+    @rtype: any
+    """
+
+    if field == '':
+        return default
+    else:
+        return field
+
+def _select_source_file(assistant):
+    """
+    Function to select the file containing the data to import to the open RTK
+    Program database.
+
+    @param assistant: the gtk.Assistant() calling this function.
+    @type assistant: gtk.Assistant
+    @return: _headers, _contents; lists containing the column headings and
+             each line from the source file.
+    @rtype: lists
+    """
+
+    # Get the user's selected file and write the results.
+    _dialog = gtk.FileChooserDialog(_(u"RTK: Import Hardware from File ..."),
+                                    None,
+                                    gtk.DIALOG_MODAL |
+                                    gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+    _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+    _dialog.set_current_folder(_conf.PROG_DIR)
+
+    # Set some filters to select all files or only some text files.
+    _filter = gtk.FileFilter()
+    _filter.set_name(u"All files")
+    _filter.add_pattern("*")
+    _dialog.add_filter(_filter)
+
+    _filter = gtk.FileFilter()
+    _filter.set_name("Text Files (csv, txt)")
+    _filter.add_mime_type("text/csv")
+    _filter.add_mime_type("text/txt")
+    _filter.add_mime_type("application/xls")
+    _filter.add_pattern("*.csv")
+    _filter.add_pattern("*.txt")
+    _filter.add_pattern("*.xls")
+    _dialog.add_filter(_filter)
+
+    # Run the dialog and write the file.
+    _contents = []
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _filename = _dialog.get_filename()
+        _file = open(_filename, 'r')
+
+        for _line in _file:
+            _contents.append([_line.rstrip('\n')])
+
+        _headers = str(_contents[0][0]).rsplit('\t')
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+
+        _dialog.destroy()
+
+    else:
+        _dialog.destroy()
+        assistant.destroy()
+
+    return _headers, _contents
+
+
+class ImportHardware(gtk.Assistant):
     """
     This is the gtk.Assistant() that walks the user through the process of
     importing Hardware records to the open RTK Program database.
     """
 
-    def __init__(self, button, app):
+    def __init__(self, __button, app):
         """
         Initialize an instance of the Import Hardware Assistant.
 
-        @param button: the gtk.Button() that called this gtk.Assistant().
-        @type button: gtk.Button
+        @param __button: the gtk.Button() that called this gtk.Assistant().
+        @type __button: gtk.Button
         @param app: the current instance of the RTK application.
         """
+
         self._app = app
 
-        self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RTK Import Hardware Assistant"))
-        self.assistant.connect('apply', self._import)
-        self.assistant.connect('cancel', self._cancel)
-        self.assistant.connect('close', self._cancel)
+        gtk.Assistant.__init__(self)
+        self.set_title(_(u"RTK Import Hardware Assistant"))
+        self.connect('apply', self._import)
+        self.connect('cancel', self._cancel)
+        self.connect('close', self._cancel)
 
         # Initialize some variables.
         self._file_index = [-1] * 96
 
         # Create the introduction page.
-        fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK hardware import assistant.  It will "
-                   u"help you import system hardware information to the "
-                   u"database from external files.  Press 'Forward' to "
-                   u"continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=600, height=-1, wrap=True)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _(u"Introduction"))
-        self.assistant.set_page_complete(fixed, True)
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"This is the RTK hardware import "
+                                    u"assistant.  It will help you import "
+                                    u"system hardware information to the "
+                                    u"database from external files.  Press "
+                                    u"'Forward' to continue or 'Cancel' to "
+                                    u"quit the assistant."),
+                                  width=600, height=-1, wrap=True)
+        _fixed.put(_label, 5, 5)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_title(_fixed, _(u"Introduction"))
+        self.set_page_complete(_fixed, True)
 
         # Create the age to map input file fields to database fields.
-        model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                              gobject.TYPE_STRING)
-        self.tvwFileFields = gtk.TreeView(model)
+        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING)
+        self.tvwFileFields = gtk.TreeView(_model)
 
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwFileFields)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add(self.tvwFileFields)
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
-        column.set_resizable(True)
-        column.set_visible(False)
-        self.tvwFileFields.append_column(column)
+        _cell = gtk.CellRendererText()
+        _cell.set_property('editable', 0)
+        _cell.set_property('background', 'light gray')
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=0)
+        _column.set_resizable(True)
+        _column.set_visible(False)
+        self.tvwFileFields.append_column(_column)
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
-        column.set_resizable(True)
-        label = gtk.Label(column.get_title())
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup(u"<span weight='bold'>%s</span>" %
-                         _("Database\nField"))
-        label.show_all()
-        column.set_widget(label)
-        self.tvwFileFields.append_column(column)
+        _cell = gtk.CellRendererText()
+        _cell.set_property('editable', 0)
+        _cell.set_property('background', 'light gray')
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=1)
+        _column.set_resizable(True)
+        _label = gtk.Label(_column.get_title())
+        _label.set_line_wrap(True)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_markup(u"<span weight='bold'>%s</span>" %
+                          _("Database\nField"))
+        _label.show_all()
+        _column.set_widget(_label)
+        self.tvwFileFields.append_column(_column)
 
-        cell = gtk.CellRendererCombo()
-        cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
-        (_file_fields, self._file_contents) = self._select_source_file()
-        cellmodel.append(["", -1])
+        (_file_fields, self._file_contents) = _select_source_file(self)
+        if len(_file_fields) == 0:
+            _util.rtk_information(_(u"Source file must have headings for each "
+                                    u"column of data.  Please add headings to "
+                                    u"the source file and try again."))
+            self._cancel()
+        if len(self._file_contents) == 0:
+            _util.rtk_warning(_(u"No data was found in the source file.  "
+                                u"Please check the contents of the source "
+                                u"file and try again."))
+            self._cancel()
+
+        _cell = gtk.CellRendererCombo()
+        _cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
+        _cellmodel.append(["", -1])
         for i in range(len(_file_fields)):
-            cellmodel.append([_file_fields[i], i])
+            _cellmodel.append([_file_fields[i], i])
 
-        cell.set_property('editable', 1)
-        cell.set_property('has-entry', False)
-        cell.set_property('model', cellmodel)
-        cell.set_property('text-column', 0)
+        _cell.set_property('editable', 1)
+        _cell.set_property('has-entry', False)
+        _cell.set_property('model', _cellmodel)
+        _cell.set_property('text-column', 0)
 
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
-        column.set_resizable(True)
-        label = gtk.Label(column.get_title())
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup(u"<span weight='bold'>%s</span>" % _("File\nField"))
-        label.show_all()
-        column.set_widget(label)
-        self.tvwFileFields.append_column(column)
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=2)
+        _column.set_resizable(True)
+        _label = gtk.Label(_column.get_title())
+        _label.set_line_wrap(True)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_markup(u"<span weight='bold'>%s</span>" % _("File\nField"))
+        _label.show_all()
+        _column.set_widget(_label)
+        self.tvwFileFields.append_column(_column)
 
-        cell.connect('changed', self._callback_combo_cell, 2, model)
+        _cell.connect('changed', self._callback_combo_cell, 2, _model)
 
-        _db_fields = ["Revision ID", "Assembly ID",
-                      "Additive Adjustment Factor", "Allocation Type",
-                      "Alternate Part Number", "Assembly Criticality",
-                      "Attachments", "Availability", "Availability, Mission",
-                      "CAGE Code", "Calculation Model", "Category",
-                      "Composite Reference Designator", "Cost, Unit",
-                      "Cost/Failure", "Cost/Hour", "Cost Type", "Description",
-                      "Detection Failure Rate", "Detection Percent",
-                      "Duty Cycle", "Entered By", "Environment, Active",
-                      "Environment, Dormant", "Failure Distribution",
-                      "Parameter 1 (Scale)", "Parameter 2 (Shape)",
-                      "Parameter 3 (Location)", "Failure Rate, Actve",
-                      "Failure Rate, Dormant", "Failure Rate, Mission",
-                      "Failure Rate, Percent", "Failure Rate, Predicted",
-                      "Failure Rate, Software", "Failure Rate, Specified",
-                      "Failure Rate Type", "Figure Number", "Humidity",
-                      "Image File", "Isolation Failure Rate",
-                      "Isolation Percent", "Logistics Control Number",
-                      "Level", "Manufacturer",
-                      "Mean Corrective Maintenance Time", "Mission Time",
-                      "Mean Maintenance Time", "Modified By",
-                      "Mean Preventive Maintenance Time", "MTBF, Mission",
-                      "MTBF, Predicted", "MTBF, Specified", "MTTR",
-                      "MTTR Additive Adjustment Factor",
-                      "MTTR, Multiplicative Adjustment Factor",
-                      "MTTR, Specified", "MTTR Type",
-                      "Multiplicative Adjustment Factor", "Name", "NSN",
-                      "Overstressed?", "Page Number", "Parent Assembly",
-                      "Part?", "Part Number", "Percent Isolation, Group",
-                      "Percent Isolation, Single", "Quantity",
-                      "Reference Designator", "Reliability, Mission",
-                      "Reliability, Predicted", "Remarks",
-                      "Repair Distribution", "Repair Parameter 1 (Scale)",
-                      "Repair Parameter 2 (Shape)", "Repairable?", "RPM",
-                      "Specification Number", "Subcategory", "Tagged?",
-                      "Temperature, Active", "Temperature, Dormant",
-                      "Total Part Quantity", "Total Power", "Vibration",
-                      "Weibull Data Set", "Weibull File",
-                      "Year of Manufacture", "Hazard Rate Model",
-                      "Reliability Goal Measure", "Reliability Goal",
-                      "MTBF LCL", "MTBF UCL", "h(t) LCL", "h(t) UCL"]
+        _db_fields = [_(u"Revision ID"), _(u"Assembly ID"),
+                      _(u"Additive Adjustment Factor"), _(u"Allocation Type"),
+                      _(u"Alternate Part Number"), _(u"Assembly Criticality"),
+                      _(u"Attachments"), _(u"Availability"),
+                      _(u"Availability, Mission"), _(u"CAGE Code"),
+                      _(u"Calculation Model"), _(u"Category"),
+                      _(u"Composite Reference Designator"), _(u"Cost, Unit"),
+                      _(u"Cost/Failure"), _(u"Cost/Hour"), _(u"Cost Type"),
+                      _(u"Description"), _(u"Detection Failure Rate"),
+                      _(u"Detection Percent"), _(u"Duty Cycle"),
+                      _(u"Entered By"), _(u"Environment, Active"),
+                      _(u"Environment, Dormant"), _(u"Failure Distribution"),
+                      _(u"Parameter 1 (Scale)"), _(u"Parameter 2 (Shape)"),
+                      _(u"Parameter 3 (Location)"), _(u"Failure Rate, Actve"),
+                      _(u"Failure Rate, Dormant"), _(u"Failure Rate, Mission"),
+                      _(u"Failure Rate, Percent"),
+                      _(u"Failure Rate, Predicted"),
+                      _(u"Failure Rate, Software"),
+                      _(u"Failure Rate, Specified"), _(u"Failure Rate Type"),
+                      _(u"Figure Number"), _(u"Humidity"), _(u"Image File"),
+                      _(u"Isolation Failure Rate"), _(u"Isolation Percent"),
+                      _(u"Logistics Control Number"), _(u"Level"),
+                      _(u"Manufacturer"),
+                      _(u"Mean Corrective Maintenance Time"),
+                      _(u"Mission Time"), _(u"Mean Maintenance Time"),
+                      _(u"Modified By"),
+                      _(u"Mean Preventive Maintenance Time"),
+                      _(u"MTBF, Mission"), _(u"MTBF, Predicted"),
+                      _(u"MTBF, Specified"), _(u"MTTR"),
+                      _(u"MTTR Additive Adjustment Factor"),
+                      _(u"MTTR, Multiplicative Adjustment Factor"),
+                      _(u"MTTR, Specified"), _(u"MTTR Type"),
+                      _(u"Multiplicative Adjustment Factor"), _(u"Name"),
+                      _(u"NSN"), _(u"Overstressed?"), _(u"Page Number"),
+                      _(u"Parent Assembly"), _(u"Part?"), _(u"Part Number"),
+                      _(u"Percent Isolation, Group"),
+                      _(u"Percent Isolation, Single"), _(u"Quantity"),
+                      _(u"Reference Designator"), _(u"Reliability, Mission"),
+                      _(u"Reliability, Predicted"), _(u"Remarks"),
+                      _(u"Repair Distribution"),
+                      _(u"Repair Parameter 1 (Scale)"),
+                      _(u"Repair Parameter 2 (Shape)"), _(u"Repairable?"),
+                      _(u"RPM"), _(u"Specification Number"), _(u"Subcategory"),
+                      _(u"Tagged?"), _(u"Temperature, Active"),
+                      _(u"Temperature, Dormant"), _(u"Total Part Quantity"),
+                      _(u"Total Power"), _(u"Vibration"),
+                      _(u"Weibull Data Set"), _(u"Weibull File"),
+                      _(u"Year of Manufacture"), _(u"Hazard Rate Model"),
+                      _(u"Reliability Goal Measure"), _(u"Reliability Goal"),
+                      _(u"MTBF LCL"), _(u"MTBF UCL"), _(u"h(t) LCL"),
+                      _(u"h(t) UCL")]
 
         for i in range(len(_db_fields)):
-            model.append([i, _db_fields[i], ""])
+            _model.append([i, _db_fields[i], ""])
 
-        self.assistant.append_page(scrollwindow)
-        self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(scrollwindow, _(u"Select Fields to "
-                                                      u"Import"))
-        self.assistant.set_page_complete(scrollwindow, True)
+        self.append_page(_scrollwindow)
+        self.set_page_type(_scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(_scrollwindow, _(u"Select Fields to Import"))
+        self.set_page_complete(_scrollwindow, True)
 
         # Create the page to apply the import criteria.
-        fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' "
-                   u"to quit the assistant.")
-        label = _widg.make_label(_text_, width=600, height=-1, wrap=True)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _(u"Import Data"))
-        self.assistant.set_page_complete(fixed, True)
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"Press 'Apply' to import the requested "
+                                    u"data or 'Cancel' to quit the "
+                                    u"assistant."), width=600, height=-1,
+                                  wrap=True)
+        _fixed.put(_label, 5, 5)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_title(_fixed, _(u"Import Data"))
+        self.set_page_complete(_fixed, True)
 
-        self.assistant.show_all()
+        self.show_all()
 
     def _callback_combo_cell(self, cell, path, row, position, treemodel):
         """
-        Called whenever a TreeView CellRendererCombo changes.
+        Called whenever a gtk.TreeView() gtk.CellRendererCombo() changes.
 
-        Keyword Arguments:
-        cell      -- the gtk.CellRendererCombo that called this function
-        path      -- the path in the gtk.TreeView containing the
-                     gtk.CellRendererCombo that called this function.
-        row       -- the new gtk.TreeIter in the gtk.CellRendererCombo that
-                     called this function.
-        position  -- the position of in the gtk.TreeView of the
-                     gtk.CellRendererCombo that called this function.
-        treemodel -- the gtk.TreeModel for the gtk.TreeView.
-        lastcol   -- the index of the last visible column in the
-                     gtk.TreeView.
+        @param cell: the gtk.CellRendererCombo() that called this function.
+        @type ce;;" gtk.CellRendererCombo
+        @param path: the path in the gtk.TreeView() containing the
+                     gtk.CellRendererCombo() that called this function.
+        @type path: string
+        @param row: the new gtk.TreeIter() in the gtk.CellRendererCombo() that
+                    called this function.
+        @type row: gtk.TreeIter
+        @param position: the position of in the gtk.TreeView() of the
+                         gtk.CellRendererCombo() that called this function.
+        @type position: integer
+        @param treemodel: the gtk.TreeModel() for the gtk.TreeView().
+        @type treemodel: gtk.TreeModel
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _model = cell.get_property('model')
         _text = _model.get_value(row, 0)
-        _index  = _model.get_value(row, 1)
+        _index = _model.get_value(row, 1)
 
-        _treerow = treemodel.get_iter(path)
+        _row = treemodel.get_iter(path)
 
-        _position = treemodel.get_value(_treerow, 0)
+        _position = treemodel.get_value(_row, 0)
         self._file_index[_position] = _index
 
-        treemodel.set_value(_treerow, position, _text)
+        treemodel.set_value(_row, position, _text)
 
         return False
 
     def _forward_page_select(self, current_page):
+        """
+        Method to select the next page to display in the gtk.Assistant().
+
+        @param current_page: the currently selected page in the
+                             gtk.Assistant().
+        @type current_page: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
+        """
 
         if current_page == 0:
-            self._select_source_file()
+            _select_source_file(self)
         else:
-            self.assistant.set_current_page(current_page + 1)
+            self.set_current_page(current_page + 1)
 
-    def _select_source_file(self):
-
-        # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_(u"RTK: Import Hardware from File ..."),
-                                       None,
-                                       gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-        dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-        dialog.set_current_folder(_conf.PROG_DIR)
-
-        # Set some filters to select all files or only some text files.
-        filter = gtk.FileFilter()
-        filter.set_name(u"All files")
-        filter.add_pattern("*")
-        dialog.add_filter(filter)
-
-        filter = gtk.FileFilter()
-        filter.set_name("Text Files (csv, txt)")
-        filter.add_mime_type("text/csv")
-        filter.add_mime_type("text/txt")
-        filter.add_mime_type("application/xls")
-        filter.add_pattern("*.csv")
-        filter.add_pattern("*.txt")
-        filter.add_pattern("*.xls")
-        dialog.add_filter(filter)
-
-        # Run the dialog and write the file.
-        _contents = []
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
-            _filename = dialog.get_filename()
-            _file = open(_filename, 'r')
-
-            for _line in _file:
-                _contents.append([_line.rstrip('\n')])
-
-            _headers = str(_contents[0][0]).rsplit('\t')
-            for i in range(len(_contents) - 1):
-                _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
-
-            dialog.destroy()
-
-            return _headers, _contents
-
-        else:
-            dialog.destroy()
-            self.assistant.destroy()
-
-    def _import(self, button):
+    def _import(self, __button):
         """
         Method to perform the import from an external file to the database.
 
-        Keyword Arguments:
-        button -- the gtk.Button widget that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        _model = self.tvwFileFields.get_model()
-        row = _model.get_iter_root()
-
-        # Find the number of existing hardware items.
-        if _conf.BACKEND == 'mysql':
-            _query = "SELECT COUNT(*) FROM tbl_system"
-        elif _conf.BACKEND == 'sqlite3':
-            _query = "SELECT COALESCE(MAX(fld_assembly_id)+1, 0) \
-                      FROM tbl_system"
-
-        num_assemblies = self._app.DB.execute_query(_query,
-                                                    None,
-                                                    self._app.ProgCnx)
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
 
         _contents = []
         for i in range(len(self._file_contents) - 1):
             _temp = []
             for j in range(len(self._file_index)):
                 if self._file_index[j] == -1:
-                   _temp.append('')
+                    _temp.append('')
                 else:
                     try:
                         _temp.append(self._file_contents[i][self._file_index[j]].rstrip('\t'))
@@ -337,29 +400,29 @@ class ImportHardware(object):
             # Convert missing integer values to correct default value.
             for i in [0, 1, 3, 5, 11, 22, 23, 24, 43, 60,
                       63, 72, 75, 78, 79, 82, 89]:
-                _temp[i] = self._missing_to_default(_temp[i], 0)
+                _temp[i] = _missing_to_default(_temp[i], 0)
 
             for i in [10, 16, 35, 42, 56, 67, 85]:
-                _temp[i] = self._missing_to_default(_temp[i], 1)
+                _temp[i] = _missing_to_default(_temp[i], 1)
 
-            _temp[87] = self._missing_to_default(_temp[87], 2013)
+            _temp[87] = _missing_to_default(_temp[87], 2013)
 
             # Convert missing float values to correct default value.
             for i in [2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,
                       34, 39, 40, 44, 46, 48, 49, 50, 51, 52, 54, 55, 65, 66,
                       73, 74, 76, 83, 84, 91, 92, 93, 94]:
-                _temp[i] = self._missing_to_default(_temp[i], 0.0)
+                _temp[i] = _missing_to_default(_temp[i], 0.0)
 
             for i in [7, 8, 53, 57, 69, 70, 90]:
-                _temp[i] = self._missing_to_default(_temp[i], 1.0)
+                _temp[i] = _missing_to_default(_temp[i], 1.0)
 
             for i in [80, 81]:
-                _temp[i] = self._missing_to_default(_temp[i], 30.0)
+                _temp[i] = _missing_to_default(_temp[i], 30.0)
 
-            _temp[37] = self._missing_to_default(_temp[37], 50.0)
+            _temp[37] = _missing_to_default(_temp[37], 50.0)
 
             for i in [19, 20, 45]:
-                _temp[i] = self._missing_to_default(_temp[i], 100.0)
+                _temp[i] = _missing_to_default(_temp[i], 100.0)
 
             _contents.append(_temp)
 
@@ -463,39 +526,50 @@ class ImportHardware(object):
                                           commit=True):
             _util.rtk_error(_(u"Error importing hardware information to the "
                               u"open RTK Program database."))
+
+            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
             return True
 
         else:
             # Find all the children of the top-level assembly.
-            _iter = {0:'-'}
+            _iter = {0: '-'}
             j = 0
             _root = [child for child in _contents if child[62] == str(j)]
             self._add_children(_root, _iter, _contents)
+
+            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
             self._app.HARDWARE.load_tree()
 
             return False
 
-    def _add_children(self, root, _iter_, contents):
+    def _add_children(self, root, _iter, contents):
         """
         Method to add all children assemblies to the open RTK Program database.
 
         @param root: the list of children assemblies to add.
-        @param iter: a dictionary with assembly id as the key and the string
-                     representation of the gtk.Iter() as the value.
+        @type root: list
+        @param _iter: a dictionary with assembly id as the key and the string
+                      representation of the gtk.TreeIter() as the value.
+        @type _iter: dictionary
         @param contents: the contents of the file which is being imported.
+        @type contents: list
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         for i in range(len(root)):
 
             # Build the string representation of the assembly's iter.
             _parent_id = int(root[i][62])
-            if(str(_iter_[_parent_id]) == '-'):
-                _iter_[int(root[i][1])] = '0:' + str(i)
+            if str(_iter[_parent_id]) == '-':
+                _iter[int(root[i][1])] = '0:' + str(i)
                 root[i][62] = '0'
             else:
-                _iter_[int(root[i][1])] = str(_iter_[_parent_id]) + ':' + str(i)
-                root[i][62] = str(_iter_[_parent_id])
+                _iter[int(root[i][1])] = str(_iter[_parent_id]) + \
+                                          ':' + str(i)
+                root[i][62] = str(_iter[_parent_id])
 
             _values = (int(root[i][0]), int(root[i][1]),
                        float(root[i][2]), int(root[i][3]),
@@ -627,21 +701,14 @@ class ImportHardware(object):
                                                "Table" % root[i][1])
                     _error = True
 
-
-            _children = [child for child in contents if child[62] == root[i][1]]
+            _children = [child for child in contents
+                         if child[62] == root[i][1]]
             if len(_children) > 0:
-                _iter_ = self._add_children(_children, _iter_, contents)
+                self._add_children(_children, _iter, contents)
 
-        return _iter_
+        return False
 
-    def _missing_to_default(self, field, default_value):
-
-        if field == '':
-            field = default_value
-
-        return field
-
-    def _cancel(self, __button):
+    def _cancel(self, __button=None):
         """
         Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
@@ -650,389 +717,326 @@ class ImportHardware(object):
         @type __button: gtk.Button
         """
 
-        self.assistant.destroy()
+        self.destroy()
 
 
-class ImportIncident:
+class ImportIncident(gtk.Assistant):
     """
-    This is the gtk.Assistant that walks the user through the process of
+    This is the gtk.Assistant() that walks the user through the process of
     importing program incident records to the open RTK Program database.
     """
 
-    def __init__(self, button, app):
+    def __init__(self, __button, app):
         """
         Initialize an instance of the Import Incident Assistant.
 
-        Keyword Arguments:
-        button -- the gtk.Button widget that calling this Assistant.
-        app    -- the instance of the RTK application calling the Assistant.
+        @param __button: the gtk.Button() widget that called this Assistant.
+        @type __button: gtk.Button
+        @param app: the current instance of the RTK application.
         """
 
         self._app = app
 
-        self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RTK Import Incidents Assistant"))
-        self.assistant.connect('apply', self._import)
-        self.assistant.connect('cancel', self._cancel)
-        self.assistant.connect('close', self._cancel)
+        gtk.Assistant.__init__(self)
+        self.set_title(_(u"RTK Import Incidents Assistant"))
+        self.connect('apply', self._import)
+        self.connect('cancel', self._cancel)
+        self.connect('close', self._cancel)
 
-# Initialize some variables.
+        # Initialize some variables.
         self._file_index = [-1] * 76
 
-# Create the introduction page.
-        fixed = gtk.Fixed()
-        _text_ = _("This is the RTK incident import assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _("Introduction"))
-        self.assistant.set_page_complete(fixed, True)
+        # Create the introduction page.
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"This is the RTK incident import "
+                                    u"assistant.  It will help you import "
+                                    u"program incidents to the database from "
+                                    u"external files.  Press 'Forward' to "
+                                    u"continue or 'Cancel' to quit the "
+                                    u"assistant."), width=600, height=-1,
+                                  wrap=True)
+        _fixed.put(_label, 5, 5)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_title(_fixed, _(u"Introduction"))
+        self.set_page_complete(_fixed, True)
 
-# Create the gtk.TreeView to map input file fields to database fields.
-        model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                              gobject.TYPE_STRING)
-        self.tvwFileFields = gtk.TreeView(model)
+        # Create the gtk.TreeView to map input file fields to database fields.
+        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING)
+        self.tvwFileFields = gtk.TreeView(_model)
 
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwFileFields)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add(self.tvwFileFields)
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=0)
-        column.set_resizable(True)
-        column.set_visible(False)
-        self.tvwFileFields.append_column(column)
+        _cell = gtk.CellRendererText()
+        _cell.set_property('editable', 0)
+        _cell.set_property('background', 'light gray')
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=0)
+        _column.set_resizable(True)
+        _column.set_visible(False)
+        self.tvwFileFields.append_column(_column)
 
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', 0)
-        cell.set_property('background', 'light gray')
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=1)
-        column.set_resizable(True)
-        label = gtk.Label(column.get_title())
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("Database\nField"))
-        label.show_all()
-        column.set_widget(label)
-        self.tvwFileFields.append_column(column)
+        _cell = gtk.CellRendererText()
+        _cell.set_property('editable', 0)
+        _cell.set_property('background', 'light gray')
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=1)
+        _column.set_resizable(True)
+        _label = gtk.Label(_column.get_title())
+        _label.set_line_wrap(True)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_markup("<span weight='bold'>%s</span>" %
+                          _(u"Database\nField"))
+        _label.show_all()
+        _column.set_widget(_label)
+        self.tvwFileFields.append_column(_column)
 
-        cell = gtk.CellRendererCombo()
-        cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
-        (_file_fields, self._file_contents) = self._select_source_file()
-        cellmodel.append(["", -1])
+        (_file_fields, self._file_contents) = _select_source_file(self)
+        if len(_file_fields) == 0:
+            _util.rtk_information(_(u"Source file must have headings for each "
+                                    u"column of data.  Please add headings to "
+                                    u"the source file and try again."))
+            self._cancel()
+        if len(self._file_contents) == 0:
+            _util.rtk_warning(_(u"No data was found in the source file.  "
+                                u"Please check the contents of the source "
+                                u"file and try again."))
+            self._cancel()
+
+        _cell = gtk.CellRendererCombo()
+        _cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
+        _cellmodel.append(["", -1])
         for i in range(len(_file_fields)):
-            cellmodel.append([_file_fields[i], i])
+            _cellmodel.append([_file_fields[i], i])
 
-        cell.set_property('editable', 1)
-        cell.set_property('has-entry', False)
-        cell.set_property('model', cellmodel)
-        cell.set_property('text-column', 0)
+        _cell.set_property('editable', 1)
+        _cell.set_property('has-entry', False)
+        _cell.set_property('model', _cellmodel)
+        _cell.set_property('text-column', 0)
 
-        column = gtk.TreeViewColumn()
-        column.pack_start(cell, True)
-        column.set_attributes(cell, text=2)
-        column.set_resizable(True)
-        label = gtk.Label(column.get_title())
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("File\nField"))
-        label.show_all()
-        column.set_widget(label)
-        self.tvwFileFields.append_column(column)
+        _column = gtk.TreeViewColumn()
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=2)
+        _column.set_resizable(True)
+        _label = gtk.Label(_column.get_title())
+        _label.set_line_wrap(True)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_markup("<span weight='bold'>%s</span>" % _(u"File\nField"))
+        _label.show_all()
+        _column.set_widget(_label)
+        self.tvwFileFields.append_column(_column)
 
-        cell.connect('changed', self._callback_combo_cell, 2, model)
+        _cell.connect('changed', self._callback_combo_cell, 2, _model)
 
-        _db_fields = ["Revision ID", "Incident ID", "Incident Category",
-                      "Incident Type", "Short Description", "Long Description",
-                      "Criticality", "Detection Method", "Remarks", "Status",
-                      "Found During Test", "Found During Test Case",
-                      "Execution Time", "Affected Unit", "Incident Cost",
-                      "Incident Age", "Hardware ID", "Software ID",
-                      "Requested By", "Request Date", "Reviewed",
-                      "Reviewed By", "Reviewed Date", "Approved",
-                      "Approved By", "Approved Date", "Closed",
-                      "Closed By", "Closed Date", "Life Cycle", "Analysis",
-                      "Accepted", "Part Number", "Age at Incident", "Failure",
-                      "Suspension", "No Fault Found", "Out of Calibration",
-                      "Initial Installation", "Interval Censored"]
+        _db_fields = [_(u"Revision ID"), _(u"Incident ID"),
+                      _(u"Incident Category"), _(u"Incident Type"),
+                      _(u"Short Description"), _(u"Long Description"),
+                      _(u"Criticality"), _(u"Detection Method"),
+                      _(u"Remarks"), _(u"Status"), _(u"Found During Test"),
+                      _(u"Found During Test Case"), _(u"Execution Time"),
+                      _(u"Affected Unit"), _(u"Incident Cost"),
+                      _(u"Incident Age"), _(u"Hardware ID"), _(u"Software ID"),
+                      _(u"Requested By"), _(u"Request Date"), _(u"Reviewed"),
+                      _(u"Reviewed By"), _(u"Reviewed Date"), _(u"Approved"),
+                      _(u"Approved By"), _(u"Approved Date"), _(u"Closed"),
+                      _(u"Closed By"), _(u"Closed Date"), _(u"Life Cycle"),
+                      _(u"Analysis"), _(u"Accepted"), _(u"Part Number"),
+                      _(u"Age at Incident"), _(u"Failure"), _(u"Suspension"),
+                      _(u"No Fault Found"), _(u"Out of Calibration"),
+                      _(u"Initial Installation"), _(u"Interval Censored")]
 
         for i in range(len(_db_fields)):
-            model.append([i, _db_fields[i], ""])
+            _model.append([i, _db_fields[i], ""])
 
-        self.assistant.append_page(scrollwindow)
-        self.assistant.set_page_type(scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(scrollwindow,
-                                      _(u"Select Fields to Import"))
-        self.assistant.set_page_complete(scrollwindow, True)
+        self.append_page(_scrollwindow)
+        self.set_page_type(_scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(_scrollwindow, _(u"Select Fields to Import"))
+        self.set_page_complete(_scrollwindow, True)
 
-# Create the page to apply the import criteria.
-        fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to import the requested data or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
-        fixed.put(label, 5, 5)
-        self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(fixed, _("Import Data"))
-        self.assistant.set_page_complete(fixed, True)
+        # Create the page to apply the import criteria.
+        _fixed = gtk.Fixed()
+        _label = _widg.make_label(_(u"Press 'Apply' to import the requested "
+                                    u"data or 'Cancel' to quit the assistant."),
+                                  width=600, height=-1, wrap=True)
+        _fixed.put(_label, 5, 5)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_title(_fixed, _(u"Import Data"))
+        self.set_page_complete(_fixed, True)
 
-        self.assistant.show_all()
+        self.show_all()
 
     def _callback_combo_cell(self, cell, path, row, position, treemodel):
         """
         Called whenever a TreeView CellRendererCombo changes.
 
-        Keyword Arguments:
-        cell      -- the gtk.CellRendererCombo that called this function
-        path      -- the path in the gtk.TreeView containing the
-                     gtk.CellRendererCombo that called this function.
-        row       -- the new gtk.TreeIter in the gtk.CellRendererCombo that
-                     called this function.
-        position  -- the position of in the gtk.TreeView of the
-                     gtk.CellRendererCombo that called this function.
-        treemodel -- the gtk.TreeModel for the gtk.TreeView.
-        lastcol   -- the index of the last visible column in the
-                     gtk.TreeView.
+        @param cell: the gtk.CellRendererCombo() that called this function.
+        @type ce;;" gtk.CellRendererCombo
+        @param path: the path in the gtk.TreeView() containing the
+                     gtk.CellRendererCombo() that called this function.
+        @type path: string
+        @param row: the new gtk.TreeIter() in the gtk.CellRendererCombo() that
+                    called this function.
+        @type row: gtk.TreeIter
+        @param position: the position of in the gtk.TreeView() of the
+                         gtk.CellRendererCombo() that called this function.
+        @type position: integer
+        @param treemodel: the gtk.TreeModel() for the gtk.TreeView().
+        @type treemodel: gtk.TreeModel
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        model = cell.get_property('model')
-        _text = model.get_value(row, 0)
-        _index  = model.get_value(row, 1)
+        _model = cell.get_property('model')
+        _text = _model.get_value(row, 0)
+        _index = _model.get_value(row, 1)
 
-        treerow = treemodel.get_iter(path)
+        _row = treemodel.get_iter(path)
 
-        _position = treemodel.get_value(treerow, 0)
-        self._file_index.insert(_position, _index)
+        _position = treemodel.get_value(_row, 0)
+        self._file_index[_position] = _index
 
-        treemodel.set_value(treerow, position, _text)
+        treemodel.set_value(_row, position, _text)
 
         return False
 
     def _forward_page_select(self, current_page):
+        """
+        Method to select the next page to display in the gtk.Assistant().
 
-        if(current_page == 0):
-            self._select_source_file()
+        @param current_page: the currently selected page in the
+                             gtk.Assistant().
+        @type current_page: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
+        """
+
+        if current_page == 0:
+            _select_source_file(self)
         else:
             self.assistant.set_current_page(current_page + 1)
 
-    def _select_source_file(self):
-
-        import os
-
-        # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_(u"RTK: Import Incidents from File ..."),
-                                       None,
-                                       gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-        dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-
-        # Set some filters to select all files or only some text files.
-        filter = gtk.FileFilter()
-        filter.set_name("All files")
-        filter.add_pattern("*")
-        dialog.add_filter(filter)
-
-        filter = gtk.FileFilter()
-        filter.set_name("Text Files (csv, txt)")
-        filter.add_mime_type("text/csv")
-        filter.add_mime_type("text/txt")
-        filter.add_mime_type("application/xls")
-        filter.add_pattern("*.csv")
-        filter.add_pattern("*.txt")
-        filter.add_pattern("*.xls")
-        dialog.add_filter(filter)
-
-        # Run the dialog and write the file.
-        response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
-            _filename = dialog.get_filename()
-            (name, extension) = os.path.splitext(_filename)
-
-        dialog.destroy()
-
-        _contents = []
-        _file = open(_filename, 'r')
-
-        for _line in _file:
-            _contents.append([_line.rstrip('\n')])
-
-        _headers = str(_contents[0][0]).rsplit('\t')
-        for i in range(len(_contents) - 1):
-            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
-
-        return(_headers, _contents)
-
-    def _import(self, button):
+    def _import(self, __button):
         """
         Method to perform the import from an external file to the database.
 
-        Keyword Arguments:
-        button -- the gtk.Button widget that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        from datetime import datetime
-
-        window = self.assistant.get_root_window()
-        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-
-        model = self.tvwFileFields.get_model()
-        row = model.get_iter_root()
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
 
         # Find the number of existing incidents.
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT COUNT(*) FROM tbl_incident"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT COALESCE(MAX(fld_incident_id)+1, 0) FROM tbl_incident"
+        if _conf.BACKEND == 'mysql':
+            _query = "SELECT COUNT(*) FROM tbl_incident"
+        elif _conf.BACKEND == 'sqlite3':
+            _query = "SELECT COALESCE(MAX(fld_incident_id)+1, 0) \
+                      FROM tbl_incident"
 
-        num_incidents = self._app.DB.execute_query(query,
-                                                   None,
-                                                   self._app.ProgCnx)
+        _num_incidents = self._app.DB.execute_query(_query, None,
+                                                    self._app.ProgCnx)
 
         for i in range(len(self._file_contents) - 1):
-            contents = []
+            _contents = []
 
             for j in range(len(self._file_index)):
                 if self._file_index[j] == -1:
-                    contents.append('')
+                    _contents.append('')
                 else:
                     try:
-                        contents.append(self._file_contents[i][self._file_index[j]])
+                        _contents.append(self._file_contents[i][self._file_index[j]])
                     except IndexError:
-                        contents.append('')
+                        _contents.append('')
 
-            contents[14] = contents[14].lstrip('$')
+            _contents[14] = _contents[14].replace('$', '')
+
+            # Remove any commas that may be in numerical fields.
+            for j in [12, 14, 15]:
+                _contents[j] = _contents[j].replace(',', '')
 
             # Convert all the date fields to ordinal dates.
-            contents[19] = _util.date_to_ordinal(contents[19])
-            contents[22] = _util.date_to_ordinal(contents[22])
-            contents[25] = _util.date_to_ordinal(contents[25])
-            contents[28] = _util.date_to_ordinal(contents[28])
+            for j in [19, 22, 25, 28]:
+                _contents[j] = _util.date_to_ordinal(_contents[j])
 
             # Convert all the True/False fields to integer.
-            contents[31] = _util.string_to_boolean(contents[31])
-            contents[34] = _util.string_to_boolean(contents[34])
-            contents[35] = _util.string_to_boolean(contents[35])
-            contents[36] = _util.string_to_boolean(contents[36])
-            contents[37] = _util.string_to_boolean(contents[37])
-            contents[38] = _util.string_to_boolean(contents[38])
-            contents[39] = _util.string_to_boolean(contents[39])
-            contents[40] = _util.string_to_boolean(contents[40])
-            contents[41] = _util.string_to_boolean(contents[41])
+            for j in [31, 34, 35, 36, 37, 38, 39, 40, 41]:
+                _contents[j] = _util.string_to_boolean(_contents[j])
 
             # Convert missing values to correct default value.
-            contents[0] = self._missing_to_default(contents[0], 0)
-            contents[2] = self._missing_to_default(contents[2], 0)
-            contents[3] = self._missing_to_default(contents[3], 0)
-            contents[6] = self._missing_to_default(contents[6], 1)
-            contents[9] = self._missing_to_default(contents[9], 0)
-            contents[12] = self._missing_to_default(contents[12], 0.0)
-            contents[14] = self._missing_to_default(contents[14], 0.0)
-            contents[15] = self._missing_to_default(contents[15], 0)
-            contents[16] = self._missing_to_default(contents[16], -1)
-            contents[17] = self._missing_to_default(contents[17], -1)
-            contents[18] = self._missing_to_default(contents[18], 0)
-            contents[20] = self._missing_to_default(contents[20], 0)
-            contents[21] = self._missing_to_default(contents[21], 0)
-            contents[23] = self._missing_to_default(contents[23], 0)
-            contents[24] = self._missing_to_default(contents[24], 0)
-            contents[26] = self._missing_to_default(contents[26], 0)
-            contents[27] = self._missing_to_default(contents[27], 0)
-            contents[28] = self._missing_to_default(contents[28], 0)
-            contents[29] = self._missing_to_default(contents[29], 0)
-            contents[42] = self._missing_to_default(contents[42], 0.0)
+            for j in [0, 1, 15, 20, 23, 26]:
+                _contents[j] = _missing_to_default(_contents[j], 0)
 
-            if(contents[1] == 0 or contents[1] is None or contents[1] == ''):
-                contents[1] = num_incidents[0][0] + i + 1
+            for j in [16, 17]:
+                _contents[j] = _missing_to_default(_contents[j], -1)
 
-            try:
-                _values_ = (int(contents[0]), int(contents[1]),
-                            int(contents[2]), int(contents[3]), contents[4],
-                            contents[5], int(contents[6]), contents[7],
-                            contents[8], int(contents[9]), contents[10],
-                            contents[11], float(contents[12]), contents[13],
-                            float(contents[14]), int(contents[15]),
-                            int(contents[16]), int(contents[17]), contents[18],
-                            int(contents[19]), int(contents[20]),
-                            contents[21], int(contents[22]), int(contents[23]),
-                            contents[24], int(contents[25]), int(contents[26]),
-                            contents[27], int(contents[28]), int(contents[29]),
-                            contents[30], int(contents[31]))
+            for j in [12, 14, 42]:
+                _contents[j] = _missing_to_default(_contents[j], 0.0)
 
-                _query_ = "INSERT INTO tbl_incident \
-                           VALUES (%d, %d, %d, %d, '%s', '%s', %d, '%s', '%s', \
-                                   %d, '%s', '%s', %f, '%s', %f, %d, %d, %d, \
-                                   %d, '%s', %d, %d, '%s', %d, %d, '%s', %d, \
-                                   %d, '%s', %d, '%s', %d)" % _values_
-                results = self._app.DB.execute_query(_query_,
-                                                     None,
-                                                     self._app.ProgCnx,
-                                                     commit=True)
+            _contents[9] = _missing_to_default(_contents[9], 'Initiated')
 
-            except ValueError:
-                self._app.import_log.error("Failed to import record %d into tbl_incident" % contents[1])
-                #self._app.import_log.error(contents)
+            if _contents[1] == 0 or _contents[1] is None or _contents[1] == '':
+                _contents[1] = _num_incidents[0][0] + i + 1
 
-            try:
-                _values_ = (str(contents[1]), str(contents[32]),
-                            float(contents[33]), int(contents[34]),
-                            int(contents[35]), int(contents[36]),
-                            int(contents[37]), int(contents[38]),
-                            int(contents[39]), int(contents[40]),
-                            int(contents[41]), float(contents[42]), 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            _values = (int(_contents[0]), int(_contents[1]), _contents[2],
+                       _contents[3], _contents[4], _contents[5], _contents[6],
+                       _contents[7], _contents[8], _contents[9], _contents[10],
+                       _contents[11], float(_contents[12]), _contents[13],
+                       float(_contents[14]), int(_contents[15]),
+                       int(_contents[16]), int(_contents[17]), _contents[18],
+                       int(_contents[19]), int(_contents[20]), _contents[21],
+                       int(_contents[22]), int(_contents[23]), _contents[24],
+                       int(_contents[25]), int(_contents[26]), _contents[27],
+                       int(_contents[28]), _contents[29], _contents[30],
+                       int(_contents[31]))
 
-                _query_ = "INSERT INTO tbl_incident_detail \
-                           VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
-                                   %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
-                                   %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
-                                   %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
-                                   %d, %d, %d, %d, %d, %d)" % _values_
-                results = self._app.DB.execute_query(_query_,
-                                                     None,
-                                                     self._app.ProgCnx,
-                                                     commit=True)
+            _query = "INSERT INTO tbl_incident \
+                      VALUES (%d, %d, '%s', '%s', '%s', '%s', '%s', '%s', \
+                              '%s', '%s', '%s', '%s', %f, '%s', %f, %d, \
+                              %d, %d, '%s', %d, %d, '%s', %d, %d, '%s', \
+                              %d, %d, '%s', %d, '%s', '%s', %d)" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error importing program incidents."))
 
-            except ValueError:
-                self._app.import_log.error("Failed to import record %d into tbl_incident_detail" % contents[1])
+            _values = (str(_contents[1]), str(_contents[32]),
+                       float(_contents[33]), int(_contents[34]),
+                       int(_contents[35]), int(_contents[36]),
+                       int(_contents[37]), int(_contents[38]),
+                       int(_contents[39]), int(_contents[40]),
+                       int(_contents[41]), float(_contents[42]), 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-        # Load the INCIDENT treeview with the newly imported records.
-        values = (self._app.REVISION.revision_id, )
-        if(_conf.BACKEND == 'mysql'):
-            query = "SELECT * FROM tbl_incident \
-                     WHERE fld_revision_id=%d"
-        elif(_conf.BACKEND == 'sqlite3'):
-            query = "SELECT * FROM tbl_incident \
-                     WHERE fld_revision_id=?"
+            _query = "INSERT INTO tbl_incident_detail \
+                      VALUES ('%s', '%s', %f, %d, %d, %d, %d, %d, %d, \
+                              %d, %d, %f, %d, %d, %d, %d, %d, %d, %d, \
+                              %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                              %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \
+                              %d, %d, %d, %d, %d, %d)" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error importing program incidents."))
 
-        window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
-        self._app.INCIDENT.load_tree
+        self._app.INCIDENT.load_tree()
 
         return False
 
-    def _missing_to_default(self, field, default_value):
-
-        if(field == ''):
-            field = default_value
-
-        return(field)
-
-    def _cancel(self, button):
+    def _cancel(self, __button=None):
         """
-        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
-        self.assistant.destroy()
+        self.destroy()

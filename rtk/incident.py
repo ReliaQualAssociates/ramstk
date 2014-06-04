@@ -436,7 +436,7 @@ class Incident(object):
             _scrollwindow = gtk.ScrolledWindow()
             _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow.add_with_viewport(self.tvwComponentList)
+            _scrollwindow.add(self.tvwComponentList)
 
             _frame = _widg.make_frame(label=_(u"Component Information"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
@@ -613,7 +613,7 @@ class Incident(object):
                                    gobject.TYPE_FLOAT)
             self.tvwComponentList.set_model(_model)
 
-            _heading = [_(u"Reference\nDesignator"), _(u"Initial\nInstall"),
+            _heading = [_(u"Part\nNumber"), _(u"Initial\nInstall"),
                         _(u"Failure"), _(u"Suspension"), _(u"OOT\nFailure"),
                         _("CND/NFF"), _(u"Interval\nCensored"),
                         _(u"Use\nOperating\nTime"), _(u"Use\nCalendar\nTime"),
@@ -625,6 +625,7 @@ class Incident(object):
                     _cell = gtk.CellRendererText()
                     _cell.set_property('editable', 0)
                     _cell.set_property('background', 'light gray')
+                    _cell.set_property('foreground', 'black')
                     _column.set_attributes(_cell, text=i)
                 else:
                     _cell = gtk.CellRendererToggle()
@@ -636,6 +637,9 @@ class Incident(object):
                 _label = _widg.make_column_heading(_heading[i])
                 _column.set_widget(_label)
                 _column.pack_start(_cell, True)
+                _column.set_clickable(True)
+                _column.set_resizable(True)
+                _column.set_sort_column_id(i)
                 self.tvwComponentList.append_column(_column)
 
             # Set the tooltips for the widgets in quedrant #3.
@@ -1068,16 +1072,12 @@ class Incident(object):
         _model = self.tvwComponentList.get_model()
         _model.clear()
 
-        _query = "SELECT t2.fld_ref_des, t2.fld_name, \
-                             t1.fld_initial_installation, t1.fld_failure, \
-                             t1.fld_suspension, t1.fld_occ_fault, \
-                             t1.fld_cnd_nff, t1.fld_interval_censored, \
-                             t1.fld_use_op_time, t1.fld_use_cal_time, \
-                             t1.fld_ttf, t1.fld_age_at_incident \
-                  FROM tbl_incident_detail AS t1 \
-                  INNER JOIN tbl_system AS t2 \
-                  ON t1.fld_part_num=t2.fld_ref_des \
-                  WHERE t1.fld_incident_id='%s'" % self.incident_id
+        _query = "SELECT fld_part_num, fld_initial_installation, fld_failure, \
+                         fld_suspension, fld_occ_fault, fld_cnd_nff, \
+                         fld_interval_censored, fld_use_op_time, \
+                         fld_use_cal_time, fld_ttf, fld_age_at_incident \
+                  FROM tbl_incident_detail \
+                  WHERE fld_incident_id='%s'" % self.incident_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
@@ -1354,12 +1354,11 @@ class Incident(object):
                           fld_use_op_time=%d, fld_use_cal_time=%d, \
                           fld_ttf=%f \
                       WHERE fld_incident_id='%s'" % \
-                     (model.get_value(row, 2), model.get_value(row, 3),
-                      model.get_value(row, 4), model.get_value(row, 5),
-                      model.get_value(row, 6), model.get_value(row, 7),
-                      model.get_value(row, 8), model.get_value(row, 9),
-                      model.get_value(row, 10),
-                      self.model.get_value(self.selected_row, 0))
+                     (model.get_value(row, 1), model.get_value(row, 2),
+                      model.get_value(row, 3), model.get_value(row, 4),
+                      model.get_value(row, 5), model.get_value(row, 6),
+                      model.get_value(row, 7), model.get_value(row, 8),
+                      model.get_value(row, 9), self.incident_id)
 
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):

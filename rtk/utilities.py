@@ -809,8 +809,6 @@ def rtk_error(prompt, _parent=None):
     _dialog.run()
     _dialog.destroy()
 
-    set_cursor(self._app, gtk.gdk.LEFT_PTR)
-
 
 def rtk_information(prompt, _parent=None):
     """
