@@ -72,6 +72,34 @@ def _vandv_tree_edit(__cell, path, new_text, position, model):
 
     return False
 
+def _add_to_combo(cell, path, new_text):
+    """
+    Function to add a new value to a gtk.CellRendererCombo() that has the
+    'has-entry' property set to True.
+
+    @param cell: the gtk.CellRendererCombo() calling this function.
+    @type cell: gtk.CellRendererCombo
+    @param path: the path of the currently selected gtk.TreeIter().
+    @type path: string
+    @param new_text: the new text that was entered into the
+                     gtk.CellRendererCombo().
+    @type new_text: string
+    @return: False if successful or True if an error is encountered.
+    @rtype: boolean
+    """
+
+    # Get the current entries in the gtk.CellRendererCombo().
+    _current_items = []
+    _model = cell.get_property('model')
+    _row = _model.get_iter_root()
+    while _row is not None:
+        _current_items.append(_model.get_value(_row, 0))
+        _row = _model.iter_next(_row)
+
+    if not new_text in _current_items:
+        _model.append([new_text])
+
+    return False
 
 class Requirement(object):
     """
@@ -364,7 +392,7 @@ class Requirement(object):
 
     def _create_notebook(self):
         """
-        Method to create the REQUIREMENT class gtk.Notebook().
+        Method to create the Requirement class gtk.Notebook().
         """
 
         def _create_stakeholder_input_tab(self, notebook):
@@ -372,7 +400,7 @@ class Requirement(object):
             Function to create the Stakeholder Input gtk.Notebook tab and
             populate it with the appropriate widgets.
 
-            self     -- the current instance of a REQUIREMENT class.
+            self     -- the current instance of a Requirement class.
             notebook -- the gtk.Notebook() to add the general data tab.
             """
 
@@ -393,26 +421,34 @@ class Requirement(object):
             # information.                                                  #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Set the has-entry property for stakeholder and affinity group
-            # gtk.CellRendererCombo cells.
-            _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[1]).get_cell_renderers()
-            _cell_[0].set_property('has-entry', True)
+            # gtk.CellRendererCombo cells.  Connect the edited signal to the
+            # callback function that updates the model to include the new
+            # entry that is manually entered by the user.
+            _cell = self.tvwStakeholderInput.get_column(
+                self._lst_stakeholder_col_order[1]).get_cell_renderers()
+            _cell[0].set_property('has-entry', True)
+            _cell[0].connect('edited', _add_to_combo)
 
-            _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[3]).get_cell_renderers()
-            _cell_[0].set_property('has-entry', True)
+            _cell = self.tvwStakeholderInput.get_column(
+                self._lst_stakeholder_col_order[3]).get_cell_renderers()
+            _cell[0].set_property('has-entry', True)
+            _cell[0].connect('edited', _add_to_combo)
 
             for i in range(4, 9):
-                _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[i]).get_cell_renderers()
-                _cell_[0].set_alignment(xalign=0.5, yalign=0.5)
+                _cell = self.tvwStakeholderInput.get_column(
+                    self._lst_stakeholder_col_order[i]).get_cell_renderers()
+                _cell[0].set_alignment(xalign=0.5, yalign=0.5)
 
             # Set the priority, customer rating, and planned rating
             # gtk.CellRendererSpin to integer spins with increments of 1.
             # Make it an integer spin by setting the number of digits to 0.
             for i in range(4, 7):
-                _cell_ = self.tvwStakeholderInput.get_column(self._lst_stakeholder_col_order[i]).get_cell_renderers()
-                _adjustment_ = _cell_[0].get_property('adjustment')
-                _adjustment_.set_step_increment(1)
-                _cell_[0].set_property('adjustment', _adjustment_)
-                _cell_[0].set_property('digits', 0)
+                _cell = self.tvwStakeholderInput.get_column(
+                    self._lst_stakeholder_col_order[i]).get_cell_renderers()
+                _adjustment = _cell[0].get_property('adjustment')
+                _adjustment.set_step_increment(1)
+                _cell[0].set_property('adjustment', _adjustment)
+                _cell[0].set_property('digits', 0)
 
             # Insert the tab.
             label = gtk.Label()
