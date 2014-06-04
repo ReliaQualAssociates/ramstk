@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       crystal.py is part of The RelKit Project
+#       crystal.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -64,12 +64,12 @@ class Crystal:
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Crystal Component Class
         prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -121,11 +121,11 @@ class Crystal:
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Crystal Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         """
 
@@ -175,11 +175,11 @@ class Crystal:
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -195,11 +195,11 @@ class Crystal:
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -217,7 +217,7 @@ class Crystal:
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -242,7 +242,7 @@ class Crystal:
         Keyword Arguments:
         entry   -- the entry widget calling this function.
         event   -- the event that triggered calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         convert -- the data type to convert the entry contents to.
         _index_ -- the position in the Component property array
                    associated with the data from the entry that called
@@ -282,11 +282,11 @@ class Crystal:
         Crystal Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -321,11 +321,11 @@ class Crystal:
         the Crystal Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 

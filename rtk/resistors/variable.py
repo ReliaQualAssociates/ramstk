@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       variable.py is part of The RelKit Project
+#       variable.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -63,12 +63,12 @@ class VarWirewound(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Wirewound
         Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -114,12 +114,12 @@ class VarWirewound(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Resistor Component Class
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -147,11 +147,11 @@ class VarWirewound(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -165,11 +165,11 @@ class VarWirewound(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -188,7 +188,7 @@ class VarWirewound(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -230,11 +230,11 @@ class VarWirewound(Resistor):
         Variable Value Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -266,11 +266,11 @@ class VarWirewound(Resistor):
         the Variable Value Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -386,12 +386,12 @@ class VarWirewoundPower(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Wirewound Power
         Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -430,12 +430,12 @@ class VarWirewoundPower(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Wirewound Power Resistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -468,11 +468,11 @@ class VarWirewoundPower(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -485,11 +485,11 @@ class VarWirewoundPower(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -509,7 +509,7 @@ class VarWirewoundPower(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -534,11 +534,11 @@ class VarWirewoundPower(Resistor):
         Variable Value Wirewound Power Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -570,11 +570,11 @@ class VarWirewoundPower(Resistor):
         the Variable Value Wirewound Power Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -693,12 +693,12 @@ class WirewoundPrecision(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Precision
         Wirewound Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -746,12 +746,12 @@ class WirewoundPrecision(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Precision Wirewound Resistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -784,11 +784,11 @@ class WirewoundPrecision(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -802,11 +802,11 @@ class WirewoundPrecision(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -826,7 +826,7 @@ class WirewoundPrecision(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -862,11 +862,11 @@ class WirewoundPrecision(Resistor):
         Variable Value Precision Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -898,11 +898,11 @@ class WirewoundPrecision(Resistor):
         the Variable Value Precision Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1014,12 +1014,12 @@ class WirewoundSemiPrecision(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Semiprecision
         Wirewound Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1058,12 +1058,12 @@ class WirewoundSemiPrecision(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Semiprecision Wirewound Resistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1091,11 +1091,11 @@ class WirewoundSemiPrecision(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -1109,11 +1109,11 @@ class WirewoundSemiPrecision(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1132,7 +1132,7 @@ class WirewoundSemiPrecision(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1171,11 +1171,11 @@ class WirewoundSemiPrecision(Resistor):
         Variable Value Semiprecision Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1207,11 +1207,11 @@ class WirewoundSemiPrecision(Resistor):
         the Variable Value Semiprecision Wirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1322,12 +1322,12 @@ class NonWirewound(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Nonwirewound
         Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1366,12 +1366,12 @@ class NonWirewound(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Nonwirewound Resistor Component
         Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1399,11 +1399,11 @@ class NonWirewound(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -1416,11 +1416,11 @@ class NonWirewound(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1439,7 +1439,7 @@ class NonWirewound(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1468,11 +1468,11 @@ class NonWirewound(Resistor):
         Variable Value Nonwirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1504,11 +1504,11 @@ class NonWirewound(Resistor):
         the Variable Value Nonwirewound Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1619,12 +1619,12 @@ class Composition(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Carbon
         Composition Resistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1664,12 +1664,12 @@ class Composition(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Carbon Composition Resistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1697,11 +1697,11 @@ class Composition(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -1714,11 +1714,11 @@ class Composition(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1737,7 +1737,7 @@ class Composition(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1770,11 +1770,11 @@ class Composition(Resistor):
         Variable Value Carbon Composition Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1806,11 +1806,11 @@ class Composition(Resistor):
         the Variable Value Carbon Composition Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1915,12 +1915,12 @@ class VarFilm(Resistor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Variable Value Film Resistor
         Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1967,12 +1967,12 @@ class VarFilm(Resistor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Variable Value Film Resistor Component Class
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -2000,11 +2000,11 @@ class VarFilm(Resistor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Resistor.assessment_inputs_load(self, part)
@@ -2018,11 +2018,11 @@ class VarFilm(Resistor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -2041,7 +2041,7 @@ class VarFilm(Resistor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -2078,11 +2078,11 @@ class VarFilm(Resistor):
         Variable Value Film Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -2115,11 +2115,11 @@ class VarFilm(Resistor):
         the Variable Value Film Resistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 

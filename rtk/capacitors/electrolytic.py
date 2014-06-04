@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       electrolytic.py is part of The RelKit Project
+#       electrolytic.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -58,12 +58,12 @@ class TantalumSolid(Capacitor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Fixed Solid Tantalum
         Electrolytic Capacitor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -84,11 +84,11 @@ class TantalumSolid(Capacitor):
 
     def assessment_inputs_load(self, part):
 
-        """ Loads the RelKit Workbook calculation input widgets with
+        """ Loads the RTK Workbook calculation input widgets with
             calculation input information.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -101,12 +101,12 @@ class TantalumSolid(Capacitor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the RelKit Workbook calculation results tab with the
+        """ Populates the RTK Workbook calculation results tab with the
             widgets to display Fixed Solid Tantalum Electrolytic Capacitor
             Component Class calculation results.
 
             Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
+            part   -- the RTK COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -124,11 +124,11 @@ class TantalumSolid(Capacitor):
 
     def assessment_results_load(self, part):
 
-        """ Loads the RelKit Workbook calculation results widgets with
+        """ Loads the RTK Workbook calculation results widgets with
             calculation results.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         Capacitor.assessment_results_load(self, part)
@@ -144,7 +144,7 @@ class TantalumSolid(Capacitor):
             Fixed Solid Tantalum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp
@@ -175,7 +175,7 @@ class TantalumSolid(Capacitor):
             the Fixed Solid Tantalum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -285,12 +285,12 @@ class TantalumNonSolid(Capacitor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the RelKit Workbook calculation input tab with the
+        """ Populates the RTK Workbook calculation input tab with the
             widgets needed to select inputs for Fixed Non-Solid Tantalum
             Electrolytic Capacitor Component Class prediction calculations.
 
             Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
+            part   -- the RTK COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -313,11 +313,11 @@ class TantalumNonSolid(Capacitor):
 
     def assessment_inputs_load(self, part):
 
-        """ Loads the RelKit Workbook calculation input widgets with
+        """ Loads the RTK Workbook calculation input widgets with
             calculation input information.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         Capacitor.assessment_inputs_load(self, part)
@@ -328,12 +328,12 @@ class TantalumNonSolid(Capacitor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the RelKit Workbook calculation results tab with the
+        """ Populates the RTK Workbook calculation results tab with the
             widgets to display Fixed Non-Solid Tantalum Electrolytic Capacitor
             Component Class calculation results.
 
             Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
+            part   -- the RTK COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -351,11 +351,11 @@ class TantalumNonSolid(Capacitor):
 
     def assessment_results_load(self, part):
 
-        """ Loads the RelKit Workbook calculation results widgets with
+        """ Loads the RTK Workbook calculation results widgets with
             calculation results.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         Capacitor.assessment_results_load(self, part)
@@ -371,7 +371,7 @@ class TantalumNonSolid(Capacitor):
             Fixed Non-Solid Tantalum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp
@@ -403,7 +403,7 @@ class TantalumNonSolid(Capacitor):
             Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -508,7 +508,7 @@ class Aluminum(Capacitor):
             Fixed Wet Aluminum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp
@@ -539,7 +539,7 @@ class Aluminum(Capacitor):
             the Fixed Wet Aluminum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp, sqrt
@@ -637,7 +637,7 @@ class AluminumDry(Capacitor):
             Fixed Dry Aluminum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp
@@ -668,7 +668,7 @@ class AluminumDry(Capacitor):
             the Fixed Dry Aluminum Electrolytic Capacitor Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp, sqrt

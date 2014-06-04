@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#    functions.py is part of The RelKit Project
+#    functions.py is part of The RTK Project
 #
 # All rights reserved.
 

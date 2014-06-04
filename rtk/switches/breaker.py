@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       breaker.py is part of The RelKit Project
+#       breaker.py is part of The RTK Project
 #
 #       Copyright 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 #
@@ -65,12 +65,12 @@ class Breaker(Switch):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the RelKit Workbook calculation input tab with the
+        """ Populates the RTK Workbook calculation input tab with the
             widgets needed to select inputs for Circuit Breaker Switch
             Component Class prediction calculations.
 
             Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
+            part   -- the RTK COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -104,12 +104,12 @@ class Breaker(Switch):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
 
-        """ Populates the RelKit Workbook calculation results tab with the
+        """ Populates the RTK Workbook calculation results tab with the
             widgets to display Circuit Breaker Switch Component Class
             calculation results.
 
             Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
+            part   -- the RTK COMPONENT object.
             layout -- the layout widget to contain the display widgets.
             x_pos  -- the x position of the widgets.
             y_pos  -- the y position of the first widget.
@@ -140,11 +140,11 @@ class Breaker(Switch):
 
     def assessment_inputs_load(self, part):
 
-        """ Loads the RelKit Workbook calculation input widgets with
+        """ Loads the RTK Workbook calculation input widgets with
             calculation input information.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         Switch.assessment_inputs_load(self, part)
@@ -156,11 +156,11 @@ class Breaker(Switch):
 
     def assessment_results_load(self, part):
 
-        """ Loads the RelKit Workbook calculation results widgets with
+        """ Loads the RTK Workbook calculation results widgets with
             calculation results.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         Switch.assessment_results_load(self, part)
@@ -177,7 +177,7 @@ class Breaker(Switch):
             Circuit Breaker Switch Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         part._hrmodel = {}
@@ -218,7 +218,7 @@ class Breaker(Switch):
             the Circuit Breaker Switch Component Class.
 
             Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+            part -- the RTK COMPONENT object.
         """
 
         from math import exp

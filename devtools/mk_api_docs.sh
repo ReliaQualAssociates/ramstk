@@ -23,8 +23,8 @@ esac
 
 echo "Completed generating $TYPE RTK api documentation."
 
-#echo "Uploading api documentation to RelKit website."
+#echo "Uploading api documentation to RTK website."
 #rsync -aiv * weibullguy,reliafree@web.sourceforge.net:/home/project-web/reliafree/htdocs/apidocs/
-#echo "Completed uploading api documentation to RelKit website."
+#echo "Completed uploading api documentation to RTK website."
 
 exit 0

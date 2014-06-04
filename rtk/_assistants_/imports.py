@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       import.py is part of The RelKit Project
+#       import.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,7 +35,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
+# Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
@@ -68,7 +68,7 @@ class ImportHardware(object):
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RelKit Import Hardware Assistant"))
+        self.assistant.set_title(_(u"RTK Import Hardware Assistant"))
         self.assistant.connect('apply', self._import)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
@@ -78,7 +78,7 @@ class ImportHardware(object):
 
         # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RelKit hardware import assistant.  It will "
+        _text_ = _(u"This is the RTK hardware import assistant.  It will "
                    u"help you import system hardware information to the "
                    u"database from external files.  Press 'Forward' to "
                    u"continue or 'Cancel' to quit the assistant.")
@@ -665,13 +665,13 @@ class ImportIncident:
 
         Keyword Arguments:
         button -- the gtk.Button widget that calling this Assistant.
-        app    -- the instance of the RelKit application calling the Assistant.
+        app    -- the instance of the RTK application calling the Assistant.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Import Incidents Assistant"))
+        self.assistant.set_title(_("RTK Import Incidents Assistant"))
         self.assistant.connect('apply', self._import)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
@@ -681,7 +681,7 @@ class ImportIncident:
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit incident import assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _("This is the RTK incident import assistant.  It will help you import program incidents to the database from external files.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -827,7 +827,7 @@ class ImportIncident:
         import os
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_(u"RelKit: Import Incidents from File ..."),
+        dialog = gtk.FileChooserDialog(_(u"RTK: Import Incidents from File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,

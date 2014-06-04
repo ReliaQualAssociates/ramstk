@@ -5,7 +5,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       fixed.py is part of The RelKit Project
+#       fixed.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -66,11 +66,11 @@ class PaperBypass(Capacitor):
         Fixed Paper Bypass Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -101,11 +101,11 @@ class PaperBypass(Capacitor):
         the Fixed Paper Bypass Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -209,11 +209,11 @@ class PaperFeedthrough(Capacitor):
         Fixed Paper Feedthrough Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -243,11 +243,11 @@ class PaperFeedthrough(Capacitor):
         the Fixed Paper Feedthrough Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -347,11 +347,11 @@ class PlasticFilm(Capacitor):
         Fixed Paper and Plastic Film Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -381,11 +381,11 @@ class PlasticFilm(Capacitor):
         the Fixed Paper and Plastic Film Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -505,11 +505,11 @@ class MetallizedPaper(Capacitor):
         Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -540,11 +540,11 @@ class MetallizedPaper(Capacitor):
         Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -650,11 +650,11 @@ class Plastic(Capacitor):
         Fixed Plastic and Metallized Plastic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -684,11 +684,11 @@ class Plastic(Capacitor):
         the Fixed Plastic and Metallized Plastic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -783,11 +783,11 @@ class SuperMetallizedPlastic(Capacitor):
         Fixed Super-Metallized Plastic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -817,11 +817,11 @@ class SuperMetallizedPlastic(Capacitor):
         the Fixed Super-Metallized Plastic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -915,11 +915,11 @@ class Mica(Capacitor):
         Fixed Mica Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -949,11 +949,11 @@ class Mica(Capacitor):
         the Fixed Mica Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1059,11 +1059,11 @@ class MicaButton(Capacitor):
         Fixed Mica Button Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1093,11 +1093,11 @@ class MicaButton(Capacitor):
         the Fixed Mica Button Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1194,11 +1194,11 @@ class Glass(Capacitor):
         Fixed Glass Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1232,11 +1232,11 @@ class Glass(Capacitor):
         the Fixed Glass Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1341,11 +1341,11 @@ class CeramicGeneral(Capacitor):
         Fixed General Purpose Ceramic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1375,11 +1375,11 @@ class CeramicGeneral(Capacitor):
         the Fixed General Purpose Ceramic Capacitor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1488,11 +1488,11 @@ class CeramicChip(Capacitor):
         Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1523,11 +1523,11 @@ class CeramicChip(Capacitor):
         Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 

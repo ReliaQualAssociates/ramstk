@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       transistor.py is part of The RelKit Project
+#       transistor.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -63,12 +63,12 @@ class LFBipolar(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Low Frequency Bipolar
         Transistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -116,12 +116,12 @@ class LFBipolar(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Low Frequency Bipolar Transistor Component
         Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -152,11 +152,11 @@ class LFBipolar(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -172,11 +172,11 @@ class LFBipolar(Semiconductor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -196,7 +196,7 @@ class LFBipolar(Semiconductor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -224,11 +224,11 @@ class LFBipolar(Semiconductor):
         Low Frequency Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -266,11 +266,11 @@ class LFBipolar(Semiconductor):
         the Low Frequency Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -394,12 +394,12 @@ class LFSiFET(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Low Frequency Silicon FET
         prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -440,11 +440,11 @@ class LFSiFET(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Low Frequency Silicon FET calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -466,11 +466,11 @@ class LFSiFET(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -485,11 +485,11 @@ class LFSiFET(Semiconductor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Semiconductor.assessment_results_load(self, part)
@@ -505,7 +505,7 @@ class LFSiFET(Semiconductor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -533,11 +533,11 @@ class LFSiFET(Semiconductor):
         Low Frequency Silicon FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -569,11 +569,11 @@ class LFSiFET(Semiconductor):
         the Low Frequency Silicon FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -681,12 +681,12 @@ class Unijunction(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Unijunction Transistor
         Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -699,12 +699,12 @@ class Unijunction(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Unijunction Transistor Component Class
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -722,11 +722,11 @@ class Unijunction(Semiconductor):
         Unijunction Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -758,11 +758,11 @@ class Unijunction(Semiconductor):
         the Unijunction Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -863,12 +863,12 @@ class HFLNBipolar(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for High Frequency, Low Noise
         Bipolar Transistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -908,12 +908,12 @@ class HFLNBipolar(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display High Frequency, Low Noise Bipolar Transistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -939,11 +939,11 @@ class HFLNBipolar(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -958,11 +958,11 @@ class HFLNBipolar(Semiconductor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -981,11 +981,11 @@ class HFLNBipolar(Semiconductor):
         High Frequency, Low Noise Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1016,11 +1016,11 @@ class HFLNBipolar(Semiconductor):
         the High Frequency, Low Noise Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1149,12 +1149,12 @@ class HFHPBipolar(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for High Frequency, High Power
         Bipolar Transistor Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1228,12 +1228,12 @@ class HFHPBipolar(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display High Frequency, High Power Bipolar Transistor
         Component Class calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1259,11 +1259,11 @@ class HFHPBipolar(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1282,11 +1282,11 @@ class HFHPBipolar(Semiconductor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Semiconductor.assessment_results_load(self, part)
@@ -1303,7 +1303,7 @@ class HFHPBipolar(Semiconductor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1337,11 +1337,11 @@ class HFHPBipolar(Semiconductor):
         High Frequency, High Power Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1373,11 +1373,11 @@ class HFHPBipolar(Semiconductor):
         the High Frequency, High Power Bipolar Transistor Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1510,12 +1510,12 @@ class HFGaAsFET(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for High Frequency GaAs FET
         Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1558,12 +1558,12 @@ class HFGaAsFET(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display High Frequency GaAs FET Component Class
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1589,11 +1589,11 @@ class HFGaAsFET(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1608,11 +1608,11 @@ class HFGaAsFET(Semiconductor):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         fmt = "{0:0." + str(part.fmt) + "g}"
@@ -1631,7 +1631,7 @@ class HFGaAsFET(Semiconductor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1663,11 +1663,11 @@ class HFGaAsFET(Semiconductor):
         High Frequency GaAs FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1705,11 +1705,11 @@ class HFGaAsFET(Semiconductor):
         the High Frequency GaAs FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1814,12 +1814,12 @@ class HFSiFET(Semiconductor):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for High Frequency Silicon FET
         Component Class prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1844,12 +1844,12 @@ class HFSiFET(Semiconductor):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display High Frequency Silicon FET Component Class
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -1862,11 +1862,11 @@ class HFSiFET(Semiconductor):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         Semiconductor.assessment_inputs_load(self, part)
@@ -1882,7 +1882,7 @@ class HFSiFET(Semiconductor):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -1910,11 +1910,11 @@ class HFSiFET(Semiconductor):
         High Frequency Silicon FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -1946,11 +1946,11 @@ class HFSiFET(Semiconductor):
         the High Frequency Silicon FET Component Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 

@@ -6,7 +6,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       gaas.py is part of The RelKit Project
+#       gaas.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -49,12 +49,12 @@ class GaAsDigital(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Digital GaAs Integrated
         Circuit prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -71,12 +71,12 @@ class GaAsDigital(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Digital GaAs Integrated Circuit calculation
         results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -89,11 +89,11 @@ class GaAsDigital(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)
@@ -109,11 +109,11 @@ class GaAsDigital(IntegratedCircuit):
         Digital GaAs Integrated Circuit Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -152,11 +152,11 @@ class GaAsDigital(IntegratedCircuit):
         the Digital GaAs Integrated Circuit Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -269,12 +269,12 @@ class GaAsMMIC(IntegratedCircuit):
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation input tab with the
+        Populates the RTK Workbook calculation input tab with the
         widgets needed to select inputs for Microwave Monolithic GaAs
         Integrated Circuit prediction calculations.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -301,12 +301,12 @@ class GaAsMMIC(IntegratedCircuit):
 
     def assessment_results_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RelKit Workbook calculation results tab with the
+        Populates the RTK Workbook calculation results tab with the
         widgets to display Microwave Monolithic GaAs Integrated Circuit
         calculation results.
 
         Keyword Arguments:
-        part   -- the RelKit COMPONENT object.
+        part   -- the RTK COMPONENT object.
         layout -- the layout widget to contain the display widgets.
         x_pos  -- the x position of the widgets.
         y_pos  -- the y position of the first widget.
@@ -327,11 +327,11 @@ class GaAsMMIC(IntegratedCircuit):
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RelKit Workbook calculation input widgets with
+        Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         IntegratedCircuit.assessment_inputs_load(self, part)
@@ -343,11 +343,11 @@ class GaAsMMIC(IntegratedCircuit):
 
     def assessment_results_load(self, part):
         """
-        Loads the RelKit Workbook calculation results widgets with
+        Loads the RTK Workbook calculation results widgets with
         calculation results.
 
         Keyword Arguments:
-        part -- the RelKit COMPONENT object.
+        part -- the RTK COMPONENT object.
         """
 
         IntegratedCircuit.assessment_results_load(self, part)
@@ -363,7 +363,7 @@ class GaAsMMIC(IntegratedCircuit):
 
         Keyword Arguments:
         combo   -- the combobox widget calling this function.
-        part    -- the RelKit COMPONENT object.
+        part    -- the RTK COMPONENT object.
         _index_ -- the user-definded index for the calling combobx.
         """
 
@@ -390,11 +390,11 @@ class GaAsMMIC(IntegratedCircuit):
         Microwave Monolithic GaAs Integrated Circuit Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
@@ -433,11 +433,11 @@ class GaAsMMIC(IntegratedCircuit):
         the Microwave Monolithic GaAs Integrated Circuit Class.
 
         Keyword Arguments:
-        partmodel   -- the RelKit winParts full gtk.TreeModel.
+        partmodel   -- the RTK winParts full gtk.TreeModel.
         partrow     -- the currently selected row in the winParts full
                        gtk.TreeModel.
-        systemmodel -- the RelKit HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RelKit HARWARE
+        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
+        systemrow   -- the currently selected row in the RTK HARWARE
                        object gtk.TreeModel.
         """
 
