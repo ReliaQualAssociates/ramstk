@@ -246,7 +246,7 @@ class TreeWindow(gtk.Window):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.show_all()
-            _label.set_tooltip_text(_(u"Displays the system field incidents."))
+            _label.set_tooltip_text(_(u"Displays the program incidents."))
             self.notebook.insert_page(self.scwIncidents, tab_label=_label,
                                       position=-1)
             _app.INCIDENT.load_tree()
