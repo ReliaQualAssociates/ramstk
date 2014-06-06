@@ -99,30 +99,34 @@ CREATE TABLE "tbl_failure_definitions" (
 DROP TABLE IF EXISTS "tbl_revisions";
 CREATE TABLE "tbl_revisions" (
     "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_availability" REAL NOT NULL DEFAULT(1),        -- Assessed availability of the revision.
-    "fld_availability_mission" REAL NOT NULL DEFAULT(1),-- Assessed mission availability of the revision.
-    "fld_cost" REAL NOT NULL DEFAULT(0),                -- Assessed cost of the revision.
-    "fld_cost_failure" REAL NOT NULL DEFAULT(0),        -- Assessed cost per failure of the revision.
-    "fld_cost_hour" REAL NOT NULL DEFAULT(0),           -- Assessed cost to operate the revision for one hour.
-    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0), -- Assessed active failure intensity of the revision.
-    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),-- Assessed dormant failure intensity of the revision.
-    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),-- Assessed mission failure intensity of the revision.
-    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),-- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
-    "fld_failure_rate_software" REAL NOT NULL DEFAULT(0),-- Assessed software failure intensity of the revision.
-    "fld_mmt" REAL NOT NULL DEFAULT(0),                 -- Mean maintenance time (MMT) of the revision.
-    "fld_mcmt" REAL NOT NULL DEFAULT(0),                -- Mean corrective maintenance time (MCMT) of the revision.
-    "fld_mpmt" REAL NOT NULL DEFAULT(0),                -- Mean preventive maintenance time (MPMT) of the revision.
-    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),        -- Assessed mission MTBF of the revision.
-    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),      -- Assessed MTBF of the revision.
-    "fld_mttr" REAL NOT NULL DEFAULT(0),                -- Assessed MTTR of the revision.
-    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),       -- Noun name of the revision.
-    "fld_reliability_mission" REAL NOT NULL DEFAULT(1), -- Assessed mission reliability of the revision.
+    "fld_availability" REAL NOT NULL DEFAULT(1),            -- Assessed availability of the revision.
+    "fld_availability_mission" REAL NOT NULL DEFAULT(1),    -- Assessed mission availability of the revision.
+    "fld_cost" REAL NOT NULL DEFAULT(0),                    -- Assessed cost of the revision.
+    "fld_cost_failure" REAL NOT NULL DEFAULT(0),            -- Assessed cost per failure of the revision.
+    "fld_cost_hour" REAL NOT NULL DEFAULT(0),               -- Assessed cost to operate the revision for one hour.
+    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0),     -- Assessed active failure intensity of the revision.
+    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),    -- Assessed dormant failure intensity of the revision.
+    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),    -- Assessed mission failure intensity of the revision.
+    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),  -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
+    "fld_failure_rate_software" REAL NOT NULL DEFAULT(0),   -- Assessed software failure intensity of the revision.
+    "fld_mmt" REAL NOT NULL DEFAULT(0),                     -- Mean maintenance time (MMT) of the revision.
+    "fld_mcmt" REAL NOT NULL DEFAULT(0),                    -- Mean corrective maintenance time (MCMT) of the revision.
+    "fld_mpmt" REAL NOT NULL DEFAULT(0),                    -- Mean preventive maintenance time (MPMT) of the revision.
+    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission MTBF of the revision.
+    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed MTBF of the revision.
+    "fld_mttr" REAL NOT NULL DEFAULT(0),                    -- Assessed MTTR of the revision.
+    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),           -- Noun name of the revision.
+    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),     -- Assessed mission reliability of the revision.
     "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),   -- Assessed reliability of the revision.
-    "fld_remarks" BLOB NOT NULL,                        -- Remarks about the revision.
+    "fld_remarks" BLOB NOT NULL,                            -- Remarks about the revision.
     "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),  -- Total number of components comprising the revision.
-    "fld_revision_code" VARCHAR(8) DEFAULT('')          -- Alphnumeric code for the revision.
+    "fld_revision_code" VARCHAR(8) DEFAULT(''),             -- Alphnumeric code for the revision.
+    "fld_program_time" REAL DEFAULT(0),                     -- Total expected time for all tasks in the development program.
+    "fld_program_time_sd" REAL DEFAULT(0),                  -- Standard error on the total expected program time.
+    "fld_program_cost" REAL DEFAULT(0),                     -- Total expected cost for all tasks in the development program.
+    "fld_program_cost_sd" REAL DEFAULT(0)                   -- Standard error on the total expected program cost.
 );
-INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'');
+INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'', 0.0, 0.0, 0.0, 0.0);
 
 CREATE TABLE "tbl_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
@@ -1254,7 +1258,7 @@ CREATE TABLE "tbl_fmeca" (
     "fld_function_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system function.
     "fld_mode_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_mode_description" VARCHAR(512),                -- Noun description of the failure mode.
-    "fld_mission_phase" VARCHAR(64),                    -- Mission phase failure mode is of concern.
+    "fld_mission_phase" VARCHAR(64),                    -- Mission phase during which the failure mode is of concern.
     "fld_local_effect" VARCHAR(512),                    -- Local effect of the failure mode.
     "fld_next_effect" VARCHAR(512),                     -- Next higher level effect of the failure mode.
     "fld_end_effect" VARCHAR(512),                      -- System level effect of the failure mode.
@@ -1275,7 +1279,8 @@ CREATE TABLE "tbl_fmeca" (
     "fld_rpn_severity_new" VARCHAR(64),                 -- RPN severity score of the failure mode after taking action.
     "fld_critical_item" TINYINT DEFAULT(0),             -- Whether or not failure mode causes item under analysis to be critical.
     "fld_single_point" TINYINT DEFAULT(0),              -- Whether or not failure mode causes item under analysis to be a single point of vulnerability.
-    "fld_remarks" BLOB                                  -- Remarks associated with the failure mode.
+    "fld_remarks" BLOB,                                 -- Remarks associated with the failure mode.
+    "fld_mission" VARCHAR(64) DEFAULT('Default Mission') -- Mission during which the failure mode is of concern.
 );
 
 CREATE TABLE "tbl_fmeca_mechanisms" (

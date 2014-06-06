@@ -221,5 +221,41 @@ experience. -->
             <editable>1</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Program Time</defaulttitle>
+            <usertitle>Program Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Time SE</defaulttitle>
+            <usertitle>Program Time SE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Cost</defaulttitle>
+            <usertitle>Program Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Cost SE</defaulttitle>
+            <usertitle>Program Cost SE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

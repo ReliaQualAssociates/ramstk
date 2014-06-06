@@ -3757,9 +3757,8 @@ class Software(object):
 
             _model.append(_piter, _results[i])
 
-        _root = _model.get_iter_root()
-        if _root is not None:
-            _path = _model.get_path(_root)
+        if _model.get_iter_root() is not None:
+            _path = _model.get_path(_model.get_iter_root())
             _col = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _col)
 

@@ -1165,6 +1165,46 @@ def moving_average(data, n=3):
     return (_cumsum[n - 1:] - _cumsum[:1 - n]) / n
 
 
+def beta_bounds(a, m, b, alpha):
+    """
+    Function to calculate the mean, standard error, and bounds on the mean of
+    a beta distribution.  These are the project management estimators, not
+    exact calculations.
+
+    @param a: the minimum expected value.
+    @type a: float
+    @param m: most likely value.
+    @type m: float
+    @param b: the maximum expected value.
+    @type b: float
+    @param alpha: the desired confidence level.
+    @type alpha: float
+    @return: (_meanll, _mean, _meanul); the calculated mean and bounds.
+    @rtype: tuple of floats
+    """
+
+    from scipy.stats import norm
+
+    if alpha < 0.0:
+        _util.rtk_information(_(u"Confidence level take a value between 0 and "
+                                u"1 inclusive [0, 1].  Please select and "
+                                u"appropriate confidence level and try "
+                                u"again."))
+        return a, m, b, 0.0
+    elif alpha > 1.0:
+        _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
+    else:
+        _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
+
+    _mean = (a + 4.0 * m + b) / 6.0
+    _sd = (b - a) / 6.0
+
+    _meanll = _mean - _z_norm * _sd
+    _meanul = _mean + _z_norm * _sd
+
+    return _meanll, _mean, _meanul, _sd
+
+
 def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.

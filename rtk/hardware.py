@@ -2630,8 +2630,8 @@ class Hardware(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(self.tvwFMECA)
 
-            _frame_ = _widg.make_frame(
-                label=_(u"Failure Mode, Effects, and Criticality Analysis"))
+            _frame_ = _widg.make_frame(label=_(u"Failure Mode, Effects, and "
+                                               u"Criticality Analysis"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -2651,8 +2651,16 @@ class Hardware(object):
                                              u"component."))
             self.tvwFMECA.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
+            # Connect the mission gtk.CellRendererCombo() to a callback
+            # function.
+            _column = self.tvwFMECA.get_column(self._FMECA_col_order[2])
+            _cell = _column.get_cell_renderers()
+            _cellmodel = _cell[0].get_property('model')
+            _cell[0].connect('changed', self._load_mission_phase_combo,
+                             _cellmodel)
+
             # Load the severity classification gtk.CellRendererCombo().
-            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[11])
+            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[12])
             _cell_ = _column_.get_cell_renderers()
             _cellmodel_ = _cell_[0].get_property('model')
             _cellmodel_.clear()
@@ -2678,7 +2686,7 @@ class Hardware(object):
                 _cellmodel_.append([_results_[i][2] + " - " + _results_[i][1]])
 
             # Load the qualitative failure probability gtk.CellRendererCombo().
-            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[13])
+            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[14])
             _cell_ = _column_.get_cell_renderers()
             _cellmodel_ = _cell_[0].get_property('model')
             _cellmodel_.clear()
@@ -2707,11 +2715,11 @@ class Hardware(object):
                                   self._fmeca_treeview_row_changed)
 
             # Load the RPN severity and RPN severity new gtk.CellRendererCombo.
-            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[20])
+            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[21])
             _cell_ = _column_.get_cell_renderers()
             _cellmodel1_ = _cell_[0].get_property('model')
             _cellmodel1_.clear()
-            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[21])
+            _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[22])
             _cell_ = _column_.get_cell_renderers()
             _cellmodel2_ = _cell_[0].get_property('model')
             _cellmodel2_.clear()
@@ -3709,44 +3717,43 @@ class Hardware(object):
 
         self._ItemCA = {}
 
-        _model_ = self.tvwFMECA.get_model()
-        _model_.clear()
+        # Load the mission gtk.CellRendererCombo().
+        _column = self.tvwFMECA.get_column(self._FMECA_col_order[2])
+        _cell = _column.get_cell_renderers()
+        _cellmodel = _cell[0].get_property('model')
+        _cellmodel.clear()
 
-        # Load the mission phase gtk.CellRendererCombo.
-        _column_ = self.tvwFMECA.get_column(self._FMECA_col_order[2])
-        _cell_ = _column_.get_cell_renderers()
-        _cellmodel_ = _cell_[0].get_property('model')
-        _cellmodel_.clear()
-
-        _query_ = "SELECT fld_phase_id, fld_phase_name, fld_phase_start, \
-                          fld_phase_end \
-                   FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % 0
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT fld_mission_description, fld_mission_id, \
+                         fld_mission_time \
+                  FROM tbl_missions \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        _results = self._app.DB.execute_query(_query, None,
+                                              self._app.ProgCnx)
 
         try:
-            _n_phases_ = len(_results_)
+            _n_missions = len(_results)
         except TypeError:
-            _util.rtk_error(_(u"There was a problem loading the mission phase "
+            _util.rtk_error(_(u"There was a problem loading the mission "
                               u"list in the Assembly Work Book FMEA/FMECA "
                               u"tab.  This may indicate your RTK program "
                               u"database is corrupt."))
-            _n_phases_ = 0
+            _n_missions = 0
 
-        _cellmodel_.append([""])
-        for i in range(_n_phases_):
-            self._mission_phase[_results_[i][0]] = float(
-                _results_[i][3]) - float(_results_[i][2])
-            _cellmodel_.append([_results_[i][1]])
+        _cellmodel.append([""])
+        for i in range(_n_missions):
+            self._mission[_results[i][0]] = [_results[i][1], _results[i][2]]
+            _cellmodel.append([_results[i][0]])
+
+        _model_ = self.tvwFMECA.get_model()
+        _model_.clear()
 
         # Load the failure modes to the gtk.TreeView.
         _query_ = "SELECT t1.fld_mode_id, t1.fld_mode_description, \
-                          t1.fld_mission_phase, t1.fld_local_effect, \
-                          t1.fld_next_effect, t1.fld_end_effect, \
-                          t1.fld_detection_method, t1.fld_other_indications, \
-                          t1.fld_isolation_method, t1.fld_design_provisions, \
+                          t1.fld_mission, t1.fld_mission_phase, \
+                          t1.fld_local_effect, t1.fld_next_effect, \
+                          t1.fld_end_effect, t1.fld_detection_method, \
+                          t1.fld_other_indications, t1.fld_isolation_method, \
+                          t1.fld_design_provisions, \
                           t1.fld_operator_actions, t1.fld_severity_class, \
                           t1.fld_hazard_rate_source, \
                           t1.fld_failure_probability, \
@@ -3774,17 +3781,17 @@ class Hardware(object):
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
         _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_modes_):
-            self._dicModeCA[_results_[i][0]] = [_results_[i][14],
-                                         _results_[i][15],
-                                         _results_[i][24],
-                                         _results_[i][17],
-                                         _results_[i][11], 0.0, 0.0]
+            self._dicModeCA[_results_[i][0]] = [_results_[i][15],
+                                         _results_[i][16],
+                                         _results_[i][25],
+                                         _results_[i][18],
+                                         _results_[i][12], 0.0, 0.0]
             try:
                 self._ItemCA[self.assembly_id].append([_results_[i][0],
-                                                       _results_[i][11], ''])
+                                                       _results_[i][12], ''])
             except KeyError:
                 self._ItemCA[self.assembly_id] = [[_results_[i][0],
-                                                   _results_[i][11], '']]
+                                                   _results_[i][12], '']]
 
             _data_ = [_results_[i][self._FMECA_col_order[0]],
                       _util.none_to_string(
@@ -3826,6 +3833,8 @@ class Hardware(object):
                       _results_[i][self._FMECA_col_order[22]],
                       _util.none_to_string(
                           _results_[i][self._FMECA_col_order[23]]),
+                      _util.none_to_string(
+                          _results_[i][self._FMECA_col_order[24]]),
                       0, '#FFFFFF', True, _icon_]
 
             # Load the FMECA gtk.TreeView with the data.
@@ -3833,10 +3842,10 @@ class Hardware(object):
                 _model_.append(None, _data_)
             except TypeError:
                 _util.rtk_error(_(u"Failed to load FMEA/FMECA failure "
-                                          u"mode %d" % _results_[i][2]))
+                                  u"mode %d" % _results_[i][1]))
 
             # Load the FMECA dictionary with the data.
-            self._fmeca[_results_[i][self._FMECA_col_order[0]]] = _data_[1:25]
+            self._fmeca[_results_[i][self._FMECA_col_order[0]]] = _data_[1:26]
 
         # Load the failure consequences to the FMECA dictionary.
         _query_ = "SELECT * FROM tbl_failure_consequences \
@@ -3903,7 +3912,7 @@ class Hardware(object):
                                           _results_[i][8],
                                           _results_[i][9]]
             _data_ = [_results_[i][2],
-                      _util.none_to_string(_results_[i][3]), "", "", "",
+                      _util.none_to_string(_results_[i][3]), "", "", "", "",
                       "", "", "", "", "", "", "", "", "", "", "", "", "",
                       "", "", "", "", 0, 0, "", 1, '#D3D3D3', False,
                       _icon]
@@ -3943,7 +3952,7 @@ class Hardware(object):
                                                     _results_[i][13],
                                                     _results_[i][14]]
             _data_ = [_results_[i][3],
-                      _util.none_to_string(_results_[i][4]), "", "", "",
+                      _util.none_to_string(_results_[i][4]), "", "", "", "",
                       "", "", "", "", "", "", "", "", "", "", "", "", "",
                       "", "", "", "", 0, 0, "", 3, '#D3D3D3', False,
                       _icon_]
@@ -3978,7 +3987,7 @@ class Hardware(object):
                                                      _results_[i][5],
                                                      _results_[i][6]]
             _data_ = [_results_[i][3],
-                      _util.none_to_string(_results_[i][4]), "", "", "",
+                      _util.none_to_string(_results_[i][4]), "", "", "", "",
                       "", "", "", "", "", "", "", "", "", "", "", "", "",
                       "", "", "", "", 0, 0, "", 2, '#D3D3D3', False,
                       _icon_]
@@ -3997,6 +4006,62 @@ class Hardware(object):
             _col_ = self.tvwFMECA.get_column(1)
             self.tvwFMECA.set_cursor(_path_, _col_, False)
             self.tvwFMECA.row_activated(_path_, _col_)
+
+        return False
+
+    def _load_mission_phase_combo(self, cell, path, row, model):
+        """
+        Method to load the mission phase gtk.CellRendererCombo() in the FMECA
+        when the mission gtk.CellRendererCombo() is changed.
+
+        @param cell: the gtk.CellRendererCombo() that was edited.
+        @type cell: gtk.CellRendererCombo
+        @param path: the gtk.TreeView() path of the gtk.CellRendererCombo()
+                     that was edited.
+        @type path: string
+        @param row: the gtk.TreeIter() in the edited gtk.CellRendererCombo().
+        @type row: gtk.TreeIter
+        @param model: the gtk.TreeModel() from the mission
+                      gtk.CellRendererCombo().
+        @type model: gtk.TreeModel
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
+        """
+
+        # Load the mission phase gtk.CellRendererCombo().
+        _column = self.tvwFMECA.get_column(self._FMECA_col_order[3])
+        _cell = _column.get_cell_renderers()
+        _cellmodel = _cell[0].get_property('model')
+        _cellmodel.clear()
+
+        # Retrieve the mission phases for the newly selected mission.
+        _query = "SELECT fld_phase_id, fld_phase_name, fld_phase_start, \
+                         fld_phase_end \
+                  FROM tbl_mission_phase \
+                  WHERE fld_mission_id=%d" % \
+                 self._mission[model.get_value(row, 0)][0]
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
+
+        try:
+            _n_phases = len(_results)
+        except TypeError:
+            _util.rtk_warning(_(u"There was a problem loading the mission "
+                                u"phase list in the Assembly Work Book "
+                                u"FMEA/FMECA tab.  This may indicate your RTK "
+                                u"program database is corrupt."))
+            return True
+
+        # Now load the mission phase gtk.CellRendererCombo() and the mission
+        # phase dictionary with the retrieved values.
+        _cellmodel.append([""])
+        for i in range(_n_phases):
+            self._mission_phase[_results[i][0]] = float(
+                _results[i][3]) - float(_results[i][2])
+            _cellmodel.append([_results[i][1]])
+
+        # Set the mission phase combo to the blank entry.
+        (_model, _row) = self.tvwFMECA.get_selection().get_selected()
+        _model.set_value(_row, self._FMECA_col_order[3], '')
 
         return False
 
@@ -4926,7 +4991,6 @@ class Hardware(object):
                 if self.chkApplyResults.get_active():
 
                     _measure = self.cmbRqmtType.get_active()
-                    _operating_time = float(self.txtOperTime.get_text())
                     if _measure == 1:       # Expressed as reliability.
                         _value = model.get_value(row, 19)
                     elif _measure == 2:     # Expressed as an MTBF.
@@ -4937,23 +5001,12 @@ class Hardware(object):
                         _value = 1.0
 
                     _query = "UPDATE tbl_system \
-                              SET fld_failure_rate_active=%f, \
-                                  fld_failure_rate_predicted=%f, \
-                                  fld_failure_rate_specified=%f, \
-                                  fld_mission_time=%f, \
-                                  fld_mtbf_predicted=%f, \
-                                  fld_mtbf_specified=%f, \
-                                  fld_failure_rate_type=%d, \
-                                  fld_reliability_goal_measure=%d, \
+                              SET fld_reliability_goal_measure=%d, \
                                   fld_reliability_goal=%f \
                               WHERE fld_revision_id=%d \
                               AND fld_assembly_id=%d" % \
-                             (model.get_value(row, 15),
-                              model.get_value(row, 15),
-                              model.get_value(row, 15), _operating_time,
-                              model.get_value(row, 17),
-                              model.get_value(row, 17), 3, _measure, _value,
-                              model.get_value(row, 0), model.get_value(row, 1))
+                             (_measure, _value, model.get_value(row, 0),
+                              model.get_value(row, 1))
                 if not self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx,
                                                   commit=True):
@@ -4980,6 +5033,7 @@ class Hardware(object):
 
         # Update the allocation method.
         (_model, _row) = self.treeview.get_selection().get_selected()
+        _path = _model.get_path(_row)
         _model.set_value(_row, self._col_order[3], i)
         _model.set_value(_row, self._col_order[45], _operating_time)
         _model.set_value(_row, self._col_order[89], _measure)
@@ -4994,6 +5048,11 @@ class Hardware(object):
 
         if self.chkApplyResults.get_active():
             self.load_tree()
+
+            # Return to the previously selected row (bug #93).
+            _col = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _col)
 
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
@@ -5313,42 +5372,43 @@ class Hardware(object):
 
             if _type_ == 0:  # Failure mode.
                 # Update the FMECA table.
-                _values_ = (model.get_value(row, self._FMECA_col_order[1]), \
-                            model.get_value(row, self._FMECA_col_order[2]), \
-                            model.get_value(row, self._FMECA_col_order[3]), \
-                            model.get_value(row, self._FMECA_col_order[4]), \
-                            model.get_value(row, self._FMECA_col_order[5]), \
-                            model.get_value(row, self._FMECA_col_order[6]), \
-                            model.get_value(row, self._FMECA_col_order[7]), \
-                            model.get_value(row, self._FMECA_col_order[8]), \
-                            model.get_value(row, self._FMECA_col_order[9]), \
-                            model.get_value(row, self._FMECA_col_order[10]), \
-                            model.get_value(row, self._FMECA_col_order[11]), \
-                            model.get_value(row, self._FMECA_col_order[12]), \
-                            model.get_value(row, self._FMECA_col_order[13]), \
+                _values_ = (model.get_value(row, self._FMECA_col_order[1]),
+                            model.get_value(row, self._FMECA_col_order[2]),
+                            model.get_value(row, self._FMECA_col_order[3]),
+                            model.get_value(row, self._FMECA_col_order[4]),
+                            model.get_value(row, self._FMECA_col_order[5]),
+                            model.get_value(row, self._FMECA_col_order[6]),
+                            model.get_value(row, self._FMECA_col_order[7]),
+                            model.get_value(row, self._FMECA_col_order[8]),
+                            model.get_value(row, self._FMECA_col_order[9]),
+                            model.get_value(row, self._FMECA_col_order[10]),
+                            model.get_value(row, self._FMECA_col_order[11]),
+                            model.get_value(row, self._FMECA_col_order[12]),
+                            model.get_value(row, self._FMECA_col_order[13]),
+                            model.get_value(row, self._FMECA_col_order[14]),
                             float(model.get_value(row,
-                                                  self._FMECA_col_order[14])), \
+                                                  self._FMECA_col_order[15])),
                             float(model.get_value(row,
-                                                  self._FMECA_col_order[15])), \
+                                                  self._FMECA_col_order[16])),
                             float(model.get_value(row,
-                                                  self._FMECA_col_order[16])), \
+                                                  self._FMECA_col_order[17])),
                             float(model.get_value(row,
-                                                  self._FMECA_col_order[17])), \
+                                                  self._FMECA_col_order[18])),
                             float(model.get_value(row,
-                                                  self._FMECA_col_order[18])), \
-                            model.get_value(row, self._FMECA_col_order[20]), \
+                                                  self._FMECA_col_order[20])),
                             model.get_value(row, self._FMECA_col_order[21]),
+                            model.get_value(row, self._FMECA_col_order[22]),
                             int(model.get_value(row,
-                                                self._FMECA_col_order[22])), \
+                                                self._FMECA_col_order[23])),
                             int(model.get_value(row,
-                                                self._FMECA_col_order[23])), \
-                            model.get_value(row, self._FMECA_col_order[24]), \
+                                                self._FMECA_col_order[24])),
+                            model.get_value(row, self._FMECA_col_order[25]),
                             int(model.get_value(row,
                                                 self._FMECA_col_order[0])))
 
                 _query = "UPDATE tbl_fmeca \
                           SET fld_mode_description='%s', \
-                              fld_mission_phase='%s', \
+                              fld_mission='%s', fld_mission_phase='%s', \
                               fld_local_effect='%s', fld_next_effect='%s', \
                               fld_end_effect='%s', fld_detection_method='%s', \
                               fld_other_indications='%s', \

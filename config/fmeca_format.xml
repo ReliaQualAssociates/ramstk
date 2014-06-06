@@ -3,7 +3,7 @@
 
       fmeca_format.xml is part of the RTK Project
 
-      Copyright 2010-2013 Andrew "Weibullguy" Rowland
+      Copyright 2010-2014 Andrew "Weibullguy" Rowland
                           <darowland@ieee.org>
 
 All rights reserved.
@@ -34,10 +34,19 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
+            <defaulttitle>Mission</defaulttitle>
+            <usertitle>Mission</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
             <defaulttitle>Mission Phase</defaulttitle>
             <usertitle>Mission Phase</usertitle>
             <datatype>gchararray</datatype>
-            <position>2</position>
+            <position>3</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -46,7 +55,7 @@ experience. -->
             <defaulttitle>Local Effect</defaulttitle>
             <usertitle>Local Effect</usertitle>
             <datatype>gchararray</datatype>
-            <position>3</position>
+            <position>4</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -55,7 +64,7 @@ experience. -->
             <defaulttitle>Next Effect</defaulttitle>
             <usertitle>Next Effect</usertitle>
             <datatype>gchararray</datatype>
-            <position>4</position>
+            <position>5</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -64,7 +73,7 @@ experience. -->
             <defaulttitle>End Effect</defaulttitle>
             <usertitle>End Effect</usertitle>
             <datatype>gchararray</datatype>
-            <position>5</position>
+            <position>6</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -73,7 +82,7 @@ experience. -->
             <defaulttitle>Detection Method</defaulttitle>
             <usertitle>Detection Method</usertitle>
             <datatype>gchararray</datatype>
-            <position>6</position>
+            <position>7</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -82,7 +91,7 @@ experience. -->
             <defaulttitle>Other Indications</defaulttitle>
             <usertitle>Other Indications</usertitle>
             <datatype>gchararray</datatype>
-            <position>7</position>
+            <position>8</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -91,7 +100,7 @@ experience. -->
             <defaulttitle>Isolation Method</defaulttitle>
             <usertitle>Isolation Method</usertitle>
             <datatype>gchararray</datatype>
-            <position>8</position>
+            <position>9</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -100,7 +109,7 @@ experience. -->
             <defaulttitle>Design Provisions</defaulttitle>
             <usertitle>Design Provisions</usertitle>
             <datatype>gchararray</datatype>
-            <position>9</position>
+            <position>10</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -109,7 +118,7 @@ experience. -->
             <defaulttitle>Operator Actions</defaulttitle>
             <usertitle>Operator Actions</usertitle>
             <datatype>gchararray</datatype>
-            <position>10</position>
+            <position>11</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -118,7 +127,7 @@ experience. -->
             <defaulttitle>Severity Class</defaulttitle>
             <usertitle>Severity Class</usertitle>
             <datatype>gchararray</datatype>
-            <position>11</position>
+            <position>12</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -127,7 +136,7 @@ experience. -->
             <defaulttitle>Hazard Rate Data Source</defaulttitle>
             <usertitle>Hazard Rate Data Source</usertitle>
             <datatype>gchararray</datatype>
-            <position>12</position>
+            <position>13</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -136,7 +145,7 @@ experience. -->
             <defaulttitle>Failure Probability</defaulttitle>
             <usertitle>Failure Probability</usertitle>
             <datatype>gchararray</datatype>
-            <position>13</position>
+            <position>14</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -145,7 +154,7 @@ experience. -->
             <defaulttitle>Effect Probability</defaulttitle>
             <usertitle>Effect Probability</usertitle>
             <datatype>gchararray</datatype>
-            <position>14</position>
+            <position>15</position>
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -154,7 +163,7 @@ experience. -->
             <defaulttitle>Mode Ratio</defaulttitle>
             <usertitle>Mode Ratio</usertitle>
             <datatype>gchararray</datatype>
-            <position>15</position>
+            <position>16</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -163,7 +172,7 @@ experience. -->
             <defaulttitle>Mode Failure Rate</defaulttitle>
             <usertitle>Mode Failure Rate</usertitle>
             <datatype>gchararray</datatype>
-            <position>16</position>
+            <position>17</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -172,7 +181,7 @@ experience. -->
             <defaulttitle>Mode Operating Time</defaulttitle>
             <usertitle>Mode Operating Time</usertitle>
             <datatype>gchararray</datatype>
-            <position>17</position>
+            <position>18</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -181,7 +190,7 @@ experience. -->
             <defaulttitle>Mode Criticality</defaulttitle>
             <usertitle>Mode Criticality</usertitle>
             <datatype>gchararray</datatype>
-            <position>18</position>
+            <position>19</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -190,7 +199,7 @@ experience. -->
             <defaulttitle>Item Criticality</defaulttitle>
             <usertitle>Item Criticality</usertitle>
             <datatype>gchararray</datatype>
-            <position>19</position>
+            <position>20</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -199,7 +208,7 @@ experience. -->
             <defaulttitle>Severity (RPN)</defaulttitle>
             <usertitle>Severity (RPN)</usertitle>
             <datatype>gchararray</datatype>
-            <position>20</position>
+            <position>21</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -208,7 +217,7 @@ experience. -->
             <defaulttitle>Severity New (RPN)</defaulttitle>
             <usertitle>Severity New (RPN)</usertitle>
             <datatype>gchararray</datatype>
-            <position>21</position>
+            <position>22</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -217,7 +226,7 @@ experience. -->
             <defaulttitle>Critical Item</defaulttitle>
             <usertitle>Critical Item</usertitle>
             <datatype>gint</datatype>
-            <position>22</position>
+            <position>23</position>
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>0</visible>
@@ -226,7 +235,7 @@ experience. -->
             <defaulttitle>Single Point of Failure</defaulttitle>
             <usertitle>Single Point of Failure</usertitle>
             <datatype>gint</datatype>
-            <position>23</position>
+            <position>24</position>
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>1</visible>
@@ -235,7 +244,7 @@ experience. -->
             <defaulttitle>Remarks</defaulttitle>
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
-            <position>24</position>
+            <position>25</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>

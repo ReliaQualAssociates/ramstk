@@ -87,9 +87,9 @@ class Revision(object):
         #  Maximum Value, Mean Value, Variance]
         self._dic_environments = {}
 
-        # Define private REVISION class list attributes.
+        # Define private Revision class list attributes.
 
-        # Define public REVISION class attributes.
+        # Define public Revision class attributes.
         self.revision_id = 0
         self.name = ''
         self.n_parts = 0
@@ -113,6 +113,10 @@ class Revision(object):
         self.mission_availability = 0.0
         self.remarks = ''
         self.code = ''
+        self.program_time = 0.0
+        self.program_time_se = 0.0
+        self.program_cost = 0.0
+        self.program_cost_se = 0.0
 
         # Create the main REVISION class treeview.
         (self.treeview,
@@ -1345,34 +1349,54 @@ class Revision(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        (_model_, _row_) = treeview.get_selection().get_selected()
+        (_model_, _row) = treeview.get_selection().get_selected()
 
         # If selecting a revision, load everything associated with
         # the new revision.
-        if _row_ is not None:
-            self.revision_id = _model_.get_value(_row_, 0)
-            self.availability = _model_.get_value(_row_, 1)
-            self.mission_availability = _model_.get_value(_row_, 2)
-            self.cost = _model_.get_value(_row_, 3)
-            self.cost_per_failure = _model_.get_value(_row_, 4)
-            self.cost_per_hour = _model_.get_value(_row_, 5)
-            self.active_hazard_rate = _model_.get_value(_row_, 6)
-            self.dormant_hazard_rate = _model_.get_value(_row_, 7)
-            self.mission_hazard_rate = _model_.get_value(_row_, 8)
-            self.hazard_rate = _model_.get_value(_row_, 9)
-            self.software_hazard_rate = _model_.get_value(_row_, 10)
-            self.mmt = _model_.get_value(_row_, 11)
-            self.mcmt = _model_.get_value(_row_, 12)
-            self.mpmt = _model_.get_value(_row_, 13)
-            self.mission_mtbf = _model_.get_value(_row_, 14)
-            self.mtbf = _model_.get_value(_row_, 15)
-            self.mttr = _model_.get_value(_row_, 16)
-            self.name = _model_.get_value(_row_, 17)
-            self.mission_reliability = _model_.get_value(_row_, 18)
-            self.reliability = _model_.get_value(_row_, 19)
-            self.remarks = _model_.get_value(_row_, 20)
-            self.n_parts = _model_.get_value(_row_, 21)
-            self.code = _model_.get_value(_row_, 22)
+        if _row is not None:
+            self.revision_id = _model_.get_value(_row, self._lst_col_order[0])
+            self.availability = _model_.get_value(_row,
+                                                  self._lst_col_order[1])
+            self.mission_availability = _model_.get_value(
+                _row, self._lst_col_order[2])
+            self.cost = _model_.get_value(_row, self._lst_col_order[3])
+            self.cost_per_failure = _model_.get_value(_row,
+                                                      self._lst_col_order[4])
+            self.cost_per_hour = _model_.get_value(_row,
+                                                   self._lst_col_order[5])
+            self.active_hazard_rate = _model_.get_value(_row,
+                                                        self._lst_col_order[6])
+            self.dormant_hazard_rate = _model_.get_value(_row,
+                                                         self._lst_col_order[7])
+            self.mission_hazard_rate = _model_.get_value(_row,
+                                                         self._lst_col_order[8])
+            self.hazard_rate = _model_.get_value(_row,
+                                                 self._lst_col_order[9])
+            self.software_hazard_rate = _model_.get_value(
+                _row, self._lst_col_order[10])
+            self.mmt = _model_.get_value(_row, self._lst_col_order[11])
+            self.mcmt = _model_.get_value(_row, self._lst_col_order[12])
+            self.mpmt = _model_.get_value(_row, self._lst_col_order[13])
+            self.mission_mtbf = _model_.get_value(_row,
+                                                  self._lst_col_order[14])
+            self.mtbf = _model_.get_value(_row, self._lst_col_order[15])
+            self.mttr = _model_.get_value(_row, self._lst_col_order[16])
+            self.name = _model_.get_value(_row, self._lst_col_order[17])
+            self.mission_reliability = _model_.get_value(
+                _row, self._lst_col_order[18])
+            self.reliability = _model_.get_value(_row,
+                                                 self._lst_col_order[19])
+            self.remarks = _model_.get_value(_row, self._lst_col_order[20])
+            self.n_parts = _model_.get_value(_row, self._lst_col_order[21])
+            self.code = _model_.get_value(_row, self._lst_col_order[22])
+            self.program_time = _model_.get_value(_row,
+                                                  self._lst_col_order[23])
+            self.program_time_se = _model_.get_value(_row,
+                                                     self._lst_col_order[24])
+            self.program_cost = _model_.get_value(_row,
+                                                  self._lst_col_order[25])
+            self.program_cost_se = _model_.get_value(_row,
+                                                     self._lst_col_order[26])
 
             # Build the queries to select the components, reliability tests,
             # and program incidents associated with the selected REVISION.
@@ -1827,32 +1851,42 @@ class Revision(object):
                         model.get_value(row, self._lst_col_order[20]),
                         model.get_value(row, self._lst_col_order[21]),
                         model.get_value(row, self._lst_col_order[22]),
+                        model.get_value(row, self._lst_col_order[23]),
+                        model.get_value(row, self._lst_col_order[24]),
+                        model.get_value(row, self._lst_col_order[25]),
+                        model.get_value(row, self._lst_col_order[26]),
                         model.get_value(row, self._lst_col_order[0]))
-            _query_ = "UPDATE tbl_revisions \
-                       SET fld_availability=%f, fld_availability_mission=%f, \
-                           fld_cost=%f, fld_cost_failure=%f, \
-                           fld_cost_hour=%f, \
-                           fld_failure_rate_active=%f, \
-                           fld_failure_rate_dormant=%f, \
-                           fld_failure_rate_mission=%f, \
-                           fld_failure_rate_predicted=%f, \
-                           fld_failure_rate_software=%f, fld_mmt=%f, \
-                           fld_mcmt=%f, fld_mpmt=%f, fld_mtbf_mission=%f, \
-                           fld_mtbf_predicted=%f, fld_mttr=%f, fld_name='%s', \
-                           fld_reliability_mission=%f, \
-                           fld_reliability_predicted=%f, fld_remarks='%s', \
-                           fld_total_part_quantity=%d, fld_revision_code='%s' \
-                       WHERE fld_revision_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _query = "UPDATE tbl_revisions \
+                      SET fld_availability=%f, fld_availability_mission=%f, \
+                          fld_cost=%f, fld_cost_failure=%f, \
+                          fld_cost_hour=%f, \
+                          fld_failure_rate_active=%f, \
+                          fld_failure_rate_dormant=%f, \
+                          fld_failure_rate_mission=%f, \
+                          fld_failure_rate_predicted=%f, \
+                          fld_failure_rate_software=%f, fld_mmt=%f, \
+                          fld_mcmt=%f, fld_mpmt=%f, fld_mtbf_mission=%f, \
+                          fld_mtbf_predicted=%f, fld_mttr=%f, fld_name='%s', \
+                          fld_reliability_mission=%f, \
+                          fld_reliability_predicted=%f, fld_remarks='%s', \
+                          fld_total_part_quantity=%d, \
+                          fld_revision_code='%s', fld_program_time=%f, \
+                          fld_program_time_sd=%f, fld_program_cost=%f, \
+                          fld_program_cost_sd=%f \
+                      WHERE fld_revision_id=%d" % _values_
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                self._app.debug_log.error("revision.py: Failed to save "
+                                          "revision %d." %
+                                          model.get_value(
+                                              row, self._lst_col_order[0]))
+                return True
+            else:
+                return False
 
-            if not _results_:
-                self._app.debug_log.error("revision.py: Failed to save revision to tbl_revisions.")
-
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
-        _model_.foreach(_save_line, self)
+        if self.treeview.get_model().foreach(_save_line, self):
+            _util.rtk_error(_(u"Error saving revision to the RTK Program "
+                              u"database."))
 
         self._save_use_profile()
         self._save_failure_definition()
