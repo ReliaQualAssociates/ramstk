@@ -72,15 +72,16 @@ def _vandv_tree_edit(__cell, path, new_text, position, model):
 
     return False
 
-def _add_to_combo(cell, path, new_text):
+
+def _add_to_combo(cell, __path, new_text):
     """
     Function to add a new value to a gtk.CellRendererCombo() that has the
     'has-entry' property set to True.
 
     @param cell: the gtk.CellRendererCombo() calling this function.
     @type cell: gtk.CellRendererCombo
-    @param path: the path of the currently selected gtk.TreeIter().
-    @type path: string
+    @param __path: the path of the currently selected gtk.TreeIter().
+    @type __path: string
     @param new_text: the new text that was entered into the
                      gtk.CellRendererCombo().
     @type new_text: string
@@ -96,10 +97,11 @@ def _add_to_combo(cell, path, new_text):
         _current_items.append(_model.get_value(_row, 0))
         _row = _model.iter_next(_row)
 
-    if not new_text in _current_items:
+    if new_text not in _current_items:
         _model.append([new_text])
 
     return False
+
 
 class Requirement(object):
     """
@@ -115,18 +117,18 @@ class Requirement(object):
         @param application: the RTK application.
         """
 
-        # Define private REQUIREMENT class attributes.
+        # Define private Requirement class attributes.
         self._ready = False
         self._app = application
         self._selected_tab = 1
 
-        # Define private REQUIREMENT class dictionary attributes.
+        # Define private Requirement class dictionary attributes.
         self._dic_owners = {}
 
-        # Define private REQUIREMENT class list attributes.
+        # Define private Requirement class list attributes.
         self._lst_col_order = []
 
-        # Define public REQUIREMENT class attributes.
+        # Define public Requirement class attributes.
         self.requirement_id = 0
         self.assembly_id = 0
         self.requirement_desc = ''
@@ -321,7 +323,9 @@ class Requirement(object):
         _position_ += 1
 
         # Add child (derived) requirement button.
-        self.btnAddChild.set_tooltip_text(_(u"Adds a new requirement subordinate to the selected requirement."))
+        self.btnAddChild.set_tooltip_text(_(u"Adds a new requirement "
+                                            u"subordinate to the selected "
+                                            u"requirement."))
         _image_ = gtk.Image()
         _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         self.btnAddChild.set_icon_widget(_image_)
@@ -366,7 +370,9 @@ class Requirement(object):
         _position_ += 1
 
         # Assign existing V&V task button
-        self.btnAssign.set_tooltip_text(_(u"Assigns an exisiting Verification and Validation (V&V) task to the selected requirement."))
+        self.btnAssign.set_tooltip_text(_(u"Assigns an existing Verification "
+                                          u"and Validation (V&V) task to the "
+                                          u"selected requirement."))
         self.btnAssign.set_name('Assign')
         _image_ = gtk.Image()
         _image_.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
@@ -375,7 +381,9 @@ class Requirement(object):
         _toolbar_.insert(self.btnAssign, _position_)
         _position_ += 1
 
-        self.cmbVandVTasks.set_tooltip_text(_(u"List of existing V&V activities available to assign to selected requirement."))
+        self.cmbVandVTasks.set_tooltip_text(_(u"List of existing V&V "
+                                              u"activities available to "
+                                              u"assign to a requirement."))
         alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
         alignment.add(self.cmbVandVTasks)
         toolitem = gtk.ToolItem()
@@ -385,6 +393,7 @@ class Requirement(object):
         _toolbar_.show()
 
         # Hide the toolbar items associated with the V&V tab.
+        self.btnAdd.hide()
         self.btnAssign.hide()
         self.cmbVandVTasks.hide()
 
@@ -532,7 +541,8 @@ class Requirement(object):
                                                       None,
                                                       self._app.ComCnx)
             _widg.load_combo(self.cmbRqmtType, _results_, False)
-            _cell_ = self.treeview.get_column(self._lst_stakeholder_col_order[4]).get_cell_renderers()
+            _cell_ = self.treeview.get_column(
+                self._lst_stakeholder_col_order[4]).get_cell_renderers()
             _cell_model_ = _cell_[0].get_property('model')
             _cell_model_.clear()
             for i in range(len(_results_)):
@@ -588,7 +598,8 @@ class Requirement(object):
                                                      u"validated."))
             self.txtValidatedDate.connect('focus-out-event',
                                           self._callback_entry, 'text', 9)
-            _fxdGeneralData.put(self.txtValidatedDate, _x_pos_ + 200, _y_pos_[5])
+            _fxdGeneralData.put(self.txtValidatedDate, _x_pos_ + 200,
+                                _y_pos_[5])
 
             self.btnValidateDate.set_tooltip_text(_(u"Launches the calendar "
                                                     u"to select the date the "
@@ -597,7 +608,8 @@ class Requirement(object):
             self.btnValidateDate.connect('button-release-event',
                                          _util.date_select,
                                          self.txtValidatedDate)
-            _fxdGeneralData.put(self.btnValidateDate, _x_pos_ + 305, _y_pos_[5])
+            _fxdGeneralData.put(self.btnValidateDate, _x_pos_ + 305,
+                                _y_pos_[5])
 
             self.cmbOwner.set_tooltip_text(_(u"Displays the responsible "
                                              u"organization or individual for "
@@ -658,9 +670,9 @@ class Requirement(object):
             Function to the create the tab for analyzing the selected
             requirement.
 
-            Keyword Arguments:
-            self     -- the current instance of a REQUIREMENT class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Requirement class.
+            @param notebook: the gtk.Notebook() to add the general data tab.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -694,7 +706,8 @@ class Requirement(object):
                                      gtk.POLICY_AUTOMATIC)
             _scwComplete_.add_with_viewport(_fxdComplete_)
 
-            _fraComplete_ = _widg.make_frame(label=_(u"Completeness of Requirement"))
+            _fraComplete_ = _widg.make_frame(label=_(u"Completeness of "
+                                                     u"Requirement"))
             _fraComplete_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _fraComplete_.add(_scwComplete_)
 
@@ -712,7 +725,8 @@ class Requirement(object):
                                        gtk.POLICY_AUTOMATIC)
             _scwConsistent_.add_with_viewport(_fxdConsistent_)
 
-            _fraConsistent_ = _widg.make_frame(label=_(u"Consistency of Requirement"))
+            _fraConsistent_ = _widg.make_frame(label=_(u"Consistency of "
+                                                       u"Requirement"))
             _fraConsistent_.set_shadow_type(gtk.SHADOW_NONE)
             _fraConsistent_.add(_scwConsistent_)
 
@@ -727,7 +741,8 @@ class Requirement(object):
                                        gtk.POLICY_AUTOMATIC)
             _scwVerifiable_.add_with_viewport(_fxdVerifiable_)
 
-            _fraVerifiable_ = _widg.make_frame(label=_(u"Verifiability of Requirement"))
+            _fraVerifiable_ = _widg.make_frame(label=_(u"Verifiability of "
+                                                       u"Requirement"))
             _fraVerifiable_.set_shadow_type(gtk.SHADOW_NONE)
             _fraVerifiable_.add(_scwVerifiable_)
 
@@ -738,34 +753,52 @@ class Requirement(object):
             # information.                                                  #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the labels for quadrant #1.
-            _labels_ = [_(u"The requirement clearly states what is needed or desired."),
-                        _(u"The requirement is unambiguous and not open to interpretation."),
-                        _(u"All terms that can have more than one meaning are qualified so that the desired meaning is readily apparent."),
-                        _(u"Diagrams, drawings, etc. are used to increase understanding of the requirement."),
-                        _(u"The requirement is free from spelling and grammatical errors."),
-                        _(u"The requirement is written in non-technical language using the vocabulary of the stakeholder."),
-                        _(u"Stakeholders understand the requirement as written."),
-                        _(u"The requirement is clear enough to be turned over to an independent group and still be understood."),
-                        _(u"The requirement avoids stating how the problem is to be solved or what techniques are to be used.")]
+            _labels = [_(u"The requirement clearly states what is needed or "
+                         u"desired."),
+                       _(u"The requirement is unambiguous and not open to "
+                         u"interpretation."),
+                       _(u"All terms that can have more than one meaning are "
+                         u"qualified so that the desired meaning is readily "
+                         u"apparent."),
+                       _(u"Diagrams, drawings, etc. are used to increase "
+                         u"understanding of the requirement."),
+                       _(u"The requirement is free from spelling and "
+                         u"grammatical errors."),
+                       _(u"The requirement is written in non-technical "
+                         u"language using the vocabulary of the stakeholder."),
+                       _(u"Stakeholders understand the requirement as "
+                         u"written."),
+                       _(u"The requirement is clear enough to be turned over "
+                         u"to an independent group and still be understood."),
+                       _(u"The requirement avoids stating how the problem is "
+                         u"to be solved or what techniques are to be used.")]
 
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_, _y_pos1_) = _widg.make_labels(_labels_, _fxdClear_, 5, 5)
+            (_max1_, _y_pos1_) = _widg.make_labels(_labels, _fxdClear_, 5, 5)
 
             # Create the labels for quadrant #3.
-            _labels_ = [_(u"Performance objectives are properly documented from the user's point of view."),
-                        _(u"No necessary information is missing from the requirement."),
-                        _(u"The requirement has been assigned a priority."),
-                        _(u"The requirement is realistic given the technology that will used to implement the system."),
-                        _(u"The requirement is feasible to implement given the defined project timeframe, scope, structure and budget."),
-                        _(u"If the requirement describes something as a 'standard' the specific source is cited."),
-                        _(u"The requirement is relevant to the problem and its solution."),
-                        _(u"The requirement contains no implied design details."),
-                        _(u"The requirement contains no implied implementation constraints."),
-                        _(u"The requirement contains no implied project management constraints.")]
+            _labels = [_(u"Performance objectives are properly documented "
+                         u"from the user's point of view."),
+                       _(u"No necessary information is missing from the "
+                         u"requirement."),
+                       _(u"The requirement has been assigned a priority."),
+                       _(u"The requirement is realistic given the technology "
+                         u"that will used to implement the system."),
+                       _(u"The requirement is feasible to implement given the "
+                         u"defined project time frame, scope, structure and "
+                         u"budget."),
+                       _(u"If the requirement describes something as a "
+                         u"'standard' the specific source is cited."),
+                       _(u"The requirement is relevant to the problem and its "
+                         u"solution."),
+                       _(u"The requirement contains no implied design "
+                         u"details."),
+                       _(u"The requirement contains no implied implementation "
+                         u"constraints."),
+                       _(u"The requirement contains no implied project "
+                         u"management constraints.")]
 
             (_max2_,
-             _y_pos2_) = _widg.make_labels(_labels_, _fxdComplete_, 5, 5)
+             _y_pos2_) = _widg.make_labels(_labels, _fxdComplete_, 5, 5)
             _x_pos_ = max(_max1_, _max2_) + 50
 
             # Place the quadrant 1 widgets.
@@ -830,30 +863,46 @@ class Requirement(object):
             _fxdComplete_.put(self.chkCompleteQ10, _x_pos_, _y_pos2_[9])
 
             # Create the labels for quadrant #2.
-            _labels_ = [_(u"The requirement describes a single need or want; it could not be broken into several different requirements."),
-                        _(u"The requirement requires non-standard hardware or must use software to implement."),
-                        _(u"The requirement can be implemented within known constraints."),
-                        _(u"The requirement provides an adequate basis for design and testing."),
-                        _(u"The requirement adequately supports the business goal of the project."),
-                        _(u"The requirement does not conflict with some constraint, policy or regulation."),
-                        _(u"The requirement does not conflict with another requirement."),
-                        _(u"The requirement is not a duplicate of another requirement."),
-                        _(u"The requirement is in scope for the project.")]
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_, _y_pos1_) = _widg.make_labels(_labels_,
+            _labels = [_(u"The requirement describes a single need or want; "
+                         u"it could not be broken into several different "
+                         u"requirements."),
+                       _(u"The requirement requires non-standard hardware or "
+                         u"must use software to implement."),
+                       _(u"The requirement can be implemented within known "
+                         u"constraints."),
+                       _(u"The requirement provides an adequate basis for "
+                         u"design and testing."),
+                       _(u"The requirement adequately supports the business "
+                         u"goal of the project."),
+                       _(u"The requirement does not conflict with some "
+                         u"constraint, policy or regulation."),
+                       _(u"The requirement does not conflict with another "
+                         u"requirement."),
+                       _(u"The requirement is not a duplicate of another "
+                         u"requirement."),
+                       _(u"The requirement is in scope for the project.")]
+
+            (_max1_, _y_pos1_) = _widg.make_labels(_labels,
                                                    _fxdConsistent_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 50
 
             # Create the labels for quadrant #4.
-            _labels_ = [_(u"The requirement is verifiable by testing, demonstration, review, or analysis."),
-                        _(u"The requirement lacks 'weasel words' (e.g. various, mostly, suitable, integrate, maybe, consistent, robust, modular,  user-friendly, superb, good)."),
-                        _(u"Any performance criteria are quantified such that they are testable."),
-                        _(u"Independent testing would be able to determine whether the requirement has been satisfied."),
-                        _(u"The task(s) that will validate and verify the final design satisfies the requirement have been identified."),
-                        _(u"The identified V&amp;V task(s) have been added to the validation plan (e.g., DVP)")]
-            _max2_ = 0
-            (_max2_, _y_pos2_) = _widg.make_labels(_labels_,
+            _labels = [_(u"The requirement is verifiable by testing, "
+                         u"demonstration, review, or analysis."),
+                       _(u"The requirement lacks 'weasel words' (e.g. "
+                         u"various, mostly, suitable, integrate, maybe, "
+                         u"consistent, robust, modular, user-friendly, "
+                         u"superb, good)."),
+                       _(u"Any performance criteria are quantified such that "
+                         u"they are testable."),
+                       _(u"Independent testing would be able to determine "
+                         u"whether the requirement has been satisfied."),
+                       _(u"The task(s) that will validate and verify the "
+                         u"final design satisfies the requirement have been "
+                         u"identified."),
+                       _(u"The identified V&amp;V task(s) have been added to "
+                         u"the validation plan (e.g., DVP)")]
+
+            (_max2_, _y_pos2_) = _widg.make_labels(_labels,
                                                    _fxdVerifiable_, 5, 5)
             _x_pos_ = max(_max1_, _max2_) + 50
 
@@ -923,12 +972,12 @@ class Requirement(object):
 
         def _create_vandv_tab(self, notebook):
             """
-            Function to create the Verification and Validation Plan gtk.Notebook
-            tab and populate it with the appropriate widgets.
+            Function to create the Verification and Validation Plan
+            gtk.Notebook() tab and populate it with the appropriate widgets.
 
-            Keyword Arguments:
-            self     -- the current instance of a REQUIREMENT class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Requirement class.
+            @param notebook: the gtk.Notebook() to add the general data tab.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -995,11 +1044,10 @@ class Requirement(object):
                              "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_tooltip_text(_(u"Displays the list of V&V tasks for the selected requirement."))
+            label.set_tooltip_text(_(u"Displays the list of V&V tasks for the "
+                                     u"selected requirement."))
             label.show_all()
-            notebook.insert_page(_fraVandV,
-                                 tab_label=label,
-                                 position=-1)
+            notebook.insert_page(_fraVandV, tab_label=label, position=-1)
 
             return False
 
@@ -1031,7 +1079,7 @@ class Requirement(object):
         _query = "SELECT * FROM tbl_requirements \
                   WHERE fld_revision_id=%d \
                   ORDER BY fld_requirement_id" % \
-                  self._app.REVISION.revision_id
+                 self._app.REVISION.revision_id
         _results = self._app.DB.execute_query(_query,
                                               None,
                                               self._app.ProgCnx)
@@ -1262,8 +1310,9 @@ class Requirement(object):
             Function to load the Requirements Analysis tab widgets with the
             values from the RTK Program database.
 
-            Keyword Arguments:
-            self -- the current instance of a REQUIREMENT class.
+            @param self: the current instance of a Requirement class.
+            @return: False if successful and True if an error is encountered.
+            @rtype: boolean
             """
 
             self.chkClearQ1.set_active(self.clear_q1)
@@ -1321,9 +1370,11 @@ class Requirement(object):
 
         self.notebook.set_current_page(self._selected_tab)
         if self._selected_tab == 3:
+            self.btnAdd.show()
             self.btnAssign.show()
             self.cmbVandVTasks.show()
         else:
+            self.btnAdd.hide()
             self.btnAssign.hide()
             self.cmbVandVTasks.hide()
 
@@ -1334,17 +1385,20 @@ class Requirement(object):
         Callback function for handling mouse clicks on the Requirement
         Object treeview.
 
-        Keyword Arguments:
-        treeview -- the REQUIREMENTS object gtk.TreeView().
-        event    -- a gtk.gdk.Event() that called this function (the
-                    important attribute is which mouse button was clicked).
-                    1 = left
-                    2 = scrollwheel
-                    3 = right
-                    4 = forward
-                    5 = backward
-                    8 =
-                    9 =
+        @param treeview: the Requirements class gtk.TreeView().
+        @type treeview: gtk.TreeView
+        @param event: the gtk.gdk.Event() that called this function (the
+                      important attribute is which mouse button was clicked).
+                      1 = left
+                      2 = scrollwheel
+                      3 = right
+                      4 = forward
+                      5 = backward
+                      8 =
+                      9 =
+        @type event: gtk.gdk.Event
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         if event.button == 1:
@@ -1356,15 +1410,19 @@ class Requirement(object):
 
     def _treeview_row_changed(self, treeview, __path, __column):
         """
-        Callback function to handle events for the REQUIREMENT Object treeview.
-        It is called whenever the REQUIREMENT Object treeview is clicked or a
-        row is activated.  It will save the previously selected row in the
-        REQUIREMENT Object treeview.
+        Callback function to handle events for the Requirement class
+        gtk.TreeView().  It is called whenever the Requirement class
+        gtk.TreeView() is clicked or a row is activated.
 
-        Keyword Arguments:
-        treeview -- the REQUIREMENT object gtk.TreeView().
-        __path   -- the actived row gtk.TreeView() path.
-        __column -- the actived gtk.TreeViewColumn().
+        @param treeview: the Requirement class gtk.TreeView().
+        @type treeview: gtk.TreeView
+        @param __path: the activated row gtk.TreeView() path.
+        @param __path: string
+        @param __column: the activated column index in the Revision class
+                         gtk.TreeView().
+        @type __column: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         (_model_, _row_) = treeview.get_selection().get_selected()
@@ -1438,12 +1496,16 @@ class Requirement(object):
 
     def _add_requirement(self, __button, level):
         """
-        Method to add a new Requirement to the RTK Program's database.
+        Method to add a new Requirement to the open RTK Program database.
 
-        @param button: the gtk.ToolButton() that called this function.
+        @param __button: the gtk.ToolButton() that called this function.
+        @type __button: gtk.ToolButton
         @param level: the indenture level of the Requirement(s) to add.
                       0 = sibling
                       1 = child.
+        @type level: integer
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         # Find the selected requirement.
@@ -1471,21 +1533,18 @@ class Requirement(object):
         # Now add the number of derived or sibling requirements the user
         # requested.
         for i in range(_n_requirements_):
-            _requirement_name_ = "New Requirement_" + str(i)
-            _query_ = "INSERT INTO tbl_requirements \
-                       (fld_revision_id, fld_assembly_id, \
-                        fld_requirement_desc, fld_parent_requirement) \
-                       VALUES (%d, %d, '%s', '%s')" % \
-                       (self._app.REVISION.revision_id,
-                        self._app.HARDWARE.assembly_id, _requirement_name_,
-                        _parent_)
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _requirement_name = "New Requirement_" + str(i)
+            _query = "INSERT INTO tbl_requirements \
+                      (fld_revision_id, fld_assembly_id, \
+                       fld_requirement_desc, fld_parent_requirement) \
+                      VALUES (%d, %d, '%s', '%s')" % \
+                     (self._app.REVISION.revision_id,
+                      self._app.HARDWARE.assembly_id, _requirement_name,
+                      _parent_)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
 
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("requirement.py: Failed to add requirement.")
+                _util.rtk_error(_(u"Error adding new reuqirement."))
                 return True
 
         self._app.REVISION.load_tree()
@@ -1497,34 +1556,32 @@ class Requirement(object):
         """
         Method to add one or more stakeholder inputs to the RTK Program
         database.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _n_inputs_ = _util.add_items(title=_(u"RTK - Add Stakeholder Inputs"),
-                                     prompt=_(u"How many stakeholder inputs to add?"))
+                                     prompt=_(u"How many stakeholder inputs "
+                                              u"to add?"))
 
         if _n_inputs_ > 0:
-# Find the currently selected stakeholder input, if any, and retrieve the
-# revision ID.  If there is no selected stakeholder input, retrieve the
-# revision ID from the global REVISION Object variable revision_id
-            _selection_ = self.tvwStakeholderInput.get_selection()
-            (_model_, _row_) = _selection_.get_selected()
-
-            _revision_id_ = self._app.REVISION.revision_id
-
+            # Find the currently selected stakeholder input, if any, and
+            # retrieve the revision ID.  If there is no selected stakeholder
+            # input, retrieve the revision ID from the public Revision class
+            # variable revision_id
             for i in range(_n_inputs_):
-                _input_ = "Stakeholder input %d" % i
-                _query_ = "INSERT INTO tbl_stakeholder_input \
-                           (fld_revision_id, fld_stakeholder, \
-                            fld_description, fld_group) \
-                           VALUES (%d, '', '%s', '')" % \
-                           (_revision_id_, _input_)
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                _input = "Stakeholder input %d" % i
+                _query = "INSERT INTO tbl_stakeholder_input \
+                          (fld_revision_id, fld_stakeholder, \
+                           fld_description, fld_group) \
+                          VALUES (%d, '', '%s', '')" % \
+                         (self._app.REVISION.revision_id, _input)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
 
-                if _results_ == '' or not _results_ or _results_ is None:
-                    self._app.debug_log.error("requirement.py: Failed to add stakeholder inputs.")
+                    _util.rtk_error(_(u"Error adding new stakeholder input."))
                     return True
 
             self._load_stakeholder_inputs()
@@ -1553,14 +1610,9 @@ class Requirement(object):
                                             _task_name)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Failed to add new V&V task to "
-                                          u"requirement %d.  Check the error "
-                                          u"log at %s.  If the problem "
-                                          u"persists, contact "
-                                          u"bugs@reliaqual.com with the error "
-                                          u"log attached.") %
-                                        (self.requirement_id,
-                                         _conf.LOG_DIR + "RTK_error.log"))
+                _util.rtk_error(_(u"Failed to add new V&V task to requirement "
+                                  u"%d.") % (self.requirement_id,
+                                             _conf.LOG_DIR + "RTK_error.log"))
                 return True
 
             if _conf.BACKEND == 'mysql':
@@ -1580,14 +1632,8 @@ class Requirement(object):
                       self.requirement_id)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Failed to add new V&V task %d to "
-                                          u"the validation matrix.  Check the "
-                                          u"error log at %s.  If the problem "
-                                          u"persists, contact "
-                                          u"bugs@reliaqual.com with the error "
-                                          u"log attached.") %
-                                        (_task_id[0][0],
-                                         _conf.LOG_DIR + "RTK_error.log"))
+                _util.rtk_error(_(u"Failed to add new V&V task %d to the "
+                                  u"validation matrix.") % _task_id[0][0])
                 return True
 
 # FIXME: This seems a kludgy way to do this.  Try to make it more efficient.
@@ -1608,14 +1654,8 @@ class Requirement(object):
                                               _task_id, self.requirement_id)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Failed to add new V&V task %d to "
-                                          u"the validation matrix.  Check the "
-                                          u"error log at %s.  If the problem "
-                                          u"persists, contact "
-                                          u"bugs@reliaqual.com with the error "
-                                          u"log attached.") %
-                                        (_task_id[0][0],
-                                         _conf.LOG_DIR + "RTK_error.log"))
+                _util.rtk_error(_(u"Failed to add new V&V task %d to the "
+                                  u"validation matrix.") % _task_id[0][0])
                 return True
 
         self._load_vandv_tasks()
@@ -1631,31 +1671,27 @@ class Requirement(object):
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         # Delete any and all derived requirements.
-        _query_ = "DELETE FROM tbl_requirements \
-                   WHERE fld_parent_requirement=%d" % \
-                   _model_.get_string_from_iter(_row_)
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
+        _query = "DELETE FROM tbl_requirements \
+                  WHERE fld_parent_requirement=%d" % \
+                 _model_.get_string_from_iter(_row_)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.user_log.error("requirement.py: Failed to delete derived requirements from requirement %d." % _model_.get_value(_row_, 1))
+            _util.rtk_error(_(u"Error deleting derived requirements from "
+                              u"requirement %d." %
+                              _model_.get_value(_row_, 1)))
             return True
 
         # Then delete the requirement itself.
-        _values_ = (self._app.REVISION.revision_id, \
-                    _model_.get_value(_row_, 1))
-        _query_ = "DELETE FROM tbl_requirements \
-                   WHERE fld_revision_id=%d \
-                   AND fld_requirement_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
+        _query = "DELETE FROM tbl_requirements \
+                  WHERE fld_revision_id=%d \
+                  AND fld_requirement_id=%d" % (self._app.REVISION.revision_id,
+                                                _model_.get_value(_row_, 1))
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.user_log.error("requirement.py: Failed to delete requirement %d." % _model_.get_value(_row_, 1))
+            _util.rtk_error(_(u"Error deleting requirement %d." %
+                              _model_.get_value(_row_, 1)))
             return True
 
         self.load_tree()
@@ -1666,21 +1702,21 @@ class Requirement(object):
         """
         Method to delete the selected stakeholder input from the RTK Program
         Database.
+
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        (_model_,
-         _row_) = self.tvwStakeholderInput.get_selection().get_selected()
+        (_model,
+         _row) = self.tvwStakeholderInput.get_selection().get_selected()
 
-        _query_ = "DELETE FROM tbl_stakeholder_input \
-                   WHERE fld_input_id=%d" % \
-                   _model_.get_value(_row_, self._lst_stakeholder_col_order[0])
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
+        _query = "DELETE FROM tbl_stakeholder_input \
+                  WHERE fld_input_id=%d" % \
+                 _model.get_value(_row, self._lst_stakeholder_col_order[0])
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
 
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.user_log.error("requirement.py: Failed to delete requirement.")
+            _util.rtk_error(_(u"Error deleting stakeholder input."))
             return True
 
         self._load_stakeholder_inputs()
@@ -1802,14 +1838,8 @@ class Requirement(object):
                       AND fld_requirement_id=%d" % _values
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Error saving requirement %d.  "
-                                          u"Check the error log at %s.  "
-                                          u"E-mail bugs@reliaqual.com with "
-                                          u"the error log attached if the "
-                                          u"problem persists.") %
-                                        (model.get_value(
-                                            row, self._lst_col_order[1]),
-                                         _conf.LOG_DIR + "RTK_error.log"))
+                _util.rtk_error(_(u"Error saving requirement %d.") %
+                                model.get_value(row, self._lst_col_order[1]))
                 return True
 
             return False
@@ -1829,15 +1859,16 @@ class Requirement(object):
 
         def _save_line(model, __path, row, self):
             """
-            Function to save each node in the Stakeholder Input gtk.TreeView.
+            Function to save each node in the Stakeholder Input gtk.TreeView().
 
-            Keyword Arguments:
-            model  -- the stakeholder inputs gtk.TreeModel().
-            __path -- the path of the active row in the stakeholder inputs
-                      gtk.TreeModel()..
-            row    -- the selected row in the stakeholder inputs
-                      gtk.TreeView().
-            self   -- the current instance of the REQUIREMENT object.
+            @param model: the stakeholder inputs gtk.TreeModel().
+            @param __path: the path of the active gtk.TreeIter()row in the
+                           stakeholder inputs gtk.TreeModel().
+            @param row: the selected gtk.TreeIter() in the stakeholder inputs
+                        gtk.TreeView().
+            @param self: the current instance of the Requirement class.
+            @return: False if successful or True if an error is encountered.
+            @rtype: boolean
             """
 
             _user_def_ = []
@@ -1869,22 +1900,37 @@ class Requirement(object):
             model.set_value(row, self._lst_stakeholder_col_order[8],
                             _overall_)
 
-            _values = (model.get_value(row, self._lst_stakeholder_col_order[1]),
-                       model.get_value(row, self._lst_stakeholder_col_order[2]),
-                       model.get_value(row, self._lst_stakeholder_col_order[3]),
-                       model.get_value(row, self._lst_stakeholder_col_order[4]),
-                       model.get_value(row, self._lst_stakeholder_col_order[5]),
-                       model.get_value(row, self._lst_stakeholder_col_order[6]),
-                       model.get_value(row, self._lst_stakeholder_col_order[7]),
-                       model.get_value(row, self._lst_stakeholder_col_order[8]),
-                       model.get_value(row, self._lst_stakeholder_col_order[9]),
-                       model.get_value(row, self._lst_stakeholder_col_order[10]),
-                       model.get_value(row, self._lst_stakeholder_col_order[11]),
-                       model.get_value(row, self._lst_stakeholder_col_order[12]),
-                       model.get_value(row, self._lst_stakeholder_col_order[13]),
-                       model.get_value(row, self._lst_stakeholder_col_order[14]),
+            _values = (model.get_value(row,
+                                       self._lst_stakeholder_col_order[1]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[2]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[3]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[4]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[5]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[6]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[7]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[8]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[9]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[10]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[11]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[12]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[13]),
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[14]),
                        self._app.REVISION.revision_id,
-                       model.get_value(row, self._lst_stakeholder_col_order[0]))
+                       model.get_value(row,
+                                       self._lst_stakeholder_col_order[0]))
             _query = "UPDATE tbl_stakeholder_input \
                       SET fld_stakeholder='%s', fld_description='%s', \
                           fld_group='%s', fld_priority=%d, \
@@ -1897,7 +1943,9 @@ class Requirement(object):
                       AND fld_input_id=%d" % _values
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                self._app.debug_log.error("requirement.py: Failed to save stakeholder inputs.")
+                _util.rtk_error(_(u"Error saving stakeholder input %d.") %
+                                model.get_value(
+                                    row, self._lst_stakeholder_col_order[0]))
                 return True
 
             return False
@@ -1946,7 +1994,8 @@ class Requirement(object):
                       model.get_value(row, self._lst_col_order[0]))
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                self._app.debug_log.error("requirement.py: Failed to save V&V task %d." % model.get_value(row, self._lst_col_order[0]))
+                _util.rtk_error(_(u"Error saving V&V task %d.") %
+                                model.get_value(row, self._lst_col_order[0]))
                 return True
 
             return False
@@ -2095,7 +2144,8 @@ class Requirement(object):
         _overall = _priority * _improvement * _user_def_1 * _user_def_2 * \
                    _user_def_3 * _user_def_4 * _user_def_5
 
-        _model.set_value(_row, self._lst_stakeholder_col_order[7], _improvement)
+        _model.set_value(_row, self._lst_stakeholder_col_order[7],
+                         _improvement)
         _model.set_value(_row, self._lst_stakeholder_col_order[8], _overall)
 
         return False
@@ -2192,6 +2242,8 @@ class Requirement(object):
 
         @param button: the gtk.ToolButton() that was pressed.
         @type button: gtk.ToolButton
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         _page_ = self.notebook.get_current_page()
