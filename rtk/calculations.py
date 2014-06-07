@@ -208,16 +208,20 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         if harsh:
             if Voper > 0.60 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 60% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 60% " \
+                                                 "rated voltage.\n"
                 r_index += 1
             if Tmax - Toper <= 10.0:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating temperature within 10.0C of maximum rated temperature.\n"
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 10.0C of maximum " \
+                                                 "rated temperature.\n"
                 r_index += 1
         else:
             if Voper > 0.90 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
                 r_index += 1
 
     elif category == 2:                     # Connection
@@ -232,24 +236,30 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         if harsh:
             if Voper > 0.7 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 70% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 70% " \
+                                                 "rated voltage.\n"
                 r_index += 1
             if Ioper > 0.7 * Irate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 70% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 70% " \
+                                                 "rated current.\n"
                 r_index += 1
             if (Trise + Toper - Tmax) < 25:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating temperature within 25.0C of maximum rated temperature.\n"
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 25.0C of maximum " \
+                                                 "rated temperature.\n"
                 r_index += 1
         else:
             if Voper > 0.9 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
                 r_index += 1
             if Ioper > 0.9 * Irate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
                 r_index += 1
 
     elif category == 3:                    # Inductive Device
@@ -263,24 +273,30 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         if harsh:
             if Ioper > 0.60 * Irate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 60% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 60% " \
+                                                 "rated current.\n"
                 r_index += 1
             if Voper > 0.50 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 50% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 50% " \
+                                                 "rated voltage.\n"
                 r_index += 1
             if Ths - Toper < 15.0:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating temperature within 15.0C of maximum rated temperature.\n"
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 15.0C of maximum " \
+                                                 "rated temperature.\n"
                 r_index += 1
         else:
             if Ioper > 0.90 * Irate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
                 r_index += 1
             if Voper > 0.90 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
                 r_index += 1
 
     elif category == 4:                     # Integrated Circuit
@@ -294,38 +310,46 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
             if harsh:
                 if Tjunc > 135.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 135.0C.\n"
+                    reason = reason + str(r_index) + ". Junction temperature " \
+                                                     "> 135.0C.\n"
                     r_index += 1
         else:
             if harsh:
                 if Voper > 1.05 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 105% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "105% rated voltage.\n"
                     r_index += 1
                 if Voper < 0.95 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage < 95% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage < " \
+                                                     "95% rated voltage.\n"
                     r_index += 1
                 if Ioper > 0.80 * Irate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 80% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "80% rated current.\n"
                     r_index += 1
                 if Tjunc > 125.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                    reason = reason + str(r_index) + ". Junction temperature " \
+                                                     "> 125.0C.\n"
                     r_index += 1
             else:
                 if Voper > 1.05 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 105% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "105% rated voltage.\n"
                     r_index += 1
                 if Voper < 0.95 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage < 95% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage < " \
+                                                     "95% rated voltage.\n"
                     r_index += 1
                 if Ioper > 0.90 * Irate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "90% rated current.\n"
                     r_index += 1
 
     elif category == 6:                    # Miscellaneous
@@ -337,7 +361,8 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
             Vrated = partmodel.get_value(partrow, 94)
             if Voper >= 0.94 * Vrated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 94% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 94% " \
+                                                 "rated voltage.\n"
                 r_index += 1
         elif subcategory == 82:            # Fuse
             # TODO: Overstress calculations for fuses.
@@ -355,45 +380,53 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         if harsh:
             if Aidx == 1 and Ioper > 0.75 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 75% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 75% " \
+                                                 "rated current.\n"
                 r_index += 1
             elif Aidx == 2 and Ioper > 0.75 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 75% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 75% " \
+                                                 "rated current.\n"
                 r_index += 1
             elif Aidx == 3 and Ioper > 0.40 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 40% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 40% " \
+                                                 "rated current.\n"
                 r_index += 1
         else:
             if Aidx == 1 and Ioper > 0.90 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
                 r_index += 1
             elif Aidx == 2 and Ioper > 0.90 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
                 r_index += 1
             elif Aidx == 3 and Ioper > 0.50 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 50% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 50% " \
+                                                 "rated current.\n"
                 r_index += 1
 
     elif category == 8:                    # Resistor
-        # TODO: Add temperature limit overstress calculations for resistors
-        # TODO: Add voltage ratio overstress calculations for variable resistors.
+# TODO: Add temperature limit overstress calculations for resistors
+# TODO: Add voltage ratio overstress calculations for variable resistors.
         Poper = partmodel.get_value(partrow, 64)
         Prated = partmodel.get_value(partrow, 93)
 
         if harsh:
             if Poper > 0.5 * Prated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating power > 50% rated power.\n"
+                reason = reason + str(r_index) + ". Operating power > 50% " \
+                                                 "rated power.\n"
                 r_index += 1
         else:
             if Poper > 0.8 * Prated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating power > 80% rated power.\n"
+                reason = reason + str(r_index) + ". Operating power > 80% " \
+                                                 "rated power.\n"
                 r_index += 1
 
     elif category == 9:                    # Semiconductor
@@ -409,102 +442,122 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
             if harsh:
                 if Poper > 0.7 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 70% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
                     r_index += 1
                 if Tjunc > 125.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
                     r_index += 1
             else:
                 if Poper > 0.9 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 90% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power " \
+                                                     "> 90% rated power.\n"
                     r_index += 1
 
         elif subcategory > 2 and subcategory < 6:    # Optoelectronics
             if Voper > 0.70 * Vrate:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating voltage > 70% rated voltage.\n"
+                reason = reason + str(r_index) + ". Operating voltage > 70% " \
+                                                 "rated voltage.\n"
                 r_index += 1
             if Tjunc > 125.0:
                 overstress = True
-                reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                reason = reason + str(r_index) + ". Junction temperature > " \
+                                                 "125.0C.\n"
                 r_index += 1
 
         elif subcategory == 6:             # Thyristor
             if harsh:
                 if Ioper > 0.70 * Irate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 70% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "70% rated current.\n"
                     r_index += 1
                 if Voper > 0.70 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 70% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "70% rated voltage.\n"
                     r_index += 1
                 if Tjunc > 125.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
                     r_index += 1
             else:
                 if Ioper > 0.90 * Irate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "90% rated current.\n"
                     r_index += 1
                 if Voper > 0.90 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
                     r_index += 1
 
         elif subcategory == 7:             # GaAs transistor
             if harsh:
                 if Poper > 0.70 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 70% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
                     r_index += 1
                 if Voper > 0.70 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 70% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage " \
+                                                     "> 70% rated voltage.\n"
                     r_index += 1
                 if Tjunc > 135.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
                     r_index += 1
             else:
                 if Poper > 0.90 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 90% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "90% rated power.\n"
                     r_index += 1
                 if Voper > 0.90 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
                     r_index += 1
 
         elif subcategory > 7:              # Silicon transistor
             if harsh:
                 if Poper > 0.70 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 70% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
                     r_index += 1
                 if Voper > 0.75 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 70% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "70% rated voltage.\n"
                     r_index += 1
                 if Tjunc > 125.0:
                     overstress = True
-                    reason = reason + str(r_index) + ". Junction temperature > 125.0C.\n"
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
                     r_index += 1
             else:
                 if Poper > 0.90 * Prate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating power > 90% rated power.\n"
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "90% rated power.\n"
                     r_index += 1
                 if Voper > 0.90 * Vrate:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating voltage > 90% rated voltage.\n"
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
                     r_index += 1
 
     elif category == 10:                   # Switching Device
-        # TODO: Add contact power overstress calculations for switches
+# TODO: Add contact power overstress calculations for switches
         Aidx = partmodel.get_value(partrow, 5)
         Ioper = partmodel.get_value(partrow, 62)
         Irated = partmodel.get_value(partrow, 92)
@@ -512,57 +565,54 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         if subcategory == 71:              # Circuit Breaker
             if Ioper > 0.8 * Irated:
                 overstress = True
-                reason = reason + str(r_index) + ". Operating current > 80% rated current.\n"
+                reason = reason + str(r_index) + ". Operating current > 80% " \
+                                                 "rated current.\n"
                 r_index += 1
 
         else:
             if harsh:
                 if Aidx == 1 and Ioper > 0.75 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 75% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 75% rated current.\n"
                     r_index += 1
                 elif Aidx == 2 and Ioper > 0.75 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 75% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "75% rated current.\n"
                     r_index += 1
                 elif Aidx == 3 and Ioper > 0.40 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 40% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "40% rated current.\n"
                     r_index += 1
             else:
                 if Aidx == 1 and Ioper > 0.90 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 90% rated current.\n"
                     r_index += 1
                 elif Aidx == 2 and Ioper > 0.90 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 90% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 90% rated current.\n"
                     r_index += 1
                 elif Aidx == 3 and Ioper > 0.50 * Irated:
                     overstress = True
-                    reason = reason + str(r_index) + ". Operating current > 50% rated current.\n"
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 50% rated current.\n"
                     r_index += 1
 
     return overstress, reason
 
 
 def similar_hazard_rate(component, new_qual, new_environ, new_temp):
-
     """
     Calculates the estimated hazard rate of a similar item based on
     differences in quality level, environment, and operating temperature.
 
     All conversion factors come from Reliability Toolkit: Commercial Practices
     Edition, Section 6.3.3.
-
-    Keyword Arguments:
-    component   -- the Component Object to perform calculations on.
-    new_qual    -- the quality level of the new item.
-    new_environ -- the environment of the new item.
-    new_temp    -- the operating temperature of the new item.
-
-    Returns:
-    hr_similar -- the estimated hazard rate for the new item.
 
     To convert from quality A to quality B use conversion factors from
     Table 6.3.3-1 (reproduced below).
@@ -616,6 +666,17 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     -------------+------+------+------+------+------+------+------+
     70           |  2.4 |  2.2 |  1.9 |  1.8 |  1.5 |  1.2 |  1.0 |
     -------------+------+------+------+------+------+------+------+
+
+    @param component: the rtk.Component() class to perform calculations on.
+    @type component: rtk.Component
+    @param new_qual: the index of the quality level of the new item.
+    @type new_qual: integer
+    @param new_environ: the index of the environment of the new item.
+    @type new_environ: integer
+    @param new_temp: the index of the operating temperature of the new item.
+    @type new_temp: integer
+    @return: hr_similar; the estimated hazard rate for the new item.
+    @rtype: float
     """
 
     qual_factor = [[1.0, 0.8, 0.5, 0.2],
@@ -676,25 +737,21 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
                    [1.9, 1.7, 1.6, 1.5, 1.2, 1.0, 0.8],
                    [2.4, 2.2, 1.9, 1.8, 1.5, 1.2, 1.0]]
 
-    base_temp = component.system_model.get_value(component.system_selected_row, 80)
+    base_temp = component.system_model.get_value(
+        component.system_selected_row, 80)
     temp = temp_factor[base_temp][new_temp]
 
-    hr_similar = 1 / ((1 / component.system_model.get_value(component.system_selected_row, 28)) * quality * environ * temp)
+    hr_similar = 1.0 / ((1.0 / component.system_model.get_value(
+        component.system_selected_row, 28)) * quality * environ * temp)
 
     return hr_similar
 
 
-def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa):
-
+def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
+                        lambdaa):
     """
     Calculates the dormant hazard rate based on active environment, dormant
     environment, and component category.
-
-    @param category: the component category index.
-    @param subcategory: the component subcategory index.
-    @param active_env: the active environment index.
-    @param dormant_env: the dormant environment index.
-    @param lambdaa: the active hazard rate of the component.
 
     All conversion factors come from Reliability Toolkit: Commercial
     Practices Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below).
@@ -727,6 +784,19 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     --------------+-------+--------+--------+-------+-------+-------+-------+
     Transformers  | 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
     --------------+-------+--------+--------+-------+-------+-------+-------+
+
+    @param category: the component category index.
+    @type category: integer
+    @param subcategory: the component subcategory index.
+    @type subcategory: integer
+    @param active_env: the active environment index.
+    @type active_env: integer
+    @param dormant_env: the dormant environment index.
+    @type dormant_env: integer
+    @param lambdaa: the active hazard rate of the component.
+    @type lambdaa: float
+    @return: lambdad; the dormant hazard rate.
+    @rtype: float
     """
 
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -741,51 +811,51 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
               [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
     # First find the component category/subcategory index.
-    if category == 1:                      # Capacitor
+    if category == 1:                       # Capacitor
         c_index = 3
-    elif category == 2:                    # Connection
+    elif category == 2:                     # Connection
         c_index = 7
-    elif category == 3:                    # Inductive Device.
-        if subcategory > 1:                # Transformer
+    elif category == 3:                     # Inductive Device.
+        if subcategory > 1:                 # Transformer
             c_index = 9
-    elif category == 4:                    # Integrated Circuit
+    elif category == 4:                     # Integrated Circuit
         c_index = 0
-    elif category == 7:                    # Relay
+    elif category == 7:                     # Relay
         c_index = 6
-    elif category == 8:                    # Resistor
+    elif category == 8:                     # Resistor
         c_index = 4
-    elif category == 9:                    # Semiconductor
-        if subcategory > 0 and subcategory < 7:                # Diode
+    elif category == 9:                     # Semiconductor
+        if subcategory > 0 and subcategory < 7:     # Diode
             c_index = 1
-        elif subcategory > 6 and subcategory < 14:             # Transistor
+        elif subcategory > 6 and subcategory < 14:  # Transistor
             c_index = 2
-    elif category == 10:                   # Switching Device
+    elif category == 10:                    # Switching Device
         c_index = 5
 
-# Now find the appropriate active to passive environment index.
-    if active_env > 0 and active_env < 4:                     # Ground
-        if dormant_env == 1:               # Ground
+    # Now find the appropriate active to passive environment index.
+    if active_env > 0 and active_env < 4:   # Ground
+        if dormant_env == 1:                # Ground
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6:                   # Naval
-        if dormant_env == 1:               # Ground
+    elif active_env > 3 and active_env < 6:         # Naval
+        if dormant_env == 1:                # Ground
             e_index = 4
-        elif dormant_env == 2:             # Naval
+        elif dormant_env == 2:              # Naval
             e_index = 3
         else:
             e_index = 7
-    elif active_env > 5 and active_env < 11:                  # Airborne
-        if dormant_env == 1:               # Ground
+    elif active_env > 5 and active_env < 11:        # Airborne
+        if dormant_env == 1:                # Ground
             e_index = 2
-        elif dormant_env == 3:             # Airborne
+        elif dormant_env == 3:              # Airborne
             e_index = 1
         else:
             e_index = 7
-    elif active_env == 11:                 # Space
-        if dormant_env == 1:               # Ground
+    elif active_env == 11:                  # Space
+        if dormant_env == 1:                # Ground
             e_index = 6
-        elif dormant_env == 4:             # Space
+        elif dormant_env == 4:              # Space
             e_index = 5
         else:
             e_index = 7
@@ -798,19 +868,21 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env, lambdaa)
     return lambdad
 
 
-def criticality_analysis(ModeCA, ItemCA, RPN):
+def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
 
-    @param ModeCA: list containing inputs for the MIL-STD-1629A mode
+    @param modeca: list containing inputs for the MIL-STD-1629A mode
                    criticality calculation.
-    @type ModeCA: list of mixed types
-    @param ItemCA: list containing inputs for the MIL-STD-1629A item
+    @type modeca: list of mixed types
+    @param itemca: list containing inputs for the MIL-STD-1629A item
                    criticality calculation.
-    @type ItemCA: list of mixed types
-    @param RPN: list containing inputs for the automotive criticality
+    @type itemca: list of mixed types
+    @param rpn: list containing inputs for the automotive criticality
                 calculation.
-    @type RPN: list of mixed types
+    @type rpn: list of mixed types
+    @return: modeca, itemca, rpn
+    @rtype: list, list, list
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -820,21 +892,21 @@ def criticality_analysis(ModeCA, ItemCA, RPN):
     # First, calculate the mode criticality and assign result to position 4.
     # Second, calculate the mode failure rate and assign result to position 5.
     # Third, calculate the item criticality and assign result to position 6.
-    _keys = ModeCA.keys()
+    _keys = modeca.keys()
     for i in range(len(_keys)):
-        ModeCA[_keys[i]][4] = ModeCA[_keys[i]][0] * ModeCA[_keys[i]][1] * \
-                              ModeCA[_keys[i]][2] * ModeCA[_keys[i]][3]
-        ModeCA[_keys[i]][5] = ModeCA[_keys[i]][1] * ModeCA[_keys[i]][2]
+        modeca[_keys[i]][4] = modeca[_keys[i]][0] * modeca[_keys[i]][1] * \
+                              modeca[_keys[i]][2] * modeca[_keys[i]][3]
+        modeca[_keys[i]][5] = modeca[_keys[i]][1] * modeca[_keys[i]][2]
 
     # Now calculate the item criticality in accordance with MIL-STD-1629A.
-    _keys = ItemCA.keys()
+    _keys = itemca.keys()
     for i in range(len(_keys)):
-        _cats = sorted(list(set([j[1] for j in ItemCA[_keys[i]]])))
+        _cats = sorted(list(set([j[1] for j in itemca[_keys[i]]])))
         for k in range(len(_cats)):
             _crit = 0.0
-            _modes = [j[0] for j in ItemCA[_keys[i]] if j[1] == _cats[k]]
+            _modes = [j[0] for j in itemca[_keys[i]] if j[1] == _cats[k]]
             for l in range(len(_modes)):
-                _crit += ModeCA[_modes[l]][4]
+                _crit += modeca[_modes[l]][4]
 
             if _cats[k] is not None and _cats[k] != '' and \
                _crit is not None and _crit != '':
@@ -843,15 +915,17 @@ def criticality_analysis(ModeCA, ItemCA, RPN):
                              str(fmt.format(_util.none_to_string(_crit))) + \
                              "\n"
 
-        ItemCA[_keys[i]].append(_item_crit)
+        itemca[_keys[i]].append(_item_crit)
 
-    # Now calculate the RPN criticality.
-    _keys = RPN.keys()
+    # now calculate the rpn criticality.
+    _keys = rpn.keys()
     for i in range(len(_keys)):
-        RPN[_keys[i]][3] = RPN[_keys[i]][0] * RPN[_keys[i]][1] * RPN[_keys[i]][2]
-        RPN[_keys[i]][7] = RPN[_keys[i]][4] * RPN[_keys[i]][5] * RPN[_keys[i]][6]
+        rpn[_keys[i]][3] = rpn[_keys[i]][0] * rpn[_keys[i]][1] * \
+                           rpn[_keys[i]][2]
+        rpn[_keys[i]][7] = rpn[_keys[i]][4] * rpn[_keys[i]][5] * \
+                           rpn[_keys[i]][6]
 
-    return ModeCA, ItemCA, RPN
+    return modeca, itemca, rpn
 
 
 def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
@@ -860,29 +934,43 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     phase.
 
     @param T1: the length of the first test phase.
+    @type T1: float
     @param MTBFi: the inital MTBF for the test phase.
+    @type MTBFi: float
     @param MTBFf: the final MTBF for the test phase.
+    @type MTBFf: float
     @param MTBFa: the average MTBF for the test phase.
+    @type MTBFa: float
     @param GR: the average growth rate across the entire test program.
+    @type GR: float
     @param MS: the management strategy for this program.
+    @type MS: float
     @param FEF: the average FEF for this program.
+    @type FEF: float
     @param Prob: the probability of seeing one failure.
+    @type Prob: float
     @param ti: the growth start time; time to first fix for this program.
+    @type t1: float
     @param fix: list of True/False indicating which parameters are fixed when
-             calculating results for each test phase.
-             0 = Program probability
-             1 = Management strategy
-             2 = Time to first failure
-             3 = Total test time for test phase
-             4 = Test phase initial MTBF
-             5 = Test phase final MTBF
-             6 = Growth rate
+                calculating results for each test phase.
+                0 = Program probability
+                1 = Management strategy
+                2 = Time to first failure
+                3 = Total test time for test phase
+                4 = Test phase initial MTBF
+                5 = Test phase final MTBF
+                6 = Growth rate
+    @type fix: list of booleans
+    @return: GRi, T1, MTBFi, MTBFf; growth rate, test time, initial MTBF,
+                                    final MTBF for the test phase.
+    @rtype: float, float, float, float
     """
 
     # Calculate the average growth rate for the phase.
     if not fix[6]:
         try:
-            GRi = -log(T1 / ti) - 1.0 + sqrt((1.0 + log(T1 / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
+            GRi = -log(T1 / ti) - 1.0 + \
+                  sqrt((1.0 + log(T1 / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
         except(ValueError, ZeroDivisionError):
             GRi = 0.0
     else:
@@ -911,7 +999,8 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     # Calculate total test time for the phase.
     if not fix[3]:
         try:
-            T1 = exp(log(ti) + 1.0 / GRi * (log(MTBFf /MTBFi) + log(1.0 - GRi)))
+            T1 = exp(log(ti) +
+                     1.0 / GRi * (log(MTBFf / MTBFi) + log(1.0 - GRi)))
         except(ValueError, ZeroDivisionError):
             T1 = 0.0
 
@@ -933,26 +1022,6 @@ def crow_amsaa(F, X, alpha, _grouped=False):
      - Cumulative MTBF: MTBFc = 1.0 / lambda * T^(beta - 1)
      - chi square: value of the chi square test statistic.
      - Cm: value of the Cramer-von Mises test statistc.
-
-    Exact Data Example (90% Fisher Matrix Bounds):\n
-     - Beta\t[LCB, 0.6142, UCB]\n
-     - Lambda\t[LCB, 0.4239, UCB]\n
-     - FIi\t[0.01327, 0.02179, 0.03579]\n
-     - FIc\t[0.02499, 0.03548, 0.05039]\n
-     - MTBFi\t[27.94261, 42.8926, 75.34193]\n
-     - MTBFc\t[19.84581, 28.1649, 40.01927]\n
-     - Chi Square\n
-     - Cramer-von Mises\n\n
-
-    Grouped Data Example (90% Fisher Matrix Bounds):\n
-     - Beta\t[0.6546, 0.81361, 1.0112]\n
-     - Lambda\t[0.1459, 0.44585, 1.3621]\n
-     - FIi\t[0.0863, 0.11390, 0.1504]\n
-     - FIc\t[0.1150, 0.14000, 0.1704]\n
-     - MTBFi\t[6.6483, 8.77963, 11.5932]\n
-     - MTBFc\t[5.8680, 7.14286, 8.6947]\n
-     - Chi Square\n
-     - Cramer-von Mises
 
     @param F: list of failure counts.
     @type F: list of integers.
@@ -1078,7 +1147,8 @@ def crow_amsaa(F, X, alpha, _grouped=False):
         # Calculate the Fisher matrix bounds on the instantaneous failure
         # intensity.
         _del_beta = __lambda[1] * X[i]**(__beta[1] - 1.0) + \
-                    __lambda[1] * __beta[1] * X[i]**(__beta[1] - 1.0) * log(X[i])
+                    __lambda[1] * __beta[1] * \
+                    X[i]**(__beta[1] - 1.0) * log(X[i])
         _del_lambda = __beta[1] * X[i]**(__beta[1] - 1.0)
         _var = _del_beta**2.0 * __var[1][1] + \
                _del_lambda**2.0 * __var[0][0] + \
@@ -1144,7 +1214,7 @@ def crow_amsaa(F, X, alpha, _grouped=False):
         # applicability.
         _beta_bar = (sum(F[:i+1]) - 1) * __beta[1] / sum(F[:i+1])
 
-        _ei += ((X[i]/ TTT**_beta_bar) -
+        _ei += ((X[i] / TTT**_beta_bar) -
                 ((2.0 * i - 1.0) / (2.0 * sum(F[:i+1]))))**2.0
         _Cm = _ei / (12.0 * sum(F[:i+1]))
 
@@ -1154,10 +1224,14 @@ def crow_amsaa(F, X, alpha, _grouped=False):
 
 def moving_average(data, n=3):
     """
-    Function to calculate the moving average of a dataset.
+    Function to calculate the moving average of a data set.
 
-    @param _data_: the dataset for which to find the moving average.
+    @param data: the data set for which to find the moving average.
+    @type data: list of floats or integers
     @param n: the desired period.
+    @type n: integer
+    @return: the nth period moving average of data.
+    @rtype: float
     """
 
     _cumsum = np.cumsum(data, dtype=float)  # pylint: disable=E1101
@@ -1179,11 +1253,11 @@ def beta_bounds(a, m, b, alpha):
     @type b: float
     @param alpha: the desired confidence level.
     @type alpha: float
-    @return: (_meanll, _mean, _meanul); the calculated mean and bounds.
+    @return: _meanll, _mean, _meanul; the calculated mean and bounds.
     @rtype: tuple of floats
     """
 
-    from scipy.stats import norm
+    from scipy.stats import norm            # pylint: disable=E0611
 
     if alpha < 0.0:
         _util.rtk_information(_(u"Confidence level take a value between 0 and "
@@ -1238,29 +1312,30 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     @param conf: the confidence level of the KM estimates (default is 75%).
     @param type: the confidence interval type for the KM estimates.
     @return: _KM, a list of lists where each inner list has the following
-            information:
+                  information:
 
-            0 = total number of subjects in each curve.
-            1 = the time points at which the curve has a step.
-            2 = the number of subjects at risk at t.
-            3 = the number of events that occur at time t.
-            4 = the number of subjects that enter at time t (counting
-                process data only).
-            5 = the estimate of survival at time t+0. This may be a vector
-                or a matrix.
-            6 = type of survival censoring.
-            7 = the standard error of the cumulative hazard or -log(survival).
-            8 = upper confidence limit for the survival curve.
-            9 = lower confidence limit for the survival curve.
-           10 = the approximation used to compute the confidence limits.
-           11 = the level of the confidence limits, e.g. 90 or 95%.
-           12 = the returned value from the na.action function, if any.
-                It will be used in the printout of the curve, e.g., the
-                number of observations deleted due to missing values.
+                   0 = total number of subjects in each curve.
+                   1 = the time points at which the curve has a step.
+                   2 = the number of subjects at risk at t.
+                   3 = the number of events that occur at time t.
+                   4 = the number of subjects that enter at time t (counting
+                       process data only).
+                   5 = the estimate of survival at time t+0. This may be a
+                       vector or a matrix.
+                   6 = type of survival censoring.
+                   7 = the standard error of the cumulative hazard or
+                       -log(survival).
+                   8 = upper confidence limit for the survival curve.
+                   9 = lower confidence limit for the survival curve.
+                  10 = the approximation used to compute the confidence limits.
+                  11 = the level of the confidence limits, e.g. 90 or 95%.
+                  12 = the returned value from the na.action function, if any.
+                       It will be used in the printout of the curve, e.g., the
+                       number of observations deleted due to missing values.
     @rtype: list
     """
 
-    from scipy.stats import norm            # pylint: disable=E1101
+    from scipy.stats import norm            # pylint: disable=E0611
 
     # Eliminate zero time failures and failures occurring after any
     # user-supplied upper limit.
@@ -1298,10 +1373,10 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
         _KM_ = survival.survfit(fmla)       # pylint: disable=E1101
 
         # Every subject must have a censored time to use survrec.
-        #survrec = importr('survrec')
-        #units = robjects.StrVector(units)
-        #survr = survrec.Survr(units, times2, status2)
-        #fit = survrec.wc_fit(survr)
+        # survrec = importr('survrec')
+        # units = robjects.StrVector(units)
+        # survr = survrec.Survr(units, times2, status2)
+        # fit = survrec.wc_fit(survr)
 
         return _KM_
 
@@ -1360,8 +1435,9 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
             tj = ti
             ti = _dataset_[i][0]
 
-            _KM_.append([ti, _n_, _d_, _Si_, _Sh_, _se_, _ll_, _ul_, _H_, muhat, var])
-            #if(_s_ > 0):
+            _KM_.append([ti, _n_, _d_, _Si_, _Sh_, _se_, _ll_, _ul_, _H_,
+                         muhat, var])
+            # if(_s_ > 0):
             #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
             #                 _se_, _ll_, _ul_, _H_])
 
@@ -1372,22 +1448,29 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
 
 
 def mean_cumulative_function(units, times, data, _conf_=0.75):
-    """ This function estimates the mean cumulative function for a population
-        of items.
+    """
+    This function estimates the mean cumulative function (MCF) for a population
+    of items.
 
-    @param units: list of unique unit ID's in the dataset.
-    @param times: list of unique failure times in the dataset.
+    @param units: list of unique unit ID's in the data set.
+    @type units: list
+    @param times: list of unique failure times in the data set.
+    @type times: list of floats
     @param data: a data.frame or matrix where:
                  Column 0 is the failed unit id.
                  Column 1 is the left of the interval.
                  Column 2 is the right of the interval.
                  Column 3 is the interarrival time.
-    @param conf: the confidence level of the KM estimates (default is 75%).
+    @type data: R data.frame
+    @param conf: the confidence level of the MCF estimates (default is 75%).
+    @type conf: float
+    @return: MCF
+    @rtype: list of lists
     """
 
-    from scipy.stats import norm            # pylint: disable=E1101
+    from scipy.stats import norm            # pylint: disable=E0611
 
-# Determine the confidence bound z-value.
+    # Determine the confidence bound z-value.
     _z_norm_ = norm.ppf(_conf_)
 
     _m_ = len(units)
@@ -1404,17 +1487,27 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     _delta_ = np.zeros(shape=(_m_, _n_))    # pylint: disable=E1101
 
     for i in range(_n_):
-        k = np.where(data[:, 2] == str(times[i]))    # Array of indices with failure times equal to the current unique failure time.
-        _u_ = np.array(data[k, 0])[0].tolist()       # List of units whose failure time is equal to the current unique failure time.
+        # Array of indices with failure times equal to the current unique
+        # failure time.
+        k = np.where(data[:, 2] == str(times[i]))    # pylint: disable=E1101
+
+        # List of units whose failure time is equal to the current unique
+        # failure time.
+        _u_ = np.array(data[k, 0])[0].tolist()      # pylint: disable=E1101
         for j in range(len(_u_)):
-            k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+            k = [a for a, x in enumerate(units) if x == _u_[j]]
             _delta_[k, 0:i+1] = 1
 
     for i in range(_n_):
-        k = np.where(datad[:, 2] == str(times[i]))   # Array of indices with failure times equal to the current unique failure time.
-        _u_ = np.array(datad[k, 0])[0].tolist()      # List of units whose failure time is equal to the current unique failure time.
+        # Array of indices with failure times equal to the current unique
+        # failure time.
+        k = np.where(datad[:, 2] == str(times[i]))   # pylint: disable=E1101
+
+        # List of units whose failure time is equal to the current unique
+        # failure time.
+        _u_ = np.array(datad[k, 0])[0].tolist()      # pylint: disable=E1101
         for j in range(len(_u_)):
-            k = [a for a, x in enumerate(units) if x == _u_[j]]     #
+            k = [a for a, x in enumerate(units) if x == _u_[j]]
             _d_[k, i] += 1
 
     _delta_ = _delta_.transpose()
@@ -1467,24 +1560,30 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     return _MCF_
 
 
-def parametric_fit(_dataset_, _starttime_, _reltime_,
-                   _fitmeth_, _dist_='exponential'):
+def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_,
+                   _dist_='exponential'):
     """
     Function to fit data to a parametric distribution and estimate the
     parameters.
 
-    @param _dataset_: the dataset to fit.  This is a
+    @param _dataset_: the data set to fit.
+    @type _dataset_: list of floats
     @param _reltime_: the maximum time to include in the fit.  Used to exclude
-                     outliers.
+                      outliers.
+    @type _reltime_: float
     @param _fitmeth_: method used to fit data to the selected distribution.
-                     1 = rank regression
-                     2 = maximum likelihood estimation (MLE)
+                      1 = rank regression
+                      2 = maximum likelihood estimation (MLE)
+    @type _fitmeth_: integer
     @param _dist_: the noun name of the distribution to fit.  Defaults to
-                     the exponential distribution.
+                   the exponential distribution.
+    @type _dist_: string
+    @return: fit
+    @rtype: R.Survival.SurvReg object
     """
 
-# Eliminate zero time failures and failures occurring after any user-supplied
-# upper limit.
+    # Eliminate zero time failures and failures occurring after any
+    # user-supplied upper limit.
     _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
     _dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
 
@@ -1495,7 +1594,7 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
 
         Rbase = importr('base')
 
-        if _fitmeth_ == 1:                 # MLE
+        if _fitmeth_ == 1:                  # MLE
             if _dist_ == 'exponential':
                 _dist_ = 'exp'
             elif _dist_ == 'lognormal':
@@ -1517,11 +1616,11 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
                               ('right', robjects.FloatVector(right))])
 
             censdata = robjects.DataFrame(od)
-            n_row = Rbase.nrow(censdata)
+            n_row = Rbase.nrow(censdata)    # pylint: disable=E1101
             if n_row[0] > 1:
                 fitdistrplus = importr('fitdistrplus')
                 try:
-                    fit = fitdistrplus.fitdistcens(censdata, _dist_)
+                    fit = fitdistrplus.fitdistcens(censdata, _dist_)    # pylint: disable=E1101
                 except ri.RRuntimeError:
                     return True
 
@@ -1530,7 +1629,7 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
             else:
                 return True
 
-        elif _fitmeth_ == 2:               # Regression
+        elif _fitmeth_ == 2:                # Regression
             if _dist_ == 'normal':
                 _dist_ = 'gaussian'
 
@@ -1555,11 +1654,11 @@ def parametric_fit(_dataset_, _starttime_, _reltime_,
             time2 = robjects.FloatVector(time2)
             status = robjects.IntVector(status)
 
-            surv = survival.Surv(time, time2, status, type='interval')
+            surv = survival.Surv(time, time2, status, type='interval')  # pylint: disable=E1101
             robjects.globalenv['surv'] = surv
             formula = robjects.Formula('surv ~ 1')
 
-            fit = survival.survreg(formula, dist=_dist_)
+            fit = survival.survreg(formula, dist=_dist_)    # pylint: disable=E1101
 
     else:
         print "No R"
@@ -1582,7 +1681,7 @@ def smooth_curve(x, y, num):
     @rtype: list
     """
 
-    from scipy.interpolate import spline
+    from scipy.interpolate import spline    # pylint: disable=E0611
 
     _error = False
 
@@ -1590,7 +1689,7 @@ def smooth_curve(x, y, num):
     # x values are in the range of the minimum and maximum x values passed to
     # the function.  The number of new data points between these values is
     # determined by the value of parameter num.
-    _new_x = np.linspace(x.min(), x.max(), num)
+    _new_x = np.linspace(x.min(), x.max(), num)     # pylint: disable=E1101
 
     # Attempt to create a new set of y values using the original x, original y,
     # and new x values.  If the operation is unsuccessful, create a list of
@@ -1600,7 +1699,7 @@ def smooth_curve(x, y, num):
         _new_y = spline(x, y, _new_x)
     except ValueError:
         _error = True
-        _new_y = np.zeros(num)
+        _new_y = np.zeros(num)              # pylint: disable=E1101
 
     _new_x = _new_x.tolist()
     _new_y = _new_y.tolist()
@@ -1609,14 +1708,27 @@ def smooth_curve(x, y, num):
 
 
 def theoretical_distribution(_data_, _distr_, _para_):
+    """
+    Function to generate data points from a theoretical distribution with the
+    parameters provided.
+
+    @param _data_: data set used to bound the theoretical distribution.
+    @type _data_: list of floats
+    @param _distr_: the name of the desired theoretical distribution.
+    @type _distr_: string
+    @param _para_: the parameters of the desired theoretical distribution.
+    @type _para_: list of floats
+    @return: theop
+    @rtype: R object
+    """
 
     Rbase = importr('base')
 
-# Create the R density and probabilty distribution names.
+    # Create the R density and probabilty distribution names.
     ddistname = R.paste('d', _distr_, sep='')
     pdistname = R.paste('p', _distr_, sep='')
 
-# Calculate the minimum and maximum values for x.
+    # Calculate the minimum and maximum values for x.
     xminleft = min([i[0] for i in _data_ if i[0] != 'NA'])
     xminright = min([i[1] for i in _data_ if i[1] != 'NA'])
     x_min = min(xminleft, xminright)
@@ -1629,8 +1741,8 @@ def theoretical_distribution(_data_, _distr_, _para_):
     x_min = x_min - 0.3 * x_range
     x_max = x_max + 0.3 * x_range
 
-# Creat a list of probabilities for the theoretical distribution with the
-# estimated parameters.
+    # Create a list of probabilities for the theoretical distribution with the
+    # estimated parameters.
     den = float(len(_data_))
     densfun = R.get(ddistname, mode='function')
     nm = R.names(_para_)
@@ -1638,6 +1750,6 @@ def theoretical_distribution(_data_, _distr_, _para_):
     args = R.names(f)
     m = R.match(nm, args)
     s = R.seq(x_min, x_max, by=(x_max - x_min) / den)
-    theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))
+    theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))    # pylint: disable=E1101
 
     return theop
