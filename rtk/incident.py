@@ -579,7 +579,7 @@ class Incident(object):
             _fixed1.show_all()
 
             # Connect the quadrant #1 widgets' signals to callback functions.
-            self.btnIncidentDate.connect('released', _util.date_select,
+            self.btnIncidentDate.connect('button-release-event', _util.date_select,
                                          self.txtRequestDate)
 
             self.chkReviewed.connect('toggled', self._callback_check,
@@ -835,12 +835,12 @@ class Incident(object):
             _fixed2.put(self.btnClosureDate, _x_pos + 105, _y_pos[5])
 
             # Connect the quadrant #1 widgets' signals to callback functions.
-            self.btnReviewDate.connect('released', _util.date_select,
-                                       self.txtReviewDate)
-            self.btnApproveDate.connect('released', _util.date_select,
-                                        self.txtApproveDate)
-            self.btnClosureDate.connect('released', _util.date_select,
-                                        self.txtCloseDate)
+            self.btnReviewDate.connect('button-release-event',
+                                       _util.date_select, self.txtReviewDate)
+            self.btnApproveDate.connect('button-release-event',
+                                        _util.date_select, self.txtApproveDate)
+            self.btnClosureDate.connect('button-release-event',
+                                        _util.date_select, self.txtCloseDate)
 
             self.cmbReviewBy.connect('changed', self._callback_combo,
                                      self._lst_col_order[21])

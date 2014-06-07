@@ -2986,7 +2986,7 @@ class Hardware(object):
 
             _button = _widg.make_button(height=25, width=25, label="...",
                                         image=None)
-            _button.connect('released', _util.date_select,
+            _button.connect('button-release-event', _util.date_select,
                             self.txtActionDueDate)
             self.fxdAction.put(self.txtActionDueDate, _x_pos, _y_pos2[2])
             self.fxdAction.put(_button, _x_pos + 105, _y_pos2[2])
@@ -2997,14 +2997,14 @@ class Hardware(object):
 
             _button = _widg.make_button(height=25, width=25, label="...",
                                         image=None)
-            _button.connect('released', _util.date_select,
+            _button.connect('button-release-event', _util.date_select,
                             self.txtActionApproveDate)
             self.fxdAction.put(self.txtActionApproveDate, _x_pos, _y_pos3[1])
             self.fxdAction.put(_button, _x_pos + 105, _y_pos3[1])
 
             _button = _widg.make_button(height=25, width=25, label="...",
                                         image=None)
-            _button.connect('released', _util.date_select,
+            _button.connect('button-release-event', _util.date_select,
                             self.txtActionCloseDate)
             self.fxdAction.put(self.txtActionCloseDate, _x_pos, _y_pos3[3])
             self.fxdAction.put(_button, _x_pos + 105, _y_pos3[3])

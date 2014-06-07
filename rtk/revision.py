@@ -612,13 +612,15 @@ class Revision(object):
             # Mission description widgets.
             self.btnAddMission.set_tooltip_text(_(u"Adds a new mission to the "
                                                   u"selected program."))
-            self.btnAddMission.connect('released', self._add_mission)
+            self.btnAddMission.connect('button-release-event',
+                                       self._add_mission)
             _bbxMission_.pack_start(self.btnAddMission)
 
             self.btnRemoveMission.set_tooltip_text(_(u"Removes the currently "
                                                      u"selected mission from "
                                                      u"the program."))
-            self.btnRemoveMission.connect('released', self._delete_mission)
+            self.btnRemoveMission.connect('button-release-event',
+                                          self._delete_mission)
             _bbxMission_.pack_end(self.btnRemoveMission)
 
             _max1_ = 0
@@ -653,13 +655,15 @@ class Revision(object):
             # Mission profile widgets.
             self.btnAddPhase.set_tooltip_text(_(u"Adds a new phase to the "
                                                 u"selected mission."))
-            self.btnAddPhase.connect('released', self._add_mission_phase)
+            self.btnAddPhase.connect('button-release-event',
+                                     self._add_mission_phase)
             _bbxMissionProfile_.pack_start(self.btnAddPhase)
 
             self.btnRemovePhase.set_tooltip_text(_(u"Removes the currently "
                                                    u"selected phase from the "
                                                    u"mission."))
-            self.btnRemovePhase.connect('released', self._delete_mission_phase)
+            self.btnRemovePhase.connect('button-release-event',
+                                        self._delete_mission_phase)
             _bbxMissionProfile_.pack_end(self.btnRemovePhase)
 
             _scwMissionProfile_.add(self.tvwMissionProfile)
@@ -670,7 +674,8 @@ class Revision(object):
                                                       u"condition to the "
                                                       u"environmental "
                                                       u"profile."))
-            self.btnAddEnvironment.connect('released', self._add_environment)
+            self.btnAddEnvironment.connect('button-release-event',
+                                           self._add_environment)
             _bbxEnvironment_.pack_start(self.btnAddEnvironment)
 
             self.btnRemoveEnvironment.set_tooltip_text(_(u"Removes the "
@@ -679,7 +684,7 @@ class Revision(object):
                                                          u"condition from the "
                                                          u"environmental "
                                                          u"profile."))
-            self.btnRemoveEnvironment.connect('released',
+            self.btnRemoveEnvironment.connect('button-release-event',
                                               self._delete_environment)
             _bbxEnvironment_.pack_end(self.btnRemoveEnvironment)
 
@@ -782,7 +787,7 @@ class Revision(object):
             self.btnAddDefinition.set_tooltip_text(_(u"Adds a new failure "
                                                      u"definition to the "
                                                      u"list."))
-            self.btnAddDefinition.connect('released',
+            self.btnAddDefinition.connect('button-release-event',
                                           self._add_failure_definition)
             _bbxFailureDefs_.pack_start(self.btnAddDefinition)
 
@@ -790,7 +795,7 @@ class Revision(object):
                                                         u"currently selected "
                                                         u"failure definition "
                                                         u"from the list."))
-            self.btnRemoveDefinition.connect('released',
+            self.btnRemoveDefinition.connect('button-release-event',
                                              self._delete_failure_definition)
             _bbxFailureDefs_.pack_end(self.btnRemoveDefinition)
 
@@ -2306,10 +2311,10 @@ class Revision(object):
             self.mission_mtbf = 0.0
 
         # Calculate reliabilities.
-        self.reliability = exp(-1.0 * self.hazard_rate * _conf.MTIME /
+        self.reliability = exp(-1.0 * self.hazard_rate * _conf.RTK_MTIME /
                                _conf.FRMULT)
         self.mission_reliability = exp(-1.0 * self.mission_hazard_rate *
-                                       _conf.MTIME / _conf.FRMULT)
+                                       _conf.RTK_MTIME / _conf.FRMULT)
 
         # Calculate logistics availability.
         try:
@@ -2330,7 +2335,7 @@ class Revision(object):
 
         # Calculate costs.
         self.cost_per_failure = self.cost * self.hazard_rate
-        self.cost_per_hour = self.cost / _conf.MTIME
+        self.cost_per_hour = self.cost / _conf.RTK_MTIME
 
         # Update the Revision class gtk.TreeView().
         (_model, _row) = self.treeview.get_selection().get_selected()

@@ -201,7 +201,7 @@ value for display.  This allows failure rates to display without using
 scientific notation."""
 PLACES = 6
 """ Number of decimal places to show in numerical results."""
-MTIME = 100.0
+RTK_MTIME = 10.0
 """ The default mission time for new RTK Programs."""
 
 # Variables to control GUI options.
@@ -517,7 +517,7 @@ class RTKConf(object):
             config.set('General', 'parallelcalcs', 'False')
             config.set('General', 'frmultiplier', FRMULT)
             config.set('General', 'failtimeunit', 'hours')
-            config.set('General', 'calcreltime', MTIME)
+            config.set('General', 'calcreltime', RTK_MTIME)
             config.set('General', 'autoaddlistitems', 'False')
             config.set('General', 'decimal', PLACES)
             config.set('General', 'treetabpos', TABPOS[0])
@@ -603,7 +603,7 @@ class RTKConf(object):
                 config.write(parser)
                 parser.close()
             except EnvironmentError:
-                print _("Could not save your RTK configuration.")
+                print _(u"Could not save your RTK configuration.")
 
     def read_configuration(self):
         """

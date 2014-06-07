@@ -1517,12 +1517,14 @@ def options(__widget, app):
     Options(app)
 
 
-def date_select(__widget, entry=None):
+def date_select(__widget, __event, entry=None):
     """
     Function to select a date from a calendar widget.
 
-    @param __widget: the gtk.Widget() calling this function.
+    @param __widget: the gtk.Widget() that called this function.
     @type __widget: gtk.Widget
+    @param __event: the gtk.gdk.Event() that called this function.
+    @type __event: gtk.gdk>Event
     @param entry: the gtk.Entry() widget in which to display the date.
     @type entry: gtk.Entry
     @return: _date
@@ -1614,25 +1616,24 @@ def long_call(app):
     app.winWorkBook.window.set_cursor(None)
 
 
-class Options(object):
+class Options(gtk.Window):
     """
     An assistant to provide a GUI to the various configuration files for RTK.
     """
 
-    def __init__(self, _app):
+    def __init__(self, application):
         """
         Allows a user to set site-wide options.
 
-        Keyword Arguments:
-        app    -- the RTK application object.
+        @param application: the current instance of the RTK application.
         """
 
         import pango
 
-        self._app = _app
+        self._app = application
 
-        self.winOptions = gtk.Window()
-        self.winOptions.set_title(_(u"RTK - Options"))
+        gtk.Window.__init__(self)
+        self.set_title(_(u"RTK - Options"))
 
         notebook = gtk.Notebook()
 
@@ -1643,10 +1644,14 @@ class Options(object):
             self.chkRevisions = _widg.make_check_button(_(u"Revisions"))
             self.chkFunctions = _widg.make_check_button(_(u"Functions"))
             self.chkRequirements = _widg.make_check_button(_(u"Requirements"))
-            self.chkSoftware = _widg.make_check_button(_(u"Software Reliability"))
-            self.chkValidation = _widg.make_check_button(_(u"Validation Tasks"))
+            self.chkSoftware = _widg.make_check_button(_(u"Software"))
+            self.chkValidation = _widg.make_check_button(_(u"Validation "
+                                                           u"Tasks"))
             self.chkRG = _widg.make_check_button(_(u"Reliability Tests"))
-            self.chkIncidents = _widg.make_check_button(_(u"Field Incidents"))
+            self.chkIncidents = _widg.make_check_button(_(u"Program "
+                                                          u"Incidents"))
+            self.chkSurvivalAnalysis = _widg.make_check_button(_(u"Survival "
+                                                                 u"Analysis"))
 
             self.btnSaveOptions = gtk.Button(stock=gtk.STOCK_SAVE)
             self.btnSaveOptions.connect('clicked', self.save_options)
@@ -1658,8 +1663,9 @@ class Options(object):
             fixed.put(self.chkValidation, 5, 125)
             fixed.put(self.chkRG, 5, 155)
             fixed.put(self.chkIncidents, 5, 185)
+            fixed.put(self.chkSurvivalAnalysis, 5, 215)
 
-            fixed.put(self.btnSaveOptions, 5, 215)
+            fixed.put(self.btnSaveOptions, 5, 305)
 
             query = "SELECT fld_revision_active, fld_function_active, \
                             fld_requirement_active, fld_hardware_active, \
@@ -1669,10 +1675,8 @@ class Options(object):
                             fld_survival_active, fld_rbd_active, \
                             fld_fta_active \
                      FROM tbl_program_info"
-            results = _app.DB.execute_query(query,
-                                            None,
-                                            _app.ProgCnx,
-                                            commit=False)
+            results = self._app.DB.execute_query(query, None, self._app.ProgCnx,
+                                                commit=False)
 
             self.chkRevisions.set_active(results[0][0])
             self.chkFunctions.set_active(results[0][1])
@@ -1681,20 +1685,75 @@ class Options(object):
             self.chkValidation.set_active(results[0][5])
             self.chkRG.set_active(results[0][6])
             self.chkIncidents.set_active(results[0][8])
+            self.chkSurvivalAnalysis.set_active(results[0][10])
 
-            label = gtk.Label(_("RTK Modules"))
-            label.set_tooltip_text(_("Select active RTK modules."))
+            label = gtk.Label(_(u"RTK Modules"))
+            label.set_tooltip_text(_(u"Select active RTK modules."))
             notebook.insert_page(fixed, tab_label=label, position=-1)
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+
+        # ----- ----- ----- Create default value options ----- ----- ----- #
+        _fixed = gtk.Fixed()
+
+        self.cmbModuleBookTabPosition = _widg.make_combo(simple=True)
+        self.cmbWorkBookTabPosition = _widg.make_combo(simple=True)
+        self.cmbListBookTabPosition = _widg.make_combo(simple=True)
+
+        self.txtFRMultiplier = _widg.make_entry()
+        self.txtDecimalPlaces = _widg.make_entry(width=75)
+        self.txtMissionTime = _widg.make_entry(width=75)
+
+        self.btnDefaultsSave = gtk.Button(stock=gtk.STOCK_SAVE)
+        self.btnDefaultsSave.connect('clicked', self._save_defaults)
+
+        for _position in ["Bottom", "Left", "Right", "Top"]:
+            self.cmbModuleBookTabPosition.append_text(_position)
+            self.cmbWorkBookTabPosition.append_text(_position)
+            self.cmbListBookTabPosition.append_text(_position)
+
+        _label = _widg.make_label(_(u"Module Book tab position:"))
+        _fixed.put(_label, 5, 5)
+        _fixed.put(self.cmbModuleBookTabPosition, 310, 5)
+        _label = _widg.make_label(_(u"Work Book tab position:"))
+        _fixed.put(_label, 5, 35)
+        _fixed.put(self.cmbWorkBookTabPosition, 310, 35)
+        _label = _widg.make_label(_(u"List and Matrix Book tab position:"))
+        _fixed.put(_label, 5, 65)
+        _fixed.put(self.cmbListBookTabPosition, 310, 65)
+        _label = _widg.make_label(_(u"Failure rate multiplier:"))
+        _fixed.put(_label, 5, 125)
+        _fixed.put(self.txtFRMultiplier, 310, 125)
+        _label = _widg.make_label(_(u"Decimal places:"))
+        _fixed.put(_label, 5, 155)
+        _fixed.put(self.txtDecimalPlaces, 310, 155)
+        _label = _widg.make_label(_(u"Default mission time:"))
+        _fixed.put(_label, 5, 185)
+        _fixed.put(self.txtMissionTime, 310, 185)
+
+        _fixed.put(self.btnDefaultsSave, 5, 305)
+
+        _label = gtk.Label(_(u"Look & Feel"))
+        _label.set_tooltip_text(_(u"Allows setting default values in RTK."))
+        notebook.insert_page(_fixed, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- - Create list edit options - ----- ----- ----- #
         fixed = gtk.Fixed()
 
-        self.rdoMeasurement = gtk.RadioButton(group=None, label=_(u"Edit measurement units"))
-        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit requirement types"))
-        self.rdoRiskCategory = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit risk categories"))
-        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit V&V activity types"))
-        self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement, label=_(u"Edit user list"))
+        self.rdoMeasurement = gtk.RadioButton(group=None,
+                                              label=_(u"Edit measurement "
+                                                      u"units"))
+        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoMeasurement,
+                                                   label=_(u"Edit requirement "
+                                                           u"types"))
+        self.rdoRiskCategory = gtk.RadioButton(group=self.rdoMeasurement,
+                                               label=_(u"Edit risk "
+                                                       u"categories"))
+        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoMeasurement,
+                                             label=_(u"Edit V&V activity "
+                                                     u"types"))
+        self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement,
+                                        label=_(u"Edit user list"))
 
         self.btnListEdit = gtk.Button(stock=gtk.STOCK_EDIT)
         self.btnListEdit.connect('clicked', self.edit_lists)
@@ -1707,32 +1766,59 @@ class Options(object):
         fixed.put(self.btnListEdit, 5, 205)
 
         label = gtk.Label(_(u"Edit Lists"))
-        label.set_tooltip_text(_(u"Allows editting of lists used in RTK."))
+        label.set_tooltip_text(_(u"Allows editing of lists used in RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
-        # ----- ----- ----- - Create tree edit options - ----- ----- ----- #
+        # ----- ----- ----- -- Create tree edit options - ----- ----- ----- #
         fixed = gtk.Fixed()
 
-        self.rdoRevision = gtk.RadioButton(group=None, label=_(u"Edit Revision tree layout"))
-        self.rdoFunction = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Function tree layout"))
-        self.rdoRequirement = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Requirement tree layout"))
-        self.rdoHardware = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Hardware tree layout"))
-        self.rdoSoftware = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Software tree layout"))
-        self.rdoValidation = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit V&V tree layout"))
-        self.rdoIncident = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Program Incident tree layout"))
-        self.rdoTesting = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Testing tree layout"))
-        self.rdoSurvival = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Survival Analysis tree layout"))
+        self.rdoRevision = gtk.RadioButton(group=None,
+                                           label=_(u"Edit Revision tree "
+                                                   u"layout"))
+        self.rdoFunction = gtk.RadioButton(group=self.rdoRevision,
+                                           label=_(u"Edit Function tree "
+                                                   u"layout"))
+        self.rdoRequirement = gtk.RadioButton(group=self.rdoRevision,
+                                              label=_(u"Edit Requirement tree "
+                                                      u"layout"))
+        self.rdoHardware = gtk.RadioButton(group=self.rdoRevision,
+                                           label=_(u"Edit Hardware tree "
+                                                   u"layout"))
+        self.rdoSoftware = gtk.RadioButton(group=self.rdoRevision,
+                                           label=_(u"Edit Software tree "
+                                                   u"layout"))
+        self.rdoValidation = gtk.RadioButton(group=self.rdoRevision,
+                                             label=_(u"Edit V&V tree layout"))
+        self.rdoIncident = gtk.RadioButton(group=self.rdoRevision,
+                                           label=_(u"Edit Program Incident "
+                                                   u"tree layout"))
+        self.rdoTesting = gtk.RadioButton(group=self.rdoRevision,
+                                          label=_(u"Edit Testing tree layout"))
+        self.rdoSurvival = gtk.RadioButton(group=self.rdoRevision,
+                                           label=_(u"Edit Survival Analysis "
+                                                   u"tree layout"))
 
-        self.rdoPart = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Part list layout"))
+        self.rdoPart = gtk.RadioButton(group=self.rdoRevision,
+                                       label=_(u"Edit Part list layout"))
 
-        self.rdoAllocation = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Reliability Allocation worksheet layout"))
-        self.rdoRiskAnalysis = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Risk Analysis worksheet layout"))
-        self.rdoSimilarItem = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit Similar Item Analysis worksheet layout"))
-        self.rdoFMECA = gtk.RadioButton(group=self.rdoRevision, label=_(u"Edit FMEA/FMECA worksheet layout"))
+        self.rdoAllocation = gtk.RadioButton(group=self.rdoRevision,
+                                             label=_(u"Edit Reliability "
+                                                     u"Allocation worksheet "
+                                                     u"layout"))
+        self.rdoRiskAnalysis = gtk.RadioButton(group=self.rdoRevision,
+                                               label=_(u"Edit Risk Analysis "
+                                                       u"worksheet layout"))
+        self.rdoSimilarItem = gtk.RadioButton(group=self.rdoRevision,
+                                              label=_(u"Edit Similar Item "
+                                                      u"Analysis worksheet "
+                                                      u"layout"))
+        self.rdoFMECA = gtk.RadioButton(group=self.rdoRevision,
+                                        label=_(u"Edit FMEA/FMECA worksheet "
+                                                u"layout"))
 
         self.btnTreeEdit = gtk.Button(stock=gtk.STOCK_EDIT)
-        self.btnTreeEdit.connect('released', self._edit_tree)
+        self.btnTreeEdit.connect('button-release-event', self._edit_tree)
 
         fixed.put(self.rdoRevision, 5, 5)
         fixed.put(self.rdoFunction, 5, 35)
@@ -1751,7 +1837,8 @@ class Options(object):
         fixed.put(self.btnTreeEdit, 5, 405)
 
         label = gtk.Label(_(u"Edit Tree Layouts"))
-        label.set_tooltip_text(_(u"Allows editting of tree layouts used in RTK."))
+        label.set_tooltip_text(_(u"Allows editing of tree layouts used in "
+                                 u"RTK."))
         notebook.insert_page(fixed, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
@@ -1836,8 +1923,8 @@ class Options(object):
         notebook.insert_page(vbox, tab_label=label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
-        self.winOptions.add(notebook)
-        self.winOptions.show_all()
+        self.add(notebook)
+        self.show_all()
 
     def _edit_tree(self, __button):
         """
@@ -1888,7 +1975,7 @@ class Options(object):
                      datatype[i].text, widget[i].text]
             model.append(_data)
 
-        notebook = self.winOptions.get_children()
+        notebook = self.get_children()
         notebook[0].set_current_page(2)
         _child = notebook[0].get_nth_page(notebook[0].get_current_page())
         notebook[0].set_tab_label_text(_child, _(u"Edit %s Tree" % _name))
@@ -1925,13 +2012,15 @@ class Options(object):
 
     def _cell_toggled(self, cell, path, position, model):
         """
-        Called whenever a TreeView CellRenderer is edited.
+        Called whenever a gtl.TreeView() gtk.CellRenderer() is edited.
 
-        Keyword Arguments:
-        cell     -- the CellRenderer that was edited.
-        path     -- the TreeView path of the CellRenderer that was edited.
-        position -- the column position of the edited CellRenderer.
-        model    -- the TreeModel the CellRenderer belongs to.
+        @param cell: the gtk.CellRenderer() that was edited.
+        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that
+                     was edited.
+        @param position: the column position of the edited gtk.CellRenderer().
+        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
         model[path][position] = not cell.get_active()
@@ -1950,17 +2039,17 @@ class Options(object):
 
         (_name, _fmt_idx) = self._get_format_info()
 
-# Get the format file for the gtk.TreeView to be edited.
+        # Get the format file for the gtk.TreeView to be edited.
         _format_file = _conf.RTK_FORMAT_FILE[_fmt_idx]
         _basename = os.path.basename(_format_file)
 
-# Make a copy of the original format file.
+        # Make a copy of the original format file.
         copyfile(_format_file, _format_file + '.bak')
 
         # Open the format file for writing.
         _file = open(_format_file, 'w')
 
-# Create the new format file.
+        # Create the new format file.
         _file.write("<!--\n")
         _file.write("-*- coding: utf-8 -*-\n\n")
         _file.write("%s is part of the RTK Project\n\n" % _basename)
@@ -1980,13 +2069,20 @@ class Options(object):
         row = model.get_iter_first()
         while row is not None:
             _file.write("\t\t<column>\n")
-            _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" % model.get_value(row, 0))
-            _file.write("\t\t\t<usertitle>%s</usertitle>\n"% model.get_value(row, 1))
-            _file.write("\t\t\t<datatype>%s</datatype>\n" % model.get_value(row, 5))
-            _file.write('\t\t\t<position>%d</position>\n' % model.get_value(row, 2))
-            _file.write("\t\t\t<widget>%s</widget>\n" % model.get_value(row, 6))
-            _file.write("\t\t\t<editable>%d</editable>\n" % model.get_value(row, 3))
-            _file.write("\t\t\t<visible>%d</visible>\n" % model.get_value(row, 4))
+            _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" %
+                        model.get_value(row, 0))
+            _file.write("\t\t\t<usertitle>%s</usertitle>\n"%
+                        model.get_value(row, 1))
+            _file.write("\t\t\t<datatype>%s</datatype>\n" %
+                        model.get_value(row, 5))
+            _file.write('\t\t\t<position>%d</position>\n' %
+                        model.get_value(row, 2))
+            _file.write("\t\t\t<widget>%s</widget>\n" %
+                        model.get_value(row, 6))
+            _file.write("\t\t\t<editable>%d</editable>\n" %
+                        model.get_value(row, 3))
+            _file.write("\t\t\t<visible>%d</visible>\n" %
+                        model.get_value(row, 4))
             _file.write("\t\t</column>\n")
 
             row = model.iter_next(row)
@@ -1995,7 +2091,7 @@ class Options(object):
         _file.write("</root>")
         _file.close()
 
-        self.winOptions.destroy()
+        self.destroy()
 
         return False
 
@@ -2055,7 +2151,7 @@ class Options(object):
         @return: False if successful or True if an error is encountered.
         """
 
-        self.winOptions.destroy()
+        self.destroy()
 
         _values = (self.chkRevisions.get_active(),
                    self.chkFunctions.get_active(),
@@ -2065,7 +2161,7 @@ class Options(object):
                    self.chkRG.get_active(),
                    0,
                    self.chkIncidents.get_active(),
-                   0, 0, 0, 0)
+                   0, self.chkSurvivalAnalysis, 0, 0)
 
         _query = "UPDATE tbl_program_info \
                   SET fld_revision_active=%d, fld_function_active=%d, \
@@ -2074,15 +2170,98 @@ class Options(object):
                       fld_rcm_active=%d, fld_fraca_active=%d, \
                       fld_fmeca_active=%d, fld_survival_active=%d, \
                       fld_rbd_active=%d, fld_fta_active=%d" % _values
-        return self._app.DB.execute_query(_query, None,
-                                          self._app.ProgCnx, commit=True)
+        return self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True)
+
+    def _save_defaults(self, __button):
+        """
+
+        @param __button:  the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False
+        @rtype: boolean
+        """
+
+        import ConfigParser
+        from shutil import copyfile
+
+        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+
+        _config = ConfigParser.RawConfigParser()
+
+        # Make a copy of the original configuration file.
+        copyfile(_conf_file, _conf_file + '.bak')
+
+        # Read the configuration file and get the current values.
+        _config.read(_conf_file)
+
+        _fr_multiplier = _config.get('General', 'frmultiplier')
+        _mission_time = _config.get('General', 'calcreltime')
+        _decimal_places = _config.get('General', 'decimal')
+        _module_tab_position = _config.get('General', 'treetabpos')
+        _work_tab_position = _config.get('General', 'booktabpos')
+        _list_tab_position = _config.get('General', 'listtabpos')
+
+        # Write changes to the configuration file.  If the user has left
+        # something blank, set it to the existing value.
+        try:
+            _config.set('General', 'frmultiplier',
+                        float(self.txtFRMultiplier.get_text()) / 1.0)
+        except ValueError:
+                _config.set('General', 'frmultiplier', _fr_multiplier)
+
+        try:
+            _config.set('General', 'calcreltime',
+                        float(self.txtMissionTime.get_text()) / 1.0)
+        except ValueError:
+            _config.set('General', 'calcreltime', _mission_time)
+
+        try:
+            _config.set('General', 'decimal',
+                        int(self.txtDecimalPlaces.get_text()) / 1)
+        except ValueError:
+            _config.set('General', 'decimal', _decimal_places)
+
+        try:
+            _config.set('General', 'treetabpos',
+                        self.cmbModuleBookTabPosition.get_active_text().lower())
+        except AttributeError:
+            _config.set('General', 'treetabpos', _module_tab_position)
+
+        try:
+            _config.set('General', 'listtabpos',
+                        self.cmbListBookTabPosition.get_active_text().lower())
+        except AttributeError:
+            _config.set('General', 'listtabpos', _list_tab_position)
+
+        try:
+            _config.set('General', 'booktabpos',
+                        self.cmbWorkBookTabPosition.get_active_text().lower())
+        except AttributeError:
+            _config.set('General', 'booktabpos', _work_tab_position)
+
+        try:
+            _parser = open(_conf_file, 'w')
+            _config.write(_parser)
+            _parser.close()
+            self.destroy()
+            return False
+        except EnvironmentError:
+            rtk_error(_(u"Error saving configuration.  Restoring old "
+                        u"configuration values."))
+            copyfile(_conf_file + '.bak', _conf_file)
+            self.destroy()
+            return True
+
+
 
     def edit_lists(self, __button):
         """
 
         @param __button: the gtk.Button() that called this method.
         @type __button: gtk.Button
-        @return:
+        @return: False
+        @rtype: boolean
         """
 
         #if self.rdoMeasurement.get_active():

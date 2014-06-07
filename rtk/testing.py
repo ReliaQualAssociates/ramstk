@@ -811,7 +811,7 @@ class Testing(object):
             # Connect gtk.Widget() signals to callback functions.
             self.cmbPlanModel.connect('changed', self._callback_combo, 12)
             self.cmbAssessModel.connect('changed', self._callback_combo, 13)
-            self.btnFindTTFF.connect('released', _mttff_calculator)
+            self.btnFindTTFF.connect('button-release-event', _mttff_calculator)
             self.txtMTBFI.connect('focus-out-event',
                                   self._callback_entry, 'float', 6)
             self.txtMTBFG.connect('focus-out-event',

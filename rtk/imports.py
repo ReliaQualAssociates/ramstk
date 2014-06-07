@@ -280,7 +280,8 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order, s_treeview, d_treeview)
+            button.connect('button-release-event', _set_import_order,
+                           s_treeview, d_treeview)
 
             response = dialog.run()
 
@@ -651,7 +652,8 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order, s_treeview, d_treeview)
+            button.connect('button-release-event', _set_import_order,
+                           s_treeview, d_treeview)
 
             response = dialog.run()
 
@@ -926,7 +928,7 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order,
+            button.connect('button-release-event', _set_import_order,
                            s_treeview, d_treeview)
 
             response = dialog.run()

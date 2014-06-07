@@ -1215,8 +1215,13 @@ class AddRGRecord(gtk.Assistant):
 # Create the introduction page.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK reliability growth record assistant.  It will help you add a record for tracking against the currently selected reliability growth plan.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=-1, wrap=True)
+        label = _widg.make_label(_(u"This is the RTK reliability growth "
+                                   u"record assistant.  It will help you add "
+                                   u"a record for tracking against the "
+                                   u"currently selected reliability growth "
+                                   u"plan.  Press 'Forward' to continue or "
+                                   u"'Cancel' to quit the assistant."),
+                                 width=600, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.append_page(fixed)
         self.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1234,17 +1239,23 @@ class AddRGRecord(gtk.Assistant):
 
 # Create the gtk.Combo that allow one of multiple selections.
         self.txtDate = _widg.make_entry(width=100)
-        self.txtDate.set_tooltip_text(_(u"Date test record was generated.  This is not necessarily the date the record is being added."))
+        self.txtDate.set_tooltip_text(_(u"Date test record was generated.  "
+                                        u"This is not necessarily the date "
+                                        u"the record is being added."))
         self.btnDate = _widg.make_button(height=25,
                                          width=25,
                                          label="...",
                                          image=None)
-        self.btnDate.connect('released', _util.date_select,
+        self.btnDate.connect('button-release-event', _util.date_select,
                              self.txtDate)
         self.txtTime = _widg.make_entry()
         self.txtTime.set_tooltip_text(_(u"Test time."))
         self.chkAdditional = _widg.make_check_button(_(u"Additional"))
-        self.chkAdditional.set_tooltip_text(_(u"If checked, the test time is additional test time.  If unchecked, the test time is cumulative since the start of testing."))
+        self.chkAdditional.set_tooltip_text(_(u"If checked, the test time is "
+                                              u"additional test time.  If "
+                                              u"unchecked, the test time is "
+                                              u"cumulative since the start of "
+                                              u"testing."))
         self.chkAdditional.set_active(False)
         self.txtNumFails = _widg.make_entry()
         self.txtNumFails.set_tooltip_text(_(u"Number of failures observed."))

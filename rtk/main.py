@@ -179,17 +179,17 @@ class RTK:
             _util.rtk_error(_(u"Invalid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
             quit()
 
-# Get a connection to the program database.
-        if(_conf.BACKEND == 'mysql'):
+        # Get a connection to the program database.
+        if _conf.BACKEND == 'mysql':
             self.DB = _mysql.MySQLInterface(self)
 
-        elif(_conf.BACKEND == 'sqlite3'):
+        elif _conf.BACKEND == 'sqlite3':
             self.DB = _sqlite.SQLite3Interface(self)
 
-# Create the GUI and objects for each of the RTK classes.
+        # Create the GUI and objects for each of the RTK classes.
         self.winWorkBook = _note.WorkBookWindow(self)
 
-# Create each of the modules.
+        # Create each of the modules.
         self.REVISION = Revision(self)
         self.REQUIREMENT = Requirement(self)
         self.FUNCTION = Function(self)

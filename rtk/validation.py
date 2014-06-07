@@ -514,7 +514,7 @@ class Validation(object):
                                                u"select the date the task "
                                                u"was completed."))
             _fxdGenDataQuad2_.put(self.btnEndDate, _x_pos_ + 105, _y_pos1_[1])
-            self.btnEndDate.connect('released', date_select,
+            self.btnEndDate.connect('button-release-event', date_select,
                                     self.txtEndDate)
 
             self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to "
@@ -522,7 +522,7 @@ class Validation(object):
                                                  u"was started."))
             _fxdGenDataQuad2_.put(self.btnStartDate, _x_pos_ + 105,
                                   _y_pos1_[0])
-            self.btnStartDate.connect('released', date_select,
+            self.btnStartDate.connect('button-release-event', date_select,
                                       self.txtStartDate)
 
             self.txtStartDate.set_tooltip_text(_(u"Displays the date the "

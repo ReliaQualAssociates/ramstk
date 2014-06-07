@@ -748,9 +748,9 @@ class Dataset(object):
                                     self._callback_entry, 'date', 36)
             self.txtEndDate.connect('changed', self._callback_entry, None,
                                     'date', 36)
-            self.btnStartDate.connect('released', _util.date_select,
-                                      self.txtStartDate)
-            self.btnEndDate.connect('released', _util.date_select,
+            self.btnStartDate.connect('button-release-event',
+                                      _util.date_select, self.txtStartDate)
+            self.btnEndDate.connect('button-release-event', _util.date_select,
                                     self.txtEndDate)
 
             self.chkGroup.hide()

@@ -594,7 +594,8 @@ class Requirement(object):
                                                     u"to select the date the "
                                                     u"requirement was "
                                                     u"validated."))
-            self.btnValidateDate.connect('released', _util.date_select,
+            self.btnValidateDate.connect('button-release-event',
+                                         _util.date_select,
                                          self.txtValidatedDate)
             _fxdGeneralData.put(self.btnValidateDate, _x_pos_ + 305, _y_pos_[5])
 
