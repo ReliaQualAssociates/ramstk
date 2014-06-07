@@ -118,14 +118,14 @@ class RTK:
         __error_log = _conf.LOG_DIR + '/RTK_error.log'
         __import_log = _conf.LOG_DIR + '/RTK_import.log'
 
-        if(not _util.dir_exists(_conf.LOG_DIR)):
+        if not _util.dir_exists(_conf.LOG_DIR):
             os.makedirs(_conf.LOG_DIR)
 
-        if(_util.file_exists(__user_log)):
+        if _util.file_exists(__user_log):
             os.remove(__user_log)
-        if(_util.file_exists(__error_log)):
+        if _util.file_exists(__error_log):
             os.remove(__error_log)
-        if(_util.file_exists(__import_log)):
+        if _util.file_exists(__import_log):
             os.remove(__import_log)
 
         self.debug_log = _util.create_logger("RTK.debug", logging.DEBUG,

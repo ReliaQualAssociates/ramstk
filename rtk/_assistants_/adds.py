@@ -1534,6 +1534,9 @@ class CreateDataSet(object):
         _confidence_ = float(self.txtConfidence.get_text())
         _description_ = self.txtDescription.get_text()
 
+        self._app.user_log.info('The following records contained inconsistent '
+                                'information and were not used in the '
+                                'creation of the data set:\n')
         # First create a new dataset in the RTK Program database or create a
         # new file to output the results to.
         if self.optDatabase.get_active():
@@ -1823,15 +1826,15 @@ class CreateDataSet(object):
                                     u"the creation of the dataset. Please see "
                                     u"file '%s' for details." %
                                     (_n_inconsistent_,
-                                     _conf.LOG_DIR + 'RTK_import.log')))
+                                     _conf.LOG_DIR + 'RTK_user.log')))
 
         # Load the dataset gtk.TreeView with the newly created dataset if it
         # was created in the RTK Program database.
         if self.optDatabase.get_active():
             self._app.DATASET.load_tree()
-            self._app.DATASET.load_notebook()
-            _page = sum(_conf.RTK_MODULES[:11])
-            self._app.winTree.notebook.set_current_page(_page - 1)
+            #self._app.DATASET.load_notebook()
+            #_page = sum(_conf.RTK_MODULES[:11])
+            #self._app.winTree.notebook.set_current_page(_page)
 
         return False
 
@@ -1862,7 +1865,7 @@ class CreateDataSet(object):
             _err = True
 
         if _err:
-            self._app.import_log.error(_errmsg)
+            self._app.user_log.info(_errmsg)
 
         return _err
 

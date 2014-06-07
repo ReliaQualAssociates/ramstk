@@ -931,6 +931,8 @@ class ImportIncident(gtk.Assistant):
         @rtype: boolean
         """
 
+        _import_error = False
+
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
         # Find the number of existing incidents.
@@ -943,6 +945,9 @@ class ImportIncident(gtk.Assistant):
         _num_incidents = self._app.DB.execute_query(_query, None,
                                                     self._app.ProgCnx)
 
+        self._app.import_log.info('The following records could not be '
+                                  'imported to the open RTK database:\n')
+
         for i in range(len(self._file_contents) - 1):
             _contents = []
 
@@ -951,7 +956,8 @@ class ImportIncident(gtk.Assistant):
                     _contents.append('')
                 else:
                     try:
-                        _contents.append(self._file_contents[i][self._file_index[j]])
+                        _contents.append(
+                            self._file_contents[i][self._file_index[j]])
                     except IndexError:
                         _contents.append('')
 
@@ -1003,7 +1009,8 @@ class ImportIncident(gtk.Assistant):
                               %d, %d, '%s', %d, '%s', '%s', %d)" % _values
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Error importing program incidents."))
+                self._app.import_log.info(_contents)
+                _import_error = True
 
             _values = (str(_contents[1]), str(_contents[32]),
                        float(_contents[33]), int(_contents[34]),
@@ -1022,7 +1029,14 @@ class ImportIncident(gtk.Assistant):
                               %d, %d, %d, %d, %d, %d)" % _values
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.rtk_error(_(u"Error importing program incidents."))
+                self._app.import_log.info(_contents)
+                _import_error = True
+
+        if _import_error:
+            _util.rtk_information(_(u"Error importing one or more program "
+                                    u"incidents.  Refer to the import log %s "
+                                    u"for more details.") %
+                                  _conf.LOG_DIR + "RTK_import.log")
 
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
