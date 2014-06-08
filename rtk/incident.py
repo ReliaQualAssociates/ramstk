@@ -198,6 +198,9 @@ class Incident(object):
                                                     _conf.RTK_COLORS[13])
 
         # Dataset class Work Book toolbar widgets.
+        self.chkAllRevisions = _widg.make_check_button(_(u"Include incidents "
+                                                         u"from all "
+                                                         u"revisions"))
 
         # Create the Program Incident page widgets.
         self.btnIncidentDate = _widg.make_button(height=25, width=25,
@@ -386,6 +389,22 @@ class Incident(object):
         _button.set_tooltip_text(_(u"Launches the Data Set creation "
                                    u"assistant."))
         _toolbar.insert(_button, _pos)
+        _pos += 1
+
+        # Add a checkbutton to allow the user to load all incidents from all
+        # revisions when checked.  The default will be to leave this unchecked.
+        self.chkAllRevisions.set_tooltip_text(_(u"Whether or not to include "
+                                                u"incidents from all "
+                                                u"revisions (checked) or only "
+                                                u"the currently selected "
+                                                u"revision (un-checked)."))
+        self.chkAllRevisions.set_active(False)
+        _alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
+        _alignment.add(self.chkAllRevisions)
+        _toolitem = gtk.ToolItem()
+        _toolitem.add(_alignment)
+        _toolbar.insert(_toolitem, _pos)
+        self.chkAllRevisions.connect('toggled', self.load_tree)
 
         _toolbar.show()
 
@@ -393,7 +412,7 @@ class Incident(object):
 
     def _create_notebook(self):
         """
-        Method to create the Dataset class gtk.Notebook().
+        Method to create the Incident class gtk.Notebook().
 
         @return: _notebook
         @rtype: gtk.Notebook
@@ -405,6 +424,7 @@ class Incident(object):
             displaying general information related to the selected incident.
 
             @param self: the current instance of a Incident class.
+            @type rtk.Incident
             @param notebook: the Incident class gtk.Notebook() widget.
             @type notebook: gtk.Notebook
             @return: False if successful or True if an error is encountered.
@@ -694,7 +714,8 @@ class Incident(object):
             Function to create the Incident class gtk.Notebook() page for
             displaying the analysis of the selected incident.
 
-            @param self: the current instance of a Incident class.
+            @param self: the current instance of the Incident class.
+            @type self: rtk.Incident
             @param notebook: the Incident class gtk.Notebook() widget.
             @type notebook: gtk.Notebook
             @return: False if successful or True if an error is encountered.
@@ -884,21 +905,31 @@ class Incident(object):
 
         return _notebook
 
-    def load_tree(self):
+    def load_tree(self, __button=None):
         """
         Loads the Incident class gtk.TreeModel() with the list of Program
         incidents.
 
+        @param __button: the gtkCheckButton() that called this method.  Needed
+                         to allow the 'All Revisions' gtk.CheckButton() to
+                         call this method.
+        @type __button: gtk.CheckButton
         @return: False if successful or True if an error is encountered.
         @rtype: boolean
         """
 
-        # Select all the program incidents for the selected revision from the
-        # open RTK Program database.
-        _query = "SELECT * FROM tbl_incident \
-                  WHERE fld_revision_id=%d \
-                  ORDER BY fld_incident_id" % \
-                  self._app.REVISION.revision_id
+        # Select all the program incidents.  If the 'All Revisions'
+        # gtk.CheckButton() is active, get all incidents regardless of
+        # revision.  Otherwise, get only incidents associated with the
+        # selected revision.
+        if self.chkAllRevisions.get_active():
+            _query = "SELECT * FROM tbl_incident \
+                      ORDER BY fld_incident_id"
+        else:
+            _query = "SELECT * FROM tbl_incident \
+                      WHERE fld_revision_id=%d \
+                      ORDER BY fld_incident_id" % \
+                     self._app.REVISION.revision_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             self.n_incidents = len(_results)
