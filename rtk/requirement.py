@@ -409,8 +409,10 @@ class Requirement(object):
             Function to create the Stakeholder Input gtk.Notebook tab and
             populate it with the appropriate widgets.
 
-            self     -- the current instance of a Requirement class.
-            notebook -- the gtk.Notebook() to add the general data tab.
+            @param self: the current instance of a Requirement class.
+            @type self: rtk.Requirement
+            @param notebook: the gtk.Notebook() to add the general data page.
+            @type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1157,7 +1159,7 @@ class Requirement(object):
 
         # Load the stakeholder gtk.CellRendererCombo with a list of existing
         # requirement codes in the database.
-        _query = "SELECT fld_requirement_code \
+        _query = "SELECT fld_requirement_code, fld_requirement_desc \
                    FROM tbl_requirements \
                    WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
         _results = self._app.DB.execute_query(_query,
@@ -1173,7 +1175,7 @@ class Requirement(object):
         _model = _cell[0].get_property('model')
         _model.clear()
         for i in range(_n_requirements):
-            _model.append([_results[i][0]])
+            _model.append([_results[i][0] + ' - ' + _results[i][1]])
 
         # Now load the Stakeholder Inputs gtk.TreeView.
         _query = "SELECT fld_input_id, fld_stakeholder, fld_description, \
@@ -1278,6 +1280,7 @@ class Requirement(object):
             Function to load the widgets on the General Data tab.
 
             @param self: the current instance of a Requirement class.
+            @type self: rtk.Requirement
             """
 
             try:

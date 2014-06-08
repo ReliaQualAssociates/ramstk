@@ -1217,14 +1217,11 @@ def expand_plot(event):
     _plot = event.canvas
     _parent = _plot.get_parent()
 
-    _height = int(_parent.get_size_request()[0])
-    _width = int(_parent.get_size_request()[1] / 2)
-
     if event.button == 3:                   # Right click.
         _window = gtk.Window()
         _window.set_skip_pager_hint(True)
         _window.set_skip_taskbar_hint(True)
-        _window.set_default_size(400, 200)
+        _window.set_default_size(800, 400)
         _window.set_border_width(5)
         _window.set_position(gtk.WIN_POS_NONE)
         _window.set_title(_(u"RTK Plot"))
