@@ -108,20 +108,20 @@ class Dataset(object):
         # Define public Dataset class scalar attributes.
         self.dataset_id = 0
         """ ID in the RTK Program database of the currently selected data set.
-        """
+        """                                 # pylint: disable=W0105
         self.assembly_id = 0
         self.description = ''
-        """ Description of the data set."""
+        """ Description of the data set."""     # pylint: disable=W0105
         self.source = 0
-        """ Source of the data set."""
+        """ Source of the data set."""      # pylint: disable=W0105
         self.distribution_id = 0
         """ ID in the RTK Program database of the statistical distribution to
-            fit the data to."""
+            fit the data to."""             # pylint: disable=W0105
         self.confidence = 0.75
         """ s-confidence level to use in analyses of the data set. """
         self.confidence_type = 0
         """ s-confidence type (lower one-sided, upper one-sided, or
-            two-sided). """
+            two-sided). """                 # pylint: disable=W0105
         self.confidence_method = 0
         self.fit_method = 0
         self.rel_time = 100.0

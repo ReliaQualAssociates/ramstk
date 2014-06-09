@@ -459,7 +459,7 @@ class Testing(object):
 
     def create_tree(self):
         """
-        Creates the TESTING treeview and connects it to callback functions to
+        Creates the Testing treeview and connects it to callback functions to
         handle editing.  Background and foreground colors can be set using the
         user-defined values in the RTK configuration file.
         """
@@ -540,16 +540,16 @@ class Testing(object):
 
     def _create_notebook(self):
         """
-        Method to create the TESTING class gtk.Notebook().
+        Method to create the Testing class gtk.Notebook().
         """
 
         def _create_planning_inputs_tab(self, notebook):
             """
-            Function to create the TESTING class gtk.Notebook() page for
+            Function to create the Testing class gtk.Notebook() page for
             displaying test planning inputs for the selected test.
 
-            @param self: the current instance of a TESTING class.
-            @param notebook: the TESTING class gtk.Notebook() widget.
+            @param self: the current instance of a Testing class.
+            @param notebook: the Testing class gtk.Notebook() widget.
             @type notebook: gtk.Notebook
             """
 
@@ -857,6 +857,12 @@ class Testing(object):
             #   7. Final MTBF for the test phase
             #   8. Average MTBF for the test phase
             # =============================================================== #
+            self.tvwRGPlanDetails.set_tooltip_markup(_(u"Displays the details "
+                                                       u"of the reliability "
+                                                       u"growth plan.  Right "
+                                                       u"click any date "
+                                                       u"field to show the "
+                                                       u"calendar."))
             _labels = [_(u"Phase"), _(u"Test\nArticles"), _(u"Start Date"),
                        _(u"End Date"), _(u"Total Time"), _(u"Growth Rate"),
                        _(u"Initial MTBF"), _(u"Final MTBF"),
@@ -869,27 +875,28 @@ class Testing(object):
             self.tvwRGPlanDetails.set_model(_model)
 
             for i in range(9):
-                _cell = gtk.CellRendererText()
                 if i == 0:
+                    _cell = gtk.CellRendererText()
                     _cell.set_property('editable', 0)
                     _cell.set_property('background', 'light gray')
                 else:
+                    _cell = gtk.CellRendererText()
                     _cell.set_property('editable', 1)
                     _cell.set_property('background', 'white')
                     _cell.connect('edited', self._rg_plan_edit, i)
 
                 _column = gtk.TreeViewColumn()
-                label = _widg.make_column_heading(_labels[i])
-                _column.set_widget(label)
+                _label = _widg.make_column_heading(_labels[i])
+                _column.set_widget(_label)
                 _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=i)
                 _column.set_resizable(True)
-                if i < 2:
+                if i in [0, 1]:
                     _datatype = (i, 'gint')
-                elif i == 2 or i == 3:
+                elif i in [2, 3]:
                     _datatype = (i, 'gchararray')
                 else:
                     _datatype = (i, 'gfloat')
+                _column.set_attributes(_cell, text=i)
                 _column.set_cell_data_func(_cell, _widg.format_cell,
                                            (i, _datatype))
                 _column.connect('notify::width', _widg.resize_wrap, _cell)
@@ -1010,6 +1017,13 @@ class Testing(object):
             self.fxdRGRisk.show_all()
 
             # Populate the center of the Test Feasibility tab.
+            self.tvwTestFeasibility.set_tooltip_markup(_(u"Displays the "
+                                                         u"details of the "
+                                                         u"reliability growth "
+                                                         u"plan.  Right click "
+                                                         u"any date field to "
+                                                         u"show the "
+                                                         u"calendar."))
             _labels_ = [_(u"Phase"), _(u"Number of\nTest\nArticles"),
                         _(u"Start Date"), _(u"End Date"),
                         _(u"Expected\nNumber\nof\nFailures"),
@@ -2277,7 +2291,11 @@ class Testing(object):
 
 # Initial MTBF to growth potential MTBF ratio is high enough.  Too low means
 # growth testing is being started too early.
-            self.txtMIMGP.set_text(str(fmt.format(MTBFI / MTBFGP)))
+            try:
+                self.txtMIMGP.set_text(str(fmt.format(MTBFI / MTBFGP)))
+            except ZeroDivisionError:
+                self.txtMIMGP.set_text("0.0")
+
             if MTBFI / MTBFGP >= 0.15 and MTBFI / MTBFGP <= 0.47:
                 self.chkMIMGP.set_active(True)
             else:

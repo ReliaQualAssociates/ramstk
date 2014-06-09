@@ -1517,14 +1517,12 @@ def options(__widget, app):
     Options(app)
 
 
-def date_select(__widget, __event, entry=None):
+def date_select(__widget, entry=None):
     """
     Function to select a date from a calendar widget.
 
     @param __widget: the gtk.Widget() that called this function.
     @type __widget: gtk.Widget
-    @param __event: the gtk.gdk.Event() that called this function.
-    @type __event: gtk.gdk>Event
     @param entry: the gtk.Entry() widget in which to display the date.
     @type entry: gtk.Entry
     @return: _date
@@ -2161,7 +2159,7 @@ class Options(gtk.Window):
                    self.chkRG.get_active(),
                    0,
                    self.chkIncidents.get_active(),
-                   0, self.chkSurvivalAnalysis, 0, 0)
+                   0, self.chkSurvivalAnalysis.get_active(), 0, 0)
 
         _query = "UPDATE tbl_program_info \
                   SET fld_revision_active=%d, fld_function_active=%d, \
