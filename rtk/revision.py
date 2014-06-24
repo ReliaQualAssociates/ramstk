@@ -66,7 +66,7 @@ class Revision(object):
         """
         Initializes the Revision class.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private REVISION class attributes.
@@ -195,8 +195,8 @@ class Revision(object):
         Method to create the Revision class gtk.TreeView() and connects it to
         callback functions to handle editing.
 
-        @return: _scrollwindow
-        @rtype: gtk.ScrolledWindow
+        :return: _scrollwindow
+        :rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
@@ -214,8 +214,8 @@ class Revision(object):
         """
         Method to create the gtk.ToolBar() for the Revision class work book.
 
-        @return: _toolbar
-        @rtype: gtk.ToolBar
+        :return: _toolbar
+        :rtype: gtk.ToolBar
         """
 
         _toolbar_ = gtk.Toolbar()

@@ -49,8 +49,8 @@ except ImportError:
 
 # We need to explicitly import the following module otherwise pyinstaller
 # won't pick it up and add it to the executable on Windows.
-if(os.name == 'nt'):
-    from scipy.sparse.csgraph import _validation  # @UnusedImport
+if os.name == 'nt':
+    from scipy.sparse.csgraph import _validation    # pylint: disable=W0611
 
 # Add localization support.
 _ = gettext.gettext
@@ -70,7 +70,7 @@ def main():
     return 0
 
 
-class RTK:
+class RTK(object):
     """ This is the RTK class. """
 
     def __init__(self):
@@ -100,20 +100,21 @@ class RTK:
         self.ProgCnx = None
 
         # Import the test data file if we are executing in developer mode.
-        if(len(sys.argv) > 1 and sys.argv[1] == 'devmode'):
+        if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
             _conf.MODE = 'developer'
 
         # Read the configuration file.
         _util.read_configuration()
 
-        if(os.name == 'posix'):
+        if os.name == 'posix':
             _conf.OS = 'Linux'
-        elif(os.name == 'nt'):
+        elif os.name == 'nt':
             _conf.OS = 'Windows'
 
-# Create loggers for the application.  The first is to store log information
-# for RTK developers.  The second is to log errors for the user.  The user can
-# use these errors to help find problems with their inputs and sich.
+        # Create loggers for the application.  The first is to store log
+        # information for RTK developers.  The second is to log errors for the
+        # user.  The user can use these errors to help find problems with their
+        # inputs and sich.
         __user_log = _conf.LOG_DIR + '/RTK_user.log'
         __error_log = _conf.LOG_DIR + '/RTK_error.log'
         __import_log = _conf.LOG_DIR + '/RTK_import.log'
@@ -138,28 +139,30 @@ class RTK:
         self.LOADED = False
         self.partlist = {}
 
-# Find out who is using RTK and when.
+        # Find out who is using RTK and when.
         self._UID = getpass.getuser()
         self._TODAY = datetime.datetime.now()
         self.DATE = "1970-01-01"
 
-# Get a connection to the common database.
-        if(_conf.COM_BACKEND == 'mysql'):
+        # Get a connection to the common database.
+        if _conf.COM_BACKEND == 'mysql':
             self.COMDB = _mysql.MySQLInterface(self)
             self.ComCnx = self.COMDB.get_connection(_conf.RTK_COM_INFO)
 
-        elif(_conf.COM_BACKEND == 'sqlite3'):
+        elif _conf.COM_BACKEND == 'sqlite3':
             self.COMDB = _sqlite.SQLite3Interface(self)
             _database = _conf.CONF_DIR + _conf.RTK_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
-# Read the license file and compare to the product key in the site database.
-# If they are not equal, quit the application.
+        # Read the license file and compare to the product key in the site
+        # database.  If they are not equal, quit the application.
         _license_file = _conf.DATA_DIR + '/license.key'
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            _util.rtk_error(_(u"Cannot find your license file in %s.  If your license file is elsewhere, please place it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
+            _util.rtk_error(_(u"Cannot find your license file in %s.  If "
+                              u"your license file is elsewhere, please place "
+                              u"it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
             quit()
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -170,13 +173,18 @@ class RTK:
         _results = self.COMDB.execute_query(_query,
                                             None,
                                             self.ComCnx)
-        if(_license_key != _results[0][0]):
-            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license key is incorrect.  Closing RTK application."))
+        if _license_key != _results[0][0]:
+            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
+                              u"key is incorrect.  Closing the RTK "
+                              u"application."))
             quit()
 
-        if(datetime.datetime.today().toordinal() > _results[0][1]):
-            _expire_date = str(datetime.datetime.fromordinal(int(_results[0][1])).strftime('%Y-%m-%d'))
-            _util.rtk_error(_(u"Invalid license (Expired).  Your license expired on %s.  Closing RTK application." % _expire_date))
+        if datetime.datetime.today().toordinal() > _results[0][1]:
+            _expire_date = str(datetime.datetime.fromordinal(int(
+                _results[0][1])).strftime('%Y-%m-%d'))
+            _util.rtk_error(_(u"Invalid license (Expired).  Your license "
+                              u"expired on %s.  Closing RTK application." %
+                              _expire_date))
             quit()
 
         # Get a connection to the program database.
@@ -208,7 +216,8 @@ class RTK:
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a program database."))
+        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
+                                     u"program database."))
 
         self.winTree.present()
 
@@ -218,17 +227,15 @@ class RTK:
         user opens.
         """
 
+        _util.set_cursor(self, gtk.gdk.WATCH)
         self.winTree.statusbar.push(2, _(u"Opening Program Database..."))
-        self.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-        self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-        self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
-# Get a connection to the program database and then retrieve the program
-# information.
+        # Get a connection to the program database and then retrieve the
+        # program information.
         query = "SELECT * FROM tbl_program_info"
-        if(_conf.BACKEND == 'mysql'):
+        if _conf.BACKEND == 'mysql':
             self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO)
-        elif(_conf.BACKEND == 'sqlite3'):
+        elif _conf.BACKEND == 'sqlite3':
             self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO[2])
 
         results = self.DB.execute_query(query, None, self.ProgCnx)
@@ -262,16 +269,15 @@ class RTK:
             if _results[i] == 1:
                 _conf.RTK_PAGE_NUMBER.append(i)
 
-
         _conf.METHOD = results[0][36]
 
         icon = _conf.ICON_DIR + '32x32/db-connected.png'
         icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
         self.icoStatus.set_from_pixbuf(icon)
-        self.icoStatus.set_tooltip(_(u"RTK is connected to program database %s." %
-                                   _conf.RTK_PROG_INFO[2]))
+        self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
+                                     u"%s." % _conf.RTK_PROG_INFO[2]))
         self.winTree.set_title(_(u"RTK - Analyzing %s" %
-                               _conf.RTK_PROG_INFO[2]))
+                                 _conf.RTK_PROG_INFO[2]))
 
         self.winTree.load_trees(self)
 
@@ -296,10 +302,9 @@ class RTK:
 
         self.LOADED = True
 
-        self.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-        self.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-        self.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
         self.winTree.statusbar.pop(2)
+
+        _util.set_cursor(self, gtk.gdk.LEFT_PTR)
 
 if __name__ == '__main__':
 
