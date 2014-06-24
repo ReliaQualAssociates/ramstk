@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-""" This is the main program for the RTK application. """
+"""
+This is the main program for the RTK application.
+"""
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2009 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -54,10 +58,6 @@ if os.name == 'nt':
 
 # Add localization support.
 _ = gettext.gettext
-
-# Import other RTK modules.
-
-# Import all of the RTK Classes.
 
 
 def main():

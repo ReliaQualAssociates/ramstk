@@ -8,7 +8,8 @@ application.
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -825,8 +826,8 @@ def cell_toggled(cell, path, position, model):
 
 def resize_wrap(column, __param, cell):
     """
-    This function dynamically sets the wrap-width property for the
-    gtk.CellRenderers in the gtk.TreeView when the column width is resized.
+    This function dynamically sets the wrap-width property for a
+    gtk.CellRenderer() in the gtk.TreeView() when the column width is resized.
 
     :param column: the gtk.TreeViewColumn() being resized.
     :type column: gtk.TreeViewColumn
@@ -838,18 +839,17 @@ def resize_wrap(column, __param, cell):
     :rtype: boolean
     """
 
-# TODO: Adjust the height of the row when the width is adjusted.
-    width = column.get_width()
+    _width = column.get_width()
 
-    if width <= 0:
+    if _width <= 0:
         return
     else:
-        width += 10
+        _width += 10
 
     try:
-        cell.set_property('wrap-width', width)
+        cell.set_property('wrap-width', _width)
     except TypeError:                       # This is a gtk.CellRendererToggle
-        cell.set_property('width', width)
+        cell.set_property('width', _width)
 
     return False
 

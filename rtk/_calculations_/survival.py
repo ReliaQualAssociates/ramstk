@@ -4,8 +4,10 @@ Contains functions for performing non-parametric and parametric survival
 analyses.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -547,23 +549,23 @@ def kaplan_meier_mean(data, conf=0.75):
     Data Analysis", page 74.
 
     :param data: the Kaplan-Meier data set.  This is a matrix where each row
-                 contains the following, in order:
-                 - Time point (t) at which the curve has a step.
-                 - Number of subjects at risk at time t.
-                 - Number of events that occur at time t.
-                 - Standard error of the survival function at time t.
-                 - Lower bound on the survival function at time t.
-                 - Point estimate of the survival function at time t.
-                 - Upper bound on the survival function at time t.
+             contains the following, in order:
+              * Time point (t) at which the curve has a step.
+              * Number of subjects at risk at time t.
+              * Number of events that occur at time t.
+              * Standard error of the survival function at time t.
+              * Lower bound on the survival function at time t.
+              * Point estimate of the survival function at time t.
+              * Upper bound on the survival function at time t.
     :type data: numpy matrix
     :param conf: the desired confidence for the bounding values.
     :type conf: float
     :return: _mtbf; matrix of mean values where each row contains the
              following, in order:
-             - Lower bound on the mean value.
-             - Point estimate of the mean value.
-             - Upper bound on the mean value.
-             - Variance of the mean value.
+              * Lower bound on the mean value.
+              * Point estimate of the mean value.
+              * Upper bound on the mean value.
+              * Variance of the mean value.
     :rtype: list of lists
     """
 

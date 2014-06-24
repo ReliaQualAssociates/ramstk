@@ -61,7 +61,6 @@ class Revision(object):
     to a revision of the open RTK Program.
     """
 
-# TODO: Replace error log entries with application error dialogs.
     def __init__(self, application):
         """
         Initializes the Revision class.
@@ -69,11 +68,11 @@ class Revision(object):
         :param application: the current instance of the RTK application.
         """
 
-        # Define private REVISION class attributes.
+        # Define private Revision class attributes.
         self._app = application
         self._int_mission_id = -1
 
-        # Define private REVISION class dictionary attributes.
+        # Define private Revision class dictionary attributes.
 
         # For mission information.  Mission Name is the key.
         # The value is a list:

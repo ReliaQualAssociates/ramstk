@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-""" Capacitor is the meta class for all capacitor types. """
+"""
+Capacitor is the meta class for all capacitor types.
+"""
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -16,7 +20,7 @@ import pango
 import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except:
+except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 import gettext

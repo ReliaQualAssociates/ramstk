@@ -109,12 +109,11 @@ class Requirement(object):
     system being analyzed.
     """
 
-# TODO: Write code to update notebook widgets when editing the Requirements treeview.
     def __init__(self, application):
         """
         Initializes the Requirement class.
 
-        :param application: the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Requirement class attributes.
@@ -2269,7 +2268,6 @@ class Requirement(object):
             elif button.get_name() == 'Assign':
                 self._add_vandv_task(1)
             elif button.get_name() == 'Remove':
-# TODO: Write method to remove V&V task from a requirement.
                 print "Lets remove this validation task"
             elif button.get_name() == 'Save':
                 self._save_vandv_tasks()

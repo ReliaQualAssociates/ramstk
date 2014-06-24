@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-""" This is the List notebook for RTK. """
+"""
+This is the List Book for RTK.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
 #       partlist.py is part of the RTK Project
@@ -54,41 +57,37 @@ class ListWindow(gtk.Window):
     selected Revision, Function, or Assembly in the upper window.
     """
 
-    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
-    # TODO: Create GUI to set/edit user-defined column headings for all trees.
-
     def __init__(self, application):
         """
-        Initializes the List Object.
+        Initializes the List Class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         self._app = application
 
-# Define global dictionary variables.
-        self.parttreepaths = {}
-
-# Define local dictionary variables.
-# Dictionary to hold the Assembly ID/Hardware Tree treemodel paths.  This is
-# used to keep the Hardware Tree and the Parts List in sync.
+        # Define private dictionary variables.
+        # Dictionary to hold the Assembly ID/Hardware Tree treemodel paths.
+        # This is used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
 
-# Define local list variables.
+        # Define private list variables.
         self._VISIBLE_PARTS_ = []
 
-# Define global object variables.
+        # Define private scalar variables.
+        self._assembly_id = 0
+
+        # Define public dictionary variables.
+        self.parttreepaths = {}
+
+        # Define public object variables.
         self.objPartModel = None
         self.objTestModel = None
         self.objIncidentModel = None
         self.objDatasetModel = None
         self.objPartRow = None
 
-# Define local scalar variables.
-        self._assembly_id = 0
-
-# Create a new window and set its properties.
+        # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_title(_(u"RTK Lists"))
         self.set_resizable(True)

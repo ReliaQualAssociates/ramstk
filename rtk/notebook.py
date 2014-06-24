@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-""" This is the Workbook window for RTK. """
+"""
+This is the Work Book window for RTK.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

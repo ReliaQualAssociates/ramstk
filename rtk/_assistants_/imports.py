@@ -4,8 +4,8 @@ This module contains classes (gtk.Assistants) used to import data from external
 files into the open RTK Program database.  Currently the following import
 assistants are implemented:
 
- - Hardware
- - Program Incidents
+ * Hardware
+ * Program Incidents
 """
 
 __author__ = 'Andrew Rowland'

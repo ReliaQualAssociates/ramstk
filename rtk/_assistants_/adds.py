@@ -1,19 +1,21 @@
 #!/usr/bin/env python
-'''
+"""
 Module containing various assistants for adding or creating objects in the
 open RTK Program database.  This module contains assistants to guide the user
 through the following:
 
-1. Adding a new Revision.
-2. Adding a new Test Plan.
-3. Adding a new record to a Test Plan.
-4. Adding a new Program Incident.
-5. Creating a new Survival Analysis data set from program incidents.
-6. Adding a new record to a Survival Analysis data set.
-'''
+ * Adding a new Revision.
+ * Adding a new Test Plan.
+ * Adding a new record to a Test Plan.
+ * Adding a new Program Incident.
+ * Creating a new Survival Analysis data set from program incidents.
+ * Adding a new record to a Survival Analysis data set.
+"""
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -52,7 +54,7 @@ try:
     import rtk.configuration as _conf       # pylint: disable=F0401
     import rtk.utilities as _util           # pylint: disable=F0401
     import rtk.widgets as _widg             # pylint: disable=F0401
-except ImportError:
+except locale.Error:
     import configuration as _conf           # pylint: disable=F0401
     import utilities as _util               # pylint: disable=F0401
     import widgets as _widg                 # pylint: disable=F0401
@@ -61,8 +63,8 @@ except ImportError:
 import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except ImportError:
-    locale.setlocale(locale.LC_ALL, "")
+except locale.Error:
+    locale.setlocale(locale.LC_ALL, '')
 
 import gettext
 _ = gettext.gettext

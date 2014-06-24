@@ -4,7 +4,9 @@ Contains functions for performing calculations associated with reliability
 growth.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -735,7 +737,6 @@ def crow_amsaa_parameters(F, X, T_star=0.0, grouped=False):
     # Validate that the failure time and failure count lists are not empty.
     # If they are, raise an error and return 0.0 for both parameters.
     if F == [] or X == []:
-# TODO: Write lists to the error log.
         _util.rtk_error(_(u"The list of failure times and/or the list of "
                           u"failure counts is empty.  Cannot estimate "
                           u"Crow-AMSAA parameters without both."))
