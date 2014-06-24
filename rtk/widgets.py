@@ -916,6 +916,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
     @rtype: boolean
     """
 
+    import heapq
+
     n_points = len(x)
 
     axis.cla()
@@ -929,18 +931,24 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
             line, = axis.step(x, y1, _marker_[0], where='mid')
             for i in range(n_points):           # pylint: disable=W0612
                 line.set_ydata(y1)
+            _lst_min_.append(min(y1))
+            _lst_max_.append(max(y1))
         elif _type_[0] == 2:
             line, = axis.plot(x, y1, _marker_[0], linewidth=2)
             for i in range(n_points):
                 line.set_ydata(y1)
+            _lst_min_.append(min(y1))
+            _lst_max_.append(max(y1))
         elif _type_[0] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=y1, color=_marker_[0])
+            n, bins, __patches = axis.hist(x, bins=len(y1), color=_marker_[0])
+            _lst_min_.append(min(n))
+            _lst_max_.append(max(n))
         elif _type_[0] == 4:
             line, = axis.plot_date(x, y1, _marker_[0],
                                    xdate=True, linewidth=2)
-        _lst_min_.append(min(y1))
-        _lst_max_.append(max(y1))
+            _lst_min_.append(min(y1))
+            _lst_max_.append(max(y1))
 
     if y2 is not None:
         if _type_[1] == 1:
@@ -953,8 +961,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
                 line2.set_ydata(y2)
         elif _type_[1] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=y2, color=_marker_[1])
-            line2, = axis.plot(bins, y2)
+            __n, bins, __patches = axis.hist(x, bins=len(y2),
+                                             color=_marker_[1])
         elif _type_[1] == 4:
             line2, = axis.plot_date(x, y2, _marker_[1],
                                     xdate=True, linewidth=2)
@@ -972,8 +980,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
                 line3.set_ydata(y3)
         elif _type_[2] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=y3, color=_marker_[2])
-            line3, = axis.plot(bins, y3)
+            __n, bins, __patches = axis.hist(x, bins=len(y3),
+                                             color=_marker_[2])
         elif _type_[2] == 4:
             line3, = axis.plot_date(x, y3, _marker_[2],
                                     xdate=True, linewidth=2)
@@ -991,8 +999,8 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
                 line4.set_ydata(y4)
         elif _type_[3] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=y4, color=_marker_[3])
-            line4, = axis.plot(bins, y4)
+            __n, bins, __patches = axis.hist(x, bins=len(y4),
+                                             color=_marker_[3])
         elif _type_[3] == 4:
             line4, = axis.plot_date(x, y4, _marker_[3],
                                     xdate=True, linewidth=2)
@@ -1003,9 +1011,15 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
     axis.set_xlabel(_xlab_)
     axis.set_ylabel(_ylab_)
 
+    # Get the minimum and maximum y-values to set the axis bounds.  If the
+    # maximum value is infinity, use the next largest value and so forth.
     _min_ = min(_lst_min_)
-    _max_ = max(_lst_max_)
-    axis.set_ybound(_min_, _max_)
+    _max = heapq.nlargest(2, _lst_max_)
+    for i, _max in enumerate(_lst_max_):
+        if _max < _lst_max_[i] and _lst_max_[i] != float('inf'):
+            _max = _lst_max_[i]
+
+    axis.set_ybound(_min_, _max)
 
     plot.draw()
 

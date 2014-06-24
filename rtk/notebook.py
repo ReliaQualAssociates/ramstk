@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 """ This is the Workbook window for RTK. """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -49,10 +51,9 @@ class WorkBookWindow(gtk.Window):
 
     def __init__(self, application):
         """
-        Initializes the WorkBook Class.
+        Initializes the Work Book Class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        @param application: the current instance of the RTK application.
         """
 
         self._app = application

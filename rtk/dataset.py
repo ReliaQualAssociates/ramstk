@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 This is the Class that is used to represent and hold information related to
-Program survival data sets.
+RTK Program survival data sets.
 """
 
 __author__ = 'Andrew Rowland'
@@ -46,7 +46,7 @@ from matplotlib.figure import Figure
 # Import modules for mathematics.
 import numpy as np
 from math import exp, fabs, log, sqrt
-from scipy.stats import chi2, norm          # pylint: disable=E0611
+from scipy.stats import chi2, norm
 
 try:
     from rpy2 import robjects
@@ -69,10 +69,8 @@ from _assistants_.adds import AddDataset
 from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
-from _calculations_.growth import power_law, loglinear
-from _calculations_.survival import kaplan_meier, kaplan_meier_hazard, \
-    kaplan_meier_mean, mean_cumulative_function, parametric_fit, \
-    theoretical_distribution, turnbull
+from _calculations_.growth import crow_bounds, fisher_bounds, nhpp_mean_variance, power_law
+from _calculations_.survival import *
 
 # Add localization support.
 try:
@@ -123,6 +121,8 @@ class Dataset(object):
         """ s-confidence type (lower one-sided, upper one-sided, or
             two-sided). """                 # pylint: disable=W0105
         self.confidence_method = 0
+        """ s-confidence method. """
+
         self.fit_method = 0
         self.rel_time = 100.0
         self.n_rel_points = 0
@@ -254,10 +254,10 @@ class Dataset(object):
         self.txtHazardRateiUL = _widg.make_entry(width=100, editable=False)
 
         # Lower left quadrant non-parametric widgets.
-        self.lblMHBResult = _widg.make_label(_(u""), width=100)
-        self.lblZLPResult = _widg.make_label(_(u""), width=100)
-        self.lblZLRResult = _widg.make_label(_(u""), width=100)
-        self.lblRhoResult = _widg.make_label(_(u""), width=100)
+        self.lblMHBResult = _widg.make_label(_(u""), width=150)
+        self.lblZLPResult = _widg.make_label(_(u""), width=150)
+        self.lblZLRResult = _widg.make_label(_(u""), width=150)
+        self.lblRhoResult = _widg.make_label(_(u""), width=150)
 
         self.txtMHB = _widg.make_entry(width=100)
         self.txtChiSq = _widg.make_entry(width=100)
@@ -1551,17 +1551,17 @@ class Dataset(object):
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
             self.vpnAnalysisResults.pack2(self.fraParStats, True, True)
 
-            _b_hat = str(fmt.format(self.scale[0]))
-            _alpha_hat = str(fmt.format(self.shape[0]))
+            _b_hat = str(fmt.format(self.scale[1]))
+            _alpha_hat = str(fmt.format(self.shape[1]))
             self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = "
                                        u"%s T<sup>%s</sup></span>") %
                                      (_b_hat, _alpha_hat))
 
-            self.txtScale.set_text(str(fmt.format(self.scale[0])))
-            self.txtScaleLL.set_text(str(fmt.format(self.scale[1])))
+            self.txtScale.set_text(str(fmt.format(self.scale[1])))
+            self.txtScaleLL.set_text(str(fmt.format(self.scale[0])))
             self.txtScaleUL.set_text(str(fmt.format(self.scale[2])))
-            self.txtShape.set_text(str(fmt.format(self.shape[0])))
-            self.txtShapeLL.set_text(str(fmt.format(self.shape[1])))
+            self.txtShape.set_text(str(fmt.format(self.shape[1])))
+            self.txtShapeLL.set_text(str(fmt.format(self.shape[0])))
             self.txtShapeUL.set_text(str(fmt.format(self.shape[2])))
 
             self.lblCumMTBF.set_markup(_(u"<span>Cumulative MTBF:</span>"))
@@ -1782,7 +1782,7 @@ class Dataset(object):
 
         return False
 
-    def _load_nonparametric_tree(self, model, data, index, col_headings):
+    def _load_nonparametric_tree(self, model, col_headings):
         """"
         Method to load the gtk.TreeView() with the results of non-parametric
         analyses.  This includes the MCF, Kaplan-Meier, and NHPP - Power Law
@@ -1790,11 +1790,6 @@ class Dataset(object):
 
         @param model: the nonparametric estimates gtk.TreeModel().
         @type: model gtk.TreeModel
-        @param data: a dictionary containing the data to load into the
-                     gtk.TreeModel().
-        @type data: dictionary
-        @param index: a list containing the order of the
-        @type: index: list of integers
         @param col_headings: a list containing the the text for the
                              gtk.TreeColumn() headers.
         @type col_headings: list of strings
@@ -1808,14 +1803,6 @@ class Dataset(object):
         # Remove all the existing columns from the gtk.TreeView.
         for _col in self.tvwNonParResults.get_columns():
             self.tvwNonParResults.remove_column(_col)
-
-        # Load the model with the data.
-        for i in range(len(data)):
-            _lineitem = []
-            for j in range(len(index)):
-                _lineitem.append(data[i][index[j]])
-
-            model.append(_lineitem)
 
         # Add columns to display the data.
         for i in range(len(col_headings)):
@@ -1845,14 +1832,14 @@ class Dataset(object):
 
         _model.set_value(_row, self._col_order[11], self.n_suspensions)
         _model.set_value(_row, self._col_order[12], self.n_failures)
-        _model.set_value(_row, self._col_order[13], self.scale[0])
-        _model.set_value(_row, self._col_order[14], self.scale[1])
+        _model.set_value(_row, self._col_order[13], self.scale[1])
+        _model.set_value(_row, self._col_order[14], self.scale[0])
         _model.set_value(_row, self._col_order[15], self.scale[2])
-        _model.set_value(_row, self._col_order[16], self.shape[0])
-        _model.set_value(_row, self._col_order[17], self.shape[1])
+        _model.set_value(_row, self._col_order[16], self.shape[1])
+        _model.set_value(_row, self._col_order[17], self.shape[0])
         _model.set_value(_row, self._col_order[18], self.shape[2])
-        _model.set_value(_row, self._col_order[19], self.location[0])
-        _model.set_value(_row, self._col_order[20], self.location[1])
+        _model.set_value(_row, self._col_order[19], self.location[1])
+        _model.set_value(_row, self._col_order[20], self.location[0])
         _model.set_value(_row, self._col_order[21], self.location[2])
         _model.set_value(_row, self._col_order[22], self.variance[0])
         _model.set_value(_row, self._col_order[23], self.variance[1])
@@ -1893,11 +1880,11 @@ class Dataset(object):
         self.n_suspensions = _model.get_value(_row, self._col_order[11])
         self.n_failures = _model.get_value(_row, self._col_order[12])
 
-        self.scale[0] = _model.get_value(_row, self._col_order[13])
-        self.scale[1] = _model.get_value(_row, self._col_order[14])
+        self.scale[1] = _model.get_value(_row, self._col_order[13])
+        self.scale[0] = _model.get_value(_row, self._col_order[14])
         self.scale[2] = _model.get_value(_row, self._col_order[15])
-        self.shape[0] = _model.get_value(_row, self._col_order[16])
-        self.shape[1] = _model.get_value(_row, self._col_order[17])
+        self.shape[1] = _model.get_value(_row, self._col_order[16])
+        self.shape[0] = _model.get_value(_row, self._col_order[17])
         self.shape[2] = _model.get_value(_row, self._col_order[18])
         self.location[0] = _model.get_value(_row, self._col_order[19])
         self.location[1] = _model.get_value(_row, self._col_order[20])
@@ -2300,27 +2287,15 @@ class Dataset(object):
                 self.lblConfMethod.show()
                 self.vpnAnalysisResults.pack2(self.fraParStats)
 
-            if _text == 7:                  # WeiBayes
-                dialog = _widg.make_dialog(_(u"RTK Information"),
-                                           dlgbuttons=(gtk.STOCK_OK,
-                                                       gtk.RESPONSE_ACCEPT))
-
-                fixed = gtk.Fixed()
-
-                y_pos = 10
-                label = _widg.make_label(_(u"WeiBayes is not yet implemented "
-                                           u"in RTK."), width=300, height=100)
-                fixed.put(label, 5, y_pos)
-
-                fixed.show_all()
-
-                dialog.vbox.pack_start(fixed)   # pylint: disable=E1101
-                dialog.run()
-
-                dialog.destroy()
+            if _text == 9:                  # WeiBayes
+                _util.rtk_information(_(u"WeiBayes is not yet implemented "
+                                        u"in RTK."))
 
         elif index == 7:                    # Confidence method
             self.confidence_method = _text
+
+        elif index == 8:                    # Fit method
+            self.fit_method = _text
 
         (_model, _row) = self.treeview.get_selection().get_selected()
         _model.set_value(_row, index, _text)
@@ -2360,6 +2335,8 @@ class Dataset(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
         _model.set_value(_row, index, _text)
+
+        self._update_attributes()
 
         return False
 
@@ -2474,8 +2451,8 @@ class Dataset(object):
 
         # Set maximum time to some very large value if the user has not set
         # this themselves.  Keeping it at zero results in nothing being
-        # returned from the SQL queries to follow.
-        if self.rel_time == 0.0:
+        # returned from the SQL query to follow.
+        if float(self.txtEndTime.get_text()) == 0.0:
             self.rel_time = 1000000.0
             _RELTIME_ = True
 
@@ -2486,6 +2463,8 @@ class Dataset(object):
         _z_norm = norm.ppf(_confidence)
 
         # Get the entire dataset.
+        # Example of a record returned from the following query:
+        #     (u'HT36103', 0.0, 12.0, 12.0, 1, 1, 739014)
         _query = "SELECT fld_unit, fld_left_interval, fld_right_interval, \
                          fld_tbf, fld_status, fld_quantity, fld_request_date \
                   FROM tbl_survival_data \
@@ -2505,12 +2484,26 @@ class Dataset(object):
         for i in range(len(_results)):
             _censdata.append([_results[i][1], _results[i][2]])
 
+        # Create lists of the failure times and number of failures.
+        _X = [x[2] for x in _results]
+        _F = [x[5] for x in _results]
+
+        # Create a list of interarrivale times.
+        _tbf = [_results[i][3] - _results[i - 1][3]
+                for i, __ in enumerate(_results)]
+
+        # Create a list of failure dates.
+        _dates = [x[6] for x in _results]
+
         # Initialize variables.
         self.n_failures = 0
         self.n_suspensions = 0
-        MTBF = 0.0
-        MTBFLL = 0.0
-        MTBFUL = 0.0
+        _mtbfc = 0.0
+        _mtbfc_ll = 0.0
+        _mtbfc_ul = 0.0
+        _mtbfi = 0.0
+        _mtbfi_ll = 0.0
+        _mtbfi_ul = 0.0
         self.scale[0] = 0.0
         self.scale[1] = 0.0
         self.scale[2] = 0.0
@@ -2537,188 +2530,75 @@ class Dataset(object):
         _p_value = [1.0, 1.0, 1.0, 1.0]
         _text = [u"", u"", u""]
 
-        # ================================================================= #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         # Perform Nelson's mean cumulative function analysis.               #
-        # ================================================================= #
-        if self.distribution_id == 1:                 # MCF
-            # Create a list of unique units.
-            _query = "SELECT DISTINCT(fld_unit) \
-                      FROM tbl_survival_data \
-                      WHERE fld_dataset_id=%d \
-                      AND fld_right_interval <= %f \
-                      AND fld_right_interval > %f" % \
-                     (self.dataset_id, self.rel_time, self.start_time)
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx)
-            try:
-                _n_units = len(_results)
-            except TypeError:
-                _n_units = 0
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        if self.distribution_id == 1:
+            # Create a dictionary with the unit id as the key and a list of
+            # failure/censoring times as the value.  Create a list containing
+            # all failure times.
+            _data = {}
+            _all_times = []
+            for i in range(len(_results)):
+                _key = _results[i][0]
+                _value = _results[i][2]
+                # If the time is a right censored observation, convert it to
+                # a string with a + symbol attached to indicate it as a
+                # censored observation and don't add it to the list of all
+                # failure times.  Otherwise, add it to the list of all
+                # failure times with no conversion.
+                if _results[i][4] == 'Right Censored':
+                    _value = str(_value) + '+'
+                else:
+                    _all_times.append(_value)
 
-            _units = []
-            for i in range(_n_units):
-                _units.append(_results[i][0])
+                if _key not in _data:
+                    _data[_key] = [_value]
+                else:
+                    _data[_key].append(_value)
 
-            # Create a list of unique failure times.
-            _query = "SELECT DISTINCT(fld_right_interval) \
-                      FROM tbl_survival_data \
-                      WHERE fld_dataset_id=%d \
-                      AND fld_right_interval >= %f \
-                      AND fld_right_interval <= %f \
-                      ORDER BY fld_right_interval ASC" % \
-                     (self.dataset_id, self.start_time, self.rel_time)
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx)
+            # Calculate the mean cumulative function.                     #
+            _nonpar = mean_cumulative_function(_data, _confidence)
 
-            try:
-                _n_times = len(_results)
-            except TypeError:
-                _n_times = 0
-
-            _times = []
-            for i in range(_n_times):
-                _times.append(_results[i][0])
-
-            # Get the entire dataset.
-            # Example of a record returned from the following query:
-            #     (u'HT36103', 0.0, 12.0, 12.0)
-            _query = "SELECT fld_unit, fld_left_interval, \
-                             fld_right_interval, fld_tbf, fld_quantity \
-                      FROM tbl_survival_data \
-                      WHERE fld_dataset_id=%d \
-                      AND fld_right_interval >= %f \
-                      AND fld_right_interval <= %f \
-                      ORDER BY fld_unit ASC, \
-                               fld_left_interval ASC" % \
-                     (self.dataset_id, self.start_time, self.rel_time)
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx)
-
-            # ============================================================== #
-            #  0 = Event Time ti. (string)
-            #  1 = Delta array at time ti. (array of integers)
-            #  2 = d array at time ti. (array of integers)
-            #  3 = Sum of delta at time ti. (integer)
-            #  4 = Sum of d at time ti. (integer)
-            #  5 = d bar at time ti. (float)
-            #  6 = Variance of MCF at time ti. (float)
-            #  7 = Lower bound on mean cumulative function at time ti. (float)
-            #  8 = Upper bound on mean cumulative fucntion at time ti. (float)
-            #  9 = Mean cumulative function at time ti. (float)
-            # 10 = Cumulative MTBF at time ti. (float)
-            # 11 = Lower bound on cumulative MTBF at time ti. (float)
-            # 12 = Upper bound on cumulative MTBF at time ti. (float)
-            # 13 = Instantaneous MTBF at time ti. (float)
-            # 14 = Lower bound on instantaneous MTBF at time ti. (float)
-            # 15 = Upper bound on instantaneous MTBF at time ti. (float)
-            # =============================================================== #
-            _nonpar = mean_cumulative_function(_units, _times, _results,
-                                               _confidence)
-
-            # Load the non-parametric results gtk.TreeView
-            _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                                   gobject.TYPE_INT, gobject.TYPE_FLOAT,
-                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
-            _index = [0, 3, 4, 5, 6, 7, 9, 8, 11, 10, 12, 14, 13, 15]
-            _col_headings = [_(u"Event\nTime"),
-                             _(u"\u03B4."), _(u"d."), _(u"d bar"),
-                             _(u"\u03C3<sup>2</sup><sub>MCF</sub>"),
-                             _(u"MCF Lower\nBound"), _(u"MCF"),
-                             _(u"MCF Upper\nBound"),
-                             _(u"Cumulative MTBF\nLower Bound"),
-                             _(u"Cumulative\nMTBF"),
-                             _(u"Cumulative\nMTBF\nUpper Bound"),
-                             _(u"Instantaneous\nMTBF\nLower Bound"),
-                             _(u"Instantaneous\nMTBF"),
-                             _(u"Instantaneous\nMTBF\nUpper Bound")]
-            self._load_nonparametric_tree(_model, _nonpar, _index,
-                                          _col_headings)
-            # Get:
-            #   Total number of failures.
-            #   List of unique failures times.
-            #   List of MCF at each unique failure time.
-            #   List of MCF lower bound at each unique failure time.
-            #   List of MCF upper bound at each unique failure time.
-            #   Maximum observed time.
             _n_records = len(_nonpar)
-            _failures = [x[4] for x in _nonpar]
+            _unique_times = [x.tolist()[0][0] for x in _nonpar]
+            _failures = [x.tolist()[0][1] for x in _nonpar]
+            _muhatll = [x.tolist()[0][2] for x in _nonpar]
+            _muhat = [x.tolist()[0][3] for x in _nonpar]
+            _muhatul = [x.tolist()[0][4] for x in _nonpar]
+
             self.n_failures = int(sum(_failures))
-            times = [x[0] for x in _nonpar]
-            muhat = [x[9] for x in _nonpar]
-            muhatll = [x[7] for x in _nonpar]
-            muhatul = [x[8] for x in _nonpar]
-            ta = max(times)
 
-            # Calculate the MIL-HDBK-189, Laplace, and Lewis-Robinson test
-            # statistics.  Find the chi-square critical value.  These
-            # statistics are used to test for HPP vs. NHPP in the data.
-            _query = "SELECT t1.fld_unit, t2.fld_tbf, t1.fld_request_date \
-                      FROM tbl_incident AS t1 \
-                      INNER JOIN tbl_survival_data AS t2 \
-                      WHERE t2.fld_record_id=t1.fld_incident_id \
-                      AND t2.fld_dataset_id=%d \
-                      AND t2.fld_right_interval >= %f \
-                      AND t2.fld_right_interval <= %f \
-                      AND t1.fld_request_date >= %d \
-                      AND t1.fld_request_date < %d \
-                      ORDER BY t1.fld_request_date ASC" % \
-                     (self.dataset_id, self.start_time, self.rel_time,
-                      self.start_date, self.end_date)
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx)
-
-            _tbf = []
-            _failnum = []
-            _dates = []
-            _denominator = 0.0
-            for i in range(_n_records):
-                try:
-                    self.mhb += log(times[i] / ta)
-                    _denominator += log(ta / times[i])
-                except ValueError or ZeroDivisionError:
-                    print i, times[i], ta
-
-
-                self.lp += times[i] / ta
-                _tbf.append(_results[i][1])
-                _failnum.append(i)
-                _dates.append(_results[i][2])
-
-            self.mhb = -2.0 * self.mhb
-            self.lp = (self.lp - (self.n_failures / 2.0)) / \
-                      sqrt(self.n_failures / 12.0)
-            tau = np.mean(_tbf)             # pylint: disable=E1101
-            S = np.std(_tbf)                # pylint: disable=E1101
-            self.lr = self.lp * tau / S
+            # Calculate the trend statistics, the critical values, and the
+            # p-values.
+            self.mhb = mil_handbook(_all_times)
+            self.lp = laplace(_all_times, self.n_failures)
+            self.lr = lewis_robinson(_all_times, self.n_failures)
+            _rho = serial_correlation(_all_times, self.n_failures)
 
             _chisq = chi2.ppf(1.0 - _confidence, 2 * self.n_failures)
-
-            _beta = self.n_failures / _denominator
-            _eta = ta / self.n_failures**(1.0 / _beta)
-
-            # Calculate the sample serial correlation coefficient.
-            _cov = 0.0
-            _var1 = 0.0
-            _var2 = 0.0
-            _tau_bar = np.mean(_tbf)        # pylint: disable=E1101
-            for i in range(len(_tbf) - 1):
-                _cov += (_tbf[i] - _tau_bar) * (_tbf[i + 1] - _tau_bar)
-                _var1 += (_tbf[i] - _tau_bar)**2.0
-                _var2 += (_tbf[i + 1] - _tau_bar)**2.0
-            _rho = sqrt(self.n_failures - 1) * (_cov / sqrt(_var1 * _var2))
+            _z_norm = norm.ppf(_confidence)
 
             _p_value[0] = chi2.cdf(self.mhb, 2 * self.n_failures)
-            _p_value[1] = norm.cdf(abs(self.lp))
-            _p_value[2] = norm.cdf(abs(self.lr))
+            _p_value[1] = norm.cdf(self.lp)
+            _p_value[2] = norm.cdf(self.lr)
             _p_value[3] = norm.cdf(_rho)
 
+            # Load the non-parametric results gtk.TreeModel().
+            _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
+                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                   gobject.TYPE_FLOAT)
+            _col_headings = [_(u"Event\nTime"), _(u"Number of\nFailures."),
+                             _(u"MCF Lower\nBound"), _(u"MCF"),
+                             _(u"MCF Upper\nBound")]
+
+            for _row in _nonpar:
+                _model.append(_row.tolist()[0])
+            self._load_nonparametric_tree(_model, _col_headings)
+
             # Plot the mean cumulative function with confidence bounds.
-            _widg.load_plot(self.axAxis1, self.pltPlot1, x=times,
-                            y1=muhat, y2=muhatll, y3=muhatul,
+            _widg.load_plot(self.axAxis1, self.pltPlot1, x=_unique_times,
+                            y1=_muhat, y2=_muhatll, y3=_muhatul,
                             _title_=_(u"MCF Plot for %s") % self.description,
                             _xlab_=_(u"Time"),
                             _ylab_=_(u"Mean Cumulative Function [mu(t)]"),
@@ -2743,10 +2623,7 @@ class Dataset(object):
                             _type_=[4], _marker_=['g-'])
 
             # Create a lag plot.
-            _zero_line = []
-            for i in range(len(_tbf) - 1):
-                _zero_line.append(_tbf[i])
-
+            _zero_line = _tbf[:-1]
             _widg.load_plot(self.axAxis4, self.pltPlot4,
                             x=_tbf[0:len(_tbf)-1], y1=_tbf[1:len(_tbf)],
                             y2=_zero_line,
@@ -2760,11 +2637,6 @@ class Dataset(object):
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
-
-            # Assign the cumulative MTBF for display.
-            MTBF = _nonpar[_n_records - 1][10]
-            MTBFLL = _nonpar[_n_records - 1][11]
-            MTBFUL = _nonpar[_n_records - 1][12]
 
             self.txtChiSq.set_text(str(fmt.format(_chisq)))
             self.txtRho.set_text(str(fmt.format(_rho)))
@@ -2791,102 +2663,69 @@ class Dataset(object):
                 self.lblZLRResult.set_markup(
                     _(u"<span foreground='green'>Constant</span>"))
 
-        # =================================================================== #
-        # Perform a Kaplan-Meier analysis.
-        # =================================================================== #
-        elif self.distribution_id == 2:     # Kaplan-Meier
-# TODO: Revise tbl_dataset to include a field for the hardware id.
-# TODO: Revise the following query to include the hardware id field that will be added.
-            _query = "SELECT fld_left_interval, fld_right_interval, \
-                             fld_status, fld_quantity, fld_unit \
-                      FROM tbl_survival_data \
-                      WHERE fld_dataset_id=%d \
-                      AND fld_right_interval >= %f \
-                      AND fld_right_interval <= %f \
-                      ORDER BY fld_right_interval ASC, \
-                      fld_status DESC" % (self.dataset_id, self.start_time,
-                                          self.rel_time)
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx)
-
-            # Make a list with the rank of the records that are failures.
-            r = []
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        # Perform a Kaplan-Meier analysis.                                  #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        elif self.distribution_id == 2:
+            _data = []
             for i in range(len(_results)):
-                if(_results[i][2] == 'Event' or
-                   _results[i][2] == 'Interval Censored'):
-                    r.append(i + 1)
+                _row = (_results[i][1], _results[i][2], _results[i][4],
+                        _results[i][5])
+                _data.append(_row)
 
-            # The Kaplan-Meier function will retun a list of lists where the
-            # index of each list is:
-            #    0 = total number of subjects in each curve.
-            #    1 = the time points at which the curve has a step.
-            #    2 = the number of subjects at risk at t.
-            #    3 = the number of events that occur at time t.
-            #    4 = the number of subjects that enter at time t (counting
-            #        process data only).
-            #    5 = the estimate of survival at time t+0. This may be a vector
-            #        or a matrix.
-            #    6 = type of survival censoring.
-            #    7 = the standard error of the cumulative hazard or
-            #        -log(survival).
-            #    8 = upper confidence limit for the survival curve.
-            #    9 = lower confidence limit for the survival curve.
-            #   10 = the approximation used to compute the confidence limits.
-            #   11 = the level of the confidence limits, e.g. 90 or 95%.
-            #   12 = the returned value from the na.action function, if any.
-            #        It will be used in the printout of the curve, e.g., the
-            #        number of observations deleted due to missing values.
-            _nonpar = kaplan_meier(_results, self.rel_time, _confidence)
-            turnbull(_results, self.rel_time, _confidence)
+            _nonpar = kaplan_meier(_data, self.rel_time)
+            #turnbull(_results, self.rel_time, _confidence)
 
-            n_points = _nonpar[0][0]
-            _times = _nonpar[1]
-            _Shat = _nonpar[5]
-            _Shatll = _nonpar[8]
-            _Shatul = _nonpar[9]
-
-            _kaplan_meier = []
-            for i in range(len(_times)):
-                _kaplan_meier.append([_nonpar[1][i], _nonpar[2][i],
-                                      _nonpar[3][i], _nonpar[7][i],
-                                      _nonpar[9][i], _nonpar[5][i],
-                                      _nonpar[8][i]])
-                self.n_failures += _nonpar[3][i]
+            _n_points = _nonpar.tolist()[0][1]
+            _times = np.transpose(_nonpar).tolist()[0]
+            _S_hat_ll = np.transpose(_nonpar).tolist()[4]
+            _S_hat = np.transpose(_nonpar).tolist()[5]
+            _S_hat_ul = np.transpose(_nonpar).tolist()[6]
 
             # Calculate the MTBF, the variance on the MTBF, and the limits on
             # the MTBF.
-            _mtbf = kaplan_meier_mean(_kaplan_meier, _confidence)
+            _mtbf = kaplan_meier_mean(_nonpar, _confidence)
 
-            MTBF = _mtbf[len(_mtbf) - 1][0]
-            MTBFLL = _mtbf[len(_mtbf) - 1][1]
-            MTBFUL = _mtbf[len(_mtbf) - 1][2]
+            _mtbfi_ll = _mtbf[-1][0]
+            _mtbfi = _mtbf[-1][1]
+            _mtbfi_ul = _mtbf[-1][2]
 
             # Load the non-parametric results gtk.TreeView
             _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
                                    gobject.TYPE_INT, gobject.TYPE_FLOAT,
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                    gobject.TYPE_FLOAT)
-            _index = [0, 1, 2, 3, 4, 5, 6]
             _col_headings = [_(u"Time"), _(u"Number\nat Risk"),
                              _(u"Number\nFailing"), _(u"se S(t)"),
                              _(u"S(t) Lower\nBound"), _(u"S(t)"),
                              _(u"S(t) Upper\nBound")]
-            self._load_nonparametric_tree(_model, _kaplan_meier,
-                                          _index, _col_headings)
+            for _row in _nonpar:
+                _model.append(_row.tolist()[0])
+            self._load_nonparametric_tree(_model, _col_headings)
 
+            # Calculate hazard functions.
             _logtimes = [log(i) for i in _times]
+            _hazards = kaplan_meier_hazard(_nonpar)
 
-            (_h_, _hll_, _hul_,
-             _H_, _Hll_, _Hul_,
-             _logH_, _logHll_, _logHul_) = kaplan_meier_hazard(_kaplan_meier)
+            # Extract the various hazard functions from the numpy matrix so
+            # they can be plotted.
+            _h_ll = [x[0] for x in _hazards.tolist()]
+            _h = [x[1] for x in _hazards.tolist()]
+            _h_ul = [x[2] for x in _hazards.tolist()]
+            _H_ll = [x[3] for x in _hazards.tolist()]
+            _H = [x[4] for x in _hazards.tolist()]
+            _H_ul = [x[5] for x in _hazards.tolist()]
+            _logH_ll = [x[6] for x in _hazards.tolist()]
+            _logH = [x[7] for x in _hazards.tolist()]
+            _logH_ul = [x[8] for x in _hazards.tolist()]
 
             # Calculate the number of failures and suspensions in the dataset.
-            self.n_suspensions = n_points - self.n_failures
+            self.n_suspensions = _n_points - self.n_failures
 
             # Plot the survival curve with confidence bounds.
             _widg.load_plot(self.axAxis1, self.pltPlot1,
-                            x=_times, y1=_Shat,
-                            y2=_Shatll, y3=_Shatul,
+                            x=_times, y1=_S_hat,
+                            y2=_S_hat_ll, y3=_S_hat_ul,
                             _title_=_(u"Kaplan-Meier Plot for %s") %
                             self.description,
                             _xlab_=_(u"Time"),
@@ -2899,8 +2738,8 @@ class Dataset(object):
 
             # Plot the hazard rate curve with confidence bounds.
             _widg.load_plot(self.axAxis3, self.pltPlot3,
-                            x=_times[1:], y1=_h_[1:],
-                            y2=_hll_[1:], y3=_hul_[1:],
+                            x=_times, y1=_h,
+                            y2=_h_ll, y3=_h_ul,
                             _title_=_(u"Hazard Rate Plot for %s") %
                             self.description,
                             _xlab_=_(u"Time"),
@@ -2919,8 +2758,8 @@ class Dataset(object):
 
             # Plot the cumulative hazard curve with confidence bounds.
             _widg.load_plot(self.axAxis2, self.pltPlot2,
-                            x=_times, y1=_H_,
-                            y2=_Hll_, y3=_Hul_,
+                            x=_times, y1=_H,
+                            y2=_H_ll, y3=_H_ul,
                             _title_=_("Cumulative Hazard Plot for %s") %
                             self.description,
                             _xlab_=_("Time"),
@@ -2934,8 +2773,8 @@ class Dataset(object):
 
             # Plot the log cumulative hazard curve with confidence bounds.
             _widg.load_plot(self.axAxis4, self.pltPlot4,
-                            x=_logtimes, y1=_logH_[:len(_logtimes)],
-                            y2=_logHll_, y3=_logHul_,
+                            x=_logtimes, y1=_logH,
+                            y2=_logH_ll, y3=_logH_ul,
                             _title_=_("Log Cum. Hazard Plot for %s") %
                             self.description,
                             _xlab_=_("log(Time)"),
@@ -2959,65 +2798,15 @@ class Dataset(object):
         # =================================================================== #
         elif self.distribution_id == 3:     # NHPP - Power Law
 
-            _F_ = []
-            _X_ = []
-            _dates_ = []
-            _times_ = []
-            _mtbf_model_ = []
-            _fi_model_ = []
-            _mtbf_c_plot_ll_ = []
-            _mtbf_c_plot_ = []
-            _mtbf_c_plot_ul_ = []
-            _fi_c_plot_ll_ = []
-            _fi_c_plot_ = []
-            _fi_c_plot_ul_ = []
+            _running_results = []
 
-            # Create lists of the failure times and number of failures.
-            for i in range(len(_results)):
-                _F_.append(_results[i][5])
-                _X_.append(_results[i][2])
-                _dates_.append(_results[i][6])
+            _X = np.cumsum(_X).tolist()
 
-            _T_ = float(self.txtEndTime.get_text())
+            # Retrieve the user-supplied time to at which to calculate means
+            # and other quantities.  Otherwise use the latest failure time.
+            if float(self.txtEndTime.get_text()) > 0.0:
+                _T_star = float(self.txtEndTime.get_text())
 
-            # The power_law function will return a list of lists where each
-            # list contains:
-            #   Index       Value
-            #    0          Cumulative test time
-            #    1          Cumulative number of failures
-            #    2          Calculated cumulative MTBF
-            #    3          Lower bound on alpha
-            #    4          Point estimate of alpha
-            #    5          Upper bound on alpha
-            #    6          Lower bound on b
-            #    7          Point estimate of b
-            #    8          Upper bound on b
-            #    9          Lower bound on model estimate of cumulative MTBF
-            #   10          Model point estimate of cumulative MTBF
-            #   11          Upper bound on model estimate of cumulative MTBF
-            #   12          Lower bound on model estimate of instantaneous MTBF
-            #   13          Model point estimate of instantaneous MTBF
-            #   14          Upper bound on model estimate of instantaneous MTBF
-            #   15          Lower bound on model estimate of cumulative failure
-            #               intensity
-            #   16          Model point estimate of cumulative failure
-            #               intensity
-            #   17          Upper bound on model estimate of cumulative failure
-            #               intensity
-            #   18          Lower bound on model estimate of instantaneous
-            #               failure intensity
-            #   19          Model point estimate of instantaneous failure
-            #               intensity
-            #   20          Upper bound on model estimate of instantaneous
-            #               failure intensity
-            _power_law = power_law(_F_, _X_, self.confidence_method,
-                                   self.fit_method, self.confidence_type,
-                                   _confidence, _T_)
-            if len(_power_law) == 0:
-                _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
-                return True
-
-            # Load the non-parametric results gtk.TreeView
             _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -3025,181 +2814,188 @@ class Dataset(object):
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
-            _index = [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17]
-            _col_headings = [_(u"Cumulative\nTime"),
-                             _(u"Cumulative\nNumber\nof Failures"),
-                             _(u"\u03B1\nLower Bound"), _(u"\u03B1"),
-                             _(u"\u03B1\nLower Bound"), _(u"b\nLower Bound"),
-                             _(u"b"), _(u"b\nUpper Bound"),
+
+            for i in range(len(_X)):
+                _T_star = max(_X)
+
+                # The power_law function returns a list of lists:
+                # [[alpha lower bound, point estimate of alpha, alpha upper bound],
+                #  [beta lower bound, point estimate of beta, beta upper bound]]
+                self.scale, self.shape = power_law(_F[:i + 1], _X[:i + 1],
+                                                   self.confidence_method,
+                                                   self.fit_method,
+                                                   self.confidence_type,
+                                                   _confidence, _T_star)
+
+                if len(self.scale) == 0:
+                   self.scale[0] == 0.0
+                   self.scale[1] == 0.0
+                   self.scale[2] == 0.0
+                   self.shape[0] == 0.0
+                   self.shape[1] == 0.0
+                   self.shape[2] == 0.0
+
+                # Calculate the cumulative and instantaneous MTBF and failure
+                # intensity.
+                _mtbfc = self.scale[1] * _T_star**self.shape[1]
+                _mtbfi = _mtbfc / (1.0 - self.shape[1])
+
+                # Calculate bounds on the cumulative and instantaneous MTBF and
+                # failure intensities.
+# TODO: Implement mtbf bounds using Crow and Fisher methods.
+                _mtbfc_ll = self.scale[0] * _T_star**self.shape[0]
+                _mtbfc_ul = self.scale[2] * _T_star**self.shape[2]
+
+                _mtbfi_ll = _mtbfc_ll / (1.0 - self.shape[0])
+                _mtbfi_ul = _mtbfc_ul / (1.0 - self.shape[2])
+
+                _record = [_X[i], sum(_F[:i + 1]),
+                           self.scale[0], self.scale[1], self.scale[2],
+                           self.shape[0], self.shape[1], self.shape[2],
+                           _mtbfc_ll, _mtbfc, _mtbfc_ul,
+                           _mtbfi_ll, _mtbfi, _mtbfi_ul]
+                _running_results.append(_record)
+                _model.append(_record)
+
+            # Load the non-parametric results gtk.TreeView
+            _col_headings = [_(u"Time"), _(u"Cumulative\nFailures"),
+                             _(u"Scale Parameter\nLower Bound"),
+                             _(u"Scale Parameter"),
+                             _(u"Scale Parameter\nUpper Bound"),
+                             _(u"Shape Parameter\nLower Bound"),
+                             _(u"Shape Parameter"),
+                             _(u"Shape Parameter\nUpper Bound"),
                              _(u"Cumulative MTBF\nLower Bound"),
                              _(u"Cumulative\nMTBF"),
                              _(u"Cumulative\nMTBF\nUpper Bound"),
-                             _(u"Cumulative\nFailure Intensity\nUpper Bound"),
-                             _(u"Cumulative\nFailure\nIntensity"),
-                             _(u"Cumulative\nFailure Intensity\nUpper Bound")]
-            self._load_nonparametric_tree(_model, _power_law,
-                                          _index, _col_headings)
+                             _(u"Instantaneous MTBF\nLower Bound"),
+                             _(u"Instantaneous\nMTBF"),
+                             _(u"Instantaneous\nMTBF\nUpper Bound")]
 
-            self.shape[1] = _power_law[len(_power_law) - 1][3]
-            self.shape[0] = _power_law[len(_power_law) - 1][4]
-            self.shape[2] = _power_law[len(_power_law) - 1][5]
+            self._load_nonparametric_tree(_model, _col_headings)
 
-            self.scale[1] = _power_law[len(_power_law) - 1][6]
-            self.scale[0] = _power_law[len(_power_law) - 1][7]
-            self.scale[2] = _power_law[len(_power_law) - 1][8]
+            # Get the
+            _plot_times = [x[0] for x in _running_results]
+            _plot_mtbf_ll = [x[8] for x in _running_results]
+            _plot_mtbf = [x[9] for x in _running_results]
+            _plot_mtbf_ul = [x[10] for x in _running_results]
+            _plot_mtbfi_ll = [(self.scale[0] * x[0]**self.shape[0]) / \
+                              (1.0 - self.shape[0]) for x in _running_results]
+            _plot_mtbfi = [(self.scale[1] * x[0]**self.shape[1]) / (1.0 - self.shape[1]) for x in _running_results]
+            _plot_mtbfi_ul = [(self.scale[2] * x[0]**self.shape[2]) / (1.0 - self.shape[2]) for x in _running_results]
 
-            MTBFLL = _power_law[len(_power_law) - 1][9]
-            MTBF = _power_law[len(_power_law) - 1][10]
-            MTBFUL = _power_law[len(_power_law) - 1][11]
+            # Set the minimum MTBF values to zero.
+            _plot_mtbf_ll[np.where(_plot_mtbf_ll) < 0.0] = 0.0
+            _plot_mtbfi_ll[np.where(_plot_mtbfi_ll) < 0.0] = 0.0
 
-            MTBFiLL = _power_law[len(_power_law) - 1][12]
-            MTBFi = _power_law[len(_power_law) - 1][13]
-            MTBFiUL = _power_law[len(_power_law) - 1][14]
-
-            _start = int(0.1 * len(_power_law))
-            _end = len(_power_law) - 1
-            _shape = sum([z[4] for z in _power_law[_start:_end]]) / \
-                     (_end - _start)
-            _scale = sum([z[7] for z in _power_law[_start:_end]]) / \
-                     (_end - _start)
-
-            # Calculate the bounds at each observation point.
-            _mtbf_c_plot_ll_ = np.array([], float)  # pylint: disable=E1101
-            _mtbf_c_plot_ul_ = np.array([], float)  # pylint: disable=E1101
-            _fi_c_plot_ll_ = np.array([], float)    # pylint: disable=E1101
-            _fi_c_plot_ul_ = np.array([], float)    # pylint: disable=E1101
-            for i in range(len(_power_law)):
-                _times_.append(_power_law[i][0])
-                _mtbf_model_.append(_scale * _power_law[i][0]**_shape)
-                _fi_model_.append((1.0 / _scale) * _power_law[i][0]**-_shape)
-                _mtbf_c_plot_ll_ = np.append(_mtbf_c_plot_ll_,  # pylint: disable=E1101
-                                             _power_law[i][9])
-                _mtbf_c_plot_.append(_power_law[i][10])    # pylint: disable=E1101
-                _mtbf_c_plot_ul_ = np.append(_mtbf_c_plot_ul_,  # pylint: disable=E1101
-                                             _power_law[i][11])
-                _fi_c_plot_ll_ = np.append(_fi_c_plot_ll_, _power_law[i][15])  # pylint: disable=E1101
-                _fi_c_plot_.append(_power_law[i][16])  # pylint: disable=E1101
-                _fi_c_plot_ul_ = np.append(_fi_c_plot_ul_, _power_law[i][17])  # pylint: disable=E1101
-
-            _times_ = np.array(_times_[:len(_mtbf_c_plot_ll_)]) # pylint: disable=E1101
-
-            (_new_times_,
-             _mtbf_c_plot_ll_,
-             _error) = _calc.smooth_curve(_times_, _mtbf_c_plot_ll_,
-                                          50 * len(_mtbf_c_plot_ll_))
-            _mtbf_c_plot_ul_ = _calc.smooth_curve(_times_, _mtbf_c_plot_ul_,
-                                                  50 * len(_mtbf_c_plot_ul_))[1]
-            _fi_c_plot_ll_ = _calc.smooth_curve(_times_, _fi_c_plot_ll_,
-                                                50 * len(_fi_c_plot_ll_))[1]
-            _fi_c_plot_ul_ = _calc.smooth_curve(_times_, _fi_c_plot_ul_,
-                                                50 * len(_fi_c_plot_ul_))[1]
-            _times_ = _times_.tolist()
-
-            # Display the NHPP Power Law specific results.
-            self.txtMTBFi.set_text(str(fmt.format(MTBFi)))
-            self.txtMTBFiLL.set_text(str(fmt.format(MTBFiLL)))
-            self.txtMTBFiUL.set_text(str(fmt.format(MTBFiUL)))
-
-            try:
-                self.txtHazardRatei.set_text(str(fmt.format(1.0 / MTBFi)))
-            except ZeroDivisionError:
-                self.txtHazardRatei.set_text("0.0")
-
-            try:
-                self.txtHazardRateiLL.set_text(str(fmt.format(1.0 / MTBFiUL)))
-            except ZeroDivisionError:
-                self.txtHazardRateiLL.set_text("0.0")
-
-            try:
-                self.txtHazardRateiUL.set_text(str(fmt.format(1.0 / MTBFiLL)))
-            except ZeroDivisionError:
-                self.txtHazardRateiUL.set_text("0.0")
+            # Calculate the cumulative MTBF at each time point using the final
+            # estimates of alpha and beta.
+            _plot_model = [x[0] * 500.0 / _X[-1]
+                           for x in _running_results]
 
             # Plot the MTBF curve with confidence bounds.
-            _widg.load_plot(self.axAxis1, self.pltPlot1, x=_times_,
-                            y1=_mtbf_c_plot_, y2=_mtbf_model_,
-                            _title_=_(u"Duane Plot of %s Cumulative MTBF") %
-                            self.description,
-                            _xlab_=_(u"Cumulative Time [hours]"),
+            _widg.load_plot(self.axAxis1, self.pltPlot1, x=_plot_times,
+                            y1=_plot_mtbf,
+                            _title_=_(u"NHPP - Power Law Plot Cumulative "
+                                      u"MTBF Over Cumulative Operating Time"),
+                            _xlab_=_(u"Cumulative Operating Time [t]"),
                             _ylab_=_(u"Cumulative MTBF [m(t)] "),
-                            _marker_=['go', 'k--'],
-                            _type_=[2, 2])
+                            _marker_=['go'],
+                            _type_=[2])
 
             # Plot the smoothed confidence bounds.
-            line = matplotlib.lines.Line2D(_new_times_[10:],
-                                           _mtbf_c_plot_ll_[10:], lw=1.5,
-                                           color='r', ls='-.')
-            self.axAxis1.add_line(line)
-            line = matplotlib.lines.Line2D(_new_times_[10:],
-                                           _mtbf_c_plot_ul_[10:], lw=1.5,
-                                           color='b', ls='-.')
-            self.axAxis1.add_line(line)
+            _line = matplotlib.lines.Line2D(_plot_times,
+                                            _plot_mtbf_ll, lw=1.5,
+                                            color='r', ls='-.')
+            self.axAxis1.add_line(_line)
+            _line = matplotlib.lines.Line2D(_plot_times,
+                                            _plot_mtbf_ul, lw=1.5,
+                                            color='b', ls='-.')
+            self.axAxis1.add_line(_line)
+
+            #line = matplotlib.lines.Line2D(_plot_times,
+            #                               _plot_model, lw=1.5,
+            #                               color='k', ls='--')
+            #self.axAxis1.add_line(line)
 
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
-                     _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
+                     _(u"Cum. MTBF UCL"))
             _widg.create_legend(self.axAxis1, _text, fontsize='medium',
                                 legframeon=True, location='lower right',
                                 legshadow=True)
 
-            _widg.load_plot(self.axAxis2, self.pltPlot2, x=_dates_,
-                            y1=_mtbf_c_plot_, y2=_mtbf_model_,
-                            _title_=_(u"Duane Plot of %s Cumulative MTBF Over "
-                                      u"Calendar Time") % self.description,
+            _widg.load_plot(self.axAxis2, self.pltPlot2, x=_dates,
+                            y1=_plot_mtbf,
+                            _title_=_(u"NHPP - Power Law Plot of Cumulative "
+                                      u"MTBF Over Calendar Time"),
                             _xlab_=_(u"Calendar Time"),
                             _ylab_=_(u"Cumulative MTBF [m(t)] "),
-                            _marker_=['go', 'k--'],
-                            _type_=[4, 4])
+                            _marker_=['go'],
+                            _type_=[4])
+
+            _line = matplotlib.lines.Line2D(_dates,
+                                            _plot_mtbf_ll, lw=1.5,
+                                            color='r', ls='-.')
+            self.axAxis2.add_line(_line)
+
+            _line = matplotlib.lines.Line2D(_dates,
+                                            _plot_mtbf_ul, lw=1.5,
+                                            color='b', ls='-.')
+            self.axAxis2.add_line(_line)
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
-                     _(u"Cum. MTBF UCL"), _(u"Fitted Model"))
+                     _(u"Cum. MTBF UCL"))
             _widg.create_legend(self.axAxis2, _text, fontsize='medium',
                                 legframeon=True, location='lower right',
                                 legshadow=True)
 
-            # Load the failure intensity versus cumulative operating time.
-            _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times_,
-                            y1=_fi_c_plot_, y2=_fi_model_,
-                            _title_=_(u"Duane Plot of %s Cumulative Failure "
-                                      u"Intesity") % self.description,
-                            _xlab_=_(u"Cumulative Time [hours]"),
-                            _ylab_=_(u"Cumulative Failure Intensity "),
-                            _marker_=['go', 'k--'],
-                            _type_=[2, 2])
+            # Load the instantaneous MTBF versus cumulative operating time.
+            _widg.load_plot(self.axAxis3, self.pltPlot3, x=_plot_times,
+                            y1=_plot_mtbfi,
+                            _title_=_(u"NHPP - Power Law Plot of "
+                                      u"Instantaneous MTBF Over Cumulative "
+                                      u"Operating Time"),
+                            _xlab_=_(u"Cumulative Operating Time [t]"),
+                            _ylab_=_(u"Instantaneous MTBF [M(t)] "),
+                            _marker_=['g-'],
+                            _type_=[2])
 
             # Plot the smoothed confidence bounds.
-            line = matplotlib.lines.Line2D(_new_times_, _fi_c_plot_ll_,
+            _line = matplotlib.lines.Line2D(_plot_times, _plot_mtbfi_ll,
                                            lw=1.5, color='r', ls='-.')
-            self.axAxis3.add_line(line)
-
-            line = matplotlib.lines.Line2D(_new_times_, _fi_c_plot_ul_,
+            self.axAxis3.add_line(_line)
+            _line = matplotlib.lines.Line2D(_plot_times, _plot_mtbfi_ul,
                                            lw=1.5, color='b', ls='-.')
-            self.axAxis3.add_line(line)
+            self.axAxis3.add_line(_line)
 
-            self.axAxis3.set_xscale('log')
-            self.axAxis3.set_yscale('log')
-
-            _text = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
-                     _(u"Cum. FI UCL"), _(u"Fitted Model"))
+            _text = (_(u"Instantaneous MTBF"), _(u"Inst. MTBF LCL"),
+                     _(u"Inst. MTBF UCL"))
             _widg.create_legend(self.axAxis3, _text, fontsize='medium',
                                 legframeon=True, location='upper right',
                                 legshadow=True)
 
-            # Load the failure intensity versus calendar time plot.
-            _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates_[3:],
-                            y1=_fi_c_plot_[3:], y2=_fi_model_[3:],
-                            _title_=_(u"Duane Plot of %s Cumulative Failure "
-                                      u"Intensity Over Calendar Time") %
-                            self.description,
+            # Load the instantaneous MTBF versus calendar time plot.
+            _widg.load_plot(self.axAxis4, self.pltPlot4, x=_dates,
+                            y1=_plot_mtbfi,
+                            _title_=_(u"NHPP - Power Law Plot of "
+                                      u"Instantaneous MTBF Over Calendar "
+                                      u"Time"),
                             _xlab_=_(u"Calendar Time"),
-                            _ylab_=_(u"Cumulative Failure Intensity "),
-                            _marker_=['go', 'k--'],
-                            _type_=[4, 4])
+                            _ylab_=_(u"Instantaneous MTBF "),
+                            _marker_=['g-'],
+                            _type_=[4])
 
-            _text = (_(u"Cumulative Failure Intensity"), _(u"Cum. FI LCL"),
-                     _(u"Cum. FI UCL"), _(u"Fitted Model"))
+            # Plot the smoothed confidence bounds.
+            _line = matplotlib.lines.Line2D(_dates, _plot_mtbfi_ll,
+                                           lw=1.5, color='r', ls='-.')
+            self.axAxis4.add_line(_line)
+            _line = matplotlib.lines.Line2D(_dates, _plot_mtbfi_ul,
+                                           lw=1.5, color='b', ls='-.')
+            self.axAxis4.add_line(_line)
+
             _widg.create_legend(self.axAxis4, _text, fontsize='medium',
                                 legframeon=True, location='upper right',
                                 legshadow=True)
@@ -3215,8 +3011,6 @@ class Dataset(object):
 
             self.vbxPlot2.pack_start(self.pltPlot2)
             self.vbxPlot2.pack_start(self.pltPlot4)
-
-            self.pltPlot1.draw()
 
         elif self.distribution_id == 4:     # NHPP - Loglinear
 
@@ -3269,41 +3063,41 @@ class Dataset(object):
             _log_linear = loglinear(_F_, _X_, self.fit_method,
                                     self.confidence_type, _confidence, _T_)
 
-# =========================================================================== #
-# Fit the data to an exponential distribution and estimate it's parameters.
-# =========================================================================== #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        # Fit the data to an exponential distribution and estimate it's     #
+        # parameters.                                                       #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         elif self.distribution_id == 5:
-            fit = parametric_fit(_results, self.start_time, self.rel_time,
+            _fit = parametric_fit(_results, self.start_time, self.rel_time,
                                  self.fit_method, 'exponential')
 
             if self.fit_method == 1:        # MLE
-                self.scale[0] = fit[0][0]
-                self.scale[1] = fit[0][0] - _z_norm * fit[1][0]
-                self.scale[2] = fit[0][0] + _z_norm * fit[1][0]
-                self.variance[0] = fit[1][0]**2.0
-                self.mle = fit[3][0]
-                self.aic = fit[4][0]
-                self.bic = fit[5][0]
+                self.scale[1] = _fit[0][0]
+                self.scale[0] = _fit[0][0] + _z_norm * _fit[1][0]
+                self.scale[2] = _fit[0][0] - _z_norm * _fit[1][0]
+                self.variance[0] = _fit[1][0]**2.0
+                self.mle = _fit[3][0]
+                self.aic = _fit[4][0]
+                self.bic = _fit[5][0]
 
             elif self.fit_method == 2:      # Rank regression.
-                self.scale[0] = 1.0 / exp(fit[0][0])
-                self.scale[1] = 1.0 / (exp(fit[0][0] + _z_norm * fit[2][0]))
-                self.scale[2] = 1.0 / (exp(fit[0][0] - _z_norm * fit[2][0]))
-                self.variance[0] = fit[2][0]
-                self.mle = fit[3][0]
+                self.scale[1] = 1.0 / exp(_fit[0][0])
+                self.scale[0] = 1.0 / (exp(_fit[0][0] + _z_norm * _fit[2][0]))
+                self.scale[2] = 1.0 / (exp(_fit[0][0] - _z_norm * _fit[2][0]))
+                self.variance[0] = _fit[2][0]
+                self.mle = _fit[3][0]
 
-            MTBF = 1.0 / self.scale[0]
-            MTBFLL = 1.0 / self.scale[1]
-            MTBFUL = 1.0 / self.scale[2]
+            _mtbfi = 1.0 / self.scale[0]
+            _mtbfi_ll = 1.0 / self.scale[1]
+            _mtbfi_ul = 1.0 / self.scale[2]
 
-            para = R.list(rate=self.scale[0])
-            _theop_ = theoretical_distribution(_censdata, 'exp', para)
+            _para = R.list(rate=self.scale[0])
+            _theop = theoretical_distribution(_results, 'exp', _para)
 
-            times = [float(i[3]) for i in _results if i[2] <= self.rel_time]
-            Rtimes = robjects.FloatVector(times)
-            Rtimes = R.sort(Rtimes)
-            _qqplot_ = R.qqplot(R.qexp(R.ppoints(Rtimes), rate=self.scale[0]),
-                                Rtimes, False)
+            _times = [i[2] for i in _results if i[2] <= self.rel_time]
+            _r_times = R.sort(robjects.FloatVector(_times))
+            _qqplot = R.qqplot(R.qexp(R.ppoints(_r_times), rate=self.scale[0]),
+                               _r_times, False)
 
 # =========================================================================== #
 # Fit the data to a lognormal and estimate it's parameters.
@@ -3357,53 +3151,53 @@ class Dataset(object):
                                          meanlog=self.scale[0],
                                          sdlog=self.shape[0]), Rtimes, False)
 
-# =========================================================================== #
-# Fit the data to a normal distibution and estimate it's parameters.
-# =========================================================================== #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        # Fit the data to a normal distibution and estimate it's            #
+        # parameters.                                                       #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         elif self.distribution_id == 7:
-            fit = parametric_fit(_results, self.start_time, self.rel_time,
-                                 self.fit_method, 'normal')
+            _fit = parametric_fit(_results, self.start_time, self.rel_time,
+                                  self.fit_method, 'normal')
 
             if self.fit_method == 1:        # MLE
-                self.scale[0] = fit[0][0]
-                self.scale[1] = self.scale[0] - _z_norm * fit[1][0]
-                self.scale[2] = self.scale[0] + _z_norm * fit[1][0]
-                self.shape[0] = fit[0][1]
-                self.shape[1] = self.shape[0] - _z_norm * fit[1][1]
-                self.shape[2] = self.shape[0] + _z_norm * fit[1][1]
-                self.variance[0] = fit[1][0]**2
-                self.variance[1] = fit[1][1]**2
-                self.mle = fit[3][0]
-                self.aic = fit[4][0]
-                self.bic = fit[5][0]
+                self.scale[1] = _fit[0][0]
+                self.scale[0] = self.scale[1] - _z_norm * _fit[1][0]
+                self.scale[2] = self.scale[1] + _z_norm * _fit[1][0]
+                self.shape[1] = _fit[0][1]
+                self.shape[0] = self.shape[1] - _z_norm * _fit[1][1]
+                self.shape[2] = self.shape[1] + _z_norm * _fit[1][1]
+                self.variance[0] = _fit[1][0]**2
+                self.variance[1] = _fit[1][1]**2
+                self.mle = _fit[3][0]
+                self.aic = _fit[4][0]
+                self.bic = _fit[5][0]
             elif self.fit_method == 2:      # Rank regression.
-                self.scale[0] = fit[1][0]
-                self.shape[0] = exp(fit[1][1])
-                self.variance[0] = fit[2][0]
-                self.covariance[0] = fit[2][1]
-                self.variance[0] = fit[2][2]
-                self.variance[1] = fit[2][3]
-                self.scale[1] = self.scale[0] - _z_norm * \
+                self.scale[1] = _fit[1][0]
+                self.shape[1] = exp(_fit[1][1])
+                self.variance[0] = _fit[2][0]
+                self.covariance[0] = _fit[2][1]
+                self.variance[0] = _fit[2][2]
+                self.variance[1] = _fit[2][3]
+                self.scale[0] = self.scale[1] - _z_norm * \
                                 sqrt(self.variance[0])
-                self.scale[2] = self.scale[0] + _z_norm * \
+                self.scale[2] = self.scale[1] + _z_norm * \
                                 sqrt(self.variance[0])
-                self.shape[1] = self.shape[0] - _z_norm * \
+                self.shape[0] = self.shape[1] - _z_norm * \
                                 sqrt(self.variance[1])
-                self.shape[2] = self.shape[0] + _z_norm * \
+                self.shape[2] = self.shape[1] + _z_norm * \
                                 sqrt(self.variance[1])
 
-            MTBF = self.scale[0]
-            MTBFLL = self.scale[1]
-            MTBFUL = self.scale[2]
+            _mtbfi = self.scale[1]
+            _mtbfi_ll = self.scale[0]
+            _mtbfi_ul = self.scale[2]
 
-            para = R.list(sd=self.shape[0], mean=self.scale[0])
-            _theop_ = theoretical_distribution(_censdata, 'norm', para)
+            _para = R.list(sd=self.shape[1], mean=self.scale[1])
+            _theop = theoretical_distribution(_results, 'norm', _para)
 
-            times = [float(i[3]) for i in _results if i[2] <= self.rel_time]
-            Rtimes = robjects.FloatVector(times)
-            Rtimes = R.sort(Rtimes)
-            _qqplot_ = R.qqplot(R.qnorm(R.ppoints(Rtimes), mean=self.scale[0],
-                                        sd=self.shape[0]), Rtimes, False)
+            _times = [float(i[2]) for i in _results if i[2] <= self.rel_time]
+            _r_times = R.sort(robjects.FloatVector(_times))
+            _qqplot = R.qqplot(R.qnorm(R.ppoints(_r_times), mean=self.scale[1],
+                                       sd=self.shape[1]), _r_times, False)
 
 # =========================================================================== #
 # Fit the data to a Weibull distribution and estimate it's parameters.
@@ -3413,15 +3207,15 @@ class Dataset(object):
                                  self.fit_method, 'weibull')
 
             if self.fit_method == 1:        # MLE
-                self.scale[0] = fit[0][1]
-                self.scale[1] = self.scale[0] / exp(_z_norm * fit[1][1] /
+                self.scale[1] = fit[0][1]
+                self.scale[0] = self.scale[1] / exp(_z_norm * fit[1][1] /
                                                     self.scale[0])
-                self.scale[2] = self.scale[0] * exp(_z_norm * fit[1][1] /
+                self.scale[2] = self.scale[1] * exp(_z_norm * fit[1][1] /
                                                     self.scale[0])
-                self.shape[0] = fit[0][0]
-                self.shape[1] = self.shape[0] / exp(_z_norm * fit[1][0] /
+                self.shape[1] = fit[0][0]
+                self.shape[0] = self.shape[1] / exp(_z_norm * fit[1][0] /
                                                     self.shape[0])
-                self.shape[2] = self.shape[0] * exp(_z_norm * fit[1][0] /
+                self.shape[2] = self.shape[1] * exp(_z_norm * fit[1][0] /
                                                     self.shape[0])
                 self.variance[1] = fit[1][0]**2
                 self.variance[0] = fit[1][1]**2
@@ -3430,35 +3224,35 @@ class Dataset(object):
                 self.bic = fit[5][0]
 
                 if __USE_RPY2__:
-                    MTBF = self.scale[0] * \
-                           R.gamma(1.0 + (1.0 / self.shape[0]))[0]
-                    MTBFLL = self.scale[1] * \
+                    MTBF = self.scale[1] * \
+                           R.gamma(1.0 + (1.0 / self.shape[1]))[0]
+                    MTBFLL = self.scale[0] * \
                              R.gamma(1.0 + (1.0 / self.shape[2]))[0]
                     MTBFUL = self.scale[2] * \
-                             R.gamma(1.0 + (1.0 / self.shape[1]))[0]
+                             R.gamma(1.0 + (1.0 / self.shape[0]))[0]
 
             elif self.fit_method == 2:      # Regression
-                self.scale[0] = exp(fit[1][0])
-                self.shape[0] = exp(fit[1][1])
+                self.scale[1] = exp(fit[1][0])
+                self.shape[1] = exp(fit[1][1])
                 self.variance[0] = fit[2][0]
                 self.covariance[0] = fit[2][1]
                 self.variance[1] = fit[2][3]
-                self.scale[1] = self.scale[0] - _z_norm * \
+                self.scale[0] = self.scale[1] - _z_norm * \
                                 sqrt(self.variance[0])
-                self.scale[2] = self.scale[0] + _z_norm * \
+                self.scale[2] = self.scale[1] + _z_norm * \
                                 sqrt(self.variance[0])
-                self.shape[1] = self.shape[0] - _z_norm * \
+                self.shape[0] = self.shape[1] - _z_norm * \
                                 sqrt(self.variance[1])
-                self.shape[2] = self.shape[0] + _z_norm * \
+                self.shape[2] = self.shape[1] + _z_norm * \
                                 sqrt(self.variance[1])
 
                 if __USE_RPY2__:
-                    MTBF = self.scale[0] * \
-                           R.gamma(1.0 + (1.0 / self.shape[0]))[0]
-                    MTBFLL = self.scale[1] * \
+                    MTBF = self.scale[1] * \
+                           R.gamma(1.0 + (1.0 / self.shape[1]))[0]
+                    MTBFLL = self.scale[0] * \
                              R.gamma(1.0 + (1.0 / self.shape[2]))[0]
                     MTBFUL = self.scale[2] * \
-                             R.gamma(1.0 + (1.0 / self.shape[1]))[0]
+                             R.gamma(1.0 + (1.0 / self.shape[0]))[0]
 
             para = R.list(shape=self.shape[0], scale=self.scale[0])
             _theop_ = theoretical_distribution(_censdata, 'weibull', para)
@@ -3472,8 +3266,9 @@ class Dataset(object):
 
         #elif self.distribution_id == 9:     # Fit to a WeiBayes.
 
-# Find the percent of records belonging to each sub-assembly and then allocate
-# this percent of the overall failure rate to each sub-assembly.
+        # Find the percent of records belonging to each sub-assembly and then
+        # allocate this percent of the overall failure rate to each
+        # sub-assembly.
         if self.chkGroup.get_active():
             _query = "SELECT t2.fld_name, SUM(t1.fld_quantity), \
                              t2.fld_assembly_id \
@@ -3562,46 +3357,45 @@ class Dataset(object):
                            _color)
                 _model.append(_values)
 
-# =========================================================================== #
-# Create and display parametric plots.
-# =========================================================================== #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+        # Create and display parametric plots.                              #
+        # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         if self.distribution_id > 4:
             # Plot a histogram of interarrival times.
-            hist = R.hist(Rtimes, plot='False')
-            _bins = list(hist[0])
-            # counts = list(hist[1])
+            _hist = R.hist(_r_times, plot='False')
+            _bins = list(_hist[0])
 
-            __title__ = _(u"Histogram of Interarrival Times for %s") % \
-                        self.description
+            _title = _(u"Histogram of Interarrival Times for %s") % \
+                       self.description
             _widg.load_plot(self.axAxis1, self.pltPlot1,
-                            x=Rtimes, y1=_bins,
-                            _title_=__title__,
+                            x=_r_times, y1=_bins,
+                            _title_=_title,
                             _xlab_=_(u"Interarrival Times"),
                             _ylab_=_(u"Count "),
                             _type_=[3],
                             _marker_=['g'])
 
             # Plot an ECDF of interarrival times.
-            Rstats = importr('stats')
-            Fn = Rstats.ecdf(Rtimes)        # pylint: disable=E1101
-            _ecdf = Fn(Rtimes)
+            _r_stats = importr('stats')
+            _function = _r_stats.ecdf(_r_times)
+            _ecdf = _function(_r_times)
 
-            __title__ = _(u"Empirical CDF of Interarrival Times for %s") % \
-                        self.description
+            _title = _(u"Empirical CDF of Interarrival Times for %s") % \
+                     self.description
             _widg.load_plot(self.axAxis3, self.pltPlot3,
-                            x=Rtimes, y1=_ecdf, y2=_theop_[1:],
-                            _title_=__title__,
+                            x=_r_times, y1=_ecdf, y2=_theop[1:],
+                            _title_=_title,
                             _xlab_=_(u"t"),
                             _ylab_=_(u"F(t) "),
                             _type_=[1, 2],
                             _marker_=['b-', 'r:'])
 
             # Plot the probability plot of interarrival times.
-            __title__ = _(u"Probability Plot of Interarrival Times for "
-                          u"%s ") % self.description
+            _title = _(u"Probability Plot of Interarrival Times for "
+                       u"%s ") % self.description
             _widg.load_plot(self.axAxis4, self.pltPlot4,
-                            x=_qqplot_[0], y1=_qqplot_[1],
-                            _title_=__title__,
+                            x=_qqplot[0], y1=_qqplot[1],
+                            _title_=_title,
                             _xlab_=_(u"Theoretical"),
                             _ylab_=_(u"Observed"),
                             _type_=[2],
@@ -3626,22 +3420,25 @@ class Dataset(object):
         self._update_tree()
         self.load_analyses_results_page()
 
-        self.txtMTBF.set_text(str(fmt.format(MTBF)))
-        self.txtMTBFLL.set_text(str(fmt.format(MTBFLL)))
-        self.txtMTBFUL.set_text(str(fmt.format(MTBFUL)))
+        self.txtMTBF.set_text(str(fmt.format(_mtbfc)))
+        self.txtMTBFLL.set_text(str(fmt.format(_mtbfc_ll)))
+        self.txtMTBFUL.set_text(str(fmt.format(_mtbfc_ul)))
+        self.txtMTBFi.set_text(str(fmt.format(_mtbfi)))
+        self.txtMTBFiLL.set_text(str(fmt.format(_mtbfi_ll)))
+        self.txtMTBFiUL.set_text(str(fmt.format(_mtbfi_ul)))
 
         try:
-            self.txtHazardRate.set_text(str(fmt.format(1.0 / MTBF)))
+            self.txtHazardRate.set_text(str(fmt.format(1.0 / _mtbfi)))
         except ZeroDivisionError:
             self.txtHazardRate.set_text("0.0")
 
         try:
-            self.txtHazardRateLL.set_text(str(fmt.format(1.0 / MTBFUL)))
+            self.txtHazardRateLL.set_text(str(fmt.format(1.0 / _mtbfi_ul)))
         except ZeroDivisionError:
             self.txtHazardRateLL.set_text("0.0")
 
         try:
-            self.txtHazardRateUL.set_text(str(fmt.format(1.0 / MTBFLL)))
+            self.txtHazardRateUL.set_text(str(fmt.format(1.0 / _mtbfi_ll)))
         except ZeroDivisionError:
             self.txtHazardRateUL.set_text("0.0")
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """ This is the System Tree window for RTK. """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
-
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # -*- coding: utf-8 -*-
 #
 #       tree.py is part of The RTK Project
@@ -575,19 +576,18 @@ class TreeWindow(gtk.Window):
         """
         Called whenever the Tree Book notebook page is changed.
 
-        Keyword Arguments:
-        notebook -- the Tree Book notebook widget.
-        page     -- the newly selected page widget.
-        page_num -- the newly selected page number.
-                    0 = Revision Tree
-                    1 = Function Tree
-                    2 = Requirements Tree
-                    3 = Hardware Tree
-                    4 = Software Tree
-                    5 = Validation Tree
-                    6 = Reliability Testing Tree
-                    7 = Field Incident Tree
-                    8 = Survival Analyses Tree
+        @param notebook: the Tree Book notebook widget.
+        @param page: the newly selected page widget.
+        @param page_num: the newly selected page number.
+                            0 = Revision Tree
+                            1 = Function Tree
+                            2 = Requirements Tree
+                            3 = Hardware Tree
+                            4 = Software Tree
+                            5 = Validation Tree
+                            6 = Reliability Testing Tree
+                            7 = Field Incident Tree
+                            8 = Survival Analyses Tree
         """
 
         button = self.toolbar.get_nth_item(4)

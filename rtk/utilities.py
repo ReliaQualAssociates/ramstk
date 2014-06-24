@@ -821,7 +821,7 @@ def rtk_information(prompt, _parent=None):
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE,
+                                gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
                                 message_format=prompt)
     _dialog.run()
     _dialog.destroy()
@@ -859,7 +859,7 @@ def rtk_warning(prompt, _parent=None):
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                gtk.MESSAGE_WARNING, gtk.BUTTONS_CLOSE,
+                                gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
                                 message_format=prompt)
     _dialog.run()
     _dialog.destroy()
@@ -1517,7 +1517,7 @@ def options(__widget, app):
     Options(app)
 
 
-def date_select(__widget, entry=None):
+def date_select(__widget, __event=None, entry=None):
     """
     Function to select a date from a calendar widget.
 
