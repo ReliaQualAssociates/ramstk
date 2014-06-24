@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
 import locale
 import sys
 
@@ -78,7 +79,6 @@ try:
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 

@@ -54,7 +54,7 @@ try:
     import rtk.configuration as _conf       # pylint: disable=F0401
     import rtk.utilities as _util           # pylint: disable=F0401
     import rtk.widgets as _widg             # pylint: disable=F0401
-except locale.Error:
+except ImportError:
     import configuration as _conf           # pylint: disable=F0401
     import utilities as _util               # pylint: disable=F0401
     import widgets as _widg                 # pylint: disable=F0401
