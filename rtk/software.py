@@ -780,10 +780,9 @@ def _calculate_trr_risk(model, row, risk):
 
 class Software(object):
     """
-    The Software class
+    The Software class represents the software items (modules and units) for
+    the system being analyzed.
     """
-
-    # TODO: Write code to update notebook widgets when editing the system treeview.
 
     _csci_test_rankings = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],     # noqa
                            [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],     # noqa
@@ -834,7 +833,6 @@ class Software(object):
         Initializes the Software class.
 
         :param application: the current instance of the RTK application.
-        :type application: RTK application
         """
 
         # Define private Software class scalar attributes.
@@ -1844,7 +1842,6 @@ class Software(object):
                                            self._callback_entry, 'int', 54)
 
             _fxdbottomleft.show_all()
-# TODO: Include recommended and selected columns in test matrices.
             # Create and load the Test Matrix for CSCI-level testing.
             _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
                                    gobject.TYPE_INT, gobject.TYPE_INT,

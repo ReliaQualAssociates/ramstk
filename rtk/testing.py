@@ -3,13 +3,13 @@
 This is the Class that is used to represent and hold information related to
 RTK Program test plans.  This includes the following types of test plans:
 
-    - Highly Accelerated Life Test (HALT)
-    - Highly Accelerated Stress Screening (HASS)
-    - Accelerated Life Test (ALT)
-    - Environmental Stress Screening (ESS)
-    - Reliability Growth (RG) Testing
-    - Reliability Demonstration/Qualification (RD/RQ) Testing
-    - Production Reliability Verification Testing (PRVT)
+ * Highly Accelerated Life Test (HALT)
+ * Highly Accelerated Stress Screening (HASS)
+ * Accelerated Life Test (ALT)
+ * Environmental Stress Screening (ESS)
+ * Reliability Growth (RG) Testing
+ * Reliability Demonstration/Qualification (RD/RQ) Testing
+ * Production Reliability Verification Testing (PRVT)
 """
 
 __author__ = 'Andrew Rowland'
@@ -245,12 +245,11 @@ class Testing(object):
                   60: {0.2: 0.128, 0.15: 0.147, 0.1: 0.173, 0.05: 0.220, 0.01: 0.33},
                   100: {0.2: 0.129, 0.15: 0.147, 0.1: 0.173, 0.05: 0.220, 0.01: 0.34}}
 
-# TODO: Write code to update Work Book widgets when editing the Module Book.
     def __init__(self, application):
         """
         Initializes the Testing Object.
 
-        :param application: the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Testing class attributes.
@@ -2165,8 +2164,6 @@ class Testing(object):
 
             _M = len(_X)                    # Total number of groups.
             _N = sum(_F)                    # Total number of failures.
-
-# TODO: Add gtk.Entry() for entering termination time for a time terminated test.
             _T_star = _X[-1]                # Test termination time.
 
             # Estimate model parameters and bounds.
@@ -2180,7 +2177,7 @@ class Testing(object):
                     (_lambda_hat[1],
                      _beta_hat[1]) = crow_amsaa_parameters(_F, _X,
                                                            grouped=True)
-# TODO: Add a gtk.ComboBox() to select confidence bound types for RG assessment.  Default to Crow bounds until then.
+
             # Calculate the confidence bounds for the model parameters.
             (_lambda_hat[0],
              _lambda_hat[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],

@@ -1338,7 +1338,6 @@ class Dataset(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-# TODO: Add revision information to data sets.
         _query = "SELECT * FROM tbl_dataset"
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:

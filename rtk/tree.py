@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-""" This is the System Tree window for RTK. """
+"""
+This is the Module Book window for RTK.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
 #       tree.py is part of The RTK Project
@@ -51,14 +54,11 @@ class TreeWindow(gtk.Window):
     This class is the window containing the various gtk.Treeviews.
     """
 
-#TODO: Create GUI to set/edit user-defined column headings for all trees.
-
     def __init__(self, application):
         """
         Initializes the TreeBook Object.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         self._app = application
@@ -503,42 +503,6 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
         button.connect('clicked', _util.save_project, self._app)
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
-# TODO: Connect callback to approriate class' calculate method.
-        # Calculate button
-        button = gtk.MenuToolButton(None, label = "")
-        button.set_tooltip_text(_(u"Perform various calculations on the "
-                                  u"system."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        button.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_(u"Project"))
-        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK "
-                                     u"project."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Revision"))
-        menu_item.set_tooltip_text(_(u"Calculate the revisions only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Function"))
-        menu_item.set_tooltip_text(_(u"Calculate the functions only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 2)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"System"))
-        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies "
-                                     u"only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 3)
-        menu.add(menu_item)
-        button.set_menu(menu)
-        menu.show_all()
-        button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 

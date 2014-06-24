@@ -52,25 +52,22 @@ class Function(object):
     analyzed.
     """
 
-    # TODO: Write code to update notebook widgets when editing the Function treeview.
-
     def __init__(self, application):
         """
-        Initializes the FUNCTION class.
+        Initializes the Function class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
-        # Define private FUNCTION class attributes.
+        # Define private Function class attributes.
         self._app = application
 
-        # Define private FUNCTION class dictionary attributes.
+        # Define private Function class dictionary attributes.
 
-        # Define private FUNCTION class list attributes.
+        # Define private Function class list attributes.
         self._col_order = []
 
-        # Define public FUNCTION class attributes.
+        # Define public Function class attributes.
         self.function_id = 0
         self.availability = 0.0
         self.mission_availability = 0.0
@@ -123,7 +120,6 @@ class Function(object):
         self.txtRemarks = _widg.make_text_view(width=400)
 
         # Functional matrix tab widgets.
-# TODO: Move the functional matrix to the parts window.
         self.chkParts = _widg.make_check_button(label=_(u"Show components."))
         self.chkAssemblies = _widg.make_check_button(label=_(u"Show assemblies."))
         self.tvwFunctionMatrix = gtk.TreeView()

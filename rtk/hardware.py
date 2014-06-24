@@ -75,8 +75,6 @@ class Hardware(object):
     components) in the system being analyzed.
     """
 
-# TODO: Write code to update Work Book widgets when editing the Module Book.
-
     def __init__(self, application):
         """
         Initializes the Hardware class.
@@ -3389,7 +3387,6 @@ class Hardware(object):
                                                   None,
                                                   self._app.ProgCnx)
 
-            # TODO: Load the risk map with saved results.
             _model = self.tvwRiskMap.get_model()
             #for i in range(len(_results)):
             #   model.set(row, _results[i][2])
@@ -6069,7 +6066,6 @@ class Hardware(object):
                     # partmodel.set_value(partrow, 103, _text_)
 
             if self.part:                   # Update the Parts List.
-# TODO: Need code to update the parts list.
                 # self.model.set_value(self.selected_row, _index_, _text_)
                 print "TODO: Write code to update parts list."
 
