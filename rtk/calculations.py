@@ -354,8 +354,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
 
     elif category == 6:                    # Miscellaneous
         if subcategory == 80:              # Crystal
-            # TODO: Overstress calculations for crystals.
-            print "TODO: Overstress calculations for crystals."
+            print "Bug #113: No overstress calculations for crystals."
         elif subcategory == 81:            # Lamps
             Voper = partmodel.get_value(partrow, 66)
             Vrated = partmodel.get_value(partrow, 94)
@@ -365,14 +364,11 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                  "rated voltage.\n"
                 r_index += 1
         elif subcategory == 82:            # Fuse
-            # TODO: Overstress calculations for fuses.
-            print "TODO: Overstress calculations for fuses."
+            print "Bug #114: No overstress calculations for fuses."
         elif subcategory == 83:            # Filter
-            # TODO: Overstress calculations for filters.
-            print "TODO: Overstress calculations for filters."
+            print "Bug #115: No overstress calculations for filters."
 
     elif category == 7:                    # Relay
-        # TODO: Add contact power overstress calculations for relays
         Aidx = partmodel.get_value(partrow, 30)
         Ioper = partmodel.get_value(partrow, 62)
         Irated = partmodel.get_value(partrow, 92)
@@ -411,8 +407,6 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                 r_index += 1
 
     elif category == 8:                    # Resistor
-# TODO: Add temperature limit overstress calculations for resistors
-# TODO: Add voltage ratio overstress calculations for variable resistors.
         Poper = partmodel.get_value(partrow, 64)
         Prated = partmodel.get_value(partrow, 93)
 
@@ -557,7 +551,6 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                     r_index += 1
 
     elif category == 10:                   # Switching Device
-# TODO: Add contact power overstress calculations for switches
         Aidx = partmodel.get_value(partrow, 5)
         Ioper = partmodel.get_value(partrow, 62)
         Irated = partmodel.get_value(partrow, 92)
@@ -1007,221 +1000,6 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     return GRi, T1, MTBFi, MTBFf
 
 
-def crow_amsaa(F, X, alpha, _grouped=False):
-    """
-    Function to estimate the parameters (beta and lambda) of the Crow-AMSAA
-    continuous model using either the Option for Individual Failure Data
-    (default) or the Option for Grouped Failure Data.
-
-    Estimates or calculates the following:
-     - beta: Crow-AMSAA shape parameter.
-     - lambda: Crow-AMSAA scale parameter.
-     - Instantaneous failure intensity: FIi = lambda * beta * T^(beta - 1)
-     - Cumulative failure intensity: FIc = lambda * T^(beta - 1)
-     - Instantaneous MTBF: MTBFi = 1.0 / lambda * beta * T^(beta - 1)
-     - Cumulative MTBF: MTBFc = 1.0 / lambda * T^(beta - 1)
-     - chi square: value of the chi square test statistic.
-     - Cm: value of the Cramer-von Mises test statistc.
-
-    @param F: list of failure counts.
-    @type F: list of integers.
-    @param X: list of failures times.
-    @type X: list of floats.
-    @param alpha: the confidence level for calculations.
-    @type alpha: float
-    @param _grouped: indicates whether or not to use grouped data.
-    @type _grouped: boolean
-    @return: (_beta_hat, _lambda_hat, _rhoc_hat, _rhoi_hat, _muc_hat, _mui_hat)
-             where each returned variable is a list of lists.  There is an
-             internal list for each failure time passed to the function.  These
-             internal lists = [Lower Bound, Point, Upper Bound] for each
-             variable.
-    @rtype: mixed tuple
-    """
-
-    from numpy import matrix                # pylint: disable=E0611
-    from scipy.optimize import fsolve       # pylint: disable=E0611
-    from scipy.stats import norm            # pylint: disable=E0611
-
-    # Define the function that will be set equal to zero and solved for beta.
-    def _beta(b, f, t, logt):
-        """
-        Function for estimating the beta value from grouped data.
-        """
-
-        return(sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) /
-                            (t[1:]**b - t[:-1]**b) - log(max(t)))))
-
-    # Find the total time on test.
-    TTT = X[-1]
-    FFF = sum(F)
-
-    _ei = 0.0
-    _chi_square = 0.0
-    _Cm = 0.0
-
-    _beta_hat = []
-    _lambda_hat = []
-    _rhoc_hat = []
-    _rhoi_hat = []
-    _muc_hat = []
-    _mui_hat = []
-
-    # Get the standard normal value for the desired confidence.
-    _z_norm = abs(norm.ppf(alpha))
-
-    __failures = np.array([0], float)       # pylint: disable=E1101
-    __times = np.array([0], float)          # pylint: disable=E1101
-    __logt = np.array([0], float)           # pylint: disable=E1101
-
-    for i in range(len(F)):
-        __beta = [0.0, 0.0, 0.0]
-        __lambda = [0.0, 0.0, 0.0]
-        __rhoi = [0.0, 0.0, 0.0]
-        __rhoc = [0.0, 0.0, 0.0]
-        __muc = [0.0, 0.0, 0.0]
-        __mui = [0.0, 0.0, 0.0]
-        __var = [[0.0, 0.0], [0.0, 0.0]]
-
-        if not _grouped:
-            logX = [log(x) for x in X[:i+1]]
-
-            # Estimate the value of beta.
-            try:
-                __beta[1] = (sum(F[:i+1]) /
-                             (sum(F[:i+1]) * log(X[i]) - sum(logX)))
-            except ZeroDivisionError:
-                __beta[1] = 1.0
-
-            # Using this estimated beta, estimate the value of lambda.
-            __lambda[1] = sum(F[:i+1]) / X[i]**__beta[1]
-
-            # Calculate the chi-square statistic to test for trend.
-            _chi_square = 2.0 * FFF / __beta[1]
-
-        elif _grouped:
-            __failures = np.append(__failures, F[i])    # pylint: disable=E1101
-            __times = np.append(__times, X[i])          # pylint: disable=E1101
-            __logt = np.append(__logt, log(X[i]))       # pylint: disable=E1101
-
-            # Estimate the value of beta.
-            __beta[1] = fsolve(_beta, 1.0,
-                               args=(__failures, __times, __logt))[0]
-
-            # Using this estimated beta, estimate the value of lambda.
-            __lambda[1] = (sum(F[:i+1]) / (X[:i+1])**__beta[1]).tolist()[-1]
-
-            # Calculate the chi-square statistic to test for trend.
-            _NPi = sum(F[:i+1]) * X[i] / max(X)
-            _chi_square += (sum(F[:i+1]) - _NPi)**2.0 / (_NPi)
-
-        # Calculate the variance-covariance matrix for the model
-        # parameters.  The matrix is a list of lists:
-        #
-        #       __var = [[Var Lambda, Cov],
-        #                [Cov, Var Beta]]
-        __var[0][0] = sum(F[:i+1]) / __lambda[1]**2.0
-        __var[1][1] = (sum(F[:i+1]) / __beta[1]**2.0) + \
-                      __lambda[1] * X[i]**__beta[1] * log(X[i])**2.0
-        __var[0][1] = X[i]**__beta[1] * log(X[i])
-        __var[1][0] = __var[0][1]
-        __var = matrix(__var).I.tolist()
-
-        # Calculate the Fisher matrix bounds on each AMSAA parameter.
-        __lambda[0] = __lambda[1] * exp(-_z_norm * sqrt(__var[0][0]) /
-                                        __lambda[1])
-        __lambda[2] = __lambda[1] * exp(_z_norm * sqrt(__var[0][0]) /
-                                        __lambda[1])
-
-        __beta[0] = __beta[1] * exp(-_z_norm * sqrt(__var[1][1]) /
-                                    __beta[1])
-        __beta[2] = __beta[1] * exp(_z_norm * sqrt(__var[1][1]) /
-                                    __beta[1])
-
-        _beta_hat.append(__beta)
-        _lambda_hat.append(__lambda)
-
-        # Calculate the instantaneous failure intensity at time T.
-        __rhoi[1] = __lambda[1] * __beta[1] * X[i]**(__beta[1] - 1.0)
-
-        # Calculate the Fisher matrix bounds on the instantaneous failure
-        # intensity.
-        _del_beta = __lambda[1] * X[i]**(__beta[1] - 1.0) + \
-                    __lambda[1] * __beta[1] * \
-                    X[i]**(__beta[1] - 1.0) * log(X[i])
-        _del_lambda = __beta[1] * X[i]**(__beta[1] - 1.0)
-        _var = _del_beta**2.0 * __var[1][1] + \
-               _del_lambda**2.0 * __var[0][0] + \
-               2.0 * _del_beta * _del_lambda * __var[0][1]
-
-        __rhoi[0] = __rhoi[1] * exp(-_z_norm * sqrt(_var) / __rhoi[1])
-        __rhoi[2] = __rhoi[1] * exp(_z_norm * sqrt(_var) / __rhoi[1])
-
-        _rhoi_hat.append(__rhoi)
-
-        # Calculate the cumulative failure intensity at time T.
-        __rhoc[1] = __lambda[1] * (X[i])**(__beta[1] - 1.0)
-
-        # Calculate the Fisher matrix bounds on the cumulative failure
-        # intensity.
-        _del_beta = __lambda[1] * X[i]**(__beta[1] - 1.0) * log(X[i])
-        _del_lambda = X[i]**(__beta[1] - 1.0)
-        _var = _del_beta**2.0 * __var[1][1] + \
-               _del_lambda**2.0 * __var[0][0] + \
-               2.0 * _del_beta * _del_lambda * __var[0][1]
-
-        __rhoc[0] = __rhoc[1] * exp(-_z_norm * sqrt(_var) / __rhoc[1])
-        __rhoc[2] = __rhoc[1] * exp(_z_norm * sqrt(_var) / __rhoc[1])
-
-        _rhoc_hat.append(__rhoc)
-
-        # Calculate the instantaneous MTBF at time T.
-        __mui[1] = X[i]**(1.0 - __beta[1]) / (__lambda[1] * __beta[1])
-
-        # Calculate the Fisher matrix bounds on the instantaneous MTBF.
-        _del_beta = (-(X[i]**(1.0 - __beta[1])) /
-                     (__lambda[1] * __beta[1]**2.0)) - \
-                    ((X[i]**(1.0 - __beta[1]) * log(X[i])) /
-                     (__lambda[1] * __beta[1]))
-        _del_lambda = -(X[i]**(1.0 - __beta[1])) / \
-                      (__lambda[1]**2.0 * __beta[1])
-        _var = _del_beta**2.0 * __var[1][1] + \
-               _del_lambda**2.0 * __var[0][0] + \
-               2.0 * _del_beta * _del_lambda * __var[0][1]
-
-        __mui[0] = __mui[1] * exp(-_z_norm * sqrt(_var) / __mui[1])
-        __mui[2] = __mui[1] * exp(_z_norm * sqrt(_var) / __mui[1])
-
-        _mui_hat.append(__mui)
-
-        # Calculate the cumulative MTBF at time T.
-        __muc[1] = X[i]**(1.0 - __beta[1]) / __lambda[1]
-
-        # Calculate the Fisher matrix bounds on the cumulative MTBF.
-        _del_beta = (-1.0 / __lambda[1]) * \
-                    X[i]**(1.0 - __beta[1]) * log(X[i])
-        _del_lambda = (-1.0 / __lambda[1]**2.0) * X[i]**(1.0 - __beta[1])
-        _var = _del_beta**2.0 * __var[1][1] + \
-               _del_lambda**2.0 * __var[0][0] + \
-               2.0 * _del_beta * _del_lambda * __var[0][1]
-
-        __muc[0] = __muc[1] * exp(-_z_norm * sqrt(_var) / __muc[1])
-        __muc[2] = __muc[1] * exp(_z_norm * sqrt(_var) / __muc[1])
-
-        _muc_hat.append(__muc)
-
-        # Calculate the Cramer-von Mises statistic to test for model
-        # applicability.
-        _beta_bar = (sum(F[:i+1]) - 1) * __beta[1] / sum(F[:i+1])
-
-        _ei += ((X[i] / TTT**_beta_bar) -
-                ((2.0 * i - 1.0) / (2.0 * sum(F[:i+1]))))**2.0
-        _Cm = _ei / (12.0 * sum(F[:i+1]))
-
-    return(_beta_hat, _lambda_hat, _rhoc_hat, _rhoi_hat, _muc_hat, _mui_hat,
-           _chi_square, _Cm)
-
-
 def moving_average(data, n=3):
     """
     Function to calculate the moving average of a data set.
@@ -1261,14 +1039,14 @@ def beta_bounds(a, m, b, alpha):
 
     if alpha < 0.0:
         _util.rtk_information(_(u"Confidence level take a value between 0 and "
-                                u"1 inclusive [0, 1].  Please select and "
+                                u"100 inclusive [0, 100].  Please select and "
                                 u"appropriate confidence level and try "
                                 u"again."))
         return a, m, b, 0.0
     elif alpha > 1.0:
         _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
     else:
-        _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
+        _z_norm = norm.ppf(1.0 - ((1.0 - alpha) / 2.0))
 
     _mean = (a + 4.0 * m + b) / 6.0
     _sd = (b - a) / 6.0
@@ -1684,7 +1462,8 @@ def smooth_curve(x, y, num):
     from scipy.interpolate import spline    # pylint: disable=E0611
 
     _error = False
-
+    x=np.array(x)
+    y=np.array(y)
     # Create a new set of x values to be used for smoothing the data.  The new
     # x values are in the range of the minimum and maximum x values passed to
     # the function.  The number of new data points between these values is
