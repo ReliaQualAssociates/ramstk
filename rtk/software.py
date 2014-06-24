@@ -61,18 +61,18 @@ def _test_selection_tree_edit(cell, path, position, model):
     Called whenever a gtk.TreeView CellRenderer is edited for the
     test selection worksheet.
 
-    @param cell: the gtk.CellRenderer() that was edited.
-    @type cell: gtk.CellRenderer
-    @param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
+    :param cell: the gtk.CellRenderer() that was edited.
+    :type cell: gtk.CellRenderer
+    :param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
                  edited.
-    @type path: string
-    @param position: the column position in the Software class gtk.TreeView()
+    :type path: string
+    :param position: the column position in the Software class gtk.TreeView()
                      of the edited gtk.CellRenderer().
-    @type position: integer
-    @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-    @type model: gtk.TreeModel
-    @return: False if successful or True if an error is encountered.
-    @rtype: boolean
+    :type position: integer
+    :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+    :type model: gtk.TreeModel
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     model[path][position] = not cell.get_active()
@@ -84,14 +84,14 @@ def _set_risk_color(risk, module):
     """
     Function to find the hexadecimal code for the risk level colors.
 
-    @param risk: dictionary containing the Software class risk factors.
-    @type risk: dictionary
-    @param module: the software id used as a key for accessing the correct risk
+    :param risk: dictionary containing the Software class risk factors.
+    :type risk: dictionary
+    :param module: the software id used as a key for accessing the correct risk
                    factors from the risk dictionary.
-    @type module: integer
-    @return: a dictionary containing the hexadecimal color values for each
+    :type module: integer
+    :return: a dictionary containing the hexadecimal color values for each
              risk factor.
-    @rtype: dictionary
+    :rtype: dictionary
     """
 
     _color = {}
@@ -225,11 +225,11 @@ def _calculate_app_risk(model, row):
     |  18   | Development Tools            |   High   |
     +-------+------------------------------+----------+
 
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type row: gtk.TreeIter
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _application = model.get_value(row, 4)
@@ -258,16 +258,16 @@ def _calculate_development_risk(model, row, risk):
         Low development risk (Dc > 0.9) is assigned a 0.5.
         High development risk (Dc < 0.5) is assigned a 2.
 
-    @param model: the Software class gtk.TreeModel()
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel()
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the development
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the development
                  environment risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _A = _calculate_app_risk(model, row)
@@ -313,16 +313,16 @@ def _calculate_srr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the software requirements
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the software requirements
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -415,16 +415,16 @@ def _calculate_pdr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the preliminary design
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the preliminary design
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -505,16 +505,16 @@ def _calculate_cdr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the critical design
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the critical design
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -680,16 +680,16 @@ def _calculate_trr_risk(model, row, risk):
 
             SM = (0.9 * um + wm + 2.0 * xm) / NM
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the test readiness review
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the test readiness review
                  risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -833,8 +833,8 @@ class Software(object):
         """
         Initializes the Software class.
 
-        @param application: the current instance of the RTK application.
-        @type application: RTK application
+        :param application: the current instance of the RTK application.
+        :type application: RTK application
         """
 
         # Define private Software class scalar attributes.
@@ -1326,9 +1326,9 @@ class Software(object):
         Creates the Software gtk.Treeview and connects it to callback functions
         to handle editing.
 
-        @return: the gtk.ScrolledWindow() container holding the Software class
+        :return: the gtk.ScrolledWindow() container holding the Software class
                  gtk.TreeView().
-        @rtype: gtk.ScrolledWindow
+        :rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
@@ -1351,8 +1351,8 @@ class Software(object):
         """
         Method to create the toolbar for the Software class Work Book.
 
-        @return: the gtk.Toolbar() used in the Software class gtk.NoteBook().
-        @rtype: gtk.Toolbar
+        :return: the gtk.Toolbar() used in the Software class gtk.NoteBook().
+        :rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -1421,8 +1421,8 @@ class Software(object):
         """
         Method to create the Software class gtk.Notebook().
 
-        @return: the Software class gtk.Notebook() used for the Work Book.
-        @rtype: gtk.Notebook
+        :return: the Software class gtk.Notebook() used for the Work Book.
+        :rtype: gtk.Notebook
         """
 
         def _create_general_data_page(self, notebook):
@@ -1430,10 +1430,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying general data about the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1528,10 +1528,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying the risk analysis for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1620,12 +1620,12 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying the risk analysis for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2116,10 +2116,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying reliability estimates for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2245,8 +2245,8 @@ class Software(object):
         """
         Method to create the Software class risk analysis gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _create_development_environment_page(self):
@@ -3730,8 +3730,8 @@ class Software(object):
         Method to load the Software clas gtk.TreeModel() with system
         information.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT * FROM tbl_software " \
@@ -3771,8 +3771,8 @@ class Software(object):
         """
         Method to load the Software class gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_general_data_page(self):
@@ -3804,8 +3804,8 @@ class Software(object):
             Function to load the widgets on the Risk Analysis gtk.Notebook()
             page.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _error = False
@@ -4334,8 +4334,8 @@ class Software(object):
         """
         Method to load the Software class Risk Map.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the risk matrix.
@@ -4391,12 +4391,12 @@ class Software(object):
         """
         Updates the values in the Software class gtk.TreeView().
 
-        @param columns: a list of integers representing the column numbers to
+        :param columns: a list of integers representing the column numbers to
                         update.
-        @type columns: list of integers
-        @param values: a list of new values for the Software class
+        :type columns: list of integers
+        :param values: a list of new values for the Software class
                        gtk.TreeModel().
-        @type values: list
+        :type values: list
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4492,16 +4492,16 @@ class Software(object):
         Method to update the Software class Risk Map when the risk is
         re-calculated.
 
-        @param model: the Software calss Risk Map gtk.TreeModel().
-        @type model: gtk.TreeModel
-        @param __path: the path of the selected row in the Software class Risk
+        :param model: the Software calss Risk Map gtk.TreeModel().
+        :type model: gtk.TreeModel
+        :param __path: the path of the selected row in the Software class Risk
                        Map gtk.TreeView().
-        @type __path: string
-        @param row: the selected Software class gtk.TreeIter() from the risk
+        :type __path: string
+        :param row: the selected Software class gtk.TreeIter() from the risk
                     map gtk.TreeModel().
-        @type row: gtk.TreeIter
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type row: gtk.TreeIter
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _module = model.get_value(row, 0)
@@ -4545,24 +4545,24 @@ class Software(object):
     | Test Readiness Review        | Unit   | X  |     |     |  X  |  X  |
     +------------------------------+--------+----+-----+-----+-----+-----+
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _show_page(notebook, child, label):
             """
             Function to show a page in a gtk.Notebook().
 
-            @param notebook: the gtk.Notebook() to add the page to.
-            @type notebook: gtk.Notebook
-            @param child: the child gtk.Widget() to add to the gtk.Notebook()
+            :param notebook: the gtk.Notebook() to add the page to.
+            :type notebook: gtk.Notebook
+            :param child: the child gtk.Widget() to add to the gtk.Notebook()
                           page.
-            @type child: gtk.Widget
-            @param label: the gtk.Label() to use as the label for the
+            :type child: gtk.Widget
+            :param label: the gtk.Label() to use as the label for the
                           gtk.Notebook() tab.
-            @type label: gtk.Label
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type label: gtk.Label
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             notebook.insert_page(child, tab_label=label, position=-1)
@@ -4574,15 +4574,15 @@ class Software(object):
             Function to remove existing gtk.Widget() from a container and then
             pack new child gtk.Widget() into the container.
 
-            @param container: a container type gtk.Widget(); typically a
+            :param container: a container type gtk.Widget(); typically a
                               gtk.Box() or gtk.Paned().
-            @type container: gtk.Widget
-            @param child1: a gtk.Widget().
-            @type child1: gtk.Widget
-            @param child2: a gtk.Widget().
-            @type child2: gtk.Widget
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type container: gtk.Widget
+            :param child1: a gtk.Widget().
+            :type child1: gtk.Widget
+            :param child2: a gtk.Widget().
+            :type child2: gtk.Widget
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # Remove existing children from the container.
@@ -4667,9 +4667,9 @@ class Software(object):
         Callback function for handling mouse clicks on the Software class
         gtk.TreeView().
 
-        @param treeview: the Software class gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param event: the gtk.gdk.Event() that called this function (the
+        :param treeview: the Software class gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param event: the gtk.gdk.Event() that called this function (the
                       important attribute is which mouse button was clicked).
                       1 = left
                       2 = scrollwheel
@@ -4678,9 +4678,9 @@ class Software(object):
                       5 = backward
                       8 =
                       9 =
-        @type event: gtk.gdk.Event
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type event: gtk.gdk.Event
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -4698,20 +4698,20 @@ class Software(object):
         previously selected row in the Software class gtk.TreeView().  Then it
         loads the Software class.
 
-        @param __treeview: one of the Software class gtk.TreeView().
-        @type __treeview: gtk.TreeView
-        @param __path: the activated row's path.
-        @type __path: string
-        @param __column: the activated gtk.TreeViewColumn().
-        @type __column: gtk.TreeViewColumn
-        @param index: determines which Software class gtk.TreeView() had the
+        :param __treeview: one of the Software class gtk.TreeView().
+        :type __treeview: gtk.TreeView
+        :param __path: the activated row's path.
+        :type __path: string
+        :param __column: the activated gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
+        :param index: determines which Software class gtk.TreeView() had the
                       change:
                       0 = main treeview
                       1 = incident list treeview
                       2 = incident action list treeview
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Save the previously selected row in the Software tree.
@@ -4741,14 +4741,14 @@ class Software(object):
         """
         Adds a new Software module to the Program's database.
 
-        @param __button: the gtk.Button() that called this function.
-        @type __button: gtk.Button
-        @param level: the level of Software module to add.
+        :param __button: the gtk.Button() that called this function.
+        :type __button: gtk.Button
+        :param level: the level of Software module to add.
                       0 = sibling
                       1 = child
-        @type level: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type level: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4885,10 +4885,10 @@ class Software(object):
         Deletes the currently selected software modules from the Program's
         database.
 
-        @param __widget: the gtk.Widget() that called this function.
-        @type __widget: gtk.Widget
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __widget: the gtk.Widget() that called this function.
+        :type __widget: gtk.Widget
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4931,8 +4931,8 @@ class Software(object):
         Saves the Software class gtk.TreeView() information to the open RTK
         Program database.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -4940,15 +4940,15 @@ class Software(object):
             Saves each row in the Software class gtk.TreeModel to the open RTK
             program database.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active row in the Software class
+            :param model: the Software class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active row in the Software class
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected row in the Software class gtk.TreeView().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type __path: string
+            :param row: the selected row in the Software class gtk.TreeView().
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _values = (model.get_value(row, self._col_order[2]),
@@ -5073,8 +5073,8 @@ class Software(object):
         Method to save the answers to the Risk Analysis questions on the
         currently selected tab in the risk analysis gtk.NoteBook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 # TODO: Add a transaction before saving all the risk Q & A stuff.
         def _save_development_env(self):
@@ -5082,8 +5082,8 @@ class Software(object):
             Function to save development environment information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(43):
@@ -5105,8 +5105,8 @@ class Software(object):
             Function to save software requirements review information to the
             open RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(50):
@@ -5137,8 +5137,8 @@ class Software(object):
             Function to save preliminary design review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(39):
@@ -5169,8 +5169,8 @@ class Software(object):
             Function to save critical design review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(72):
@@ -5203,8 +5203,8 @@ class Software(object):
             Function to save test readiness review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in [0, 1, 2, 3, 4, 5, 6]:
@@ -5275,8 +5275,8 @@ class Software(object):
         Method to save the test techniques for the currently selected
         software module.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -5333,13 +5333,13 @@ class Software(object):
         """
         Callback function to retrieve and save gtk.CheckButton() changes.
 
-        @param check: the gtk.CheckButton() that called the function.
-        @type check: gtk.CheckButton
-        @param index: the position in the applicable Software class dictionary
+        :param check: the gtk.CheckButton() that called the function.
+        :type check: gtk.CheckButton
+        :param index: the position in the applicable Software class dictionary
                       associated with the data from the calling checkbutton.
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -5372,13 +5372,13 @@ class Software(object):
         """
         Callback function to retrieve and save combobox changes.
 
-        @param combo: the gtk.ComboBox() that called the function.
-        @type combo: gtk.ComboBox
-        @param index: the position in the Software class gtk.TreeView()
+        :param combo: the gtk.ComboBox() that called the function.
+        :type combo: gtk.ComboBox
+        :param index: the position in the Software class gtk.TreeView()
                       associated with the data from the calling gtk.ComboBox().
-        @type index: integer
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         _combo_state = combo.get_active()
@@ -5459,17 +5459,17 @@ class Software(object):
         Callback function to retrieve and save Software class gtk.Entry()
         changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called the function.
-        @type __event: gtk.gdk.Event
-        @param convert: the data type to convert the entry contents to.
-        @type convert: string
-        @param index: the position in the Software class gtk.TreeView()
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called the function.
+        :type __event: gtk.gdk.Event
+        :param convert: the data type to convert the entry contents to.
+        :type convert: string
+        :param index: the position in the Software class gtk.TreeView()
                       associated with the data from the calling entry.
-        @type index: integer
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         from datetime import datetime
@@ -5543,20 +5543,20 @@ class Software(object):
         """
         Called whenever the Software class Work Book page is changed.
 
-        @param __notebook: the Software class gtk.Notebook().
-        @type __notebook: gtk.Notebook
-        @param __page: the newly selected page widget.
-        @type __page: gtk.Widget
-        @param page_num: the newly selected page number.
+        :param __notebook: the Software class gtk.Notebook().
+        :type __notebook: gtk.Notebook
+        :param __page: the newly selected page widget.
+        :type __page: gtk.Widget
+        :param page_num: the newly selected page number.
                          0 = General Data
                          1 = Risk Analysis
                          2 = Test Selection
                          3 = Assessment Results
-        @type page_num: integer
-        @param index: which gtk.Notebook() called this method.
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type page_num: integer
+        :param index: which gtk.Notebook() called this method.
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if index == 0:                      # Main gtk.Notebook
@@ -5591,10 +5591,10 @@ class Software(object):
         """
         Method to react to the Software class gtk.ToolButton clicked events.
 
-        @param button: the gtk.ToolButton() that was pressed.
-        @type button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param button: the gtk.ToolButton() that was pressed.
+        :type button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _button = button.get_name()
@@ -5619,10 +5619,10 @@ class Software(object):
         """
         Method to calculate metrics for the Software class.
 
-        @param __button: the gtk.ToolButton() that called this method.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _count_units(model, __path, row, self):
@@ -5630,18 +5630,18 @@ class Software(object):
             Function to sum unit-level answers for the parent module-level
             module.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the currently active path in the Software class
+            :param model: the Software class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the currently active path in the Software class
                            gtk.TreeModel()
-            @type __path: tuple
-            @param row: the currently active gtk.TreeIter() in the Software
+            :type __path: tuple
+            :param row: the currently active gtk.TreeIter() in the Software
                         class gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @param self: the current instance of the RTK application.
-            @type self: RTK instance
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :param self: the current instance of the RTK application.
+            :type self: RTK instance
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _software_id = model.get_value(row, 1)
@@ -5817,16 +5817,16 @@ class Software(object):
             also provides test planning guidance in a similar manner as
             RL-TR-92-52.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the selected row in the Software class
+            :param model: the Software class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the selected row in the Software class
                            gtk.TreeView().
-            @type __path: string
-            @param row: the gtk.Iter() in the Software class gtk.TreeView() for
+            :type __path: string
+            :param row: the gtk.Iter() in the Software class gtk.TreeView() for
                         which to calculate the risk.
-            @type row: gtk.Iter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.Iter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _A = 0.0
@@ -5924,8 +5924,8 @@ class Software(object):
         software failure rates.  RTK also provides test planning guidance in
         the same manner as RL-TR-92-52.
 
-        @return: the reliability risk reduction factor.
-        @rtype: float
+        :return: the reliability risk reduction factor.
+        :rtype: float
         """
 
         # Calculate the risk reduction due to the test effort.

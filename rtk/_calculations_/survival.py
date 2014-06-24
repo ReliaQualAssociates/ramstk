@@ -75,14 +75,14 @@ def d_matrix(data, times):
     function.  The d.(tk) array is the total number of system recurrences at
     time tk.
 
-    @param data: a dictionary containing the failure/censoring data for a
+    :param data: a dictionary containing the failure/censoring data for a
                  population of systems.
-    @type data: dictionary with the system id as the key and a list of the
+    :type data: dictionary with the system id as the key and a list of the
                 failure/censoring times as the value.
-    @param times: a list of unique and sorted failures times.
-    @return: _d_matrix; matrix of total number of system recurrences at each
+    :param times: a list of unique and sorted failures times.
+    :return: _d_matrix; matrix of total number of system recurrences at each
              unique failure time.
-    @rtype: numpy 1-D matrix of integers
+    :rtype: numpy 1-D matrix of integers
     """
 
     _d_matrix = []
@@ -117,14 +117,14 @@ def delta_matrix(data, times):
     cumulative function.  The delta.(tk) array contains the indicator variable
     for system operating at time tk.
 
-    @param data: a dictionary containing the failure/censoring data for a
+    :param data: a dictionary containing the failure/censoring data for a
                  population of systems.
-    @type data: dictionary with the system id as the key and a list of the
+    :type data: dictionary with the system id as the key and a list of the
                 failure/censoring times as the value.
-    @param times: a list of unique and sorted failures times.
-    @type times: list of floats
-    @return: _delta_matrix; matrix of indicator variables.
-    @rtype: numpy 1-D matrix of integers
+    :param times: a list of unique and sorted failures times.
+    :type times: list of floats
+    :return: _delta_matrix; matrix of indicator variables.
+    :rtype: numpy 1-D matrix of integers
     """
 
     _delta_matrix = []
@@ -161,15 +161,15 @@ def mean_cumulative_function(data, conf=0.75):
     This function estimates the mean cumulative function for a population of
     items.
 
-    @param data: a dictionary where the key is the system id and the value is a
+    :param data: a dictionary where the key is the system id and the value is a
                  list of failure/censoring times.  The last entry in this list
                  is the censoring time.  Failures times are float or integer
                  and the censoring time is a string.  For example:
                  [88., 92., 227., '350+']
-    @type data: dictionary.
-    @param conf: the confidence level of the MCF estimates (default is 75%).
-    @type conf: float
-    @return: _mcf; matrix of lists containing MCF values.  There is one row
+    :type data: dictionary.
+    :param conf: the confidence level of the MCF estimates (default is 75%).
+    :type conf: float
+    :return: _mcf; matrix of lists containing MCF values.  There is one row
              for each unique failure time.  Each row contains the following:
              - Unique failure time (t).
              - Number of failures at time t.
@@ -182,7 +182,7 @@ def mean_cumulative_function(data, conf=0.75):
              - Lower bound on the instantaneous MTBF at time t.
              - Point estimate of the instantaneous MTBF at time t.
              - Upper bound on the instantaneous MTBF at time t.
-    @rtype: numpy matrix
+    :rtype: numpy matrix
     """
 
     # Find the standard normal critical value.
@@ -233,19 +233,19 @@ def mcf_variance(delta, d, delta_dot, d_bar):
     """
     Function to calculate the variance of d(tk) for the MCF.
 
-    @param delta: the matrix of indicator variables for operating systems.
-    @type delta: numpy matrix
-    @param d: the matrix of the number of system recurrences.
-    @type d: numpy matrix
-    @param delta_dot: an array containing the risk population at each observed
+    :param delta: the matrix of indicator variables for operating systems.
+    :type delta: numpy matrix
+    :param d: the matrix of the number of system recurrences.
+    :type d: numpy matrix
+    :param delta_dot: an array containing the risk population at each observed
                       failure time.
-    @type delta_dot: numpy array
-    @param d_bar: an array containing the fraction of the risk population that
+    :type delta_dot: numpy array
+    :param d_bar: an array containing the fraction of the risk population that
                   failed at each observed failure time.
-    @type d_bar: numpy array
-    @return: _variance_mu; an array containing the variance of the MCF at each
+    :type d_bar: numpy array
+    :return: _variance_mu; an array containing the variance of the MCF at each
              observed failure time.
-    @rtype: numpy array
+    :rtype: numpy array
     """
 
     _temp1 = np.divide(delta, delta_dot)
@@ -270,10 +270,10 @@ def mil_handbook(times):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    @param times: an array of failure times,
-    @type times: numpy array
-    @return: _mhb; the MIL-HDBK test statistic
-    @rtype: float
+    :param times: an array of failure times,
+    :type times: numpy array
+    :return: _mhb; the MIL-HDBK test statistic
+    :rtype: float
     """
 
     _T = max(times)
@@ -295,12 +295,12 @@ def laplace(times, N):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    @param times: an array of failure times,
-    @type times: numpy array
-    @param N: the total number of failures.
-    @type N: integer
-    @return: _zlp; the Laplace test statistic
-    @rtype: float
+    :param times: an array of failure times,
+    :type times: numpy array
+    :param N: the total number of failures.
+    :type N: integer
+    :return: _zlp; the Laplace test statistic
+    :rtype: float
     """
 
     _T = max(times)
@@ -323,12 +323,12 @@ def lewis_robinson(times, N):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    @param times: an array of failure times,
-    @type times: numpy array
-    @param N: the total number of failures.
-    @type N: integer
-    @return: _zlr; the Lewis-Robinson test statistic
-    @rtype: float
+    :param times: an array of failure times,
+    :type times: numpy array
+    :param N: the total number of failures.
+    :type N: integer
+    :return: _zlr; the Lewis-Robinson test statistic
+    :rtype: float
     """
 
     # Calculate the Laplace statistic.
@@ -359,14 +359,14 @@ def serial_correlation(times, N, k=1):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    @param times: an array of failure times,
-    @type times: numpy array
-    @param N: the total number of failures.
-    @type N: integer
-    @param k: the desired order of the serial-correlation.
-    @type k: integer
-    @return: _rho; the serial-correlation coefficient.
-    @rtype: float
+    :param times: an array of failure times,
+    :type times: numpy array
+    :param N: the total number of failures.
+    :type N: integer
+    :param k: the desired order of the serial-correlation.
+    :type k: integer
+    :return: _rho; the serial-correlation coefficient.
+    :rtype: float
     """
 
     # Find the interarrival times.  We need to add a zero to the times array
@@ -395,23 +395,23 @@ def kaplan_meier(data, endtime, conf=0.75, conftype=3):
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
-    @param data: the data to use in estimating the KM values.
-    @type data: list of tuples where each tuple is in the form of
+    :param data: the data to use in estimating the KM values.
+    :type data: list of tuples where each tuple is in the form of
                 (Left of Interval, Right of Interval, Event Status, Quantity)
                 Event status is one of:
                 - 0 = right censored
                 - 1 = event at time
                 - 2 = left censored
                 - 3 = interval censored
-    @param endtime: time at which to stop analysis (helps eliminate stretched
+    :param endtime: time at which to stop analysis (helps eliminate stretched
                     plots due to small number of events at high hours).
-    @param conf: the confidence level of the KM estimates.
-    @param conftype: the confidence interval type for the KM estimates.
+    :param conf: the confidence level of the KM estimates.
+    :param conftype: the confidence interval type for the KM estimates.
                      Confidence type is one of:
                      - 1 = lower one-sided
                      - 2 = upper one-sided
                      - 3 = two-sided
-    @return: _kaplan_meier; the matrix of results where each row in the matrix
+    :return: _kaplan_meier; the matrix of results where each row in the matrix
              contains the following, in order:
              - Observation time
              - Number at risk
@@ -420,7 +420,7 @@ def kaplan_meier(data, endtime, conf=0.75, conftype=3):
              - Lower bound on S(t)
              - Point estimate of S(t)
              - Upper bound on S(t)
-    @rtype: numpy matrix
+    :rtype: numpy matrix
     """
 
     # Eliminate zero time failures and failures occurring after any
@@ -546,7 +546,7 @@ def kaplan_meier_mean(data, conf=0.75):
     uses the algorithm found in Lee and Wang, "Statistical Methods for Survival
     Data Analysis", page 74.
 
-    @param data: the Kaplan-Meier data set.  This is a matrix where each row
+    :param data: the Kaplan-Meier data set.  This is a matrix where each row
                  contains the following, in order:
                  - Time point (t) at which the curve has a step.
                  - Number of subjects at risk at time t.
@@ -555,16 +555,16 @@ def kaplan_meier_mean(data, conf=0.75):
                  - Lower bound on the survival function at time t.
                  - Point estimate of the survival function at time t.
                  - Upper bound on the survival function at time t.
-    @type data: numpy matrix
-    @param conf: the desired confidence for the bounding values.
-    @type conf: float
-    @return: _mtbf; matrix of mean values where each row contains the
+    :type data: numpy matrix
+    :param conf: the desired confidence for the bounding values.
+    :type conf: float
+    :return: _mtbf; matrix of mean values where each row contains the
              following, in order:
              - Lower bound on the mean value.
              - Point estimate of the mean value.
              - Upper bound on the mean value.
              - Variance of the mean value.
-    @rtype: list of lists
+    :rtype: list of lists
     """
 
     from operator import itemgetter

@@ -584,10 +584,10 @@ def duane_parameters(F, X):
     when regression is used to estimated the NHPP Power Law model parameters.
     The form of the Duane model used in RTK:
 
-        cumulative failure intensity = lambda_c = (1 / b) * T^-alpha
-        cumulative MTBF = MTBFc = b * T^alpha
-        instantaneous failure intensity = lambda_i = (1 - alpha) * lambda_c
-        instantaneous MTBF = MTBFi = MTBFc / (1 - alpha)
+    .. note:: cumulative failure intensity = lambda_c = (1 / b) * T^-alpha
+    .. note:: cumulative MTBF = MTBFc = b * T^alpha
+    .. note:: instantaneous failure intensity = lambda_i = (1 - alpha) * lambda_c
+    .. note:: instantaneous MTBF = MTBFi = MTBFc / (1 - alpha)
 
     :param F: list of the number of failures at each failure time.
     :type F: list of integers
@@ -670,8 +670,8 @@ def duane_mean(b, alpha, T):
     values (e.g., MTBF) given the Duane parameters and a time.  The Duane model
     used is:
 
-        cumulative mean = mean_c = b * T^alpha
-        instantaneous mean = mean_i = mean_c / (1 - alpha)
+    cumulative mean = mean_c = b * T^alpha
+    instantaneous mean = mean_i = mean_c / (1 - alpha)
 
     :param b: the Duane model scale parameter.
     :type b: float
@@ -710,10 +710,13 @@ def crow_amsaa_parameters(F, X, T_star=0.0, grouped=False):
     used when MLE is used to estimated the NHPP Power Law model parameters.
     The form of the Crow-AMSAA model used in RTK:
 
-        cumulative failure intensity = lambda_c = lambda * T^(beta - 1)
-        cumulative MTBF = MTBFc = (1 / lambda) * T^(1- beta)
-        instantaneous failure intensity = lambda_i = lambda * beta * T^(beta - 1)
-        instantaneous MTBF = MTBFi = 1 / lambda_i
+    .. hlist::
+       :columns: 1
+
+        * cumulative failure intensity = lambda_c = lambda * T^(beta - 1)
+        * cumulative MTBF = MTBFc = (1 / lambda) * T^(1- beta)
+        * instantaneous failure intensity = lambda_i = lambda * beta * T^(beta - 1)
+        * instantaneous MTBF = MTBFi = 1 / lambda_i
 
     :param F: list of the number of failures at each failure time.
     :type F: list of integers
@@ -777,8 +780,9 @@ def crow_amsaa_mean(_lambda, beta, T):
     mean values (e.g., MTBF) given the Crow-AMSAA parameters and a time.  The
     Crow-AMSAA model used is:
 
-        cumulative mean = mean_c = (1 / lambda) * T^(1 - beta)
-        instantaneous mean = mean_i = 1 / (lambda * beta * T^(beta - 1))
+    .. math::
+    cumulative mean &= mean_c = (1 / lambda) * T^((1 - beta) \\
+    instantaneous mean &= mean_i = 1 / (lambda * beta * T^(beta - 1))
 
     :param _lambda: the Crow-AMSAA model scale parameter.
     :type _lambda: float
@@ -809,8 +813,8 @@ def cramer_von_mises(X, beta, T_star=0.0, type2=True):
     not a set of data fits to the Crow-AMSAA model.  This is used when failure
     times are exact.
 
-    The null hypothesis is rejected if the statistic exceeds the critical value
-    for a chosen significance level.
+    .. note:: The null hypothesis is rejected if the statistic exceeds the
+              critical value for a chosen significance level.
 
     :param X: list of failure times
     :type X: list of floats
@@ -845,8 +849,11 @@ def crow_amsaa_chi_square(F, X, _lambda, beta, grouped=True):
     Function to calculate the chi-square statistic for GoF.  This is used when
     failure times are grouped.  The test statistic is calculated as follows:
 
-        theta_i = lambda * (T_i^beta - T_i-1^beta)
-        chi-square = sum((Ni - theta_i)^2 / theta_i)
+    .. hlist::
+       :columns: 1
+
+        * theta_i = lambda * (T_i^beta - T_i-1^beta)
+        * chi-square = sum((Ni - theta_i)^2 / theta_i)
 
     Where theta_i is the expected number of failures in the interval (i, i-1)
     and Ni is the observed number of failures.  The null hypothesis is rejected
@@ -1075,7 +1082,10 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
     Function to estimate the parameters (alpha and beta) of the NHPP power law
     model.  The NHPP power law model used in RTK is:
 
-        cumulative failure intensity = m(t) = alpha * t^(-beta)
+    .. hlist::
+       :columns: 1
+
+        * cumulative failure intensity = m(t) = alpha * t^(-beta)
 
     :param F: list of failure counts.
     :type F: list of integers

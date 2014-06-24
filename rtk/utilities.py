@@ -220,7 +220,7 @@ def parse_config(configfile):
     """
     This function parses the XML configuration file passed as a parameter.
 
-    @param configfile: the configuration file that needs to be parsed.
+    :param configfile: the configuration file that needs to be parsed.
     """
 
     from lxml import etree
@@ -234,9 +234,9 @@ def split_string(string):
     """
     Splits a colon-delimited string into its constituent parts.
 
-    @param string: the colon delimited string that needs to be split into a
+    :param string: the colon delimited string that needs to be split into a
                    list.
-    @type string: list of strings
+    :type string: list of strings
     """
 
     strlist = string.rsplit(':')
@@ -248,7 +248,7 @@ def none_to_string(string):
     """
     Converts None types to an empty string.
 
-    @param string: the string to convert.
+    :param string: the string to convert.
     """
 
     if string is None:
@@ -262,8 +262,8 @@ def string_to_boolean(string):
     Converts string representations of TRUE/FALSE to an integer value for use
     in the database.
 
-    @param string: the string to convert.
-    @type string: string
+    :param string: the string to convert.
+    :type string: string
     """
 
     result = 0
@@ -281,8 +281,8 @@ def date_to_ordinal(date):
     """
     Converts date strings to ordinal dates for use in the database.
 
-    @param date: the date string to convert.
-    @type date: string
+    :param date: the date string to convert.
+    :type date: string
     """
 
     from dateutil.parser import parse
@@ -297,8 +297,8 @@ def ordinal_to_date(ordinal):
     """
     Converts ordinal dates to date strings in ISO 8601 format.
 
-    @param ordinal: the ordinal date to convert.
-    @type ordinal: date
+    :param ordinal: the ordinal date to convert.
+    :type ordinal: date
     """
 
     from datetime import datetime
@@ -313,8 +313,8 @@ def tuple_to_list(_tuple, _list):
     """
     Appends a tuple to a list.
 
-    @param _tuple: the tuple to add to the list.
-    @param _list: the existing list to add the tuple elements to.
+    :param _tuple: the tuple to add to the list.
+    :param _list: the existing list to add the tuple elements to.
     """
 
     for i in range(len(_tuple)):
@@ -327,8 +327,8 @@ def dir_exists(directory):
     """
     Helper function to check if a directory exists.
 
-    @param directory: a string representing the directory path to check for.
-    @type directory: string
+    :param directory: a string representing the directory path to check for.
+    :type directory: string
     """
 
     return os.path.isdir(directory)
@@ -338,10 +338,10 @@ def file_exists(_file):
     """
     Helper function to check if a file exists.
 
-    @param _file: a string representing the filepath to check for.
-    @type _file: string
-    @return: True if the file exists or False if not.
-    @rtype: boolean
+    :param _file: a string representing the filepath to check for.
+    :type _file: string
+    :return: True if the file exists or False if not.
+    :rtype: boolean
     """
 
     return os.path.isfile(_file)
@@ -351,10 +351,10 @@ def create_project(widget, app):
     """
     Creates a new RTK Project.
 
-    @param widget: the gtk.Widget() that called this function.
-    @type widget: gtk.Widget
-    @param app: the current instance of the RTK application.
-    @return: False if successful or True if an error is encountered.
+    :param widget: the gtk.Widget() that called this function.
+    :type widget: gtk.Widget
+    :param app: the current instance of the RTK application.
+    :return: False if successful or True if an error is encountered.
     """
 
     if _conf.BACKEND == 'mysql':
@@ -495,15 +495,15 @@ def open_project(__widget, app, dlg=1, filename=''):
     Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
-    @param dlg: whether or not to display a file chooser dialog.
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
+    :param dlg: whether or not to display a file chooser dialog.
                 0=No
                 1=Yes (default)
-    @type dlg: integer
-    @param filename: the full path to the RTK Program database to open.
-    @type filename: string
+    :type dlg: integer
+    :param filename: the full path to the RTK Program database to open.
+    :type filename: string
     """
 
     if _conf.BACKEND == 'mysql':
@@ -599,9 +599,9 @@ def save_project(__widget, app):
     """
     Saves the RTK information to the open RTK Program database.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 # TODO: Only save the active module in the Tree Book.
     if not app.LOADED:
@@ -653,9 +653,9 @@ def delete_project(__widget, app):
     """
     Deletes an existing RTK Project.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 
     if _conf.BACKEND == 'mysql':
@@ -736,9 +736,9 @@ def import_project(__widget, app):
     Imports project information from external files such as Excel, CVS, other
     delimited text files, etc.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 
 # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
@@ -791,10 +791,10 @@ def rtk_error(prompt, _parent=None):
     """
     Dialog to display runtime errors to the user.
 
-    @param prompt: the prompt to display in the dialog.
-    @type prompt: string
-    @param _parent: the parent gtk.Window(), if any, for the dialog.
-    @type _parent: gtk.Window
+    :param prompt: the prompt to display in the dialog.
+    :type prompt: string
+    :param _parent: the parent gtk.Window(), if any, for the dialog.
+    :type _parent: gtk.Window
     """
 
     prompt = prompt + u"  Check the error log %s for additional information " \
@@ -814,10 +814,10 @@ def rtk_information(prompt, _parent=None):
     """
     Dialog to display runtime information to the user.
 
-    @param prompt: the prompt to display in the dialog.
-    @type prompt: string
-    @param _parent: the parent gtk.Window(), if any, for the dialog.
-    @type _parent: gtk.Window
+    :param prompt: the prompt to display in the dialog.
+    :type prompt: string
+    :param _parent: the parent gtk.Window(), if any, for the dialog.
+    :type _parent: gtk.Window
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -831,12 +831,12 @@ def rtk_question(prompt, _parent=None):
     """
     Dialog to display runtime questions to the user.
 
-    @param prompt: the prompt to display in the dialog.
-    @type prompt: string
-    @param _parent: the parent gtk.Window(), if any, for the dialog.
-    @type _parent: gtk.Window
-    @return: gtk.RESPONSE_YES or gtk.RESPONSE_NO
-    @rtype: GTK response type
+    :param prompt: the prompt to display in the dialog.
+    :type prompt: string
+    :param _parent: the parent gtk.Window(), if any, for the dialog.
+    :type _parent: gtk.Window
+    :return: gtk.RESPONSE_YES or gtk.RESPONSE_NO
+    :rtype: GTK response type
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -852,10 +852,10 @@ def rtk_warning(prompt, _parent=None):
     """
     Dialog to display runtime warnings to the user.
 
-    @param prompt: the prompt to display in the dialog.
-    @type prompt: string
-    @param _parent: the parent gtk.Window(), if any, for the dialog.
-    @type _parent: gtk.Window
+    :param prompt: the prompt to display in the dialog.
+    :type prompt: string
+    :param _parent: the parent gtk.Window(), if any, for the dialog.
+    :type _parent: gtk.Window
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -869,10 +869,10 @@ def add_items(title, prompt=""):
     """
     Adds one or more items to a treeview hierarchy.
 
-    @param title: the string to put in the title bar of the dialog.
-    @type title: string
-    @param prompt: the prompt to put on the dialog.
-    @type prompt: string
+    :param title: the string to put in the title bar of the dialog.
+    :type title: string
+    :param prompt: the prompt to put on the dialog.
+    :type prompt: string
     """
 
     _dialog = _widg.make_dialog(title)
@@ -904,9 +904,9 @@ def cut_copy_paste(__widget, action):
     """
     Cuts, copies, and pastes.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param action: whether to cut, copy, or paste
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param action: whether to cut, copy, or paste
                    0 = cut
                    1 = copy
                    2 = paste
@@ -970,12 +970,12 @@ def find_all_in_list(_list, value, start=0):
     """
     Finds all instances of value in the list starting at position start.
 
-    @param _list: the list to search.
-    @type _list: list
-    @param value: the value to search for in the list.
-    @type value: any of same type found in list
-    @param start: the position in the list to start the search.
-    @type start: integer
+    :param _list: the list to search.
+    :type _list: list
+    :param value: the value to search for in the list.
+    :type value: any of same type found in list
+    :param start: the position in the list to start the search.
+    :type start: integer
     """
 
     positions = []
@@ -1008,9 +1008,9 @@ def create_comp_ref_des(__widget, app):
     """
     Iterively creates composite reference designators.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 
     _model = app.HARDWARE.treeview.get_model()
@@ -1023,14 +1023,14 @@ def build_comp_ref_des(model, __path, row):
     Creates the composite reference designator for the currently selected row
     in the System gtk.Treemodel.
 
-    @param model: the Hardware class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param __path: the path of the currently selected gtk.TreeIter() in the
+    :param model: the Hardware class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param __path: the path of the currently selected gtk.TreeIter() in the
                    Hardware class gtk.TreeModel().
-    @param __path: tuple
-    @param row: the currently selected gtk.TreeIter() in the Hardware class
+    :param __path: tuple
+    :param row: the currently selected gtk.TreeIter() in the Hardware class
                 gtk.TreeModel().
-    @type row: gtk.TreeIter
+    :type row: gtk.TreeIter
     """
 
     _ref_des = model.get_value(row, 68)
@@ -1058,9 +1058,9 @@ def add_parts_system_hierarchy(__widget, app):
     already exist.  This function will populate the hierarchy with the parts
     in the program incident data.
 
-    @param __widget: the gtk.Widget() that called the function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() that called the function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 
     # Find the revision id.
@@ -1187,12 +1187,12 @@ def set_part_model(category, subcategory):
     This functions sets the Component class part model based on the category
     and subcategory.
 
-    @param category: the component category for part.
-    @type category: integer
-    @param subcategory: the component sub-category for the part.
-    @type subcategory: integer
-    @return: _part
-    @rtype: Component class instance
+    :param category: the component category for part.
+    :type category: integer
+    :param subcategory: the component sub-category for the part.
+    :type subcategory: integer
+    :return: _part
+    :rtype: Component class instance
     """
 
     if category == 0 or subcategory == 0:  # No category or subcategory
@@ -1464,12 +1464,12 @@ def calculate_max_text_width(text, font):
     Function to calculate the maximum width of the text string that is using a
     particular font.
 
-    @param text: the text string to calculate.
-    @type text: string
-    @param font: the font being used.
-    @type font: string
-    @return: _max
-    @rtype: integer
+    :param text: the text string to calculate.
+    :type text: string
+    :param font: the font being used.
+    :type font: string
+    :return: _max
+    :rtype: integer
     """
 
     _max = 0
@@ -1509,9 +1509,9 @@ def options(__widget, app):
     """
     Function to launch the user options configuration assistant.
 
-    @param __widget: the gtk.Widget() calling this function.
-    @type __widget: gtk.Widget
-    @param app: the current instance of the RTK application.
+    :param __widget: the gtk.Widget() calling this function.
+    :type __widget: gtk.Widget
+    :param app: the current instance of the RTK application.
     """
 
     Options(app)
@@ -1521,12 +1521,12 @@ def date_select(__widget, __event=None, entry=None):
     """
     Function to select a date from a calendar widget.
 
-    @param __widget: the gtk.Widget() that called this function.
-    @type __widget: gtk.Widget
-    @param entry: the gtk.Entry() widget in which to display the date.
-    @type entry: gtk.Entry
-    @return: _date
-    @rtype: date string (YYYY-MM-DD)
+    :param __widget: the gtk.Widget() that called this function.
+    :type __widget: gtk.Widget
+    :param entry: the gtk.Entry() widget in which to display the date.
+    :type entry: gtk.Entry
+    :return: _date
+    :rtype: date string (YYYY-MM-DD)
     """
 
     from datetime import datetime
@@ -1558,8 +1558,8 @@ def set_cursor(app, cursor):
     """
     Function to set the cursor for a gtk.gdk.Window()
 
-    @param app: the running instance of the RTK application.
-    @param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
+    :param app: the running instance of the RTK application.
+    :param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
                    following:
                    gtk.gdk.X_CURSOR
                    gtk.gdk.ARROW
@@ -1606,7 +1606,7 @@ def long_call(app):
     """
     Function for restoring the cursor to normal after a long call.
 
-    @param app: the running instance of the RTK application.
+    :param app: the running instance of the RTK application.
     """
 
     app.winTree.window.set_cursor(None)
@@ -1623,7 +1623,7 @@ class Options(gtk.Window):
         """
         Allows a user to set site-wide options.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         import pango
@@ -1928,8 +1928,8 @@ class Options(gtk.Window):
         """
         Method to edit gtk.TreeView() layouts.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button()
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button()
         """
 
         from lxml import etree
@@ -1984,17 +1984,17 @@ class Options(gtk.Window):
         """
         Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-        @param __cell: the gtk.CellRenderer() that was edited.
-        @type __cell: gtk.CellRenderer
-        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
                      edited.
-        @type path: string
-        @param new_text: the new text in the edited gtk.CellRenderer().
-        @type new_text: string
-        @param position: the column position of the edited gtk.CellRenderer().
-        @type position: integer
-        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        @type model: gtk.TreeModel
+        :type path: string
+        :param new_text: the new text in the edited gtk.CellRenderer().
+        :type new_text: string
+        :param position: the column position of the edited gtk.CellRenderer().
+        :type position: integer
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
         """
 
         _type = gobject.type_name(model.get_column_type(position))
@@ -2012,13 +2012,13 @@ class Options(gtk.Window):
         """
         Called whenever a gtl.TreeView() gtk.CellRenderer() is edited.
 
-        @param cell: the gtk.CellRenderer() that was edited.
-        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that
+        :param cell: the gtk.CellRenderer() that was edited.
+        :param path: the gtk.TreeView() path of the gtk.CellRenderer() that
                      was edited.
-        @param position: the column position of the edited gtk.CellRenderer().
-        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param position: the column position of the edited gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         model[path][position] = not cell.get_active()
@@ -2029,8 +2029,8 @@ class Options(gtk.Window):
         """
         Method for saving the gtk.TreeView layout file.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         """
 
         from shutil import copyfile
@@ -2144,9 +2144,9 @@ class Options(gtk.Window):
         """
         Method to save the configuration changes made by the user.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
         """
 
         self.destroy()
@@ -2174,10 +2174,10 @@ class Options(gtk.Window):
     def _save_defaults(self, __button):
         """
 
-        @param __button:  the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False
-        @rtype: boolean
+        :param __button:  the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False
+        :rtype: boolean
         """
 
         import ConfigParser
@@ -2256,10 +2256,10 @@ class Options(gtk.Window):
     def edit_lists(self, __button):
         """
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False
+        :rtype: boolean
         """
 
         #if self.rdoMeasurement.get_active():

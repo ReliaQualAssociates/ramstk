@@ -92,7 +92,7 @@ class Dataset(object):
         """
         Initializes the Dataset class.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Dataset class scalar attributes.
@@ -369,9 +369,9 @@ class Dataset(object):
         Creates the Dataset class gtk.TreeView() and connects it to callback
         functions to handle editing.
 
-        @return _scrollwindow: the gtk.ScrolledWindow() container holding the
+        :return _scrollwindow: the gtk.ScrolledWindow() container holding the
                                Dataset class gtk.TreeView().
-        @rtype: gtk.ScrolledWindow
+        :rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays a list of survival data "
@@ -393,8 +393,8 @@ class Dataset(object):
         """
         Method to create the gtk.Toolbar() for the Dataset class Work Book.
 
-        @return: _toolbar
-        @rtype: gtk.Toolbar
+        :return: _toolbar
+        :rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -498,8 +498,8 @@ class Dataset(object):
         """
         Method to create the Dataset class gtk.Notebook().
 
-        @return: _notebook
-        @rtype: gtk.Notebook
+        :return: _notebook
+        :rtype: gtk.Notebook
         """
 
         def _create_analyses_input_page(self, notebook):
@@ -507,11 +507,11 @@ class Dataset(object):
             Function to create the Dataset class gtk.Notebook() page for
             displaying assessment inputs for the selected data set.
 
-            @param self: the current instance of a Dataset class.
-            @param notebook: the Dataset class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Dataset class.
+            :param notebook: the Dataset class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -774,11 +774,11 @@ class Dataset(object):
             Function to create the Dataset class gtk.Notebook() page for
             displaying assessment results for the selected data set.
 
-            @param self: the current instance of a Dataset class.
-            @param notebook: the Dataset class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Dataset class.
+            :param notebook: the Dataset class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1158,11 +1158,11 @@ class Dataset(object):
             Function to create the Dataset class gtk.Notebook() page for
             displaying plots for the selected data set.
 
-            @param self: the current instance of a Dataset class.
-            @param notebook: the Dataset class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Dataset class.
+            :param notebook: the Dataset class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1205,11 +1205,11 @@ class Dataset(object):
             displaying results decomposed to child assemblies and/or components
             for the selected data set.
 
-            @param self: the current instance of a Dataset class.
-            @param notebook: the Dataset class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Dataset class.
+            :param notebook: the Dataset class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1332,8 +1332,8 @@ class Dataset(object):
         """
         Loads the Dataset class gtk.TreeModel().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1370,8 +1370,8 @@ class Dataset(object):
         """
         Method to load the Dataset class gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_analyses_input_page(self):
@@ -1451,8 +1451,8 @@ class Dataset(object):
         """
         Loads the gtk.Widgets() with analyses results for the Dataset class.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1630,8 +1630,8 @@ class Dataset(object):
         """
         Method used to load the survival data set in the gtk.TreeView().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the gtk.TreeView() containing the list of failure/censoring
@@ -1662,8 +1662,8 @@ class Dataset(object):
         Method to load the Nevada chart if one is associated with the selected
         data set.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         import pango
@@ -1788,13 +1788,13 @@ class Dataset(object):
         analyses.  This includes the MCF, Kaplan-Meier, and NHPP - Power Law
         analyses.
 
-        @param model: the nonparametric estimates gtk.TreeModel().
-        @type: model gtk.TreeModel
-        @param col_headings: a list containing the the text for the
+        :param model: the nonparametric estimates gtk.TreeModel().
+        :type: model gtk.TreeModel
+        :param col_headings: a list containing the the text for the
                              gtk.TreeColumn() headers.
-        @type col_headings: list of strings
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type col_headings: list of strings
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Remove the existing model from the gtk.TreeView.
@@ -1824,8 +1824,8 @@ class Dataset(object):
         """
         Method to update the Dataset class gtk.TreeModel().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1860,8 +1860,8 @@ class Dataset(object):
         """
         Method to update the Dataset class attributes.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1915,9 +1915,9 @@ class Dataset(object):
         """
         Method for handling mouse clicks on the Dataset class gtk.TreeView().
 
-        @param treeview: the Dataset class gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param event: a gtk.gdk.Event() that called this function (the
+        :param treeview: the Dataset class gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param event: a gtk.gdk.Event() that called this function (the
                       important attribute is which mouse button was clicked).
                       1 = left
                       2 = scrollwheel
@@ -1926,9 +1926,9 @@ class Dataset(object):
                       5 = backward
                       8 =
                       9 =
-        @type event: gtk.gdk.Event
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type event: gtk.gdk.Event
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -1944,14 +1944,14 @@ class Dataset(object):
         gtk.Treeview().  It is called whenever the Dataset class
         gtk.TreeView() is clicked or a row is activated.
 
-        @param __treeview: the Dataset class gtk.TreeView().
-        @type __treeview: gtk.TreeView
-        @param __path: the activated gtk.TreeIter() path.
-        @type __path: string
-        @param __column: the activated gtk.TreeViewColumn().
-        @type __column: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __treeview: the Dataset class gtk.TreeView().
+        :type __treeview: gtk.TreeView
+        :param __path: the activated gtk.TreeIter() path.
+        :type __path: string
+        :param __column: the activated gtk.TreeViewColumn().
+        :type __column: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1980,10 +1980,10 @@ class Dataset(object):
         Method to add one or more record to the selected survival analysis
         data set.
 
-        @param __button: the gtk.ToolButton() that called this method.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _n_new_records = _util.add_items(_(u"RTK - Add Data Set Records"),
@@ -2030,10 +2030,10 @@ class Dataset(object):
         Method to remove the selected data set from the open RTK Program
         database.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -2056,10 +2056,10 @@ class Dataset(object):
         Method to remove the selected record from the survival analysis
         data set.
 
-        @param __button: the gtk.ToolButton() that called this method.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -2109,10 +2109,10 @@ class Dataset(object):
         Method to save the Dataset class gtk.TreeView() information to the open
         RTK Program database.
 
-        @param __button: the gtk.Button() widget that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() widget that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line_item(model, __path, row, self):
@@ -2120,16 +2120,16 @@ class Dataset(object):
             Method to save each row in the Dataset class gtk.TreeModel to the
             open RTK Program database.
 
-            @param model: the Dataset class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active gtk.TreeIter() in the Dataset
+            :param model: the Dataset class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active gtk.TreeIter() in the Dataset
                            class gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Dataset class
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Dataset class
                         gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _values = (model.get_value(row, 1), model.get_value(row, 2),
@@ -2183,16 +2183,16 @@ class Dataset(object):
             Function to save each of the survival data records that comprise
             the selected Dataset to the open RTK Program database.
 
-            @param model: the Dataset class records gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active gtk.TreeIter() in the Dataset
+            :param model: the Dataset class records gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active gtk.TreeIter() in the Dataset
                            class records gtk.TreeModel().
-            @type __Path: string
-            @param row: the selected gtk.TreeIter() in the Dataset records
+            :type __Path: string
+            :param row: the selected gtk.TreeIter() in the Dataset records
                         gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _query = "UPDATE tbl_survival_data \
@@ -2226,9 +2226,9 @@ class Dataset(object):
         """
         Callback function to retrieve and save gtk.ComboBox() changes.
 
-        @param combo: the gtk.ComboBox() that called this method.
-        @type combo: gtk.ComboBox
-        @param index: the position in the Dataset class gtk.TreeView()
+        :param combo: the gtk.ComboBox() that called this method.
+        :type combo: gtk.ComboBox
+        :param index: the position in the Dataset class gtk.TreeView()
                       associated with the data from the calling gtk.ComboBox().
                       1 = Assembly ID
                       3 = Source of dataset
@@ -2236,9 +2236,9 @@ class Dataset(object):
                       6 = Confidence type
                       7 = Confidence method
                       8 = Fit method
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if index == 1:
@@ -2306,17 +2306,17 @@ class Dataset(object):
         """
         Callback function to retrieve and save gtk.Entry() changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called the function.
-        @type __event: gtk.gdk.Event
-        @param convert: the data type to convert the gtk.Entry() contents to.
-        @type convert: string
-        @param index: the position in the applicable gtk.TreeModel() associated
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called the function.
+        :type __event: gtk.gdk.Event
+        :param convert: the data type to convert the gtk.Entry() contents to.
+        :type convert: string
+        :param index: the position in the applicable gtk.TreeModel() associated
                       with the data from the calling gtk.Entry().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from datetime import datetime
@@ -2344,21 +2344,21 @@ class Dataset(object):
         """
         Called whenever a gtk.TreeView() gtk.CellRendererCombo() changes.
 
-        @param cell: the gtk.CellRendererCombo)_ that called this method.
-        @type cell: gtk.CellRendererCombo
-        @param path: the path in the gtk.TreeView() containing the
+        :param cell: the gtk.CellRendererCombo)_ that called this method.
+        :type cell: gtk.CellRendererCombo
+        :param path: the path in the gtk.TreeView() containing the
                      gtk.CellRendererCombo() that called this function.
-        @type path: string
-        @param row: the new gtk.TreeIter() in the gtk.CellRendererCombo() that
+        :type path: string
+        :param row: the new gtk.TreeIter() in the gtk.CellRendererCombo() that
                     called this function.
-        @type row: gtk.TreeIter
-        @param col: the index of the column in the gtk.TreeView() containing
+        :type row: gtk.TreeIter
+        :param col: the index of the column in the gtk.TreeView() containing
                     the gtk.CellRendererCombo().
-        @type col: integer
-        @param treemodel: the gtk.TreeModel() for the gtk.TreeView().
-        @type treemodel: gtk.TreeModel
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type col: integer
+        :param treemodel: the gtk.TreeModel() for the gtk.TreeView().
+        :type treemodel: gtk.TreeModel
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         model = cell.get_property('model')
@@ -2373,22 +2373,22 @@ class Dataset(object):
         """
         Called whenever a gtk.TreeView() gtk.CellRendererText() changes.
 
-        @param __cell: the gtk.CellRendererText() that called this method.
-        @type __cell: gtk.CellRendererText
-        @param path: the path in the gtk.TreeView() containing the
+        :param __cell: the gtk.CellRendererText() that called this method.
+        :type __cell: gtk.CellRendererText
+        :param path: the path in the gtk.TreeView() containing the
                      gtk.CellRendererText() that called this method.
-        @type path: string
-        @param new_text: the new text in the gtk.CellRendererText() that called
+        :type path: string
+        :param new_text: the new text in the gtk.CellRendererText() that called
                          this method.
-        @type new_text: string
-        @param index: the index (column) in the gtk.TreeView() containing the
+        :type new_text: string
+        :param index: the index (column) in the gtk.TreeView() containing the
                       gtk.CellRendererText() that is being edited.
-        @type index: integer
-        @param convert: the data type to convert new_text to for the
+        :type index: integer
+        :param convert: the data type to convert new_text to for the
                         gtk.CellRendererText().
-        @type convert: string
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type convert: string
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from datetime import datetime
@@ -2412,18 +2412,18 @@ class Dataset(object):
         Called whenever the Dataset class Work Book gtk.Notebook() page is
         changed.
 
-        @param __notebook: the Dataset class gtk.Notebook().
-        @type __notebook: gtk.Notebook
-        @param __page: the newly selected page's gtk.Widget().
-        @type __page: gtk.Widget
-        @param __page_num: the newly selected page number.
+        :param __notebook: the Dataset class gtk.Notebook().
+        :type __notebook: gtk.Notebook
+        :param __page: the newly selected page's gtk.Widget().
+        :type __page: gtk.Widget
+        :param __page_num: the newly selected page number.
                            0 = Analysis Inputs
                            1 = Analysis Results (numeric)
                            2 = Plots
                            3 = Results Breakdown
-        @type __page_num: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type __page_num: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         return False
@@ -2432,10 +2432,10 @@ class Dataset(object):
         """
         Method to execute the selected analysis.
 
-        @param __button: the gtk.ToolButton() that called this method.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2871,10 +2871,9 @@ class Dataset(object):
                              _(u"Instantaneous MTBF\nLower Bound"),
                              _(u"Instantaneous\nMTBF"),
                              _(u"Instantaneous\nMTBF\nUpper Bound")]
-
             self._load_nonparametric_tree(_model, _col_headings)
 
-            # Get the
+            # Create the lists of values used in plotting.
             _plot_times = [x[0] for x in _running_results]
             _plot_mtbf_ll = [x[8] for x in _running_results]
             _plot_mtbf = [x[9] for x in _running_results]
@@ -3457,10 +3456,10 @@ class Dataset(object):
         suspension times, and intervals with a quantity value rather than a
         single record for each failure.
 
-        @param __button: the gtk.Button() that called this function.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this function.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT fld_record_id, fld_unit, fld_left_interval, \

@@ -63,12 +63,12 @@ def calculate_part(model):
     """
     Calculates the hazard rate for a component.
 
-    @param model: the component's h(t) prediction model and the input
+    :param model: the component's h(t) prediction model and the input
                   variables.  The keys are the model variables and the values
                   are the values of the variable in the key.
-    @type model: dictionary
-    @return: _lambdap, the calculated h(t).
-    @rtype: float
+    :type model: dictionary
+    :return: _lambdap, the calculated h(t).
+    :rtype: float
     """
 
     _keys = model.keys()
@@ -164,16 +164,16 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                  | Contact Power              |   50%   |   60%   |
     -------------+----------------------------+---------+---------+
 
-    @param partmodel: the winParts full gtk.TreeModel().
-    @type partmodel: gtk.TreeModel
-    @param partrow: the currently selected gtk.TreeIter() in the winParts full
+    :param partmodel: the winParts full gtk.TreeModel().
+    :type partmodel: gtk.TreeModel
+    :param partrow: the currently selected gtk.TreeIter() in the winParts full
                     gtk.TreeModel().
-    @type partrow: gtk.TreeIter
-    @param systemmodel: the Hardware class gtk.TreeModel().
-    @type systemmodel: gtk.TreeModel
-    @param systemrow: the currently selected gtk.TreeIter() in the Hardware
+    :type partrow: gtk.TreeIter
+    :param systemmodel: the Hardware class gtk.TreeModel().
+    :type systemmodel: gtk.TreeModel
+    :param systemrow: the currently selected gtk.TreeIter() in the Hardware
                       class gtk.TreeModel().
-    @type systemrow: gtk.TreeIter
+    :type systemrow: gtk.TreeIter
     """
 
     # |------------------  <---- Knee Temperature
@@ -660,16 +660,16 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     70           |  2.4 |  2.2 |  1.9 |  1.8 |  1.5 |  1.2 |  1.0 |
     -------------+------+------+------+------+------+------+------+
 
-    @param component: the rtk.Component() class to perform calculations on.
-    @type component: rtk.Component
-    @param new_qual: the index of the quality level of the new item.
-    @type new_qual: integer
-    @param new_environ: the index of the environment of the new item.
-    @type new_environ: integer
-    @param new_temp: the index of the operating temperature of the new item.
-    @type new_temp: integer
-    @return: hr_similar; the estimated hazard rate for the new item.
-    @rtype: float
+    :param component: the rtk.Component() class to perform calculations on.
+    :type component: rtk.Component
+    :param new_qual: the index of the quality level of the new item.
+    :type new_qual: integer
+    :param new_environ: the index of the environment of the new item.
+    :type new_environ: integer
+    :param new_temp: the index of the operating temperature of the new item.
+    :type new_temp: integer
+    :return: hr_similar; the estimated hazard rate for the new item.
+    :rtype: float
     """
 
     qual_factor = [[1.0, 0.8, 0.5, 0.2],
@@ -778,18 +778,18 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     Transformers  | 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
     --------------+-------+--------+--------+-------+-------+-------+-------+
 
-    @param category: the component category index.
-    @type category: integer
-    @param subcategory: the component subcategory index.
-    @type subcategory: integer
-    @param active_env: the active environment index.
-    @type active_env: integer
-    @param dormant_env: the dormant environment index.
-    @type dormant_env: integer
-    @param lambdaa: the active hazard rate of the component.
-    @type lambdaa: float
-    @return: lambdad; the dormant hazard rate.
-    @rtype: float
+    :param category: the component category index.
+    :type category: integer
+    :param subcategory: the component subcategory index.
+    :type subcategory: integer
+    :param active_env: the active environment index.
+    :type active_env: integer
+    :param dormant_env: the dormant environment index.
+    :type dormant_env: integer
+    :param lambdaa: the active hazard rate of the component.
+    :type lambdaa: float
+    :return: lambdad; the dormant hazard rate.
+    :rtype: float
     """
 
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -865,17 +865,17 @@ def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
 
-    @param modeca: list containing inputs for the MIL-STD-1629A mode
+    :param modeca: list containing inputs for the MIL-STD-1629A mode
                    criticality calculation.
-    @type modeca: list of mixed types
-    @param itemca: list containing inputs for the MIL-STD-1629A item
+    :type modeca: list of mixed types
+    :param itemca: list containing inputs for the MIL-STD-1629A item
                    criticality calculation.
-    @type itemca: list of mixed types
-    @param rpn: list containing inputs for the automotive criticality
+    :type itemca: list of mixed types
+    :param rpn: list containing inputs for the automotive criticality
                 calculation.
-    @type rpn: list of mixed types
-    @return: modeca, itemca, rpn
-    @rtype: list, list, list
+    :type rpn: list of mixed types
+    :return: modeca, itemca, rpn
+    :rtype: list, list, list
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -926,25 +926,25 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
     Function to calculate the values for an individual reliability growth
     phase.
 
-    @param T1: the length of the first test phase.
-    @type T1: float
-    @param MTBFi: the inital MTBF for the test phase.
-    @type MTBFi: float
-    @param MTBFf: the final MTBF for the test phase.
-    @type MTBFf: float
-    @param MTBFa: the average MTBF for the test phase.
-    @type MTBFa: float
-    @param GR: the average growth rate across the entire test program.
-    @type GR: float
-    @param MS: the management strategy for this program.
-    @type MS: float
-    @param FEF: the average FEF for this program.
-    @type FEF: float
-    @param Prob: the probability of seeing one failure.
-    @type Prob: float
-    @param ti: the growth start time; time to first fix for this program.
-    @type t1: float
-    @param fix: list of True/False indicating which parameters are fixed when
+    :param T1: the length of the first test phase.
+    :type T1: float
+    :param MTBFi: the inital MTBF for the test phase.
+    :type MTBFi: float
+    :param MTBFf: the final MTBF for the test phase.
+    :type MTBFf: float
+    :param MTBFa: the average MTBF for the test phase.
+    :type MTBFa: float
+    :param GR: the average growth rate across the entire test program.
+    :type GR: float
+    :param MS: the management strategy for this program.
+    :type MS: float
+    :param FEF: the average FEF for this program.
+    :type FEF: float
+    :param Prob: the probability of seeing one failure.
+    :type Prob: float
+    :param ti: the growth start time; time to first fix for this program.
+    :type t1: float
+    :param fix: list of True/False indicating which parameters are fixed when
                 calculating results for each test phase.
                 0 = Program probability
                 1 = Management strategy
@@ -953,10 +953,10 @@ def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
                 4 = Test phase initial MTBF
                 5 = Test phase final MTBF
                 6 = Growth rate
-    @type fix: list of booleans
-    @return: GRi, T1, MTBFi, MTBFf; growth rate, test time, initial MTBF,
+    :type fix: list of booleans
+    :return: GRi, T1, MTBFi, MTBFf; growth rate, test time, initial MTBF,
                                     final MTBF for the test phase.
-    @rtype: float, float, float, float
+    :rtype: float, float, float, float
     """
 
     # Calculate the average growth rate for the phase.
@@ -1004,12 +1004,12 @@ def moving_average(data, n=3):
     """
     Function to calculate the moving average of a data set.
 
-    @param data: the data set for which to find the moving average.
-    @type data: list of floats or integers
-    @param n: the desired period.
-    @type n: integer
-    @return: the nth period moving average of data.
-    @rtype: float
+    :param data: the data set for which to find the moving average.
+    :type data: list of floats or integers
+    :param n: the desired period.
+    :type n: integer
+    :return: the nth period moving average of data.
+    :rtype: float
     """
 
     _cumsum = np.cumsum(data, dtype=float)  # pylint: disable=E1101
@@ -1023,16 +1023,16 @@ def beta_bounds(a, m, b, alpha):
     a beta distribution.  These are the project management estimators, not
     exact calculations.
 
-    @param a: the minimum expected value.
-    @type a: float
-    @param m: most likely value.
-    @type m: float
-    @param b: the maximum expected value.
-    @type b: float
-    @param alpha: the desired confidence level.
-    @type alpha: float
-    @return: _meanll, _mean, _meanul; the calculated mean and bounds.
-    @rtype: tuple of floats
+    :param a: the minimum expected value.
+    :type a: float
+    :param m: most likely value.
+    :type m: float
+    :param b: the maximum expected value.
+    :type b: float
+    :param alpha: the desired confidence level.
+    :type alpha: float
+    :return: _meanll, _mean, _meanul; the calculated mean and bounds.
+    :rtype: tuple of floats
     """
 
     from scipy.stats import norm            # pylint: disable=E0611
@@ -1061,7 +1061,7 @@ def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
-    @param _dates_: tuple containing start and end date for calculating
+    :param _dates_: tuple containing start and end date for calculating
                     time to failure.
     """
 
@@ -1078,18 +1078,18 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
-    @param dataset: list of tuples where each tuple is in the form of:
+    :param dataset: list of tuples where each tuple is in the form of:
                     (Left of Interval, Right of Interval, Event Status) and
                     event status are:
                     0 = right censored
                     1 = event at time
                     2 = left censored
                     3 = interval censored
-    @param reltime: time at which to stop analysis (helps eliminate stretched
+    :param reltime: time at which to stop analysis (helps eliminate stretched
                     plots due to small number of events at high hours).
-    @param conf: the confidence level of the KM estimates (default is 75%).
-    @param type: the confidence interval type for the KM estimates.
-    @return: _KM, a list of lists where each inner list has the following
+    :param conf: the confidence level of the KM estimates (default is 75%).
+    :param type: the confidence interval type for the KM estimates.
+    :return: _KM, a list of lists where each inner list has the following
                   information:
 
                    0 = total number of subjects in each curve.
@@ -1110,7 +1110,7 @@ def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
                   12 = the returned value from the na.action function, if any.
                        It will be used in the printout of the curve, e.g., the
                        number of observations deleted due to missing values.
-    @rtype: list
+    :rtype: list
     """
 
     from scipy.stats import norm            # pylint: disable=E0611
@@ -1230,20 +1230,20 @@ def mean_cumulative_function(units, times, data, _conf_=0.75):
     This function estimates the mean cumulative function (MCF) for a population
     of items.
 
-    @param units: list of unique unit ID's in the data set.
-    @type units: list
-    @param times: list of unique failure times in the data set.
-    @type times: list of floats
-    @param data: a data.frame or matrix where:
+    :param units: list of unique unit ID's in the data set.
+    :type units: list
+    :param times: list of unique failure times in the data set.
+    :type times: list of floats
+    :param data: a data.frame or matrix where:
                  Column 0 is the failed unit id.
                  Column 1 is the left of the interval.
                  Column 2 is the right of the interval.
                  Column 3 is the interarrival time.
-    @type data: R data.frame
-    @param conf: the confidence level of the MCF estimates (default is 75%).
-    @type conf: float
-    @return: MCF
-    @rtype: list of lists
+    :type data: R data.frame
+    :param conf: the confidence level of the MCF estimates (default is 75%).
+    :type conf: float
+    :return: MCF
+    :rtype: list of lists
     """
 
     from scipy.stats import norm            # pylint: disable=E0611
@@ -1344,20 +1344,20 @@ def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_,
     Function to fit data to a parametric distribution and estimate the
     parameters.
 
-    @param _dataset_: the data set to fit.
-    @type _dataset_: list of floats
-    @param _reltime_: the maximum time to include in the fit.  Used to exclude
+    :param _dataset_: the data set to fit.
+    :type _dataset_: list of floats
+    :param _reltime_: the maximum time to include in the fit.  Used to exclude
                       outliers.
-    @type _reltime_: float
-    @param _fitmeth_: method used to fit data to the selected distribution.
+    :type _reltime_: float
+    :param _fitmeth_: method used to fit data to the selected distribution.
                       1 = rank regression
                       2 = maximum likelihood estimation (MLE)
-    @type _fitmeth_: integer
-    @param _dist_: the noun name of the distribution to fit.  Defaults to
+    :type _fitmeth_: integer
+    :param _dist_: the noun name of the distribution to fit.  Defaults to
                    the exponential distribution.
-    @type _dist_: string
-    @return: fit
-    @rtype: R.Survival.SurvReg object
+    :type _dist_: string
+    :return: fit
+    :rtype: R.Survival.SurvReg object
     """
 
     # Eliminate zero time failures and failures occurring after any
@@ -1449,14 +1449,14 @@ def smooth_curve(x, y, num):
     Function to produce smoothed plots where there are a small number of data
     points in the original data set.
 
-    @param x: a numpy array of the raw x-values.
-    @type x: numpy array
-    @param y: a numpy array of the raw y-values.
-    @type y: numpy array
-    @param num: the number of points to generate.
-    @type num: integer
-    @return: _new_x, _new_y
-    @rtype: list
+    :param x: a numpy array of the raw x-values.
+    :type x: numpy array
+    :param y: a numpy array of the raw y-values.
+    :type y: numpy array
+    :param num: the number of points to generate.
+    :type num: integer
+    :return: _new_x, _new_y
+    :rtype: list
     """
 
     from scipy.interpolate import spline    # pylint: disable=E0611
@@ -1491,14 +1491,14 @@ def theoretical_distribution(_data_, _distr_, _para_):
     Function to generate data points from a theoretical distribution with the
     parameters provided.
 
-    @param _data_: data set used to bound the theoretical distribution.
-    @type _data_: list of floats
-    @param _distr_: the name of the desired theoretical distribution.
-    @type _distr_: string
-    @param _para_: the parameters of the desired theoretical distribution.
-    @type _para_: list of floats
-    @return: theop
-    @rtype: R object
+    :param _data_: data set used to bound the theoretical distribution.
+    :type _data_: list of floats
+    :param _distr_: the name of the desired theoretical distribution.
+    :type _distr_: string
+    :param _para_: the parameters of the desired theoretical distribution.
+    :type _para_: list of floats
+    :return: theop
+    :rtype: R object
     """
 
     Rbase = importr('base')

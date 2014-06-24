@@ -275,11 +275,11 @@ class Function(object):
             Function to create the FUNCTION class gtk.Notebook() page for
             displaying general data about the selected FUNCTION.
 
-            @param self: the current instance of a Function class.
-            @param notebook: the gtk.Notebook() to add the page.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Function class.
+            :param notebook: the gtk.Notebook() to add the page.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1215,10 +1215,10 @@ class Function(object):
         Method to add a failure mode to the FMEA/FMECA for the selected
         function.
 
-        @param __button: the gtk.ToolButton() that called this function.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this function.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -1297,10 +1297,10 @@ class Function(object):
         Method to delete the currently selected failure mode from the
         FMEA/FMECA for the selected function.
 
-        @param __button: the gtk.ToolButton() that called this function.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this function.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)

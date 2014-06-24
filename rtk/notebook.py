@@ -53,7 +53,7 @@ class WorkBookWindow(gtk.Window):
         """
         Initializes the Work Book Class.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         self._app = application

@@ -61,19 +61,19 @@ def _component_list_edit(cell, path, __new_text, position, model):
     Function to respond to component list gtk.TreeView() gtk.CellRenderer()
     editing.
 
-    @param cell: the gtk.CellRenderer() that was edited.
-    @type cell: gtk.CellRenderer
-    @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+    :param cell: the gtk.CellRenderer() that was edited.
+    :type cell: gtk.CellRenderer
+    :param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
                  edited.
-    @type path: string
-    @param __new_text: the new text in the edited gtk.CellRenderer().
-    @type __new_text: string
-    @param position: the column position of the edited gtk.CellRenderer().
-    @type position: integer
-    @param model: the gtk.TreeModel() the edited gtk.CellRenderer() belongs to.
-    @type model: gtk.TreeModel
-    @return: False if successful or True if an error is encountered.
-    @rtype: boolean
+    :type path: string
+    :param __new_text: the new text in the edited gtk.CellRenderer().
+    :type __new_text: string
+    :param position: the column position of the edited gtk.CellRenderer().
+    :type position: integer
+    :param model: the gtk.TreeModel() the edited gtk.CellRenderer() belongs to.
+    :type model: gtk.TreeModel
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     value = not cell.get_active()
@@ -133,7 +133,7 @@ class Incident(object):
         """
         Initializes the Incident class.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Incident class scalar attributes.
@@ -265,9 +265,9 @@ class Incident(object):
         Creates the Incident class gtk.TreeView() and connects it to callback
         functions to handle editing.
 
-        @return _scrollwindow: the gtk.ScrolledWindow() container holding the
+        :return _scrollwindow: the gtk.ScrolledWindow() container holding the
                                Dataset class gtk.TreeView().
-        @rtype: gtk.ScrolledWindow
+        :rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_("Displays a list of Program "
@@ -289,8 +289,8 @@ class Incident(object):
         """
         Method to create the gtk.Toolbar() for the Incident class Work Book.
 
-        @return: _toolbar
-        @rtype: gtk.Toolbar
+        :return: _toolbar
+        :rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -414,8 +414,8 @@ class Incident(object):
         """
         Method to create the Incident class gtk.Notebook().
 
-        @return: _notebook
-        @rtype: gtk.Notebook
+        :return: _notebook
+        :rtype: gtk.Notebook
         """
 
         def _create_incident_details_page(self, notebook):
@@ -423,12 +423,12 @@ class Incident(object):
             Function to create the Incident class gtk.Notebook() page for
             displaying general information related to the selected incident.
 
-            @param self: the current instance of a Incident class.
-            @type rtk.Incident
-            @param notebook: the Incident class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Incident class.
+            :type rtk.Incident
+            :param notebook: the Incident class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -714,12 +714,12 @@ class Incident(object):
             Function to create the Incident class gtk.Notebook() page for
             displaying the analysis of the selected incident.
 
-            @param self: the current instance of the Incident class.
-            @type self: rtk.Incident
-            @param notebook: the Incident class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of the Incident class.
+            :type self: rtk.Incident
+            :param notebook: the Incident class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -910,12 +910,12 @@ class Incident(object):
         Loads the Incident class gtk.TreeModel() with the list of Program
         incidents.
 
-        @param __button: the gtkCheckButton() that called this method.  Needed
+        :param __button: the gtkCheckButton() that called this method.  Needed
                          to allow the 'All Revisions' gtk.CheckButton() to
                          call this method.
-        @type __button: gtk.CheckButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type __button: gtk.CheckButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Select all the program incidents.  If the 'All Revisions'
@@ -981,8 +981,8 @@ class Incident(object):
         """
         Method to load the Incident class gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_incident_details_page(self):
@@ -1096,8 +1096,8 @@ class Incident(object):
         """
         Method to load the component list for the selected incident.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _model = self.tvwComponentList.get_model()
@@ -1125,8 +1125,8 @@ class Incident(object):
         """
         Method to update the Incident class gtk.TreeModel().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1139,8 +1139,8 @@ class Incident(object):
         """
         Method to update the Incident class attributes.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1188,9 +1188,9 @@ class Incident(object):
         Callback function for handling mouse clicks on the Incident class
         treeview.
 
-        @param treeview: the Incident class gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param event: a gtk.gdk.Event() that called this function (the
+        :param treeview: the Incident class gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param event: a gtk.gdk.Event() that called this function (the
                       important attribute is which mouse button was clicked).
                       1 = left
                       2 = scrollwheel
@@ -1199,9 +1199,9 @@ class Incident(object):
                       5 = backward
                       8 =
                       9 =
-        @type event: gtk.gdk.Event
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type event: gtk.gdk.Event
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -1217,15 +1217,15 @@ class Incident(object):
         gtk.Treeview().  It is called whenever the Incident class
         gtk.TreeView() is clicked or a row is activated.
 
-        @param __treeview: the Incident class gtk.TreeView().
-        @type __treeview: gtk.TreeView
-        @param __path: the path of the activated gtk.TreeIter() in the Incident
+        :param __treeview: the Incident class gtk.TreeView().
+        :type __treeview: gtk.TreeView
+        :param __path: the path of the activated gtk.TreeIter() in the Incident
                        class gtk.TreeView().
-        @type __path: string
-        @param __column: the activated gtk.TreeViewColumn().
-        @type __column: gtk.TreeViewColumn
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type __path: string
+        :param __column: the activated gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1241,10 +1241,10 @@ class Incident(object):
         """
         Adds a new hardware item to the selected incident.
 
-        @param __widget: the gtk.Widget() that called this function.
-        @type __widget: gtk.Widget
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __widget: the gtk.Widget() that called this function.
+        :type __widget: gtk.Widget
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _n_components = _util.add_items(title=_(u"RTK - Add Components to "
@@ -1279,10 +1279,10 @@ class Incident(object):
         Deletes the currently selected component from the selected Program
         incident.
 
-        @param __button: the gtk.ToolButton() that called this function.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this function.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.tvwComponentList.get_selection().get_selected()
@@ -1307,10 +1307,10 @@ class Incident(object):
         Saves the Incident class gtk.TreeView() information for the selected
         Program incident to the open RTK Program database.
 
-        @param __widget: the gtk.Widget() that called this method.
-        @type __widget: gtk.Widget
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __widget: the gtk.Widget() that called this method.
+        :type __widget: gtk.Widget
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line_item(self):
@@ -1318,9 +1318,9 @@ class Incident(object):
             Saves the currently selected row in the Incident class
             gtk.TreeModel() to the open RTK Program database.
 
-            @param model: the current instance of the RTK application.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param model: the current instance of the RTK application.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _query = "UPDATE tbl_incident \
@@ -1364,16 +1364,16 @@ class Incident(object):
             Saves each row in the Incident class component list gtk.TreeModel()
             to the open RTK Program database.
 
-            @param model: the Incident class component list gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active row in the Incident class
+            :param model: the Incident class component list gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active row in the Incident class
                            component list gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Incident class
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Incident class
                         component list gtk.TreeView().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             #datetime.strptime(dt,"%Y-%m-%d").toordinal()
@@ -1412,13 +1412,13 @@ class Incident(object):
         Callback function to retrieve and save Incident class gtk.CheckButton()
         changes.
 
-        @param check: the gtk.CheckButton() that called this method.
-        @type check: gtk.CheckButton
-        @param index: the position in the Incident class component list
+        :param check: the gtk.CheckButton() that called this method.
+        :type check: gtk.CheckButton
+        :param index: the position in the Incident class component list
                       gtk.TreeModel().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if check.get_active():
@@ -1437,13 +1437,13 @@ class Incident(object):
         """
         Callback function to retrieve and save gtk.ComboBox() changes.
 
-        @param combo: the gtk.ComboBox() that called this method.
-        @type combo: gtk.ComboBox
-        @param index: the position in the Incident class component list
+        :param combo: the gtk.ComboBox() that called this method.
+        :type combo: gtk.ComboBox
+        :param index: the position in the Incident class component list
                       gtk.TreeModel().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Index     Field
@@ -1471,17 +1471,17 @@ class Incident(object):
         """
         Callback function to retrieve and save gtk.Entry() changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called the function.
-        @type __event: gtk.gdk.Event
-        @param convert: the data type to convert the gtk.Entry() contents to.
-        @type convert: string
-        @param index: the position in the applicable gtk.TreeModel() associated
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called the function.
+        :type __event: gtk.gdk.Event
+        :param convert: the data type to convert the gtk.Entry() contents to.
+        :type convert: string
+        :param index: the position in the applicable gtk.TreeModel() associated
                       with the data from the calling gtk.Entry().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from datetime import datetime

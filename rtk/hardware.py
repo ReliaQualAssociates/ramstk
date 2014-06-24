@@ -81,7 +81,7 @@ class Hardware(object):
         """
         Initializes the Hardware class.
 
-        @param application: the current instance of the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Hardware class scalar attributes.
@@ -611,9 +611,9 @@ class Hardware(object):
         Creates the Hardware class gtk.TreeView() and connects it to callback
         functions to handle editing.
 
-        @return _scrollwindow: the gtk.ScrolledWindow() container holding the
+        :return _scrollwindow: the gtk.ScrolledWindow() container holding the
                                Hardware class gtk.TreeView().
-        @rtype: gtk.ScrolledWindow
+        :rtype: gtk.ScrolledWindow
         """
 
         self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
@@ -635,8 +635,8 @@ class Hardware(object):
         """
         Method to create the toolbar for the Hardware class Work Book.
 
-        @return: _toolbar
-        @rtype: gtk.Toolbar
+        :return: _toolbar
+        :rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -809,8 +809,8 @@ class Hardware(object):
         """
         Method to create the Hardware class gtk.Notebook().
 
-        @return: _notebook
-        @rtype : gtk.Notebook
+        :return: _notebook
+        :rtype : gtk.Notebook
         """
 
         def _create_general_data_tab(self, notebook):
@@ -818,10 +818,10 @@ class Hardware(object):
             Function to create the Hardware class gtk.Notebook() page for
             displaying general data about the selected Hardware.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: Hardware object
-            @param notebook: the HARDWARE class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a HARDWARE class.
+            :type self: Hardware object
+            :param notebook: the HARDWARE class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1150,10 +1150,10 @@ class Hardware(object):
             displaying the reliability allocation analysis for the selected
             HARDWARE.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: Hardware object
-            @param notebook: the HARDWARE class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a HARDWARE class.
+            :type self: Hardware object
+            :param notebook: the HARDWARE class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1362,10 +1362,10 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the hazard analysis for the selected HARDWARE.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: HARDWARE object instance
-            @param notebook: the HARDWARE class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a HARDWARE class.
+            :type self: HARDWARE object instance
+            :param notebook: the HARDWARE class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1673,10 +1673,10 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the similar item analysis for the selected HARDWARE.
 
-            @param self: the current instance of a Hardware class.
-            @type self: the current instance of the Hardware class
-            @param notebook: the Hardware class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Hardware class.
+            :type self: the current instance of the Hardware class
+            :param notebook: the Hardware class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1822,10 +1822,10 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the assessment inputs for the selected HARDWARE.
 
-            @param self: the current instance of a Hardware class.
-            @type self: the current instance of the Hardware class
-            @param notebook: the Hardware class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Hardware class.
+            :type self: the current instance of the Hardware class
+            :param notebook: the Hardware class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2349,11 +2349,11 @@ class Hardware(object):
             Function to create the HARDWARE class gtk.Notebook() page for
             displaying the assessment results for the selected HARDWARE.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: RTK application
-            @param notebook: the HARDWARE class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False or True
+            :param self: the current instance of a HARDWARE class.
+            :type self: RTK application
+            :param notebook: the HARDWARE class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False or True
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2615,9 +2615,9 @@ class Hardware(object):
             Function to create the Hardware class gtk.Notebook() page for
             displaying the FMEA/FMECA for the selected HARDWARE.
 
-            @param self: the current instance of a Hardware class.
-            @param notebook: the Hardware class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Hardware class.
+            :param notebook: the Hardware class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -3195,13 +3195,13 @@ class Hardware(object):
             """
             Function to load the widgets on the Allocation page.
 
-            @param self: the current instance of a HARDWARE class.
-            @type self: Hardware class object
-            @param model: the HARDWARE class gtk.TreeModel()
-            @type model: gtk.TreeModel
-            @param row: the currently selected row in the HARDWARE class
+            :param self: the current instance of a HARDWARE class.
+            :type self: Hardware class object
+            :param model: the HARDWARE class gtk.TreeModel()
+            :type model: gtk.TreeModel
+            :param row: the currently selected row in the HARDWARE class
                         gtk.TreeModel()
-            @type row: gtk.Iter
+            :type row: gtk.Iter
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -3301,8 +3301,8 @@ class Hardware(object):
             """
             Function to load the widgets on the Hazard Analysis page.
 
-            @param self: the current instance of an HARDWARE class.
-            @return: False
+            :param self: the current instance of an HARDWARE class.
+            :return: False
             """
 
             # Get the hazard analysis for the assembly selected in the
@@ -3400,8 +3400,8 @@ class Hardware(object):
             """
             Function to load the widgets on the Similar Item Analysis page.
 
-            @param self: the current instance of an HARDWARE class.
-            @return: False
+            :param self: the current instance of an HARDWARE class.
+            :return: False
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -3458,8 +3458,8 @@ class Hardware(object):
             """
             Function to load the widgets on the Assessment Inputs page.
 
-            @param self: the current instance of an HARDWARE class.
-            @return: False
+            :param self: the current instance of an HARDWARE class.
+            :return: False
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -4014,18 +4014,18 @@ class Hardware(object):
         Method to load the mission phase gtk.CellRendererCombo() in the FMECA
         when the mission gtk.CellRendererCombo() is changed.
 
-        @param cell: the gtk.CellRendererCombo() that was edited.
-        @type cell: gtk.CellRendererCombo
-        @param path: the gtk.TreeView() path of the gtk.CellRendererCombo()
+        :param cell: the gtk.CellRendererCombo() that was edited.
+        :type cell: gtk.CellRendererCombo
+        :param path: the gtk.TreeView() path of the gtk.CellRendererCombo()
                      that was edited.
-        @type path: string
-        @param row: the gtk.TreeIter() in the edited gtk.CellRendererCombo().
-        @type row: gtk.TreeIter
-        @param model: the gtk.TreeModel() from the mission
+        :type path: string
+        :param row: the gtk.TreeIter() in the edited gtk.CellRendererCombo().
+        :type row: gtk.TreeIter
+        :param model: the gtk.TreeModel() from the mission
                       gtk.CellRendererCombo().
-        @type model: gtk.TreeModel
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type model: gtk.TreeModel
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the mission phase gtk.CellRendererCombo().
@@ -4343,14 +4343,14 @@ class Hardware(object):
         Method to load the correct gtk.Fixed() when changing rows in the FMECA
         gtk.TreeView().
 
-        @param __treeview: the Hardware class FMECA gtk.TreeView().
-        @type __treeview: gtk.TreeView
-        @param __path: the activated row gtk.TreeView() path.
-        @type __path: string
-        @param __column: the activated gtk.TreeViewColumn().
-        @type __column: gtk.TreeViewColumn
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __treeview: the Hardware class FMECA gtk.TreeView().
+        :type __treeview: gtk.TreeView
+        :param __path: the activated row gtk.TreeView() path.
+        :type __path: string
+        :param __column: the activated gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Remove the existing gtk.Fixed() widget.
@@ -4440,15 +4440,15 @@ class Hardware(object):
         """
         Method to add a new hardware item to the open RTK program database.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @param kind: the kind of Assembly to add.
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :param kind: the kind of Assembly to add.
                      0 = sibling assembly
                      1 = child assembly
                      2 = component
-        @type kind: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type kind: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -4944,16 +4944,16 @@ class Hardware(object):
             Saves a single row in the Hardware class allocation gtk.TreeModel()
             to the open RTK Program database.
 
-            @param model: the Hardware class allocation gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the selected row in the Hardware class
+            :param model: the Hardware class allocation gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the selected row in the Hardware class
                            allocation gtk.TreeModel().
-            @type __path: string
-            @param row: the selected row in the Hardware class allocation
+            :type __path: string
+            :param row: the selected row in the Hardware class allocation
                         gtk.TreeView().
-            @type row: gtk.TreeIter
-            @return False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :return False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _query = "UPDATE tbl_allocation \
@@ -5501,13 +5501,13 @@ class Hardware(object):
         Method to edit the Hazard Analysis or the Similar Item Analysis
         functions.
 
-        @param index: the index indicating whether to edit a Hazard Analysis or
+        :param index: the index indicating whether to edit a Hazard Analysis or
                       a Similar Item Analysis function.
                       0 = hazard analysis
                       1 = similar item analysis
-        @type index: integer
-        @returns: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :returns: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if index == 0:
@@ -5979,12 +5979,12 @@ class Hardware(object):
         """
         Callback function to retrieve and save entry changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called the function.
-        @type __event: gtk.gdk.Event
-        @param string convert: the data type to convert the entry contents to.
-        @param integer index: the position in the applicable treeview
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called the function.
+        :type __event: gtk.gdk.Event
+        :param string convert: the data type to convert the entry contents to.
+        :param integer index: the position in the applicable treeview
                               associated with the data from the calling
                               gtk.Entry().
         """
@@ -6244,11 +6244,11 @@ class Hardware(object):
         """
         Called whenever the Work Book notebook page is changed.
 
-        @param __notebook: the Hardware class gtk.Notebook().
-        @type __notebook: gtk.Notebook
-        @param __page: the newly selected page widget.
-        @type __page: gtk.Widget
-        @param page_num: the newly selected page number.
+        :param __notebook: the Hardware class gtk.Notebook().
+        :type __notebook: gtk.Notebook
+        :param __page: the newly selected page widget.
+        :type __page: gtk.Widget
+        :param page_num: the newly selected page number.
                          0 = General Data
                          1 = Allocation
                          2 = Hazard Analysis
@@ -6257,7 +6257,7 @@ class Hardware(object):
                          5 = Assessment Results
                          6 = FMEA
                          7 = Maintenance Planning
-        @type page_num: integer
+        :type page_num: integer
         """
 
         if page_num == 0:                   # General data tab.
@@ -6401,10 +6401,10 @@ class Hardware(object):
         """
         Method to react to the HARDWARE class gtk.ToolButton() clicked events.
 
-        @param button:the gtk.ToolButton() that was pressed.
-        @type button: gtk.Toolbutton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param button:the gtk.ToolButton() that was pressed.
+        :type button: gtk.Toolbutton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _page_ = self.notebook.get_current_page()
@@ -6857,14 +6857,14 @@ class Hardware(object):
             Function to perform equal apportionment of a reliability
             requirement.
 
-            @param model: the gtk.TreeModel() from which to read/write
+            :param model: the gtk.TreeModel() from which to read/write
                           allocation data.
-            @type model: gtk.TreeModel()
-            @param integer N: the number of assemblies to which the reliability
+            :type model: gtk.TreeModel()
+            :param integer N: the number of assemblies to which the reliability
                               requirement is allocated.
-            @param float Ts: the mission or operating time.
-            @param float Rs: the reliability requirement.
-            @return: False or True
+            :param float Ts: the mission or operating time.
+            :param float Rs: the reliability requirement.
+            :return: False or True
             '''
 
             try:
@@ -6900,14 +6900,14 @@ class Hardware(object):
             Function to perform AGREE apportionment of a reliability
             requirement.
 
-            @param model: the gtk.TreeModel() from which to read/write
+            :param model: the gtk.TreeModel() from which to read/write
                           allocation data.
-            @type model: gtk.TreeModel()
-            @param integer N: the number of assemblies to which the reliability
+            :type model: gtk.TreeModel()
+            :param integer N: the number of assemblies to which the reliability
                               requirement is allocated.
-            @param float Ts: the mission or operating time.
-            @param float Rs: the reliability requirement.
-            @return: False
+            :param float Ts: the mission or operating time.
+            :param float Rs: the reliability requirement.
+            :return: False
             '''
 
             _row_ = model.get_iter_root()
@@ -6934,12 +6934,12 @@ class Hardware(object):
             Function to perform ARINC apportionment of the reliability
             requirement.
 
-            @param model: the gtk.TreeModel() from which to read/write
+            :param model: the gtk.TreeModel() from which to read/write
                           allocation data.
-            @type model: gtk.TreeModel()
-            @param float Ts: the mission or operating time.
-            @param float lambdas: the failure rate requirement to allocate.
-            @return: False or True
+            :type model: gtk.TreeModel()
+            :param float Ts: the mission or operating time.
+            :param float lambdas: the failure rate requirement to allocate.
+            :return: False or True
             '''
 
             # Calculate the current system failure rate.
@@ -6986,12 +6986,12 @@ class Hardware(object):
             Function to perform feasibility of objectives apportionment of the
             reliability requirement.
 
-            @param model: the gtk.TreeModel() from which to read/write
+            :param model: the gtk.TreeModel() from which to read/write
                           allocation data.
-            @type model: gtk.TreeModel()
-            @param float Ts: the mission or operating time.
-            @param float lambdas: the failure rate requirement to allocate.
-            @return: False or True
+            :type model: gtk.TreeModel()
+            :param float Ts: the mission or operating time.
+            :param float lambdas: the failure rate requirement to allocate.
+            :return: False or True
             '''
             # First calculate the system failure rate and weighting factor for
             # each sub-system.
@@ -7461,9 +7461,9 @@ class Hardware(object):
         """
         Method to calculate the Hardware class.
 
-        @param row: the gtk.TreeIter() from the Hardware class gtk.TreeView()
+        :param row: the gtk.TreeIter() from the Hardware class gtk.TreeView()
                     to calculate results for.
-        @type row: gtk.TreeIter
+        :type row: gtk.TreeIter
         """
 
         _model_ = self.treeview.get_model()

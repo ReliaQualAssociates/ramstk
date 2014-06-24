@@ -279,8 +279,8 @@ class Revision(object):
         """
         Method to create the Revision class gtk.Notebook().
 
-        @return: _notebook
-        @rtype: gtk.Notebook
+        :return: _notebook
+        :rtype: gtk.Notebook
         """
 
         def _create_general_data_tab(self, notebook):
@@ -288,11 +288,11 @@ class Revision(object):
             Function to create the Revision class gtk.Notebook() page for
             displaying general data about the selected Revision.
 
-            @param self: the current instance of a Revision class.
-            @param notebook: the gtk.Notebook() to add the general data tab.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :param notebook: the gtk.Notebook() to add the general data tab.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _labels_ = [_(u"Revision Code:"), _(u"Revision Name:"),
@@ -384,11 +384,11 @@ class Revision(object):
             Function to create the Revision class gtk.Notebook() page for
             displaying usage profiles for the selected Revision.
 
-            @param self: the current instance of a Revision class.
-            @param notebook: the gtk.Notebook() to add the page to.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :param notebook: the gtk.Notebook() to add the page to.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _labels_ = [_(u"Mission:"), _(u"Mission Time:")]
@@ -710,10 +710,10 @@ class Revision(object):
             Function to create the Revision class gtk.Notebook() page for
             displaying failure definitions for the selected Revision.
 
-            @param self: the current instance of a Revision class.
-            @param notebook: the gtk.Notebook() to add the page to.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :param notebook: the gtk.Notebook() to add the page to.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING)
@@ -821,10 +821,10 @@ class Revision(object):
             Funciton to create the Revision class gtk.Notebook() page for
             displaying assessment results for the selected Revision.
 
-            @param self: the current instance of a Revision class.
-            @param notebook: the gtk.Notebook() to add the page to.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :param notebook: the gtk.Notebook() to add the page to.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1021,8 +1021,8 @@ class Revision(object):
         Method to load the Revision class gtk.TreeModel() with revision
         information.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1058,8 +1058,8 @@ class Revision(object):
         """
         Method to load the mission profile gtk.TreeView().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the mission profile tree.
@@ -1104,8 +1104,8 @@ class Revision(object):
         """
         Method to load the environmental profile gtk.TreeView().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the mission phase gtk.CellRendererCombo in the environmental
@@ -1177,9 +1177,9 @@ class Revision(object):
         """
         Function to load the widgets on the Failure Definition page.
 
-        @param self: the current instance of a Revision class.
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param self: the current instance of a Revision class.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT fld_definition_id, fld_definition \
@@ -1205,17 +1205,17 @@ class Revision(object):
         """
         Method to load the Revision class gtk.Notebook() widgets.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_general_data_tab(self):
             """
             Function to load the widgets on the General Data page.
 
-            @param self: the current instance of a Revision class.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             self.txtTotalCost.set_text(str(locale.currency(self.cost)))
@@ -1233,9 +1233,9 @@ class Revision(object):
             """
             Function to load the widgets on the Assessment Results page.
 
-            @param self: the current instance of a Revision class.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Revision class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1314,9 +1314,9 @@ class Revision(object):
         Callback function for handling mouse clicks on the Revision class
         gtk.TreeView().
 
-        @param treeview: the Revision class gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param event: the gtk.gdk.Event() that called this method (the
+        :param treeview: the Revision class gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
                       1 = left
                       2 = scrollwheel
@@ -1325,9 +1325,9 @@ class Revision(object):
                       5 = backward
                       8 =
                       9 =
-        @type event: gtk.gdk.Event
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type event: gtk.gdk.Event
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -1343,13 +1343,13 @@ class Revision(object):
         gtk.TreeView().  It is called whenever the Revision class
         gtk.TreeView() row is activated.
 
-        @param treeview: the Revision classt gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param string __path: the actived row gtk.TreeView() path.
-        @param __column: the actived gtk.TreeViewColumn().
-        @type __column: gtk.TreeViewColumn
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param treeview: the Revision classt gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param string __path: the actived row gtk.TreeView() path.
+        :param __column: the actived gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -1443,10 +1443,10 @@ class Revision(object):
         """
         Method to add a new mission to the open program.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Find the largest mission id already in the database and then
@@ -1485,10 +1485,10 @@ class Revision(object):
         """
         Method to add a new phase to the selected mission.
 
-        @param __button: the gtk.Button() widget that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered
-        @rtype: boolean
+        :param __button: the gtk.Button() widget that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered
+        :rtype: boolean
         """
 
         _mission = self.cmbMission.get_active_text()
@@ -1528,10 +1528,10 @@ class Revision(object):
         Function to add an environmental condition to the environmental
         profile.
 
-        @param __button: the gtk.Button() that called this function.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this function.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _mission = self.cmbMission.get_active_text()
@@ -1572,10 +1572,10 @@ class Revision(object):
         """
         Method to add a failure definition to the Revision.
 
-        @param __button: the gtk.Button() that called this function.
-        @type __button: gtk.Button
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this function.
+        :type __button: gtk.Button
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "INSERT INTO tbl_failure_definitions \
@@ -1600,10 +1600,10 @@ class Revision(object):
         Deletes the currently selected Revision from the open RTK Program
         database.
 
-        @param __menuitem: the gtk.MenuItem() that called this function.
-        @param __event: the gdk.gtk.Event() that called this function.
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :param __menuitem: the gtk.MenuItem() that called this function.
+        :param __event: the gdk.gtk.Event() that called this function.
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         # First delete the hardware items associated with the revision.
@@ -1641,10 +1641,10 @@ class Revision(object):
         Method to remove the currently selected mission from the open RTK
         Program database.
 
-        @param __button: the gtk.Button() widget that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() widget that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _mission = self.cmbMission.get_active_text()
@@ -1692,10 +1692,10 @@ class Revision(object):
         """
         Method to remove the currently selected phase from the mission.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _mission_ = self.cmbMission.get_active_text()
@@ -1742,10 +1742,10 @@ class Revision(object):
         Method to remove the selected environmental condition from the
         environmental profile.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _mission_ = self.cmbMission.get_active_text()
@@ -1777,10 +1777,10 @@ class Revision(object):
         """
         Method to the currently selected failure definition from the Revision.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Find the currently selected definition id.
@@ -1811,10 +1811,10 @@ class Revision(object):
         Saves the Revision class gtk.TreeModel() information to the open RTK
         Program database.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -1822,16 +1822,16 @@ class Revision(object):
             Saves each row in the Revision Object gtk.TreeModel() to the open
             RTK Program database.
 
-            @param model: the Revision class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active row in the Revision class
+            :param model: the Revision class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active row in the Revision class
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Revision class
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Revision class
                         gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _values_ = (model.get_value(row, self._lst_col_order[1]),
@@ -1903,8 +1903,8 @@ class Revision(object):
         Method to save the mission, mission phase, and environmental profile
         information.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_mission_phase(model, __path, row, self):
@@ -1912,17 +1912,17 @@ class Revision(object):
             Function to save each line item in the mission profile
             gtk.TreeView().
 
-            @param model: the Mission Profile gtk.TreeModel().
-            @type mode: gtk.TreeModel
-            @param __path: the selected path in the Mission Profile
+            :param model: the Mission Profile gtk.TreeModel().
+            :type mode: gtk.TreeModel
+            :param __path: the selected path in the Mission Profile
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Mission Profile
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Mission Profile
                         gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @param self: the current instance of the Revision class.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :param self: the current instance of the Revision class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _mission_ = self.cmbMission.get_active_text()
@@ -1948,17 +1948,17 @@ class Revision(object):
             Method to save each line item in the environmental profile
             gtk.TreeView()
 
-            @param model: the Environmental Profile gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the selected path in the Environmental Profile
+            :param model: the Environmental Profile gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the selected path in the Environmental Profile
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Environmental
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Environmental
                         Profile gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @param self: the current instance of the Revision class.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :param self: the current instance of the Revision class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 # [Condition ID, Phase Name, Measurement Units, Minimum Value,
 #  Maximum Value, Mean Value, Variance]
@@ -2016,8 +2016,8 @@ class Revision(object):
         """
         Method to save the failure definitions.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -2025,17 +2025,17 @@ class Revision(object):
             Method to save each line item in the failure definition
             gtk.TreeView()
 
-            @param model: the Failure Definition gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the selected path in the Failure Definition
+            :param model: the Failure Definition gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the selected path in the Failure Definition
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected gtk.TreeIter() in the Failure Definition
+            :type __path: string
+            :param row: the selected gtk.TreeIter() in the Failure Definition
                         gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @param self: the current instance of the Revision class.
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type row: gtk.TreeIter
+            :param self: the current instance of the Revision class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _values_ = (model.get_value(row, 1), self.revision_id,
@@ -2061,13 +2061,13 @@ class Revision(object):
         """
         Callback function to retrieve and save gtk.ComboBox() changes.
 
-        @param combo: the gtk.ComboBox() that called this method.
-        @type combo: gtk.ComboBox
-        @param index: the position in the Revision class gtk.TreeView()
+        :param combo: the gtk.ComboBox() that called this method.
+        :type combo: gtk.ComboBox
+        :param index: the position in the Revision class gtk.TreeView()
                       associated with the data from the calling gtk.ComboBox().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         i = combo.get_active()
@@ -2089,15 +2089,15 @@ class Revision(object):
         """
         Callback function to retrieve and save gtk.Entry() changes.
 
-        @param entry: the gtk.Entry() that called the method.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called this method.
-        @type __event: gtk.gdk.Event
-        @param index: the position in the Revision class gtk.TreeModel()
+        :param entry: the gtk.Entry() that called the method.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called this method.
+        :type __event: gtk.gdk.Event
+        :param index: the position in the Revision class gtk.TreeModel()
                        associated with the data from the calling gtk.Entry().
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -2139,19 +2139,19 @@ class Revision(object):
         """
         Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
 
-        @param __cell: the gtk.CellRenderer() that was edited.
-        @type __cell: gtk.CellRenderer
-        @param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
                      edited.
-        @type path: string
-        @param new_text: the new text in the edited gtk.CellRenderer().
-        @type new_text: string
-        @param position: the column position of the edited gtk.CellRenderer().
-        @type position: integer
-        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        @type model: gtk.TreeModel
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type path: string
+        :param new_text: the new text in the edited gtk.CellRenderer().
+        :type new_text: string
+        :param position: the column position of the edited gtk.CellRenderer().
+        :type position: integer
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _type_ = gobject.type_name(model.get_column_type(position))
@@ -2177,10 +2177,10 @@ class Revision(object):
         reliability, limiting reliability, total cost, cost per failure, and
         cost per operating hour for the selected revision.
 
-        @param __button: the gtk.ToolButton() that called this function.
-        @type __button: gtkToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this function.
+        :type __button: gtkToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from math import exp

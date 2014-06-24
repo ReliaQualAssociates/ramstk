@@ -452,7 +452,7 @@ class ListWindow(gtk.Window):
         Populates the part list treeview with the parts associated with the
         currently selected Assembly.
 
-        @param query: the SQL query to execute to retrieve the list of parts
+        :param query: the SQL query to execute to retrieve the list of parts
                       associated with the calling Revision, Assembly, or
                       Software class.
         _values_ -- the tuple of values to pass with the query.

@@ -233,9 +233,9 @@ class RTKConf(object):
         """
         Initializes the RTK configuration parser.
 
-        @param level: indicates which configuration file is to be read.
+        :param level: indicates which configuration file is to be read.
                       One of 'site' or 'user'.
-        @type level: string
+        :type level: string
         """
 
         if name == 'posix':

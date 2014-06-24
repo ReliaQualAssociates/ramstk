@@ -576,9 +576,9 @@ class TreeWindow(gtk.Window):
         """
         Called whenever the Tree Book notebook page is changed.
 
-        @param notebook: the Tree Book notebook widget.
-        @param page: the newly selected page widget.
-        @param page_num: the newly selected page number.
+        :param notebook: the Tree Book notebook widget.
+        :param page: the newly selected page widget.
+        :param page_num: the newly selected page number.
                             0 = Revision Tree
                             1 = Function Tree
                             2 = Requirements Tree
