@@ -45,7 +45,7 @@ import widgets as _widg
 import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except local.Error:
+except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
 import gettext
