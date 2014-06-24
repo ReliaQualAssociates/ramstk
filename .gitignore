@@ -24,4 +24,7 @@ pylintout
 *.txt
 *.csv
 docs/generated/
+docs/build/
+docs/source/
+docs/Makefile
 /devtools/RTKModuleTemplate.py
