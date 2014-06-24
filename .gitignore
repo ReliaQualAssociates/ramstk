@@ -4,6 +4,7 @@
 *.DS_Store
 *.out
 .Rhistory
+.ropeproject
 *.swp
 *.idea
 
@@ -15,6 +16,7 @@
 Notes
 workbook_mockup.glade
 code.counts
+geany_run_script.sh
 html
 pylintout
 *.xls*

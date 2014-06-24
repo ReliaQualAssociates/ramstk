@@ -212,6 +212,13 @@ Index   Notebook\n
   1     Work Book\n
   2     List Book"""
 
+RTK_GUI_LAYOUT = 'basic'
+""" Layout of the GUI to use.  Possible options are:\n\n
+- basic: a single window embedded with the Module Book, Work Book, and List
+         Book.\n
+- advanced: multiple windows; one each for the Module Book, Work Book, and
+            List Book."""
+
 # Variables to hold various control parameters.
 METHOD = 'STANDARD'                         # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA

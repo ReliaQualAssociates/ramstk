@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """ This is the List notebook for RTK. """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
-
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # -*- coding: utf-8 -*-
 #
 #       partlist.py is part of the RTK Project
