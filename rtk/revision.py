@@ -28,11 +28,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk  # @UnusedImport
+    import gtk                              # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade  # @UnusedImport
+    import gtk.glade                        # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -59,6 +59,11 @@ class Revision(object):
     """
     This is the Class that is used to represent and hold information related
     to a revision of the open RTK Program.
+
+    :ivar revision_id: initial value: 0
+    :ivar name: initial value: ''
+    :ivar n_parts: initial value: 0
+    :ivar cost: initial value: 0
     """
 
     def __init__(self, application):
@@ -87,6 +92,7 @@ class Revision(object):
         self._dic_environments = {}
 
         # Define private Revision class list attributes.
+        self._lst_handler_id = []
 
         # Define public Revision class attributes.
         self.revision_id = 0
@@ -117,7 +123,7 @@ class Revision(object):
         self.program_cost = 0.0
         self.program_cost_se = 0.0
 
-        # Create the main REVISION class treeview.
+        # Create the main Revision class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Revision', 0, self._app,
                                                     None, _conf.RTK_COLORS[0],
@@ -203,6 +209,13 @@ class Revision(object):
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
         self.treeview.connect('button_press_event', self._treeview_clicked)
+
+        # Connect the cells to the callback function.
+        for i in [17, 20, 22]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._revision_tree_edit, i,
+                             self.treeview.get_model())
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
@@ -294,11 +307,6 @@ class Revision(object):
             :rtype: boolean
             """
 
-            _labels_ = [_(u"Revision Code:"), _(u"Revision Name:"),
-                        _(u"Total Cost:"), _(u"Cost/Failure:"),
-                        _(u"Cost/Hour:"), _(u"Total Part Count:"),
-                        _(u"Remarks:")]
-
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -318,48 +326,57 @@ class Revision(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display general information.        #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_, _y_pos_) = _widg.make_labels(_labels_,
-                                                  _fxdGeneralData_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 25
+            _labels = [_(u"Revision Code:"), _(u"Revision Name:"),
+                       _(u"Total Cost:"), _(u"Cost/Failure:"),
+                       _(u"Cost/Hour:"), _(u"Total Part Count:"),
+                       _(u"Remarks:")]
+            _max1 = 0
+            _max2 = 0
+            (_max1, _y_pos) = _widg.make_labels(_labels,
+                                                _fxdGeneralData_, 5, 5)
+            _x_pos = max(_max1, _max2) + 25
 
+            # Set the tooltips.
             self.txtCode.set_tooltip_text(_(u"A unique code for the selected "
                                             u"revision."))
-            self.txtCode.connect('focus-out-event', self._callback_entry, 22)
-            _fxdGeneralData_.put(self.txtCode, _x_pos_, _y_pos_[0])
-
             self.txtName.set_tooltip_text(_(u"The name of the selected "
                                             u"revision."))
-            self.txtName.connect('focus-out-event', self._callback_entry, 17)
-            _fxdGeneralData_.put(self.txtName, _x_pos_, _y_pos_[1])
-
             self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of "
                                                  u"the selected revision."))
-            _fxdGeneralData_.put(self.txtTotalCost, _x_pos_, _y_pos_[2])
-
             self.txtCostFailure.set_tooltip_text(_(u"Displays the cost per "
                                                    u"failure of the selected "
                                                    u"revision."))
-            _fxdGeneralData_.put(self.txtCostFailure, _x_pos_, _y_pos_[3])
-
             self.txtCostHour.set_tooltip_text(_(u"Displays the failure cost "
                                                 u"per operating hour for the "
                                                 u"selected revision."))
-            _fxdGeneralData_.put(self.txtCostHour, _x_pos_, _y_pos_[4])
-
             self.txtPartCount.set_tooltip_text(_(u"Displays the total part "
                                                  u"count for the selected "
                                                  u"revision."))
-            _fxdGeneralData_.put(self.txtPartCount, _x_pos_, _y_pos_[5])
 
-            textview = _widg.make_text_view(txvbuffer=self.txtRemarks,
-                                            width=400)
-            textview.set_tooltip_text(_(u"Enter any remarks associated with "
-                                        u"the selected revision."))
-            _view_ = textview.get_children()[0].get_children()[0]
-            _view_.connect('focus-out-event', self._callback_entry, 20)
-            _fxdGeneralData_.put(textview, _x_pos_, _y_pos_[6])
+            # Place the widgets.
+            _fxdGeneralData_.put(self.txtCode, _x_pos, _y_pos[0])
+            _fxdGeneralData_.put(self.txtName, _x_pos, _y_pos[1])
+            _fxdGeneralData_.put(self.txtTotalCost, _x_pos, _y_pos[2])
+            _fxdGeneralData_.put(self.txtCostFailure, _x_pos, _y_pos[3])
+            _fxdGeneralData_.put(self.txtCostHour, _x_pos, _y_pos[4])
+            _fxdGeneralData_.put(self.txtPartCount, _x_pos, _y_pos[5])
+
+            # Connect to callback functions.
+            _textview = _widg.make_text_view(txvbuffer=self.txtRemarks,
+                                             width=400)
+            _textview.set_tooltip_text(_(u"Enter any remarks associated with "
+                                         u"the selected revision."))
+            _view = _textview.get_children()[0].get_children()[0]
+            _fxdGeneralData_.put(_textview, _x_pos, _y_pos[6])
+
+            self._lst_handler_id.append(
+                self.txtCode.connect('focus-out-event',
+                                     self._callback_entry, 22))
+            self._lst_handler_id.append(
+                self.txtName.connect('focus-out-event',
+                                     self._callback_entry, 17))
+            self._lst_handler_id.append(
+                _view.connect('focus-out-event', self._callback_entry, 20))
 
             _fxdGeneralData_.show_all()
 
@@ -630,7 +647,7 @@ class Revision(object):
 
             self.cmbMission.set_tooltip_text(_(u"Selects and displays the "
                                                u"current mission profile."))
-            self.cmbMission.connect('changed', self._callback_combo, 0)
+            self.cmbMission.connect('changed', self._callback_combo, 102)
             _fxdMission_.put(self.cmbMission, _x_pos_, _y_pos_[0])
 
             self.txtMission.set_tooltip_text(_(u"Displays the mission name."))
@@ -648,7 +665,7 @@ class Revision(object):
                                                 u"time units for the selected "
                                                 u"mission."))
             _widg.load_combo(self.cmbTimeUnit, _units_)
-            self.cmbTimeUnit.connect('changed', self._callback_combo, 1)
+            self.cmbTimeUnit.connect('changed', self._callback_combo, 103)
             _fxdMission_.put(self.cmbTimeUnit, _x_pos_ + 100, _y_pos_[1])
 
             # Mission profile widgets.
@@ -864,7 +881,6 @@ class Revision(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display assessment results.         #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
             # Reliability results widgets.
             _labels_ = [_(u"Active Failure Intensity [\u039B(t)]:"),
                         _(u"Dormant \u039B(t):"),
@@ -1047,7 +1063,7 @@ class Revision(object):
 
         # Try to retrieve the Revision ID attribute.
         try:
-            self.revision_id = _model.get_value(_row, 0)
+            self.revision_id = _model.get_value(_row, self._lst_col_order[0])
         except TypeError:
             self.revision_id = 0
 
@@ -1138,8 +1154,8 @@ class Revision(object):
             self._app.debug_log.error("revision.py._load_environmental_profile: "
                                       "Failed to load mission phases for "
                                       "mission %d.  The following query was "
-                                      "passed:" % _mission_id)
-            self._app.debug_log.error(_query)
+                                      "passed:" % _mission_id_)
+            self._app.debug_log.error(_query_)
 
         for i in range(_n_phases_):
             _cellmodel_.append([_results_[i][0]])
@@ -1165,8 +1181,8 @@ class Revision(object):
             self._app.debug_log.error("revision.py._load_environmental_profile: "
                                       "Failed to load environmental profile "
                                       "for mission %d.  The following query "
-                                      "was passed:" % _mission_id)
-            self._app.debug_log.error(_query)
+                                      "was passed:" % _mission_id_)
+            self._app.debug_log.error(_query_)
 
         for i in range(_n_conditions_):
             self._dic_environments[_results_[i][0]] = [_results_[i][1],
@@ -1329,39 +1345,41 @@ class Revision(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        self.revision_id = _model.get_value(_row, self._lst_col_order[0])
-        self.availability = _model.get_value(_row, self._lst_col_order[1])
-        self.mission_availability = _model.get_value(_row,
-                                                     self._lst_col_order[2])
-        self.cost = _model.get_value(_row, self._lst_col_order[3])
-        self.cost_per_failure = _model.get_value(_row, self._lst_col_order[4])
-        self.cost_per_hour = _model.get_value(_row, self._lst_col_order[5])
-        self.active_hazard_rate = _model.get_value(_row,
-                                                   self._lst_col_order[6])
-        self.dormant_hazard_rate = _model.get_value(_row,
-                                                    self._lst_col_order[7])
-        self.mission_hazard_rate = _model.get_value(_row,
-                                                    self._lst_col_order[8])
-        self.hazard_rate = _model.get_value(_row, self._lst_col_order[9])
-        self.software_hazard_rate = _model.get_value(_row,
-                                                     self._lst_col_order[10])
-        self.mmt = _model.get_value(_row, self._lst_col_order[11])
-        self.mcmt = _model.get_value(_row, self._lst_col_order[12])
-        self.mpmt = _model.get_value(_row, self._lst_col_order[13])
-        self.mission_mtbf = _model.get_value(_row, self._lst_col_order[14])
-        self.mtbf = _model.get_value(_row, self._lst_col_order[15])
-        self.mttr = _model.get_value(_row, self._lst_col_order[16])
-        self.name = _model.get_value(_row, self._lst_col_order[17])
-        self.mission_reliability = _model.get_value(_row,
+        if _row is not None:
+            self.revision_id = _model.get_value(_row, self._lst_col_order[0])
+            self.availability = _model.get_value(_row, self._lst_col_order[1])
+            self.mission_availability = _model.get_value(_row,
+                                                    self._lst_col_order[2])
+            self.cost = _model.get_value(_row, self._lst_col_order[3])
+            self.cost_per_failure = _model.get_value(_row,
+                                                     self._lst_col_order[4])
+            self.cost_per_hour = _model.get_value(_row, self._lst_col_order[5])
+            self.active_hazard_rate = _model.get_value(_row,
+                                                       self._lst_col_order[6])
+            self.dormant_hazard_rate = _model.get_value(_row,
+                                                        self._lst_col_order[7])
+            self.mission_hazard_rate = _model.get_value(_row,
+                                                        self._lst_col_order[8])
+            self.hazard_rate = _model.get_value(_row, self._lst_col_order[9])
+            self.software_hazard_rate = _model.get_value(_row,
+                                                    self._lst_col_order[10])
+            self.mmt = _model.get_value(_row, self._lst_col_order[11])
+            self.mcmt = _model.get_value(_row, self._lst_col_order[12])
+            self.mpmt = _model.get_value(_row, self._lst_col_order[13])
+            self.mission_mtbf = _model.get_value(_row, self._lst_col_order[14])
+            self.mtbf = _model.get_value(_row, self._lst_col_order[15])
+            self.mttr = _model.get_value(_row, self._lst_col_order[16])
+            self.name = _model.get_value(_row, self._lst_col_order[17])
+            self.mission_reliability = _model.get_value(_row,
                                                     self._lst_col_order[18])
-        self.reliability = _model.get_value(_row, self._lst_col_order[19])
-        self.remarks = _model.get_value(_row, self._lst_col_order[20])
-        self.n_parts = _model.get_value(_row, self._lst_col_order[21])
-        self.code = _model.get_value(_row, self._lst_col_order[22])
-        # self.program_time = _model.get_value(_row, self._lst_col_order[23])
-        # self.program_time_se = _model.get_value(_row, self._lst_col_order[24])
-        # self.program_cost = _model.get_value(_row, self._lst_col_order[25])
-        # self.program_cost_se = _model.get_value(_row, self._lst_col_order[26])
+            self.reliability = _model.get_value(_row, self._lst_col_order[19])
+            self.remarks = _model.get_value(_row, self._lst_col_order[20])
+            self.n_parts = _model.get_value(_row, self._lst_col_order[21])
+            self.code = _model.get_value(_row, self._lst_col_order[22])
+            # self.program_time = _model.get_value(_row, self._lst_col_order[23])
+            # self.program_time_se = _model.get_value(_row, self._lst_col_order[24])
+            # self.program_cost = _model.get_value(_row, self._lst_col_order[25])
+            # self.program_cost_se = _model.get_value(_row, self._lst_col_order[26])
 
         return False
 
@@ -1410,13 +1428,13 @@ class Revision(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        (__, _row) = treeview.get_selection().get_selected()
+        (_model, _row) = treeview.get_selection().get_selected()
 
-        # If selecting a revision, load everything associated with
+        # If selecting a new revision, load everything associated with
         # the new revision.
-        if _row is not None:
-
-            self._update_attributes()
+        _row_selected = _row is not None
+        _not_same_revision = _model.get_value(_row, self._lst_col_order[0]) != self.revision_id
+        if _row_selected and _not_same_revision:
 
             # Build the queries to select the components, reliability tests,
             # and program incidents associated with the selected REVISION.
@@ -1448,9 +1466,54 @@ class Revision(object):
             # self._app.winParts.load_incident_tree(_qryIncidents_,
             #                                       self.revision_id)
 
-            self.load_notebook()
+        self._update_attributes()
+        self.load_notebook()
 
-            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        return False
+
+    def _revision_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Revision Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
+                            that was edited.
+        :param string new_text: the new text in the edited gtk.CellRenderer().
+        :param integer position: the column position of the edited
+                                 gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 17:
+            self.txtName.handler_block(self._lst_handler_id[1])
+            self.txtName.set_text(str(new_text))
+            self.txtName.handler_unblock(self._lst_handler_id[1])
+        elif self._lst_col_order[position] == 20:
+            self.txtRemarks.handler_block(self._lst_handler_id[2])
+            self.txtRemarks.set_text(new_text)
+            self.txtRemarks.handler_unblock(self._lst_handler_id[2])
+        elif self._lst_col_order[position] == 22:
+            self.txtCode.handler_block(self._lst_handler_id[0])
+            self.txtCode.set_text(str(new_text))
+            self.txtCode.handler_unblock(self._lst_handler_id[0])
 
         return False
 
@@ -1812,14 +1875,13 @@ class Revision(object):
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the Revision Object gtk.TreeModel() to the open
+            Saves each row in the Revision class gtk.TreeModel() to the open
             RTK Program database.
 
             :param model: the Revision class gtk.TreeModel().
             :type model: gtk.TreeModel
-            :param __path: the path of the active row in the Revision class
-                           gtk.TreeModel().
-            :type __path: string
+            :param str __path: the path of the active row in the Revision class
+                               gtk.TreeModel().
             :param row: the selected gtk.TreeIter() in the Revision class
                         gtk.TreeModel().
             :type row: gtk.TreeIter
@@ -1980,19 +2042,19 @@ class Revision(object):
                 self._app.debug_log.error(_query)
 
         # Save the currently selected mission.
-        _mission_ = self.cmbMission.get_active_text()
+        _mission = self.cmbMission.get_active_text()
         try:
             _query = "UPDATE tbl_missions \
                       SET fld_mission_time=%f, fld_mission_units=%d, \
                           fld_mission_description='%s' \
                       WHERE fld_mission_id=%d" % \
-                     (self._dic_missions[_mission_][1],
-                      self._dic_missions[_mission_][2], _mission_,
-                      self._dic_missions[_mission_][0])
+                     (self._dic_missions[_mission][1],
+                      self._dic_missions[_mission][2], _mission,
+                      self._dic_missions[_mission][0])
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
                 _util.rtk_error(_(u"Error saving mission %d.") %
-                                self._dic_missions[_mission_][0])
+                                self._dic_missions[_mission][0])
         except KeyError:
             pass
 
@@ -2022,9 +2084,8 @@ class Revision(object):
 
             :param model: the Failure Definition gtk.TreeModel().
             :type model: gtk.TreeModel
-            :param __path: the selected path in the Failure Definition
-                           gtk.TreeModel().
-            :type __path: string
+            :param str __path: the selected path in the Failure Definition
+                               gtk.TreeModel().
             :param row: the selected gtk.TreeIter() in the Failure Definition
                         gtk.TreeModel().
             :type row: gtk.TreeIter
@@ -2066,22 +2127,22 @@ class Revision(object):
 
         _position = combo.get_active()
 
-        # Get the Revision Class gtk.TreeModel() and selected gtk.TreeIter()
-        # and update the Revision Class gtk.TreeView().
-        (_model, _row) = self.treeview.get_selection().get_selected()
+        if index < 100:
+            # Get the Revision Class gtk.TreeModel() and selected
+            # gtk.TreeIter() and update the Revision Class gtk.TreeView().
+            (_model, _row) = self.treeview.get_selection().get_selected()
 
-        # Update the Revision class public and private attributes.
-        _model.set_value(_row, index, _position)
+            # Update the Revision class public and private attributes.
+            _model.set_value(_row, index, _position)
 
-        # Update the Revision class public and private attributes.
-        self._update_attributes()
+            # Update the Revision class public and private attributes.
+            self._update_attributes()
 
-        # Deal with the specifics.
-        if index == 0:                      # Mission list
+        elif index == 102:                  # Mission list
             self._load_mission_profile()
             self._load_environmental_profile()
 
-        elif index == 1:                    # Time units
+        elif index == 103:                  # Time units
             _mission = self.cmbMission.get_active_text()
             try:
                 self._dic_missions[_mission][2] = _position
@@ -2114,18 +2175,18 @@ class Revision(object):
         else:
             _text = entry.get_text()
 
-        # Get the Revision Class gtk.TreeModel() and selected gtk.TreeIter()
-        # and update the Revision Class gtk.TreeView().
-        (_model, _row) = self.treeview.get_selection().get_selected()
+        if index < 100:
+            # Get the Revision Class gtk.TreeModel() and selected
+            # gtk.TreeIter() and update the Revision Class gtk.TreeView().
+            (_model, _row) = self.treeview.get_selection().get_selected()
 
-        # Update the Revision class public and private attributes.
-        _model.set_value(_row, index, _text)
+            # Update the Revision class public and private attributes.
+            _model.set_value(_row, index, _text)
 
-        # Update the Revision class public and private attributes.
-        self._update_attributes()
+            # Update the Revision class public and private attributes.
+            self._update_attributes()
 
-        # Deal with the specifics.
-        if index == 100:                    # Mission name.
+        elif index == 100:                  # Mission name.
             _mission = self.cmbMission.get_active_text()
 
             try:
@@ -2177,11 +2238,12 @@ class Revision(object):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        _environment_ = model[path][0]
+        _environment = model[path][0]
         if position == 1:                   # Environmental condition.
-            self._dic_environments[_environment_][0] = str(new_text)
+            self._dic_environments[_environment][0] = str(new_text)
         elif position == 2:                 # Mission phase.
-            self._dic_environments[_environment_][1] = str(new_text)
+            self._dic_environments[_environment][1] = str(new_text)
+
         return False
 
     def calculate(self, __button):

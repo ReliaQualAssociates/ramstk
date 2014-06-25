@@ -48,8 +48,31 @@ _ = gettext.gettext
 
 class Function(object):
     """
-    The FUNCTION class is used to represent a function in a system being
+    The Function class is used to represent a function in a system being
     analyzed.
+
+    :ivar revision_id: initial_value: 0
+    :ivar function_id: initial_value: 0
+    :ivar availability: initial_value: 0.0
+    :ivar mission_availability: initial_value: 0.0
+    :ivar code: initial_value: ''
+    :ivar cost: initial_value: 0.0
+    :ivar mission_hazard_rate: initial_value: 0.0
+    :ivar hazard_rate: initial_value: 0.0
+    :ivar mmt: initial_value: 0.0
+    :ivar mcmt: initial_value: 0.0
+    :ivar mpmt: initial_value: 0.0
+    :ivar mission_mtbf: initial_value: 0.0
+    :ivar mtbf: initial_value: 0.0
+    :ivar mttr: initial_value: 0.0
+    :ivar name: initial_value: ''
+    :ivar remarks: initial_value: ''
+    :ivar n_modes: initial_value: 0
+    :ivar n_parts: initial_value: 0
+    :ivar type: initial_value: 0
+    :ivar parent_id: initial_value: ''
+    :ivar level: initial_value: 0
+    :ivar safety_critical: initial_value: 1
     """
 
     def __init__(self, application):
@@ -65,9 +88,10 @@ class Function(object):
         # Define private Function class dictionary attributes.
 
         # Define private Function class list attributes.
-        self._col_order = []
+        self._lst_handler_id = []
 
         # Define public Function class attributes.
+        self.revision_id = 0
         self.function_id = 0
         self.availability = 0.0
         self.mission_availability = 0.0
@@ -90,9 +114,9 @@ class Function(object):
         self.level = 0
         self.safety_critical = 1
 
-        # Create the main FUNCTION class treeview.
+        # Create the main Function class treeview.
         (self.treeview,
-         self._col_order) = _widg.make_treeview('Function', 1, self._app,
+         self._lst_col_order) = _widg.make_treeview('Function', 1, self._app,
                                                 None, _conf.RTK_COLORS[2],
                                                 _conf.RTK_COLORS[3])
 
@@ -125,7 +149,7 @@ class Function(object):
         self.tvwFunctionMatrix = gtk.TreeView()
 
         # Diagram tab widgets.
-# TODO: Implement Diagram Worksheet for the FUNCTION class.
+# TODO: Implement Diagram Worksheet for the Function Class.
 
         # Assessment results tab widgets.
         self.txtPredictedHt = _widg.make_entry(editable=False, bold=True)
@@ -147,12 +171,12 @@ class Function(object):
                                                       _conf.RTK_COLORS[7])
 
         # Put it all together.
-        toolbar = self._create_toolbar()
+        _toolbar = self._create_toolbar()
 
         self.notebook = self._create_notebook()
 
         self.vbxFunction = gtk.VBox()
-        self.vbxFunction.pack_start(toolbar, expand=False)
+        self.vbxFunction.pack_start(_toolbar, expand=False)
         self.vbxFunction.pack_end(self.notebook)
 
         self.notebook.connect('switch-page', self._notebook_page_switched)
@@ -164,11 +188,19 @@ class Function(object):
         set using the user-defined values in the RTK configuration file.
         """
 
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) of functions."))
+        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+                                         u"of functions."))
         self.treeview.set_enable_tree_lines(True)
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
+
+        # Connect the cells to the callback function.
+        for i in [4, 14, 15]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._function_tree_edit, i,
+                             self.treeview.get_model())
 
         _scrollwindow_ = gtk.ScrolledWindow()
         _scrollwindow_.add(self.treeview)
@@ -305,47 +337,49 @@ class Function(object):
             (_max2, _y_pos2) = _widg.make_labels(_labels, _fixed_, 5, _y_start)
             _x_pos = max(_max1, _max2) + 20
 
+            # Set the tooltips.
             self.txtCode.set_tooltip_text(_(u"Enter a unique code for the "
                                             u"selected function."))
-            self.txtCode.connect('focus-out-event',
-                                 self._callback_entry, 'text', 4)
-            _fixed_.put(self.txtCode, _x_pos, _y_pos1[0])
-
             self.txtName.set_tooltip_text(_(u"Enter the name of the selected "
                                             u"function."))
-            self.txtName.get_child().get_child().connect('focus-out-event',
-                                                         self._callback_entry,
-                                                         'text', 14)
-            _fixed_.put(self.txtName, _x_pos, _y_pos1[1])
-
             self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of "
                                                  u"the selected function."))
-            _fixed_.put(self.txtTotalCost, _x_pos, _y_pos2[0])
-
             self.txtModeCount.set_tooltip_text(_(u"Displays the total number "
                                                  u"of failure modes "
                                                  u"associated with the "
                                                  u"selected function."))
-            _fixed_.put(self.txtModeCount, _x_pos, _y_pos2[1])
-
             self.txtPartCount.set_tooltip_text(_(u"Displays the total number "
                                                  u"of components associated "
                                                  u"with the selected "
                                                  u"function."))
-            _fixed_.put(self.txtPartCount, _x_pos, _y_pos2[2])
-
             self.txtRemarks.set_tooltip_text(_(u"Enter any remarks related to "
                                                u"the selected function."))
-            _textbuffer = self.txtRemarks.get_child().get_child()
-            _textbuffer.connect('focus-out-event', self._callback_entry,
-                                'text', 15)
-            _fixed_.put(self.txtRemarks, _x_pos, _y_pos2[3])
-
             self.chkSafetyCritical.set_tooltip_text(_(u"Indicates whether or "
                                                       u"not the selected "
                                                       u"function is safety "
                                                       u"critical."))
+
+            # Place the widgets.
+            _fixed_.put(self.txtCode, _x_pos, _y_pos1[0])
+            _fixed_.put(self.txtName, _x_pos, _y_pos1[1])
+            _fixed_.put(self.txtTotalCost, _x_pos, _y_pos2[0])
+            _fixed_.put(self.txtModeCount, _x_pos, _y_pos2[1])
+            _fixed_.put(self.txtPartCount, _x_pos, _y_pos2[2])
+            _fixed_.put(self.txtRemarks, _x_pos, _y_pos2[3])
             _fixed_.put(self.chkSafetyCritical, 5, _y_pos2[3] + 110)
+
+            # Connect to callback functions.
+            self._lst_handler_id.append(
+                self.txtCode.connect('focus-out-event',
+                                     self._callback_entry, 'text', 4))
+            _textview = self.txtName.get_child().get_child()
+            self._lst_handler_id.append(
+                _textview.connect('focus-out-event', self._callback_entry,
+                                  'text', 14))
+            _textview = self.txtRemarks.get_child().get_child()
+            self._lst_handler_id.append(
+                _textview.connect('focus-out-event', self._callback_entry,
+                                  'text', 15))
 
             _fixed_.show_all()
 
@@ -660,45 +694,44 @@ class Function(object):
 
     def load_tree(self):
         """
-        Method to load the FUNCTION class gtk.TreeView().
+        Method to load the Function Class gtk.TreeView().
         """
 
         # Select everything from the function table.
-        _query_ = "SELECT * FROM tbl_functions \
-                   WHERE fld_revision_id=%d \
-                   ORDER BY fld_parent_id" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_functions \
+                  WHERE fld_revision_id=%d \
+                  ORDER BY fld_parent_id" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_functions_ = len(_results_)
+            _n_functions = len(_results)
         except TypeError:
-            _n_functions_ = 0
+            _n_functions = 0
 
         # Clear the gtk.TreeView() of any existing information.
-        _model_ = self.treeview.get_model()
-        _model_.clear()
+        _model = self.treeview.get_model()
+        _model.clear()
 
         # Load the gtk.TreeView() with the new function information.
-        for i in range(_n_functions_):
-            if _results_[i][self._col_order[19]] == '-':
-                _piter_ = None
+        for i in range(_n_functions):
+            if _results[i][self._lst_col_order[19]] == '-':
+                _piter = None
             else:
-                _piter_ = _model_.get_iter_from_string(_results_[i][self._col_order[19]])
+                _piter = _model.get_iter_from_string(_results[i][self._lst_col_order[19]])
 
-            _model_.append(_piter_, _results_[i])
+            _model.append(_piter, _results[i])
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        _root = _model_.get_iter_root()
+        _root = _model.get_iter_root()
         if _root is not None:
-            _path = _model_.get_path(_root)
+            _path = _model.get_path(_root)
             _col = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _col)
 
-            self.function_id = _model_.get_value(_root, 1)
-            self._load_functional_matrix()
+            self.function_id = _model.get_value(_root, 1)
+
+        self._load_functional_matrix()
 
         return False
 
@@ -1045,6 +1078,42 @@ class Function(object):
 
         return False
 
+    def _update_attributes(self):
+        """
+        Method to update the Function class attributes.
+        """
+
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        if _row is not None:
+            self.revision_id = _model.get_value(_row, self._lst_col_order[0])
+            self.function_id = _model.get_value(_row, self._lst_col_order[1])
+            self.availability = _model.get_value(_row, self._lst_col_order[2])
+            self.mission_availability = _model.get_value(_row,
+                                                    self._lst_col_order[3])
+            self.code = _model.get_value(_row, self._lst_col_order[4])
+            self.cost = _model.get_value(_row, self._lst_col_order[5])
+            self.mission_hazard_rate = _model.get_value(_row,
+                                                        self._lst_col_order[6])
+            self.hazard_rate = _model.get_value(_row, self._lst_col_order[7])
+            self.mmt = _model.get_value(_row, self._lst_col_order[8])
+            self.mcmt = _model.get_value(_row, self._lst_col_order[9])
+            self.mpmt = _model.get_value(_row, self._lst_col_order[10])
+            self.mission_mtbf = _model.get_value(_row, self._lst_col_order[11])
+            self.mtbf = _model.get_value(_row, self._lst_col_order[12])
+            self.mttr = _model.get_value(_row, self._lst_col_order[13])
+            self.name = _model.get_value(_row, self._lst_col_order[14])
+            self.remarks = _model.get_value(_row, self._lst_col_order[15])
+            self.n_modes = _model.get_value(_row, self._lst_col_order[16])
+            self.n_parts = _model.get_value(_row, self._lst_col_order[17])
+            self.type = _model.get_value(_row, self._lst_col_order[18])
+            self.parent_id = _model.get_value(_row, self._lst_col_order[19])
+            self.level = _model.get_value(_row, self._lst_col_order[20])
+            self.safety_critical = _model.get_value(_row,
+                                                    self._lst_col_order[21])
+
+        return False
+
     def _treeview_clicked(self, treeview, event):
         """
         Callback function for handling mouse clicks on the Hardware Object
@@ -1109,6 +1178,52 @@ class Function(object):
             self.safety_critical = int(_model_.get_value(_row_, 21))
 
             self.load_notebook()
+
+        return False
+
+    def _function_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Function Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
+                            that was edited.
+        :param string new_text: the new text in the edited gtk.CellRenderer().
+        :param integer position: the column position of the edited
+                                 gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 4:
+            self.txtCode.handler_block(self._lst_handler_id[0])
+            self.txtCode.set_text(str(new_text))
+            self.txtCode.handler_unblock(self._lst_handler_id[0])
+        elif self._lst_col_order[position] == 14:
+            _textview = self.txtName.get_child().get_child()
+            _textview.handler_block(self._lst_handler_id[1])
+            _textview.get_buffer().set_text(str(new_text))
+            _textview.handler_unblock(self._lst_handler_id[1])
+        elif self._lst_col_order[position] == 15:
+            _textview = self.txtRemarks.get_child().get_child()
+            _textview.handler_block(self._lst_handler_id[2])
+            _textview.get_buffer().set_text(str(new_text))
+            _textview.handler_unblock(self._lst_handler_id[2])
 
         return False
 
@@ -1336,26 +1451,26 @@ class Function(object):
             self   -- the current instance of a FUNCTION class.
             """
 
-            _values_ = (model.get_value(row, self._col_order[2]),
-                        model.get_value(row, self._col_order[3]),
-                        model.get_value(row, self._col_order[4]),
-                        model.get_value(row, self._col_order[5]),
-                        model.get_value(row, self._col_order[6]),
-                        model.get_value(row, self._col_order[7]),
-                        model.get_value(row, self._col_order[8]),
-                        model.get_value(row, self._col_order[9]),
-                        model.get_value(row, self._col_order[10]),
-                        model.get_value(row, self._col_order[11]),
-                        model.get_value(row, self._col_order[12]),
-                        model.get_value(row, self._col_order[13]),
-                        model.get_value(row, self._col_order[14]),
-                        model.get_value(row, self._col_order[15]),
-                        model.get_value(row, self._col_order[16]),
-                        model.get_value(row, self._col_order[17]),
-                        model.get_value(row, self._col_order[18]),
-                        model.get_value(row, self._col_order[19]),
+            _values_ = (model.get_value(row, self._lst_col_order[2]),
+                        model.get_value(row, self._lst_col_order[3]),
+                        model.get_value(row, self._lst_col_order[4]),
+                        model.get_value(row, self._lst_col_order[5]),
+                        model.get_value(row, self._lst_col_order[6]),
+                        model.get_value(row, self._lst_col_order[7]),
+                        model.get_value(row, self._lst_col_order[8]),
+                        model.get_value(row, self._lst_col_order[9]),
+                        model.get_value(row, self._lst_col_order[10]),
+                        model.get_value(row, self._lst_col_order[11]),
+                        model.get_value(row, self._lst_col_order[12]),
+                        model.get_value(row, self._lst_col_order[13]),
+                        model.get_value(row, self._lst_col_order[14]),
+                        model.get_value(row, self._lst_col_order[15]),
+                        model.get_value(row, self._lst_col_order[16]),
+                        model.get_value(row, self._lst_col_order[17]),
+                        model.get_value(row, self._lst_col_order[18]),
+                        model.get_value(row, self._lst_col_order[19]),
                         self._app.REVISION.revision_id,
-                        model.get_value(row, self._col_order[1]))
+                        model.get_value(row, self._lst_col_order[1]))
 
             _query_ = "UPDATE tbl_functions \
                        SET fld_availability=%f, fld_availability_mission=%f, \
@@ -1502,10 +1617,10 @@ class Function(object):
 
     def _callback_check(self, __check):
         """
-        Callback function to retrieve and save checkbutton changes.
+        Callback function to retrieve and save gtk.CheckButton() changes.
 
-        Keyword Arguments:
-        __check -- the checkbutton that called the function.
+        :param __check: the gtk.CheckButton() that called this method.
+        :type __check: gtk.CheckButton
         """
 
         self._load_functional_matrix()
@@ -1514,36 +1629,41 @@ class Function(object):
 
     def _callback_entry(self, entry, __event, convert, index):
         """
-        Callback function to retrieve and save entry changes.
+        Callback function to retrieve and save gtk.Entry() changes.
 
-        Keyword Arguments:
-        entry   -- the entry that called the function.
-        __event -- the gtk.gdk.Event that called this function.
-        convert -- the data type to convert the entry contents to.
-        index   -- the position in the Function Object _attribute list
-                   associated with the data from the calling entry.
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called this function.
+        :type __event: gtk.gdk.Event
+        :param str convert: the data type to convert the gtk.Entry() contents.
+        :param int index: the position in the Function Class gtk.TreeView()
+                          associated with the data from the calling
+                          gtk.Entry().
         """
-
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if convert == 'text':
             if index == 14:
-                _textbuffer_ = self.txtName.get_child().get_child().get_buffer()
-                _text_ = _textbuffer_.get_text(*_textbuffer_.get_bounds())
+                _textbuffer = self.txtName.get_child().get_child().get_buffer()
+                _text = _textbuffer.get_text(*_textbuffer.get_bounds())
             elif index == 15:
-                _textbuffer_ = self.txtRemarks.get_child().get_child().get_buffer()
-                _text_ = _textbuffer_.get_text(*_textbuffer_.get_bounds())
+                _textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
+                _text = _textbuffer.get_text(*_textbuffer.get_bounds())
             else:
-                _text_ = entry.get_text()
+                _text = entry.get_text()
 
         elif convert == 'int':
-            _text_ = int(entry.get_text())
+            _text = int(entry.get_text())
 
         elif convert == 'float':
-            _text_ = float(entry.get_text().replace('$', ''))
+            _text = float(entry.get_text().replace('$', ''))
 
-        # Update the Function Tree.
-        _model_.set_value(_row_, index, _text_)
+        # Get the Function Class gtk.TreeModel() and selected gtk.TreeIter()
+        # and update the Function Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model.set_value(_row, index, _text)
+
+        # Update the Function class public and private attributes.
+        self._update_attributes()
 
         return False
 
@@ -1708,18 +1828,20 @@ class Function(object):
             except OverflowError:
                 self.mission_availability = 1.0
 
-        _model_.set_value(_row_, self._col_order[2], self.availability)
-        _model_.set_value(_row_, self._col_order[3], self.mission_availability)
-        _model_.set_value(_row_, self._col_order[5], self.cost)
-        _model_.set_value(_row_, self._col_order[6], self.mission_hazard_rate)
-        _model_.set_value(_row_, self._col_order[7], self.hazard_rate)
-        _model_.set_value(_row_, self._col_order[8], self.mmt)
-        _model_.set_value(_row_, self._col_order[9], self.mcmt)
-        _model_.set_value(_row_, self._col_order[10], self.mpmt)
-        _model_.set_value(_row_, self._col_order[11], self.mission_mtbf)
-        _model_.set_value(_row_, self._col_order[12], self.mtbf)
-        _model_.set_value(_row_, self._col_order[13], self.mttr)
-        _model_.set_value(_row_, self._col_order[17], self.n_parts)
+        _model_.set_value(_row_, self._lst_col_order[2], self.availability)
+        _model_.set_value(_row_, self._lst_col_order[3],
+                          self.mission_availability)
+        _model_.set_value(_row_, self._lst_col_order[5], self.cost)
+        _model_.set_value(_row_, self._lst_col_order[6],
+                          self.mission_hazard_rate)
+        _model_.set_value(_row_, self._lst_col_order[7], self.hazard_rate)
+        _model_.set_value(_row_, self._lst_col_order[8], self.mmt)
+        _model_.set_value(_row_, self._lst_col_order[9], self.mcmt)
+        _model_.set_value(_row_, self._lst_col_order[10], self.mpmt)
+        _model_.set_value(_row_, self._lst_col_order[11], self.mission_mtbf)
+        _model_.set_value(_row_, self._lst_col_order[12], self.mtbf)
+        _model_.set_value(_row_, self._lst_col_order[13], self.mttr)
+        _model_.set_value(_row_, self._lst_col_order[17], self.n_parts)
 
         self.load_notebook()
 
