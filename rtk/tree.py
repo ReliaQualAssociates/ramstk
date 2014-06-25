@@ -226,6 +226,7 @@ class TreeWindow(gtk.Window):
                                      u"validation activities."))
             self.notebook.insert_page(self.scwValidation, tab_label=label,
                                       position=-1)
+            _app.VALIDATION.load_tree()
 
         if _conf.RTK_MODULES[6] == 1:
             label = gtk.Label()

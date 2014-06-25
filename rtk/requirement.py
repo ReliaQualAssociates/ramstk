@@ -125,7 +125,7 @@ class Requirement(object):
         self._dic_owners = {}
 
         # Define private Requirement class list attributes.
-        self._lst_col_order = []
+        self._lst_handler_id = []
 
         # Define public Requirement class attributes.
         self.requirement_id = 0
@@ -292,6 +292,13 @@ class Requirement(object):
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
+
+        # Connect the cells to the callback function.
+        for i in [3, 11, 12, 13]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._requirement_tree_edit, i,
+                             self.treeview.get_model())
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
@@ -497,43 +504,11 @@ class Requirement(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display general information.        #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _labels_ = [_(u"Requirement ID:"), _(u"Requirement:"),
-                        _(u"Requirement Type:"), _(u"Specification:"),
-                        _(u"Page Number:"), _(u"Figure Number:"),
-                        _(u"Derived:"), _(u"Validated:"), _(u"Owner:"),
-                        _(u"Priority:"), _(u"Validated Date:")]
-            _max1_ = 0
-            _max2_ = 0
-            (_max1_, _y_pos_) = _widg.make_labels(_labels_[2:10],
-                                                  _fxdGeneralData, 5, 140)
-            _x_pos_ = max(_max1_, _max2_) + 20
-
-            self.txtCode.set_tooltip_text(_(u"Displays the unique code for "
-                                            u"the selected requirement."))
-            self.txtCode.connect('focus-out-event',
-                                 self._callback_entry, 'text', 5)
-            label = _widg.make_label(_labels_[0], 150, 25)
-            _fxdGeneralData.put(label, 5, 5)
-            _fxdGeneralData.put(self.txtCode, _x_pos_, 5)
-
-            label = _widg.make_label(_labels_[1], 150, 25)
-            _fxdGeneralData.put(label, 5, 35)
-            textview = _widg.make_text_view(txvbuffer=self.txtRequirement,
-                                            width=400)
-            textview.set_tooltip_text(_(u"Detailed description of the "
-                                        u"requirement."))
-            _widget = textview.get_children()[0].get_children()[0]
-            _widget.connect('focus-out-event', self._callback_entry, 'text', 3)
-            _fxdGeneralData.put(textview, _x_pos_, 35)
-
             # Load the gtk.ComboBox in the Work Book, the gtk.CellRendererCombo
             # in the Tree Book, and the local dictionary with the list of
             # requirement types.  The dictionary uses the noun name of the
             # requirement type as the key and the index in the gtk.ComboBox as
             # the value.
-            self.cmbRqmtType.set_tooltip_text(_(u"Selects and displays the "
-                                                u"type of requirement for the "
-                                                u"selected requirement."))
             _query_ = "SELECT fld_requirement_type_desc, \
                               fld_requirement_type_code, \
                               fld_requirement_type_id \
@@ -549,103 +524,141 @@ class Requirement(object):
             for i in range(len(_results_)):
                 _cell_model_.append([_results_[i][0]])
                 self._dic_owners[_results_[i][0]] = i + 1
-            self.cmbRqmtType.connect('changed', self._callback_combo, 4)
-            _fxdGeneralData.put(self.cmbRqmtType, _x_pos_, _y_pos_[0])
-
-            self.txtSpecification.set_tooltip_text(_(u"Displays the internal "
-                                                     u"or industry "
-                                                     u"specification "
-                                                     u"associated with the "
-                                                     u"selected requirement."))
-            self.txtSpecification.connect('focus-out-event',
-                                          self._callback_entry, 'text', 11)
-            _fxdGeneralData.put(self.txtSpecification, _x_pos_, _y_pos_[1])
-
-            self.txtPageNumber.set_tooltip_text(_(u"Displays the "
-                                                  u"specification page number "
-                                                  u"associated with the "
-                                                  u"selected requirement."))
-            self.txtPageNumber.connect('focus-out-event',
-                                       self._callback_entry, 'text', 12)
-            _fxdGeneralData.put(self.txtPageNumber, _x_pos_, _y_pos_[2])
-
-            self.txtFigureNumber.set_tooltip_text(_(u"Displays the "
-                                                    u"specification figure "
-                                                    u"number associated with "
-                                                    u"the selected "
-                                                    u"requirement."))
-            self.txtFigureNumber.connect('focus-out-event',
-                                         self._callback_entry, 'text', 13)
-            _fxdGeneralData.put(self.txtFigureNumber, _x_pos_, _y_pos_[3])
-
-            self.chkDerived.set_tooltip_text(_(u"Whether or not the selected "
-                                               u"requirement is derived."))
-            self.chkDerived.connect('toggled', self._callback_check, 6)
-            _fxdGeneralData.put(self.chkDerived, _x_pos_, _y_pos_[4])
-
-            self.chkValidated.set_tooltip_text(_(u"Whether or not the "
-                                                 u"selected requirement has "
-                                                 u"been verified and "
-                                                 u"validated."))
-            self.chkValidated.connect('toggled', self._callback_check, 8)
-            _fxdGeneralData.put(self.chkValidated, _x_pos_, _y_pos_[5])
-
-            label = _widg.make_label(_labels_[10],
-                                     150, 25)
-            _fxdGeneralData.put(label, _x_pos_ + 25, _y_pos_[5])
-            self.txtValidatedDate.set_tooltip_text(_(u"Displays the date the "
-                                                     u"selected requirement "
-                                                     u"was verified and "
-                                                     u"validated."))
-            self.txtValidatedDate.connect('focus-out-event',
-                                          self._callback_entry, 'text', 9)
-            _fxdGeneralData.put(self.txtValidatedDate, _x_pos_ + 200,
-                                _y_pos_[5])
-
-            self.btnValidateDate.set_tooltip_text(_(u"Launches the calendar "
-                                                    u"to select the date the "
-                                                    u"requirement was "
-                                                    u"validated."))
-            self.btnValidateDate.connect('button-release-event',
-                                         _util.date_select,
-                                         self.txtValidatedDate)
-            _fxdGeneralData.put(self.btnValidateDate, _x_pos_ + 305,
-                                _y_pos_[5])
-
-            self.cmbOwner.set_tooltip_text(_(u"Displays the responsible "
-                                             u"organization or individual for "
-                                             u"the selected requirement."))
-            _query_ = "SELECT fld_group_name, fld_group_id FROM tbl_groups"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
 
             # Load the gtk.ComboBox in the Work Book, the gtk.CellRendererCombo
             # in the Tree Book, and the local dictionary with the list of
             # groups.  The dictionary uses the noun name of the group as the
             # key and the index in the gtk.ComboBox as the value.
-            _model_ = self.cmbOwner.get_model()
-            _cell_ = self.treeview.get_column(
+            _query = "SELECT fld_group_name, fld_group_id FROM tbl_groups"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _model = self.cmbOwner.get_model()
+            _cell = self.treeview.get_column(
                 self._lst_col_order[10]).get_cell_renderers()
-            _cell_model_ = _cell_[0].get_property('model')
-            _model_.clear()
-            _cell_model_.clear()
-            _model_.append(None, ["", "", ""])
-            _cell_model_.append([""])
-            for i in range(len(_results_)):
-                _data_ = [_results_[i][0], str(_results_[i][1]), '']
-                _model_.append(None, _data_)
-                _cell_model_.append([_results_[i][0]])
-                self._dic_owners[_results_[i][0]] = i + 1
-            self.cmbOwner.connect('changed', self._callback_combo, 10)
-            _fxdGeneralData.put(self.cmbOwner, _x_pos_, _y_pos_[6])
+            _cell_model = _cell[0].get_property('model')
+            _model.clear()
+            _cell_model.clear()
+            _model.append(None, ["", "", ""])
+            _cell_model.append([""])
+            for i in range(len(_results)):
+                _data = [_results[i][0], str(_results[i][1]), '']
+                _model.append(None, _data)
+                _cell_model.append([_results[i][0]])
+                self._dic_owners[_results[i][0]] = i + 1
 
+            # Load the priority gtk.Combo().
             _results = [['1'], ['2'], ['3'], ['4'], ['5']]
             _widg.load_combo(self.cmbPriority, _results)
+
+            _labels = [_(u"Requirement ID:"), _(u"Requirement:"),
+                       _(u"Requirement Type:"), _(u"Specification:"),
+                       _(u"Page Number:"), _(u"Figure Number:"),
+                       _(u"Derived:"), _(u"Validated:"), _(u"Owner:"),
+                       _(u"Priority:"), _(u"Validated Date:")]
+            _max1 = 0
+            _max2 = 0
+            (_max1, _y_pos) = _widg.make_labels(_labels[2:10],
+                                                 _fxdGeneralData, 5, 140)
+            _x_pos = max(_max1, _max2) + 20
+
+            # Create the tooltips.
+            self.txtCode.set_tooltip_text(_(u"Displays the unique code for "
+                                            u"the selected requirement."))
+            self.cmbRqmtType.set_tooltip_text(_(u"Selects and displays the "
+                                                u"type of requirement for the "
+                                                u"selected requirement."))
+            self.txtSpecification.set_tooltip_text(_(u"Displays the internal "
+                                                     u"or industry "
+                                                     u"specification "
+                                                     u"associated with the "
+                                                     u"selected requirement."))
+            self.txtPageNumber.set_tooltip_text(_(u"Displays the "
+                                                  u"specification page number "
+                                                  u"associated with the "
+                                                  u"selected requirement."))
+            self.txtFigureNumber.set_tooltip_text(_(u"Displays the "
+                                                    u"specification figure "
+                                                    u"number associated with "
+                                                    u"the selected "
+                                                    u"requirement."))
+            self.chkDerived.set_tooltip_text(_(u"Whether or not the selected "
+                                               u"requirement is derived."))
+            self.chkValidated.set_tooltip_text(_(u"Whether or not the "
+                                                 u"selected requirement has "
+                                                 u"been verified and "
+                                                 u"validated."))
+            self.txtValidatedDate.set_tooltip_text(_(u"Displays the date the "
+                                                     u"selected requirement "
+                                                     u"was verified and "
+                                                     u"validated."))
+            self.btnValidateDate.set_tooltip_text(_(u"Launches the calendar "
+                                                    u"to select the date the "
+                                                    u"requirement was "
+                                                    u"validated."))
+            self.cmbOwner.set_tooltip_text(_(u"Displays the responsible "
+                                             u"organization or individual for "
+                                             u"the selected requirement."))
             self.cmbPriority.set_tooltip_text(_(u"Selects and displays the "
                                                 u"priority of the selected "
                                                 u"requirement."))
-            _fxdGeneralData.put(self.cmbPriority, _x_pos_, _y_pos_[7])
+
+            # Place the widgets.
+            label = _widg.make_label(_labels[0], 150, 25)
+            _fxdGeneralData.put(label, 5, 5)
+            _fxdGeneralData.put(self.txtCode, _x_pos, 5)
+
+            label = _widg.make_label(_labels[1], 150, 25)
+            _fxdGeneralData.put(label, 5, 35)
+
+            _fxdGeneralData.put(self.cmbRqmtType, _x_pos, _y_pos[0])
+            _fxdGeneralData.put(self.txtSpecification, _x_pos, _y_pos[1])
+            _fxdGeneralData.put(self.txtPageNumber, _x_pos, _y_pos[2])
+            _fxdGeneralData.put(self.txtFigureNumber, _x_pos, _y_pos[3])
+            _fxdGeneralData.put(self.chkDerived, _x_pos, _y_pos[4])
+            _fxdGeneralData.put(self.chkValidated, _x_pos, _y_pos[5])
+
+            label = _widg.make_label(_labels[10], 150, 25)
+            _fxdGeneralData.put(label, _x_pos + 25, _y_pos[5])
+
+            _fxdGeneralData.put(self.txtValidatedDate, _x_pos + 200, _y_pos[5])
+            _fxdGeneralData.put(self.btnValidateDate, _x_pos + 305, _y_pos[5])
+            _fxdGeneralData.put(self.cmbOwner, _x_pos, _y_pos[6])
+            _fxdGeneralData.put(self.cmbPriority, _x_pos, _y_pos[7])
+
+            # Connect to callback functions.
+            self.txtCode.connect('focus-out-event',
+                                 self._callback_entry, 'text', 5)
+
+            _textview = _widg.make_text_view(txvbuffer=self.txtRequirement,
+                                             width=400)
+            _textview.set_tooltip_text(_(u"Detailed description of the "
+                                         u"requirement."))
+            _fxdGeneralData.put(_textview, _x_pos, 35)
+            _widget = _textview.get_children()[0].get_children()[0]
+            self._lst_handler_id.append(
+                _widget.connect('focus-out-event', self._callback_entry,
+                                'text', 3))
+
+            self.cmbRqmtType.connect('changed', self._callback_combo, 4)
+            self._lst_handler_id.append(
+                self.txtSpecification.connect('focus-out-event',
+                                              self._callback_entry,
+                                              'text', 11))
+            self._lst_handler_id.append(
+                self.txtPageNumber.connect('focus-out-event',
+                                           self._callback_entry, 'text', 12))
+            self._lst_handler_id.append(
+                self.txtFigureNumber.connect('focus-out-event',
+                                             self._callback_entry, 'text', 13))
+
+            self.chkDerived.connect('toggled', self._callback_check, 6)
+            self.chkValidated.connect('toggled', self._callback_check, 8)
+            self.txtValidatedDate.connect('focus-out-event',
+                                          self._callback_entry, 'text', 9)
+            self.btnValidateDate.connect('button-release-event',
+                                         _util.date_select,
+                                         self.txtValidatedDate)
+            self.cmbOwner.connect('changed', self._callback_combo, 10)
             self.cmbPriority.connect('changed', self._callback_combo, 52)
 
             _fxdGeneralData.show_all()
@@ -1496,6 +1509,55 @@ class Requirement(object):
 
         return False
 
+    def _requirement_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Requirement Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
+                            that was edited.
+        :param string new_text: the new text in the edited gtk.CellRenderer().
+        :param integer position: the column position of the edited
+                                 gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 3:
+            #_textview = self.txtRequirement.get_child().get_child()
+            #_textview.handler_block(self._lst_handler_id[0])
+            self.txtRequirement.set_text(str(new_text))
+            #_textview.handler_unblock(self._lst_handler_id[0])
+        elif self._lst_col_order[position] == 11:
+            self.txtSpecification.handler_block(self._lst_handler_id[1])
+            self.txtSpecification.set_text(str(new_text))
+            self.txtSpecification.handler_unblock(self._lst_handler_id[1])
+        elif self._lst_col_order[position] == 12:
+            self.txtPageNumber.handler_block(self._lst_handler_id[2])
+            self.txtPageNumber.set_text(str(new_text))
+            self.txtPageNumber.handler_unblock(self._lst_handler_id[2])
+        elif self._lst_col_order[position] == 13:
+            self.txtFigureNumber.handler_block(self._lst_handler_id[3])
+            self.txtFigureNumber.set_text(str(new_text))
+            self.txtFigureNumber.handler_unblock(self._lst_handler_id[3])
+
+        return False
+
     def _add_requirement(self, __button, level):
         """
         Method to add a new Requirement to the open RTK Program database.
@@ -1595,10 +1657,9 @@ class Requirement(object):
         Adds a new Verification and Validation task to the selected
         Requirement to the Program's MySQL or SQLite3 database.
 
-        :param _type: the type of task to add.
-                      0 = add new task (default)
-                      1 = assign existing task
-        :type _type: integer
+        :param int _type: the type of task to add.
+                          - 0 = add new task (default)
+                          - 1 = assign existing task
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1722,6 +1783,37 @@ class Requirement(object):
             return True
 
         self._load_stakeholder_inputs()
+
+        return False
+
+    def _delete_vandv_task(self):
+        """
+        Method to delete the selected V & V Task link from the selected
+        Requirement.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_model,
+         _row) = self.tvwValidation.get_selection().get_selected()
+
+        _task_id = _model.get_value(_row, 0)
+
+        _query = "DELETE FROM tbl_validation_matrix \
+                  WHERE fld_revision_id=%d \
+                  AND fld_requirement_id=%d \
+                  AND fld_validation_id=%d" % \
+                 (self._app.REVISION.revision_id, self.requirement_id,
+                  _task_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error removing link to V & V task %d from "
+                              u"requirement %d.") %
+                            (self.requirement_id, _task_id))
+            return True
+
+        self._load_vandv_tasks()
 
         return False
 
@@ -2268,7 +2360,7 @@ class Requirement(object):
             elif button.get_name() == 'Assign':
                 self._add_vandv_task(1)
             elif button.get_name() == 'Remove':
-                print "Lets remove this validation task"
+                self._delete_vandv_task()
             elif button.get_name() == 'Save':
                 self._save_vandv_tasks()
 
