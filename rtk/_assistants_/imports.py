@@ -45,9 +45,14 @@ import locale
 import gettext
 
 # Import other RTK modules.
-import configuration as _conf               # pylint: disable=F0401
-import utilities as _util                   # pylint: disable=F0401
-import widgets as _widg                     # pylint: disable=F0401
+try:
+    import configuration as _conf
+    import utilities as _util
+    import widgets as _widg
+except ImportError:
+    import rtk.configuration as _conf
+    import rtk.utilities as _util
+    import rtk.widgets as _widg
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
