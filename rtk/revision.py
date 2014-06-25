@@ -1062,37 +1062,39 @@ class Revision(object):
         """
 
         # Load the mission profile tree.
-        _model_ = self.tvwMissionProfile.get_model()
-        _model_.clear()
+        _model = self.tvwMissionProfile.get_model()
+        _model.clear()
 
-        _mission_ = self.cmbMission.get_active_text()
+        _mission = self.cmbMission.get_active_text()
         try:
-            _mission_id_ = self._dic_missions[_mission_][0]
+            _mission_id = self._dic_missions[_mission][0]
         except KeyError:
-            _mission_id_ = -1
-        _query_ = "SELECT fld_phase_id, fld_phase_start, fld_phase_end, \
-                          fld_phase_name, fld_phase_description \
-                   FROM tbl_mission_phase \
-                   WHERE fld_mission_id=%d" % _mission_id_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+            _mission_id = -1
+        _query = "SELECT fld_phase_id, fld_phase_start, fld_phase_end, \
+                         fld_phase_name, fld_phase_description \
+                  FROM tbl_mission_phase \
+                  WHERE fld_mission_id=%d" % _mission_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_phases_ = len(_results_)
+            _n_phases = len(_results)
         except TypeError:
-            _n_phases_ = 0
-            self._app.debug_log.error("revision.py: Failed to load mission profile for mission %d." % _mission_id_)
+            _n_phases = 0
+            self._app.debug_log.error("revision.py._load_mission_profile: "
+                                      "Failed to load mission phases for "
+                                      "mission %d.  The following query was "
+                                      "passed:" % _mission_id)
+            self._app.debug_log.error(_query)
 
-        for i in range(_n_phases_):
-            _model_.append(_results_[i])
+        for i in range(_n_phases):
+            _model.append(_results[i])
 
         # Set the selected mission to the first in the list and then load the
         # remaining widgets appropriately.
         try:
-            self.txtMission.set_text(str(_mission_))
-            self.txtMissionTime.set_text(str(self._dic_missions[_mission_][1]))
-            self.cmbTimeUnit.set_active(self._dic_missions[_mission_][2])
+            self.txtMission.set_text(str(_mission))
+            self.txtMissionTime.set_text(str(self._dic_missions[_mission][1]))
+            self.cmbTimeUnit.set_active(self._dic_missions[_mission][2])
         except KeyError:
             self.txtMissionTime.set_text("0.0")
             self.cmbTimeUnit.set_active(0)
@@ -1133,7 +1135,11 @@ class Revision(object):
             _dic_mission_phases[0] = "All"
         except TypeError:
             _n_phases_ = 0
-            self._app.debug_log.error("revision.py: Failed to retrieve mission profile for mission %d." % _mission_id_)
+            self._app.debug_log.error("revision.py._load_environmental_profile: "
+                                      "Failed to load mission phases for "
+                                      "mission %d.  The following query was "
+                                      "passed:" % _mission_id)
+            self._app.debug_log.error(_query)
 
         for i in range(_n_phases_):
             _cellmodel_.append([_results_[i][0]])
@@ -1156,7 +1162,11 @@ class Revision(object):
             _n_conditions_ = len(_results_)
         except TypeError:
             _n_conditions_ = 0
-            self._app.debug_log.error("revision.py: Failed to retrieve environmental profile for mission %d." % _mission_id_)
+            self._app.debug_log.error("revision.py._load_environmental_profile: "
+                                      "Failed to load environmental profile "
+                                      "for mission %d.  The following query "
+                                      "was passed:" % _mission_id)
+            self._app.debug_log.error(_query)
 
         for i in range(_n_conditions_):
             self._dic_environments[_results_[i][0]] = [_results_[i][1],
@@ -1191,7 +1201,11 @@ class Revision(object):
             _n_defs = len(_results)
         except TypeError:
             _n_defs = 0
-            self._app.debug_log.error("revision.py: Failed to retrieve failure definition list for revision %d." % self.revision_id)
+            self._app.debug_log.error("revision.py._load_failure_definitions: "
+                                      "Failed to load failure definitions for "
+                                      "revision %d.  The following query was "
+                                      "passed:" % self.revision_id)
+            self._app.debug_log.error(_query)
 
         _model = self.tvwFailureDefinitions.get_model()
         _model.clear()
@@ -1304,7 +1318,50 @@ class Revision(object):
             self.revision_id
         self._app.winWorkBook.set_title(_title)
 
-        #self.notebook.set_page(0)
+        # self.notebook.set_page(0)
+
+        return False
+
+    def _update_attributes(self):
+        """
+        Method to update the Revision class attributes.
+        """
+
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        self.revision_id = _model.get_value(_row, self._lst_col_order[0])
+        self.availability = _model.get_value(_row, self._lst_col_order[1])
+        self.mission_availability = _model.get_value(_row,
+                                                     self._lst_col_order[2])
+        self.cost = _model.get_value(_row, self._lst_col_order[3])
+        self.cost_per_failure = _model.get_value(_row, self._lst_col_order[4])
+        self.cost_per_hour = _model.get_value(_row, self._lst_col_order[5])
+        self.active_hazard_rate = _model.get_value(_row,
+                                                   self._lst_col_order[6])
+        self.dormant_hazard_rate = _model.get_value(_row,
+                                                    self._lst_col_order[7])
+        self.mission_hazard_rate = _model.get_value(_row,
+                                                    self._lst_col_order[8])
+        self.hazard_rate = _model.get_value(_row, self._lst_col_order[9])
+        self.software_hazard_rate = _model.get_value(_row,
+                                                     self._lst_col_order[10])
+        self.mmt = _model.get_value(_row, self._lst_col_order[11])
+        self.mcmt = _model.get_value(_row, self._lst_col_order[12])
+        self.mpmt = _model.get_value(_row, self._lst_col_order[13])
+        self.mission_mtbf = _model.get_value(_row, self._lst_col_order[14])
+        self.mtbf = _model.get_value(_row, self._lst_col_order[15])
+        self.mttr = _model.get_value(_row, self._lst_col_order[16])
+        self.name = _model.get_value(_row, self._lst_col_order[17])
+        self.mission_reliability = _model.get_value(_row,
+                                                    self._lst_col_order[18])
+        self.reliability = _model.get_value(_row, self._lst_col_order[19])
+        self.remarks = _model.get_value(_row, self._lst_col_order[20])
+        self.n_parts = _model.get_value(_row, self._lst_col_order[21])
+        self.code = _model.get_value(_row, self._lst_col_order[22])
+        # self.program_time = _model.get_value(_row, self._lst_col_order[23])
+        # self.program_time_se = _model.get_value(_row, self._lst_col_order[24])
+        # self.program_cost = _model.get_value(_row, self._lst_col_order[25])
+        # self.program_cost_se = _model.get_value(_row, self._lst_col_order[26])
 
         return False
 
@@ -1353,54 +1410,13 @@ class Revision(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        (_model_, _row) = treeview.get_selection().get_selected()
+        (__, _row) = treeview.get_selection().get_selected()
 
         # If selecting a revision, load everything associated with
         # the new revision.
         if _row is not None:
-            self.revision_id = _model_.get_value(_row, self._lst_col_order[0])
-            self.availability = _model_.get_value(_row,
-                                                  self._lst_col_order[1])
-            self.mission_availability = _model_.get_value(
-                _row, self._lst_col_order[2])
-            self.cost = _model_.get_value(_row, self._lst_col_order[3])
-            self.cost_per_failure = _model_.get_value(_row,
-                                                      self._lst_col_order[4])
-            self.cost_per_hour = _model_.get_value(_row,
-                                                   self._lst_col_order[5])
-            self.active_hazard_rate = _model_.get_value(_row,
-                                                        self._lst_col_order[6])
-            self.dormant_hazard_rate = _model_.get_value(_row,
-                                                         self._lst_col_order[7])
-            self.mission_hazard_rate = _model_.get_value(_row,
-                                                         self._lst_col_order[8])
-            self.hazard_rate = _model_.get_value(_row,
-                                                 self._lst_col_order[9])
-            self.software_hazard_rate = _model_.get_value(
-                _row, self._lst_col_order[10])
-            self.mmt = _model_.get_value(_row, self._lst_col_order[11])
-            self.mcmt = _model_.get_value(_row, self._lst_col_order[12])
-            self.mpmt = _model_.get_value(_row, self._lst_col_order[13])
-            self.mission_mtbf = _model_.get_value(_row,
-                                                  self._lst_col_order[14])
-            self.mtbf = _model_.get_value(_row, self._lst_col_order[15])
-            self.mttr = _model_.get_value(_row, self._lst_col_order[16])
-            self.name = _model_.get_value(_row, self._lst_col_order[17])
-            self.mission_reliability = _model_.get_value(
-                _row, self._lst_col_order[18])
-            self.reliability = _model_.get_value(_row,
-                                                 self._lst_col_order[19])
-            self.remarks = _model_.get_value(_row, self._lst_col_order[20])
-            self.n_parts = _model_.get_value(_row, self._lst_col_order[21])
-            self.code = _model_.get_value(_row, self._lst_col_order[22])
-            self.program_time = _model_.get_value(_row,
-                                                  self._lst_col_order[23])
-            self.program_time_se = _model_.get_value(_row,
-                                                     self._lst_col_order[24])
-            self.program_cost = _model_.get_value(_row,
-                                                  self._lst_col_order[25])
-            self.program_cost_se = _model_.get_value(_row,
-                                                     self._lst_col_order[26])
+
+            self._update_attributes()
 
             # Build the queries to select the components, reliability tests,
             # and program incidents associated with the selected REVISION.
@@ -1423,14 +1439,14 @@ class Revision(object):
             self._app.SOFTWARE.save_software()
             self._app.SOFTWARE.revision_id = self.revision_id
             self._app.SOFTWARE.load_tree()
-            #self._app.VALIDATION.validation_save()
+            # self._app.VALIDATION.revision_id = self.revision_id
             self._app.VALIDATION.load_tree()
             self._app.TESTING.revision_id = self.revision_id
             self._app.TESTING.load_tree()
             self._app.winParts.load_part_tree(_qryParts_)
-            #self._app.winParts.load_test_tree(_qryTests_, values)
-            #self._app.winParts.load_incident_tree(_qryIncidents_,
-            #                                      self.revision_id)
+            # self._app.winParts.load_test_tree(_qryTests_, values)
+            # self._app.winParts.load_incident_tree(_qryIncidents_,
+            #                                       self.revision_id)
 
             self.load_notebook()
 
@@ -1460,17 +1476,18 @@ class Revision(object):
         except IndexError:
             _mission_id_ = 1
 
-        _values_ = (self.revision_id, "New Mission %d" % _mission_id_)
-        _query_ = "INSERT INTO tbl_missions \
-                   (fld_revision_id, fld_mission_description) \
-                   VALUES (%d, '%s')" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.debug_log.error("revision.py: Failed to add new mission.")
+        _query = "INSERT INTO tbl_missions \
+                  (fld_revision_id, fld_mission_description) \
+                  VALUES (%d, '%s')" % (self.revision_id,
+                                        "New Mission %d" % _mission_id_)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error adding a new mission."))
+            self._app.debug_log.error("revision.py._add_mission: Failed to "
+                                      "add a new mission to revision %d.  "
+                                      "The following query was passed." %
+                                      self.revision_id)
+            self._app.debug_log.error(_query)
             return True
 
         self._dic_missions["New Mission %d" % _mission_id_] = [_mission_id_,
@@ -1511,11 +1528,7 @@ class Revision(object):
                   VALUES (%d, %d, 0.0, 0.0, '', '')" % (_mission_id, _phase_id)
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.rtk_error(_(u"There was a problem adding the new "
-                                      u"mission phase.  Check the error log "
-                                      u"in the RTK configuration directory.  "
-                                      u"Report to bugs@reliaqual.com if the "
-                                      u"problem persists."))
+            _util.rtk_error(_(u"Error adding the new mission phase."))
             return True
 
         self._load_mission_profile()
@@ -1556,11 +1569,7 @@ class Revision(object):
 
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.rtk_error(_(u"Failed to add environmental "
-                                      u"condition.  Check the error log in "
-                                      u"the RTK configuration directory.  "
-                                      u"Report to bugs@reliaqual.com if the "
-                                      u"problem persists."))
+            _util.rtk_error(_(u"Error adding environmental condition."))
             return True
 
         self._load_environmental_profile()
@@ -1582,12 +1591,7 @@ class Revision(object):
                   VALUES (%d, '')" % self.revision_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.rtk_error(_(u"An error was encountered when "
-                                      u"attempting to add the failure "
-                                      u"definition.  Check the error log %s.  "
-                                      u"Report to bugs@reliaqual.com if the "
-                                      u"problem persists." %
-                                      _conf.LOG_DIR + '/RTK_error.log'))
+            _util.rtk_error(_(u"Error adding failure definition."))
             return True
 
         self._load_failure_definitions()
@@ -1654,33 +1658,22 @@ class Revision(object):
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             _util.rtk_error(_(u"Error removing one or more "
-                                      u"environments from mission.  Check the "
-                                      u"error log %s.  Report to "
-                                      u"bugs@reliaqual.com if the problem "
-                                      u"persists." %
-                                      _conf.LOG_DIR + '/RTK_error.log'))
+                              u"environments from the mission."))
             return True
 
         _query = "DELETE FROM tbl_mission_phase \
                   WHERE fld_mission_id=%d" % _mission_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.rtk_error(_(u"Error removing one or more phase from "
-                                      u"mission.  Check the error log %s.  "
-                                      u"Report to bugs@reliaqual.com if the "
-                                      u"problem persists." %
-                                      _conf.LOG_DIR + '/RTK_error.log'))
+            _util.rtk_error(_(u"Error removing one or more phases from the "
+                              u"mission."))
             return True
 
         _query = "DELETE FROM tbl_missions \
                   WHERE fld_mission_id=%d" % _mission_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
-            _util.rtk_error(_(u"Error removing mission.  Check the "
-                                      u"error log %s.  Report to "
-                                      u"bugs@reliaqual.com if the problem "
-                                      u"persists." %
-                                      _conf.LOG_DIR + '/RTK_error.log'))
+            _util.rtk_error(_(u"Error removing the selected mission."))
             return True
 
         self.load_notebook()
@@ -1783,22 +1776,23 @@ class Revision(object):
         """
 
         # Find the currently selected definition id.
-        (_model_,
-         _row_) = self.tvwFailureDefinitions.get_selection().get_selected()
-        _definition_id_ = _model_.get_value(_row_, 0)
+        (_model,
+         _row) = self.tvwFailureDefinitions.get_selection().get_selected()
+        _definition_id = _model.get_value(_row, 0)
 
         # Now remove it from the database.
-        _query_ = "DELETE FROM tbl_failure_definitions \
-                   WHERE fld_revision_id=%d \
-                   AND fld_definition_id=%d" % (self.revision_id,
-                                                _definition_id_)
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.debug_log.error("revision.py: Failed to delete failure definition.")
+        _query = "DELETE FROM tbl_failure_definitions \
+                  WHERE fld_revision_id=%d \
+                  AND fld_definition_id=%d" % (self.revision_id,
+                                               _definition_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error deleting failure definition."))
+            self._app.debug_log.error("revision.py._delete_failure_definition: "
+                                      "Error deleting failure definition %d.  "
+                                      "The following query was passed:" %
+                                      _definition_id)
+            self._app.debug_log.error(_query)
             return True
 
         self._load_failure_definitions()
@@ -1913,9 +1907,8 @@ class Revision(object):
 
             :param model: the Mission Profile gtk.TreeModel().
             :type mode: gtk.TreeModel
-            :param __path: the selected path in the Mission Profile
-                           gtk.TreeModel().
-            :type __path: string
+            :param str __path: the selected path in the Mission Profile
+                               gtk.TreeModel().
             :param row: the selected gtk.TreeIter() in the Mission Profile
                         gtk.TreeModel().
             :type row: gtk.TreeIter
@@ -1924,23 +1917,24 @@ class Revision(object):
             :rtype: boolean
             """
 
-            _mission_ = self.cmbMission.get_active_text()
-            _mission_id_ = self._dic_missions[_mission_][0]
-            _values_ = (model.get_value(row, 1), model.get_value(row, 2),
-                        model.get_value(row, 3), model.get_value(row, 4),
-                        _mission_id_, model.get_value(row, 0))
-            _query_ = "UPDATE tbl_mission_phase \
-                       SET fld_phase_start=%f, fld_phase_end=%f, \
-                           fld_phase_name='%s', fld_phase_description='%s' \
-                       WHERE fld_mission_id=%d \
-                       AND fld_phase_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if not _results_:
-                self._app.debug_log.error("revision.py: Failed to save mission phase.")
+            _mission = self.cmbMission.get_active_text()
+            _mission_id = self._dic_missions[_mission][0]
+            _values = (model.get_value(row, 1), model.get_value(row, 2),
+                       model.get_value(row, 3), model.get_value(row, 4),
+                       _mission_id, model.get_value(row, 0))
+            _query = "UPDATE tbl_mission_phase \
+                      SET fld_phase_start=%f, fld_phase_end=%f, \
+                          fld_phase_name='%s', fld_phase_description='%s' \
+                      WHERE fld_mission_id=%d \
+                      AND fld_phase_id=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving mission phase."))
+                self._app.debug_log.error("revision.py._save_mission_phase: "
+                                          "Error saving mission phase %d.  "
+                                          "The following query was passed:" %
+                                          model.get_value(row, 0))
+                self._app.debug_log.error(_query)
 
         def _save_environment_profile(model, __path, row, self):
             """
@@ -1961,27 +1955,29 @@ class Revision(object):
             """
 # [Condition ID, Phase Name, Measurement Units, Minimum Value,
 #  Maximum Value, Mean Value, Variance]
-            _mission_ = self.cmbMission.get_active_text()
-            _mission_id_ = self._dic_missions[_mission_][0]
-            _condition_ = self._dic_environments[model.get_value(row, 0)][0]
-            _phase_ = self._dic_environments[model.get_value(row, 0)][1]
-            _values_ = (_phase_, _condition_, model.get_value(row, 3),
-                        model.get_value(row, 4), model.get_value(row, 5),
-                        model.get_value(row, 6), model.get_value(row, 7),
-                        _mission_id_, model.get_value(row, 0))
-            _query_ = "UPDATE tbl_environmental_profile \
-                       SET fld_phase='%s', fld_condition_name='%s', \
-                           fld_units='%s', fld_minimum=%f, fld_maximum=%f, \
-                           fld_mean=%f, fld_variance=%f \
-                       WHERE fld_mission_id=%d \
-                       AND fld_condition_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _mission = self.cmbMission.get_active_text()
+            _mission_id = self._dic_missions[_mission][0]
+            _condition = self._dic_environments[model.get_value(row, 0)][0]
+            _phase = self._dic_environments[model.get_value(row, 0)][1]
 
-            if not _results_:
-                self._app.debug_log.error("revision.py: Failed to save environmental profile.")
+            _query = "UPDATE tbl_environmental_profile \
+                      SET fld_phase='%s', fld_condition_name='%s', \
+                          fld_units='%s', fld_minimum=%f, fld_maximum=%f, \
+                          fld_mean=%f, fld_variance=%f \
+                      WHERE fld_mission_id=%d \
+                      AND fld_condition_id=%d" % \
+                     (_phase, _condition, model.get_value(row, 3),
+                      model.get_value(row, 4), model.get_value(row, 5),
+                      model.get_value(row, 6), model.get_value(row, 7),
+                      _mission_id, model.get_value(row, 0))
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving environmental profile."))
+                self._app.debug_log.error("revision.py._save_environment_profile: "
+                                          "Error saving environmental "
+                                          "profile.  The following query was "
+                                          "passed:")
+                self._app.debug_log.error(_query)
 
         # Save the currently selected mission.
         _mission_ = self.cmbMission.get_active_text()
@@ -2001,13 +1997,13 @@ class Revision(object):
             pass
 
         # Save the phase information for the currently selected mission.
-        _model_ = self.tvwMissionProfile.get_model()
-        _model_.foreach(_save_mission_phase, self)
+        _model = self.tvwMissionProfile.get_model()
+        _model.foreach(_save_mission_phase, self)
 
         # Save the environmental profile information for the currently selected
         # mission.
-        _model_ = self.tvwEnvironmentProfile.get_model()
-        _model_.foreach(_save_environment_profile, self)
+        _model = self.tvwEnvironmentProfile.get_model()
+        _model.foreach(_save_environment_profile, self)
 
         return False
 
@@ -2033,26 +2029,25 @@ class Revision(object):
                         gtk.TreeModel().
             :type row: gtk.TreeIter
             :param self: the current instance of the Revision class.
+            :type self: rtk.Revision
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
 
-            _values_ = (model.get_value(row, 1), self.revision_id,
-                        model.get_value(row, 0))
-            _query_ = "UPDATE tbl_failure_definitions \
-                       SET fld_definition='%s' \
-                       WHERE fld_revision_id=%d \
-                       AND fld_definition_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _query = "UPDATE tbl_failure_definitions \
+                      SET fld_definition='%s' \
+                      WHERE fld_revision_id=%d \
+                      AND fld_definition_id=%d" % \
+                     (model.get_value(row, 1), self.revision_id,
+                      model.get_value(row, 0))
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving failure definition %d to the "
+                                  u"open RTK Program database.") %
+                                model.get_value(row, 0))
 
-            if not _results_:
-                self._app.debug_log.error("revision.py: Failed to save failure definition.")
-
-        _model_ = self.tvwFailureDefinitions.get_model()
-        _model_.foreach(_save_line, self)
+        _model = self.tvwFailureDefinitions.get_model()
+        _model.foreach(_save_line, self)
 
         return False
 
@@ -2062,25 +2057,40 @@ class Revision(object):
 
         :param combo: the gtk.ComboBox() that called this method.
         :type combo: gtk.ComboBox
-        :param index: the position in the Revision class gtk.TreeView()
-                      associated with the data from the calling gtk.ComboBox().
-        :type index: integer
+        :param int index: the position in the Revision class gtk.TreeView()
+                          associated with the data from the calling
+                          gtk.ComboBox().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        i = combo.get_active()
+        _position = combo.get_active()
 
+        # Get the Revision Class gtk.TreeModel() and selected gtk.TreeIter()
+        # and update the Revision Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        # Update the Revision class public and private attributes.
+        _model.set_value(_row, index, _position)
+
+        # Update the Revision class public and private attributes.
+        self._update_attributes()
+
+        # Deal with the specifics.
         if index == 0:                      # Mission list
             self._load_mission_profile()
             self._load_environmental_profile()
 
         elif index == 1:                    # Time units
-            _mission_ = self.cmbMission.get_active_text()
+            _mission = self.cmbMission.get_active_text()
             try:
-                self._dic_missions[_mission_][2] = i
+                self._dic_missions[_mission][2] = _position
             except KeyError:
-                pass
+                self._app.debug_log.error("revision.py._callback_entry: No "
+                                          "mission named %s was available in "
+                                          "_dic_missions to update." %
+                                          _mission)
+                return True
 
         return False
 
@@ -2092,74 +2102,79 @@ class Revision(object):
         :type entry: gtk.Entry
         :param __event: the gtk.gdk.Event() that called this method.
         :type __event: gtk.gdk.Event
-        :param index: the position in the Revision class gtk.TreeModel()
-                       associated with the data from the calling gtk.Entry().
-        :type index: integer
+        :param int index: the position in the Revision class gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Entry().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        if index == 20:
+            _text = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
+        else:
+            _text = entry.get_text()
 
-        if index == 17:
-            self.name = entry.get_text()
-            _model_.set_value(_row_, index, self.name)
-        elif index == 20:
-            self.remarks = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
-            _model_.set_value(_row_, index, self.remarks)
-        elif index == 22:
-            self.code = entry.get_text()
-            _model_.set_value(_row_, index, self.code)
-        elif index == 100:                  # Mission name.
-            _model_ = self.cmbMission.get_model()
-            _row_ = self.cmbMission.get_active_iter()
-            _mission_ = self.cmbMission.get_active_text()
+        # Get the Revision Class gtk.TreeModel() and selected gtk.TreeIter()
+        # and update the Revision Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-            try:
-                _model_.set_value(_row_, 0, entry.get_text())
-            except TypeError:
-                pass
+        # Update the Revision class public and private attributes.
+        _model.set_value(_row, index, _text)
+
+        # Update the Revision class public and private attributes.
+        self._update_attributes()
+
+        # Deal with the specifics.
+        if index == 100:                    # Mission name.
+            _mission = self.cmbMission.get_active_text()
 
             try:
-                self._dic_missions[entry.get_text()] = self._dic_missions.pop(_mission_)
+                self._dic_missions[_text] = self._dic_missions.pop(_mission)
             except KeyError:
-                self._app.debug_log.error("revision.py: No mission named %s is available to update." % _mission_)
+                self._app.debug_log.error("revision.py._callback_entry: No "
+                                          "mission named %s was available in "
+                                          "_dic_missions to update." %
+                                          _mission)
+                return True
 
         elif index == 101:                  # Total mission time.
-            _mission_ = self.cmbMission.get_active_text()
+            _mission = self.cmbMission.get_active_text()
             try:
-                self._dic_missions[_mission_][1] = float(entry.get_text())
+                self._dic_missions[_mission][1] = float(_text)
             except KeyError:
-                self._app.debug_log.error("revision.py: No mission named %s is available to update." % _mission_)
+                self._app.debug_log.error("revision.py._callback_entry: No "
+                                          "mission named %s was available in "
+                                          "_dic_missions to update." %
+                                          _mission)
+                return True
 
         return False
 
     def _callback_edit_tree(self, __cell, path, new_text, position, model):
         """
-        Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
+        Called whenever a Revision class gtk.TreeView() gtk.CellRenderer() is
+        edited.
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: gtk.CellRenderer
-        :param path: the gtk.TreeView() path of the gtk.CellRenderer() that was
-                     edited.
-        :type path: string
-        :param new_text: the new text in the edited gtk.CellRenderer().
-        :type new_text: string
-        :param position: the column position of the edited gtk.CellRenderer().
-        :type position: integer
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
+                         was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
         :type model: gtk.TreeModel
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        _type_ = gobject.type_name(model.get_column_type(position))
+        _type = gobject.type_name(model.get_column_type(position))
 
-        if _type_ == 'gchararray':
+        if _type == 'gchararray':
             model[path][position] = str(new_text)
-        elif _type_ == 'gint':
+        elif _type == 'gint':
             model[path][position] = int(new_text)
-        elif _type_ == 'gfloat':
+        elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
         _environment_ = model[path][0]
@@ -2294,8 +2309,7 @@ class Revision(object):
 
         # Predicted logistics h(t).
         self.hazard_rate = self.active_hazard_rate + \
-                           self.dormant_hazard_rate + \
-                           self.software_hazard_rate
+            self.dormant_hazard_rate + self.software_hazard_rate
 
         # Calculate the logistics MTBF.
         try:
@@ -2326,7 +2340,7 @@ class Revision(object):
         # Calculate mission availability.
         try:
             self.mission_availability = self.mission_mtbf / \
-                                        (self.mission_mtbf + self.mttr)
+                (self.mission_mtbf + self.mttr)
         except ZeroDivisionError:
             self.mission_availability = 1.0
         except OverflowError:

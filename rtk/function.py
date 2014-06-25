@@ -691,14 +691,14 @@ class Function(object):
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        _root_ = _model_.get_iter_root()
-        if _root_ is not None:
-            _path_ = _model_.get_path(_root_)
-            _col_ = self.treeview.get_column(0)
-            self.treeview.row_activated(_path_, _col_)
+        _root = _model_.get_iter_root()
+        if _root is not None:
+            _path = _model_.get_path(_root)
+            _col = self.treeview.get_column(0)
+            self.treeview.row_activated(_path, _col)
 
-        self.function_id = _model_.get_value(_root_, 1)
-        self._load_functional_matrix()
+            self.function_id = _model_.get_value(_root, 1)
+            self._load_functional_matrix()
 
         return False
 

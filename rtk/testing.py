@@ -1499,11 +1499,11 @@ class Testing(object):
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        root = _model_.get_iter_root()
-        if root is not None:
-            path = _model_.get_path(root)
-            col = self.treeview.get_column(0)
-            self.treeview.row_activated(path, col)
+        _root = _model_.get_iter_root()
+        if _root is not None:
+            _path = _model_.get_path(_root)
+            _col = self.treeview.get_column(0)
+            self.treeview.row_activated(_path, _col)
 
         # Load the Assembly combo.
         _query_ = "SELECT fld_name, fld_assembly_id, fld_description \

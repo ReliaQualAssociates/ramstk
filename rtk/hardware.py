@@ -3128,12 +3128,12 @@ class Hardware(object):
             #            self.dicHARDWARE[_results_[i][1]] = _data_ + (_model_.get_string_from_iter(_row_),)
             self._treepaths[_results_[i][68]] = _model_.get_path(_row_)
 
-        _row_ = _model_.get_iter_root()
-
-        _path_ = _model_.get_path(_row_)
-        self.treeview.set_cursor(_path_, None, False)
-        self.treeview.row_activated(_path_, self.treeview.get_column(0))
-        self.treeview.expand_all()
+        _root = _model_.get_iter_root()
+        if _root is not None:
+            _path = _model_.get_path(_root)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, self.treeview.get_column(0))
+            self.treeview.expand_all()
 
         return False
 
@@ -5980,10 +5980,10 @@ class Hardware(object):
         :type entry: gtk.Entry
         :param __event: the gtk.gdk.Event() that called the function.
         :type __event: gtk.gdk.Event
-        :param string convert: the data type to convert the entry contents to.
-        :param integer index: the position in the applicable treeview
-                              associated with the data from the calling
-                              gtk.Entry().
+        :param str convert: the data type to convert the entry contents to.
+        :param int index: the position in the applicable treeview
+                          associated with the data from the calling
+                          gtk.Entry().
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'

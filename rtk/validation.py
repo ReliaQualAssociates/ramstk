@@ -1048,12 +1048,12 @@ class Validation(object):
 
     def _update_tree(self, columns, values):
         """
-        Updates the values in the VALIDATION class gtk.Treeview.
+        Updates the values in the Validation class gtk.Treeview.
 
         :param columns: a list of integers representing the column numbers to
                         update.
         :type columns: list of integers
-        :param values: a list of new values for the VALIDATION class
+        :param values: a list of new values for the Validation class
                        gtk.TreeView().
         :type values: list
         """
