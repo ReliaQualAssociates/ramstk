@@ -463,7 +463,7 @@ def create_project(widget, app):
                                             u"Overwrite?") %
                                           _new_program, width=-1, height=-1,
                                           bold=False, wrap=True)
-                _dlgConfirm.vbox.pack_start(_label)       # pylint: disable=E1101
+                _dlgConfirm.vbox.pack_start(_label)
                 _label.show()
 
                 if _dlgConfirm.run() == gtk.RESPONSE_YES:

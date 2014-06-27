@@ -56,7 +56,7 @@ except ImportError:
 
 # Import mathematical functions.
 import numpy as np
-from scipy.stats import chi2, norm
+from scipy.stats import chi2, expon, norm, tvar
 from math import ceil, exp, floor, log, sqrt
 
 # Import other RTK modules.
@@ -814,25 +814,24 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
     Function to fit data to a parametric distribution and estimate the
     parameters.
 
-    :param data: the data set to fit.  This is a list of tuples where each
-                 tuple contains the following, in order:
-                 - Observed unit ID
-                 - Interval start time
-                 - Interval end time
-                 - Time between failures or interarrival time
-                 - Status of observation
-                 - Quantity of observations
-                 - Date of observation
-    :param start: the minimum time to include in the fit.  Used to exclude
-                  outliers.
-    :param end: the maximum time to include in the fit.  Used to exclude
-                outliers.
-    :param fitmeth: method used to fit data to the selected distribution.
-                    - 1 = maximum likelihood estimation (MLE)
-                    - 2 = rank regression
-    :param dist: the noun name of the distribution to fit.  Defaults to
-                 the exponential distribution.
-    :type dist: str
+    :param array-like data: the data set to fit.  This is a list of tuples
+                            where each tuple contains the following, in order:
+                            * Observed unit ID
+                            * Interval start time
+                            * Interval end time
+                            * Time between failures or interarrival time
+                            * Status of observation
+                            * Quantity of observations
+                            * Date of observation
+    :param float start: the minimum time to include in the fit.  Used to exclude
+                        outliers.
+    :param float end: the maximum time to include in the fit.  Used to exclude
+                      outliers.
+    :param int fitmeth: method used to fit data to the selected distribution.
+                        * 1 = maximum likelihood estimation (MLE)
+                        * 2 = rank regression
+    :param str dist: the noun name of the distribution to fit.  Defaults to
+                     the exponential distribution.
     :return: an R object containing the results of the analysis.  This object
              will need to be unpacked by the calling function.  The index of
              the parameters varies depending on the distribution fit.
@@ -869,6 +868,8 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
         if fitmeth == 1:
             if dist == 'exponential':
                 _dist = 'exp'
+                #expon.fit(np.array(_right), floc=0)
+                #np.std(np.array(_right))
             elif dist == 'lognormal':
                 _dist = 'lnorm'
             elif dist == 'normal':
@@ -935,8 +936,7 @@ def theoretical_distribution(data, dist, para):
                  tuples where index 1 is the left of the interval and index 2
                  is the right of the interval.  The other indices are not used.
     :type data: list of lists or list of tuples
-    :param dist: the noun name of the distribution.
-    :type dist: str
+    :param str dist: the noun name of the distribution.
     :param para: list with the names and values of the distribution parameters.
     :type para: R list
     :return: _theoretical_probs; the probabilities of the theoretical

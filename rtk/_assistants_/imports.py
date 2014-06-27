@@ -20,6 +20,7 @@ __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+import os
 
 # Modules required for the GUI.
 try:
@@ -125,12 +126,18 @@ def _select_source_file(assistant):
         _filename = _dialog.get_filename()
         _file = open(_filename, 'r')
 
+        __, _extension = os.path.splitext(_filename)
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
         for _line in _file:
             _contents.append([_line.rstrip('\n')])
 
-        _headers = str(_contents[0][0]).rsplit('\t')
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
         for i in range(len(_contents) - 1):
-            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
 
         _dialog.destroy()
 

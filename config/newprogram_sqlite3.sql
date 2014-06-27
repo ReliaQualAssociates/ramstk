@@ -46,7 +46,7 @@ CREATE TABLE "tbl_program_info" (
     "fld_last_saved_by" VARCHAR(45) DEFAULT(''),
     "fld_method" VARCHAR(16) DEFAULT('STANDARD')
 );
-INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,0,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','','STANDARD');
+INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,1,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','','STANDARD');
 
 DROP TABLE IF EXISTS "tbl_missions";
 CREATE TABLE "tbl_missions" (
