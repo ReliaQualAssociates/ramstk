@@ -1,6 +1,301 @@
 #!/usr/bin/env python
 """
 This file contains configuration information and functions for RTK.
+
+:const ICON_DIR:
+Path to the directory containing icon files used by RTK. \n
+POSIX default: /usr/share/pixmaps/RTK \n
+Windows default: None
+
+:const DATA_DIR:
+Path to the directory containing data files used by RTK. \n
+POSIX default: /usr/share/RTK \n
+Windows default: None
+
+:const CONF_DIR:
+Path to the directory containing configuration files used by RTK.\n
+POSIX default: $HOME/.config/RTK \n
+Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK
+
+:const LOG_DIR:
+Path to the directory containing log files used by RTK. \n
+POSIX default: $HOME/.config/RTK/logs \n
+Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs
+
+:const PROG_DIR:
+Path to the base directory containing RTK Program database files.  This is only
+used when the backend is SQLite3. \n
+POSIX default: $HOME/analyses/rtk \n
+Windows default: C:\\\Users\\\<USER NAME>\\\analyses\\\rtk
+
+:const RTK_FORMAT_FILE: Default value: []
+Global list containing the path to the format files to use for various widgets.
+
++-------+----------------------------+
+| Index | Tree Format                |
++=======+============================+
+|    0  | Revision Tree              |
++-------+----------------------------+
+|    1  | Function Tree              |
++-------+----------------------------+
+|    2  | Requirements Tree          |
++-------+----------------------------+
+|    3  | Hardware Tree              |
++-------+----------------------------+
+|    4  | Validation Tree            |
++-------+----------------------------+
+|    5  | Reliability Growth Tree    |
++-------+----------------------------+
+|    6  | Field Incidents List       |
++-------+----------------------------+
+|    7  | Parts List                 |
++-------+----------------------------+
+|    8  | Similar Item Analysis      |
++-------+----------------------------+
+|    9  | Hardware FMECA             |
++-------+----------------------------+
+|   10  | Stakeholder Input          |
++-------+----------------------------+
+|   11  | Test Planning List         |
++-------+----------------------------+
+|   12  | Future Use                 |
++-------+----------------------------+
+|   13  | Future Use                 |
++-------+----------------------------+
+|   14  | Future Use                 |
++-------+----------------------------+
+|   15  | Software Tree              |
++-------+----------------------------+
+|   16  | Dataset Tree               |
++-------+----------------------------+
+|   17  | Risk Analysis              |
++-------+----------------------------+
+|   18  | Functional FMECA           |
++-------+----------------------------+
+|   19  | Software FMECA             |
++-------+----------------------------+
+
+:const RTK_COLORS: Default value: []
+Global list containing the colors to use for various widgets.
+
++-------+-----------------------------------------------+
+| Index | Tree Color                                    |
++=======+===============================================+
+|   0   | Revision Tree background                      |
++-------+-----------------------------------------------+
+|   1   | Revision Tree foreground                      |
++-------+-----------------------------------------------+
+|   2   | Function Tree background                      |
++-------+-----------------------------------------------+
+|   3   | Function Tree foreground                      |
++-------+-----------------------------------------------+
+|   4   | Requirement Tree background                   |
++-------+-----------------------------------------------+
+|   5   | Requirement Tree foreground                   |
++-------+-----------------------------------------------+
+|   6   | Hardware Tree background                      |
++-------+-----------------------------------------------+
+|   7   | Hardware Tree foreground                      |
++-------+-----------------------------------------------+
+|   8   | Validation Tree background                    |
++-------+-----------------------------------------------+
+|   9   | Validation Tree foreground                    |
++-------+-----------------------------------------------+
+|  10   | Reliability Testing Tree background           |
++-------+-----------------------------------------------+
+|  11   | Reliability Testing Tree foreground           |
++-------+-----------------------------------------------+
+|  12   | Program Incident Tree background              |
++-------+-----------------------------------------------+
+|  13   | Program Incident Tree foreground              |
++-------+-----------------------------------------------+
+|  14   | Dataset Tree background color                 |
++-------+-----------------------------------------------+
+|  15   | Dataset Tree foreground color                 |
++-------+-----------------------------------------------+
+|  16   | Part List Tree background                     |
++-------+-----------------------------------------------+
+|  17   | Part List Tree foreground                     |
++-------+-----------------------------------------------+
+|  18   | Overstressed Part background                  |
++-------+-----------------------------------------------+
+|  19   | Overstressed Part foreground                  |
++-------+-----------------------------------------------+
+|  20   | Tagged Part background                        |
++-------+-----------------------------------------------+
+|  21   | Tagged Part foreground                        |
++-------+-----------------------------------------------+
+|  22   | Part with no failure rate model foreground    |
++-------+-----------------------------------------------+
+
+:const RTK_PREFIX: Default value: []
+Global variable list to house information about the prefix and next index to
+use when adding new revisions, functions, assemblies, parts, FMECA items,
+FMECA modes, FMECA effects, and FMECA causes.
+
++-------+---------------------------+
+| Index | Next Prefix/Index         |
++=======+===========================+
+|   0   | Revision prefix           |
++-------+---------------------------+
+|   1   | Next Revision index       |
++-------+---------------------------+
+|   2   | Function prefix           |
++-------+---------------------------+
+|   3   | Next Function index       |
++-------+---------------------------+
+|   4   | Hardware prefix           |
++-------+---------------------------+
+|   5   | Next Hardware index       |
++-------+---------------------------+
+|   6   | Part prefix               |
++-------+---------------------------+
+|   7   | Next Part index           |
++-------+---------------------------+
+|   8   | FMECA item prefix         |
++-------+---------------------------+
+|   9   | Next FMECA item index     |
++-------+---------------------------+
+|  10   | FMECA mode prefix         |
++-------+---------------------------+
+|  11   | Next FMECA mode index     |
++-------+---------------------------+
+|  12   | FMECA effect prefix       |
++-------+---------------------------+
+|  13   | Next FMECA effect index   |
++-------+---------------------------+
+|  14   | FMECA cause prefix        |
++-------+---------------------------+
+|  15   | Next FMECA cause index    |
++-------+---------------------------+
+|  16   | Software prefix           |
++-------+---------------------------+
+|  17   | Next Software index       |
++-------+---------------------------+
+
+:const RTK_MODULES: Default value: []
+Global list to house information about the active modules.  Where 1 = active
+and 0 = inactive.
+
++-------+---------------+
+| Index | Module        |
++=======+===============+
+|   0   | Revision      |
++-------+---------------+
+|   1   | Function      |
++-------+---------------+
+|   2   | Requirements  |
++-------+---------------+
+|   3   | Hardware      |
++-------+---------------+
+|   4   | Software      |
++-------+---------------+
+|   5   | Validation    |
++-------+---------------+
+|   6   | Testing       |
++-------+---------------+
+|   7   | Incidents     |
++-------+---------------+
+|   8   | Dataset       |
++-------+---------------+
+|   9   | FMECA         |
++-------+---------------+
+|  10   | RCM           |
++-------+---------------+
+|  11   | RBD           |
++-------+---------------+
+|  12   | FTA           |
++-------+---------------+
+
+:const RTK_PAGE_NUMBER: Default value: []
+
+:const RTK_COM_INFO: Default value: []
+Global list for the RTK common database connection information.
+
++-------+-------------------------------+
+| Index | Information                   |
++=======+===============================+
+|   0   | Host name (MySQL only)        |
++-------+-------------------------------+
+|   1   | Host port (MySQL only)        |
++-------+-------------------------------+
+|   2   | Database name                 |
++-------+-------------------------------+
+|   3   | User name (MySQL only)        |
++-------+-------------------------------+
+|   4   | User password (MySQL only)    |
++-------+-------------------------------+
+
+:const RTK_PROG_INFO: Default value: []
+Global list for RTK Program database connectioninformation.
+
++-------+-------------------------------+
+| Index | Information                   |
++=======+===============================+
+|   0   | Host name (MySQL only)        |
++-------+-------------------------------+
+|   1   | Host port (MySQL only)        |
++-------+-------------------------------+
+|   2   | Database name                 |
++-------+-------------------------------+
+|   3   | User name (MySQL only)        |
++-------+-------------------------------+
+|   4   | User password (MySQL only)    |
++-------+-------------------------------+
+
+:const RTK_RISK_POINTS: Default value: [4, 10]
+Global list for risk level cutoffs.
+
++-------+---------------------------+
+| Index | Risk Level Cutoff Value   |
++=======+===========================+
+|   0   | Low to medium             |
++-------+---------------------------+
+|   1   | Medium to high            |
++-------+---------------------------+
+
+:const COM_BACKEND: Default value: ''
+RTK common database backend to use; mysql or sqlite3.
+
+:const BACKEND: Default value: ''
+RTK Program database backend to use; mysql or sqlite3.
+
+:const LOCALE: Default value: en_US
+The language locale to use with RTK.
+
+:const OS: Default value: ''
+The operating system RTK is currently running on.
+
+:const FRMULT: Default value: 1.0
+The failure rate multiplier.  All failure rates will be multiplied by this
+value for display.  This allows failure rates to display without using
+scientific notation.
+
+:const PLACES: Default value: 6
+Number of decimal places to show in numerical results.
+
+:const RTK_MTIME: Default value: 10.0
+The default mission time for new RTK Programs.
+
+:const TABPOS: Default value: ['Top', 'Bottom', 'Bottom']
+Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
+'Bottom', 'Left', or 'Right'.
+
++-------+---------------+
+| Index | Notebook      |
++=======+===============+
+|   0   | Module Book   |
++-------+---------------+
+|   1   | Work Book     |
++-------+---------------+
+|   2   | List Book     |
++-------+---------------+
+
+:const RTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
+    * basic: a single window embedded with the Module Book, Work Book, and List
+             Book.
+    * advanced: multiple windows; one each for the Module Book, Work Book, and
+                List Book.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
@@ -26,200 +321,39 @@ import utilities as _util
 import widgets as _widg
 
 MODE = ''
-""" Sets the mode of operation.  Defaults to '' for user-mode.  Will be set to
-'developer' when devmode is passed as a CLI argument.  The 'developer' mode is
-used during testing and enables the use of built-in test cases."""
 
 ICON_DIR = ''
-""" Path to the directory containing icon files used by RTK.\n
-Defaults to /usr/share/pixmaps/RTK/ on POSIX systems."""
-
 DATA_DIR = ''
-""" Path to the directory containing data files used by RTK.\n
-Defaults to /usr/share/RTK/ on POSIX systems."""
-
 CONF_DIR = ''
-""" Path to the directory containing configuration files used by RTK.\n
-Defaults to $HOME/.config/RTK/ on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\config\RTK\ on NT systems."""
-
 LOG_DIR = ''
-""" Path to the directory containing log files used by RTK.\n
-Defaults to $HOME/.config/RTK/logs/ on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\config\RTK\logs\ on NT systems."""
-
 PROG_DIR = ''
-""" Path to the base directory containing RTK Program database files.  This is
-only used when the backend is SQLite3.\n
-Defaults to $HOME/analyses/rtk on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\analyses\rtk\ on NT systems."""
 
 RTK_FORMAT_FILE = []
-""" Global list containing the path to the format files to use for various
-widgets.\n\n
-
-Position  Tree Format\n
-    0     Revision Tree\n
-    1     Function Tree\n
-    2     Requirements Tree\n
-    3     Hardware Tree\n
-    4     Validation Tree\n
-    5     Reliability Growth Tree\n
-    6     Field Incidents List\n
-    7     Parts List\n
-    8     Similar Item Analysis\n
-    9     Hardware FMECA\n
-   10     Stakeholder Input\n
-   11     Test Planning List\n
-   12     Future Use\n
-   13     Future Use\n
-   14     Future Use\n
-   15     Software Tree\n
-   16     Dataset Tree\n
-   17     Risk Analysis\n
-   18     Functional FMECA\n
-   19     Software FMECA"""
-
 RTK_COLORS = []
-""" Global list containing the colors to use for various widgets.\n\n
-
-Position    Tree Color\n
-    0       Revision Tree background\n
-    1       Revision Tree foreground\n
-    2       Function Tree background\n
-    3       Function Tree foreground\n
-    4       Requirement Tree background\n
-    5       Requirement Tree foreground\n
-    6       Hardware Tree background\n
-    7       Hardware Tree foreground\n
-    8       Validation Tree background\n
-    9       Validation Tree foreground\n
-   10       Reliability Testing Tree background\n
-   11       Reliability Testing Tree foreground\n
-   12       Program Incident Tree background\n
-   13       Program Incident Tree foreground\n
-   14       Dataset Tree background color\n
-   15       Dataset Tree foreground color\n
-   16       Part List Tree background\n
-   17       Part List Tree foreground\n
-   18       Overstressed Part background\n
-   19       Overstressed Part foreground\n
-   20       Tagged Part background\n
-   21       Tagged Part foreground\n
-   22       Part with no failure rate model foreground"""
-
 RTK_PREFIX = []
-""" Global variable list to house information about the prefix and next index
-to use when adding new revisions, functions, assemblies, parts, FMECA items,
-FMECA modes, FMECA effects, and FMECA causes.\n\n
-
-Position    Index/Prefix\n
-    0       Revision prefix\n
-    1       Next Revision index\n
-    2       Function prefix\n
-    3       Next Function index\n
-    4       Hardware prefix\n
-    5       Next Hardware index\n
-    6       Part prefix\n
-    7       Next Part index\n
-    8       FMECA item prefix\n
-    9       Next FMECA item index\n
-   10       FMECA mode prefix\n
-   11       Next FMECA mode index\n
-   12       FMECA effect prefix\n
-   13       Next FMECA effect index\n
-   14       FMECA cause prefix\n
-   15       Next FMECA cause index\n
-   16       Software prefix\n
-   17       Next Software index"""
 
 RTK_MODULES = []
-""" Global list to house information about the active modules.  Where
-1 = active and 0 = inactive.\n\n
-
-Position    Module Status\n
-    0       Revision\n
-    1       Function\n
-    2       Requirements\n
-    3       Hardware\n
-    4       Software\n
-    5       Validation\n
-    6       Testing\n
-    7       Incidents\n
-    8       Dataset\n
-    9       FMECA\n
-   10       RCM\n
-   11       RBD\n
-   12       FTA"""
-
 RTK_PAGE_NUMBER = []
 
 RTK_COM_INFO = []
-""" Global list for the RTK common database connection information.\n\n
-
-Position    Information\n
-    0       Host name (MySQL only)\n
-    1       Host port (MySQL only)\n
-    2       Database name\n
-    3       User name (MySQL only)\n
-    4       User password (MySQL only)"""
-
 RTK_PROG_INFO = []
-""" Global list for RTK Program database connection information.\n\n
-
-Position    Information\n
-    0       Host name (MySQL only)\n
-    1       Host port (MySQL only)\n
-    2       Database name\n
-    3       User name (MySQL only)\n
-    4       User password (MySQL only)"""
 
 RTK_RISK_POINTS = [4, 10]
-""" Global list for risk level cutoffs.\n\n
 
-Index   Risk Level Cutoff Value\n
-  0     Low to medium\n
-  1     Medium to high"""
-
-# Variables to hold the backend database type for the program and common
-# database.
 COM_BACKEND = ''
-""" RTK common database backend to use; mysql or sqlite3."""
 BACKEND = ''
-""" RTK Program database backend to use; mysql or sqlite3."""
 
-# Variables to support native language support.
 LOCALE = 'en_US'
-""" The language locale to use with RTK."""
 OS = ''
-""" The operating system RTK is currently running on."""
 
-# Variables to control the display of numerical information.
 FRMULT = 1.0
-""" The failure rate multiplier.  All failure rates will be multiplied by this
-value for display.  This allows failure rates to display without using
-scientific notation."""
 PLACES = 6
-""" Number of decimal places to show in numerical results."""
 RTK_MTIME = 10.0
-""" The default mission time for new RTK Programs."""
 
-# Variables to control GUI options.
 TABPOS = ['top', 'bottom', 'bottom']
-""" Location of tabs in the three main gtk.Notebook() widgets.\n\n
-Index   Notebook\n
-  0     Module Book\n
-  1     Work Book\n
-  2     List Book"""
 
 RTK_GUI_LAYOUT = 'basic'
-""" Layout of the GUI to use.  Possible options are:\n\n
-- basic: a single window embedded with the Module Book, Work Book, and List
-         Book.\n
-- advanced: multiple windows; one each for the Module Book, Work Book, and
-            List Book."""
 
-# Variables to hold various control parameters.
 METHOD = 'STANDARD'                         # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
@@ -233,9 +367,8 @@ class RTKConf(object):
         """
         Initializes the RTK configuration parser.
 
-        :param level: indicates which configuration file is to be read.
-                      One of 'site' or 'user'.
-        :type level: string
+        :param str level: indicates which configuration file is to be read.
+                          One of 'site' or 'user'.
         """
 
         if name == 'posix':
@@ -376,7 +509,7 @@ class RTKConf(object):
                 fixed.put(cmbDBType, 345, y_pos)
 
                 fixed.show_all()
-                dialog.vbox.pack_start(fixed)   # pylint: disable=E1101
+                dialog.vbox.pack_start(fixed)
 
                 if dialog.run() == -3:
                     RTKcomlist = []

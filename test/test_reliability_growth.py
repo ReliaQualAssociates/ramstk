@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -O
 """
 This is the test class for testing reliability growth algorithms and models.
 """
@@ -16,10 +16,13 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 import unittest
 
-import os, sys
+import os
+import sys
 sys.path.insert(0, os.path.abspath(".."))
+
 from numpy import nan
-from scipy.optimize import brentq, fsolve
+from scipy.optimize import fsolve
+
 from rtk._calculations_.growth import *
 
 
@@ -373,59 +376,6 @@ class TestGrowthAssessment(unittest.TestCase):
                                -0.0466074,
                                msg="FAIL: Scale-shape parameter covariance.")
 
-    def test_fisher_confidence_bounds(self):
-        """
-        Test of the Fisher matrix confidence bounds function.
-        """
-
-        # Check the 90% two-sided Fisher bounds on the shape parameter.
-        self.assertAlmostEqual(fisher_bounds(0.6142, 0.0171030, 0.9)[0],
-                               0.4675220,
-                               msg="FAIL: Fisher shape parameter lower bound.")
-        self.assertAlmostEqual(fisher_bounds(0.6142, 0.0171030, 0.9)[1],
-                               0.8068960,
-                               msg="FAIL: Fisher shape paramter upper bound.")
-
-        # Check the 90% two-sided Fisher bounds on the scale parameter.
-        self.assertAlmostEqual(fisher_bounds(0.4239, 0.0171030, 0.9)[0],
-                               0.2854660,
-                               msg="FAIL: Fisher scale parameter lower bound.")
-        self.assertAlmostEqual(fisher_bounds(0.4239, 0.0171030, 0.9)[1],
-                               0.6294662,
-                               msg="FAIL: Fisher scale parameter upper bound.")
-
-    def test_crow_confidence_bounds(self):
-        """
-        Test of the Crow confidence bounds function.
-        """
-
-        # Check the 90% two-sided Crow bounds on the shape parameter.
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 1)[0],
-                               0.4527382,
-                               msg="FAIL: Crow shape parameter lower bound.")
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 1)[1],
-                               0.9350102,
-                               msg="FAIL: Crow shape parameter upper bound.")
-
-        # Check the 90% two-sided Crow bounds on the scale parameter.
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 2)[0],
-                               0.2870038,
-                               msg="FAIL: Crow scale parameter lower bound.")
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 2)[1],
-                               0.5827364,
-                               msg="FAIL: Crow scale parameter upper bound.")
-
-        # Check the 90% two-sided Crow bounds on cumulative failure intensity.
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 3)[0],
-                               0.0240222)
-        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
-                                           0.9, 3)[1],
-                               0.0487749)
 
     def test_nhpp_power_law_regression_models(self):
         """
@@ -480,24 +430,62 @@ class TestGrowthAssessment(unittest.TestCase):
         # Test that all zeros are returned when the wrong confidence type is
         # passed.
 
+
+class TestFisherBounds(unittest.TestCase):
+    """
+    Class for testing functions used to calculate Crow confidence bounds.
+    """
+
+    def test_fisher_shape_parameter_bounds(self):
+        """
+        Test of the Fisher confidence bounds function for calculating the
+        alpha % bounds on teh shape parameter.
+        """
+
+        # Check the 90% two-sided Fisher bounds on the shape parameter.
+        self.assertAlmostEqual(fisher_bounds(0.6142, 0.0171030, 0.9)[0],
+                               0.4675220,
+                               msg="FAIL: Fisher shape parameter lower bound.")
+
+        self.assertAlmostEqual(fisher_bounds(0.6142, 0.0171030, 0.9)[1],
+                               0.8068960,
+                               msg="FAIL: Fisher shape paramter upper bound.")
+
+    def test_fisher_scale_parameter_bounds(self):
+        """
+        Test of the Fisher confidence bounds function for calculating the
+        alpha % bounds on teh scale parameter.
+        """
+
+        # Check the 90% two-sided Fisher bounds on the scale parameter.
+        self.assertAlmostEqual(fisher_bounds(0.4239, 0.0171030, 0.9)[0],
+                               0.2854660,
+                               msg="FAIL: Fisher scale parameter lower bound.")
+        self.assertAlmostEqual(fisher_bounds(0.4239, 0.0171030, 0.9)[1],
+                               0.6294662,
+                               msg="FAIL: Fisher scale parameter upper bound.")
+
     def test_nhpp_cumulative_mean_variance(self):
         """
-        Test of the NHPP - Power Law cumulative MTBF variance function.
+        Test of the function used to calculate the variance on the estimate of
+        the NHPP cumulative mean.
         """
 
         self.assertAlmostEqual(nhpp_mean_variance(22, 620.0, 0.4239422,
                                                   0.6142104),
                                36.1006787)
 
-    def test_nhpp_cumulative_mean_fisher_bounds(self):
+    def test_fisher_cum_mean_bounds(self):
         """
-        Test of the NHPP - Power Law cumulative MTBF Fisher matrix bounds.
+        Test of the Fisher confidence bounds function for calculating the
+        alpha % bounds for the cumulative MTBF.
         """
 
         self.assertAlmostEqual(fisher_bounds(28.1848929, 36.1006787, 0.9)[0],
                                21.4470736,
                                msg="FAIL: NHPP - Power Law cum. MTBF lower "
                                    "bound.")
+
         self.assertAlmostEqual(fisher_bounds(28.1848929, 36.1006787, 0.9)[1],
                                37.0394676,
                                msg="FAIL: NHPP - Power Law cum. MTBF upper "
@@ -505,33 +493,98 @@ class TestGrowthAssessment(unittest.TestCase):
 
     def test_nhpp_instantaneous_mean_variance(self):
         """
-        Test of the NHPP - Power Law instantaneous MTBF variance function.
+        Test of the function used to calculate the variance on the estimate of
+        the NHPP instantaneous mean.
         """
 
         self.assertAlmostEqual(nhpp_mean_variance(22, 620.0, 0.4239422,
                                                   0.6142104, metric=2),
                                191.3863557)
 
-    def test_nhpp_instantaneous_mean_fisher_bounds(self):
+    def test_fisher_inst_mean_bounds(self):
         """
-        Test of the NHPP - Power Law instantaneous MTBF Fisher matrix bounds.
+        Test of the Fisher confidence bounds function for calculating the
+        alpha % bounds for the instantaneous MTBF.
         """
 
         self.assertAlmostEqual(fisher_bounds(45.8914188, 191.3863557, 0.9)[0],
                                31.1852952)
+
         self.assertAlmostEqual(fisher_bounds(45.8914188, 191.3863557, 0.9)[1],
                                67.5325441)
 
-    def test_nhpp_instantaneous_failure_intensity_crow_bounds(self):
+
+class TestCrowBounds(unittest.TestCase):
+    """
+    Class for testing functions used to calculate Crow confidence bounds.
+    """
+
+    def test_crow_shape_parameter_bounds(self):
         """
-        Test of the NHPP - Power Law instantaneous failure intensity Crow
-        bounds.
+        Test of the Crow confidence bounds function for calculating the
+        alpha % bounds on teh shape parameter.
         """
 
+        # Check the Crow lower bound on the shape parameter.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 1)[0],
+                               0.4527382,
+                               msg="FAIL: Crow shape parameter lower bound.")
+
+        # Check the Crow upper bound on the shape parameter.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 1)[1],
+                               0.9350102,
+                               msg="FAIL: Crow shape parameter upper bound.")
+
+    def test_crow_scale_parameter_bounds(self):
+        """
+        Test of the Crow confidence bounds function for calculating the
+        alpha % bounds on the scale parameter.
+        """
+
+        # Check the Crow lower bound on the scale parameter.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 2)[0],
+                               0.2870038,
+                               msg="FAIL: Crow scale parameter lower bound.")
+
+        # Check the Crow upper bound on the scale parameter.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 2)[1],
+                               0.5827364,
+                               msg="FAIL: Crow scale parameter upper bound.")
+
+    def test_crow_cun_failure_rate_bounds(self):
+        """
+        Test of the Crow confidence bounds function for calculating the
+        alpha % bounds on the cumulative failure intensity.
+        """
+
+        # Check the Crow lower bound on cumulative failure intensity.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 3)[0],
+                               0.0240222)
+
+        # Check the Crow upper bound on cumulative failure intensity.
+        self.assertAlmostEqual(crow_bounds(22, 620.0, 0.4239422, 0.6142104,
+                                           0.9, 3)[1],
+                               0.0487749)
+
+    def test_crow_inst_failure_rate_bounds(self):
+        """
+        Test of the Crow confidence bounds function for calculating the
+        alpha % bounds on the instantaneous failure intensity.
+        """
+
+        # Check the Crow lower bound on instantaneous failure intensity.
         self.assertAlmostEqual(crow_bounds(22, 620.0, 0.0, 0.0, 0.9, 3)[0],
                                0.0240222)
+
+        # Check the Crow upper bound on instantaneous failure intensity.
         self.assertAlmostEqual(crow_bounds(22, 620.0, 0.0, 0.0, 0.9, 3)[1],
                                0.0487749)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -O
 """
 This is the test class for testing survival analysis algorithms and models.
 """
@@ -20,9 +20,11 @@ import numpy as np
 import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
+
 from rpy2 import robjects
 from rpy2.robjects import r as R
-from rtk.calculations import beta_bounds, moving_average
+
+from rtk.calculations import beta_bounds
 from rtk._calculations_.survival import *
 
 class TestSurvivalModels(unittest.TestCase):
