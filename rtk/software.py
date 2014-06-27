@@ -782,6 +782,31 @@ class Software(object):
     """
     The Software class represents the software items (modules and units) for
     the system being analyzed.
+
+    :ivar _dic_risk: Dictionary to hold risk factor values.
+    Key is the module name.  The values are lists of risk factors:
+
+    +-------+--------------------------+
+    | Index |       Risk Factor        |
+    +=======+==========================+
+    |   0   | Application              |
+    +-------+--------------------------+
+    |   1   | Development environment  |
+    +-------+--------------------------+
+    |   2   | Anomaly management       |
+    +-------+--------------------------+
+    |   3   | Requirement traceability |
+    +-------+--------------------------+
+    |   4   | Quality control          |
+    +-------+--------------------------+
+    |   5   | Language type            |
+    +-------+--------------------------+
+    |   6   | Complexity               |
+    +-------+--------------------------+
+    |   7   | Modularity               |
+    +-------+--------------------------+
+    |   8   | Overall                  |
+    +-------+--------------------------+
     """
 
     _csci_test_rankings = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],     # noqa
@@ -851,26 +876,10 @@ class Software(object):
         self._dic_pdr = {}
         self._dic_cdr = {}
         self._dic_trr = {}
-
-        # Dictionary to hold risk factor values.  The key is the module name.
-        # The values are lists of risk factors, where a list contains the
-        # following factors:
-        #   +-------+--------------------------+
-        #   | Index |       Risk Factor        |
-        #   +-------+--------------------------+
-        #   |   0   | Application              |
-        #   |   1   | Development environment  |
-        #   |   2   | Anomaly management       |
-        #   |   3   | Requirement traceability |
-        #   |   4   | Quality control          |
-        #   |   5   | Language type            |
-        #   |   6   | Complexity               |
-        #   |   7   | Modularity               |
-        #   |   8   | Overall                  |
-        #   +-------+--------------------------+
         self._dic_risk = {}
 
         # Define private Software class list attributes.
+        self._lst_handler_id = []
 
         # Define public Software class scalar attributes.
         self.revision_id = 0
@@ -952,7 +961,7 @@ class Software(object):
 
         # Create the main Software class treeview.
         (self.treeview,
-         self._col_order) = _widg.make_treeview('Software', 15, self._app,
+         self._lst_col_order) = _widg.make_treeview('Software', 15, self._app,
                                                 None, _conf.RTK_COLORS[6],
                                                 _conf.RTK_COLORS[7])
 
@@ -1340,6 +1349,13 @@ class Software(object):
                               None, None, 0)
         self.treeview.connect('row_activated', self._treeview_row_changed, 0)
 
+        # Connect the cells to the callback function.
+        for i in [3]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._software_tree_edit, i,
+                             self.treeview.get_model())
+
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
 
@@ -1498,9 +1514,10 @@ class Software(object):
             _fixed.put(self.cmbApplication, _x_pos, _y_pos[1])
             _fixed.put(self.cmbPhase, _x_pos, _y_pos[2])
 
-            _textbuffer = self.txtDescription.get_child().get_child()
-            _textbuffer.connect('focus-out-event', self._callback_entry,
-                                'text', 3)
+            _textview = self.txtDescription.get_child().get_child()
+            self._lst_handler_id.append(
+                _textview.connect('focus-out-event',
+                                  self._callback_entry, 'text', 3))
             self.cmbLevel.connect('changed', self._callback_combo, 2)
             self.cmbApplication.connect('changed', self._callback_combo, 4)
             self.cmbPhase.connect('changed', self._callback_combo, 36)
@@ -3782,7 +3799,7 @@ class Software(object):
 
             if _row is not None:
                 self.cmbLevel.set_active(int(self.level_id))
-                _buffer = self.txtDescription.get_child().get_child().get_buffer()  # noqa
+                _buffer = self.txtDescription.get_child().get_child().get_buffer()
                 try:
                     _buffer.set_text(self.description)
                 except TypeError:
@@ -4410,77 +4427,77 @@ class Software(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        self.revision_id = _model.get_value(_row, self._col_order[0])
-        self.software_id = _model.get_value(_row, self._col_order[1])
-        self.level_id = _model.get_value(_row, self._col_order[2])
-        self.description = _model.get_value(_row, self._col_order[3])
-        self.application_id = _model.get_value(_row, self._col_order[4])
-        self.development_id = _model.get_value(_row, self._col_order[5])
-        self.a_risk = _model.get_value(_row, self._col_order[6])
-        self.do = _model.get_value(_row, self._col_order[7])
-        self.dd = _model.get_value(_row, self._col_order[8])
-        self.dc = _model.get_value(_row, self._col_order[9])
-        self.d_risk = _model.get_value(_row, self._col_order[10])
-        self.am = _model.get_value(_row, self._col_order[11])
-        self.sa = _model.get_value(_row, self._col_order[12])
-        self.st = _model.get_value(_row, self._col_order[13])
-        self.dr = _model.get_value(_row, self._col_order[14])
-        self.sq = _model.get_value(_row, self._col_order[15])
-        self.s1 = _model.get_value(_row, self._col_order[16])
-        self.hloc = _model.get_value(_row, self._col_order[17])
-        self.aloc = _model.get_value(_row, self._col_order[18])
-        self.sloc = _model.get_value(_row, self._col_order[19])
-        self.sl = _model.get_value(_row, self._col_order[20])
-        self.ax = _model.get_value(_row, self._col_order[21])
-        self.bx = _model.get_value(_row, self._col_order[22])
-        self.cx = _model.get_value(_row, self._col_order[23])
-        self.nm = _model.get_value(_row, self._col_order[24])
-        self.sx = _model.get_value(_row, self._col_order[25])
-        self.um = _model.get_value(_row, self._col_order[26])
-        self.wm = _model.get_value(_row, self._col_order[27])
-        self.xm = _model.get_value(_row, self._col_order[28])
-        self.sm = _model.get_value(_row, self._col_order[29])
-        self.df = _model.get_value(_row, self._col_order[30])
-        self.sr = _model.get_value(_row, self._col_order[31])
-        self.s2 = _model.get_value(_row, self._col_order[32])
-        self.rpfom = _model.get_value(_row, self._col_order[33])
-        self.parent_module = _model.get_value(_row, self._col_order[34])
-        self.dev_assess_type = _model.get_value(_row, self._col_order[35])
-        self.phase_id = _model.get_value(_row, self._col_order[36])
-        self.tcl = _model.get_value(_row, self._col_order[37])
-        self.test_path = _model.get_value(_row, self._col_order[38])
-        self.category = _model.get_value(_row, self._col_order[39])
-        self.test_effort = _model.get_value(_row, self._col_order[40])
-        self.test_approach = _model.get_value(_row, self._col_order[41])
-        self.labor_hours_test = _model.get_value(_row, self._col_order[42])
-        self.labor_hours_dev = _model.get_value(_row, self._col_order[43])
-        self.budget_test = _model.get_value(_row, self._col_order[44])
-        self.budget_dev = _model.get_value(_row, self._col_order[45])
-        self.schedule_test = _model.get_value(_row, self._col_order[46])
-        self.schedule_dev = _model.get_value(_row, self._col_order[47])
-        self.branches = _model.get_value(_row, self._col_order[48])
-        self.branches_test = _model.get_value(_row, self._col_order[49])
-        self.inputs = _model.get_value(_row, self._col_order[50])
-        self.inputs_test = _model.get_value(_row, self._col_order[51])
-        self.nm_test = _model.get_value(_row, self._col_order[52])
-        self.interfaces = _model.get_value(_row, self._col_order[53])
-        self.interfaces_test = _model.get_value(_row, self._col_order[54])
-        self.te = _model.get_value(_row, self._col_order[55])
-        self.tm = _model.get_value(_row, self._col_order[56])
-        self.tc = _model.get_value(_row, self._col_order[57])
-        self.t_risk = _model.get_value(_row, self._col_order[58])
-        self.ft1 = _model.get_value(_row, self._col_order[59])
-        self.ft2 = _model.get_value(_row, self._col_order[60])
-        self.ren_avg = _model.get_value(_row, self._col_order[61])
-        self.ren_eot = _model.get_value(_row, self._col_order[62])
-        self.ec = _model.get_value(_row, self._col_order[63])
-        self.ev = _model.get_value(_row, self._col_order[64])
-        self.et = _model.get_value(_row, self._col_order[65])
-        self.os = _model.get_value(_row, self._col_order[66])
-        self.ew = _model.get_value(_row, self._col_order[67])
-        self.e_risk = _model.get_value(_row, self._col_order[68])
-        self.failure_rate = _model.get_value(_row, self._col_order[69])
-        self.failure_rate = _model.get_value(_row, self._col_order[69])
+        self.revision_id = _model.get_value(_row, self._lst_col_order[0])
+        self.software_id = _model.get_value(_row, self._lst_col_order[1])
+        self.level_id = _model.get_value(_row, self._lst_col_order[2])
+        self.description = _model.get_value(_row, self._lst_col_order[3])
+        self.application_id = _model.get_value(_row, self._lst_col_order[4])
+        self.development_id = _model.get_value(_row, self._lst_col_order[5])
+        self.a_risk = _model.get_value(_row, self._lst_col_order[6])
+        self.do = _model.get_value(_row, self._lst_col_order[7])
+        self.dd = _model.get_value(_row, self._lst_col_order[8])
+        self.dc = _model.get_value(_row, self._lst_col_order[9])
+        self.d_risk = _model.get_value(_row, self._lst_col_order[10])
+        self.am = _model.get_value(_row, self._lst_col_order[11])
+        self.sa = _model.get_value(_row, self._lst_col_order[12])
+        self.st = _model.get_value(_row, self._lst_col_order[13])
+        self.dr = _model.get_value(_row, self._lst_col_order[14])
+        self.sq = _model.get_value(_row, self._lst_col_order[15])
+        self.s1 = _model.get_value(_row, self._lst_col_order[16])
+        self.hloc = _model.get_value(_row, self._lst_col_order[17])
+        self.aloc = _model.get_value(_row, self._lst_col_order[18])
+        self.sloc = _model.get_value(_row, self._lst_col_order[19])
+        self.sl = _model.get_value(_row, self._lst_col_order[20])
+        self.ax = _model.get_value(_row, self._lst_col_order[21])
+        self.bx = _model.get_value(_row, self._lst_col_order[22])
+        self.cx = _model.get_value(_row, self._lst_col_order[23])
+        self.nm = _model.get_value(_row, self._lst_col_order[24])
+        self.sx = _model.get_value(_row, self._lst_col_order[25])
+        self.um = _model.get_value(_row, self._lst_col_order[26])
+        self.wm = _model.get_value(_row, self._lst_col_order[27])
+        self.xm = _model.get_value(_row, self._lst_col_order[28])
+        self.sm = _model.get_value(_row, self._lst_col_order[29])
+        self.df = _model.get_value(_row, self._lst_col_order[30])
+        self.sr = _model.get_value(_row, self._lst_col_order[31])
+        self.s2 = _model.get_value(_row, self._lst_col_order[32])
+        self.rpfom = _model.get_value(_row, self._lst_col_order[33])
+        self.parent_module = _model.get_value(_row, self._lst_col_order[34])
+        self.dev_assess_type = _model.get_value(_row, self._lst_col_order[35])
+        self.phase_id = _model.get_value(_row, self._lst_col_order[36])
+        self.tcl = _model.get_value(_row, self._lst_col_order[37])
+        self.test_path = _model.get_value(_row, self._lst_col_order[38])
+        self.category = _model.get_value(_row, self._lst_col_order[39])
+        self.test_effort = _model.get_value(_row, self._lst_col_order[40])
+        self.test_approach = _model.get_value(_row, self._lst_col_order[41])
+        self.labor_hours_test = _model.get_value(_row, self._lst_col_order[42])
+        self.labor_hours_dev = _model.get_value(_row, self._lst_col_order[43])
+        self.budget_test = _model.get_value(_row, self._lst_col_order[44])
+        self.budget_dev = _model.get_value(_row, self._lst_col_order[45])
+        self.schedule_test = _model.get_value(_row, self._lst_col_order[46])
+        self.schedule_dev = _model.get_value(_row, self._lst_col_order[47])
+        self.branches = _model.get_value(_row, self._lst_col_order[48])
+        self.branches_test = _model.get_value(_row, self._lst_col_order[49])
+        self.inputs = _model.get_value(_row, self._lst_col_order[50])
+        self.inputs_test = _model.get_value(_row, self._lst_col_order[51])
+        self.nm_test = _model.get_value(_row, self._lst_col_order[52])
+        self.interfaces = _model.get_value(_row, self._lst_col_order[53])
+        self.interfaces_test = _model.get_value(_row, self._lst_col_order[54])
+        self.te = _model.get_value(_row, self._lst_col_order[55])
+        self.tm = _model.get_value(_row, self._lst_col_order[56])
+        self.tc = _model.get_value(_row, self._lst_col_order[57])
+        self.t_risk = _model.get_value(_row, self._lst_col_order[58])
+        self.ft1 = _model.get_value(_row, self._lst_col_order[59])
+        self.ft2 = _model.get_value(_row, self._lst_col_order[60])
+        self.ren_avg = _model.get_value(_row, self._lst_col_order[61])
+        self.ren_eot = _model.get_value(_row, self._lst_col_order[62])
+        self.ec = _model.get_value(_row, self._lst_col_order[63])
+        self.ev = _model.get_value(_row, self._lst_col_order[64])
+        self.et = _model.get_value(_row, self._lst_col_order[65])
+        self.os = _model.get_value(_row, self._lst_col_order[66])
+        self.ew = _model.get_value(_row, self._lst_col_order[67])
+        self.e_risk = _model.get_value(_row, self._lst_col_order[68])
+        self.failure_rate = _model.get_value(_row, self._lst_col_order[69])
+        self.failure_rate = _model.get_value(_row, self._lst_col_order[69])
 
         return False
 
@@ -4697,16 +4714,14 @@ class Software(object):
 
         :param __treeview: one of the Software class gtk.TreeView().
         :type __treeview: gtk.TreeView
-        :param __path: the activated row's path.
-        :type __path: string
+        :param str __path: the activated row's path.
         :param __column: the activated gtk.TreeViewColumn().
         :type __column: gtk.TreeViewColumn
-        :param index: determines which Software class gtk.TreeView() had the
-                      change:
-                      0 = main treeview
-                      1 = incident list treeview
-                      2 = incident action list treeview
-        :type index: integer
+        :param int index: determines which Software class gtk.TreeView() had
+                          the change:
+                          * 0 = main treeview
+                          * 1 = incident list treeview
+                          * 2 = incident action list treeview
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -4733,6 +4748,44 @@ class Software(object):
                 return False
             else:
                 return True
+
+    def _software_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Requirement Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 3:
+            _textview = self.txtDescription.get_child().get_child()
+            _buffer = _textview.get_buffer()
+            _textview.handler_block(self._lst_handler_id[0])
+            _buffer.set_text(str(new_text))
+            _textview.handler_unblock(self._lst_handler_id[0])
+
+        return False
 
     def _add_module(self, __button, level):
         """
@@ -4948,76 +5001,76 @@ class Software(object):
             :rtype: boolean
             """
 
-            _values = (model.get_value(row, self._col_order[2]),
-                       model.get_value(row, self._col_order[3]),
-                       model.get_value(row, self._col_order[4]),
-                       model.get_value(row, self._col_order[5]),
-                       model.get_value(row, self._col_order[6]),
-                       model.get_value(row, self._col_order[7]),
-                       model.get_value(row, self._col_order[8]),
-                       model.get_value(row, self._col_order[9]),
-                       model.get_value(row, self._col_order[10]),
-                       model.get_value(row, self._col_order[11]),
-                       model.get_value(row, self._col_order[12]),
-                       model.get_value(row, self._col_order[13]),
-                       model.get_value(row, self._col_order[14]),
-                       model.get_value(row, self._col_order[15]),
-                       model.get_value(row, self._col_order[16]),
-                       model.get_value(row, self._col_order[17]),
-                       model.get_value(row, self._col_order[18]),
-                       model.get_value(row, self._col_order[19]),
-                       model.get_value(row, self._col_order[20]),
-                       model.get_value(row, self._col_order[21]),
-                       model.get_value(row, self._col_order[22]),
-                       model.get_value(row, self._col_order[23]),
-                       model.get_value(row, self._col_order[24]),
-                       model.get_value(row, self._col_order[25]),
-                       model.get_value(row, self._col_order[26]),
-                       model.get_value(row, self._col_order[27]),
-                       model.get_value(row, self._col_order[28]),
-                       model.get_value(row, self._col_order[29]),
-                       model.get_value(row, self._col_order[30]),
-                       model.get_value(row, self._col_order[31]),
-                       model.get_value(row, self._col_order[32]),
-                       model.get_value(row, self._col_order[33]),
-                       model.get_value(row, self._col_order[34]),
-                       model.get_value(row, self._col_order[35]),
-                       model.get_value(row, self._col_order[36]),
-                       model.get_value(row, self._col_order[37]),
-                       model.get_value(row, self._col_order[38]),
-                       model.get_value(row, self._col_order[39]),
-                       model.get_value(row, self._col_order[40]),
-                       model.get_value(row, self._col_order[41]),
-                       model.get_value(row, self._col_order[42]),
-                       model.get_value(row, self._col_order[43]),
-                       model.get_value(row, self._col_order[44]),
-                       model.get_value(row, self._col_order[45]),
-                       model.get_value(row, self._col_order[46]),
-                       model.get_value(row, self._col_order[47]),
-                       model.get_value(row, self._col_order[48]),
-                       model.get_value(row, self._col_order[49]),
-                       model.get_value(row, self._col_order[50]),
-                       model.get_value(row, self._col_order[51]),
-                       model.get_value(row, self._col_order[52]),
-                       model.get_value(row, self._col_order[53]),
-                       model.get_value(row, self._col_order[54]),
-                       model.get_value(row, self._col_order[55]),
-                       model.get_value(row, self._col_order[56]),
-                       model.get_value(row, self._col_order[57]),
-                       model.get_value(row, self._col_order[58]),
-                       model.get_value(row, self._col_order[59]),
-                       model.get_value(row, self._col_order[60]),
-                       model.get_value(row, self._col_order[61]),
-                       model.get_value(row, self._col_order[62]),
-                       model.get_value(row, self._col_order[63]),
-                       model.get_value(row, self._col_order[64]),
-                       model.get_value(row, self._col_order[65]),
-                       model.get_value(row, self._col_order[66]),
-                       model.get_value(row, self._col_order[67]),
-                       model.get_value(row, self._col_order[68]),
-                       model.get_value(row, self._col_order[69]),
-                       model.get_value(row, self._col_order[0]),
-                       model.get_value(row, self._col_order[1]))
+            _values = (model.get_value(row, self._lst_col_order[2]),
+                       model.get_value(row, self._lst_col_order[3]),
+                       model.get_value(row, self._lst_col_order[4]),
+                       model.get_value(row, self._lst_col_order[5]),
+                       model.get_value(row, self._lst_col_order[6]),
+                       model.get_value(row, self._lst_col_order[7]),
+                       model.get_value(row, self._lst_col_order[8]),
+                       model.get_value(row, self._lst_col_order[9]),
+                       model.get_value(row, self._lst_col_order[10]),
+                       model.get_value(row, self._lst_col_order[11]),
+                       model.get_value(row, self._lst_col_order[12]),
+                       model.get_value(row, self._lst_col_order[13]),
+                       model.get_value(row, self._lst_col_order[14]),
+                       model.get_value(row, self._lst_col_order[15]),
+                       model.get_value(row, self._lst_col_order[16]),
+                       model.get_value(row, self._lst_col_order[17]),
+                       model.get_value(row, self._lst_col_order[18]),
+                       model.get_value(row, self._lst_col_order[19]),
+                       model.get_value(row, self._lst_col_order[20]),
+                       model.get_value(row, self._lst_col_order[21]),
+                       model.get_value(row, self._lst_col_order[22]),
+                       model.get_value(row, self._lst_col_order[23]),
+                       model.get_value(row, self._lst_col_order[24]),
+                       model.get_value(row, self._lst_col_order[25]),
+                       model.get_value(row, self._lst_col_order[26]),
+                       model.get_value(row, self._lst_col_order[27]),
+                       model.get_value(row, self._lst_col_order[28]),
+                       model.get_value(row, self._lst_col_order[29]),
+                       model.get_value(row, self._lst_col_order[30]),
+                       model.get_value(row, self._lst_col_order[31]),
+                       model.get_value(row, self._lst_col_order[32]),
+                       model.get_value(row, self._lst_col_order[33]),
+                       model.get_value(row, self._lst_col_order[34]),
+                       model.get_value(row, self._lst_col_order[35]),
+                       model.get_value(row, self._lst_col_order[36]),
+                       model.get_value(row, self._lst_col_order[37]),
+                       model.get_value(row, self._lst_col_order[38]),
+                       model.get_value(row, self._lst_col_order[39]),
+                       model.get_value(row, self._lst_col_order[40]),
+                       model.get_value(row, self._lst_col_order[41]),
+                       model.get_value(row, self._lst_col_order[42]),
+                       model.get_value(row, self._lst_col_order[43]),
+                       model.get_value(row, self._lst_col_order[44]),
+                       model.get_value(row, self._lst_col_order[45]),
+                       model.get_value(row, self._lst_col_order[46]),
+                       model.get_value(row, self._lst_col_order[47]),
+                       model.get_value(row, self._lst_col_order[48]),
+                       model.get_value(row, self._lst_col_order[49]),
+                       model.get_value(row, self._lst_col_order[50]),
+                       model.get_value(row, self._lst_col_order[51]),
+                       model.get_value(row, self._lst_col_order[52]),
+                       model.get_value(row, self._lst_col_order[53]),
+                       model.get_value(row, self._lst_col_order[54]),
+                       model.get_value(row, self._lst_col_order[55]),
+                       model.get_value(row, self._lst_col_order[56]),
+                       model.get_value(row, self._lst_col_order[57]),
+                       model.get_value(row, self._lst_col_order[58]),
+                       model.get_value(row, self._lst_col_order[59]),
+                       model.get_value(row, self._lst_col_order[60]),
+                       model.get_value(row, self._lst_col_order[61]),
+                       model.get_value(row, self._lst_col_order[62]),
+                       model.get_value(row, self._lst_col_order[63]),
+                       model.get_value(row, self._lst_col_order[64]),
+                       model.get_value(row, self._lst_col_order[65]),
+                       model.get_value(row, self._lst_col_order[66]),
+                       model.get_value(row, self._lst_col_order[67]),
+                       model.get_value(row, self._lst_col_order[68]),
+                       model.get_value(row, self._lst_col_order[69]),
+                       model.get_value(row, self._lst_col_order[0]),
+                       model.get_value(row, self._lst_col_order[1]))
 
             _query = "UPDATE tbl_software \
                       SET fld_level_id=%d, fld_description='%s', \
@@ -5055,7 +5108,7 @@ class Software(object):
                                           u"problem persists you can report "
                                           u"it to bugs@reliaqual.com.") %
                                         model.get_value(row,
-                                                        self._col_order[3]))
+                                                        self._lst_col_order[3]))
                 return True
 
             return False
@@ -5278,28 +5331,28 @@ class Software(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _software_id = _model.get_value(_row, self._col_order[1])
+        _software_id = _model.get_value(_row, self._lst_col_order[1])
 
         _model.set_value(_row, 37, self.cmbTCL.get_active())
         _model.set_value(_row, 38, self.cmbTestPath.get_active())
 
-        _values = (_model.get_value(_row, self._col_order[37]),
-                   _model.get_value(_row, self._col_order[38]),
-                   _model.get_value(_row, self._col_order[40]),
-                   _model.get_value(_row, self._col_order[41]),
-                   _model.get_value(_row, self._col_order[42]),
-                   _model.get_value(_row, self._col_order[43]),
-                   _model.get_value(_row, self._col_order[44]),
-                   _model.get_value(_row, self._col_order[45]),
-                   _model.get_value(_row, self._col_order[46]),
-                   _model.get_value(_row, self._col_order[47]),
-                   _model.get_value(_row, self._col_order[48]),
-                   _model.get_value(_row, self._col_order[49]),
-                   _model.get_value(_row, self._col_order[50]),
-                   _model.get_value(_row, self._col_order[51]),
-                   _model.get_value(_row, self._col_order[52]),
-                   _model.get_value(_row, self._col_order[53]),
-                   _model.get_value(_row, self._col_order[54]),
+        _values = (_model.get_value(_row, self._lst_col_order[37]),
+                   _model.get_value(_row, self._lst_col_order[38]),
+                   _model.get_value(_row, self._lst_col_order[40]),
+                   _model.get_value(_row, self._lst_col_order[41]),
+                   _model.get_value(_row, self._lst_col_order[42]),
+                   _model.get_value(_row, self._lst_col_order[43]),
+                   _model.get_value(_row, self._lst_col_order[44]),
+                   _model.get_value(_row, self._lst_col_order[45]),
+                   _model.get_value(_row, self._lst_col_order[46]),
+                   _model.get_value(_row, self._lst_col_order[47]),
+                   _model.get_value(_row, self._lst_col_order[48]),
+                   _model.get_value(_row, self._lst_col_order[49]),
+                   _model.get_value(_row, self._lst_col_order[50]),
+                   _model.get_value(_row, self._lst_col_order[51]),
+                   _model.get_value(_row, self._lst_col_order[52]),
+                   _model.get_value(_row, self._lst_col_order[53]),
+                   _model.get_value(_row, self._lst_col_order[54]),
                    _software_id)
         _query = "UPDATE tbl_software \
                   SET fld_tcl=%d, fld_test_path=%d, fld_test_effort=%d, \
@@ -5874,15 +5927,15 @@ class Software(object):
             self._dic_risk[_software_id][7] = _SM
             self._dic_risk[_software_id][8] = _rpfom
 
-            model.set_value(row, self._col_order[6], _A)
-            model.set_value(row, self._col_order[10], _D)
-            model.set_value(row, self._col_order[12], _SA)
-            model.set_value(row, self._col_order[13], _ST)
-            model.set_value(row, self._col_order[15], _SQ)
-            model.set_value(row, self._col_order[20], _SL)
-            model.set_value(row, self._col_order[25], _SX)
-            model.set_value(row, self._col_order[29], _SM)
-            model.set_value(row, self._col_order[33], _rpfom)
+            model.set_value(row, self._lst_col_order[6], _A)
+            model.set_value(row, self._lst_col_order[10], _D)
+            model.set_value(row, self._lst_col_order[12], _SA)
+            model.set_value(row, self._lst_col_order[13], _ST)
+            model.set_value(row, self._lst_col_order[15], _SQ)
+            model.set_value(row, self._lst_col_order[20], _SL)
+            model.set_value(row, self._lst_col_order[25], _SX)
+            model.set_value(row, self._lst_col_order[29], _SM)
+            model.set_value(row, self._lst_col_order[33], _rpfom)
 
             return False
 
@@ -5900,7 +5953,7 @@ class Software(object):
                  float(len(self._dic_risk.values()))    # noqa
 
         self._dic_risk[_model.get_value(_row, 1)][8] = _rpfom
-        _model.set_value(_row, self._col_order[33], _rpfom)
+        _model.set_value(_row, self._lst_col_order[33], _rpfom)
 
         # Update the risk map.
         _model = self.tvwRiskMap.get_model()

@@ -1516,11 +1516,11 @@ class Requirement(object):
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: gtk.CellRenderer
-        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
-                            that was edited.
-        :param string new_text: the new text in the edited gtk.CellRenderer().
-        :param integer position: the column position of the edited
-                                 gtk.CellRenderer().
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
         :type model: gtk.TreeModel
         """
