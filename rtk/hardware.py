@@ -73,6 +73,63 @@ class Hardware(object):
     """
     The Hardware class represents the hardware items (assemblies and
     components) in the system being analyzed.
+
+    :ivar _dicModeCA: Dictionary to carry MIL-STD-1629A failure mode values.
+    Key is the mode ID; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Effect probability        |
+    +-------+---------------------------+
+    |   1   | Mode ratio                |
+    +-------+---------------------------+
+    |   2   | Item hazard rate          |
+    +-------+---------------------------+
+    |   3   | Mode operating time       |
+    +-------+---------------------------+
+    |   4   | Severity classification   |
+    +-------+---------------------------+
+    |   5   | Mode criticality          |
+    +-------+---------------------------+
+    |   6   | Mode hazard rate          |
+    +-------+---------------------------+
+
+    :ivar _dicItemCA: Dictionary to carry MIL-STD-1629A hardware item values.
+    Key is the hardware ID; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Failure mode ID           |
+    +-------+---------------------------+
+    |   1   | Severity classification   |
+    +-------+---------------------------+
+    |   2   | Item criticality          |
+    +-------+---------------------------+
+
+    :ivar _dicRPN: Dictionary to carry RPN hardware item values.
+    Key is the failure mechanism ID; value is a list with the following:
+
+    +-------+---------------------------------------+
+    | Index | Information                           |
+    +=======+=======================================+
+    |   0   | Severity rating                       |
+    +-------+---------------------------------------+
+    |   1   | Occurrence rating                     |
+    +-------+---------------------------------------+
+    |   2   | Detection rating                      |
+    +-------+---------------------------------------+
+    |   3   | RPN                                   |
+    +-------+---------------------------------------+
+    |   4   | Severity rating after taking action   |
+    +-------+---------------------------------------+
+    |   5   | Occurrence rating after taking action |
+    +-------+---------------------------------------+
+    |   6   | Detection rating after taking action  |
+    +-------+---------------------------------------+
+    |   7   | RPN after taking action               |
+    +-------+---------------------------------------+
     """
 
     def __init__(self, application):
@@ -98,40 +155,15 @@ class Hardware(object):
         self._mechanisms = {}
         self._fmeca_controls = {}
         self._fmeca_actions = {}
-
         self._dicModeCA = {}
-        """Dictionary to carry MIL-STD-1629A failure mode values.  Key is the
-        mode ID; value is a list with the following:\n
-        | 0 | Effect probability\n
-        | 1 | Mode ratio\n
-        | 2 | Item hazard rate\n
-        | 3 | Mode operating time\n
-        | 4 | Severity classification\n
-        | 5 | Mode criticality\n
-        | 6 | Mode hazard rate"""
         self._ItemCA = {}
-        """Dictionary to carry MIL-STD-1629A hardware item values.  Key is the
-        hardware ID; value is a list with the following:\n
-        | 0 | Failure mode ID\n
-        | 1 | Severity classification\n
-        | 2 | Item criticality"""
         self._rpnsev = {}                   # Carries RPN severity values.
         self._RPN = {}
-        """Dictionary to carry RPN hardware item values.  Key is the failure
-        mechanism ID; value is a list with the following:\n
-        | 0 | Severity rating\n
-        | 1 | Occurrence rating\n
-        | 2 | Detection rating\n
-        | 3 | RPN\n
-        | 4 | Severity rating after taking action\n
-        | 5 | Occurrence rating after taking action\n
-        | 6 | Detection rating after taking action\n
-        | 7 | RPN after taking action"""
 
         # Define private Hardware class list attributes.
-        self._col_order = []
         self._risk_col_order = []
         self._sia_col_order = []
+        self._lst_handler_id = []
 
         # Define public Hardware class scalar attributes.
         self.revision_id = 0
@@ -295,18 +327,18 @@ class Hardware(object):
         self.txtAltPartNum = _widg.make_entry()
         self.txtRefDes = _widg.make_entry()
         self.txtCompRefDes = _widg.make_entry()
-        self.txtQuantity = _widg.make_entry()
+        self.txtQuantity = _widg.make_entry(width=50)
         self.txtDescription = _widg.make_entry(width=700)
         self.txtCAGECode = _widg.make_entry()
         self.txtLCN = _widg.make_entry()
         self.txtNSN = _widg.make_entry()
-        self.txtYearMade = _widg.make_entry()
+        self.txtYearMade = _widg.make_entry(width=100)
         self.txtSpecification = _widg.make_entry()
         self.txtPageNum = _widg.make_entry()
         self.txtFigNum = _widg.make_entry()
         self.txtImageFile = _widg.make_entry()
         self.txtAttachments = _widg.make_entry()
-        self.txtMissionTime = _widg.make_entry()
+        self.txtMissionTime = _widg.make_entry(width=75)
         self.txtRevisionID = _widg.make_entry(width=50, editable=False)
         self.txtRemarks = _widg.make_text_view(width=400)
 
@@ -926,7 +958,7 @@ class Hardware(object):
 
             _max1 = 0
             _max2 = 0
-            (_max1_,
+            (_max1,
              _y_pos1_) = _widg.make_labels(_labels, _fxdGenDataQuad1_, 5, 5)
 
             # Create the labels for quadrant #3.
@@ -934,66 +966,67 @@ class Hardware(object):
                        _(u"NSN:"), _(u"Manufacture Year:")]
             (_max2,
              _y_pos2_) = _widg.make_labels(_labels, _fxdGenDataQuad3_, 5, 5)
-            _x_pos_ = max(_max1, _max2) + 20
+            _x_pos_ = max(_max1, _max2) + 25
 
             # Place the quadrant #1 widgets.
             self.txtName.set_tooltip_text(_(u"Displays the name of the "
                                             u"selected assembly."))
-            _fxdGenDataQuad1_.put(self.txtName, _x_pos_, _y_pos1_[0])
-            self.txtName.connect('focus-out-event',
-                                 self._callback_entry, 'text', 58)
-
             self.txtPartNum.set_tooltip_text(_(u"Displays the part number of "
                                                u"the selected assembly."))
-            _fxdGenDataQuad1_.put(self.txtPartNum, _x_pos_, _y_pos1_[1])
-            self.txtPartNum.connect('focus-out-event',
-                                    self._callback_entry, 'text', 64)
-
             self.txtAltPartNum.set_tooltip_text(_(u"Displays an alternative "
                                                   u"part number for the "
                                                   u"selected assembly."))
-            _fxdGenDataQuad1_.put(self.txtAltPartNum, _x_pos_, _y_pos1_[2])
-            self.txtAltPartNum.connect('focus-out-event',
-                                       self._callback_entry, 'text', 4)
-
             self.cmbCategory.set_tooltip_text(_(u"Select the part type for "
                                                 u"this component."))
-            _fxdGenDataQuad1_.put(self.lblCategory, 5, _y_pos1_[3])
-            _fxdGenDataQuad1_.put(self.cmbCategory, _x_pos_, _y_pos1_[3])
-            self.cmbCategory.connect('changed', self._callback_combo, 511)
-
             self.cmbSubcategory.set_tooltip_text(_(u"Select the part sub-type "
                                                    u"for this component."))
-            _fxdGenDataQuad1_.put(self.lblSubcategory, 5, _y_pos1_[4])
-            _fxdGenDataQuad1_.put(self.cmbSubcategory, _x_pos_, _y_pos1_[4])
-            self.cmbSubcategory.connect('changed', self._callback_combo, 578)
-
             self.txtRefDes.set_tooltip_text(_(u"Displays the reference "
                                               u"designator of the selected "
                                               u"assembly."))
-            _fxdGenDataQuad1_.put(self.txtRefDes, _x_pos_, _y_pos1_[5])
-            self.txtRefDes.connect('focus-out-event',
-                                   self._callback_entry, 'text', 68)
-
             self.txtCompRefDes.set_tooltip_text(_(u"Displays the composite "
                                                   u"reference designator of "
                                                   u"the selected assembly."))
-            _fxdGenDataQuad1_.put(self.txtCompRefDes, _x_pos_, _y_pos1_[6])
-            self.txtCompRefDes.connect('focus-out-event',
-                                       self._callback_entry, 'text', 12)
-
             self.txtQuantity.set_tooltip_text(_(u"Displays the quantity of "
                                                 u"the selected assembly."))
-            _fxdGenDataQuad1_.put(self.txtQuantity, _x_pos_, _y_pos1_[7])
-            self.txtQuantity.connect('focus-out-event',
-                                     self._callback_entry, 'int', 67)
-
             self.txtDescription.set_tooltip_text(_(u"Displays the description "
                                                    u"of the selected "
                                                    u"assembly."))
+
+            _fxdGenDataQuad1_.put(self.txtName, _x_pos_, _y_pos1_[0])
+            _fxdGenDataQuad1_.put(self.txtPartNum, _x_pos_, _y_pos1_[1])
+            _fxdGenDataQuad1_.put(self.txtAltPartNum, _x_pos_, _y_pos1_[2])
+            _fxdGenDataQuad1_.put(self.lblCategory, 5, _y_pos1_[3])
+            _fxdGenDataQuad1_.put(self.cmbCategory, _x_pos_, _y_pos1_[3])
+            _fxdGenDataQuad1_.put(self.lblSubcategory, 5, _y_pos1_[4])
+            _fxdGenDataQuad1_.put(self.cmbSubcategory, _x_pos_, _y_pos1_[4])
+            _fxdGenDataQuad1_.put(self.txtRefDes, _x_pos_, _y_pos1_[5])
+            _fxdGenDataQuad1_.put(self.txtCompRefDes, _x_pos_, _y_pos1_[6])
+            _fxdGenDataQuad1_.put(self.txtQuantity, _x_pos_, _y_pos1_[7])
             _fxdGenDataQuad1_.put(self.txtDescription, _x_pos_, _y_pos1_[8])
-            self.txtDescription.connect('focus-out-event',
-                                        self._callback_entry, 'text', 17)
+
+            self._lst_handler_id.append(
+                self.txtName.connect('focus-out-event',
+                                     self._callback_entry, 'text', 58))
+            self._lst_handler_id.append(
+                self.txtPartNum.connect('focus-out-event',
+                                        self._callback_entry, 'text', 64))
+            self._lst_handler_id.append(
+                self.txtAltPartNum.connect('focus-out-event',
+                                           self._callback_entry, 'text', 4))
+            self.cmbCategory.connect('changed', self._callback_combo, 511)
+            self.cmbSubcategory.connect('changed', self._callback_combo, 578)
+            self._lst_handler_id.append(
+                self.txtRefDes.connect('focus-out-event',
+                                       self._callback_entry, 'text', 68))
+            self._lst_handler_id.append(
+                self.txtCompRefDes.connect('focus-out-event',
+                                           self._callback_entry, 'text', 12))
+            self._lst_handler_id.append(
+                self.txtQuantity.connect('focus-out-event',
+                                         self._callback_entry, 'int', 67))
+            self._lst_handler_id.append(
+                self.txtDescription.connect('focus-out-event',
+                                            self._callback_entry, 'text', 17))
 
             _fxdGenDataQuad1_.show_all()
 
@@ -1001,38 +1034,39 @@ class Hardware(object):
             self.cmbManufacturer.set_tooltip_text(_(u"Displays the "
                                                     u"manufacturer of the "
                                                     u"selected assembly."))
-            _fxdGenDataQuad3_.put(self.cmbManufacturer, _x_pos_, _y_pos2_[0])
-            self.cmbManufacturer.connect('changed',
-                                         self._callback_combo, 43)
-
             self.txtCAGECode.set_tooltip_text(_(u"Displays the Commercial and "
                                                 u"Government Entity (CAGE) "
                                                 u"code of the selected "
                                                 u"assembly."))
-            _fxdGenDataQuad3_.put(self.txtCAGECode, _x_pos_, _y_pos2_[1])
-            self.txtCAGECode.connect('focus-out-event',
-                                     self._callback_entry, 'text', 9)
-
             self.txtLCN.set_tooltip_text(_(u"Displays the logistics control "
                                            u"number (LCN) of the selected "
                                            u"assembly."))
-            _fxdGenDataQuad3_.put(self.txtLCN, _x_pos_, _y_pos2_[2])
-            self.txtLCN.connect('focus-out-event',
-                                self._callback_entry, 'text', 41)
-
             self.txtNSN.set_tooltip_text(_(u"Displays the national stock "
                                            u"number (NSN) of the selected "
                                            u"assembly."))
-            _fxdGenDataQuad3_.put(self.txtNSN, _x_pos_, _y_pos2_[3])
-            self.txtNSN.connect('focus-out-event',
-                                self._callback_entry, 'text', 59)
-
             self.txtYearMade.set_tooltip_text(_(u"Displays the year the "
                                                 u"selected assembly was "
                                                 u"manufactured."))
+            _fxdGenDataQuad3_.put(self.cmbManufacturer, _x_pos_, _y_pos2_[0])
+            _fxdGenDataQuad3_.put(self.txtCAGECode, _x_pos_, _y_pos2_[1])
+            _fxdGenDataQuad3_.put(self.txtLCN, _x_pos_, _y_pos2_[2])
+            _fxdGenDataQuad3_.put(self.txtNSN, _x_pos_, _y_pos2_[3])
             _fxdGenDataQuad3_.put(self.txtYearMade, _x_pos_, _y_pos2_[4])
-            self.txtYearMade.connect('focus-out-event',
-                                     self._callback_entry, 'int', 87)
+
+            self.cmbManufacturer.connect('changed',
+                                         self._callback_combo, 43)
+            self._lst_handler_id.append(
+                self.txtCAGECode.connect('focus-out-event',
+                                         self._callback_entry, 'text', 9))
+            self._lst_handler_id.append(
+                self.txtLCN.connect('focus-out-event',
+                                    self._callback_entry, 'text', 41))
+            self._lst_handler_id.append(
+                self.txtNSN.connect('focus-out-event',
+                                    self._callback_entry, 'text', 59))
+            self._lst_handler_id.append(
+                self.txtYearMade.connect('focus-out-event',
+                                         self._callback_entry, 'int', 87))
 
             _fxdGenDataQuad3_.show_all()
 
@@ -1051,76 +1085,77 @@ class Hardware(object):
                        _(u"Remarks:")]
             (_max2,
              _y_pos2_) = _widg.make_labels(_labels, _fxdGenDataQuad4_, 5, 5)
-            _x_pos_ = max(_max1, _max2) + 20
+            _x_pos_ = max(_max1, _max2) + 25
 
             # Place the quadrant #2 widgets.
             self.txtSpecification.set_tooltip_text(_(u"Displays the governing "
                                                      u"specification for the "
                                                      u"selected assembly, if "
                                                      u"any."))
-            _fxdGenDataQuad2_.put(self.txtSpecification, _x_pos_, _y_pos1_[0])
-            self.txtSpecification.connect('focus-out-event',
-                                          self._callback_entry, 'text', 77)
-
             self.txtPageNum.set_tooltip_text(_(u"Displays the governing "
                                                u"specification page number "
                                                u"for the selected assembly."))
-            _fxdGenDataQuad2_.put(self.txtPageNum, _x_pos_, _y_pos1_[1])
-            self.txtPageNum.connect('focus-out-event',
-                                    self._callback_entry, 'text', 61)
-
             self.txtFigNum.set_tooltip_text(_(u"Displays the governing "
                                               u"specification figure number "
                                               u"for the selected assembly."))
-            _fxdGenDataQuad2_.put(self.txtFigNum, _x_pos_, _y_pos1_[2])
-            self.txtFigNum.connect('focus-out-event',
-                                   self._callback_entry, 'text', 36)
-
             self.txtImageFile.set_tooltip_text(_(u"Displays the URL to an "
                                                  u"image of the selected "
                                                  u"assembly."))
-            _fxdGenDataQuad2_.put(self.txtImageFile, _x_pos_, _y_pos1_[3])
-            self.txtImageFile.connect('focus-out-event',
-                                      self._callback_entry, 'text', 38)
-
             self.txtAttachments.set_tooltip_text(_(u"Displays the URL to an "
                                                    u"attachment associated "
                                                    u"with the selected "
                                                    u"assembly."))
-            _fxdGenDataQuad2_.put(self.txtAttachments, _x_pos_, _y_pos1_[4])
-            self.txtAttachments.connect('focus-out-event',
-                                        self._callback_entry, 'text', 6)
-
             self.txtMissionTime.set_tooltip_text(_(u"Displays the mission "
                                                    u"time for the selected "
                                                    u"assembly."))
+
+            _fxdGenDataQuad2_.put(self.txtSpecification, _x_pos_, _y_pos1_[0])
+            _fxdGenDataQuad2_.put(self.txtPageNum, _x_pos_, _y_pos1_[1])
+            _fxdGenDataQuad2_.put(self.txtFigNum, _x_pos_, _y_pos1_[2])
+            _fxdGenDataQuad2_.put(self.txtImageFile, _x_pos_, _y_pos1_[3])
+            _fxdGenDataQuad2_.put(self.txtAttachments, _x_pos_, _y_pos1_[4])
             _fxdGenDataQuad2_.put(self.txtMissionTime, _x_pos_, _y_pos1_[5])
-            self.txtMissionTime.connect('focus-out-event',
-                                        self._callback_entry, 'float', 45)
+
+            self._lst_handler_id.append(
+                self.txtSpecification.connect('focus-out-event',
+                                              self._callback_entry,
+                                              'text', 77))
+            self._lst_handler_id.append(
+                self.txtPageNum.connect('focus-out-event',
+                                        self._callback_entry, 'text', 61))
+            self._lst_handler_id.append(
+                self.txtFigNum.connect('focus-out-event',
+                                       self._callback_entry, 'text', 36))
+            self.txtImageFile.connect('focus-out-event', self._callback_entry,
+                                      'text', 38)
+            self.txtAttachments.connect('focus-out-event',
+                                        self._callback_entry, 'text', 6)
+            self._lst_handler_id.append(
+                self.txtMissionTime.connect('focus-out-event',
+                                            self._callback_entry, 'float', 45))
 
             _fxdGenDataQuad2_.show_all()
 
             # Place the quadrant #4 widgets.
             self.txtRevisionID.set_tooltip_text(_(u"Displays the currently "
                                                   u"selected revision."))
-            _fxdGenDataQuad4_.put(self.txtRevisionID, _x_pos_, _y_pos2_[0])
-
             self.chkRepairable.set_tooltip_text(_(u"Indicates whether or not "
                                                   u"the selected assembly is "
                                                   u"repairable."))
-            _fxdGenDataQuad4_.put(self.chkRepairable, _x_pos_, _y_pos2_[1])
-            self.chkRepairable.connect('toggled', self._callback_check, 75)
-
             self.chkTagged.set_tooltip_text(_(u"Indicates whether or not the "
                                               u"selected assembly is tagged.  "
                                               u"A tagged assembly has no "
                                               u"specific meaning."))
-            _fxdGenDataQuad4_.put(self.chkTagged, _x_pos_, _y_pos2_[2])
-            self.chkTagged.connect('toggled', self._callback_check, 79)
-
             self.txtRemarks.set_tooltip_text(_(u"Enter any remarks associated "
                                                u"with the selected assembly."))
+
+            _fxdGenDataQuad4_.put(self.txtRevisionID, _x_pos_, _y_pos2_[0])
+            _fxdGenDataQuad4_.put(self.chkRepairable, _x_pos_, _y_pos2_[1])
+            _fxdGenDataQuad4_.put(self.chkTagged, _x_pos_, _y_pos2_[2])
             _fxdGenDataQuad4_.put(self.txtRemarks, _x_pos_, _y_pos2_[3])
+
+            self.chkRepairable.connect('toggled', self._callback_check, 75)
+            self.chkTagged.connect('toggled', self._callback_check, 79)
             self.txtRemarks.get_child().get_child().connect(
                 'focus-out-event', self._callback_entry, 'text', 71)
 
@@ -2042,39 +2077,55 @@ class Hardware(object):
 
             self.cmbHRType.connect('changed', self._callback_combo, 35)
             self.cmbCalcModel.connect('changed', self._callback_combo, 10)
-            self.txtSpecifiedHt.connect('focus-out-event',
-                                        self._callback_entry, 'float', 34)
-            self.txtSpecifiedMTBF.connect('focus-out-event',
-                                          self._callback_entry, 'float', 51)
-            self.txtSoftwareHt.connect('focus-out-event',
-                                       self._callback_entry, 'float', 33)
-            self.txtAddAdj.connect('focus-out-event',
-                                   self._callback_entry, 'float', 2)
-            self.txtMultAdj.connect('focus-out-event',
-                                    self._callback_entry, 'float', 57)
-            self.txtAllocationWF.connect('focus-out-event',
-                                         self._callback_entry, 'float', 3)
+            self._lst_handler_id.append(
+                self.txtSpecifiedHt.connect('focus-out-event',
+                                            self._callback_entry, 'float', 34))
+            self._lst_handler_id.append(
+                self.txtSpecifiedMTBF.connect('focus-out-event',
+                                              self._callback_entry,
+                                              'float', 51))
+            self._lst_handler_id.append(
+                self.txtSoftwareHt.connect('focus-out-event',
+                                           self._callback_entry, 'float', 33))
+            self._lst_handler_id.append(
+                self.txtAddAdj.connect('focus-out-event',
+                                       self._callback_entry, 'float', 2))
+            self._lst_handler_id.append(
+                self.txtMultAdj.connect('focus-out-event',
+                                        self._callback_entry, 'float', 57))
+            self._lst_handler_id.append(
+                self.txtAllocationWF.connect('focus-out-event',
+                                             self._callback_entry, 'float', 3))
             self.cmbFailDist.connect('changed', self._callback_combo, 24)
-            self.txtFailScale.connect('focus-out-event',
-                                      self._callback_entry, 'float', 25)
-            self.txtFailShape.connect('focus-out-event',
-                                      self._callback_entry, 'float', 26)
-            self.txtFailLoc.connect('focus-out-event',
-                                    self._callback_entry, 'float', 27)
+            self._lst_handler_id.append(
+                self.txtFailScale.connect('focus-out-event',
+                                          self._callback_entry, 'float', 25))
+            self._lst_handler_id.append(
+                self.txtFailShape.connect('focus-out-event',
+                                          self._callback_entry, 'float', 26))
+            self._lst_handler_id.append(
+                self.txtFailLoc.connect('focus-out-event',
+                                        self._callback_entry, 'float', 27))
             self.cmbActEnviron.connect('changed', self._callback_combo, 22)
-            self.txtActTemp.connect('focus-out-event',
-                                    self._callback_entry, 'float', 80)
+            self._lst_handler_id.append(
+                self.txtActTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 80))
             self.cmbDormantEnviron.connect('changed', self._callback_combo, 23)
-            self.txtDormantTemp.connect('focus-out-event',
-                                        self._callback_entry, 'float', 81)
-            self.txtDutyCycle.connect('focus-out-event',
-                                      self._callback_entry, 'float', 20)
-            self.txtHumidity.connect('focus-out-event',
-                                     self._callback_entry, 'float', 37)
-            self.txtVibration.connect('focus-out-event',
-                                      self._callback_entry, 'float', 84)
-            self.txtRPM.connect('focus-out-event',
-                                self._callback_entry, 'float', 76)
+            self._lst_handler_id.append(
+                self.txtDormantTemp.connect('focus-out-event',
+                                            self._callback_entry, 'float', 81))
+            self._lst_handler_id.append(
+                self.txtDutyCycle.connect('focus-out-event',
+                                          self._callback_entry, 'float', 20))
+            self._lst_handler_id.append(
+                self.txtHumidity.connect('focus-out-event',
+                                         self._callback_entry, 'float', 37))
+            self._lst_handler_id.append(
+                self.txtVibration.connect('focus-out-event',
+                                          self._callback_entry, 'float', 84))
+            self._lst_handler_id.append(
+                self.txtRPM.connect('focus-out-event',
+                                    self._callback_entry, 'float', 76))
             self.txtWeibullFile.connect('focus-out-event',
                                         self._callback_entry, 'text', 86)
 
@@ -2125,22 +2176,31 @@ class Hardware(object):
             self.fxdRelInputQuad1.put(self.txtFieldFailures, _x_pos_r,
                                       _y_pos_r[7])
 
-            self.txtBurnInTemp.connect('focus-out-event',
-                                       self._callback_entry, 'float', 206)
-            self.txtBurnInTime.connect('focus-out-event',
-                                       self._callback_entry, 'float', 207)
-            self.txtLabDevices.connect('focus-out-event',
-                                       self._callback_entry, "int", 220)
-            self.txtLabTime.connect('focus-out-event',
-                                    self._callback_entry, 'float', 308)
-            self.txtLabTemp.connect('focus-out-event',
-                                    self._callback_entry, 'float', 306)
-            self.txtLabFailures.connect('focus-out-event',
-                                        self._callback_entry, "int", 227)
-            self.txtFieldTime.connect('focus-out-event',
-                                      self._callback_entry, 'float', 265)
-            self.txtFieldFailures.connect('focus-out-event',
-                                          self._callback_entry, "int", 226)
+            self._lst_handler_id.append(
+                self.txtBurnInTemp.connect('focus-out-event',
+                                           self._callback_entry, 'float', 206))
+            self._lst_handler_id.append(
+                self.txtBurnInTime.connect('focus-out-event',
+                                           self._callback_entry, 'float', 207))
+            self._lst_handler_id.append(
+                self.txtLabDevices.connect('focus-out-event',
+                                           self._callback_entry, "int", 220))
+            self._lst_handler_id.append(
+                self.txtLabTime.connect('focus-out-event',
+                                        self._callback_entry, 'float', 308))
+            self._lst_handler_id.append(
+                self.txtLabTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 306))
+            self._lst_handler_id.append(
+                self.txtLabFailures.connect('focus-out-event',
+                                            self._callback_entry, "int", 227))
+            self._lst_handler_id.append(
+                self.txtFieldTime.connect('focus-out-event',
+                                          self._callback_entry, 'float', 265))
+            self._lst_handler_id.append(
+                self.txtFieldFailures.connect('focus-out-event',
+                                              self._callback_entry,
+                                              'int', 226))
 
             _fxdRelInputQuad1_.show_all()
             self.fxdRelInputQuad1.show_all()
@@ -2172,157 +2232,183 @@ class Hardware(object):
                 _x_pos_r_ += 30
 
             # Place the quadrant #2 widgets.
+            _query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+
+            _widg.load_combo(self.cmbMTTRType, _results)
+
+            _query = "SELECT fld_distribution_noun FROM tbl_distributions"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbRepairDist, _results)
+
             self.cmbMTTRType.set_tooltip_text(_(u"Selects the method of "
                                                 u"assessing the mean time to "
                                                 u"repair (MTTR) for the "
                                                 u"selected assembly."))
+            self.txtSpecifiedMTTR.set_tooltip_text(_(u"Displays the specified "
+                                                     u"mean time to repair "
+                                                     u"(MTTR) for the "
+                                                     u"selected assembly."))
+            self.txtMTTRAddAdj.set_tooltip_text(_(u"Displays the mean time to "
+                                                  u"repair (MTTR) assessment "
+                                                  u"additive adjustment "
+                                                  u"factor for the selected "
+                                                  u"assembly."))
+            self.txtMTTRMultAdj.set_tooltip_text(_(u"Displays the mean time "
+                                                   u"to repair (MTTR) "
+                                                   u"assessment "
+                                                   u"multaplicative "
+                                                   u"adjustment factor for "
+                                                   u"the selected assembly."))
+            self.cmbRepairDist.set_tooltip_text(_(u"Selects the time to "
+                                                  u"repair distribution for "
+                                                  u"the selected assembly."))
+            self.txtRepairScale.set_tooltip_text(_(u"Displays the time to "
+                                                   u"repair distribution "
+                                                   u"scale parameter."))
+            self.txtRepairShape.set_tooltip_text(_(u"Displays the time to "
+                                                   u"repair distribution "
+                                                   u"shape parameter."))
+
             _fxdRelInputQuad2_.put(self.cmbMTTRType, _x_pos_, _y_pos1_[0])
-            _query_ = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-
-            _widg.load_combo(self.cmbMTTRType, _results_)
-            self.cmbMTTRType.connect('changed', self._callback_combo, 56)
-
-            self.txtSpecifiedMTTR.set_tooltip_text(_(
-                u"Displays the specified mean time to repair (MTTR) for the selected assembly."))
             _fxdRelInputQuad2_.put(self.txtSpecifiedMTTR, _x_pos_, _y_pos1_[1])
-            self.txtSpecifiedMTTR.connect('focus-out-event',
-                                          self._callback_entry, 'float', 55)
-
-            self.txtMTTRAddAdj.set_tooltip_text(_(
-                u"Displays the mean time to repair (MTTR) assessment additive adjustment factor for the selected assembly."))
             _fxdRelInputQuad2_.put(self.txtMTTRAddAdj, _x_pos_, _y_pos1_[2])
-            self.txtMTTRAddAdj.connect('focus-out-event',
-                                       self._callback_entry, 'float', 53)
-
-            self.txtMTTRMultAdj.set_tooltip_text(_(
-                u"Displays the mean time to repair (MTTR) assessment multaplicative adjustment factor for the selected assembly."))
             _fxdRelInputQuad2_.put(self.txtMTTRMultAdj, _x_pos_, _y_pos1_[3])
-            self.txtMTTRMultAdj.connect('focus-out-event',
-                                        self._callback_entry, 'float', 54)
-
-            self.cmbRepairDist.set_tooltip_text(_(
-                u"Selects the time to repair distribution for the selected assembly."))
             _fxdRelInputQuad2_.put(self.cmbRepairDist, _x_pos_, _y_pos1_[4])
-            _query_ = "SELECT fld_distribution_noun FROM tbl_distributions"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbRepairDist, _results_)
-            self.cmbRepairDist.connect('changed', self._callback_combo, 72)
-
-            self.txtRepairScale.set_tooltip_text(_(
-                u"Displays the time to repair distribution scale parameter."))
             _fxdRelInputQuad2_.put(self.txtRepairScale, _x_pos_, _y_pos1_[5])
-            self.txtRepairScale.connect('focus-out-event',
-                                        self._callback_entry, 'float', 73)
-
-            self.txtRepairShape.set_tooltip_text(_(
-                u"Displays the time to repair distribution shape parameter."))
             _fxdRelInputQuad2_.put(self.txtRepairShape, _x_pos_, _y_pos1_[6])
-            self.txtRepairShape.connect('focus-out-event',
-                                        self._callback_entry, 'float', 74)
+
+            self.cmbMTTRType.connect('changed', self._callback_combo, 56)
+            self._lst_handler_id.append(
+                self.txtSpecifiedMTTR.connect('focus-out-event',
+                                              self._callback_entry,
+                                              'float', 55))
+            self._lst_handler_id.append(
+                self.txtMTTRAddAdj.connect('focus-out-event',
+                                           self._callback_entry, 'float', 53))
+            self._lst_handler_id.append(
+                self.txtMTTRMultAdj.connect('focus-out-event',
+                                            self._callback_entry, 'float', 54))
+            self.cmbRepairDist.connect('changed', self._callback_combo, 72)
+            self._lst_handler_id.append(
+                self.txtRepairScale.connect('focus-out-event',
+                                            self._callback_entry, 'float', 73))
+            self._lst_handler_id.append(
+                self.txtRepairShape.connect('focus-out-event',
+                                            self._callback_entry, 'float', 74))
 
             _fxdRelInputQuad2_.show_all()
 
             # Place the quadrant #4 widgets.
-            self.cmbCostType.set_tooltip_text(_(
-                u"Select the method for assessing the cost of the selected assembly."))
+            _query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
+            _widg.load_combo(self.cmbCostType, _results)
+
+            self.cmbCostType.set_tooltip_text(_(u"Select the method for "
+                                                u"assessing the cost of the "
+                                                u"selected assembly."))
+            self.txtCost.set_tooltip_text(_(u"The cost of the selected "
+                                            u"hardware item."))
+            self.txtMinTemp.set_tooltip_text(_(u"The minimum design operating "
+                                               u"temperature for the selected"
+                                               u"component."))
+            self.txtKneeTemp.set_tooltip_text(_(u"The knee temperature for "
+                                                u"the selected component."))
+            self.txtMaxTemp.set_tooltip_text(_(u"The maximum design operating "
+                                               u"temperature for the selected "
+                                               u"component."))
+            self.txtRatedVoltage.set_tooltip_text(_(u"The maximum rated "
+                                                    u"voltage for the "
+                                                    u"selected component."))
+            self.txtOpVoltage.set_tooltip_text(_(u"The operating voltage for "
+                                                 u"the selected component."))
+            self.txtRatedCurrent.set_tooltip_text(_(u"The maximum rated "
+                                                    u"current for the "
+                                                    u"selected component."))
+            self.txtOpCurrent.set_tooltip_text(_(u"The operating current for "
+                                                 u"the selected component."))
+            self.txtRatedPower.set_tooltip_text(_(u"The maximum rated power "
+                                                  u"for the selected "
+                                                  u"component."))
+            self.txtOpPower.set_tooltip_text(_(u"The operating power for the "
+                                               u"selected component."))
+            self.txtThetaJC.set_tooltip_text(_(u"The junction-to-case thermal "
+                                               u"resistance for the selected "
+                                               u"component."))
+            self.txtTempRise.set_tooltip_text(_(u"The ambient to case "
+                                                u"temperature rise for the "
+                                                u"selected component."))
+            self.txtCaseTemp.set_tooltip_text(_(u"The case temperature for "
+                                                u"the selected component."))
+
             _fxdRelInputQuad4_.put(self.cmbCostType, _x_pos_, _y_pos2_[0])
-            _query_ = "SELECT fld_cost_type_noun FROM tbl_cost_type"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-            _widg.load_combo(self.cmbCostType, _results_)
-            self.cmbCostType.connect('changed', self._callback_combo, 16)
-
-            self.txtCost.set_tooltip_text(
-                _(u"The cost of the selected hardware item."))
             _fxdRelInputQuad4_.put(self.txtCost, _x_pos_, _y_pos2_[1])
-            self.txtCost.connect('focus-out-event',
-                                 self._callback_entry, 'float', 13)
-
-            self.txtMinTemp.set_tooltip_text(_(
-                u"The minimum design operating temperature for the selected component."))
             self.fxdRelInputQuad4.put(self.txtMinTemp, _x_pos_r_, _y_pos_r_[0])
-            self.txtMinTemp.connect('focus-out-event',
-                                    self._callback_entry, 'float', 256)
-
-            self.txtKneeTemp.set_tooltip_text(
-                _(u"The knee temperature for the selected component."))
             self.fxdRelInputQuad4.put(self.txtKneeTemp, _x_pos_r_,
                                       _y_pos_r_[1])
-            self.txtKneeTemp.connect('focus-out-event',
-                                     self._callback_entry, 'float', 243)
-
-            self.txtMaxTemp.set_tooltip_text(_(
-                u"The maximum design operating temperature for the selected component."))
             self.fxdRelInputQuad4.put(self.txtMaxTemp, _x_pos_r_, _y_pos_r_[2])
-            self.txtMaxTemp.connect('focus-out-event',
-                                    self._callback_entry, 'float', 255)
-
-            self.txtRatedVoltage.set_tooltip_text(
-                _(u"The maximum rated voltage for the selected component."))
             self.fxdRelInputQuad4.put(self.txtRatedVoltage, _x_pos_r_,
                                       _y_pos_r_[3])
-            self.txtRatedVoltage.connect('focus-out-event',
-                                         self._callback_entry, 'float', 294)
-
-            self.txtOpVoltage.set_tooltip_text(
-                _(u"The operating voltage for the selected component."))
             self.fxdRelInputQuad4.put(self.txtOpVoltage, _x_pos_r_,
                                       _y_pos_r_[4])
-            self.txtOpVoltage.connect('focus-out-event',
-                                      self._callback_entry, 'float', 266)
-
-            self.txtRatedCurrent.set_tooltip_text(
-                _(u"The maximum rated current for the selected component."))
             self.fxdRelInputQuad4.put(self.txtRatedCurrent, _x_pos_r_,
                                       _y_pos_r_[5])
-            self.txtRatedCurrent.connect('focus-out-event',
-                                         self._callback_entry, 'float', 292)
-
-            self.txtOpCurrent.set_tooltip_text(
-                _(u"The operating current for the selected component."))
             self.fxdRelInputQuad4.put(self.txtOpCurrent, _x_pos_r_,
                                       _y_pos_r_[6])
-            self.txtOpCurrent.connect('focus-out-event',
-                                      self._callback_entry, 'float', 262)
-
-            self.txtRatedPower.set_tooltip_text(
-                _(u"The maximum rated power for the selected component."))
             self.fxdRelInputQuad4.put(self.txtRatedPower, _x_pos_r_,
                                       _y_pos_r_[7])
-            self.txtRatedPower.connect('focus-out-event',
-                                       self._callback_entry, 'float', 293)
-
-            self.txtOpPower.set_tooltip_text(
-                _(u"The operating power for the selected component."))
             self.fxdRelInputQuad4.put(self.txtOpPower, _x_pos_r_, _y_pos_r_[8])
-            self.txtOpPower.connect('focus-out-event',
-                                    self._callback_entry, 'float', 264)
-
-            self.txtThetaJC.set_tooltip_text(_(
-                u"The junction-to-case thermal resistance for the selected component."))
             self.fxdRelInputQuad4.put(self.txtThetaJC, _x_pos_r_, _y_pos_r_[9])
-            self.txtThetaJC.connect('focus-out-event',
-                                    self._callback_entry, 'float', 309)
-
-            self.txtTempRise.set_tooltip_text(_(
-                u"The ambient to case temperature rise for the selected component."))
             self.fxdRelInputQuad4.put(self.txtTempRise, _x_pos_r_,
                                       _y_pos_r_[10])
-            self.txtTempRise.connect('focus-out-event',
-                                     self._callback_entry, 'float', 307)
-
-            self.txtCaseTemp.set_tooltip_text(
-                _(u"The case temperature for the selected component."))
             self.fxdRelInputQuad4.put(self.txtCaseTemp, _x_pos_r_,
                                       _y_pos_r_[11])
-            self.txtCaseTemp.connect('focus-out-event',
-                                     self._callback_entry, 'float', 305)
+
+            self.cmbCostType.connect('changed', self._callback_combo, 16)
+            self._lst_handler_id.append(
+                self.txtCost.connect('focus-out-event',
+                                     self._callback_entry, 'float', 13))
+            self._lst_handler_id.append(
+                self.txtMinTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 256))
+            self._lst_handler_id.append(
+                self.txtKneeTemp.connect('focus-out-event',
+                                         self._callback_entry, 'float', 243))
+            self._lst_handler_id.append(
+                self.txtMaxTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 255))
+            self._lst_handler_id.append(
+                self.txtRatedVoltage.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 294))
+            self._lst_handler_id.append(
+                self.txtOpVoltage.connect('focus-out-event',
+                                          self._callback_entry, 'float', 266))
+            self._lst_handler_id.append(
+                self.txtRatedCurrent.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 292))
+            self._lst_handler_id.append(
+                self.txtOpCurrent.connect('focus-out-event',
+                                          self._callback_entry, 'float', 262))
+            self._lst_handler_id.append(
+                self.txtRatedPower.connect('focus-out-event',
+                                           self._callback_entry, 'float', 293))
+            self._lst_handler_id.append(
+                self.txtOpPower.connect('focus-out-event',
+                                        self._callback_entry, 'float', 264))
+            self._lst_handler_id.append(
+                self.txtThetaJC.connect('focus-out-event',
+                                        self._callback_entry, 'float', 309))
+            self._lst_handler_id.append(
+                self.txtTempRise.connect('focus-out-event',
+                                         self._callback_entry, 'float', 307))
+            self._lst_handler_id.append(
+                self.txtCaseTemp.connect('focus-out-event',
+                                         self._callback_entry, 'float', 305))
 
             _fxdRelInputQuad4_.show_all()
             self.fxdRelInputQuad4.show_all()
@@ -2333,8 +2419,10 @@ class Hardware(object):
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
             _label_.show_all()
-            _label_.set_tooltip_text(_(
-                u"Allows entering reliability, maintainability, and other assessment inputs for the selected assembly."))
+            _label_.set_tooltip_text(_(u"Allows entering reliability, "
+                                       u"maintainability, and other "
+                                       u"assessment inputs for the selected "
+                                       u"assembly."))
 
             notebook.insert_page(_hbox_,
                                  tab_label=_label_,
@@ -4467,19 +4555,22 @@ class Hardware(object):
 
             _title_ = _(u"RTK - Add Sibling Assemblies")
             _prompt_ = _(u"How many sibling assemblies to add?")
+            _part = 0
 
         elif kind == 1:
             _parent_ = _model_.get_string_from_iter(_row_)
             _title_ = _(u"RTK - Add Child Assemblies")
             _prompt_ = _(u"How many child assemblies to add?")
+            _part = 0
 
         elif kind == 2:
             _parent_ = _model_.get_string_from_iter(_row_)
             _title_ = _(u"RTK - Add Components")
             _prompt_ = _(u"How many components to add?")
+            _part = 1
 
         _n_new_assembly_ = _util.add_items(_title_, _prompt_)
-        for i in range(_n_new_assembly_):  # @UnusedVariable
+        for i in range(_n_new_assembly_):
             # Create the default name of the assembly.
             _name_ = str(_conf.RTK_PREFIX[4]) + ' ' + str(_conf.RTK_PREFIX[5])
 
@@ -4487,7 +4578,7 @@ class Hardware(object):
             _conf.RTK_PREFIX[5] = _conf.RTK_PREFIX[5] + 1
 
             _values_ = (self.revision_id, str(_conf.RTK_PROG_INFO[3]),
-                        _parent_, _name_)
+                        _parent_, _name_, _part)
 
             # First we add the assembly to the system table.  Next we find the
             # # the ID of the newly inserted assembly.  Finally, we add this
@@ -4502,9 +4593,9 @@ class Hardware(object):
             _values_ = _values_ + (_assembly_id_,)
             _query_ = "INSERT INTO tbl_system \
                        (fld_revision_id, fld_entered_by, \
-                        fld_parent_assembly, fld_description, \
+                        fld_parent_assembly, fld_description, fld_part, \
                         fld_assembly_id) \
-                       VALUES (%d, '%s', '%s', '%s', %d)" % _values_
+                       VALUES (%d, '%s', '%s', '%s', %d, %d)" % _values_
             _results_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx,
@@ -4529,53 +4620,31 @@ class Hardware(object):
                     "assembly.py: Failed to add new assembly to allocation table.")
                 return True
 
-            _query = "INSERT INTO tbl_risk_matrix \
-                      (fld_revision_id, fld_assembly_id) \
-                      VALUES({0:d}, {1:d})".format(self.revision_id,
-                                                   _assembly_id_)
-            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                              commit=True):
-                self._app.debug_log.error("assembly.py: Failed to add new "
-                                          "assembly to risk matrix table.")
-                return True
+            if _part == 0:
+                _query = "INSERT INTO tbl_risk_matrix \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES({0:d}, {1:d})".format(self.revision_id,
+                                                       _assembly_id_)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.debug_log.error("assembly.py: Failed to add new "
+                                              "assembly to risk matrix table.")
+                    return True
 
-            _query_ = "INSERT INTO tbl_similar_item \
-                       (fld_revision_id, fld_assembly_id) \
-                       VALUES ({0:d}, {1:d})".format(self.revision_id,
-                                                     _assembly_id_)
-            if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
-                                              commit=True):
-                self._app.debug_log.error("assembly.py: Failed to add new "
-                                          "assembly to similar items table.")
-                return True
+                _query = "INSERT INTO tbl_similar_item \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES ({0:d}, {1:d})".format(self.revision_id,
+                                                        _assembly_id_)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    self._app.debug_log.error("assembly.py: Failed to add new "
+                                              "assembly to similar items "
+                                              "table.")
+                    return True
 
-            # Retrieve the list of function id's in the open RTK program
-            # database.
-            _query_ = "SELECT fld_function_id \
-                       FROM tbl_functions \
-                       WHERE fld_revision_id=%d" % self.revision_id
-            _functions_ = self._app.DB.execute_query(_query_,
-                                                     None,
-                                                     self._app.ProgCnx)
-
-            # Add a record to the functional matrix table for each function
-            # that exists in the open RTK program database.
-            for j in range(len(_functions_)):
-                _values_ = (self.revision_id, _functions_[j][0], _assembly_id_)
-                _query_ = "INSERT INTO tbl_functional_matrix \
-                           (fld_revision_id, fld_function_id, \
-                            fld_assembly_id, fld_relationship) \
-                           VALUES(%d, %d, %d, '')" % _values_
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
-
-                if _results_ == '' or not _results_ or _results_ is None:
-                    self._app.debug_log.error(
-                        "assembly.py: Failed to add new assembly to functional matrix table.")
-
-            if self.part:
+            elif _part == 1:
                 _values_ = (self.revision_id, _assembly_id_)
                 _query_ = "INSERT INTO tbl_prediction \
                            (fld_revision_id, fld_assembly_id) \
@@ -4588,6 +4657,31 @@ class Hardware(object):
                 if _results_ == '' or not _results_ or _results_ is None:
                     self._app.debug_log.error(
                         "hardware.py: Failed to add new component to prediction table.")
+
+            # Retrieve the list of function id's in the open RTK program
+            # database.
+            _query = "SELECT fld_function_id \
+                      FROM tbl_functions \
+                      WHERE fld_revision_id=%d" % self.revision_id
+            _functions = self._app.DB.execute_query(_query, None,
+                                                    self._app.ProgCnx)
+
+            # Add a record to the functional matrix table for each function
+            # that exists in the open RTK program database.
+            for j in range(len(_functions)):
+                _values_ = (self.revision_id, _functions[j][0], _assembly_id_)
+                _query_ = "INSERT INTO tbl_functional_matrix \
+                           (fld_revision_id, fld_function_id, \
+                            fld_assembly_id, fld_relationship) \
+                           VALUES(%d, %d, %d, '')" % _values_
+                _results_ = self._app.DB.execute_query(_query_,
+                                                       None,
+                                                       self._app.ProgCnx,
+                                                       commit=True)
+
+                if _results_ == '' or not _results_ or _results_ is None:
+                    self._app.debug_log.error(
+                        "assembly.py: Failed to add new assembly to functional matrix table.")
 
         self.load_tree()
 

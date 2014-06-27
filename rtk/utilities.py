@@ -776,7 +776,7 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
 
     label = _widg.make_label(_prompt_)
     hbox.pack_end(label)
-    dialog.vbox.pack_start(hbox)            # pylint: disable=E1101
+    dialog.vbox.pack_start(hbox)
     hbox.show_all()
 
     if dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -791,8 +791,7 @@ def rtk_error(prompt, _parent=None):
     """
     Dialog to display runtime errors to the user.
 
-    :param prompt: the prompt to display in the dialog.
-    :type prompt: string
+    :param str prompt: the prompt to display in the dialog.
     :param _parent: the parent gtk.Window(), if any, for the dialog.
     :type _parent: gtk.Window
     """

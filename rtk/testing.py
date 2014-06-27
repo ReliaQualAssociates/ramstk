@@ -261,6 +261,7 @@ class Testing(object):
         self._dic_rg_plan = {}              # RG plan details.
 
         # Define private Testing class list attributes.
+        self._lst_handler_id = []
 
         # Define public Testing class attributes.
         self.assembly_id = 0
@@ -293,9 +294,9 @@ class Testing(object):
 
         # Create the main TESTING class treeview.
         (self.treeview,
-         self._col_order) = _widg.make_treeview('Testing', 11, self._app,
-                                                None, _conf.RTK_COLORS[10],
-                                                _conf.RTK_COLORS[11])
+         self._lst_col_order) = _widg.make_treeview('Testing', 11, self._app,
+                                                    None, _conf.RTK_COLORS[10],
+                                                    _conf.RTK_COLORS[11])
 
         # Toolbar widgets.
         self.btnAdd = gtk.ToolButton()
@@ -501,6 +502,13 @@ class Testing(object):
                               None, None, 0)
         self.treeview.connect('row_activated', self._treeview_row_changed, 0)
 
+        # Connect the cells to the callback function.
+        for i in [3, 4, 6, 7, 8, 9, 10, 11, 16, 17, 18, 19, 20, 21]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._testing_tree_edit, i,
+                             self.treeview.get_model())
+
         _scrollwindow_ = gtk.ScrolledWindow()
         _scrollwindow_.add(self.treeview)
 
@@ -610,6 +618,13 @@ class Testing(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display test planning inputs.       #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Create a tag named hyperlink if it doesn't already exist.
+            _tag = self.txtAttachment.get_tag_table().lookup('hyperlink')
+            if _tag is None:
+                _tag = self.txtAttachment.create_tag('hyperlink',
+                                                     foreground='blue')
+            _tag.connect('event', self._hyperlink_handler)
+
             # Place the widgets that are common to all test types.
             _results = [["HALT"], ["HASS"], ["ALT"], ["ESS"],
                         [_(u"Reliability Growth")],
@@ -633,35 +648,21 @@ class Testing(object):
             self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the "
                                                 u"assembly associated with "
                                                 u"the test."))
-            _fixed.put(self.cmbAssembly, _x_pos, _y_pos[0])
-            self.cmbAssembly.connect('changed', self._callback_combo, 1)
-
             self.cmbTestType.set_tooltip_text(_(u"Selects and displays the "
                                                 u"type of test being "
                                                 u"planned."))
-            _fixed.put(self.cmbTestType, _x_pos, _y_pos[1])
-            self.cmbTestType.connect('changed', self._callback_combo, 5)
-
             self.txtName.set_tooltip_text(_(u"The title or name of the "
                                             u"selected test."))
+
+            _fixed.put(self.cmbAssembly, _x_pos, _y_pos[0])
+            _fixed.put(self.cmbTestType, _x_pos, _y_pos[1])
             _fixed.put(self.txtName, _x_pos, _y_pos[2])
-            self.txtName.connect('focus-out-event',
-                                 self._callback_entry, 'text', 3)
 
             _textview_ = _widg.make_text_view(txvbuffer=self.txtDescription,
                                               width=555)
             _textview_.set_tooltip_text(_(u"Detailed description of the "
                                           u"selected test."))
             _fixed.put(_textview_, 5, _y_pos[3] + 30)
-            self.txtDescription.connect('changed',
-                                        self._callback_entry, None, 'text', 4)
-
-            # Create a tag named hyperlink if it doesn't already exist.
-            _tag = self.txtAttachment.get_tag_table().lookup('hyperlink')
-            if _tag is None:
-                _tag = self.txtAttachment.create_tag('hyperlink',
-                                                     foreground='blue')
-            _tag.connect('event', self._hyperlink_handler)
 
             _label = _widg.make_label(_(u"Attachments:"), 150, 25)
             _fixed.put(_label, 5, _y_pos[3] + 135)
@@ -671,8 +672,17 @@ class Testing(object):
                                          u"attached documents associated "
                                          u"with the selected test."))
             _fixed.put(_textview, 5, _y_pos[3] + 170)
-            self.txtAttachment.connect('changed',
-                                       self._callback_entry, None, 'text', 15)
+
+            self.cmbAssembly.connect('changed', self._callback_combo, 1)
+            self.cmbTestType.connect('changed', self._callback_combo, 5)
+            self._lst_handler_id.append(
+                self.txtName.connect('focus-out-event', self._callback_entry,
+                                     'text', 3))
+            self._lst_handler_id.append(
+                self.txtDescription.connect('changed', self._callback_entry,
+                                            None, 'text', 4))
+            self.txtAttachment.connect('changed', self._callback_entry,
+                                       None, 'text', 15)
 
             _fixed.show_all()
 
@@ -838,34 +848,48 @@ class Testing(object):
             self.cmbPlanModel.connect('changed', self._callback_combo, 12)
             self.cmbAssessModel.connect('changed', self._callback_combo, 13)
             self.btnFindTTFF.connect('button-release-event', _mttff_calculator)
-            self.txtMTBFI.connect('focus-out-event',
-                                  self._callback_entry, 'float', 6)
-            self.txtMTBFG.connect('focus-out-event',
-                                  self._callback_entry, 'float', 7)
-            self.txtMTBFGP.connect('focus-out-event',
-                                   self._callback_entry, 'float', 8)
-            self.txtTechReq.connect('focus-out-event',
-                                    self._callback_entry, 'float', 9)
+            self._lst_handler_id.append(
+                self.txtMTBFI.connect('focus-out-event', self._callback_entry,
+                                      'float', 6))
+            self._lst_handler_id.append(
+                self.txtMTBFG.connect('focus-out-event', self._callback_entry,
+                                      'float', 7))
+            self._lst_handler_id.append(
+                self.txtMTBFGP.connect('focus-out-event', self._callback_entry,
+                                       'float', 8))
+            self._lst_handler_id.append(
+                self.txtTechReq.connect('focus-out-event',
+                                        self._callback_entry, 'float', 9))
             self.spnNumPhases.connect('focus-out-event',
                                       self._callback_entry, 'float', 14)
             self.spnNumPhases.connect('value-changed',
                                       self._callback_spin, 14)
-            self.txtTTFF.connect('focus-out-event',
-                                 self._callback_entry, 'float', 20)
-            self.txtTTT.connect('focus-out-event',
-                                self._callback_entry, 'float', 16)
-            self.txtAverageGR.connect('focus-out-event',
-                                      self._callback_entry, 'float', 17)
-            self.txtAverageFEF.connect('focus-out-event',
-                                       self._callback_entry, 'float', 21)
-            self.txtProgramMS.connect('focus-out-event',
-                                      self._callback_entry, 'float', 18)
-            self.txtProgramProb.connect('focus-out-event',
-                                        self._callback_entry, 'float', 19)
-            self.txtProducerRisk.connect('focus-out-event',
-                                         self._callback_entry, 'float', 11)
-            self.txtConsumerRisk.connect('focus-out-event',
-                                         self._callback_entry, 'float', 10)
+            self._lst_handler_id.append(
+                self.txtTTFF.connect('focus-out-event', self._callback_entry,
+                                     'float', 20))
+            self._lst_handler_id.append(
+                self.txtTTT.connect('focus-out-event', self._callback_entry,
+                                    'float', 16))
+            self._lst_handler_id.append(
+                self.txtAverageGR.connect('focus-out-event',
+                                          self._callback_entry, 'float', 17))
+            self._lst_handler_id.append(
+                self.txtAverageFEF.connect('focus-out-event',
+                                           self._callback_entry, 'float', 21))
+            self._lst_handler_id.append(
+                self.txtProgramMS.connect('focus-out-event',
+                                          self._callback_entry, 'float', 18))
+            self._lst_handler_id.append(
+                self.txtProgramProb.connect('focus-out-event',
+                                            self._callback_entry, 'float', 19))
+            self._lst_handler_id.append(
+                self.txtProducerRisk.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 11))
+            self._lst_handler_id.append(
+                self.txtConsumerRisk.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 10))
 
             self.fxdRGPlan.show_all()
 
@@ -1880,7 +1904,7 @@ class Testing(object):
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
-        _text_ = str(_model_.get_value(_row_, self._col_order[14]))
+        _text_ = str(_model_.get_value(_row_, self._lst_col_order[14]))
 
         _start_ = self.txtAttachment.get_start_iter()
         _end_ = self.txtAttachment.get_end_iter()
@@ -2507,33 +2531,33 @@ class Testing(object):
         :type row: gtk.Iter
         """
 
-        values = (model.get_value(row, self._col_order[1]),
-                  model.get_value(row, self._col_order[3]),
-                  model.get_value(row, self._col_order[4]),
-                  model.get_value(row, self._col_order[5]),
-                  model.get_value(row, self._col_order[6]),
-                  model.get_value(row, self._col_order[7]),
-                  model.get_value(row, self._col_order[8]),
-                  model.get_value(row, self._col_order[9]),
-                  model.get_value(row, self._col_order[10]),
-                  model.get_value(row, self._col_order[11]),
-                  model.get_value(row, self._col_order[12]),
-                  model.get_value(row, self._col_order[13]),
-                  model.get_value(row, self._col_order[14]),
-                  model.get_value(row, self._col_order[15]),
-                  model.get_value(row, self._col_order[16]),
-                  model.get_value(row, self._col_order[17]),
-                  model.get_value(row, self._col_order[18]),
-                  model.get_value(row, self._col_order[19]),
-                  model.get_value(row, self._col_order[20]),
-                  model.get_value(row, self._col_order[21]),
-                  model.get_value(row, self._col_order[22]),
-                  model.get_value(row, self._col_order[23]),
-                  model.get_value(row, self._col_order[24]),
-                  model.get_value(row, self._col_order[25]),
-                  model.get_value(row, self._col_order[26]),
-                  model.get_value(row, self._col_order[2]),
-                  model.get_value(row, self._col_order[0]))
+        values = (model.get_value(row, self._lst_col_order[1]),
+                  model.get_value(row, self._lst_col_order[3]),
+                  model.get_value(row, self._lst_col_order[4]),
+                  model.get_value(row, self._lst_col_order[5]),
+                  model.get_value(row, self._lst_col_order[6]),
+                  model.get_value(row, self._lst_col_order[7]),
+                  model.get_value(row, self._lst_col_order[8]),
+                  model.get_value(row, self._lst_col_order[9]),
+                  model.get_value(row, self._lst_col_order[10]),
+                  model.get_value(row, self._lst_col_order[11]),
+                  model.get_value(row, self._lst_col_order[12]),
+                  model.get_value(row, self._lst_col_order[13]),
+                  model.get_value(row, self._lst_col_order[14]),
+                  model.get_value(row, self._lst_col_order[15]),
+                  model.get_value(row, self._lst_col_order[16]),
+                  model.get_value(row, self._lst_col_order[17]),
+                  model.get_value(row, self._lst_col_order[18]),
+                  model.get_value(row, self._lst_col_order[19]),
+                  model.get_value(row, self._lst_col_order[20]),
+                  model.get_value(row, self._lst_col_order[21]),
+                  model.get_value(row, self._lst_col_order[22]),
+                  model.get_value(row, self._lst_col_order[23]),
+                  model.get_value(row, self._lst_col_order[24]),
+                  model.get_value(row, self._lst_col_order[25]),
+                  model.get_value(row, self._lst_col_order[26]),
+                  model.get_value(row, self._lst_col_order[2]),
+                  model.get_value(row, self._lst_col_order[0]))
 
         query = "UPDATE tbl_tests \
                  SET fld_assembly_id=%d, fld_test_name='%s', \
@@ -2688,6 +2712,7 @@ class Testing(object):
         :rtype: boolean
         """
 
+        # Get the Testing Class gtk.TreeModel() and selected gtk.TreeIter().
         (_model, _row) = self.treeview.get_selection().get_selected()
 
         # Update the Testing Tree.
@@ -2700,6 +2725,7 @@ class Testing(object):
         else:
             _model.set_value(_row, index, check.get_active())
 
+        # Update the Testing class public and private attributes.
         self._update_attributes()
 
         return False
@@ -2819,13 +2845,11 @@ class Testing(object):
         :rtype: boolean
         """
 
-        (_model, _row) = self.treeview.get_selection().get_selected()
-
         if convert == 'text':
-            if index == self._col_order[4]:
+            if index == self._lst_col_order[4]:
                 _bounds = self.txtDescription.get_bounds()
                 _text = self.txtDescription.get_text(_bounds[0], _bounds[1])
-            elif index == self._col_order[15]:
+            elif index == self._lst_col_order[15]:
                 _bounds = self.txtAttachment.get_bounds()
                 _text = self.txtAttachment.get_text(_bounds[0], _bounds[1])
             else:
@@ -2847,16 +2871,15 @@ class Testing(object):
             _text = datetime.strptime(entry.get_text(),
                                       '%Y-%m-%d').toordinal()
 
-        # Try to update the gtk.TreeModel.  Just keep going if no row is
-        # selected.
-        try:
-            _model.set_value(_row, index, _text)
-        except TypeError:
-            pass
-
         if index == 13:
             self._rg_plan_details(2)
 
+        # Get the Testing Class gtk.TreeModel() and selected gtk.TreeIter()
+        # and update the Function Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model.set_value(_row, index, _text)
+
+        # Update the Testing class public and private attributes.
         self._update_attributes()
 
         return False
@@ -3169,6 +3192,94 @@ class Testing(object):
             return False
         else:
             return True
+
+    def _testing_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Testing Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 3:
+            self.txtName.handler_block(self._lst_handler_id[0])
+            self.txtName.set_text(str(new_text))
+            self.txtName.handler_unblock(self._lst_handler_id[0])
+        elif self._lst_col_order[position] == 4:
+            self.txtDescription.handler_block(self._lst_handler_id[1])
+            self.txtDescription.set_text(_util.none_to_string(new_text))
+            self.txtDescription.handler_unblock(self._lst_handler_id[1])
+        elif self._lst_col_order[position] == 6:
+            self.txtMTBFI.handler_block(self._lst_handler_id[2])
+            self.txtMTBFI.set_text(str(new_text))
+            self.txtMTBFI.handler_unblock(self._lst_handler_id[2])
+        elif self._lst_col_order[position] == 7:
+            self.txtMTBFG.handler_block(self._lst_handler_id[3])
+            self.txtMTBFG.set_text(str(new_text))
+            self.txtMTBFG.handler_unblock(self._lst_handler_id[3])
+        elif self._lst_col_order[position] == 8:
+            self.txtMTBFGP.handler_block(self._lst_handler_id[4])
+            self.txtMTBFGP.set_text(str(new_text))
+            self.txtMTBFGP.handler_unblock(self._lst_handler_id[4])
+        elif self._lst_col_order[position] == 9:
+            self.txtTechReq.handler_block(self._lst_handler_id[5])
+            self.txtTechReq.set_text(str(new_text))
+            self.txtTechReq.handler_unblock(self._lst_handler_id[5])
+        elif self._lst_col_order[position] == 20:
+            self.txtTTFF.handler_block(self._lst_handler_id[6])
+            self.txtTTFF.set_text(str(new_text))
+            self.txtTTFF.handler_unblock(self._lst_handler_id[6])
+        elif self._lst_col_order[position] == 16:
+            self.txtTTT.handler_block(self._lst_handler_id[7])
+            self.txtTTT.set_text(str(new_text))
+            self.txtTTT.handler_unblock(self._lst_handler_id[7])
+        elif self._lst_col_order[position] == 17:
+            self.txtAverageGR.handler_block(self._lst_handler_id[8])
+            self.txtAverageGR.set_text(str(new_text))
+            self.txtAverageGR.handler_unblock(self._lst_handler_id[8])
+        elif self._lst_col_order[position] == 21:
+            self.txtAverageFEF.handler_block(self._lst_handler_id[9])
+            self.txtAverageFEF.set_text(str(new_text))
+            self.txtAverageFEF.handler_unblock(self._lst_handler_id[9])
+        elif self._lst_col_order[position] == 18:
+            self.txtProgramMS.handler_block(self._lst_handler_id[10])
+            self.txtProgramMS.set_text(str(new_text))
+            self.txtProgramMS.handler_unblock(self._lst_handler_id[10])
+        elif self._lst_col_order[position] == 19:
+            self.txtProgramProb.handler_block(self._lst_handler_id[11])
+            self.txtProgramProb.set_text(str(new_text))
+            self.txtProgramProb.handler_unblock(self._lst_handler_id[11])
+        elif self._lst_col_order[position] == 11:
+            self.txtProducerRisk.handler_block(self._lst_handler_id[12])
+            self.txtProducerRisk.set_text(str(new_text))
+            self.txtProducerRisk.handler_unblock(self._lst_handler_id[12])
+        elif self._lst_col_order[position] == 10:
+            self.txtConsumerRisk.handler_block(self._lst_handler_id[13])
+            self.txtConsumerRisk.set_text(str(new_text))
+            self.txtConsumerRisk.handler_unblock(self._lst_handler_id[13])
+
+        return False
 
     def _rg_plan_edit(self, cell, path, new_text, position):
         """

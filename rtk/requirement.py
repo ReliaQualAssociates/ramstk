@@ -558,7 +558,7 @@ class Requirement(object):
             _max1 = 0
             _max2 = 0
             (_max1, _y_pos) = _widg.make_labels(_labels[2:10],
-                                                 _fxdGeneralData, 5, 140)
+                                                _fxdGeneralData, 5, 140)
             _x_pos = max(_max1, _max2) + 20
 
             # Create the tooltips.
@@ -617,8 +617,8 @@ class Requirement(object):
             _fxdGeneralData.put(self.chkDerived, _x_pos, _y_pos[4])
             _fxdGeneralData.put(self.chkValidated, _x_pos, _y_pos[5])
 
-            label = _widg.make_label(_labels[10], 150, 25)
-            _fxdGeneralData.put(label, _x_pos + 25, _y_pos[5])
+            _label = _widg.make_label(_labels[10], 150, 25)
+            _fxdGeneralData.put(_label, _x_pos + 25, _y_pos[5])
 
             _fxdGeneralData.put(self.txtValidatedDate, _x_pos + 200, _y_pos[5])
             _fxdGeneralData.put(self.btnValidateDate, _x_pos + 305, _y_pos[5])

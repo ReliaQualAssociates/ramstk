@@ -58,8 +58,8 @@ except ImportError:
 import numpy as np
 from numpy.linalg import inv
 from math import ceil, exp, floor, log, sqrt
-from scipy.stats import chi2, norm, t   #pylint: disable=E0611
-from scipy.optimize import fsolve, root       #pylint: disable=E0611
+from scipy.stats import chi2, norm, t       #pylint: disable=E0611
+from scipy.optimize import fsolve, root     #pylint: disable=E0611
 
 # Import other RTK modules.
 try:
