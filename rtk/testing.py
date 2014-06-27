@@ -255,6 +255,7 @@ class Testing(object):
         # Define private Testing class attributes.
         self._app = application
         self._int_mission_id = -1
+        self._flt_test_termination_time = 0.0
 
         # Define private Testing class dictionary attributes.
         self._dic_assemblies = {}           # List of assemblies.
@@ -457,6 +458,8 @@ class Testing(object):
         self.txtGoFTrend = _widg.make_entry(width=100, editable=False)
         self.lblGoFModel = _widg.make_label("", width=100)
         self.txtGoFModel = _widg.make_entry(width=100, editable=False)
+        self.txtTestTermTime = _widg.make_entry(width=100)
+
         self.optLinear = gtk.RadioButton(label=_(u"Use Linear Scales"))
         self.optLinear.set_name('linear')
         self.optLinear.set_active(True)
@@ -1215,6 +1218,10 @@ class Testing(object):
                                                   u"rate/MTBF bounds and "
                                                   u"goodness of fit (GoF) "
                                                   u"tests."))
+            self.txtTestTermTime.set_tooltip_text(_(u"For time terminated "
+                                                    u"(Type II) tests, enter "
+                                                    u"the test termination "
+                                                    u"time."))
 
             # Place the widgets used to describe the format of the dataset.
             _y_pos = 5
@@ -1230,7 +1237,12 @@ class Testing(object):
 
             _label = _widg.make_label(_(u"Confidence:"))
             _fxdDataSet_.put(_label, 5, _y_pos)
-            _fxdDataSet_.put(self.spnConfidence, 230, _y_pos)
+            _fxdDataSet_.put(self.spnConfidence, 250, _y_pos)
+            _y_pos += 30
+
+            _label = _widg.make_label(_(u"Test Termination Time:"))
+            _fxdDataSet_.put(_label, 5, _y_pos)
+            _fxdDataSet_.put(self.txtTestTermTime, 250, _y_pos)
             _y_pos += 25
 
             _label = _widg.make_label(u"")
@@ -1242,16 +1254,18 @@ class Testing(object):
                                        self._callback_entry, 'float', 26)
             self.spnConfidence.connect('value-changed',
                                        self._callback_spin, 26)
+            self.txtTestTermTime.connect('focus-out-event',
+                                         self._callback_entry, 'float', 200)
 
             # Place the gtk.TreeView() that will display the reliability test
             # data.
             _labels = [_(u"Record\nNumber"), _(u"Date"),
                        _(u"Interval\nStart"), _(u"Interval\nEnd"),
                        _(u"Number\nof\nFailures")]
-            _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                    gobject.TYPE_INT)
-            self.tvwTestAssessment.set_model(_model_)
+            _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                   gobject.TYPE_INT)
+            self.tvwTestAssessment.set_model(_model)
             self.tvwTestAssessment.set_tooltip_text(_(u"Displays the "
                                                       u"incidents associated "
                                                       u"with the selected "
@@ -1261,7 +1275,7 @@ class Testing(object):
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
                 _cell.set_property('background', 'white')
-                _cell.connect('edited', _widg.edit_tree, i, _model_)
+                _cell.connect('edited', _widg.edit_tree, i, _model)
 
                 _column = gtk.TreeViewColumn()
                 _column.set_widget(_widg.make_column_heading(_labels[i]))
@@ -1662,6 +1676,7 @@ class Testing(object):
         self.spnConfidence.set_value(self.confidence)
         self.txtCumTestTime.set_text(str(self.cum_time))
         self.txtCumFailures.set_text(str(self.cum_failures))
+        self.txtTestTermTime.set_text(str(self._flt_test_termination_time))
 
         return False
 
@@ -2188,7 +2203,11 @@ class Testing(object):
 
             _M = len(_X)                    # Total number of groups.
             _N = sum(_F)                    # Total number of failures.
-            _T_star = _X[-1]                # Test termination time.
+
+            # If the user-suppled test termination time is less than the latest
+            # observed time, then use the latest observed time.
+            if self._flt_test_termination_time < _X[-1]:
+                self._flt_test_termination_time = _X[-1]
 
             # Estimate model parameters and bounds.
             if _N > 1:
@@ -2204,31 +2223,34 @@ class Testing(object):
 
             # Calculate the confidence bounds for the model parameters.
             (_lambda_hat[0],
-             _lambda_hat[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                           _beta_hat[1], _alpha, 2)
+             _lambda_hat[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                           _lambda_hat[1], _beta_hat[1],
+                                           _alpha, 2)
             (_beta_hat[0],
-             _beta_hat[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                         _beta_hat[1], _alpha, 1)
+             _beta_hat[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                         _lambda_hat[1], _beta_hat[1],
+                                         _alpha, 1)
 
             # Calculate MTBF and failure intensity point estimates.
             (_mu_c[1],
-             _mu_i[1]) = crow_amsaa_mean(_lambda_hat[1], _beta_hat[1], _T_star)
+             _mu_i[1]) = crow_amsaa_mean(_lambda_hat[1], _beta_hat[1],
+                                         self._flt_test_termination_time)
 
             _rho_c[1] = 1.0 / _mu_c[1]
             _rho_i[1] = 1.0 / _mu_i[1]
 
             # Calculate bounds on the MTBF and failure intensities.
             (_rho_c[0],
-             _rho_c[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                      _beta_hat[1], _alpha, 3)
+             _rho_c[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                      _lambda_hat[1], _beta_hat[1], _alpha, 3)
 
             _mu_c[0] = 1.0 / _rho_c[2]
             _mu_c[2] = 1.0 / _rho_c[0]
 
             _rho_i[0] = _lambda_hat[0] * _beta_hat[0] * \
-                _T_star**(_beta_hat[0] - 1.0)
+                self._flt_test_termination_time**(_beta_hat[0] - 1.0)
             _rho_i[2] = _lambda_hat[2] * _beta_hat[2] * \
-                _T_star**(_beta_hat[2] - 1.0)
+                self._flt_test_termination_time**(_beta_hat[2] - 1.0)
 
             _mu_i[0] = 1.0 / _rho_i[2]
             _mu_i[2] = 1.0 / _rho_i[0]
@@ -2240,7 +2262,7 @@ class Testing(object):
 
             __row = __model.iter_next(__row)
 
-        self.cum_time = _T_star
+        self.cum_time = sum(_X)
         self.cum_failures = _N
 
         # Calculate critical values for GoF tests.
@@ -2257,7 +2279,9 @@ class Testing(object):
             #       Ha: the data does not fit the Crow-AMSAA model
             #
             # Reject Ho if _CvM exceeds the critical value.
-            _cvm = cramer_von_mises(_X, _beta_hat[1], _T_star, type2=True)
+            _cvm = cramer_von_mises(_X, _beta_hat[1],
+                                    self._flt_test_termination_time,
+                                    type2=True)
             self.txtGoFTrend.set_text(str(fmt.format(_cvm_critical)))
             self.txtGoFModel.set_text(str(fmt.format(_cvm)))
             if _cvm < _cvm_critical:
@@ -2292,8 +2316,8 @@ class Testing(object):
             _gr[2] = 1.0 - _beta_hat[0]
 
             # Load the results.
-            _model.set_value(_row, 24, _T_star)
-            _model.set_value(_row, 25, _N)
+            _model.set_value(_row, 24, self._flt_test_termination_time)
+            _model.set_value(_row, 25, self.cum_failures)
             self.txtScalell.set_text(str(fmt.format(_lambda_hat[0])))
             self.txtScale.set_text(str(fmt.format(_lambda_hat[1])))
             self.txtScaleul.set_text(str(fmt.format(_lambda_hat[2])))
@@ -2878,6 +2902,9 @@ class Testing(object):
         # and update the Function Class gtk.TreeView().
         (_model, _row) = self.treeview.get_selection().get_selected()
         _model.set_value(_row, index, _text)
+
+        if index == 200:
+            self._flt_test_termination_time = float(_text)
 
         # Update the Testing class public and private attributes.
         self._update_attributes()
