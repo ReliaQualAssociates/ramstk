@@ -41,19 +41,6 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
-# Import R library.
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    import rpy2.rlike.container as rlc
-    import rpy2.rinterface as ri
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
 # Import mathematical functions.
 import numpy as np
 from numpy.linalg import inv
@@ -698,6 +685,11 @@ def duane_mean(b, alpha, T):
 def beta_grouped(b, f, t, logt):
     """
     Function for estimating the beta value from grouped data.
+
+    :param float b: guess for the Crow-AMSAA shape parameter.
+    :param ndarray f:
+    :param ndarray t:
+    :param ndarray logt:
     """
 
     _beta = sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) /
@@ -895,14 +887,10 @@ def var_covar(N, T, alpha, beta):
     Function to calculate the variance-covariance matrix for the NHPP - Power
     Law model parameters.  Used for Crow-AMSAA models too.
 
-    :param N: total number of failures in the data set.
-    :type N: integer
-    :param T: total observation time or maximum failure time.
-    :type T: float
-    :param alpha: the point estimate of the alpha (scale) parameter.
-    :type alpha: float
-    :param beta: the point estimate of the beta (shape) parameter.
-    :type beta: float
+    :param int N: total number of failures in the data set.
+    :param float T: total observation time or maximum failure time.
+    :param float alpha: the point estimate of the alpha (scale) parameter.
+    :param float beta: the point estimate of the beta (shape) parameter.
     :return: the variance-covariance matrix for alpha and beta.  It has the
              form:
                     [[Var(alpha), Cov(alpha, beta)],

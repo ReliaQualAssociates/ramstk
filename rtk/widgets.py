@@ -942,7 +942,7 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,    # pylint: di
             _lst_max_.append(max(y1))
         elif _type_[0] == 3:
             axis.grid(False, which='both')
-            n, bins, __patches = axis.hist(x, bins=len(y1), color=_marker_[0])
+            n, bins, __patches = axis.hist(x, bins=y1, color=_marker_[0])
             _lst_min_.append(min(n))
             _lst_max_.append(max(n))
         elif _type_[0] == 4:

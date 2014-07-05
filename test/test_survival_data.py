@@ -15,24 +15,816 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import unittest
-import numpy as np
 
 import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
 
-from rpy2 import robjects
-from rpy2.robjects import r as R
+import numpy as np
 
 from rtk.calculations import beta_bounds
 from rtk._calculations_.survival import *
 
-class TestSurvivalModels(unittest.TestCase):
 
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-    # The following data is used to test the Mean Cumulative Function         #
-    # algorithms                                                              #
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+class TestMedianRanks(unittest.TestCase):
+    """
+    Class for testing functions used to calculate median ranks.
+    """
+
+    DATA_EXACT = np.array([[0.0, 10.0, 1, 1], [0.0, 30.0, 1, 1],
+                           [0.0, 45.0, 1, 1], [0.0, 49.0, 1, 1],
+                           [0.0, 82.0, 1, 1], [0.0, 90.0, 1, 1],
+                           [0.0, 96.0, 1, 1], [0.0, 100.0, 1, 1]])
+
+    DATA_SUSPENSIONS = np.array([[0.0, 10.0, 1, 2], [0.0, 30.0, 1, 1],
+                                 [0.0, 45.0, 1, 3], [0.0, 49.0, 1, 1],
+                                 [0.0, 82.0, 1, 1], [0.0, 90.0, 1, 1],
+                                 [0.0, 96.0, 1, 1], [0.0, 100.0, 1, 2]])
+
+    DATA_INTERVAL = np.array([[0.0, 100.0, 7, 3], [100.0, 200.0, 5, 3],
+                              [200.0, 300.0, 3, 3], [300.0, 400.0, 2, 3],
+                              [400.0, 500.0, 1, 3], [500.0, 600.0, 2, 3]])
+
+    def test_adjusted_rank(self):
+        """
+        Test of the adjust rank function.
+        """
+
+        # Test with exact data.
+        np.testing.assert_equal(adjusted_rank(self.DATA_EXACT),
+                                [1, 2, 3, 4, 5, 6, 7, 8])
+
+        # Test with suspended data.
+        np.testing.assert_equal(adjusted_rank(self.DATA_SUSPENSIONS),
+                                [-1, 1.125, -1, 2.4375,
+                                 3.75, 5.0625, 6.375, -1])
+
+    def test_bernards_approximation(self):
+        """
+        Test of Bernard's approximation function.
+        """
+
+        # Test with exact data.  Fails as not equal, why?
+        np.testing.assert_equal(bernard_ranks(self.DATA_EXACT),
+                                [0.083333333333333329, 0.20238095238095236,
+                                 0.32142857142857145, 0.44047619047619047,
+                                 0.55952380952380953, 0.6785714285714286,
+                                 0.79761904761904756, 0.91666666666666663])
+
+        # Test with right censored data.
+        np.testing.assert_equal(bernard_ranks(self.DATA_SUSPENSIONS),
+                                [np.nan, 0.098214285714285698, np.nan,
+                                 0.2544642857142857, 0.4107142857142857,
+                                 0.5669642857142857, 0.7232142857142857,
+                                 np.nan])
+
+        # Test with interval censored data.
+        np.testing.assert_equal(bernard_ranks(self.DATA_INTERVAL,
+                                              grouped=True),
+                                [0.32843137254901966, 0.57352941176470584,
+                                 0.72058823529411764, 0.81862745098039214,
+                                 0.86764705882352944, 0.96568627450980393])
+
+
+
+class TestExponential(unittest.TestCase):
+    """
+    Class to test exponential distribution algorithms.
+    """
+
+    # TODO: Add test for generating a theoretical exp(theta)
+
+    # Data is the same as that used in the ReliaSoft wiki examples.
+    # The table can be found at the following URL, for example.
+    # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
+    # lambda = 0.02711 and rho = -0.9679 when fit to the EXP.
+    DATA = np.array([['', 0.0, 5.0, 0, 1, 1], ['', 0.0, 10.0, 0, 1, 1],
+                     ['', 0.0, 15.0, 0, 1, 1], ['', 0.0, 20.0, 0, 1, 1],
+                     ['', 0.0, 25.0, 0, 1, 1], ['', 0.0, 30.0, 0, 1, 1],
+                     ['', 0.0, 35.0, 0, 1, 1], ['', 0.0, 40.0, 0, 1, 1],
+                     ['', 0.0, 50.0, 0, 1, 1], ['', 0.0, 60.0, 0, 1, 1],
+                     ['', 0.0, 70.0, 0, 1, 1], ['', 0.0, 80.0, 0, 1, 1],
+                     ['', 0.0, 90.0, 0, 1, 1], ['', 0.0, 100.0, 0, 1, 1]])
+
+    # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
+    LEUK = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
+                     [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
+                     [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
+                     [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
+                     [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
+                     [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
+                     [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
+                     [0.0, 34.0, 1, 1]])
+
+    # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
+    MICE = np.array([[0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 9.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2]])
+
+    # Danish AIDS patients.  Data retrieved from:
+    # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
+    AIDS = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
+                     [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
+                     [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
+                     [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
+                     [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
+                     [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
+                     [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
+                     [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
+                     [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
+                     [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
+
+    # Data set of 100 exponentially distributed points with a mean of 100.
+    EXP_TEST = [(u'', 48.146, 48.146, 0.0, 1, 1), (u'', 20.564, 20.564, 0.0, 1, 1),
+                (u'', 94.072, 94.072, 0.0, 1, 1), (u'', 177.992, 177.992, 0.0, 1, 1),
+                (u'', 89.103, 89.103, 0.0, 1, 1), (u'', 350.577, 350.577, 0.0, 1, 1),
+                (u'', 82.223, 82.223, 0.0, 1, 1), (u'', 40.360, 40.360, 0.0, 1, 1),
+                (u'', 39.576, 39.576, 0.0, 1, 1), (u'', 53.127, 53.127, 0.0, 1, 1),
+                (u'', 159.732, 159.732, 0.0, 1, 1), (u'', 48.398, 48.398, 0.0, 1, 1),
+                (u'', 46.984, 46.984, 0.0, 1, 1), (u'', 36.169, 36.169, 0.0, 1, 1),
+                (u'', 351.347, 351.347, 0.0, 1, 1), (u'', 18.917, 18.917, 0.0, 1, 1),
+                (u'', 101.977, 101.977, 0.0, 1, 1), (u'', 141.988, 141.988, 0.0, 1, 1),
+                (u'', 241.044, 241.044, 0.0, 1, 1), (u'', 61.993, 61.993, 0.0, 1, 1),
+                (u'', 171.813, 171.813, 0.0, 1, 1), (u'', 78.747, 78.747, 0.0, 1, 1),
+                (u'', 54.070, 54.070, 0.0, 1, 1), (u'', 87.229, 87.229, 0.0, 1, 1),
+                (u'', 158.980, 158.980, 0.0, 1, 1), (u'', 185.254, 185.254, 0.0, 1, 1),
+                (u'', 16.452, 16.452, 0.0, 1, 1), (u'', 120.144, 120.144, 0.0, 1, 1),
+                (u'', 294.418, 294.418, 0.0, 1, 1), (u'', 13.640, 13.640, 0.0, 1, 1),
+                (u'', 115.532, 115.532, 0.0, 1, 1), (u'', 58.595, 58.595, 0.0, 1, 1),
+                (u'', 7.876, 7.876, 0.0, 1, 1), (u'', 10.790, 10.790, 0.0, 1, 1),
+                (u'', 67.342, 67.342, 0.0, 1, 1), (u'', 14.848, 14.848, 0.0, 1, 1),
+                (u'', 82.160, 82.160, 0.0, 1, 1), (u'', 14.558, 14.558, 0.0, 1, 1),
+                (u'', 18.793, 18.793, 0.0, 1, 1), (u'', 69.776, 69.776, 0.0, 1, 1),
+                (u'', 65.542, 65.542, 0.0, 1, 1), (u'', 194.039, 194.039, 0.0, 1, 1),
+                (u'', 41.559, 41.559, 0.0, 1, 1), (u'', 75.549, 75.549, 0.0, 1, 1),
+                (u'', 14.808, 14.808, 0.0, 1, 1), (u'', 184.263, 184.263, 0.0, 1, 1),
+                (u'', 2.810, 2.810, 0.0, 1, 1), (u'', 13.095, 13.095, 0.0, 1, 1),
+                (u'', 52.885, 52.885, 0.0, 1, 1), (u'', 49.855, 49.855, 0.0, 1, 1),
+                (u'', 263.548, 263.548, 0.0, 1, 1), (u'', 4.248, 4.248, 0.0, 1, 1),
+                (u'', 66.864, 66.864, 0.0, 1, 1), (u'', 172.663, 172.663, 0.0, 1, 1),
+                (u'', 226.918, 226.918, 0.0, 1, 1), (u'', 169.175, 169.175, 0.0, 1, 1),
+                (u'', 148.070, 148.070, 0.0, 1, 1), (u'', 3.679, 3.679, 0.0, 1, 1),
+                (u'', 28.693, 28.693, 0.0, 1, 1), (u'', 34.931, 34.931, 0.0, 1, 1),
+                (u'', 297.467, 297.467, 0.0, 1, 1), (u'', 137.072, 137.072, 0.0, 1, 1),
+                (u'', 53.180, 53.180, 0.0, 1, 1), (u'', 49.760, 49.760, 0.0, 1, 1),
+                (u'', 19.664, 19.664, 0.0, 1, 1),  (u'', 96.415, 96.415, 0.0, 1, 1),
+                (u'', 14.003, 14.003, 0.0, 1, 1), (u'', 17.743, 17.743, 0.0, 1, 1),
+                (u'', 212.279, 212.279, 0.0, 1, 1), (u'', 38.951, 38.951, 0.0, 1, 1),
+                (u'', 74.057, 74.057, 0.0, 1, 1), (u'', 86.769, 86.769, 0.0, 1, 1),
+                (u'', 37.765, 37.765, 0.0, 1, 1), (u'', 5.566, 5.566, 0.0, 1, 1),
+                (u'', 71.048, 71.048, 0.0, 1, 1), (u'', 5.137, 5.137, 0.0, 1, 1),
+                (u'', 35.461, 35.461, 0.0, 1, 1), (u'', 121.963, 121.963, 0.0, 1, 1),
+                (u'', 42.486, 42.486, 0.0, 1, 1), (u'', 52.315, 52.315, 0.0, 1, 1),
+                (u'', 77.095, 77.095, 0.0, 1, 1), (u'', 14.259, 14.259, 0.0, 1, 1),
+                (u'', 111.147, 111.147, 0.0, 1, 1), (u'', 49.364, 49.364, 0.0, 1, 1),
+                (u'', 1.978, 1.978, 0.0, 1, 1), (u'', 163.827, 163.827, 0.0, 1, 1),
+                (u'', 66.690, 66.690, 0.0, 1, 1), (u'', 80.172, 80.172, 0.0, 1, 1),
+                (u'', 323.763, 323.763, 0.0, 1, 1), (u'', 275.491, 275.491, 0.0, 1, 1),
+                (u'', 49.315, 49.315, 0.0, 1, 1), (u'', 1.585, 1.585, 0.0, 1, 1),
+                (u'', 317.922, 317.922, 0.0, 1, 1), (u'', 12.398, 12.398, 0.0, 1, 1),
+                (u'', 222.930, 222.930, 0.0, 1, 1), (u'', 6.328, 6.328, 0.0, 1, 1),
+                (u'', 143.687, 143.687, 0.0, 1, 1), (u'', 134.763, 134.763, 0.0, 1, 1),
+                (u'', 88.862, 88.862, 0.0, 1, 1), (u'', 143.918, 143.918, 0.0, 1, 1)]
+
+    def test_exponential_partial_derivs_exact(self):
+        """
+        Test of the exponential log likelihood partial derivative with exact data only.
+        """
+
+        self.assertAlmostEqual(exponential_partial_derivs(1.0, self.LEUK),
+                               -177.0)
+
+    def test_exponential_partial_derivs_right(self):
+        """
+        Test of the exponential log likelihood partial derivative with exact and right censored data.
+        """
+
+        self.assertAlmostEqual(exponential_partial_derivs(1.0, self.MICE),
+                               -81.0)
+
+    def test_exponential_partial_derivs_interval(self):
+        """
+        Test of the exponential log likelihood partial derivative with exact, right, and interval censored data.
+        """
+
+        # Parameter is 0.0034 for exponential.
+        self.assertAlmostEqual(exponential_partial_derivs(0.0034, self.AIDS),
+                               -33687.147058823532)
+
+
+    def test_exponential_log_pdf(self):
+        """
+        Test of the exponential log pdf function.
+        """
+
+        np.testing.assert_allclose(exponential_log_pdf(np.array(self.DATA[:, 2], dtype=float),
+                                                       0.02222222),
+                                   [-3.91777369, -4.02888479, -4.13999589, -4.25110699,
+                                    -4.36221809, -4.47332919, -4.58444029, -4.69555139,
+                                    -4.91777359, -5.13999579, -5.36221799, -5.58444019,
+                                    -5.80666239, -6.02888459])
+
+    def test_exponential_mle_fit(self):
+        """
+        Test of maximum likelihood extimate (MLE) fit of the exponential parameters.
+        """
+
+        # Check the mean.
+        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
+                                              10000000.0, 1)[0][0],
+                               0.0106235,
+                               msg='FAIL: Exponential scale parameter (lambda) test using MLE.')
+
+        # Check the variance.
+        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
+                                              10000000.0, 1)[1][0],
+                               1.3219492619921581e-06,
+                               msg='FAIL: Exponential scale parameter (lambda) variance test using MLE.')
+
+    def test_exponential_regression_fit(self):
+        """
+        Test of rank regression on y (RRY) fit of the exponential parameters.
+        """
+
+        # Test the parameter estimation.
+        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
+                                              10000000.0, 2)[0][0],
+                               0.0108368,
+                               msg='FAIL: Exponential scale parameter (lambda) test using RRY.')
+
+        # Test the variance estimation.
+        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
+                                              10000000.0, 2)[1][0],
+                               2.8792752e-08,
+                               msg='FAIL: Exponential scale parameter (lambda) variance test using RRY.')
+
+        # Test the correlation coefficient.
+        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
+                                              10000000.0, 2)[3],
+                               -0.9881986,
+                               msg='FAIL: Exponential correlation coefficient test using RRY.')
+
+    def test_theoretical_exponential(self):
+        """
+        Test of the theoretical distribution function for the exponential.
+        """
+
+        _para = [0.0106235]
+        np.testing.assert_equal(theoretical_distribution(np.array(self.EXP_TEST),
+                                                            'exponential', _para)[99],
+                                0.9760679054934378)
+
+
+
+class TestLogNormal(unittest.TestCase):
+    """
+    Class for testing lognormal distribution algorithms.
+    """
+
+    # TODO: Add test for generating a theoretical lnorm(mu, sigma)
+
+    # Data is the same as that used in the ReliaSoft wiki examples.
+    # The table can be found at the following URL, for example.
+    # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
+    # mu = 3.516, sigma = 0.9663, and rho = 0.9754 when fit to the LNORM.
+    DATA = np.array([['', 5.0, 5.0, 0, 1, 1], ['', 10.0, 10.0, 0, 1, 1],
+                     ['', 15.0,	15.0, 0, 1, 1], ['', 20.0, 20.0, 0, 1, 1],
+                     ['', 25.0, 25.0, 0, 1, 1], ['', 30.0, 30.0, 0, 1, 1],
+                     ['', 35.0, 35.0, 0, 1, 1], ['', 40.0, 40.0, 0, 1, 1],
+                     ['', 50.0, 50.0, 0, 1, 1], ['', 60.0, 60.0, 0, 1, 1],
+                     ['', 70.0, 70.0, 0, 1, 1], ['', 80.0, 80.0, 0, 1, 1],
+                     ['', 90.0, 90.0, 0, 1, 1], ['', 100.0, 100.0, 0, 1, 1]])
+
+    DATA3 = np.array([['', 0.0, 24.0, 0.0, 3, 24], ['', 24.0, 39.0, 0.0, 3, 1],
+                      ['', 24.0, 113.0, 0.0, 3, 4], ['', 28.0, 88.0, 0.0, 3, 1],
+                      ['', 39.0, 113.0, 0.0, 3, 2], ['', 57.0, 113.0, 0.0, 3, 1],
+                      ['', 0.0, 39.0, 0.0, 3, 2], ['', 24.0, 57.0, 0.0, 3, 10],
+                      ['', 24.0, 28.0, 0.0, 3, 4], ['', 24.0, 88.0, 0.0, 3, 3],
+                      ['', 28.0, 39.0, 0.0, 3, 4], ['', 39.0, 57.0, 0.0, 3, 3],
+                      ['', 57.0, 88.0, 0.0, 3, 5], ['', 88.0, 113.0, 0.0, 3, 1],
+                      ['', 0.0, 88.0, 0.0, 2, 34], ['', 0.0, 24.0, 0.0, 2, 61],
+                      ['', 0.0, 28.0, 0.0, 2, 8], ['', 0.0, 39.0, 0.0, 2, 15],
+                      ['', 0.0, 57.0, 0.0, 2, 22], ['', 0.0, 113.0, 0.0, 2, 92]])
+
+    def test_lognormal_mle_fit(self):
+        """
+        Test of maximum likelihood estimate (MLE) fit of the lognormal parameters.
+        """
+
+        # Check the mean.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 1,
+                                              dist='lognormal')[0][0],
+                               3.5158550,
+                               msg='FAIL: Lognormal scale parameter (mu) test using MLE.')
+
+        # Check the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 1,
+                                              dist='lognormal')[0][1],
+                               0.8491917,
+                               msg='FAIL: Lognormal shape parameter (sigma) test using MLE.')
+
+    def test_lognormal_regression_fit(self):
+        """
+        Test of rank regression on y (RRY) fit of the lognormal parameters.
+        """
+
+        # Check the mean.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[0][0],
+                              3.51585540,
+                               msg='FAIL: Lognormal scale parameter (mu) test using RRY.')
+
+        # Check the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[0][1],
+                               0.9693628,
+                               msg='FAIL: Lognormal shape parameter (sigma) test using RRY.')
+
+        # Check the variance on the mean.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[1][0],
+                               0.004542255,
+                               msg='FAIL: Lognormal scale paramter (mu) variance test using RRY.')
+
+        # Check the variance on the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[1][2],
+                               0.05942344,
+                               msg='FAIL: Lognormal shape parameter (sigma) variance test using RRY.')
+
+        # Check the covariance of the mean and standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[1][1],
+                               -0.0159699,
+                               msg='FAIL: Lognormal covariance test using RRY.')
+
+        # Check the correlation coefficient.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='lognormal')[3],
+                               0.9753344,
+                               msg='FAIL: Lognormal correlation coefficient test using RRY.')
+
+    def test_theoretical_lognormal(self):
+        """
+        Test of the theoretical distribution function for the lognormal.
+        """
+
+        _para = [3.51585540, 0.9693628]
+        np.testing.assert_equal(theoretical_distribution(np.array(self.DATA),
+                                                         'lognormal', _para)[13],
+                                0.86946087881485745)
+
+
+
+class TestGaussian(unittest.TestCase):
+    """
+    Class for testing Gaussian distribution algorithms.
+    """
+
+    # TODO: Add test for generating a theoretical norm(mu, sigma)
+
+    # Data is the same as that used in the ReliaSoft wiki examples.
+    # The table can be found at the following URL, for example.
+    # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
+    # mu = 45.0000, sigma = 33.5367 and rho = 0.9790 when fit to the GAU.
+    DATA = np.array([['', 0.0, 5.0, 0, 1, 1], ['', 0.0, 10.0, 0, 1, 1],
+                     ['', 0.0,	15.0, 0, 1, 1], ['', 0.0, 20.0, 0, 1, 1],
+                     ['', 0.0, 25.0, 0, 1, 1], ['', 0.0, 30.0, 0, 1, 1],
+                     ['', 0.0, 35.0, 0, 1, 1], ['', 0.0, 40.0, 0, 1, 1],
+                     ['', 0.0, 50.0, 0, 1, 1], ['', 0.0, 60.0, 0, 1, 1],
+                     ['', 0.0, 70.0, 0, 1, 1], ['', 0.0, 80.0, 0, 1, 1],
+                     ['', 0.0, 90.0, 0, 1, 1], ['', 0.0, 100.0, 0, 1, 1]])
+
+    DATA3 = np.array([['', 0.0, 24.0, 0.0, 3, 24], ['', 24.0, 39.0, 0.0, 3, 1],
+                      ['', 24.0, 113.0, 0.0, 3, 4], ['', 28.0, 88.0, 0.0, 3, 1],
+                      ['', 39.0, 113.0, 0.0, 3, 2], ['', 57.0, 113.0, 0.0, 3, 1],
+                      ['', 0.0, 39.0, 0.0, 3, 2], ['', 24.0, 57.0, 0.0, 3, 10],
+                      ['', 24.0, 28.0, 0.0, 3, 4], ['', 24.0, 88.0, 0.0, 3, 3],
+                      ['', 28.0, 39.0, 0.0, 3, 4], ['', 39.0, 57.0, 0.0, 3, 3],
+                      ['', 57.0, 88.0, 0.0, 3, 5], ['', 88.0, 113.0, 0.0, 3, 1],
+                      ['', 0.0, 88.0, 0.0, 2, 34], ['', 0.0, 24.0, 0.0, 2, 61],
+                      ['', 0.0, 28.0, 0.0, 2, 8], ['', 0.0, 39.0, 0.0, 2, 15],
+                      ['', 0.0, 57.0, 0.0, 2, 22], ['', 0.0, 113.0, 0.0, 2, 92]])
+
+    # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
+    LEUK = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
+                     [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
+                     [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
+                     [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
+                     [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
+                     [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
+                     [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
+                     [0.0, 34.0, 1, 1]])
+
+    # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
+    MICE = np.array([[0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 9.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2]])
+
+    # Danish AIDS patients.  Data retrieved from:
+    # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
+    AIDS = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
+                     [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
+                     [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
+                     [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
+                     [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
+                     [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
+                     [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
+                     [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
+                     [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
+                     [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
+
+    # Data set of 100 normally distributed points a mean of 100.0 and a
+    # variance of 10.0
+    NORM_TEST = [(u'', 95.370, 95.370, 0.0, 1, 1), (u'', 0.0, 114.011, 0.0, 1, 1),
+                 (u'', 0.0, 113.246, 0.0, 1, 1), (u'', 0.0, 109.167, 0.0, 1, 1),
+                 (u'', 0.0, 104.227, 0.0, 1, 1), (u'', 107.109, 107.109, 0.0, 1, 1),
+                 (u'', 0.0, 117.43215, 0.0, 1, 1), (u'', 0.0, 94.785, 0.0, 1, 1),
+                 (u'', 0.0, 83.56718, 0.0, 1, 1), (u'', 0.0, 103.501, 0.0, 1, 1),
+                 (u'', 89.931, 89.931, 0.0, 1, 1), (u'', 0.0, 120.455, 0.0, 1, 1),
+                 (u'', 0.0, 97.081, 0.0, 1, 1), (u'', 0.0, 96.813, 0.0, 1, 1),
+                 (u'', 0.0, 97.571, 0.0, 1, 1), (u'', 106.757, 106.757, 0.0, 1, 1),
+                 (u'', 0.0, 99.335, 0.0, 1, 1), (u'', 0.0, 104.538, 0.0, 1, 1),
+                 (u'', 0.0, 102.028, 0.0, 1, 1), (u'', 0.0, 90.032, 0.0, 1, 1),
+                 (u'', 77.542, 77.542, 0.0, 1, 1), (u'', 0.0, 102.761, 0.0, 1, 1),
+                 (u'', 0.0, 82.485, 0.0, 1, 1), (u'', 0.0, 77.743, 0.0, 1, 1),
+                 (u'', 0.0, 109.974, 0.0, 1, 1), (u'', 94.851, 94.851, 0.0, 1, 1),
+                 (u'', 0.0, 89.771, 0.0, 1, 1), (u'', 0.0, 98.193, 0.0, 1, 1),
+                 (u'', 0.0, 102.165, 0.0, 1, 1), (u'', 0.0, 96.783, 0.0, 1, 1),
+                 (u'', 108.865, 108.865, 0.0, 1, 1), (u'', 0.0, 120.462, 0.0, 1, 1),
+                 (u'', 0.0, 111.592, 0.0, 1, 1), (u'', 0.0, 106.148, 0.0, 1, 1),
+                 (u'', 0.0, 102.946, 0.0, 1, 1), (u'', 111.290, 111.290, 0.0, 1, 1),
+                 (u'', 0.0, 106.002, 0.0, 1, 1), (u'', 0.0, 114.617, 0.0, 1, 1),
+                 (u'', 0.0, 88.229, 0.0, 1, 1), (u'', 0.0, 131.364, 0.0, 1, 1),
+                 (u'', 86.855, 86.855, 0.0, 1, 1), (u'', 0.0, 109.927, 0.0, 1, 1),
+                 (u'', 0.0, 75.116, 0.0, 1, 1), (u'', 0.0, 100.465, 0.0, 1, 1),
+                 (u'', 0.0, 97.783, 0.0, 1, 1), (u'', 108.169, 108.169, 0.0, 1, 1),
+                 (u'', 0.0, 98.851, 0.0, 1, 1), (u'', 0.0, 99.310, 0.0, 1, 1),
+                 (u'', 0.0, 94.588, 0.0, 1, 1), (u'', 0.0, 98.123, 0.0, 1, 1),
+                 (u'', 115.666, 115.666, 0.0, 1, 1), (u'', 0.0, 104.491, 0.0, 1, 1),
+                 (u'', 0.0, 93.490, 0.0, 1, 1), (u'', 0.0, 111.794, 0.0, 1, 1),
+                 (u'', 0.0, 114.320, 0.0, 1, 1), (u'', 106.938, 106.938, 0.0, 1, 1),
+                 (u'', 0.0, 106.450, 0.0, 1, 1), (u'', 0.0, 103.105, 0.0, 1, 1),
+                 (u'', 0.0, 107.781, 0.0, 1, 1), (u'', 0.0, 120.846, 0.0, 1, 1),
+                 (u'', 100.102, 100.102, 0.0, 1, 1), (u'', 0.0, 92.930, 0.0, 1, 1),
+                 (u'', 0.0, 101.246, 0.0, 1, 1), (u'', 0.0, 69.517, 0.0, 1, 1),
+                 (u'', 0.0, 106.276, 0.0, 1, 1), (u'', 99.046, 99.046, 0.0, 1, 1),
+                 (u'', 0.0, 101.300, 0.0, 1, 1), (u'', 0.0, 98.588, 0.0, 1, 1),
+                 (u'', 0.0, 110.022, 0.0, 1, 1), (u'', 0.0, 91.255, 0.0, 1, 1),
+                 (u'', 106.687, 106.687, 0.0, 1, 1), (u'', 0.0, 102.443, 0.0, 1, 1),
+                 (u'', 0.0, 100.342, 0.0, 1, 1), (u'', 0.0, 96.635, 0.0, 1, 1),
+                 (u'', 0.0, 80.909, 0.0, 1, 1), (u'', 111.080, 111.080, 0.0, 1, 1),
+                 (u'', 0.0, 107.005, 0.0, 1, 1), (u'', 0.0, 103.043, 0.0, 1, 1),
+                 (u'', 0.0, 92.660, 0.0, 1, 1), (u'', 0.0, 81.526, 0.0, 1, 1),
+                 (u'', 94.497, 94.497, 0.0, 1, 1), (u'', 0.0, 88.791, 0.0, 1, 1),
+                 (u'', 0.0, 97.913, 0.0, 1, 1), (u'', 0.0, 96.120, 0.0, 1, 1),
+                 (u'', 0.0, 101.234, 0.0, 1, 1), (u'', 95.132, 95.132, 0.0, 1, 1),
+                 (u'', 0.0, 93.939, 0.0, 1, 1), (u'', 0.0, 92.302, 0.0, 1, 1),
+                 (u'', 0.0, 96.536, 0.0, 1, 1), (u'', 0.0, 110.747, 0.0, 1, 1),
+                 (u'', 99.888, 99.888, 0.0, 1, 1), (u'', 0.0, 92.780, 0.0, 1, 1),
+                 (u'', 0.0, 107.678, 0.0, 1, 1), (u'', 0.0, 96.187, 0.0, 1, 1),
+                 (u'', 0.0, 87.938, 0.0, 1, 1), (u'', 91.664, 91.664, 0.0, 1, 1),
+                 (u'', 0.0, 106.149, 0.0, 1, 1), (u'', 0.0, 104.320, 0.0, 1, 1),
+                 (u'', 0.0, 115.681, 0.0, 1, 1), (u'', 0.0, 95.920, 0.0, 1, 1)]
+
+    def test_gaussian_log_likelihood_exact(self):
+        """
+        Test of the Gaussian log likelihood partial derivatives with exact data only.
+        """
+
+        np.testing.assert_equal(gaussian_partial_derivs([1.0, 1.0], self.LEUK),
+                                [177.0, 156.0])
+
+    def test_gaussian_log_likelihood_right(self):
+        """
+        Test of the Gaussian log likelihood partial derivatives with exact and right censored data.
+        """
+
+        np.testing.assert_equal(gaussian_partial_derivs([1.0, 1.0], self.MICE),
+                                [31.000000005139885, 26.000000046258979])
+
+    def test_gaussian_log_likelihood_interval(self):
+        """
+        Test of the Gaussian log likelihood partial derivatives with exact, right, and interval censored data.
+        """
+
+        np.testing.assert_equal(gaussian_partial_derivs([1.0, 1.0], self.AIDS),
+                                [-2280.5, -2215.5])
+
+    def test_guassian_mle_fit(self):
+        """
+        Test of maximum likelihood estimate (MLE) fit of the Gaussian parameters.
+        """
+
+        # Check the mean.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 1,
+                                              dist='normal')[0][0],
+                               100.5283533,
+                               msg='FAIL: Gaussian scale parameter (mu) test using MLE.')
+
+        # Check the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 1,
+                                              dist='normal')[0][1],
+                               10.5442140,
+                               msg='FAIL: Gaussian shape parameter (sigma) test using MLE.')
+
+    def test_gaussian_regression_fit(self):
+        """
+        Test of rank regression on y (RRY) fit of the Gaussian parameters.
+        """
+
+        # Check the mean.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[0][0],
+                               100.5283533,
+                               msg='FAIL: Gaussian scale parameter (mu) test using RRY.')
+
+        # Check the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[0][1],
+                               10.8427617,
+                               msg='FAIL: Gaussian shape parameter (sigma) test using RRY.')
+
+        # Check the variance on the mean.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[1][0],
+                               0.0000011825642,
+                               msg='FAIL: Gaussian scale parameter (mu) variance test using RRY.')
+
+        # Check the variance on the standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[1][2],
+                               0.0120824,
+                               msg='FAIL: Gaussian shape parameeter (sigma) variance test using RRY.')
+
+        # Check the covariance of the mean and standard deviation.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[1][1],
+                               -0.0001189,
+                               msg='FAIL: Gaussian covariance test using RRY.')
+
+        # Check the correlation coefficient.
+        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
+                                              10000000.0, 2,
+                                              dist='normal')[3],
+                               0.9932564,
+                               msg='FAIL: Gaussian correlation coefficient test using RRY.')
+
+    def test_theoretical_gussian(self):
+        """
+        Test of the theoretical distribution function for the Gaussian.
+        """
+
+        _para = [100.5283533, 10.8427617]
+        np.testing.assert_equal(theoretical_distribution(np.array(self.NORM_TEST),
+                                                         'normal', _para)[115],
+                                0.90900989457431303)
+
+
+
+class TestWeibull(unittest.TestCase):
+    """
+    Class for testing Weibull dsitribution algorithms.
+    """
+
+    # TODO: Add test for generating a theoretical wei(eta, beta)
+
+    # Data is the same as that used in the ReliaSoft wiki examples.
+    # The table can be found at the following URL, for example.
+    # http://reliawiki.org/index.php/The_Weibull_Distribution#Rank_Regression_on_Y
+    # eta = 76.318, beta = 1.4301, and rho = 0.9956 when fit to the WEI.
+    DATA = np.array([['', 0.0, 16.0, 0, 1, 1], ['', 0.0, 34.0, 0, 1, 1],
+                     ['', 0.0, 53.0, 0, 1, 1], ['', 0.0, 75.0, 0, 1, 1],
+                     ['', 0.0, 93.0, 0, 1, 1], ['', 0.0, 120.0, 0, 1, 1]])
+
+    DATA3 = np.array([['', 0.0, 24.0, 0.0, 24, 3], ['', 24.0, 39.0, 0.0, 1, 3],
+                      ['', 24.0, 113.0, 0.0, 4, 3], ['', 28.0, 88.0, 0.0, 1, 3],
+                      ['', 39.0, 113.0, 0.0, 2, 3], ['', 57.0, 113.0, 0.0, 1, 3],
+                      ['', 0.0, 39.0, 0.0, 2, 3], ['', 24.0, 57.0, 0.0, 10, 3],
+                      ['', 24.0, 28.0, 0.0, 4, 3], ['', 24.0, 88.0, 0.0, 3, 3],
+                      ['', 28.0, 39.0, 0.0, 4, 3], ['', 39.0, 57.0, 0.0, 3, 3],
+                      ['', 57.0, 88.0, 0.0, 5, 3], ['', 88.0, 113.0, 0.0, 1, 3],
+                      ['', 0.0, 88.0, 0.0, 34, 2], ['', 0.0, 24.0, 0.0, 61, 2],
+                      ['', 0.0, 28.0, 0.0, 8, 2], ['', 0.0, 39.0, 0.0, 15, 2],
+                      ['', 0.0, 57.0, 0.0, 22, 2], ['', 0.0, 113.0, 0.0, 92, 2]])
+
+    # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
+    LEUK = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
+                     [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
+                     [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
+                     [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
+                     [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
+                     [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
+                     [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
+                     [0.0, 34.0, 1, 1]])
+
+    # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
+    MICE = np.array([[0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
+                     [0.0, 8.0, 1, 1], [0.0, 9.0, 1, 1],
+                     [0.0, 10.0, 1, 1], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2],
+                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2]])
+
+    # Danish AIDS patients.  Data retrieved from:
+    # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
+    AIDS = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
+                     [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
+                     [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
+                     [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
+                     [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
+                     [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
+                     [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
+                     [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
+                     [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
+                     [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
+
+    # Data set of 100 exponentially distributed points with a mean of 100.
+    EXP_TEST = [(u'', 48.146, 48.146, 0.0, 1, 1), (u'', 20.564, 20.564, 0.0, 1, 1),
+                (u'', 94.072, 94.072, 0.0, 1, 1), (u'', 177.992, 177.992, 0.0, 1, 1),
+                (u'', 89.103, 89.103, 0.0, 1, 1), (u'', 350.577, 350.577, 0.0, 1, 1),
+                (u'', 82.223, 82.223, 0.0, 1, 1),  (u'', 40.360, 40.360, 0.0, 1, 1),
+                (u'', 39.576, 39.576, 0.0, 1, 1), (u'', 53.127, 53.127, 0.0, 1, 1),
+                (u'', 159.732, 159.732, 0.0, 1, 1), (u'', 48.398, 48.398, 0.0, 1, 1),
+                (u'', 46.984, 46.984, 0.0, 1, 1), (u'', 36.169, 36.169, 0.0, 1, 1),
+                (u'', 351.347, 351.347, 0.0, 1, 1), (u'', 18.917, 18.917, 0.0, 1, 1),
+                (u'', 101.977, 101.977, 0.0, 1, 1), (u'', 141.988, 141.988, 0.0, 1, 1),
+                (u'', 241.044, 241.044, 0.0, 1, 1), (u'', 61.993, 61.993, 0.0, 1, 1),
+                (u'', 171.813, 171.813, 0.0, 1, 1), (u'', 78.747, 78.747, 0.0, 1, 1),
+                (u'', 54.070, 54.070, 0.0, 1, 1), (u'', 87.229, 87.229, 0.0, 1, 1),
+                (u'', 158.980, 158.980, 0.0, 1, 1), (u'', 185.254, 185.254, 0.0, 1, 1),
+                (u'', 16.452, 16.452, 0.0, 1, 1), (u'', 120.144, 120.144, 0.0, 1, 1),
+                (u'', 294.418, 294.418, 0.0, 1, 1), (u'', 13.640, 13.640, 0.0, 1, 1),
+                (u'', 115.532, 115.532, 0.0, 1, 1), (u'', 58.595, 58.595, 0.0, 1, 1),
+                (u'', 7.876, 7.876, 0.0, 1, 1), (u'', 10.790, 10.790, 0.0, 1, 1),
+                (u'', 67.342, 67.342, 0.0, 1, 1), (u'', 14.848, 14.848, 0.0, 1, 1),
+                (u'', 82.160, 82.160, 0.0, 1, 1), (u'', 14.558, 14.558, 0.0, 1, 1),
+                (u'', 18.793, 18.793, 0.0, 1, 1), (u'', 69.776, 69.776, 0.0, 1, 1),
+                (u'', 65.542, 65.542, 0.0, 1, 1), (u'', 194.039, 194.039, 0.0, 1, 1),
+                (u'', 41.559, 41.559, 0.0, 1, 1), (u'', 75.549, 75.549, 0.0, 1, 1),
+                (u'', 14.808, 14.808, 0.0, 1, 1), (u'', 184.263, 184.263, 0.0, 1, 1),
+                (u'', 2.810, 2.810, 0.0, 1, 1), (u'', 13.095, 13.095, 0.0, 1, 1),
+                (u'', 52.885, 52.885, 0.0, 1, 1), (u'', 49.855, 49.855, 0.0, 1, 1),
+                (u'', 263.548, 263.548, 0.0, 1, 1), (u'', 4.248, 4.248, 0.0, 1, 1),
+                (u'', 66.864, 66.864, 0.0, 1, 1), (u'', 172.663, 172.663, 0.0, 1, 1),
+                (u'', 226.918, 226.918, 0.0, 1, 1), (u'', 169.175, 169.175, 0.0, 1, 1),
+                (u'', 148.070, 148.070, 0.0, 1, 1), (u'', 3.679, 3.679, 0.0, 1, 1),
+                (u'', 28.693, 28.693, 0.0, 1, 1), (u'', 34.931, 34.931, 0.0, 1, 1),
+                (u'', 297.467, 297.467, 0.0, 1, 1), (u'', 137.072, 137.072, 0.0, 1, 1),
+                (u'', 53.180, 53.180, 0.0, 1, 1), (u'', 49.760, 49.760, 0.0, 1, 1),
+                (u'', 19.664, 19.664, 0.0, 1, 1),  (u'', 96.415, 96.415, 0.0, 1, 1),
+                (u'', 14.003, 14.003, 0.0, 1, 1), (u'', 17.743, 17.743, 0.0, 1, 1),
+                (u'', 212.279, 212.279, 0.0, 1, 1), (u'', 38.951, 38.951, 0.0, 1, 1),
+                (u'', 74.057, 74.057, 0.0, 1, 1), (u'', 86.769, 86.769, 0.0, 1, 1),
+                (u'', 37.765, 37.765, 0.0, 1, 1), (u'', 5.566, 5.566, 0.0, 1, 1),
+                (u'', 71.048, 71.048, 0.0, 1, 1), (u'', 5.137, 5.137, 0.0, 1, 1),
+                (u'', 35.461, 35.461, 0.0, 1, 1), (u'', 121.963, 121.963, 0.0, 1, 1),
+                (u'', 42.486, 42.486, 0.0, 1, 1), (u'', 52.315, 52.315, 0.0, 1, 1),
+                (u'', 77.095, 77.095, 0.0, 1, 1), (u'', 14.259, 14.259, 0.0, 1, 1),
+                (u'', 111.147, 111.147, 0.0, 1, 1), (u'', 49.364, 49.364, 0.0, 1, 1),
+                (u'', 1.978, 1.978, 0.0, 1, 1), (u'', 163.827, 163.827, 0.0, 1, 1),
+                (u'', 66.690, 66.690, 0.0, 1, 1), (u'', 80.172, 80.172, 0.0, 1, 1),
+                (u'', 323.763, 323.763, 0.0, 1, 1), (u'', 275.491, 275.491, 0.0, 1,1 ),
+                (u'', 49.315, 49.315, 0.0, 1, 1), (u'', 1.585, 1.585, 0.0, 1, 1),
+                (u'', 317.922, 317.922, 0.0, 1, 1), (u'', 12.398, 12.398, 0.0, 1, 1),
+                (u'', 222.930, 222.930, 0.0, 1, 1), (u'', 6.328, 6.328, 0.0, 1, 1),
+                (u'', 143.687, 143.687, 0.0, 1, 1), (u'', 134.763, 134.763, 0.0, 1, 1),
+                (u'', 88.862, 88.862, 0.0, 1, 1), (u'', 143.918, 143.918, 0.0, 1, 1)]
+
+    def test_weibull_log_likelihood_exact(self):
+        """
+        Test of the Weibull log likelihood partial derivatives with exact data only.
+        """
+
+        np.testing.assert_equal(weibull_partial_derivs([1.0, 1.0], self.LEUK),
+                                [177.0,-450.4866935010138])
+
+    def test_weibull_log_likelihood_right(self):
+        """
+        Test of the Weibull log likelihood partial derivatives with exact and right censored data.
+        """
+
+        np.testing.assert_equal(weibull_partial_derivs([1.0, 1.0], self.MICE),
+                                [-19.0, -173.5830426301934])
+
+    def test_weibull_log_likelihood_interval(self):
+        """
+        Test of the Weibull log likelihood partial derivatives with exact, right, and interval censored data.
+        """
+
+        # Paramaters are 0.0025 and 0.8119 for Weibull.
+        np.testing.assert_equal(weibull_partial_derivs([1.0, 1.0], self.AIDS),
+                                [-14634.5, -83800.438465226223])
+
+    def test_weibull_mle_fit(self):
+        """
+        Test of maximum likelihood estimate (MLE) fit of the Weibull parameters.
+        """
+
+        # Check the scale parameter (eta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 1,
+                                              dist='weibull')[0][0],
+                               73.5260742,
+                               msg='FAIL: Weibull scale parameter (eta) test using MLE.')
+
+        # Check the shape parameter (beta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 1, dist='weibull')[0][1],
+                               1.932677985,
+                               msg='FAIL: Weibull shape parameter (beta) test using MLE.')
+
+    def test_weibull_regression_fit(self):
+        """
+        Test of rank regression on y (RRY) fit of the Weibull parameters.
+        """
+
+        # Check the scale parameter (eta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[0][0],
+                               76.3454154,
+                               msg='FAIL: Weibull scale parameter (eta) test using RRY.')
+
+        # Check the shape parameter (beta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[0][1],
+                               1.4269671,
+                               msg='FAIL: Weibull shape parameter (beta) test using RRY.')
+
+        # Check the variance on the scale parameter (eta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[1][0],
+                               0.0045293,
+                               msg='FAIL: Weibull scale parameter (eta) variance test using RRY.')
+
+        # Check the variance on the shape parameter (beta).
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[1][2],
+                               0.0739709,
+                               msg='FAIL: Weibull shape parameter (beta) variance test using RRY.')
+
+        # Check the covariance of eta and beta.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[1][1],
+                               -0.0180467,
+                               msg='FAIL: Weibull covariance test using RRY.')
+
+        # Check the correlation coefficient.
+        self.assertAlmostEqual(parametric_fit(self.DATA, 0.0,
+                                              10000000.0, 2,
+                                              dist='weibull')[3],
+                               0.9955808,
+                               msg='FAIL: Weibull correlation coefficient test using RRY.')
+
+    def test_theoretical_weibull(self):
+        """
+        Test of the theoretical distribution function for the Weibull.
+        """
+
+        _para = [76.3454154, 1.4269671]
+        np.testing.assert_equal(theoretical_distribution(np.array(self.EXP_TEST),
+                                                         'weibull', _para)[351],
+                               0.99985204622953761 )
+
+
+
+class TestMCF(unittest.TestCase):
+    """
+    Class to test mean cumulative function (MCF) algorithms.
+    """
+
     # Data is from Table 16.2 in Meeker and Escobar, "Statistical Methods for
     # Reliability Data"
     SIM_SYS = {1: [5, 8, '12+'], 2: ['16+'], 3: [1, 8, 16, '20+']}
@@ -55,66 +847,7 @@ class TestSurvivalModels(unittest.TestCase):
                    416: [202, 563, 570, '585+'], 417: ['587+'], 418: ['578+'],
                    419: ['578+'], 420: ['586+'], 421: ['585+'], 422: ['582+']}
 
-    # Data used to test Duane algorithms.
-    # See http://www.reliawiki.org/index.php/Duane_Model
-    # Data is from least squares example 3.
-    DUANE_FAILS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1]
-    DUANE_TIMES = [9.2, 15.8, 36.5, 198.5, 40.0, 410.0, 206.0, 94.0,
-                   210.0, 1310.0, 820.0, 850.0, 210.0, 580.0, 580.0,
-                   2740.0, 220.0, 670.0, 1300.0, 1600.0, 1300.0,
-                   1200.0, 7400.0]
-
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-    # The following data used to test Kaplan-Meier algorithms                 #
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-    # Data is from
-    TURBINE_WHEEL = [(0.0, 8.0, u'Interval Censored', 0),
-                     (8.0, 12.0, u'Interval Censored', 4),
-                     (12.0, 16.0, u'Interval Censored', 2),
-                     (16.0, 20.0, u'Interval Censored', 7),
-                     (20.0, 24.0, u'Interval Censored', 5),
-                     (24.0, 28.0, u'Interval Censored', 9),
-                     (28.0, 32.0, u'Interval Censored', 9),
-                     (32.0, 36.0, u'Interval Censored', 6),
-                     (36.0, 40.0, u'Interval Censored', 22),
-                     (40.0, 44.0, u'Interval Censored', 21),
-                     (44.0, '44.0+', u'Right Censored', 21)]
-
-    TURNBULL = [(0.0, 1.0, u'Event', 12),
-                (0.0, 1.0, u'Right Censored', 3),
-                (0.0, 1.0, u'Left Censored', 2),
-                (1.0, 2.0, u'Event', 6),
-                (1.0, 2.0, u'Right Censored', 2),
-                (1.0, 2.0, u'Left Censored', 4),
-                (2.0, 3.0, u'Event', 2),
-                (2.0, 3.0, u'Right Censored', 0),
-                (2.0, 3.0, u'Left Censored', 2),
-                (3.0, 4.0, u'Event', 3),
-                (3.0, 4.0, u'Right Censored', 3),
-                (3.0, 4.0, u'Left Censored', 5)]
-
-    # Data is from Lee and Wang, page 69, example 4.2.
-    REMISSION = [(3.0, 3.0, u'Event', 1),
-                 (4.0, 4.0, u'Right Censored', 1),
-                 (5.7, 5.7, u'Right Censored', 1),
-                 (6.5, 6.5, u'Event', 1),
-                 (6.5, 6.5, u'Event', 1),
-                 (8.4, 8.4, u'Right Censored', 1),
-                 (10.0, 10.0, u'Event', 1),
-                 (10.0, 10.0, u'Right Censored', 1),
-                 (12.0, 12.0, u'Event', 1),
-                 (15.0, 15.0, u'Event', 1)]
-
-    # This data is the result of the Kaplan-Meier function using the TURNBULL
-    # data set.
-    KAPLAN_MEIER_TURNBULL = np.matrix([[1.00000000e+00, 4.40000000e+01, 2.03470206e+01, 1.39823815e-01, 7.07052113e-01, 5.37567715e-01, 4.08709687e-01],
-                                       [2.00000000e+00, 2.06529794e+01, 9.33488066e+00, 2.43896693e-01, 4.75148308e-01, 2.94594033e-01, 1.82649591e-01],
-                                       [3.00000000e+00, 9.31809879e+00, 2.68331943e+00, 3.20762342e-01, 3.93329500e-01, 2.09760215e-01, 1.11863839e-01],
-                                       [4.00000000e+00, 6.63477935e+00, 3.63477935e+00, 5.34322843e-01, 2.70292701e-01, 9.48457532e-02, 3.32813904e-02]])
-
-    # Data used to test NHPP power law and NHPP loglinear algorithms.
-    # Data is from the book
+    # Data is from Meeker and Escobar.
     GRAMPUS_FAILS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -129,114 +862,15 @@ class TestSurvivalModels(unittest.TestCase):
                      14.007, 14.028, 14.035, 14.173, 14.173, 14.449,
                      14.587, 14.610, 15.07, 16.0]
 
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-    # The following data is used to test the parametric model fitting         #
-    # function for various distributions.                                     #
-    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-    # Data set of 100 exponentially distributed points with a mean of 100.
-    EXP_TEST = [(u'', 48.146, 48.146, 0.0, 1), (u'', 20.564, 20.564, 0.0, 1),
-                (u'', 94.072, 94.072, 0.0, 1), (u'', 177.992, 177.992, 0.0, 1),
-                (u'', 89.103, 89.103, 0.0, 1), (u'', 350.577, 350.577, 0.0, 1),
-                (u'', 82.223, 82.223, 0.0, 1),  (u'', 40.360, 40.360, 0.0, 1),
-                (u'', 39.576, 39.576, 0.0, 1), (u'', 53.127, 53.127, 0.0, 1),
-                (u'', 159.732, 159.732, 0.0, 1), (u'', 48.398, 48.398, 0.0, 1),
-                (u'', 46.984, 46.984, 0.0, 1), (u'', 36.169, 36.169, 0.0, 1),
-                (u'', 351.347, 351.347, 0.0, 1), (u'', 18.917, 18.917, 0.0, 1),
-                (u'', 101.977, 101.977, 0.0, 1), (u'', 141.988, 141.988, 0.0, 1),
-                (u'', 241.044, 241.044, 0.0, 1), (u'', 61.993, 61.993, 0.0, 1),
-                (u'', 171.813, 171.813, 0.0, 1), (u'', 78.747, 78.747, 0.0, 1),
-                (u'', 54.070, 54.070, 0.0, 1), (u'', 87.229, 87.229, 0.0, 1),
-                (u'', 158.980, 158.980, 0.0, 1), (u'', 185.254, 185.254, 0.0, 1),
-                (u'', 16.452, 16.452, 0.0, 1), (u'', 120.144, 120.144, 0.0, 1),
-                (u'', 294.418, 294.418, 0.0, 1), (u'', 13.640, 13.640, 0.0, 1),
-                (u'', 115.532, 115.532, 0.0, 1), (u'', 58.595, 58.595, 0.0, 1),
-                (u'', 7.876, 7.876, 0.0, 1), (u'', 10.790, 10.790, 0.0, 1),
-                (u'', 67.342, 67.342, 0.0, 1), (u'', 14.848, 14.848, 0.0, 1),
-                (u'', 82.160, 82.160, 0.0, 1), (u'', 14.558, 14.558, 0.0, 1),
-                (u'', 18.793, 18.793, 0.0, 1), (u'', 69.776, 69.776, 0.0, 1),
-                (u'', 65.542, 65.542, 0.0, 1), (u'', 194.039, 194.039, 0.0, 1),
-                (u'', 41.559, 41.559, 0.0, 1), (u'', 75.549, 75.549, 0.0, 1),
-                (u'', 14.808, 14.808, 0.0, 1), (u'', 184.263, 184.263, 0.0, 1),
-                (u'', 2.810, 2.810, 0.0, 1), (u'', 13.095, 13.095, 0.0, 1),
-                (u'', 52.885, 52.885, 0.0, 1), (u'', 49.855, 49.855, 0.0, 1),
-                (u'', 263.548, 263.548, 0.0, 1), (u'', 4.248, 4.248, 0.0, 1),
-                (u'', 66.864, 66.864, 0.0, 1), (u'', 172.663, 172.663, 0.0, 1),
-                (u'', 226.918, 226.918, 0.0, 1), (u'', 169.175, 169.175, 0.0, 1),
-                (u'', 148.070, 148.070, 0.0, 1), (u'', 3.679, 3.679, 0.0, 1),
-                (u'', 28.693, 28.693, 0.0, 1), (u'', 34.931, 34.931, 0.0, 1),
-                (u'', 297.467, 297.467, 0.0, 1), (u'', 137.072, 137.072, 0.0, 1),
-                (u'', 53.180, 53.180, 0.0, 1), (u'', 49.760, 49.760, 0.0, 1),
-                (u'', 19.664, 19.664, 0.0, 1),  (u'', 96.415, 96.415, 0.0, 1),
-                (u'', 14.003, 14.003, 0.0, 1), (u'', 17.743, 17.743, 0.0, 1),
-                (u'', 212.279, 212.279, 0.0, 1), (u'', 38.951, 38.951, 0.0, 1),
-                (u'', 74.057, 74.057, 0.0, 1), (u'', 86.769, 86.769, 0.0, 1),
-                (u'', 37.765, 37.765, 0.0, 1), (u'', 5.566, 5.566, 0.0, 1),
-                (u'', 71.048, 71.048, 0.0, 1), (u'', 5.137, 5.137, 0.0, 1),
-                (u'', 35.461, 35.461, 0.0, 1), (u'', 121.963, 121.963, 0.0, 1),
-                (u'', 42.486, 42.486, 0.0, 1), (u'', 52.315, 52.315, 0.0, 1),
-                (u'', 77.095, 77.095, 0.0, 1), (u'', 14.259, 14.259, 0.0, 1),
-                (u'', 111.147, 111.147, 0.0, 1), (u'', 49.364, 49.364, 0.0, 1),
-                (u'', 1.978, 1.978, 0.0, 1), (u'', 163.827, 163.827, 0.0, 1),
-                (u'', 66.690, 66.690, 0.0, 1), (u'', 80.172, 80.172, 0.0, 1),
-                (u'', 323.763, 323.763, 0.0, 1), (u'', 275.491, 275.491, 0.0, 1),
-                (u'', 49.315, 49.315, 0.0, 1), (u'', 1.585, 1.585, 0.0, 1),
-                (u'', 317.922, 317.922, 0.0, 1), (u'', 12.398, 12.398, 0.0, 1),
-                (u'', 222.930, 222.930, 0.0, 1), (u'', 6.328, 6.328, 0.0, 1),
-                (u'', 143.687, 143.687, 0.0, 1), (u'', 134.763, 134.763, 0.0, 1),
-                (u'', 88.862, 88.862, 0.0, 1), (u'', 143.918, 143.918, 0.0, 1)]
-
-    # Data set of 100 normally distributed points a mean of 100.0 and a variance
-    # of 10.0
-    NORM_TEST = [(u'', 95.370, 95.370, 0.0, 1), (u'', 0.0, 114.011, 0.0, 1),
-                 (u'', 0.0, 113.246, 0.0, 1), (u'', 0.0, 109.167, 0.0, 1),
-                 (u'', 0.0, 104.227, 0.0, 1), (u'', 107.109, 107.109, 0.0, 1),
-                 (u'', 0.0, 117.43215, 0.0, 1), (u'', 0.0, 94.785, 0.0, 1),
-                 (u'', 0.0, 83.56718, 0.0, 1), (u'', 0.0, 103.501, 0.0, 1),
-                 (u'', 89.931, 89.931, 0.0, 1), (u'', 0.0, 120.455, 0.0, 1),
-                 (u'', 0.0, 97.081, 0.0, 1), (u'', 0.0, 96.813, 0.0, 1),
-                 (u'', 0.0, 97.571, 0.0, 1), (u'', 106.757, 106.757, 0.0, 1),
-                 (u'', 0.0, 99.335, 0.0, 1), (u'', 0.0, 104.538, 0.0, 1),
-                 (u'', 0.0, 102.028, 0.0, 1), (u'', 0.0, 90.032, 0.0, 1),
-                 (u'', 77.542, 77.542, 0.0, 1), (u'', 0.0, 102.761, 0.0, 1),
-                 (u'', 0.0, 82.485, 0.0, 1), (u'', 0.0, 77.743, 0.0, 1),
-                 (u'', 0.0, 109.974, 0.0, 1), (u'', 94.851, 94.851, 0.0, 1),
-                 (u'', 0.0, 89.771, 0.0, 1), (u'', 0.0, 98.193, 0.0, 1),
-                 (u'', 0.0, 102.165, 0.0, 1), (u'', 0.0, 96.783, 0.0, 1),
-                 (u'', 108.865, 108.865, 0.0, 1), (u'', 0.0, 120.462, 0.0, 1),
-                 (u'', 0.0, 111.592, 0.0, 1), (u'', 0.0, 106.148, 0.0, 1),
-                 (u'', 0.0, 102.946, 0.0, 1), (u'', 111.290, 111.290, 0.0, 1),
-                 (u'', 0.0, 106.002, 0.0, 1), (u'', 0.0, 114.617, 0.0, 1),
-                 (u'', 0.0, 88.229, 0.0, 1), (u'', 0.0, 131.364, 0.0, 1),
-                 (u'', 86.855, 86.855, 0.0, 1), (u'', 0.0, 109.927, 0.0, 1),
-                 (u'', 0.0, 75.116, 0.0, 1), (u'', 0.0, 100.465, 0.0, 1),
-                 (u'', 0.0, 97.783, 0.0, 1), (u'', 108.169, 108.169, 0.0, 1),
-                 (u'', 0.0, 98.851, 0.0, 1), (u'', 0.0, 99.310, 0.0, 1),
-                 (u'', 0.0, 94.588, 0.0, 1), (u'', 0.0, 98.123, 0.0, 1),
-                 (u'', 115.666, 115.666, 0.0, 1), (u'', 0.0, 104.491, 0.0, 1),
-                 (u'', 0.0, 93.490, 0.0, 1), (u'', 0.0, 111.794, 0.0, 1),
-                 (u'', 0.0, 114.320, 0.0, 1), (u'', 106.938, 106.938, 0.0, 1),
-                 (u'', 0.0, 106.450, 0.0, 1), (u'', 0.0, 103.105, 0.0, 1),
-                 (u'', 0.0, 107.781, 0.0, 1), (u'', 0.0, 120.846, 0.0, 1),
-                 (u'', 100.102, 100.102, 0.0, 1), (u'', 0.0, 92.930, 0.0, 1),
-                 (u'', 0.0, 101.246, 0.0, 1), (u'', 0.0, 69.517, 0.0, 1),
-                 (u'', 0.0, 106.276, 0.0, 1), (u'', 99.046, 99.046, 0.0, 1),
-                 (u'', 0.0, 101.300, 0.0, 1), (u'', 0.0, 98.588, 0.0, 1),
-                 (u'', 0.0, 110.022, 0.0, 1), (u'', 0.0, 91.255, 0.0, 1),
-                 (u'', 106.687, 106.687, 0.0, 1), (u'', 0.0, 102.443, 0.0, 1),
-                 (u'', 0.0, 100.342, 0.0, 1), (u'', 0.0, 96.635, 0.0, 1),
-                 (u'', 0.0, 80.909, 0.0, 1), (u'', 111.080, 111.080, 0.0, 1),
-                 (u'', 0.0, 107.005, 0.0, 1), (u'', 0.0, 103.043, 0.0, 1),
-                 (u'', 0.0, 92.660, 0.0, 1), (u'', 0.0, 81.526, 0.0, 1),
-                 (u'', 94.497, 94.497, 0.0, 1), (u'', 0.0, 88.791, 0.0, 1),
-                 (u'', 0.0, 97.913, 0.0, 1), (u'', 0.0, 96.120, 0.0, 1),
-                 (u'', 0.0, 101.234, 0.0, 1), (u'', 95.132, 95.132, 0.0, 1),
-                 (u'', 0.0, 93.939, 0.0, 1), (u'', 0.0, 92.302, 0.0, 1),
-                 (u'', 0.0, 96.536, 0.0, 1), (u'', 0.0, 110.747, 0.0, 1),
-                 (u'', 99.888, 99.888, 0.0, 1), (u'', 0.0, 92.780, 0.0, 1),
-                 (u'', 0.0, 107.678, 0.0, 1), (u'', 0.0, 96.187, 0.0, 1),
-                 (u'', 0.0, 87.938, 0.0, 1), (u'', 91.664, 91.664, 0.0, 1),
-                 (u'', 0.0, 106.149, 0.0, 1), (u'', 0.0, 104.320, 0.0, 1),
-                 (u'', 0.0, 115.681, 0.0, 1), (u'', 0.0, 95.920, 0.0, 1)]
+    # Data used to test Duane algorithms.
+    # See http://www.reliawiki.org/index.php/Duane_Model
+    # Data is from least squares example 3.
+    DUANE_FAILS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                   1, 1, 1, 1, 1, 1]
+    DUANE_TIMES = [9.2, 15.8, 36.5, 198.5, 40.0, 410.0, 206.0, 94.0,
+                   210.0, 1310.0, 820.0, 850.0, 210.0, 580.0, 580.0,
+                   2740.0, 220.0, 670.0, 1300.0, 1600.0, 1300.0,
+                   1200.0, 7400.0]
 
     def setUp(self):
         """
@@ -372,45 +1006,85 @@ class TestSurvivalModels(unittest.TestCase):
     #                                        sum(self.GRAMPUS_FAILS)),
     #                     -0.7)
 
+
+
+class TestKaplanMeier(unittest.TestCase):
+
+    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+    # The following data used to test Kaplan-Meier algorithms                 #
+    # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+    # Data is from
+    TURBINE_WHEEL = [(0.0, 8.0, u'Interval Censored', 0),
+                     (8.0, 12.0, u'Interval Censored', 4),
+                     (12.0, 16.0, u'Interval Censored', 2),
+                     (16.0, 20.0, u'Interval Censored', 7),
+                     (20.0, 24.0, u'Interval Censored', 5),
+                     (24.0, 28.0, u'Interval Censored', 9),
+                     (28.0, 32.0, u'Interval Censored', 9),
+                     (32.0, 36.0, u'Interval Censored', 6),
+                     (36.0, 40.0, u'Interval Censored', 22),
+                     (40.0, 44.0, u'Interval Censored', 21),
+                     (44.0, 44.0, u'Right Censored', 21)]
+
+    TURNBULL = [('', 0.0, 1.0, 0.0, u'Event', 12),
+                ('', 0.0, 1.0, 0.0, u'Right Censored', 3),
+                ('', 0.0, 1.0, 0.0, u'Left Censored', 2),
+                ('', 1.0, 2.0, 0.0, u'Event', 6),
+                ('', 1.0, 2.0, 0.0, u'Right Censored', 2),
+                ('', 1.0, 2.0, 0.0, u'Left Censored', 4),
+                ('', 2.0, 3.0, 0.0, u'Event', 2),
+                ('', 2.0, 3.0, 0.0, u'Right Censored', 0),
+                ('', 2.0, 3.0, 0.0, u'Left Censored', 2),
+                ('', 3.0, 4.0, 0.0, u'Event', 3),
+                ('', 3.0, 4.0, 0.0, u'Right Censored', 3),
+                ('', 3.0, 4.0, 0.0, u'Left Censored', 5)]
+
+    # Data is from Lee and Wang, page 69, example 4.2.
+    REMISSION = [('', 3.0, 3.0, 0.0, u'Event', 1),
+                 ('', 4.0, 4.0, 0.0, u'Right Censored', 1),
+                 ('', 5.7, 5.7, 0.0, u'Right Censored', 1),
+                 ('', 6.5, 6.5, 0.0, u'Event', 1),
+                 ('', 6.5, 6.5, 0.0, u'Event', 1),
+                 ('', 8.4, 8.4, 0.0, u'Right Censored', 1),
+                 ('', 10.0, 10.0, 0.0, u'Event', 1),
+                 ('', 10.0, 10.0, 0.0, u'Right Censored', 1),
+                 ('', 12.0, 12.0, 0.0, u'Event', 1),
+                 ('', 15.0, 15.0, 0.0, u'Event', 1)]
+
+    # This data is the result of the Kaplan-Meier function using the REMISSION
+    # data set.
+    KM_REMISSION = np.array([[3.0, 0.96722054, 0.9, 0.71671928],
+                             [4.0, 0.96722054, 0.9, 0.71671928],
+                             [5.7, 0.96722054, 0.9, 0.71671928],
+                             [6.5, 0.79948773, 0.64285714, 0.41797166],
+                             [8.4, 0.79948773, 0.64285714, 0.41797166],
+                             [10.0, 0.67381139, 0.48214286, 0.25976276],
+                             [12.0, 0.47680147, 0.24107143, 0.06504527],
+                             [15.0, 0.0, 0.0, 0.0]])
+
     def test_kaplan_meier(self):
         """
         Test of the Kaplan-Meier function.
         """
 
-        np.testing.assert_allclose(kaplan_meier(self.TURNBULL, 0.0),
-                                   [[1.00000000e+00, 4.40000000e+01,
-                                     2.03470206e+01, 1.39823815e-01,
-                                     4.08709687e-01, 5.37567715e-01,
-                                     7.07052113e-01],
-                                    [2.00000000e+00, 2.06529794e+01,
-                                     9.33488066e+00, 2.43896693e-01,
-                                     1.82649591e-01, 2.94594033e-01,
-                                     4.75148308e-01],
-                                    [3.00000000e+00, 9.31809879e+00,
-                                     2.68331943e+00, 3.20762342e-01,
-                                     1.11863839e-01, 2.09760215e-01,
-                                     3.93329500e-01],
-                                    [4.00000000e+00, 6.63477935e+00,
-                                     3.63477935e+00, 5.34322843e-01,
-                                     3.32813904e-02, 9.48457532e-02,
-                                     2.70292701e-01]])
-
-        #np.testing.assert_allclose(kaplan_meier(self.REMISSION, 0.0),
-        #                           [[3.0, 11.0, 1.10000006, 0.10050378, 1.0, 0.89999999, 0.73908354],
-        #                            [4.0, 9.89999994, 0.0, 0.10050378, 1.0, 0.89999999, 0.73908354],
-        #                            [5.7, 8.89999994, 0.0, 0.10050378, 1.0, 0.89999999, 0.73908354],
-        #                            [6.5, 7.89999994, 2.25714278, 0.24644253, 1.0, 0.64285715, 0.39659042],
-        #                            [8.4, 5.64285717, 0.0, 0.24644253, 1.0, 0.64285715, 0.39659042],
-        #                            [10.0, 4.64285717, 1.16071465, 0.36404508, 0.98412764, 0.48214281, 0.23621091],
-        #                            [12.0, 2.48214252, 1.24107126, 0.73171482, 1.0, 0.24107141, 0.0574525],
-        #                            [15.0, 1.24107126, 1.24107126, inf, nan, 0.0, nan]])
+        np.testing.assert_equal(kaplan_meier(self.REMISSION, 0.0, 100000.0),
+                                [[np.nan, 1.0, np.nan],
+                                 [0.98528769, 0.9, 0.47285659],
+                                 [0.98528769, 0.9, 0.47285659],
+                                 [0.98528769, 0.9, 0.47285659],
+                                 [0.87055655, 0.64285714, 0.2445692 ],
+                                 [0.87055655, 0.64285714, 0.2445692 ],
+                                 [0.77395576, 0.48214286, 0.12531524],
+                                 [0.62639979, 0.24107143, 0.01320876],
+                                 [0.0, 0.0, 0.0]])
 
     def test_kaplan_meier_mean(self):
         """
         Test of the Kaplan-Meier mean value function.
         """
 
-        np.testing.assert_allclose(kaplan_meier_mean(self.KAPLAN_MEIER_TURNBULL, 0.90),
+        _rank = [1, 4, 5, 7, 9, 10]
+        np.testing.assert_allclose(kaplan_meier_mean(self.KM_REMISSION, _rank, 0.90),
                                    [[44.185608360483513, 44.294594033,
                                      44.403579705516492,
                                      0.007232137023267089],
@@ -426,101 +1100,16 @@ class TestSurvivalModels(unittest.TestCase):
         Test of the Kaplan-Meier hazard rate function.
         """
 
-        np.testing.assert_allclose(kaplan_meier_hazard(self.KAPLAN_MEIER_TURNBULL),
-                                   [[0.34665091, 0.62070055, 0.89475019,
-                                     0.34665091, 0.62070055, 0.89475019,
-                                     -1.05943704, -0.47690653, -0.11121072],
-                                    [0.37206415, 0.61107851, 0.85009288,
-                                     0.7441283, 1.22215703, 1.70018576,
-                                     -0.29554182, 0.20061735, 0.53073752],
-                                    [0.31103587, 0.52059674, 0.73015762,
-                                     0.9331076, 1.56179023, 2.19047287,
-                                     -0.06923476, 0.44583275, 0.78411744],
-                                    [0.32706246, 0.58887584, 0.85068922,
-                                     1.30824983, 2.35550336, 3.40275689,
-                                     0.26869024, 0.85675444, 1.22458595]])
-
-    def test_exponential_mle_fit(self):
-        """
-        Test of the parametric function fitting to the exponential using MLE.
-        """
-
-        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
-                                              10000000.0, 1)[0][0],
-                               0.0106235)
-
-    def test_exponential_regression_fit(self):
-        """
-        Test of the parametric function fitting to the exponential using
-        regression.
-        """
-
-        self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
-                                              10000000.0, 2)[0][0],
-                               4.5446869,
-                               msg='Exponential rate check failed')
-
-    def test_guassian_mle_fit(self):
-        """
-        Test of the parametric function fitting to the Gaussian using MLE.
-        """
-
-        # Check the mean.
-        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
-                                              10000000.0, 1,
-                                              dist='normal')[0][0],
-                               100.5283533,
-                               msg='Gaussian mean check failed.')
-
-        # Check the variance.
-        self.assertAlmostEqual(parametric_fit(self.NORM_TEST, 0.0,
-                                              10000000.0, 1,
-                                              dist='normal')[0][1],
-                               10.5442140,
-                               msg='Gaussian variance check failed.')
-
-    def test_theoretical_exponential(self):
-        """
-        Test of the theoretical distribution function for the exponential.
-        """
-
-        _para = R.list(rate=0.01)
-        np.testing.assert_allclose(theoretical_distribution(self.EXP_TEST,
-                                                            'exp', _para),
-                                   [0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.00000000, 0.00000000,
-                                    0.00000000, 0.02939965, 0.08222443,
-                                    0.13217424, 0.17940553, 0.22406627,
-                                    0.26629635, 0.30622807, 0.34398651,
-                                    0.37968995, 0.41345023, 0.44537312,
-                                    0.47555861, 0.50410126, 0.53109048,
-                                    0.55661081, 0.58074220, 0.60356025,
-                                    0.62513643, 0.64553832, 0.66482985,
-                                    0.68307144, 0.70032023, 0.71663026,
-                                    0.73205261, 0.74663561, 0.76042493,
-                                    0.77346377, 0.78579297, 0.79745116,
-                                    0.80847485, 0.81889858, 0.82875500,
-                                    0.83807498, 0.84688773, 0.85522084,
-                                    0.86310043, 0.87055117, 0.87759640,
-                                    0.88425820, 0.89055743, 0.89651383,
-                                    0.90214605, 0.90747174, 0.91250757,
-                                    0.91726934, 0.92177194, 0.92602949,
-                                    0.93005533, 0.93386205, 0.93746160,
-                                    0.94086525, 0.94408365, 0.94712689,
-                                    0.95000450, 0.95272550, 0.95529840,
-                                    0.95773128, 0.96003175, 0.96220702,
-                                    0.96426390, 0.96620883, 0.96804791,
-                                    0.96978690, 0.97143124, 0.97298609,
-                                    0.97445632, 0.97584653, 0.97716108,
-                                    0.97840408, 0.97957944, 0.98069082,
-                                    0.98174172, 0.98273543, 0.98367505,
-                                    0.98456353, 0.98540366, 0.98619806,
-                                    0.98694923, 0.98765952, 0.98833115,
-                                    0.98896622, 0.98956673])
+        np.testing.assert_allclose(kaplan_meier_hazard(self.KM_REMISSION),
+                                [[0.01110958, 0.00833219, 0.00584715, 0.03442832, 0.02664096, 0.0394805, 0.06172126, np.inf],
+                                 [0.03512017, 0.02634013, 0.01848430, 0.06797427, 0.05259914, 0.07295148, 0.11855517, np.inf],
+                                 [0.11102368, 0.08326776, 0.05843351, 0.13420641, 0.10385020, 0.13479865, 0.22772265, np.inf],
+                                 [0.03332874, 0.03332874, 0.03332874, 0.22378409, 0.22378409, 0.39480504, 0.74065508, np.inf],
+                                 [0.10536052, 0.10536052, 0.10536052, 0.44183276, 0.44183276, 0.72951482, 1.42266200, np.inf],
+                                 [0.33307104, 0.33307104, 0.33307104, 0.87234165, 0.87234165, 1.34798653, 2.73267179, np.inf],
+                                 [-3.40133509, -3.40133509, -3.40133509, -1.49707356, -1.49707356, -0.9293632, -0.30022024, np.inf],
+                                 [-2.25036733, -2.25036733, -2.25036733, -0.81682385, -0.81682385, -0.3153756, 0.35252976, np.inf],
+                                 [-1.09939949, -1.09939949, -1.09939949, -0.13657413, -0.13657413, 0.29861202, 1.00527981, np.inf]])
 
     def test_beta_bounds(self):
         """
@@ -550,9 +1139,10 @@ class TestSurvivalModels(unittest.TestCase):
 
         # This test will raise an error indicating the confidence level is
         # outside the bounds of [0, 1],
-        if not self.no_gui:
-            self.assertEqual(beta_bounds(1.0, 1.0, 1.0, -90.0),
-                             (1.0, 1.0, 1.0, 0.0))
+        #if not self.no_gui:
+        #    self.assertEqual(beta_bounds(1.0, 1.0, 1.0, -90.0),
+        #                     (1.0, 1.0, 1.0, 0.0))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -24,6 +24,9 @@ __copyright__ = 'Copyright 2013 - 2014, Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+import locale
+import gettext
+from datetime import datetime
 
 # Modules required for the GUI.
 try:
@@ -32,11 +35,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk  # @UnusedImport
+    import gtk
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade  # @UnusedImport
+    import gtk.glade
 except ImportError:
     sys.exit(1)
 try:
@@ -44,29 +47,12 @@ try:
 except ImportError:
     sys.exit(1)
 
-from datetime import datetime
-
-import locale
-import gettext
-_ = gettext.gettext
-
-# Mathematics.
-from math import ceil, exp, log, sqrt
-
+# Modules used for mathematics.
 import numpy as np
+from math import ceil, exp, log, sqrt
 from scipy.stats import chi2, norm
 
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
-# Plotting.
+# Modules used for plotting.
 import matplotlib
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
@@ -74,18 +60,20 @@ from matplotlib.patches import Ellipse
 matplotlib.use('GTK')
 
 # Other RTK modules.
-from _assistants_.adds import AddRGRecord
-from _calculations_.growth import *
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
+from _assistants_.adds import AddRGRecord
+from _calculations_.growth import *
 
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 def _close_plot(__window, __event, plot, parent):

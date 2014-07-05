@@ -39,19 +39,6 @@ except ImportError:
 # Add NLS support.
 _ = gettext.gettext
 
-# Import R library.
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    import rpy2.rlike.container as rlc
-    import rpy2.rinterface as ri
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
 import numpy as np
 from math import ceil, exp, log, sqrt
 
@@ -1052,51 +1039,3 @@ def smooth_curve(x, y, num):
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error
-
-
-def theoretical_distribution(_data_, _distr_, _para_):
-    """
-    Function to generate data points from a theoretical distribution with the
-    parameters provided.
-
-    :param _data_: data set used to bound the theoretical distribution.
-    :type _data_: list of floats
-    :param _distr_: the name of the desired theoretical distribution.
-    :type _distr_: string
-    :param _para_: the parameters of the desired theoretical distribution.
-    :type _para_: list of floats
-    :return: theop
-    :rtype: R object
-    """
-
-    Rbase = importr('base')
-
-    # Create the R density and probabilty distribution names.
-    ddistname = R.paste('d', _distr_, sep='')
-    pdistname = R.paste('p', _distr_, sep='')
-
-    # Calculate the minimum and maximum values for x.
-    xminleft = min([i[0] for i in _data_ if i[0] != 'NA'])
-    xminright = min([i[1] for i in _data_ if i[1] != 'NA'])
-    x_min = min(xminleft, xminright)
-
-    xmaxleft = max([i[0] for i in _data_ if i[0] != 'NA'])
-    xmaxright = max([i[1] for i in _data_ if i[1] != 'NA'])
-    x_max = max(xmaxleft, xmaxright)
-
-    x_range = x_max - x_min
-    x_min = x_min - 0.3 * x_range
-    x_max = x_max + 0.3 * x_range
-
-    # Create a list of probabilities for the theoretical distribution with the
-    # estimated parameters.
-    den = float(len(_data_))
-    densfun = R.get(ddistname, mode='function')
-    nm = R.names(_para_)
-    f = R.formals(densfun)
-    args = R.names(f)
-    m = R.match(nm, args)
-    s = R.seq(x_min, x_max, by=(x_max - x_min) / den)
-    theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))    # pylint: disable=E1101
-
-    return theop
