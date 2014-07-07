@@ -495,15 +495,12 @@ def open_project(__widget, app, dlg=1, filename=''):
     Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
     :param app: the current instance of the RTK application.
-    :param dlg: whether or not to display a file chooser dialog.
-                0=No
-                1=Yes (default)
-    :type dlg: integer
-    :param filename: the full path to the RTK Program database to open.
-    :type filename: string
+    :param int dlg: whether or not to display a file chooser dialog.
+                    0=No
+                    1=Yes (default)
+    :param str filename: the full path to the RTK Program database to open.
     """
 
     if _conf.BACKEND == 'mysql':

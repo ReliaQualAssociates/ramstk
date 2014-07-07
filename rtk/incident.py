@@ -1029,7 +1029,8 @@ class Incident(object):
                 self.cmbStatus.set_active(0)
             self.txtAge.set_text(str(self.incident_age))
 
-            self.txtShortDescription.set_text(self.short_description)
+            self.txtShortDescription.set_text(_util.none_to_string(
+                                                self.short_description))
             _buffer = self.txtLongDescription.get_child().get_child().get_buffer()
             _buffer.set_text(self.detail_description)
             _buffer = self.txtRemarks.get_child().get_child().get_buffer()
