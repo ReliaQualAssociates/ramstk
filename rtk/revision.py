@@ -1457,7 +1457,7 @@ class Revision(object):
             self._app.SOFTWARE.save_software()
             self._app.SOFTWARE.revision_id = self.revision_id
             self._app.SOFTWARE.load_tree()
-            # self._app.VALIDATION.revision_id = self.revision_id
+            self._app.VALIDATION.revision_id = self.revision_id
             self._app.VALIDATION.load_tree()
             self._app.TESTING.revision_id = self.revision_id
             self._app.TESTING.load_tree()
@@ -1517,12 +1517,13 @@ class Revision(object):
 
         return False
 
-    def _add_mission(self, __button):
+    def _add_mission(self, __button, __event):
         """
         Method to add a new mission to the open program.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1560,12 +1561,14 @@ class Revision(object):
 
         return False
 
-    def _add_mission_phase(self, __button):
+    def _add_mission_phase(self, __button, __event):
         """
         Method to add a new phase to the selected mission.
 
-        :param __button: the gtk.Button() widget that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button__button: the gtk.Button() widget that called this
+                                   method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      function.
         :return: False if successful or True if an error is encountered
         :rtype: boolean
         """
@@ -1598,13 +1601,14 @@ class Revision(object):
 
         return False
 
-    def _add_environment(self, __button):
+    def _add_environment(self, __button, __event):
         """
         Function to add an environmental condition to the environmental
         profile.
 
-        :param __button: the gtk.Button() that called this function.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this function.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1666,8 +1670,10 @@ class Revision(object):
         Deletes the currently selected Revision from the open RTK Program
         database.
 
-        :param __menuitem: the gtk.MenuItem() that called this function.
-        :param __event: the gdk.gtk.Event() that called this function.
+        :param gtk.MenuItem __menuitem: the gtk.MenuItem() that called this
+                                        function.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      function.
         :return: False if successful and True if an error is encountered.
         :rtype: boolean
         """
@@ -1702,13 +1708,14 @@ class Revision(object):
 
         return False
 
-    def _delete_mission(self, __button):
+    def _delete_mission(self, __button, __event):
         """
         Method to remove the currently selected mission from the open RTK
         Program database.
 
-        :param __button: the gtk.Button() widget that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1743,12 +1750,13 @@ class Revision(object):
 
         return False
 
-    def _delete_mission_phase(self, __button):
+    def _delete_mission_phase(self, __button, __event):
         """
         Method to remove the currently selected phase from the mission.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1792,13 +1800,14 @@ class Revision(object):
 
         return False
 
-    def _delete_environment(self, __button):
+    def _delete_environment(self, __button, __event):
         """
         Method to remove the selected environmental condition from the
         environmental profile.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2253,8 +2262,8 @@ class Revision(object):
         reliability, limiting reliability, total cost, cost per failure, and
         cost per operating hour for the selected revision.
 
-        :param __button: the gtk.ToolButton() that called this function.
-        :type __button: gtkToolButton
+        :param gtkToolButton __button: the gtk.ToolButton() that called this
+                                       function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2440,3 +2449,11 @@ class Revision(object):
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
+
+    def _create_report(self):
+        """
+        Method to create reports related to the Revision class.  Currently, the
+        following reports may be created:
+            * Mission and environmental profile report
+            * Failure definition report
+        """
