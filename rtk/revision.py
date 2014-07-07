@@ -18,6 +18,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 import gettext
 import locale
 import sys
+from datetime import datetime
 
 import pango
 
@@ -41,10 +42,11 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from _assistants_.adds import AddRevision
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
+from _assistants_.adds import AddRevision
+from _reports_.tabular import simple_tabular_report
 
 # Add localization support.
 try:
@@ -59,6 +61,59 @@ class Revision(object):
     """
     This is the Class that is used to represent and hold information related
     to a revision of the open RTK Program.
+
+    :ivar _dic_missions: Dictionary to carry information about each mission.
+    Key is the mission name; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Mission ID                |
+    +-------+---------------------------+
+    |   1   | Mission Time              |
+    +-------+---------------------------+
+    |   2   | Mission Time Units        |
+    +-------+---------------------------+
+
+    :ivar _dic_mission_phase: Dictionary to carry information about the mission
+    phases for each mission.  Key is the mission id; value is a list with the
+    following:
+
+    +-------+-------------------------------+
+    | Index | Information                   |
+    +=======+===============================+
+    |   0   | Mission Phase ID              |
+    +-------+-------------------------------+
+    |   1   | Phase Start                   |
+    +-------+-------------------------------+
+    |   2   | Phase End                     |
+    +-------+-------------------------------+
+    |   3   | Phase Code                    |
+    +-------+-------------------------------+
+    |   4   | Phase Description             |
+    +-------+-------------------------------+
+
+    :ivar _dic_environments: Dictionary to carry information about each
+    environment in the profile.  Key is the environment name; value is a list
+    with the following:
+
+    +-------+-------------------------------+
+    | Index | Information                   |
+    +=======+===============================+
+    |   0   | Condition ID                  |
+    +-------+-------------------------------+
+    |   1   | Associated Mission Phase Name |
+    +-------+-------------------------------+
+    |   2   | Measurement Units             |
+    +-------+-------------------------------+
+    |   3   | Minimum Value                 |
+    +-------+-------------------------------+
+    |   4   | Maximum Value                 |
+    +-------+-------------------------------+
+    |   5   | Mean Value                    |
+    +-------+-------------------------------+
+    |   6   | Variance                      |
+    +-------+-------------------------------+
 
     :ivar revision_id: initial value: 0
     :ivar name: initial value: ''
@@ -78,17 +133,8 @@ class Revision(object):
         self._int_mission_id = -1
 
         # Define private Revision class dictionary attributes.
-
-        # For mission information.  Mission Name is the key.
-        # The value is a list:
-        # [Mission ID, Mission Time, Time Units]
         self._dic_missions = {}
-
-        # For environmental profile information.  Environment noun name is the
-        # key.
-        # The value is a list:
-        # [Condition ID, Phase Name, Measurement Units, Minimum Value,
-        #  Maximum Value, Mean Value, Variance]
+        self._dic_mission_phase = {}
         self._dic_environments = {}
 
         # Define private Revision class list attributes.
@@ -230,7 +276,7 @@ class Revision(object):
         :rtype: gtk.ToolBar
         """
 
-        _toolbar_ = gtk.Toolbar()
+        _toolbar = gtk.Toolbar()
 
         _position_ = 0
 
@@ -242,7 +288,7 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', AddRevision, self._app)
-        _toolbar_.insert(_button_, _position_)
+        _toolbar.insert(_button_, _position_)
         _position_ += 1
 
         # Delete revision button
@@ -253,10 +299,10 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.delete_revision)
-        _toolbar_.insert(_button_, _position_)
+        _toolbar.insert(_button_, _position_)
         _position_ += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
+        _toolbar.insert(gtk.SeparatorToolItem(), _position_)
         _position_ += 1
 
         # Calculate revision _button_
@@ -267,10 +313,34 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.calculate)
-        _toolbar_.insert(_button_, _position_)
+        _toolbar.insert(_button_, _position_)
         _position_ += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
+        # Calculate revision _button
+        _button = gtk.MenuToolButton(None, label="")
+        _button.set_tooltip_text(_(u"Create Revision reports."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
+        _button.set_icon_widget(_image)
+        _menu = gtk.Menu()
+        _menu_item = gtk.MenuItem(label=_(u"Mission and Environmental Profile"))
+        _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
+                                      u"profile report for the currently "
+                                      u"selected revision."))
+        _menu_item.connect('activate', self._create_report, 1)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Failure Definition"))
+        _menu_item.set_tooltip_text(_(u"Creates the failure definition report "
+                                      u"for the currently selected revision."))
+        _menu_item.connect('activate', self._create_report, 2)
+        _menu.add(_menu_item)
+        _button.set_menu(_menu)
+        _menu.show_all()
+        _button.show()
+        _toolbar.insert(_button, _position_)
+        _position_ += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position_)
         _position_ += 1
 
         # Save revision _button_.
@@ -281,11 +351,11 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.save_revision)
-        _toolbar_.insert(_button_, _position_)
+        _toolbar.insert(_button_, _position_)
 
-        _toolbar_.show()
+        _toolbar.show()
 
-        return _toolbar_
+        return _toolbar
 
     def _create_notebook(self):
         """
@@ -1304,24 +1374,22 @@ class Revision(object):
         self._app.winWorkBook.show_all()
 
         # Load the list of missions.
-        _query_ = "SELECT * FROM tbl_missions \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_missions \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_missions_ = len(_results_)
+            _n_missions = len(_results)
         except TypeError:
-            _n_missions_ = 0
+            _n_missions = 0
 
         self.cmbMission.get_model().clear()
         self.cmbMission.append_text("")
-        for i in range(_n_missions_):
-            self._dic_missions[_results_[i][4]] = [_results_[i][1],
-                                                   _results_[i][2],
-                                                   _results_[i][3]]
-            self.cmbMission.append_text(_results_[i][4])
+        for i in range(_n_missions):
+            self._dic_missions[_results[i][4]] = [_results[i][1],
+                                                  _results[i][2],
+                                                  _results[i][3]]
+            self.cmbMission.append_text(_results[i][4])
 
         # Load the notebook tabs.
         _load_general_data_tab(self)
@@ -1579,9 +1647,7 @@ class Revision(object):
         _query = "SELECT MAX(fld_phase_id) \
                   FROM tbl_mission_phase \
                   WHERE fld_mission_id=%d" % _mission_id
-        _phase_id = self._app.DB.execute_query(_query,
-                                               None,
-                                               self._app.ProgCnx)
+        _phase_id = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
             _phase_id = _phase_id[0][0] + 1
@@ -1606,9 +1672,9 @@ class Revision(object):
         Function to add an environmental condition to the environmental
         profile.
 
-        :param gtk.Button __button: the gtk.Button() that called this function.
+        :param gtk.Button __button: the gtk.Button() that called this method.
         :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
-                                      function.
+                                      method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1643,12 +1709,13 @@ class Revision(object):
 
         return False
 
-    def _add_failure_definition(self, __button):
+    def _add_failure_definition(self, __button, __event):
         """
         Method to add a failure definition to the Revision.
 
-        :param __button: the gtk.Button() that called this function.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      method.
         :return: False if successful and True if an error is encountered.
         :rtype: boolean
         """
@@ -1837,12 +1904,13 @@ class Revision(object):
 
         return False
 
-    def _delete_failure_definition(self, __button):
+    def _delete_failure_definition(self, __button, __event):
         """
         Method to the currently selected failure definition from the Revision.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
+                                      method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2450,10 +2518,48 @@ class Revision(object):
 
         return False
 
-    def _create_report(self):
+    def _create_report(self, __menuitem, composition):
         """
-        Method to create reports related to the Revision class.  Currently, the
-        following reports may be created:
-            * Mission and environmental profile report
-            * Failure definition report
+        Method to create reports related to the Revision class.
+
+        :param int composition: the report to create:
+                                # Mision and Environmental Profile Report
+                                # Failure Definition Report
         """
+
+        print self._dic_environments
+        _filename = '/home/andrew/MissionAndEnvironmentalProfile.xls'
+        _today = datetime.today().strftime('%Y-%m-%d')
+
+        if composition == 1:
+            _title = 'Mission and Environmental Profile Report'
+            _metadata = {}
+            _data = {0: ['Mission Phase', 'Description',
+                         'Phase Start', 'Phase End']}
+
+            i = 0
+            for _mission in self._dic_missions.keys():
+                # Create the metadata for the mission.
+                _metadata[i] = {'Mission ID:': self._dic_missions[_mission][0],
+                                'Mission:': _mission,
+                                'Mission Time:': self._dic_missions[_mission][1],
+                                'Report Date:': _today,
+                                'sheet': _mission}
+
+                # Retrive the mission phases.
+# TODO: Load a mission phase dictionary when the Revision is loaded and use this dictionary rather than a SQL call.
+                _query = "SELECT * FROM tbl_mission_phase \
+                          WHERE fld_mission_id=%d" % \
+                          self._dic_missions[_mission][0]
+                _phases = self._app.DB.execute_query(_query, None,
+                                                     self._app.ProgCnx)
+                _n_phases = len(_phases)
+
+                for j in range(_n_phases):
+                    _data[i + j + 1] = [_phases[j][4], _phases[j][5],
+                                        _phases[j][2], _phases[j][3]]
+
+                i += 1
+
+            simple_tabular_report(_data, _filename, _metadata, _title,
+                                  f_format=3)

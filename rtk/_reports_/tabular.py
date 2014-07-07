@@ -20,7 +20,8 @@ from os import name
 import xlwt
 
 
-def simple_tabular_report(data, filename, metadata=None, title=None, f_format=1):
+def simple_tabular_report(data, filename, metadata={0:{'sheet':'RTK Report'}},
+                          title=None, f_format=1):
     """
     Function to create a simple report of tabular information.  Simple, in this
     case, means reports with one or more rows of one or more columns of
@@ -30,7 +31,7 @@ def simple_tabular_report(data, filename, metadata=None, title=None, f_format=1)
     :param dic data: the tabular data to print to the report.  Key is the index
                      of the row to print, value is a list of the data for each
                      column.  The first record is the list of column headings.
-    :pram str filename: the full path to the file to save the report to.
+    :param str filename: the full path to the file to save the report to.
     :param dic metadata: metadata to print to the report.  This can be any
                          information describing the reported output (e.g.,
                          hardware assembly the report is applicable to, the
@@ -101,36 +102,37 @@ def simple_tabular_report(data, filename, metadata=None, title=None, f_format=1)
         # Create the workbook and one worksheet.
         _wb = xlwt.Workbook()
 
-        # Initialize the row and columns variables.
-        _row = 0
-        _col = 0
+        for _key in metadata.keys():
 
-        # Print the title if one was passed.
-        if title is not None:
-            _ws = _wb.add_sheet(title)
-            _ws.write(_row, _col, title, _styTitle)
-        else:
-            _ws = _wb.add_sheet('RTK Report')
-        _row += 2
+            # Initialize the row and columns variables.
+            _row = 0
+            _col = 0
 
-        # Print the metadata if any was passed.
-        if metadata is not None:
-            for key in metadata.keys():
-                _ws.write(_row, _col, key, _styDecorator)
-                _ws.write(_row, _col+1, metadata[key], _styContent)
+            _ws = _wb.add_sheet(metadata[_key]['sheet'])
+
+            # Print the title if one was passed.
+            if title is not None:
+                _ws.write(_row, _col, title, _styTitle)
+
+            _row += 2
+
+            for _key2 in metadata[_key].keys():
+                if _key2 != 'sheet':
+                    _ws.write(_row, _col, _key2, _styDecorator)
+                    _ws.write(_row, _col+1, metadata[_key][_key2], _styContent)
                 _row += 1
-        _row += 1
-
-        # Print the data if any was passed.
-        for key in data.keys():
-            i = 0
-            for j in range(len(data[key])):
-                if key == 0:
-                    _ws.write(_row, _col+j, data[key][j], _styHeaders)
-                else:
-                    _ws.write(_row, _col+j, data[key][j], _styContent)
-            i += 1
             _row += 1
+
+            # Print the data if any was passed.
+            for _key2 in data.keys():
+                i = 0
+                for j in range(len(data[_key2])):
+                    if _key2 == 0:
+                        _ws.write(_row, _col+j, data[_key2][j], _styHeaders)
+                    else:
+                        _ws.write(_row, _col+j, data[_key2][j], _styContent)
+                i += 1
+                _row += 1
 
         _wb.save(filename)
 

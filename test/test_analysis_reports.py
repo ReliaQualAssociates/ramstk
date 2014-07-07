@@ -19,6 +19,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(".."))
 
+from rtk.revision import Revision
 from rtk._reports_.tabular import *
 
 
@@ -41,29 +42,8 @@ class TestAnalysisReports(unittest.TestCase):
                 'No changes', 1.0,
                 'No changes', 1.0]}
 
-    metadata = {'Assembly:': 'Example Sub-System 1',
-                'Report Date:': '2014-06-28'}
-
-    def test_tabular_report_data_only(self):
-        """
-        Test of the simple tabular report generation function
-        passing only data.
-        """
-
-        self.assertFalse(simple_tabular_report(self.data,
-                                               self.xcloutfile + '1.xls',
-                                               f_format=3))
-
-    def test_tabular_report_data_metadata(self):
-        """
-        Test of the simple tabular report generation function
-        passing data and metadata.
-        """
-
-        self.assertFalse(simple_tabular_report(self.data,
-                                               self.xcloutfile + '2.xls',
-                                               metadata=self.metadata,
-                                               f_format=3))
+    metadata = {0: {'Assembly:': 'Example Sub-System 1',
+                    'Report Date:': '2014-06-28', 'sheet': 'Test Sheet'}}
 
     def test_tabular_report_data_metadata_title(self):
         """
@@ -72,7 +52,7 @@ class TestAnalysisReports(unittest.TestCase):
         """
 
         self.assertFalse(simple_tabular_report(self.data,
-                                               self.xcloutfile + '3.xls',
+                                               self.xcloutfile + '1.xls',
                                                metadata=self.metadata,
                                                title='Test Report',
                                                f_format=3))
