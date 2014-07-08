@@ -1382,7 +1382,7 @@ class Dataset(object):
                     _index += 1
 
             self.cmbAssembly.set_active(_index)
-            if _index in [1, 2, 3]:
+            if _index in [1, 2, 3, 4]:
                 self.chkGroup.show()
                 self.chkParts.show()
             else:
@@ -2330,7 +2330,7 @@ class Dataset(object):
             except TypeError:
                 pass
 
-            if self.distribution_id in [1, 2]:  # MCF or Kaplan-Meier
+            if self.distribution_id in [1, 2, 3, 4]:  # MCF, KM, NHPP
                 self.chkGroup.show()
                 self.chkParts.show()
                 self.cmbFitMethod.hide()
@@ -3301,12 +3301,12 @@ class Dataset(object):
                     _color = 'light gray'
 
                 _values = (_results[i][0], _results[i][1], _results[i][2],
-                           (MTBFLL * _total) / float(_results[i][1]),
-                           (MTBF * _total) / float(_results[i][1]),
-                           (MTBFUL * _total) / float(_results[i][1]),
-                           float(_results[i][1]) / (MTBFUL * _total),
-                           float(_results[i][1]) / (MTBF * _total),
-                           float(_results[i][1]) / (MTBFLL * _total),
+                           (_mtbfi_ll * _total) / float(_results[i][1]),
+                           (_mtbfi * _total) / float(_results[i][1]),
+                           (_mtbfi_ul * _total) / float(_results[i][1]),
+                           float(_results[i][1]) / (_mtbfi_ul * _total),
+                           float(_results[i][1]) / (_mtbfi * _total),
+                           float(_results[i][1]) / (_mtbfi_ll * _total),
                            _color)
                 _model.append(_values)
 
@@ -3347,12 +3347,12 @@ class Dataset(object):
                     _color = 'light gray'
 
                 _values = (_results[i][0], _results[i][1],
-                           (MTBFLL * _total) / float(_results[i][1]),
-                           (MTBF * _total) / float(_results[i][1]),
-                           (MTBFUL * _total) / float(_results[i][1]),
-                           float(_results[i][1]) / (MTBFUL * _total),
-                           float(_results[i][1]) / (MTBF * _total),
-                           float(_results[i][1]) / (MTBFLL * _total),
+                           (_mtbfi_ll * _total) / float(_results[i][1]),
+                           (_mtbfi * _total) / float(_results[i][1]),
+                           (_mtbfi_ul * _total) / float(_results[i][1]),
+                           float(_results[i][1]) / (_mtbfi_ul * _total),
+                           float(_results[i][1]) / (_mtbfi * _total),
+                           float(_results[i][1]) / (_mtbfi_ll * _total),
                            _color)
                 _model.append(_values)
 
