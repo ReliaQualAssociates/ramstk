@@ -203,9 +203,6 @@ class Incident(object):
                                                          u"revisions"))
 
         # Create the Program Incident page widgets.
-        self.btnIncidentDate = _widg.make_button(height=25, width=25,
-                                                 label="...", image='calendar')
-
         self.chkAccepted = _widg.make_check_button(label=_(u"Accepted"))
         self.chkReviewed = _widg.make_check_button(label=_(u"Reviewed"))
 
@@ -423,8 +420,7 @@ class Incident(object):
             Function to create the Incident class gtk.Notebook() page for
             displaying general information related to the selected incident.
 
-            :param self: the current instance of a Incident class.
-            :type rtk.Incident
+            :param rtk.Incident self: the current instance of a Incident class.
             :param notebook: the Incident class gtk.Notebook() widget.
             :type notebook: gtk.Notebook
             :return: False if successful or True if an error is encountered.
@@ -544,9 +540,6 @@ class Incident(object):
             _x_pos12 += 380
 
             # Set the tooltips for the widgets in quedrant #1.
-            self.btnIncidentDate.set_tooltip_text(_(u"Select the date the "
-                                                    u"incident occurred."))
-
             self.chkAccepted.set_tooltip_text(_(u"Displays whether the field "
                                                 u"incident has been accepted "
                                                 u"by the responsible owner."))
@@ -592,16 +585,12 @@ class Incident(object):
 
             _fixed1.put(self.cmbRequestBy, _x_pos12, _y_pos12[0])
             _fixed1.put(self.txtRequestDate, _x_pos12, _y_pos12[1])
-            _fixed1.put(self.btnIncidentDate, _x_pos12 + 105, _y_pos12[1])
             _fixed1.put(self.txtAge, _x_pos12, _y_pos12[2])
             _fixed1.put(self.cmbStatus, _x_pos12, _y_pos12[3])
 
             _fixed1.show_all()
 
             # Connect the quadrant #1 widgets' signals to callback functions.
-            self.btnIncidentDate.connect('button-release-event', _util.date_select,
-                                         self.txtRequestDate)
-
             self.chkReviewed.connect('toggled', self._callback_check,
                                      self._lst_col_order[20])
             self.chkAccepted.connect('toggled', self._callback_check,
@@ -966,14 +955,11 @@ class Incident(object):
             _col = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _col)
 
-        #query = "SELECT fld_name \
-        #         FROM tbl_system \
-        #         WHERE fld_parent_assembly='0' \
-        #         AND fld_part=0"
-        #results = self._app.DB.execute_query(query,
-        #                                     None,
-        #                                     self._app.ProgCnx)
-        #_widg.load_combo(self.cmbSystem, results, simple=True)
+        _query = "SELECT fld_name \
+                  FROM tbl_system \
+                  WHERE fld_part=0"
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
+        _widg.load_combo(self.cmbHardware, _results, simple=True)
 
         return False
 
@@ -1014,8 +1000,8 @@ class Incident(object):
                     self._dic_life_cycle[self.life_cycle])
             except KeyError:
                 self.cmbLifeCycle.set_active(0)
-            self.cmbHardware.set_active(self.hardware_id)
-            self.cmbSoftware.set_active(self.software_id)
+            self.cmbHardware.set_active(self.hardware_id + 1)
+            self.cmbSoftware.set_active(self.software_id + 1)
 
             try:
                 self.cmbRequestBy.set_active(self._dic_users[self.request_by])
@@ -1032,9 +1018,9 @@ class Incident(object):
             self.txtShortDescription.set_text(_util.none_to_string(
                                                 self.short_description))
             _buffer = self.txtLongDescription.get_child().get_child().get_buffer()
-            _buffer.set_text(self.detail_description)
+            _buffer.set_text(_util.none_to_string(self.detail_description))
             _buffer = self.txtRemarks.get_child().get_child().get_buffer()
-            _buffer.set_text(self.remarks)
+            _buffer.set_text(_util.none_to_string(self.remarks))
 
             return False
 
@@ -1045,8 +1031,8 @@ class Incident(object):
             """
 # TODO: Change detection method from varchar to integer.
             #self.cmbDetectionMethod.set_active(self.detection_method)
-            self.txtTest.set_text(self.test)
-            self.txtTestCase.set_text(self.test_case)
+            self.txtTest.set_text(_util.none_to_string(self.test))
+            self.txtTestCase.set_text(_util.none_to_string(self.test_case))
             self.txtExecutionTime.set_text(str(self.execution_time))
 
             _buffer = self.txtAnalysis.get_child().get_child().get_buffer()

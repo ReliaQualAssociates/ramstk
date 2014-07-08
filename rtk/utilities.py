@@ -289,7 +289,7 @@ def date_to_ordinal(date):
 
     try:
         return parse(str(date)).toordinal()
-    except ValueError:
+    except ValueError, TypeError:
         return parse('01/01/70').toordinal()
 
 
@@ -1920,12 +1920,13 @@ class Options(gtk.Window):
         self.add(notebook)
         self.show_all()
 
-    def _edit_tree(self, __button):
+    def _edit_tree(self, __button, __event):
         """
         Method to edit gtk.TreeView() layouts.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button()
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
         """
 
         from lxml import etree
