@@ -117,8 +117,8 @@ class Function(object):
         # Create the main Function class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Function', 1, self._app,
-                                                None, _conf.RTK_COLORS[2],
-                                                _conf.RTK_COLORS[3])
+                                                    None, _conf.RTK_COLORS[2],
+                                                    _conf.RTK_COLORS[3])
 
         # Toolbar widgets.
         self.btnAddSibling = gtk.ToolButton()
@@ -145,7 +145,8 @@ class Function(object):
 
         # Functional matrix tab widgets.
         self.chkParts = _widg.make_check_button(label=_(u"Show components."))
-        self.chkAssemblies = _widg.make_check_button(label=_(u"Show assemblies."))
+        self.chkAssemblies = _widg.make_check_button(label=_(u"Show "
+                                                             u"assemblies."))
         self.tvwFunctionMatrix = gtk.TreeView()
 
         # Diagram tab widgets.
@@ -202,110 +203,118 @@ class Function(object):
             _cell[0].connect('edited', self._function_tree_edit, i,
                              self.treeview.get_model())
 
-        _scrollwindow_ = gtk.ScrolledWindow()
-        _scrollwindow_.add(self.treeview)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.treeview)
 
-        return _scrollwindow_
+        return _scrollwindow
 
     def _create_toolbar(self):
         """
-        Method to create the toolbar for the FUNCTION class work book.
+        Method to create the toolbar for the Function class work book.
         """
 
-        _toolbar_ = gtk.Toolbar()
+        _toolbar = gtk.Toolbar()
 
-        _pos_ = 0
+        _position = 0
 
         # Add sibling function button.
-        self.btnAddSibling.set_tooltip_text(_(u"Adds a new function at the same indenture level as the selected function (i.e., a sibling function)."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        self.btnAddSibling.set_icon_widget(_image_)
+        self.btnAddSibling.set_tooltip_text(_(u"Adds a new function at the "
+                                              u"same indenture level as the "
+                                              u"selected function (i.e., a "
+                                              u"sibling function)."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        self.btnAddSibling.set_icon_widget(_image)
         self.btnAddSibling.connect('clicked', self._add_function, 0)
-        _toolbar_.insert(self.btnAddSibling, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnAddSibling, _position)
+        _position += 1
 
         # Add child function button.
-        self.btnAddChild.set_tooltip_text(_(u"Adds a new function one indenture level subordinate to the selected function (i.e., a child function)."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        self.btnAddChild.set_icon_widget(_image_)
+        self.btnAddChild.set_tooltip_text(_(u"Adds a new function one "
+                                            u"indenture level subordinate to "
+                                            u"the selected function (i.e., a "
+                                            u"child function)."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+        self.btnAddChild.set_icon_widget(_image)
         self.btnAddChild.connect('clicked', self._add_function, 1)
-        _toolbar_.insert(self.btnAddChild, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnAddChild, _position)
+        _position += 1
 
         # Add a failure mode button.
-        self.btnAddMode.set_tooltip_text(_(u"Adds a failure mode to the currently selected function."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        self.btnAddMode.set_icon_widget(_image_)
+        self.btnAddMode.set_tooltip_text(_(u"Adds a failure mode to the "
+                                           u"currently selected function."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnAddMode.set_icon_widget(_image)
         self.btnAddMode.connect('clicked', self._add_failure_mode)
-        _toolbar_.insert(self.btnAddMode, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnAddMode, _position)
+        _position += 1
 
         # Delete function button
-        self.btnRemoveFunction.set_tooltip_text(_(u"Removes the currently selected function."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemoveFunction.set_icon_widget(_image_)
+        self.btnRemoveFunction.set_tooltip_text(_(u"Removes the currently "
+                                                  u"selected function."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemoveFunction.set_icon_widget(_image)
         self.btnRemoveFunction.connect('clicked', self._delete_function)
-        _toolbar_.insert(self.btnRemoveFunction, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnRemoveFunction, _position)
+        _position += 1
 
         # Delete a failure mode button.
-        self.btnRemoveMode.set_tooltip_text(_(u"Removes the currently selected failure mode."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemoveMode.set_icon_widget(_image_)
+        self.btnRemoveMode.set_tooltip_text(_(u"Removes the currently "
+                                              u"selected failure mode."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemoveMode.set_icon_widget(_image)
         self.btnRemoveMode.connect('clicked', self._delete_failure_mode)
-        _toolbar_.insert(self.btnRemoveMode, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnRemoveMode, _position)
+        _position += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _pos_)
-        _pos_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
         # Calculate function button
         self.btnCalculate.set_tooltip_text(_(u"Calculate the functions."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        self.btnCalculate.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
+        self.btnCalculate.set_icon_widget(_image)
         self.btnCalculate.connect('clicked', self.calculate)
-        _toolbar_.insert(self.btnCalculate, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnCalculate, _position)
+        _position += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _pos_)
-        _pos_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
         # Save function button.
-        self.btnSave.set_tooltip_text(_(u"Saves changes to the selected function."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        self.btnSave.set_icon_widget(_image_)
+        self.btnSave.set_tooltip_text(_(u"Saves changes to the selected "
+                                        u"function."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSave.set_icon_widget(_image)
         self.btnSave.set_name('Save')
         self.btnSave.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnSave, _pos_)
-        _pos_ += 1
+        _toolbar.insert(self.btnSave, _position)
 
-        _toolbar_.show()
+        _toolbar.show()
 
         self.btnAddMode.hide()
         self.btnRemoveMode.hide()
 
-        return _toolbar_
+        return _toolbar
 
     def _create_notebook(self):
         """
-        Method to create the FUNCTION class gtk.Notebook().
+        Method to create the Function class gtk.Notebook().
         """
 
         def _create_general_data_tab(self, notebook):
             """
-            Function to create the FUNCTION class gtk.Notebook() page for
-            displaying general data about the selected FUNCTION.
+            Function to create the Function class gtk.Notebook() page for
+            displaying general data about the selected Function.
 
-            :param self: the current instance of a Function class.
-            :param notebook: the gtk.Notebook() to add the page.
-            :type notebook: gtk.Notebook
+            :param rtk.Function self: the current instance of a Function class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -401,9 +410,10 @@ class Function(object):
             """
             Function to create the hardware-function matrix tab.
 
-            Keyword Arguments:
-            self     -- the current instance of a FUNCTION class.
-            notebook -- the gtk.Notebook() to which to add the page.
+            :param rtk.Function self: the current instance of a Function class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -428,12 +438,14 @@ class Function(object):
             self.tvwFunctionMatrix.set_grid_lines(
                 gtk.TREE_VIEW_GRID_LINES_BOTH)
 
-            self.chkParts.set_tooltip_text(_(u"Include components in the functional matrix."))
+            self.chkParts.set_tooltip_text(_(u"Include components in the "
+                                             u"functional matrix."))
             self.chkParts.connect('toggled', self._callback_check)
             self.chkParts.set_active(True)
             _fixed_.put(self.chkParts, 5, 5)
 
-            self.chkAssemblies.set_tooltip_text(_(u"Include assemblies in the functional matrix."))
+            self.chkAssemblies.set_tooltip_text(_(u"Include assemblies in the "
+                                                  u"functional matrix."))
             self.chkAssemblies.connect('toggled', self._callback_check)
             self.chkAssemblies.set_active(True)
             _fixed_.put(self.chkAssemblies, 5, 35)
@@ -445,7 +457,8 @@ class Function(object):
                                "</span>")
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.set_tooltip_text(_(u"Displays the hardware/function cross-reference matrix."))
+            _label_.set_tooltip_text(_(u"Displays the hardware/function "
+                                       U"cross-reference matrix."))
             _label_.show_all()
             notebook.insert_page(_vbox_, tab_label=_label_,
                                  position=-1)
@@ -454,12 +467,13 @@ class Function(object):
 
         def _create_assessment_results_tab(self, notebook):
             """
-            Function to create the FUNCTION class gtk.Notebook() page for
-            displaying assessment results for teh selected FUNCTION.
+            Function to create the Function class gtk.Notebook() page for
+            displaying assessment results for teh selected Function.
 
-            Keyword Arguments:
-            self     -- the current instance of a FUNCTION class.
-            notebook -- the gtk.Notebook() to add the page.
+            :param rtk.Function self: the current instance of a Function class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -471,7 +485,8 @@ class Function(object):
             _fxdLeft_ = gtk.Fixed()
 
             _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
+                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdLeft_)
 
             _frame_ = _widg.make_frame(label=_(u"Reliability Results"))
@@ -484,7 +499,8 @@ class Function(object):
             _fxdRight_ = gtk.Fixed()
 
             _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
+                                      gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdRight_)
 
             _frame_ = _widg.make_frame(label=_(u"Maintainability Results"))
@@ -505,16 +521,23 @@ class Function(object):
             (_max1_, _y_pos_) = _widg.make_labels(_labels_, _fxdLeft_, 5, 5)
             _x_pos_ = max(_max1_, _max2_) + 20
 
-            self.txtPredictedHt.set_tooltip_text(_(u"Displays the predicted failure intensity for the selected function."))
+            self.txtPredictedHt.set_tooltip_text(_(u"Displays the predicted "
+                                                   u"failure intensity for "
+                                                   u"the selected function."))
+            self.txtMissionHt.set_tooltip_text(_(u"Displays the mission "
+                                                 u"failure intensity for the "
+                                                 u"selected function."))
+            self.txtMTBF.set_tooltip_text(_(u"Displays the limiting mean time "
+                                            u"between failure (MTBF) for the "
+                                            u"selected function."))
+            self.txtMissionMTBF.set_tooltip_text(_(u"Displays the mission "
+                                                   u"mean time between "
+                                                   u"failure (MTBF) for the "
+                                                   u"selected function."))
+
             _fxdLeft_.put(self.txtPredictedHt, _x_pos_, _y_pos_[0])
-
-            self.txtMissionHt.set_tooltip_text(_(u"Displays the mission failure intensity for the selected function."))
             _fxdLeft_.put(self.txtMissionHt, _x_pos_, _y_pos_[1])
-
-            self.txtMTBF.set_tooltip_text(_(u"Displays the limiting mean time between failure (MTBF) for the selected function."))
             _fxdLeft_.put(self.txtMTBF, _x_pos_, _y_pos_[2])
-
-            self.txtMissionMTBF.set_tooltip_text(_(u"Displays the mission mean time between failure (MTBF) for the selected function."))
             _fxdLeft_.put(self.txtMissionMTBF, _x_pos_, _y_pos_[3])
 
             _fxdLeft_.show_all()
@@ -527,22 +550,30 @@ class Function(object):
             (_max1_, _y_pos_) = _widg.make_labels(_labels_, _fxdRight_, 5, 5)
             _x_pos_ = max(_max1_, _max2_) + 20
 
-            self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive maintenance time (MPMT) for the selected function."))
+            self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive "
+                                            u"maintenance time (MPMT) for the "
+                                            u"selected function."))
+            self.txtMCMT.set_tooltip_text(_(u"Displays the mean corrective "
+                                            u"maintenance time (MCMT) for the "
+                                            u"selected function."))
+            self.txtMTTR.set_tooltip_text(_(u"Displays the mean time to "
+                                            u"repair (MTTR) for the selected "
+                                            u"function."))
+            self.txtMMT.set_tooltip_text(_(u"Displays the mean maintenance "
+                                           u"time (MMT) for the selected "
+                                           u"function."))
+            self.txtAvailability.set_tooltip_text(_(u"Displays the limiting "
+                                                    u"availability for the "
+                                                    u"selected function."))
+            self.txtMissionAt.set_tooltip_text(_(u"Displays the mission "
+                                                 u"availability for the "
+                                                 u"selected function."))
+
             _fxdRight_.put(self.txtMPMT, _x_pos_, _y_pos_[0])
-
-            self.txtMCMT.set_tooltip_text(_(u"Displays the mean corrective maintenance time (MCMT) for the selected function."))
             _fxdRight_.put(self.txtMCMT, _x_pos_, _y_pos_[1])
-
-            self.txtMTTR.set_tooltip_text(_(u"Displays the mean time to repair (MTTR) for the selected function."))
             _fxdRight_.put(self.txtMTTR, _x_pos_, _y_pos_[2])
-
-            self.txtMMT.set_tooltip_text(_(u"Displays the mean maintenance time (MMT) for the selected function."))
             _fxdRight_.put(self.txtMMT, _x_pos_, _y_pos_[3])
-
-            self.txtAvailability.set_tooltip_text(_(u"Displays the limiting availability for the selected function."))
             _fxdRight_.put(self.txtAvailability, _x_pos_, _y_pos_[4])
-
-            self.txtMissionAt.set_tooltip_text(_(u"Displays the mission availability for the selected function."))
             _fxdRight_.put(self.txtMissionAt, _x_pos_, _y_pos_[5])
 
             _fxdRight_.show_all()
@@ -554,7 +585,10 @@ class Function(object):
                                "</span>")
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.set_tooltip_text(_(u"Displays reliability, maintainability, and availability assessment results for the selected function."))
+            _label_.set_tooltip_text(_(u"Displays reliability, "
+                                       u"maintainability, and availability "
+                                       u"assessment results for the selected "
+                                       u"function."))
             _label_.show_all()
             notebook.insert_page(_hbox_, tab_label=_label_, position=-1)
 
@@ -562,12 +596,13 @@ class Function(object):
 
         def _create_fmeca_tab(self, notebook):
             """
-            Function to create the FMECA gtk.Notebook tab and populate it with
-            the appropriate widgets.
+            Function to create the FMECA gtk.Notebook() page and populate it
+            with the appropriate widgets.
 
-            Keyword Arguments:
-            self     -- the current instance of a FUNCTION class.
-            notebook -- the gtk.Notebook() to add the page.
+            :param rtk.Function self: the current instance of a Function class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -578,7 +613,8 @@ class Function(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add(self.tvwFMECA)
 
-            _frame_ = _widg.make_frame(label=_(u"Failure Mode, Effects, and Criticality Analysis"))
+            _frame_ = _widg.make_frame(label=_(u"Failure Mode, Effects, and "
+                                               U"Criticality Analysis"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -664,7 +700,9 @@ class Function(object):
                                "</span>")
             _label_.set_alignment(xalign=0.5, yalign=0.5)
             _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.set_tooltip_text(_(u"Failure mode, effects, and criticality analysis (FMECA) for the selected function."))
+            _label_.set_tooltip_text(_(u"Failure mode, effects, and "
+                                       u"criticality analysis (FMECA) for the "
+                                       u"selected function."))
             _label_.show_all()
 
             notebook.insert_page(_frame_,
@@ -717,7 +755,8 @@ class Function(object):
             if _results[i][self._lst_col_order[19]] == '-':
                 _piter = None
             else:
-                _piter = _model.get_iter_from_string(_results[i][self._lst_col_order[19]])
+                _piter = _model.get_iter_from_string(
+                    _results[i][self._lst_col_order[19]])
 
             _model.append(_piter, _results[i])
 
@@ -737,7 +776,7 @@ class Function(object):
 
     def _load_functional_matrix(self):
         """
-        Creates the TreeView wisget to display the Hardware/Function
+        Creates the gtk.TreeView() widget to display the Hardware-Function
         relationship matrix.
         """
 
@@ -745,7 +784,7 @@ class Function(object):
 
         _query_ = "SELECT fld_function_id, fld_code, fld_name \
                    FROM tbl_functions \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+                   WHERE fld_revision_id=%d" % self.revision_id
         _functions_ = self._app.DB.execute_query(_query_,
                                                  None,
                                                  self._app.ProgCnx,
@@ -757,9 +796,10 @@ class Function(object):
 
         # Make the treeview to display the functional matrix.
         _types_ = ['gint']
-        for i in range(_n_functions_ + 1):  # @UnusedVariable
+        for i in range(_n_functions_ + 1):
             _types_.append('gchararray')
-        _types_ = [gobject.type_from_name(_types_[i]) for i in range(len(_types_))]  # @UndefinedVariable
+        _types_ = [gobject.type_from_name(_types_[i])
+                   for i in range(len(_types_))]
         _model_ = gtk.ListStore(*_types_)
 
         self.tvwFunctionMatrix.set_model(_model_)
@@ -773,7 +813,7 @@ class Function(object):
         # Add a column to store the assembly ID.
         _cell_ = gtk.CellRendererText()
         _cell_.set_property('editable', 0)
-        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))  # @UndefinedVariable
+        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))
         _cell_.set_property('font_desc', pango.FontDescription("bold 10"))
         _cell_.set_property('xalign', 0.5)
         _cell_.set_property('yalign', 0.1)
@@ -792,7 +832,7 @@ class Function(object):
         # Add a column to store the assembly name.
         _cell_ = gtk.CellRendererText()
         _cell_.set_property('editable', 0)
-        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))  # @UndefinedVariable
+        _cell_.set_property('cell_background_gdk', gtk.gdk.Color('grey'))
         _cell_.set_property('font_desc', pango.FontDescription("bold 10"))
         _column_ = gtk.TreeViewColumn()
         _column_.set_resizable(True)
@@ -843,27 +883,27 @@ class Function(object):
         # Select the assembly id and name for only components, only assemblies,
         # or both components and assemblies.  The default is to select both.
         if self.chkParts.get_active() and not self.chkAssemblies.get_active():
-            _query_ = "SELECT fld_assembly_id, fld_name \
-                       FROM tbl_system \
-                       WHERE fld_revision_id=%d \
-                       AND fld_part=1" % \
-                       self._app.REVISION.revision_id
-        elif not self.chkParts.get_active() and self.chkAssemblies.get_active():
-            _query_ = "SELECT fld_assembly_id, fld_name \
-                       FROM tbl_system \
-                       WHERE fld_revision_id=%d \
-                       AND fld_part=0" % \
-                       self._app.REVISION.revision_id
+            _query = "SELECT fld_assembly_id, fld_name \
+                      FROM tbl_system \
+                      WHERE fld_revision_id=%d \
+                      AND fld_part=1" % \
+                     self._app.REVISION.revision_id
+        elif(not self.chkParts.get_active() and
+             self.chkAssemblies.get_active()):
+            _query = "SELECT fld_assembly_id, fld_name \
+                      FROM tbl_system \
+                      WHERE fld_revision_id=%d \
+                      AND fld_part=0" % \
+                     self._app.REVISION.revision_id
         elif self.chkParts.get_active() and self.chkAssemblies.get_active():
-            _query_ = "SELECT fld_assembly_id, fld_name \
-                       FROM tbl_system \
-                       WHERE fld_revision_id=%d" % \
-                       self._app.REVISION.revision_id
+            _query = "SELECT fld_assembly_id, fld_name \
+                      FROM tbl_system \
+                      WHERE fld_revision_id=%d" % \
+                     self._app.REVISION.revision_id
         else:
-            _query_ = ""
+            _query = ""
 
-        _assemblies_ = self._app.DB.execute_query(_query_,
-                                                  None,
+        _assemblies_ = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx,
                                                   commit=False)
 
@@ -890,24 +930,29 @@ class Function(object):
         # cell under each function column to the appropriate relationship
         # value for each assembly.
         for i in range(_n_items_):          # Loop through all the hardware.
-            _data_ = []
-            _data_.append(_assemblies_[i][0])
-            _data_.append(_assemblies_[i][1])
-            for j in range(_n_functions_):  # Loop through all the hardware/function relationships.
+            _data = []
+            _data.append(_assemblies_[i][0])
+            _data.append(_assemblies_[i][1])
+
+            # Loop through all the hardware/function relationships.
+            for j in range(_n_functions_):
                 if _results_[j][2] == 'X':
                     _color_ = 'black'
                 else:
                     _color_ = 'white'
 
                 if _results_[j][0] == _assemblies_[i][0]:
-                    _data_.append("<span foreground='black' background='%s'> %s </span>" % (_color_, _results_[j][2]))
+                    _data.append("<span foreground='black' background='%s'> "
+                                 "%s </span>" % (_color_, _results_[j][2]))
 
-            _model_.append(_data_)
+            _model_.append(_data)
 
         return False
 
     def _load_fmeca(self):
-        """ Method to load the FMECA tab information. """
+        """
+        Method to load the FMECA tab information.
+        """
 
         _model_ = self.tvwFMECA.get_model()
         _model_.clear()
@@ -963,7 +1008,7 @@ class Function(object):
             _n_modes_ = 0
 
         _icon_ = _conf.ICON_DIR + '32x32/mode.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)  # @UndefinedVariable
+        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_modes_):
             _data_ = [_results_[i][0],
                       _util.none_to_string(_results_[i][1]),
@@ -992,21 +1037,23 @@ class Function(object):
                 _model_.append(None, _data_)
             except TypeError:
                 _util.rtk_error(_(u"Failed to load FMEA/FMECA failure "
-                                          u"mode %d" % _results_[i][0]))
+                                  u"mode %d" % _results_[i][0]))
 
         return False
 
     def load_notebook(self):
         """
-        Method to load the FUNCTION class gtk.Notebook().
+        Method to load the Function class gtk.Notebook().
         """
 
         def _load_general_data_tab(self):
             """
             Function to load the widgets on the general data page.
 
-            Keyword Arguments:
-            self
+            :param rtk.Function self: the current instance of the Function
+                                      class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             self.txtCode.set_text(self.code)
@@ -1027,8 +1074,10 @@ class Function(object):
             """
             Loads the widgets with calculation results for the Function Object.
 
-            Keyword Arguments:
-            self -- the current instance of RTK.
+            :param rtk.Function self: the current instance of the Function
+                                      class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1051,14 +1100,14 @@ class Function(object):
 
             return False
 
-        (__model__, _row_) = self.treeview.get_selection().get_selected()
+        (__, _row) = self.treeview.get_selection().get_selected()
 
         if self._app.winWorkBook.get_child() is not None:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
         self._app.winWorkBook.add(self.vbxFunction)
         self._app.winWorkBook.show_all()
 
-        if _row_ is not None:
+        if _row is not None:
             _load_general_data_tab(self)
             self._load_functional_matrix()
             _load_assessment_results_tab(self)
@@ -1119,17 +1168,19 @@ class Function(object):
         Callback function for handling mouse clicks on the Hardware Object
         treeview.
 
-        Keyword Arguments:
-        treeview -- the Hardware Object treeview.
-        event    -- a gtk.gdk.Event that called this function (the
-                    important attribute is which mouse button was clicked).
-                    1 = left
-                    2 = scrollwheel
-                    3 = right
-                    4 = forward
-                    5 = backward
-                    8 =
-                    9 =
+        :param gtk.TreeView treeview: the Function class gtk.TreeView().
+        :param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method (the important attribute is which
+                                    mouse button was clicked).
+                                    * 1 = left
+                                    * 2 = scrollwheel
+                                    * 3 = right
+                                    * 4 = forward
+                                    * 5 = backward
+                                    * 8 =
+                                    * 9 =
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -1141,15 +1192,16 @@ class Function(object):
 
     def _treeview_row_changed(self, treeview, __path, __column):
         """
-        Callback function to handle events for the Function Object treeview.
-        It is called whenever the Function Object treeview is clicked or a row
-        is activated.  It will save the previously selected row in the
-        Function Object treeview.
+        Callback function to handle events for the Function class
+        gtk.TreeView().  It is called whenever the Function Object treeview is
+        clicked or a row is activated.  It will save the previously selected
+        row in the Function class gtk.TreeView().
 
-        Keyword Arguments:
-        treeview -- the Function Object gtk.TreeView.
-        __path   -- the actived row gtk.TreeView path.
-        __column -- the actived gtk.TreeViewColumn.
+        :param gtk.TreeView treeview: the Function class gtk.TreeView().
+        :param str __path: the actived row gtk.TreeView() path.
+        :param gtk.TreeViewColumn __column: the activated gtk.TreeViewColumn().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = treeview.get_selection().get_selected()
@@ -1186,15 +1238,14 @@ class Function(object):
         Method called whenever a Function Class gtk.Treeview()
         gtk.CellRenderer() is edited.
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: gtk.CellRenderer
-        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
-                            that was edited.
-        :param string new_text: the new text in the edited gtk.CellRenderer().
-        :param integer position: the column position of the edited
-                                 gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: gtk.TreeModel
+        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                                    belongs to.
         """
 
         # Update the gtk.TreeModel() with the new value.
@@ -1231,11 +1282,10 @@ class Function(object):
         """
         Adds a new Function to the Program's database.
 
-        Keyword Arguments:
-        __widget -- the widget that called this function.
-        level    -- the level of function to add.
-                    0 = sibling
-                    1 = child
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :param int level: the level of function to add.
+                          * 0 = sibling
+                          * 1 = child
         """
 
         # Find the selected function.
@@ -1263,18 +1313,17 @@ class Function(object):
 
         _query_ = "SELECT fld_assembly_id \
                    FROM tbl_system \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+                   WHERE fld_revision_id=%d" % self.revision_id
         _assembly_id_ = self._app.DB.execute_query(_query_,
                                                    None,
                                                    self._app.ProgCnx)
 
         for i in range(_n_functions_):
-            _code = str(_conf.RTK_PREFIX[2]) + ' ' + \
-                    str(_conf.RTK_PREFIX[3])
+            _code = str(_conf.RTK_PREFIX[2]) + ' ' + str(_conf.RTK_PREFIX[3])
 
             _conf.RTK_PREFIX[3] = _conf.RTK_PREFIX[3] + 1
 
-            _values_ = (self._app.REVISION.revision_id,
+            _values_ = (self.revision_id,
                         "New Function_" + str(i), '', _code, _parent_)
 
             _query_ = "INSERT INTO tbl_functions \
@@ -1287,7 +1336,8 @@ class Function(object):
                                                    commit=True)
 
             if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("function.py: Failed to add new function to function table.")
+                self._app.debug_log.error("function.py: Failed to add new "
+                                          "function to function table.")
                 return True
 
             if _conf.BACKEND == 'mysql':
@@ -1302,20 +1352,20 @@ class Function(object):
 
             try:
                 for i in range(len(_assembly_id_)):
-                    _query_ = "INSERT INTO tbl_functional_matrix \
-                               (fld_assembly_id, fld_function_id) \
-                               VALUES (%d, %d)" % \
-                               (_assembly_id_[0][i], _function_id_[0][0])
-                    _results_ = self._app.DB.execute_query(_query_,
-                                                           None,
-                                                           self._app.ProgCnx,
-                                                           commit=True)
+                    _query = "INSERT INTO tbl_functional_matrix \
+                              (fld_assembly_id, fld_function_id, \
+                               fld_revision_id) \
+                              VALUES (%d, %d, %d)" % \
+                             (_assembly_id_[i][0], _function_id_[0][0],
+                              self.revision_id)
+                    _results = self._app.DB.execute_query(_query, None,
+                                                          self._app.ProgCnx,
+                                                          commit=True)
             except TypeError:
                 self._app.debug_log.error("function.py: Failed to add new "
                                           "function %d to the functional "
                                           "matrix." % _function_id_[0][0])
 
-        #self._app.REVISION.load_tree()
         self.load_tree()
         self._load_functional_matrix()
 
@@ -1326,8 +1376,8 @@ class Function(object):
         Method to add a failure mode to the FMEA/FMECA for the selected
         function.
 
-        :param __button: the gtk.ToolButton() that called this function.
-        :type __button: gtk.ToolButton
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1352,8 +1402,8 @@ class Function(object):
                   (fld_revision_id, fld_assembly_id, \
                    fld_function_id, fld_mode_id) \
                   VALUES (%d, 0, %d, %d)" % \
-                  (self._app.REVISION.revision_id,
-                   self.function_id, _last_id)
+                 (self._app.REVISION.revision_id,
+                  self.function_id, _last_id)
         if self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                       commit=True):
             self._load_fmeca()
@@ -1365,38 +1415,33 @@ class Function(object):
     def _delete_function(self, __button):
         """
         Deletes the currently selected Function from the Program's MySQL or
-        SQLit3 database.
+        SQLite3 database.
 
-        Keyword Arguments:
-        __button -- the gtk.ToolButton() that called this function.
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        function.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _query_ = "DELETE FROM tbl_functions \
-                   WHERE fld_parent_id=%d" % \
-                   _model_.get_string_from_iter(_row_)
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.user_log.error("function.py: Failed to delete function from function table.")
+        _query = "DELETE FROM tbl_functions \
+                  WHERE fld_parent_id=%d" % \
+                 _model.get_string_from_iter(_row)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.user_log.error("function.py: Failed to delete function "
+                                     "from function table.")
             return True
 
-        _values_ = (self._app.REVISION.revision_id, \
-                    _model_.get_value(_row_, 1))
-        _query_ = "DELETE FROM tbl_functions \
-                   WHERE fld_revision_id=%d \
-                   AND fld_function_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.user_log.error("function.py: Failed to delete function from function table.")
+        _query = "DELETE FROM tbl_functions \
+                  WHERE fld_revision_id=%d \
+                  AND fld_function_id=%d" % \
+                 (self._app.REVISION.revision_id, _model.get_value(_row, 1))
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.user_log.error("function.py: Failed to delete function "
+                                     "from function table.")
             return True
 
         self.load_tree()
@@ -1408,8 +1453,8 @@ class Function(object):
         Method to delete the currently selected failure mode from the
         FMEA/FMECA for the selected function.
 
-        :param __button: the gtk.ToolButton() that called this function.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.ToolButton() that called this
+                                    function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1434,21 +1479,23 @@ class Function(object):
 
     def save_function(self):
         """
-        Saves the Function Object treeview information to the Program's
+        Saves the Function class gtk.TreeView() information to the Program's
         MySQL or SQLite3 database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Function to save each row in the Function Object treeview model to
+            Function to save each row in the Function class gtk.TreeModel() to
             the RTK database.
 
-            Keyword Arguments:
-            model  -- the Function Object treemodel.
-            __path -- the path of the active row in the Function Object
-                      treemodel.
-            row    -- the selected row in the Function Object treeview.
-            self   -- the current instance of a FUNCTION class.
+            :param gtk.TreeModel model: the Function class gtk.TreeModel().
+            :param str __path: the path of the active row in the Function class
+                               gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Function class gtk.TtreeView().
+            :param rtk.Function self: the current instance of a Function class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _values_ = (model.get_value(row, self._lst_col_order[2]),
@@ -1472,75 +1519,76 @@ class Function(object):
                         self._app.REVISION.revision_id,
                         model.get_value(row, self._lst_col_order[1]))
 
-            _query_ = "UPDATE tbl_functions \
-                       SET fld_availability=%f, fld_availability_mission=%f, \
-                           fld_code='%s', fld_cost=%f, fld_failure_rate_mission=%f, \
-                           fld_failure_rate_predicted=%f, fld_mmt=%f, fld_mcmt=%f, \
-                           fld_mpmt=%f, fld_mtbf_mission=%f, fld_mtbf_predicted=%f, \
-                           fld_mttr=%f, fld_name='%s', fld_remarks='%s', \
-                           fld_total_mode_quantity=%d, fld_total_part_quantity=%d, \
-                           fld_type=%d, fld_parent_id='%s' \
-                       WHERE fld_revision_id=%d \
-                       AND fld_function_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error("function.py: Failed to save function to function table.")
+            _query = "UPDATE tbl_functions \
+                      SET fld_availability=%f, fld_availability_mission=%f, \
+                          fld_code='%s', fld_cost=%f, \
+                          fld_failure_rate_mission=%f, \
+                          fld_failure_rate_predicted=%f, fld_mmt=%f, \
+                          fld_mcmt=%f, fld_mpmt=%f, fld_mtbf_mission=%f, \
+                          fld_mtbf_predicted=%f, fld_mttr=%f, fld_name='%s', \
+                          fld_remarks='%s', fld_total_mode_quantity=%d, \
+                          fld_total_part_quantity=%d, \
+                          fld_type=%d, fld_parent_id='%s' \
+                      WHERE fld_revision_id=%d \
+                      AND fld_function_id=%d" % _values_
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                self._app.debug_log.error("function.py: Failed to save "
+                                          "function to function table.")
                 return True
 
             return False
 
-        _model_ = self.treeview.get_model()
-        _model_.foreach(_save_line, self)
+        _model = self.treeview.get_model()
+        _model.foreach(_save_line, self)
 
         return False
 
     def _save_fmeca(self):
         """
-        Saves the ASSEMBLY Object FMECA gtk.TreeView information to the
+        Saves the Function class FMECA gtk.TreeView() information to the
         Program's MySQL or SQLite3 database.
         """
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the Assembly Object FMEA/FMECA treeview model to the
-            open RTK database.
+            Saves each row in the Function class FMEA/FMECA gtk.TreeModel() to
+            the open RTK database.
 
-            Keyword Arguments:
-            model  -- the FUNCTION class FMECA gtk.TreeModel().
-            __path -- the path of the active row in the FUNCTION class FMECA
-                      gtk.TreeModel().
-            row    -- the selected row in the FUNCTION class FMECA
-                      gtk.TreeView().
-            self   -- the current instance of a FUNCTION class.
+            :param gtk.TreeModel model: the Function class FMECA
+                                        gtk.TreeModel().
+            :param str __path: the path of the active row in the Function class
+                               FMECA gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Function class FMECA gtk.TreeView().
+            :param rtk.Function self: the current instance of a Function class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
-            _values_ = (model.get_value(row, self._FMECA_col_order[1]), \
-                        model.get_value(row, self._FMECA_col_order[2]), \
-                        model.get_value(row, self._FMECA_col_order[3]), \
-                        model.get_value(row, self._FMECA_col_order[4]), \
-                        model.get_value(row, self._FMECA_col_order[5]), \
-                        model.get_value(row, self._FMECA_col_order[6]), \
-                        model.get_value(row, self._FMECA_col_order[7]), \
-                        model.get_value(row, self._FMECA_col_order[8]), \
-                        model.get_value(row, self._FMECA_col_order[9]), \
-                        model.get_value(row, self._FMECA_col_order[10]), \
-                        model.get_value(row, self._FMECA_col_order[11]), \
-                        model.get_value(row, self._FMECA_col_order[12]), \
-                        model.get_value(row, self._FMECA_col_order[13]), \
-                        float(model.get_value(row, self._FMECA_col_order[14])), \
-                        float(model.get_value(row, self._FMECA_col_order[15])), \
-                        float(model.get_value(row, self._FMECA_col_order[16])), \
-                        float(model.get_value(row, self._FMECA_col_order[17])), \
-                        float(model.get_value(row, self._FMECA_col_order[18])), \
-                        model.get_value(row, self._FMECA_col_order[20]), \
+            _values_ = (model.get_value(row, self._FMECA_col_order[1]),
+                        model.get_value(row, self._FMECA_col_order[2]),
+                        model.get_value(row, self._FMECA_col_order[3]),
+                        model.get_value(row, self._FMECA_col_order[4]),
+                        model.get_value(row, self._FMECA_col_order[5]),
+                        model.get_value(row, self._FMECA_col_order[6]),
+                        model.get_value(row, self._FMECA_col_order[7]),
+                        model.get_value(row, self._FMECA_col_order[8]),
+                        model.get_value(row, self._FMECA_col_order[9]),
+                        model.get_value(row, self._FMECA_col_order[10]),
+                        model.get_value(row, self._FMECA_col_order[11]),
+                        model.get_value(row, self._FMECA_col_order[12]),
+                        model.get_value(row, self._FMECA_col_order[13]),
+                        float(model.get_value(row, self._FMECA_col_order[14])),
+                        float(model.get_value(row, self._FMECA_col_order[15])),
+                        float(model.get_value(row, self._FMECA_col_order[16])),
+                        float(model.get_value(row, self._FMECA_col_order[17])),
+                        float(model.get_value(row, self._FMECA_col_order[18])),
+                        model.get_value(row, self._FMECA_col_order[20]),
                         model.get_value(row, self._FMECA_col_order[21]),
-                        int(model.get_value(row, self._FMECA_col_order[22])), \
-                        int(model.get_value(row, self._FMECA_col_order[23])), \
-                        model.get_value(row, self._FMECA_col_order[24]), \
+                        int(model.get_value(row, self._FMECA_col_order[22])),
+                        int(model.get_value(row, self._FMECA_col_order[23])),
+                        model.get_value(row, self._FMECA_col_order[24]),
                         int(model.get_value(row, self._FMECA_col_order[0])))
 
             _query_ = "UPDATE tbl_fmeca \
@@ -1577,33 +1625,32 @@ class Function(object):
                                 functions):
         """
         Callback function to save changes made to the functional matrix
-        TreeView.
+        gtk.TreeView().
 
-        Keyword Arguments:
-        __cell     -- the gtk.CellRenderer() that was edited.
-        __path     -- the path to the gtk.CellRenderer() being edited.
-        new_text   -- the new text in the gtk.CellRenderer() being edited.
-        column     -- the column number of the gtk.CellRenderer() being edited.
+        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
+        :param str __path: the path to the gtk.CellRenderer() being edited.
+        :param str new_text: the new text in the gtk.CellRenderer() being
+                             edited.
+        :param int column: the column number of the gtk.CellRenderer() being
+                           edited.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        (_model_,
-         _row_) = self.tvwFunctionMatrix.get_selection().get_selected()
+        (_model,
+         _row) = self.tvwFunctionMatrix.get_selection().get_selected()
 
-        _values_ = (new_text, _model_.get_value(_row_, 0), functions[column],
-                    self._app.REVISION.revision_id)
-
-        _query_ = "UPDATE tbl_functional_matrix \
-                   SET fld_relationship='%s' \
-                   WHERE fld_assembly_id=%d \
-                   AND fld_function_id=%d \
-                   AND fld_revision_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if _results_ == '' or not _results_ or _results_ is None:
-            self._app.debug_log.error("function.py: Failed to save Functional Matrix changes.")
+        _query = "UPDATE tbl_functional_matrix \
+                  SET fld_relationship='%s' \
+                  WHERE fld_assembly_id=%d \
+                  AND fld_function_id=%d \
+                  AND fld_revision_id=%d" % \
+                 (new_text, _model.get_value(_row, 0), functions[column],
+                  self._app.REVISION.revision_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("function.py: Failed to save Functional "
+                                      "Matrix changes.")
             return True
 
         if new_text == 'X':
@@ -1619,8 +1666,10 @@ class Function(object):
         """
         Callback function to retrieve and save gtk.CheckButton() changes.
 
-        :param __check: the gtk.CheckButton() that called this method.
-        :type __check: gtk.CheckButton
+        :param gtk.CheckButton __check: the gtk.CheckButton() that called this
+                                        method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         self._load_functional_matrix()
@@ -1631,14 +1680,15 @@ class Function(object):
         """
         Callback function to retrieve and save gtk.Entry() changes.
 
-        :param entry: the gtk.Entry() that called the function.
-        :type entry: gtk.Entry
-        :param __event: the gtk.gdk.Event() that called this function.
-        :type __event: gtk.gdk.Event
+        :param gtk.Entry entry: the gtk.Entry() that called the function.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
         :param str convert: the data type to convert the gtk.Entry() contents.
-        :param int index: the position in the Function Class gtk.TreeView()
+        :param int index: the position in the Function class gtk.TreeView()
                           associated with the data from the calling
                           gtk.Entry().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if convert == 'text':
@@ -1669,16 +1719,17 @@ class Function(object):
 
     def _notebook_page_switched(self, __notebook, __page, page_num):
         """
-        Called whenever the Tree Book notebook page is changed.
+        Called whenever the Work Book gtk.Notebook() page is changed.
 
-        Keyword Arguments:
-        __notebook -- the FUNCTION class gtk.Notebook() widget.
-        __page     -- the newly selected page widget.
-        page_num   -- the newly selected page number.
-                      0 = General Data
-                      1 = Functional Matrix
-                      2 = Assessment Results
-                      3 = FMEA/FMECA
+        :param gtk.Notebook __notebook: the Function class gtk.Notebook().
+        :param gtk.Widget __page: the newly selected page widget.
+        :param int page_num: the newly selected page number.
+                             * 0 = General Data
+                             * 1 = Functional Matrix
+                             * 2 = Assessment Results
+                             * 3 = FMEA/FMECA
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if page_num == 3:                   # FMEA/FMECA tab
@@ -1689,7 +1740,9 @@ class Function(object):
             self.btnRemoveMode.show()
             self.btnCalculate.show()
             self.btnSave.show()
-            self.btnSave.set_tooltip_text(_(u"Saves changes to Functional FMEA/FMECA for the selected function."))
+            self.btnSave.set_tooltip_text(_(u"Saves changes to Functional "
+                                            u"FMEA/FMECA for the selected "
+                                            u"function."))
         else:
             self.btnAddSibling.show()
             self.btnAddChild.show()
@@ -1698,16 +1751,19 @@ class Function(object):
             self.btnRemoveMode.hide()
             self.btnCalculate.show()
             self.btnSave.show()
-            self.btnSave.set_tooltip_text(_(u"Saves changes to the selected function."))
+            self.btnSave.set_tooltip_text(_(u"Saves changes to the selected "
+                                            u"function."))
 
         return False
 
     def _toolbutton_pressed(self, button):
         """
-        Method to react to the FUNCTION class toolbar button clicked events.
+        Method to react to the Function class toolbar button clicked events.
 
-        Keyword Arguments:
-        button -- the gtk.ToolButton() button that was pressed.
+        :param gtk.ToolButton button: the gtk.ToolButton() button that was
+                                      pressed.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # FMEA roll-up lower level FMEA.
@@ -1716,16 +1772,16 @@ class Function(object):
         # V&V assign existing task
         # Maintenance planning
         # Maintenance planning save changes to selected maintenance policy
-        if self.notebook.get_current_page() == 0:   # General data tab.
+        if self.notebook.get_current_page() == 0:    # General data tab.
             if button.get_name() == 'Save':
                 self.save_function()
-        elif self.notebook.get_current_page() == 1: # Functional matrix tab.
+        elif self.notebook.get_current_page() == 1:  # Functional matrix tab.
             if button.get_name() == 'Save':
                 self.save_function()
-        elif self.notebook.get_current_page() == 2: # Assessment results tab.
+        elif self.notebook.get_current_page() == 2:  # Assessment results tab.
             if button.get_name() == 'Save':
                 self.save_function()
-        elif self.notebook.get_current_page() == 3: # FMECA/FMECA tab.
+        elif self.notebook.get_current_page() == 3:  # FMECA/FMECA tab.
             if button.get_name() == 'Save':
                 self._save_fmeca()
 
@@ -1733,39 +1789,39 @@ class Function(object):
 
     def calculate(self, __button=None):
         """
-        Calculates active hazard rate, dormant hazard rate,
-        software hazard rate, predicted hazard rate, mission MTBF, limiting
-        MTBF, mission reliability, limiting reliability, total cost, cost per
-        failure, and cost per operating hour.
+        Calculates active hazard rate, dormant hazard rate, software hazard
+        rate, predicted hazard rate, mission MTBF, limiting MTBF, mission
+        reliability, limiting reliability, total cost, cost per failure, and
+        cost per operating hour.
 
-        Keyword Arguments:
-        __button -- the gtk.ToolButton() that called this function.
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if _model_.iter_has_child(_row_):
-            for j in range(_model_.iter_n_children(_row_)):  # @UnusedVariable
+            for j in range(_model_.iter_n_children(_row_)):
                 self.calculate(None)
         else:
             if _conf.MODE == 'developer':
                 _results_ = ([29.32, 0.000147762, 0.00014542, 5, 0.05,
                               0.4762, 0.41667, 0.08929],)
             else:
-                _values_ = (_model_.get_value(_row_, 1),)
-                _query_ = "SELECT SUM(t2.fld_cost), \
-                                  SUM(t2.fld_failure_rate_predicted), \
-                                  SUM(t2.fld_failure_rate_mission), \
-                                  COUNT(t2.fld_assembly_id), \
-                                  SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                                  SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
-                           FROM tbl_system AS t2 \
-                           INNER JOIN tbl_functional_matrix AS t1 \
-                           ON t2.fld_assembly_id = t1.fld_assembly_id \
-                           WHERE t1.fld_function_id=%d \
-                           AND t2.fld_part=1"
-                _results_ = self._app.DB.execute_query(_query_,
-                                                       None,
+                _query = "SELECT SUM(t2.fld_cost), \
+                                 SUM(t2.fld_failure_rate_predicted), \
+                                 SUM(t2.fld_failure_rate_mission), \
+                                 COUNT(t2.fld_assembly_id), \
+                                 SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
+                                 SUM(1.0 / mttr), SUM(1.0 / fld_mmt) \
+                          FROM tbl_system AS t2 \
+                          INNER JOIN tbl_functional_matrix AS t1 \
+                          ON t2.fld_assembly_id = t1.fld_assembly_id \
+                          WHERE t1.fld_function_id=%d \
+                          AND t2.fld_part=1" % (_model_.get_value(_row_, 1),)
+                _results_ = self._app.DB.execute_query(_query, None,
                                                        self._app.ProgCnx)
 
                 if _results_ == '' or not _results_ or _results_ is None:
@@ -1801,16 +1857,24 @@ class Function(object):
                 self.mtbf = 1.0 / self.hazard_rate
             except ZeroDivisionError:
                 self.mtbf = 0.0
-                self._app.user_log.error(_("Attempted to divide by zero when calculating function logistics MTBF.\n \
-                                           function id %s: lambdap = %f") % (self._app.FUNCTION.function_id, self.hazard_rate))
+                self._app.user_log.error(_("Attempted to divide by zero when "
+                                           "calculating function logistics "
+                                           "MTBF.\n"
+                                           "function id %s: lambdap = %f") %
+                                         (self._app.FUNCTION.function_id,
+                                          self.hazard_rate))
 
             # Calculate the mission MTBF.
             try:
                 self.mission_mtbf = 1.0 / self.mission_hazard_rate
             except ZeroDivisionError:
                 self.mission_mtbf = 0.0
-                self._app.user_log.error(_("Attempted to divide by zero when calculating function mission MTBF.\n \
-                                           function id %s: lambdap = %f") % (self._app.FUNCTION.function_id, self.mission_hazard_rate))
+                self._app.user_log.error(_("Attempted to divide by zero when "
+                                           "calculating function mission "
+                                           "MTBF.\n"
+                                           "function id %s: lambdap = %f") %
+                                         (self._app.FUNCTION.function_id,
+                                          self.mission_hazard_rate))
 
             # Calculate the logistics availability.
             try:
@@ -1822,7 +1886,8 @@ class Function(object):
 
             # Calculate mission availability.
             try:
-                self.mission_availability = self.mission_mtbf / (self.mission_mtbf + self.mttr)
+                self.mission_availability = self.mission_mtbf / \
+                    (self.mission_mtbf + self.mttr)
             except ZeroDivisionError:
                 self.mission_availability = 1.0
             except OverflowError:
