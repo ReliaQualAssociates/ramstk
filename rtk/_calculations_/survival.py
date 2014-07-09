@@ -474,22 +474,22 @@ def kaplan_meier_mean(data, rank, conf=0.75):
     uses the algorithm found in Lee and Wang, "Statistical Methods for Survival
     Data Analysis", page 74.
 
-    :param ndarray data: the Kaplan-Meier data set.  This is a matrix where each row
-                 contains the following, in order:
-              * Time point (t) at which the curve has a step.
-              * Number of subjects at risk at time t.
-              * Number of events that occur at time t.
-              * Standard error of the survival function at time t.
-              * Lower bound on the survival function at time t.
-              * Point estimate of the survival function at time t.
-              * Upper bound on the survival function at time t.
+    :param ndarray data: the Kaplan-Meier data set.  This is a matrix where
+                         each row contains the following, in order:
+                         * Time point (t) at which the curve has a step.
+                         * Number of subjects at risk at time t.
+                         * Number of events that occur at time t.
+                         * Standard error of the survival function at time t.
+                         * Lower bound on the survival function at time t.
+                         * Point estimate of the survival function at time t.
+                         * Upper bound on the survival function at time t.
     :param float conf: the desired confidence for the bounding values.
     :return: _mtbf; matrix of mean values where each row contains the
              following, in order:
-              * Lower bound on the mean value.
-              * Point estimate of the mean value.
-              * Upper bound on the mean value.
-              * Variance of the mean value.
+             * Lower bound on the mean value.
+             * Point estimate of the mean value.
+             * Upper bound on the mean value.
+             * Variance of the mean value.
     :rtype: list of lists
     """
 
@@ -499,7 +499,7 @@ def kaplan_meier_mean(data, rank, conf=0.75):
     _x = np.insert(np.diff(data[:, 2]), 0, 1)
 
     _failures = data[np.where(_x != 0)]
-    _indices =  np.where(_x != 0)
+    _indices = np.where(_x != 0)
 
     _A = _failures[:-1, 2] * (_failures[1:, 0] - _failures[:-1, 0])
     _mtbf = np.sum(_A) + _failures[0, 0]
@@ -522,28 +522,28 @@ def kaplan_meier_hazard(data):
     subsurvival functions." Journal of the American Statistical Association
     1977;72:854-858.
 
-    :param ndarray data: the Kaplan-Meier data set.  This is a matrix where each row
-                 contains the following, in order:
-                 - Time point (t) at which the curve has a step.
-                 - Number of subjects at risk at time t.
-                 - Number of events that occur at time t.
-                 - Standard error of the survival function at time t.
-                 - Lower bound on the survival function at time t.
-                 - Point estimate of the survival function at time t.
-                 - Upper bound on the survival function at time t.
+    :param ndarray data: the Kaplan-Meier data set.  This is a matrix where
+                         each row contains the following, in order:
+                         * Time point (t) at which the curve has a step.
+                         * Number of subjects at risk at time t.
+                         * Number of events that occur at time t.
+                         * Standard error of the survival function at time t.
+                         * Lower bound on the survival function at time t.
+                         * Point eStimate of the survival function at time t.
+                         * Upper bound on the survival function at time t.
     :type data: numpy matrix
     :return: _hazard; matrix of hazard function related results.  There is one
              row for each observation time where each row contains the
              following, in order:
-             - Lower bound on the hazard rate.
-             - Point estimate of the hazard rate.
-             - Upper bound on the hazard rate.
-             - Lower bound on the cumulative hazard rate.
-             - Point estimate of the cumulative hazard rate.
-             - Upper bound on the cumulative hazard rate.
-             - Lower bound on the logarithm of the cum. hazard rate.
-             - Point estimate of the logarithm of the cum. hazard rate.
-             - Upper bound on the logarithm of the cum. hazard rate.
+             * Lower bound on the hazard rate.
+             * Point estimate of the hazard rate.
+             * Upper bound on the hazard rate.
+             * Lower bound on the cumulative hazard rate.
+             * Point estimate of the cumulative hazard rate.
+             * Upper bound on the cumulative hazard rate.
+             * Lower bound on the logarithm of the cum. hazard rate.
+             * Point estimate of the logarithm of the cum. hazard rate.
+             * Upper bound on the logarithm of the cum. hazard rate.
     :rtype: numpy matrix
     """
 
@@ -585,18 +585,18 @@ def turnbull_s(_tau_):
     for i in range(m - 1):
         _status_.append(1)
 
-    #survival = importr('survival')
+    # survival = importr('survival')
 
-    #_times_ = robjects.FloatVector(_tau_[:m-1])
-    #_status_ = robjects.IntVector(_status_)
+    # _times_ = robjects.FloatVector(_tau_[:m-1])
+    # _status_ = robjects.IntVector(_status_)
 
-    #_surv_ = survival.Surv(_times_, _status_)
-    #robjects.globalenv['surv'] = _surv_
-    #_ekm_ = survival.survfit(robjects.Formula('surv ~ 1'))
+    # _surv_ = survival.Surv(_times_, _status_)
+    # robjects.globalenv['surv'] = _surv_
+    # _ekm_ = survival.survfit(robjects.Formula('surv ~ 1'))
 
     _So_ = []
-    #for i in range(len(_ekm_[5])):
-    #    _So_.append(_ekm_[5][i])
+    # for i in range(len(_ekm_[5])):
+    #     _So_.append(_ekm_[5][i])
 
     _p_ = []
     for i in range(len(_So_) - 1):
@@ -676,14 +676,14 @@ def turnbull(_dataset_, _reltime_, _conf_=0.75, eps=1E-13, iter_max=200):
         except ValueError:
             print i, len(_p_), len(x)
 
-    #surv = round(c(1, 1-cumsum(_p_)), digits=5)
-    #right = data$right
+    # surv = round(c(1, 1-cumsum(_p_)), digits=5)
+    # right = data$right
 
-    #if(any(!(is.finite(right))))
-    #    t <- max(right[is.finite(right)])
-    #    return(list(time=tau[tau<t],surv=surv[tau<t]))
-    #else
-    #    return(list(time=tau,surv=surv))
+    # if(any(!(is.finite(right))))
+    #     t <- max(right[is.finite(right)])
+    #     return(list(time=tau[tau<t],surv=surv[tau<t]))
+    # else
+    #     return(list(time=tau,surv=surv))
 
     return
 
@@ -716,14 +716,14 @@ def adjusted_rank(data):
         if _record[3] != 1:
             _adj_rank = -1
         else:
-            _adj_rank = (_rev_rank * 1.0 * _prev_adj_rank + \
+            _adj_rank = (_rev_rank * 1.0 * _prev_adj_rank +
                          (_n_failures + 1)) / (_rev_rank + 1)
             _prev_adj_rank = _adj_rank
 
         _adjusted_rank.append(_adj_rank)
         _rev_rank -= 1
 
-    return np.array(_adjusted_rank, dtype =float)
+    return np.array(_adjusted_rank, dtype=float)
 
 
 def bernard_ranks(data, grouped=False):
@@ -824,11 +824,10 @@ def fisher_information(model, p0, X, noise=1.0):
     D = np.zeros((len(p0), X.size))
 
     for i, argname in enumerate(labels):
-        D[i,:] = [misc.derivative(
-                            lambda p: model(x, **dict(p0dict, **{argname: p})),
-                            p0dict[argname],
-                            dx=1.0e-6)
-                  for x in X ]
+        D[i, :] = [misc.derivative(
+                   lambda p: model(x, **dict(p0dict, **{argname: p})),
+                   p0dict[argname], dx=1.0e-6)
+                   for x in X]
 
     _fisher = 1.0 / noise**2 * np.einsum('mk, nk', D, D)
 
@@ -885,8 +884,8 @@ def exponential_log_likelihood(x, data):
     _interval_rt = data[np.where(data[:, 3] == 3)][:, 1]
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_ll = np.sum(_interval_n * \
-                          np.log(np.exp(-x[0] * _interval_lt) - \
+    _interval_ll = np.sum(_interval_n *
+                          np.log(np.exp(-x[0] * _interval_lt) -
                                  np.exp(-x[0] * _interval_rt)))
 
     _logLik = _event_ll - _right_ll + _interval_ll
@@ -936,10 +935,10 @@ def exponential_partial_derivs(theta, data):
     _interval_ll = np.sum(_interval_n * ((1.0 / theta) - _interval_t))
 
     # Following are the exact equations for the interval censored observations.
-    #_n = (_interval_lt * exp(-theta * _interval_lt)) - \
-    #     (_interval_rt * exp(-theta * _interval_rt))
-    #_d = exp(-theta * _interval_lt) - exp(-theta * _interval_rt)
-    #_interval_ll = np.sum(_interval_n * (_n / _d))
+    # _n = (_interval_lt * exp(-theta * _interval_lt)) - \
+    #      (_interval_rt * exp(-theta * _interval_rt))
+    # _d = exp(-theta * _interval_lt) - exp(-theta * _interval_rt)
+    # _interval_ll = np.sum(_interval_n * (_n / _d))
 
     _del_theta = _event_ll - _right_ll - _interval_ll
 
@@ -986,15 +985,15 @@ def lognormal_log_likelihood(x, data):
     # Calculate the value of the log-likelihood for the event observations.
     _event_t = data[np.where(data[:, 3] == 1)][:, 1]
     _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-    _event_ll = np.sum(_event_n * \
-                       np.log((1.0 / (_event_t * x[1])) * \
+    _event_ll = np.sum(_event_n *
+                       np.log((1.0 / (_event_t * x[1])) *
                               norm.pdf((np.log(_event_t) - x[0]) / x[1])))
 
     # Calculate the value of the log-likelihood for the right-censored
     # observations.
     _right_t = data[np.where(data[:, 3] == 2)][:, 1]
     _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-    _right_ll = np.sum(_right_n * \
+    _right_ll = np.sum(_right_n *
                        (1.0 - norm.cdf((np.log(_right_t) - x[0]) / x[1])))
 
     # Calculate the value of the log-likelihood for the left- and interval-
@@ -1003,9 +1002,11 @@ def lognormal_log_likelihood(x, data):
     _interval_rt = data[np.where(data[:, 3] == 3)][:, 1]
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_ll = np.sum(_interval_n * \
-                    np.log(norm.cdf((np.log(_interval_rt) - x[0]) / x[1]) - \
-                           norm.cdf((np.log(_interval_lt) - x[0]) / x[1])))
+    _interval_ll = np.sum(_interval_n *
+                          np.log(norm.cdf(
+                                 (np.log(_interval_rt) - x[0]) / x[1]) -
+                                 norm.cdf(
+                                 (np.log(_interval_lt) - x[0]) / x[1])))
 
     _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -1047,10 +1048,10 @@ def lognormal_partial_derivs(x, data):
     _norm = (_right_t - x[0]) / x[1]
     _cdf = norm.cdf(_norm)
     _right_mu = (1.0 / x[1]) * \
-                np.sum(_right_n * (norm.pdf(_norm) / (1.000000001 - _cdf)))
+        np.sum(_right_n * (norm.pdf(_norm) / (1.000000001 - _cdf)))
     _right_sigma = (1.0 / x[1]) * \
-                   np.sum(_right_n * \
-                          ((_norm * norm.pdf(_norm)) / (1.000000001 - _cdf)))
+        np.sum(_right_n *
+               ((_norm * norm.pdf(_norm)) / (1.000000001 - _cdf)))
 
     # Calculate the value of the log-likelihood for the left- and interval-
     # censored observations.  Use the midpoint of the interval as an
@@ -1060,27 +1061,27 @@ def lognormal_partial_derivs(x, data):
     _interval_t = (_interval_lt + _interval_rt) / 2.0
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_sigma = np.sum(_interval_n * \
-                             (((_interval_t - x[0]) / x[1]**3.0) - \
+    _interval_sigma = np.sum(_interval_n *
+                             (((_interval_t - x[0]) / x[1]**3.0) -
                               (1.0 / x[1])))
     _interval_mu = (1.0 / x[1]**2.0) * \
-                   np.sum(_interval_n * (_interval_t - x[0]))
+        np.sum(_interval_n * (_interval_t - x[0]))
 
     # Following are the exact equations for the interval censored observations.
-    #_norm_r = (_interval_rt - x[0]) / x[1]
-    #_pdf_r = norm.pdf(_norm_r)
-    #_cdf_r = norm.cdf(_norm_r)
+    # _norm_r = (_interval_rt - x[0]) / x[1]
+    # _pdf_r = norm.pdf(_norm_r)
+    # _cdf_r = norm.cdf(_norm_r)
 
-    #_norm_l = (_interval_lt - x[0]) / x[1]
-    #_pdf_l = norm.pdf(_norm_l)
-    #_cdf_l = norm.cdf(_norm_l)
+    # _norm_l = (_interval_lt - x[0]) / x[1]
+    # _pdf_l = norm.pdf(_norm_l)
+    # _cdf_l = norm.cdf(_norm_l)
 
-    #_n = _pdf_r - _pdf_l
-    #_d = _cdf_r - _cdf_l
-    #_interval_mu = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
+    # _n = _pdf_r - _pdf_l
+    # _d = _cdf_r - _cdf_l
+    # _interval_mu = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
 
-    #_n = (_norm_r * _pdf_r) - (_norm_l * _pdf_l)
-    #_interval_sigma = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
+    # _n = (_norm_r * _pdf_r) - (_norm_l * _pdf_l)
+    # _interval_sigma = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
 
     _del_mu = _event_mu + _right_mu - _interval_mu
     _del_sigma = _event_sigma + _right_sigma - _interval_sigma
@@ -1128,15 +1129,15 @@ def gaussian_log_likelihood(x, data):
     # Calculate the value of the log-likelihood for the event observations.
     _event_t = data[np.where(data[:, 3] == 1)][:, 1]
     _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-    _event_ll = np.sum(_event_n * \
-                       np.log((1.0 / (_event_t * x[1])) * \
+    _event_ll = np.sum(_event_n *
+                       np.log((1.0 / (_event_t * x[1])) *
                               norm.pdf((_event_t - x[0]) / x[1])))
 
     # Calculate the value of the log-likelihood for the right-censored
     # observations.
     _right_t = data[np.where(data[:, 3] == 2)][:, 1]
     _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-    _right_ll = np.sum(_right_n * \
+    _right_ll = np.sum(_right_n *
                        (1.0 - norm.cdf((_right_t - x[0]) / x[1])))
 
     # Calculate the value of the log-likelihood for the left- and interval-
@@ -1145,9 +1146,9 @@ def gaussian_log_likelihood(x, data):
     _interval_rt = data[np.where(data[:, 3] == 3)][:, 1]
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_ll = np.sum(_interval_n * \
-                    np.log(norm.cdf((_interval_rt - x[0]) / x[1]) - \
-                           norm.cdf((_interval_lt - x[0]) / x[1])))
+    _interval_ll = np.sum(_interval_n *
+                          np.log(norm.cdf((_interval_rt - x[0]) / x[1]) -
+                                 norm.cdf((_interval_lt - x[0]) / x[1])))
 
     _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -1189,10 +1190,10 @@ def gaussian_partial_derivs(x, data):
     _norm = (_right_t - x[0]) / x[1]
     _cdf = norm.cdf(_norm)
     _right_mu = (1.0 / x[1]) * \
-                np.sum(_right_n * (norm.pdf(_norm) / (1.000000001 - _cdf)))
+        np.sum(_right_n * (norm.pdf(_norm) / (1.000000001 - _cdf)))
     _right_sigma = (1.0 / x[1]) * \
-                   np.sum(_right_n * \
-                          ((_norm * norm.pdf(_norm)) / (1.000000001 - _cdf)))
+        np.sum(_right_n *
+               ((_norm * norm.pdf(_norm)) / (1.000000001 - _cdf)))
 
     # Calculate the value of the log-likelihood for the left- and interval-
     # censored observations.  Use the midpoint of the interval as an
@@ -1202,27 +1203,27 @@ def gaussian_partial_derivs(x, data):
     _interval_t = (_interval_lt + _interval_rt) / 2.0
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_sigma = np.sum(_interval_n * \
-                             (((_interval_t - x[0]) / x[1]**3.0) - \
+    _interval_sigma = np.sum(_interval_n *
+                             (((_interval_t - x[0]) / x[1]**3.0) -
                               (1.0 / x[1])))
     _interval_mu = (1.0 / x[1]**2.0) * \
-                   np.sum(_interval_n * (_interval_t - x[0]))
+        np.sum(_interval_n * (_interval_t - x[0]))
 
     # Following are the exact equations for the interval censored observations.
-    #_norm_r = (_interval_rt - x[0]) / x[1]
-    #_pdf_r = norm.pdf(_norm_r)
-    #_cdf_r = norm.cdf(_norm_r)
+    # _norm_r = (_interval_rt - x[0]) / x[1]
+    # _pdf_r = norm.pdf(_norm_r)
+    # _cdf_r = norm.cdf(_norm_r)
 
-    #_norm_l = (_interval_lt - x[0]) / x[1]
-    #_pdf_l = norm.pdf(_norm_l)
-    #_cdf_l = norm.cdf(_norm_l)
+    # _norm_l = (_interval_lt - x[0]) / x[1]
+    # _pdf_l = norm.pdf(_norm_l)
+    # _cdf_l = norm.cdf(_norm_l)
 
-    #_n = _pdf_r - _pdf_l
-    #_d = _cdf_r - _cdf_l
-    #_interval_mu = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
+    # _n = _pdf_r - _pdf_l
+    # _d = _cdf_r - _cdf_l
+    # _interval_mu = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
 
-    #_n = (_norm_r * _pdf_r) - (_norm_l * _pdf_l)
-    #_interval_sigma = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
+    # _n = (_norm_r * _pdf_r) - (_norm_l * _pdf_l)
+    # _interval_sigma = (1.0 / x[1]) * np.sum(_interval_n * _n / _d)
 
     _del_mu = _event_mu + _right_mu - _interval_mu
     _del_sigma = _event_sigma + _right_sigma - _interval_sigma
@@ -1243,7 +1244,7 @@ def weibull_log_pdf(data, eta, beta):
     """
 
     _log_pdf = np.log(beta / eta) + \
-               (beta - 1.0) * np.log(data / eta) - (data / eta)**beta
+        (beta - 1.0) * np.log(data / eta) - (data / eta)**beta
 
     return _log_pdf
 
@@ -1269,8 +1270,8 @@ def weibull_log_likelihood(x, data):
     # Calculate the value of the log-likelihood for the event observations.
     _event_t = data[np.where(data[:, 3] == 1)][:, 1]
     _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-    _event_ll = np.sum(_event_n * np.log((x[1] / x[0]) * \
-                                         (_event_t / x[0])**(x[1] - 1.0) * \
+    _event_ll = np.sum(_event_n * np.log((x[1] / x[0]) *
+                                         (_event_t / x[0])**(x[1] - 1.0) *
                                          np.exp(-(_event_t / x[0])**x[1])))
 
     # Calculate the value of the log-likelihood for the right-censored
@@ -1285,9 +1286,9 @@ def weibull_log_likelihood(x, data):
     _interval_rt = data[np.where(data[:, 3] == 3)][:, 1]
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
-    _interval_ll = np.sum(_interval_n * \
-                          np.log(np.exp(-(_interval_lt / x[0])**x[1]) - \
-                          np.exp(-(_interval_rt / x[0])**x[1])))
+    _interval_ll = np.sum(_interval_n *
+                          np.log(np.exp(-(_interval_lt / x[0])**x[1]) -
+                                 np.exp(-(_interval_rt / x[0])**x[1])))
 
     _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -1318,9 +1319,8 @@ def weibull_partial_derivs(x, data):
     _event_t = data[np.where(data[:, 3] == 1)][:, 1]
     _event_n = data[np.where(data[:, 3] == 1)][:, 2]
     _event_ll_beta = np.sum(_event_n) / x[1] + \
-                     np.sum(_event_n * np.log(_event_t / x[0])) - \
-                     np.sum(_event_n * (_event_t / x[0])**x[1] * \
-                            np.log(_event_t / x[0]))
+        np.sum(_event_n * np.log(_event_t / x[0])) - \
+        np.sum(_event_n * (_event_t / x[0])**x[1] * np.log(_event_t / x[0]))
     _event_ll_eta = (-x[1] / x[0]) * np.sum(_event_n) + \
                     (x[1] / x[0]) * np.sum(_event_n * (_event_t / x[0])**x[1])
 
@@ -1328,7 +1328,7 @@ def weibull_partial_derivs(x, data):
     # observations.
     _right_t = data[np.where(data[:, 3] == 2)][:, 1]
     _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-    _right_ll_beta = np.sum(_right_n * (_right_t / x[0])**x[1] * \
+    _right_ll_beta = np.sum(_right_n * (_right_t / x[0])**x[1] *
                             np.log(_right_t / x[0]))
     _right_ll_eta = (x[1] / x[0]) * np.sum(_right_n * (_right_t / x[0])**x[1])
 
@@ -1341,28 +1341,28 @@ def weibull_partial_derivs(x, data):
     _interval_n = data[np.where(data[:, 3] == 3)][:, 2]
 
     _interval_ll_beta = np.sum(_interval_n) / x[1] + \
-                        np.sum(_interval_n * np.log(_interval_t / x[0])) - \
-                        np.sum(_interval_n * (_interval_t / x[0])**x[1] * \
-                               np.log(_interval_t / x[0]))
+        np.sum(_interval_n * np.log(_interval_t / x[0])) - \
+        np.sum(_interval_n * (_interval_t / x[0])**x[1] *
+               np.log(_interval_t / x[0]))
     _interval_ll_eta = (-x[1] / x[0]) * np.sum(_interval_n) + \
-                       (x[1] / x[0]) * np.sum(_interval_n * \
-                       (_interval_t / x[0])**x[1])
+                       (x[1] / x[0]) * np.sum(_interval_n *
+                                              (_interval_t / x[0])**x[1])
 
     # Following are the exact equations for the interval censored observations.
-    #_nr = _interval_rt / x[0]
-    #_nr_b = (_nr + 0.000001)**x[1]
-    #_nr_exp = np.exp(-(_nr_b))
+    # _nr = _interval_rt / x[0]
+    # _nr_b = (_nr + 0.000001)**x[1]
+    # _nr_exp = np.exp(-(_nr_b))
 
-    #_nl = _interval_lt / x[0]
-    #_nl_b = (_nl + 0.000001)**x[1]
-    #_nl_exp = np.exp(-(_nl_b))
+    # _nl = _interval_lt / x[0]
+    # _nl_b = (_nl + 0.000001)**x[1]
+    # _nl_exp = np.exp(-(_nl_b))
 
-    #_n = (-_nl_b * np.log(_nl_b) * _nl_exp) + (_nr_b * np.log(_nr_b) * _nr_exp)
-    #_d = _nl_exp - _nr_exp
-    #_interval_ll_beta = np.sum(_interval_n * _n / _d)
+    # _n = (-_nl_b * np.log(_nl_b) * _nl_exp) + (_nr_b * np.log(_nr_b) * _nr_exp)
+    # _d = _nl_exp - _nr_exp
+    # _interval_ll_beta = np.sum(_interval_n * _n / _d)
 
-    #_n = ((x[1] / x[0]) * _nl_b * _nl_exp) - ((x[1] / x[0]) * _nr_b * _nr_exp)
-    #_interval_ll_eta = np.sum(_interval_n * _n / _d)
+    # _n = ((x[1] / x[0]) * _nl_b * _nl_exp) - ((x[1] / x[0]) * _nr_b * _nr_exp)
+    # _interval_ll_eta = np.sum(_interval_n * _n / _d)
 
     _del_beta = _event_ll_beta - _right_ll_beta + _interval_ll_beta
     _del_eta = _event_ll_eta - _right_ll_eta + _interval_ll_eta
@@ -1459,7 +1459,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
 
             # Adjust the right-censored times to be the mid-point between the
             # censored time and the maximum oberserved time in the data set.
-            _adj_right = (max(_data[:, 1]) + \
+            _adj_right = (max(_data[:, 1]) +
                           _data[np.where(_data[:, 3] == 2), 1]) / 2.0
             _data[np.where(_data[:, 3] == 2), 1] = _adj_right
 
@@ -1493,7 +1493,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
 
             # Adjust the right-censored times to be the mid-point between the
             # censored time and the maximum oberserved time in the data set.
-            _adj_right = (max(_data[:, 1]) + \
+            _adj_right = (max(_data[:, 1]) +
                           _data[np.where(_data[:, 3] == 2), 1]) / 2.0
             _data[np.where(_data[:, 3] == 2), 1] = _adj_right
 
@@ -1505,9 +1505,9 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _data[np.where(_data[:, 3] == 3), 1] = _interval_t
 
             (_mu, _sigma) = norm.fit(np.array(_data[:, 1], dtype=float))
-            #optim.fsolve(gaussian_partial_derivs,
-            #                              [_mu, _sigma],
-            #                              args=np.array(_data, dtype=float))
+            # optim.fsolve(gaussian_partial_derivs,
+            #                               [_mu, _sigma],
+            #                               args=np.array(_data, dtype=float))
 
             _parameters[0] = _mu
             _parameters[1] = _sigma
@@ -1527,8 +1527,8 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             # using the right of the interval.  Use these as the starting
             # values to scipy.optimize.fsolve.
             (__, _beta,
-            __, _eta) = exponweib.fit(np.array(_data[:, 1], dtype=float),
-                                     f0=1, floc=0)
+             __, _eta) = exponweib.fit(np.array(_data[:, 1], dtype=float),
+                                       f0=1, floc=0)
 
             (_eta, _beta) = optim.fsolve(weibull_partial_derivs, [_eta, _beta],
                                          args=np.array(_data, dtype=float))
@@ -1627,7 +1627,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
         # Calculate MLE, AIC, and BIC.
         _s2b = _RSS / _n_records
         _gof[0] = -_n_records / 2.0 * np.log(2.0 * np.pi) - \
-                  _n_records / 2.0 * np.log(_s2b) - 1.0 / (2.0 * _s2b) * _RSS
+            _n_records / 2.0 * np.log(_s2b) - 1.0 / (2.0 * _s2b) * _RSS
         _gof[1] = -2.0 * _gof[0] + 2.0
         _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
 
@@ -1645,9 +1645,10 @@ def theoretical_distribution(data, dist, params):
     parameters.
 
     :param ndarray data: the data set that the theoretical distribution will be
-                         created for.  This is a zero-based list of lists or list of
-                 tuples where index 1 is the left of the interval and index 2
-                 is the right of the interval.  The other indices are not used.
+                         created for.  This is a zero-based list of lists or
+                         list of tuples where index 1 is the left of the
+                         interval and index 2 is the right of the interval.
+                         The other indices are not used.
     :param str dist: the noun name of the distribution.
     :param list para: list with the values of the distribution parameters.
     :return: _theoretical_probs; the probabilities of the theoretical
