@@ -323,7 +323,8 @@ class Revision(object):
         _image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
         _button.set_icon_widget(_image)
         _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"Mission and Environmental Profile"))
+        _menu_item = gtk.MenuItem(label=_(u"Mission and Environmental "
+                                          u"Profile"))
         _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
                                       u"profile report for the currently "
                                       u"selected revision."))
@@ -777,16 +778,16 @@ class Revision(object):
             _scwEnvironment_.add(self.tvwEnvironmentProfile)
 
             # Insert the tab.
-            _label_ = gtk.Label()
+            _label = gtk.Label()
             _heading_ = _("Usage\nProfiles")
-            _label_.set_markup("<span weight='bold'>" + _heading_ + "</span>")
-            _label_.set_alignment(xalign=0.5, yalign=0.5)
-            _label_.set_justify(gtk.JUSTIFY_CENTER)
-            _label_.show_all()
-            _label_.set_tooltip_text(_(u"Displays usage profiles for the "
-                                       u"selected revision."))
+            _label.set_markup("<span weight='bold'>" + _heading_ + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Displays usage profiles for the "
+                                      u"selected revision."))
             notebook.insert_page(_hbxUsage_,
-                                 tab_label=_label_,
+                                 tab_label=_label,
                                  position=-1)
 
             return False
@@ -831,7 +832,7 @@ class Revision(object):
             cell.set_property('wrap-width', 250)
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
-            cell.connect('edited', _widg.edit_tree, 1, _model_)
+            cell.connect('edited', self._callback_edit_tree, 1, _model_)
             label = gtk.Label()
             label.set_line_wrap(True)
             label.set_alignment(xalign=0.5, yalign=0.5)
@@ -1221,10 +1222,10 @@ class Revision(object):
             _dic_mission_phases[0] = "All"
         except TypeError:
             _n_phases_ = 0
-            self._app.debug_log.error("revision.py._load_environmental_profile: "
-                                      "Failed to load mission phases for "
-                                      "mission %d.  The following query was "
-                                      "passed:" % _mission_id_)
+            self._app.debug_log.error("revision.py._load_environmental_"
+                                      "profile: Failed to load mission phases "
+                                      "for mission %d.  The following query "
+                                      "was passed:" % _mission_id_)
             self._app.debug_log.error(_query_)
 
         for i in range(_n_phases_):
@@ -1248,10 +1249,10 @@ class Revision(object):
             _n_conditions_ = len(_results_)
         except TypeError:
             _n_conditions_ = 0
-            self._app.debug_log.error("revision.py._load_environmental_profile: "
-                                      "Failed to load environmental profile "
-                                      "for mission %d.  The following query "
-                                      "was passed:" % _mission_id_)
+            self._app.debug_log.error("revision.py._load_environmental_"
+                                      "profile: Failed to load environmental "
+                                      "profile for mission %d.  The following "
+                                      "query was passed:" % _mission_id_)
             self._app.debug_log.error(_query_)
 
         for i in range(_n_conditions_):
@@ -1503,9 +1504,10 @@ class Revision(object):
         _row_selected = _row is not None
         _not_same_revision = _model.get_value(_row, self._lst_col_order[0]) != self.revision_id
         if _row_selected and _not_same_revision:
+            self.revision_id = _model.get_value(_row, self._lst_col_order[0])
 
             # Build the queries to select the components, reliability tests,
-            # and program incidents associated with the selected REVISION.
+            # and program incidents associated with the selected Revision.
             _qryParts_ = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
                           FROM tbl_prediction AS t1 \
                           INNER JOIN tbl_system AS t2 \
@@ -1641,7 +1643,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        _mission = self.cmbMission.get_active_text()
+        _mission = self.txtMission.get_text()
         _mission_id = self._dic_missions[_mission][0]
 
         _query = "SELECT MAX(fld_phase_id) \
@@ -1679,7 +1681,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        _mission = self.cmbMission.get_active_text()
+        _mission = self.txtMission.get_text()
         _mission_id = self._dic_missions[_mission][0]
 
         # Find the last used condition ID.
@@ -1787,7 +1789,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        _mission = self.cmbMission.get_active_text()
+        _mission = self.txtMission.get_text()
         _mission_id = self._dic_missions[_mission][0]
 
         _query = "DELETE FROM tbl_environmental_profile \
@@ -1828,7 +1830,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        _mission_ = self.cmbMission.get_active_text()
+        _mission_ = self.txtMission.get_text()
         _mission_id_ = self._dic_missions[_mission_][0]
 
         (_model_,
@@ -1879,7 +1881,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        _mission_ = self.cmbMission.get_active_text()
+        _mission_ = self.txtMission.get_text()
         _mission_id_ = self._dic_missions[_mission_][0]
 
         (_model_,
@@ -1928,10 +1930,10 @@ class Revision(object):
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             _util.rtk_error(_(u"Error deleting failure definition."))
-            self._app.debug_log.error("revision.py._delete_failure_definition: "
-                                      "Error deleting failure definition %d.  "
-                                      "The following query was passed:" %
-                                      _definition_id)
+            self._app.debug_log.error("revision.py._delete_failure_"
+                                      "definition: Error deleting failure "
+                                      "definition %d.  The following query "
+                                      "was passed:" % _definition_id)
             self._app.debug_log.error(_query)
             return True
 
@@ -2056,7 +2058,7 @@ class Revision(object):
             :rtype: boolean
             """
 
-            _mission = self.cmbMission.get_active_text()
+            _mission = self.txtMission.get_text()
             _mission_id = self._dic_missions[_mission][0]
             _values = (model.get_value(row, 1), model.get_value(row, 2),
                        model.get_value(row, 3), model.get_value(row, 4),
@@ -2092,9 +2094,8 @@ class Revision(object):
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
-# [Condition ID, Phase Name, Measurement Units, Minimum Value,
-#  Maximum Value, Mean Value, Variance]
-            _mission = self.cmbMission.get_active_text()
+
+            _mission = self.txtMission.get_text()
             _mission_id = self._dic_missions[_mission][0]
             _condition = self._dic_environments[model.get_value(row, 0)][0]
             _phase = self._dic_environments[model.get_value(row, 0)][1]
@@ -2112,14 +2113,14 @@ class Revision(object):
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
                 _util.rtk_error(_(u"Error saving environmental profile."))
-                self._app.debug_log.error("revision.py._save_environment_profile: "
-                                          "Error saving environmental "
-                                          "profile.  The following query was "
+                self._app.debug_log.error("revision.py._save_environment_"
+                                          "profile: Error saving environmental"
+                                          " profile.  The following query was "
                                           "passed:")
                 self._app.debug_log.error(_query)
 
         # Save the currently selected mission.
-        _mission = self.cmbMission.get_active_text()
+        _mission = self.txtMission.get_text()
         try:
             _query = "UPDATE tbl_missions \
                       SET fld_mission_time=%f, fld_mission_units=%d, \
@@ -2247,16 +2248,16 @@ class Revision(object):
         :rtype: boolean
         """
 
+        # Get the Revision Class gtk.TreeModel() and selected
+        # gtk.TreeIter() and update the Revision Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
         if index == 20:
             _text = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
         else:
             _text = entry.get_text()
 
         if index < 100:
-            # Get the Revision Class gtk.TreeModel() and selected
-            # gtk.TreeIter() and update the Revision Class gtk.TreeView().
-            (_model, _row) = self.treeview.get_selection().get_selected()
-
             # Update the Revision class public and private attributes.
             _model.set_value(_row, index, _text)
 
@@ -2265,15 +2266,14 @@ class Revision(object):
 
         elif index == 100:                  # Mission name.
             _mission = self.cmbMission.get_active_text()
-
+            _mission_def = self._dic_missions.pop(_mission)
             try:
-                self._dic_missions[_text] = self._dic_missions.pop(_mission)
+                self._dic_missions[_text] = _mission_def
             except KeyError:
                 self._app.debug_log.error("revision.py._callback_entry: No "
                                           "mission named %s was available in "
                                           "_dic_missions to update." %
                                           _mission)
-                return True
 
         elif index == 101:                  # Total mission time.
             _mission = self.cmbMission.get_active_text()
@@ -2284,7 +2284,6 @@ class Revision(object):
                                           "mission named %s was available in "
                                           "_dic_missions to update." %
                                           _mission)
-                return True
 
         return False
 
@@ -2293,21 +2292,20 @@ class Revision(object):
         Called whenever a Revision class gtk.TreeView() gtk.CellRenderer() is
         edited.
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: gtk.CellRenderer
+        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
                          was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: gtk.TreeModel
+        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                                    belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
         _type = gobject.type_name(model.get_column_type(position))
-
+        print new_text
         if _type == 'gchararray':
             model[path][position] = str(new_text)
         elif _type == 'gint':
@@ -2546,11 +2544,11 @@ class Revision(object):
                                 'Report Date:': _today,
                                 'sheet': _mission}
 
-                # Retrive the mission phases.
+                # Retrieve the mission phases.
 # TODO: Load a mission phase dictionary when the Revision is loaded and use this dictionary rather than a SQL call.
                 _query = "SELECT * FROM tbl_mission_phase \
                           WHERE fld_mission_id=%d" % \
-                          self._dic_missions[_mission][0]
+                         self._dic_missions[_mission][0]
                 _phases = self._app.DB.execute_query(_query, None,
                                                      self._app.ProgCnx)
                 _n_phases = len(_phases)

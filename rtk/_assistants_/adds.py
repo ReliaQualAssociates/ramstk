@@ -157,7 +157,8 @@ class AddRevision(object):
         self.assistant.set_page_type(self.fxdPageOtherInfo,
                                      gtk.ASSISTANT_PAGE_CONTENT)
         self.assistant.set_page_title(self.fxdPageOtherInfo,
-                                      _(u"Select Additional Information to Add"))
+                                      _(u"Select Additional Information to "
+                                        u"Add"))
         self.assistant.set_page_complete(self.fxdPageOtherInfo, True)
 
         # Create the software incident general information page.
@@ -290,30 +291,34 @@ class AddRevision(object):
                 _function = self._app.DB.execute_query(_query,
                                                        None,
                                                        self._app.ProgCnx)
+        else:
+            _function = [('', 0, 'New Function', 0, ''),]
 
-                # Copy the function hierarchy for the new revision.
-                for i in range(len(_function)):
-                    _function_name = _(u"New Function_") + str(i)
+        _n_functions = len(_function)
 
-                    _values = (_revision_id, _function_id, _function[i][0],
-                               _function[i][1], _function[i][2],
-                               _function[i][3], _function[i][4])
-                    _query = "INSERT INTO tbl_functions \
-                              (fld_revision_id, fld_function_id, fld_code, \
-                               fld_level, fld_name, fld_parent_id, \
-                               fld_remarks) \
-                              VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+        # Copy the function hierarchy for the new revision.
+        for i in range(_n_functions):
+            _function_name = _(u"New Function_") + str(i)
 
-                    if self.chkFunctionMatrix.get_active():
-                        _query = "INSERT INTO tbl_functional_matrix \
-                                  (fld_revision_id, fld_function_id) \
-                                  VALUES (%d, %d)" % (_revision_id, _function_id)
-                        self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                                   commit=True)
+            _values = (_revision_id, _function_id, _function[i][0],
+                       _function[i][1], _function[i][2],
+                       _function[i][3], _function[i][4])
+            _query = "INSERT INTO tbl_functions \
+                      (fld_revision_id, fld_function_id, fld_code, \
+                       fld_level, fld_name, fld_parent_id, \
+                       fld_remarks) \
+                      VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
 
-                    _function_id += 1
+            if self.chkFunctionMatrix.get_active():
+                _query = "INSERT INTO tbl_functional_matrix \
+                          (fld_revision_id, fld_function_id) \
+                          VALUES (%d, %d)" % (_revision_id, _function_id)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+
+            _function_id += 1
 
         if self.chkRequirements.get_active():
             _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
@@ -336,26 +341,26 @@ class AddRevision(object):
                                                            None,
                                                            self._app.ProgCnx)
 
-                # Copy the requirement hierarchy for the new revision.
-                for i in range(len(_requirements)):
-                    _query = "INSERT INTO tbl_requirements \
-                              (fld_revision_id, fld_requirement_id, \
-                               fld_requirement_desc, fld_requirement_code, \
-                               fld_derived, fld_parent_requirement, \
-                               fld_owner, fld_specification, \
-                               fld_page_number, fld_figure_number) \
-                              VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
-                                      '{5:s}', '{6:s}', '{7:s}', '{8:s}', \
-                                      '{9:s}')".format(
-                              _revision_id, _requirement_id,
-                              _requirements[i][0], _requirements[i][1],
-                              _requirements[i][2], _requirements[i][3],
-                              _requirements[i][4], _requirements[i][5],
-                              _requirements[i][6], _requirements[i][7])
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+            # Copy the requirement hierarchy for the new revision.
+            for i in range(len(_requirements)):
+                _query = "INSERT INTO tbl_requirements \
+                          (fld_revision_id, fld_requirement_id, \
+                           fld_requirement_desc, fld_requirement_code, \
+                           fld_derived, fld_parent_requirement, \
+                           fld_owner, fld_specification, \
+                           fld_page_number, fld_figure_number) \
+                          VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
+                                  '{5:s}', '{6:s}', '{7:s}', '{8:s}', \
+                                  '{9:s}')".format(
+                          _revision_id, _requirement_id,
+                          _requirements[i][0], _requirements[i][1],
+                          _requirements[i][2], _requirements[i][3],
+                          _requirements[i][4], _requirements[i][5],
+                          _requirements[i][6], _requirements[i][7])
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
 
-                    _requirement_id += 1
+                _requirement_id += 1
 
         if self.chkHardware.get_active():
             _query = "SELECT MAX(fld_assembly_id) FROM tbl_system"
@@ -1608,7 +1613,8 @@ class CreateDataSet(object):
         if self.chkIncludeZeroHour.get_active():
             _starttime_ = 0.0
 
-        # Select everything from the incident detail table in the Program database.
+        # Select everything from the incident detail table in the Program
+        # database.
         #   Index    Field
         #     0      Unit
         #     1      Incident ID
@@ -1703,7 +1709,8 @@ class CreateDataSet(object):
                              fld_left_interval, fld_right_interval, \
                              fld_status, fld_quantity, fld_unit, fld_tbf, \
                              fld_assembly_id, fld_request_date) \
-                            VALUES (%d, %d, %f, %f, '%s', %d, '%s', %f, %d, %d)"
+                            VALUES (%d, %d, %f, %f, '%s', %d, '%s', %f, %d, \
+                                    %d)"
             _values_ = (0, _dataset_id, 0.0, float(_results_[0][3]),
                         "Interval Censored", 1, _results_[0][0],
                         float(_results_[0][3]), _results_[0][11],
@@ -1789,22 +1796,25 @@ class CreateDataSet(object):
                 # Write the next record to the open file if it passes the
                 # consistency check.
                 n = 1
-                if _results_[i][0] == _results_[i - 1][0]: # Same unit.
+                if _results_[i][0] == _results_[i - 1][0]:  # Same unit.
                     if not self._consistency_check(_results_[i - 1],
                                                    _results_[i]):
 
-                        if _results_[i][3] == _results_[i - n][3]: # Failures occurred at same time.
+                        # Failures occurred at same time.
+                        if _results_[i][3] == _results_[i - n][3]:
                             _left_ = float(_results_[i][3])
                         else:
                             _left_ = float(_results_[i - n][3])
 
-                        _tbf_ = float(_results_[i][3]) - float(_results_[i - 1][3])
+                        _tbf_ = float(_results_[i][3]) - \
+                                float(_results_[i - 1][3])
                         _file_.write(str(i) + '\t' + str(_results_[i - 1][3]) +
                                      '\t' + str(_results_[i][3]) +
                                      '\tInterval Censored\t1\t' +
                                      str(_results_[i][0]) + '\t' +
-                                     str(_tbf_) + '\t' + str(_results_[i][11]) +
-                                     '\t' + str(_results_[i][10]) + '\n')
+                                     str(_tbf_) + '\t' +
+                                     str(_results_[i][11]) + '\t' +
+                                     str(_results_[i][10]) + '\n')
                         n = 1
 
                     else:
