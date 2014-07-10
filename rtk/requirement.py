@@ -265,12 +265,12 @@ class Requirement(object):
         self.tvwValidation = gtk.TreeView()
 
         # Put it all together.
-        toolbar = self._create_toolbar()
+        _toolbar = self._create_toolbar()
 
         self.notebook = self._create_notebook()
 
         self.vbxRequirement = gtk.VBox()
-        self.vbxRequirement.pack_start(toolbar, expand=False)
+        self.vbxRequirement.pack_start(_toolbar, expand=False)
         self.vbxRequirement.pack_end(self.notebook)
 
         self.notebook.connect('switch-page', self._notebook_page_switched)
@@ -313,97 +313,97 @@ class Requirement(object):
         :rtype: gtk.ToolBar
         """
 
-        _toolbar_ = gtk.Toolbar()
+        _toolbar = gtk.Toolbar()
 
-        _position_ = 0
+        _position = 0
 
         # Add sibling requirement button.
         self.btnAddSibling.set_tooltip_text(_(u"Adds a new requirement at the "
                                               u"same level as the selected "
                                               u"requirement."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        self.btnAddSibling.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        self.btnAddSibling.set_icon_widget(_image)
         self.btnAddSibling.connect('clicked', self._add_requirement, 0)
-        _toolbar_.insert(self.btnAddSibling, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnAddSibling, _position)
+        _position += 1
 
         # Add child (derived) requirement button.
         self.btnAddChild.set_tooltip_text(_(u"Adds a new requirement "
                                             u"subordinate to the selected "
                                             u"requirement."))
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        self.btnAddChild.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+        self.btnAddChild.set_icon_widget(_image)
         self.btnAddChild.connect('clicked', self._add_requirement, 1)
-        _toolbar_.insert(self.btnAddChild, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnAddChild, _position)
+        _position += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
-        _position_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
         # Add button.
         self.btnAdd.set_name('Add')
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        self.btnAdd.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnAdd.set_icon_widget(_image)
         self.btnAdd.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnAdd, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnAdd, _position)
+        _position += 1
 
         # Remove button.
         self.btnRemove.set_name('Remove')
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        self.btnRemove.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnRemove.set_icon_widget(_image)
         self.btnRemove.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnRemove, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnRemove, _position)
+        _position += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
-        _position_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
         # Save requirement button.
         self.btnSave.set_name('Save')
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        self.btnSave.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSave.set_icon_widget(_image)
         self.btnSave.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnSave, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnSave, _position)
+        _position += 1
 
-        _toolbar_.insert(gtk.SeparatorToolItem(), _position_)
-        _position_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
         # Assign existing V&V task button
         self.btnAssign.set_tooltip_text(_(u"Assigns an existing Verification "
                                           u"and Validation (V&V) task to the "
                                           u"selected requirement."))
         self.btnAssign.set_name('Assign')
-        _image_ = gtk.Image()
-        _image_.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
-        self.btnAssign.set_icon_widget(_image_)
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/assign.png')
+        self.btnAssign.set_icon_widget(_image)
         self.btnAssign.connect('clicked', self._toolbutton_pressed)
-        _toolbar_.insert(self.btnAssign, _position_)
-        _position_ += 1
+        _toolbar.insert(self.btnAssign, _position)
+        _position += 1
 
         self.cmbVandVTasks.set_tooltip_text(_(u"List of existing V&V "
                                               u"activities available to "
                                               u"assign to a requirement."))
-        alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
-        alignment.add(self.cmbVandVTasks)
-        toolitem = gtk.ToolItem()
-        toolitem.add(alignment)
-        _toolbar_.insert(toolitem, _position_)
+        _alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
+        _alignment.add(self.cmbVandVTasks)
+        _toolitem = gtk.ToolItem()
+        _toolitem.add(_alignment)
+        _toolbar.insert(_toolitem, _position)
 
-        _toolbar_.show()
+        _toolbar.show()
 
         # Hide the toolbar items associated with the V&V tab.
         self.btnAdd.hide()
         self.btnAssign.hide()
         self.cmbVandVTasks.hide()
 
-        return _toolbar_
+        return _toolbar
 
     def _create_notebook(self):
         """
@@ -415,10 +415,12 @@ class Requirement(object):
             Function to create the Stakeholder Input gtk.Notebook tab and
             populate it with the appropriate widgets.
 
-            :param self: the current instance of a Requirement class.
-            :type self: rtk.Requirement
-            :param notebook: the gtk.Notebook() to add the general data page.
-            :type notebook: gtk.Notebook
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the
+                                          stakeholder inputs page.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -487,9 +489,12 @@ class Requirement(object):
             Function to create the Requirement class gtk.Notebook() page for
             displaying general data about the selected Requirement.
 
-            :param self: the current instance of a Requirement class.
-            :param notebook: the gtk.Notebook() to add the general data tab.
-            :type notebook: gtk.Notebook
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the general
+                                          data tab.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -684,9 +689,12 @@ class Requirement(object):
             Function to the create the tab for analyzing the selected
             requirement.
 
-            :param self: the current instance of a Requirement class.
-            :param notebook: the gtk.Notebook() to add the general data tab.
-            :type notebook: gtk.Notebook
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the
+                                          analysis tab.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -843,7 +851,7 @@ class Requirement(object):
             self.chkClearQ9.connect('toggled', self._callback_check, 24)
             _fxdClear_.put(self.chkClearQ9, _x_pos_, _y_pos1_[8])
 
-            #self.chkClearQ10.connect('toggled', self._callback_check, 25)
+            # self.chkClearQ10.connect('toggled', self._callback_check, 25)
 
             # Place the quadrant 3 widgets.
             self.chkCompleteQ1.connect('toggled', self._callback_check, 26)
@@ -948,7 +956,7 @@ class Requirement(object):
             self.chkConsistentQ9.connect('toggled', self._callback_check, 44)
             _fxdConsistent_.put(self.chkConsistentQ9, _x_pos_, _y_pos1_[8])
 
-            #self.chkConsistentQ10.connect('toggled', self._callback_check, 45)
+            # self.chkConsistentQ10.connect('toggled', self._callback_check, 45)
 
             # Place the quadrant #4 widgets.
             self.chkVerifiableQ1.connect('toggled', self._callback_check, 46)
@@ -989,9 +997,12 @@ class Requirement(object):
             Function to create the Verification and Validation Plan
             gtk.Notebook() tab and populate it with the appropriate widgets.
 
-            :param self: the current instance of a Requirement class.
-            :param notebook: the gtk.Notebook() to add the general data tab.
-            :type notebook: gtk.Notebook
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the V & V
+                                          task page.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1087,6 +1098,9 @@ class Requirement(object):
     def load_tree(self):
         """
         Method to load the Requirement class gtk.TreeView().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Select everything from the requirements table.
@@ -1127,6 +1141,9 @@ class Requirement(object):
     def _load_stakeholder_inputs(self):
         """
         Method to load the stakeholder input tab.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the stakeholder gtk.CellRendererCombo with a list of
@@ -1291,8 +1308,10 @@ class Requirement(object):
             """
             Function to load the widgets on the General Data tab.
 
-            :param self: the current instance of a Requirement class.
-            :type self: rtk.Requirement
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             try:
@@ -1325,7 +1344,8 @@ class Requirement(object):
             Function to load the Requirements Analysis tab widgets with the
             values from the RTK Program database.
 
-            :param self: the current instance of a Requirement class.
+            :param rtk.Requirement self: the current instance of a Requirement
+                                         class.
             :return: False if successful and True if an error is encountered.
             :rtype: boolean
             """
@@ -1339,7 +1359,7 @@ class Requirement(object):
             self.chkClearQ7.set_active(self.clear_q7)
             self.chkClearQ8.set_active(self.clear_q8)
             self.chkClearQ9.set_active(self.clear_q9)
-            #self.chkClearQ10.set_active(self.clear_q10)
+            # self.chkClearQ10.set_active(self.clear_q10)
             self.chkCompleteQ1.set_active(self.complete_q1)
             self.chkCompleteQ2.set_active(self.complete_q2)
             self.chkCompleteQ3.set_active(self.complete_q3)
@@ -1400,18 +1420,17 @@ class Requirement(object):
         Callback function for handling mouse clicks on the Requirement
         Object treeview.
 
-        :param treeview: the Requirements class gtk.TreeView().
-        :type treeview: gtk.TreeView
-        :param event: the gtk.gdk.Event() that called this function (the
-                      important attribute is which mouse button was clicked).
-                      1 = left
-                      2 = scrollwheel
-                      3 = right
-                      4 = forward
-                      5 = backward
-                      8 =
-                      9 =
-        :type event: gtk.gdk.Event
+        :param gtk.TreeView treeview: the Requirements class gtk.TreeView().
+        :param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method (the important attribute is which
+                                    mouse button was clicked).
+                                    * 1 = left
+                                    * 2 = scrollwheel
+                                    * 3 = right
+                                    * 4 = forward
+                                    * 5 = backward
+                                    * 8 =
+                                    * 9 =
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1429,13 +1448,10 @@ class Requirement(object):
         gtk.TreeView().  It is called whenever the Requirement class
         gtk.TreeView() is clicked or a row is activated.
 
-        :param treeview: the Requirement class gtk.TreeView().
-        :type treeview: gtk.TreeView
-        :param __path: the activated row gtk.TreeView() path.
-        :param __path: string
-        :param __column: the activated column index in the Revision class
-                         gtk.TreeView().
-        :type __column: integer
+        :param gtk.TreeView treeview: the Requirement class gtk.TreeView().
+        :param str __path: the activated row gtk.TreeView() path.
+        :param int __column: the activated column index in the Revision class
+                             gtk.TreeView().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1514,15 +1530,16 @@ class Requirement(object):
         Method called whenever a Requirement Class gtk.Treeview()
         gtk.CellRenderer() is edited.
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: gtk.CellRenderer
+        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: gtk.TreeModel
+        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                                    belongs to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Update the gtk.TreeModel() with the new value.
@@ -1539,10 +1556,10 @@ class Requirement(object):
         # new value.  We block and unblock the signal handlers for the widgets
         # so a race condition does not ensue.
         if self._lst_col_order[position] == 3:
-            #_textview = self.txtRequirement.get_child().get_child()
-            #_textview.handler_block(self._lst_handler_id[0])
+            # _textview = self.txtRequirement.get_child().get_child()
+            # _textview.handler_block(self._lst_handler_id[0])
             self.txtRequirement.set_text(str(new_text))
-            #_textview.handler_unblock(self._lst_handler_id[0])
+            # _textview.handler_unblock(self._lst_handler_id[0])
         elif self._lst_col_order[position] == 11:
             self.txtSpecification.handler_block(self._lst_handler_id[1])
             self.txtSpecification.set_text(str(new_text))
@@ -1562,12 +1579,11 @@ class Requirement(object):
         """
         Method to add a new Requirement to the open RTK Program database.
 
-        :param __button: the gtk.ToolButton() that called this function.
-        :type __button: gtk.ToolButton
-        :param level: the indenture level of the Requirement(s) to add.
-                      0 = sibling
-                      1 = child.
-        :type level: integer
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        function.
+        :param int level: the indenture level of the Requirement(s) to add.
+                          * 0 = sibling
+                          * 1 = child or derived
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1611,7 +1627,6 @@ class Requirement(object):
                 _util.rtk_error(_(u"Error adding new reuqirement."))
                 return True
 
-        self._app.REVISION.load_tree()
         self.load_tree()
 
         return False
@@ -1658,8 +1673,8 @@ class Requirement(object):
         Requirement to the Program's MySQL or SQLite3 database.
 
         :param int _type: the type of task to add.
-                          - 0 = add new task (default)
-                          - 1 = assign existing task
+                          * 0 = add new task (default)
+                          * 1 = assign existing task
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1729,6 +1744,9 @@ class Requirement(object):
         """
         Deletes the currently selected requirement from the RTK Program
         database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1822,8 +1840,7 @@ class Requirement(object):
         Saves the Requirement class information to the open RTK Program
         database.
 
-        :param __button: the gtk.Button() that called this function.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1833,14 +1850,11 @@ class Requirement(object):
             Saves a single row in the Requirement class gtk.TreeModel() to the
             open RTK Program database.
 
-            :param model: the Requirement class gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path the path of the selected row in the Requirement class
-                          gtk.TreeModel().
-            :type __path: string
-            :param row: the selected gtk.TreeIter() in the Requirement class
-                        gtk.TreeView().
-            :type row: gtk.TreeIter
+            :param gtk.TreeModel model: the Requirement class gtk.TreeModel().
+            :param str __path: the path of the selected row in the Requirement
+                               class gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Requirement class gtk.TreeView().
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -1949,18 +1963,22 @@ class Requirement(object):
     def _save_stakeholder_inputs(self):
         """
         Method to save the stakeholder inputs to the RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
             """
             Function to save each node in the Stakeholder Input gtk.TreeView().
 
-            :param model: the stakeholder inputs gtk.TreeModel().
-            :param __path: the path of the active gtk.TreeIter()row in the
-                           stakeholder inputs gtk.TreeModel().
-            :param row: the selected gtk.TreeIter() in the stakeholder inputs
-                        gtk.TreeView().
-            :param self: the current instance of the Requirement class.
+            :param gtk.TreeModel model: the stakeholder inputs gtk.TreeModel().
+            :param str __path: the path of the active gtk.TreeIter()row in the
+                               stakeholder inputs gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     stakeholder inputs gtk.TreeView().
+            :param rtk.Requirement self: the current instance of the
+                                         Requirement class.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -1986,8 +2004,7 @@ class Requirement(object):
 
             _improvement_ = 1.0 + 0.2 * (_planned_sat_ - _current_sat_)
             _overall_ = _priority_ * _improvement_ * _user_def_[0] * \
-                        _user_def_[1] * _user_def_[2] * _user_def_[3] * \
-                        _user_def_[4]
+                _user_def_[1] * _user_def_[2] * _user_def_[3] * _user_def_[4]
 
             model.set_value(row, self._lst_stakeholder_col_order[7],
                             _improvement_)
@@ -2054,6 +2071,9 @@ class Requirement(object):
         """
         Saves the Validation Task list treeview information to the RTK Program
         database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -2061,16 +2081,15 @@ class Requirement(object):
             Saves each task associated with the selected Requirement to the RTK
             Program database.
 
-            :param model: the Requirement class V&V task list gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path: the path of the active row in the Requirement class
-                           V&V task list gtk.TreeModel().
-            :type __path: string
-            :param row: the selected gtk.TreeIter() in the Requirement class
-                        V&V task list gtk.TreeView().
-            :type row: gtk.TreeIter
-            :param self: the current instance of the Requirement class.
-            :type self: Requirement
+            :param gtk.TreeModel model: the Requirement class V&V task list
+                                        gtk.TreeModel().
+            :param str __path: the path of the active row in the Requirement
+                               class V&V task list gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Requirement class V&V task list
+                                     gtk.TreeView().
+            :param rtk.Requirement self: the current instance of the
+                                         Requirement class.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -2107,10 +2126,13 @@ class Requirement(object):
         """
         Callback function to retrieve and save checkbutton changes.
 
-        Keyword Arguments:
-        check -- the checkbutton that called the function.
-        index -- the position in the Requirement Object _attribute list
-                 associated with the data from the calling checkbutton.
+        :param gtk.CheckButton check: the gtk.CheckButton() that called this
+                                      method.
+        :param int index: the position in the Requirement class gtk.TreeView()
+                          associated with the data from the calling
+                          gtk.CheckButton().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -2122,10 +2144,12 @@ class Requirement(object):
         """
         Callback function to retrieve and save combobox changes.
 
-        Keyword Arguments:
-        combo -- the combobox that called the function.
-        index -- the position in the Requirement Object _attribute list
-                 associated with the data from the calling combobox.
+        :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
+        :param int index: the position in the Requirement class gtk.TreeView()
+                          associated with the data from the calling
+                          gtk.ComboBox().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -2152,19 +2176,24 @@ class Requirement(object):
         """
         Callback function to retrieve and save entry changes.
 
-        Keyword Arguments:
-        entry   -- the entry that called the function.
-        __event -- the gtk.gdk.Event that called this function.
-        convert -- the data type to convert the entry contents to.
-        index   -- the position in the Requirement Object _attribute list
-                   associated with the data from the calling entry.
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param str convert: the data type to convert the gtk.Entry() contents
+                            to.
+        :param int index: the position in the Requirement class gtk.TreeView()
+                          associated with the data from the calling
+                          gtk.Entry().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
         if convert == 'text':
             if index == 3:
-                _text_ = self.txtRequirement.get_text(*self.txtRequirement.get_bounds())
+                _text_ = self.txtRequirement.get_text(
+                    *self.txtRequirement.get_bounds())
             else:
                 _text_ = entry.get_text()
 
@@ -2186,6 +2215,9 @@ class Requirement(object):
         """
         This function creates the Requirement code based on the type of
         requirement it is and it's index in the database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -2209,6 +2241,9 @@ class Requirement(object):
     def _input_weight(self):
         """
         Method for calculating the overall weighting of a stakeholder input.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model,
@@ -2236,7 +2271,7 @@ class Requirement(object):
 
         _improvement = 1.0 + 0.2 * (_planned_sat - _current_sat)
         _overall = _priority * _improvement * _user_def_1 * _user_def_2 * \
-                   _user_def_3 * _user_def_4 * _user_def_5
+            _user_def_3 * _user_def_4 * _user_def_5
 
         _model.set_value(_row, self._lst_stakeholder_col_order[7],
                          _improvement)
@@ -2249,15 +2284,13 @@ class Requirement(object):
         Called whenever the Requirement class Work Book notebook page is
         changed.
 
-        :param __notebook: the Requirement class gtk.Notebook() widget.
-        :type __notebook: gtk.Notebook
-        :param __page: the newly selected page's child widget.
-        :type __page: gtk.Widget
-        :param integer page_num: the newly selected page number.
-                                 0 = Stakeholder Input
-                                 1 = General Data
-                                 2 = Analysis
-                                 3 = V & V Tasks
+        :param gtk.Notebook __notebook: the Requirement class gtk.Notebook().
+        :param gtk.Widget __page: the newly selected page's child widget.
+        :param int page_num: the newly selected page number.
+                             * 0 = Stakeholder Input
+                             * 1 = General Data
+                             * 2 = Analysis
+                             * 3 = V & V Tasks
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2334,8 +2367,7 @@ class Requirement(object):
         Method to react to the Requirement class gtk.ToolButton() clicked
         events.
 
-        :param button: the gtk.ToolButton() that was pressed.
-        :type button: gtk.ToolButton
+        :param gtk.ToolButton button: the gtk.ToolButton() that was pressed.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
