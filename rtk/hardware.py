@@ -157,7 +157,7 @@ class Hardware(object):
         self._fmeca_actions = {}
         self._dicModeCA = {}
         self._ItemCA = {}
-        self._rpnsev = {}                   # Carries RPN severity values.
+        self._rpnsev = {'': 0}              # Carries RPN severity values.
         self._RPN = {}
 
         # Define private Hardware class list attributes.
@@ -4841,7 +4841,7 @@ class Hardware(object):
             RTK Program database.
 
             Keyword Arguments:
-            model  -- the HARDWARE class gtk.Treemodel().
+            model  -- the HARDWARE class gtk.TreeModel().
             __path -- the path of the active row in the HARDWARE class
                       gtk.Treemodel().
             row    -- the selected row in the HARDWARE class gtk.TreeView().
@@ -4942,7 +4942,7 @@ class Hardware(object):
                         ht_model,
                         model.get_value(row, self._col_order[89]),
                         model.get_value(row, self._col_order[90]),
-                        self._app.REVISION.revision_id,
+                        self.revision_id,
                         model.get_value(row, self._col_order[1]))
 
             _query_ = "UPDATE tbl_system \
@@ -5007,14 +5007,13 @@ class Hardware(object):
                            fld_reliability_goal=%f \
                    WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values_
 
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
+            _results_ = self._app.DB.execute_query(_query_, None,
                                                    self._app.ProgCnx,
                                                    commit=True)
 
             if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error(
-                    "hardware.py: Failed to save hardware to system table.")
+                self._app.debug_log.error("hardware.py: Failed to save "
+                                          "hardware to system table.")
                 return True
 
             return False
@@ -6872,7 +6871,6 @@ class Hardware(object):
                                                          self._ItemCA,
                                                          self._RPN)
 
-                #print self._ItemCA
                 # Update the RTK program database with the MIL-STD-1629A
                 # results.
                 _keys = self._dicModeCA.keys()
@@ -7252,9 +7250,9 @@ class Hardware(object):
 
     def _calculate_risk(self):
         """
-        Calculates the Assembly Object risk analysis.
+        Calculates the Assembly class risk analysis.
         """
-
+        import pandas as pd
         # Get the list of failure probability names then create a dictionary
         # using these probability names as the keys.  The values for each key
         # are a list where the list contains:
@@ -7267,109 +7265,93 @@ class Hardware(object):
         #     4      Index in the gtk.TreeView() risk map for the first count.
         # {'Probability Name': [Assembly Count, System Count, Assembly Count,
         # System Count, Index]}
-        _columns_ = self.tvwRiskMap.get_columns()
-        _probs_ = {}
+        _columns = self.tvwRiskMap.get_columns()
+        _probs = {}
+        _cols = []
         j = 2
-        for i in range(1, len(_columns_)):
+        for i in range(1, len(_columns)):
             try:
-                _text_ = _columns_[i].get_widget().get_text()
-                _text_ = _text_.replace('\t', '')
-                _text_ = _text_.replace('\n', ' ')
-                _probs_[_text_] = [0, 0, 0, 0, j]
+                _text = _columns[i].get_widget().get_text()
+                _text = _text.replace('\t', '')
+                _text = _text.replace('\n', ' ')
+                _probs[_text] = j
+                _cols.append(_text)
                 j += 3
             except AttributeError:
                 pass
 
         # Get the count of hazard criticality and hazard probability
         # combinations for assembly level effects and system level effects.
-        _model_ = self.tvwRisk.get_model()
-        _row_ = _model_.get_iter_first()
-        _keys_ = _probs_.keys()
-        while _row_ is not None:
-            _assembly_crit_ = _model_.get_value(_row_, 6)
-            _assembly_prob_ = _model_.get_value(_row_, 7)
-            _assembly_crit_f_ = _model_.get_value(_row_, 10)
-            _assembly_prob_f_ = _model_.get_value(_row_, 11)
-            _system_crit_ = _model_.get_value(_row_, 14)
-            _system_prob_ = _model_.get_value(_row_, 15)
-            _system_crit_f_ = _model_.get_value(_row_, 18)
-            _system_prob_f_ = _model_.get_value(_row_, 19)
+        _model = self.tvwRisk.get_model()
+        _row = _model.get_iter_first()
+        _index = []
+        _keys = _probs.keys()
+        while _row is not None:
+            _assembly_crit = _model.get_value(_row, 6)
+            _assembly_prob = _model.get_value(_row, 7)
+            _assembly_crit_f = _model.get_value(_row, 10)
+            _assembly_prob_f = _model.get_value(_row, 11)
+            _system_crit = _model.get_value(_row, 14)
+            _system_prob = _model.get_value(_row, 15)
+            _system_crit_f = _model.get_value(_row, 18)
+            _system_prob_f = _model.get_value(_row, 19)
+            if _assembly_crit not in _index:
+                _index.append(_assembly_crit)
 
-            # {'Severity Name': [Severity Value, {'Probability Name':
-            # [Count, P Value, Cell Color]}
-            # Increment the count of assembly and system severity/probability
-            # combinations.
             try:
-                _probs_[_assembly_prob_][0] += 1
-                _probs_[_system_prob_][1] += 1
+                _c = self._assembly_risks_[_assembly_crit][0]
+                _p = self._assembly_risks_[_assembly_crit][1][_assembly_prob][1]
+                _assembly_hri = _c * _p
+                _c = self._assembly_risks_[_assembly_crit_f][0]
+                _p = self._assembly_risks_[_assembly_crit_f][1][_assembly_prob_f][1]
+                _assembly_hri_f = _c * _p
             except KeyError:
-                pass
+                _assembly_hri = 0
+                _assembly_hri_f = 0
 
             try:
-                _c_ = self._assembly_risks_[_assembly_crit_][0]
-                _p_ = \
-                    self._assembly_risks_[_assembly_crit_][1][_assembly_prob_][
-                        1]
-                _assembly_hri_ = _c_ * _p_
-                _c_ = self._assembly_risks_[_assembly_crit_f_][0]
-                _p_ = \
-                    self._assembly_risks_[_assembly_crit_f_][1][
-                        _assembly_prob_f_][
-                        1]
-                _assembly_hri_f_ = _c_ * _p_
-            except KeyError:
-                _assembly_hri_ = 0
-                _assembly_hri_f_ = 0
-
-            try:
-                _c_ = self._system_risks_[_system_crit_][0]
-                _p_ = self._system_risks_[_system_crit_][1][_system_prob_][1]
-                _system_hri_ = _c_ * _p_
-                _c_ = self._system_risks_[_system_crit_f_][0]
-                _p_ = self._system_risks_[_system_crit_f_][1][_system_prob_f_][
+                _c = self._system_risks_[_system_crit][0]
+                _p = self._system_risks_[_system_crit][1][_system_prob][1]
+                _system_hri = _c * _p
+                _c = self._system_risks_[_system_crit_f][0]
+                _p = self._system_risks_[_system_crit_f][1][_system_prob_f][
                     1]
-                _system_hri_f_ = _c_ * _p_
+                _system_hri_f = _c * _p
             except KeyError:
-                _system_hri_ = 0
-                _system_hri_f_ = 0
+                _system_hri = 0
+                _system_hri_f = 0
 
-            _model_.set_value(_row_, 8, _assembly_hri_)
-            _model_.set_value(_row_, 12, _assembly_hri_f_)
-            _model_.set_value(_row_, 16, _system_hri_)
-            _model_.set_value(_row_, 20, _system_hri_f_)
+            _model.set_value(_row, 8, _assembly_hri)
+            _model.set_value(_row, 12, _assembly_hri_f)
+            _model.set_value(_row, 16, _system_hri)
+            _model.set_value(_row, 20, _system_hri_f)
 
-            # Update the count of severity/probability interactions and
-            # calculate the hazard risk index (HRI) for the assembly and the
-            # system.
-            for i in range(len(_keys_)):
-                try:
-                    self._assembly_risks_[_assembly_crit_][1][_keys_[i]][0] = \
-                        _probs_[_keys_[i]][0]
-                except KeyError:
-                    pass
+            _row = _model.iter_next(_row)
 
-                try:
-                    self._system_risks_[_system_crit_][1][_keys_[i]][0] = \
-                        _probs_[_keys_[i]][1]
-                except KeyError:
-                    pass
+        # Create a Pandas data frame with the row labels being criticaility
+        # levels and column labels being probability levels.
+        _risk_map = pd.DataFrame(0, index=_index, columns=_cols)
 
-            _row_ = _model_.iter_next(_row_)
+        _row = _model.get_iter_first()
+        while _row is not None:
+            _assembly_crit = _model.get_value(_row, 6)
+            _assembly_prob = _model.get_value(_row, 7)
+            _risk_map.loc[_assembly_crit, _assembly_prob] += 1
+            _row = _model.iter_next(_row)
 
         # Update the counts in the risk matrix gtk.TreeView().
-        _model_ = self.tvwRiskMap.get_model()
-        _row_ = _model_.get_iter_first()
-        while _row_ is not None:
-            _crit_ = _model_.get_value(_row_, 0)
-            for i in range(len(_keys_)):
+        _model = self.tvwRiskMap.get_model()
+        _row = _model.get_iter_first()
+        while _row is not None:
+            _crit = _model.get_value(_row, 0)
+            for i in range(len(_keys)):
                 try:
-                    _count_ = self._assembly_risks_[_crit_][1][_keys_[i]][0]
-                    _idx_ = _probs_[_keys_[i]][4]
-                    _model_.set_value(_row_, _idx_, _count_)
+                    _model.set_value(_row, _probs[_keys[i]],
+                                     _risk_map.loc[_crit, _keys[i]])
                 except KeyError:
                     pass
 
-            _row_ = _model_.iter_next(_row_)
+            _row = _model.iter_next(_row)
 
         # Perform user-defined calculations.
         model = self.tvwRisk.get_model()
@@ -7551,9 +7533,8 @@ class Hardware(object):
         """
         Method to calculate the Hardware class.
 
-        :param row: the gtk.TreeIter() from the Hardware class gtk.TreeView()
-                    to calculate results for.
-        :type row: gtk.TreeIter
+        :param gtk.TreeIter row: the gtk.TreeIter() from the Hardware class
+                                 gtk.TreeView() to calculate results for.
         """
 
         _model_ = self.treeview.get_model()
@@ -7599,23 +7580,26 @@ class Hardware(object):
         # Specified, Hazard Rate
         elif _model_.get_value(row, self._col_order[35]) == 2:
             _lambdaa_ = _model_.get_value(row, self._col_order[34])
-            for i in range(_n_children_):  # @UnusedVariable
+            while _row_ is not None:
                 (_c_, _la_, _ld_, _ls_, _lp_,
                  _n_parts_, _power_) = self.calculate(_row_)
+                _row_ = _model_.iter_next(_row_)
 
         # Specified, MTBF
         elif _model_.get_value(row, self._col_order[35]) == 3:
             _mtbf_ = _model_.get_value(row, self._col_order[51])
-            for i in range(_n_children_):  # @UnusedVariable
+            while _row_ is not None:
                 (_c_, _la_, _ld_, _ls_, _lp_,
                  _n_parts_, _power_) = self.calculate(_row_)
+                _row_ = _model_.iter_next(_row_)
             try:
                 _lambdaa_ = 1.0 / _mtbf_
             except ZeroDivisionError:
                 self._app.user_log.error(_(u"Attempted to divide by zero when "
-                                           u"calculating the MTBF.\n Item %s: "
-                                           u"Active failure rate = %f") %
-                                         (_ref_des, _lambdaa_))
+                                           u"calculating the failure rate.\n "
+                                           u"Item %s: "
+                                           u"Active MTBF = %f") %
+                                         (_ref_des, _mtbf_))
                 _lambdaa_ = 0.0
 
         # Adjust the active hazard rate with the additive adjustment factor,
@@ -7701,6 +7685,7 @@ class Hardware(object):
         if _model_.get_value(row, 62) == '-':
             self._system_ht = _lambdap_
 
+        self._update_attributes()
         self.load_assessment_results_tab()
 
         return (_cost_, _lambdaa_, _lambdad_, _lambdas_, _lambdap_,
