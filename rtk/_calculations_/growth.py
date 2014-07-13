@@ -1273,5 +1273,4 @@ def loglinear(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
 
         _loglinear_.append([_T_, _n_, _M_, g0, g1, _mc_hat_, _lc_hat_])
 
-    #print _loglinear_
     return False

@@ -2091,14 +2091,13 @@ class Dataset(object):
         Method to remove the selected data set from the open RTK Program
         database.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
-        print "Fuck it"
+
         _query = "DELETE FROM tbl_dataset \
                   WHERE fld_dataset_id=%d" % self.dataset_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
@@ -2117,8 +2116,8 @@ class Dataset(object):
         Method to remove the selected record from the survival analysis
         data set.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: gtk.ToolButton
+        :param gtk.Button __button: the gtk.ToolButton() that called this
+                                    method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2170,8 +2169,8 @@ class Dataset(object):
         Method to save the Dataset class gtk.TreeView() information to the open
         RTK Program database.
 
-        :param __button: the gtk.Button() widget that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() widget that called this
+                                    method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2181,14 +2180,11 @@ class Dataset(object):
             Method to save each row in the Dataset class gtk.TreeModel to the
             open RTK Program database.
 
-            :param model: the Dataset class gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path: the path of the active gtk.TreeIter() in the Dataset
-                           class gtk.TreeModel().
-            :type __path: string
-            :param row: the selected gtk.TreeIter() in the Dataset class
-                        gtk.TreeModel().
-            :type row: gtk.TreeIter
+            :param gtk.TreeModel model: the Dataset class gtk.TreeModel().
+            :param str __path: the path of the active gtk.TreeIter() in the
+                               Dataset class gtk.TreeModel().
+            :param gtk.TreeITer row: the selected gtk.TreeIter() in the Dataset
+                                     class gtk.TreeModel().
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """

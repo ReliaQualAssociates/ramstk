@@ -326,14 +326,13 @@ def make_dialog(dlgtitle, dlgparent=None,
 
     :param dlgtitle: the title text for the gtk.Dialog().
     :type dlgtitle: string
-    @keyword dlgparent: the parent window to associate the gtk.Dialog() with.
-                        Defaults to None.
-    :type dlgparent: gtk.Window
-    @keyword dlgflags: the flags that control the operation of the
+    :keyword gtk.Window dlgparent: the parent window to associate the
+                                   gtk.Dialog() with.
+    :keyword dlgflags: the flags that control the operation of the
                        gtk.Dialog().  Defaults to gtk.DIALOG_MODAL and
                        gtk.DIALOG_DESTROY_WITH_PARENT.
     :type dlgflags: tuple of GTK Dialog Flag Constants
-    @keyword dlgbuttons: the buttons to display and their response values.
+    :keyword dlgbuttons: the buttons to display and their response values.
                          Defaults to:
                          gtk.STOCK_OK <==> gtk.RESPONSE_ACCEPT
                          gtk.STOCK_CANCEL <==> gtk.RESPONSE_REJECT

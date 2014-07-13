@@ -160,10 +160,11 @@ class RTK(object):
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            _util.rtk_error(_(u"Cannot find your license file in %s.  If "
-                              u"your license file is elsewhere, please place "
-                              u"it in %s." % (_conf.DATA_DIR, _conf.DATA_DIR)))
-            quit()
+            _util.rtk_warning(_(u"Cannot find license file %s.  "
+                                u"If your license file is elsewhere, "
+                                u"please place it in %s." %
+                              (_license_file, _conf.DATA_DIR)))
+            sys.exit(2)
 
         _license_key = _license_file.readline().rstrip('\n')
         _license_file.close()
@@ -177,7 +178,7 @@ class RTK(object):
             _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
                               u"key is incorrect.  Closing the RTK "
                               u"application."))
-            quit()
+            sys.exit(2)
 
         if datetime.datetime.today().toordinal() > _results[0][1]:
             _expire_date = str(datetime.datetime.fromordinal(int(
@@ -185,7 +186,7 @@ class RTK(object):
             _util.rtk_error(_(u"Invalid license (Expired).  Your license "
                               u"expired on %s.  Closing RTK application." %
                               _expire_date))
-            quit()
+            sys.exit(2)
 
         # Get a connection to the program database.
         if _conf.BACKEND == 'mysql':

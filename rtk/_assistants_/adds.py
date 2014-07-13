@@ -987,7 +987,10 @@ class AddTestPlan(object):
 # Create the introduction page.
 # --------------------------------------------------------------------------- #
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RTK test plan creation assistant.  It will help you create a new test plan in the open RTK Program.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(u"This is the RTK test plan creation assistant.  It will "
+                   u"help you create a new test plan in the open RTK "
+                   u"Program.  Press 'Forward' to continue or 'Cancel' to "
+                   u"quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -1004,7 +1007,7 @@ class AddTestPlan(object):
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
-# Create the gtk.Combo that allow one of multiple selections.
+        # Create the gtk.Combo that allow one of multiple selections.
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbAssembly.set_tooltip_text(_(u"Select the assembly associated with the test plan."))
         query = "SELECT fld_name, fld_assembly_id, fld_description \
@@ -1029,7 +1032,7 @@ class AddTestPlan(object):
         fixed.put(label, 5, 40)
         fixed.put(self.cmbTestType, 160, 40)
 
-# Create the gtk.Entry that allow free-form user input.
+        # Create the gtk.Entry that allow free-form user input.
         self.txtName = _widg.make_entry(width=400)
         self.txtName.set_tooltip_text(_(u"Enter a brief description or title for the test."))
 

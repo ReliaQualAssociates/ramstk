@@ -2305,7 +2305,7 @@ class Revision(object):
         """
 
         _type = gobject.type_name(model.get_column_type(position))
-        print new_text
+
         if _type == 'gchararray':
             model[path][position] = str(new_text)
         elif _type == 'gint':
