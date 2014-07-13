@@ -94,7 +94,8 @@ class Revision(object):
     +-------+-------------------------------+
 
     :ivar _dic_environments: Dictionary to carry information about each
-    environment in the profile.  Key is the environment name; value is a list
+    environment in the profile.  Key is the mission ID; value is a list
+    of lists where there is an internal list for each environmental condition
     with the following:
 
     +-------+-------------------------------+
@@ -119,6 +120,29 @@ class Revision(object):
     :ivar name: initial value: ''
     :ivar n_parts: initial value: 0
     :ivar cost: initial value: 0
+    :ivar cost_per_failure: initial value: 0.0
+    :ivar cost_per_hour: initial value: 0.0
+    :ivar active_hazard_rate: initial value: 0.0
+    :ivar dormant_hazard_rate: initial value: 0.0
+    :ivar software_hazard_rate: initial value: 0.0
+    :ivar hazard_rate: initial value: 0.0
+    :ivar mission_hazard_rate: initial value: 0.0
+    :ivar mtbf: initial value: 0.0
+    :ivar mission_mtbf: initial value: 0.0
+    :ivar reliability: initial value: 0.0
+    :ivar mission_reliability: initial value: 0.0
+    :ivar mpmt: initial value: 0.0
+    :ivar mcmt: initial value: 0.0
+    :ivar mttr: initial value: 0.0
+    :ivar mmt: initial value: 0.0
+    :ivar availability: initial value: 0.0
+    :ivar mission_availability: initial value: 0.0
+    :ivar remarks: initial value: ''
+    :ivar code: initial value: ''
+    :ivar program_time: initial value: 0.0
+    :ivar program_time_se: initial value: 0.0
+    :ivar program_cost: initial value: 0.0
+    :ivar program_cost_se: initial value: 0.0
     """
 
     def __init__(self, application):
@@ -1255,17 +1279,14 @@ class Revision(object):
                                       "query was passed:" % _mission_id_)
             self._app.debug_log.error(_query_)
 
+        _data = []
         for i in range(_n_conditions_):
-            self._dic_environments[_results_[i][0]] = [_results_[i][1],
-                                                       _results_[i][2],
-                                                       _results_[i][3],
-                                                       _results_[i][4],
-                                                       _results_[i][5],
-                                                       _results_[i][6],
-                                                       _results_[i][7]]
-            _model_.append([_results_[i][0], _results_[i][1], _results_[i][2],
-                            _results_[i][3], _results_[i][4], _results_[i][5],
-                            _results_[i][6], _results_[i][7]])
+            _data.append([_results_[i][0], _results_[i][1], _results_[i][2],
+                          _results_[i][3], _results_[i][4], _results_[i][5],
+                          _results_[i][6], _results_[i][7]])
+            _model_.append(_data)
+
+        self._dic_environments[_mission_id_] = _data
 
         return False
 
@@ -1273,7 +1294,7 @@ class Revision(object):
         """
         Function to load the widgets on the Failure Definition page.
 
-        :param self: the current instance of a Revision class.
+        :param rtk.Revision self: the current instance of a Revision class.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1671,7 +1692,7 @@ class Revision(object):
 
     def _add_environment(self, __button, __event):
         """
-        Function to add an environmental condition to the environmental
+        Method to add an environmental condition to the environmental
         profile.
 
         :param gtk.Button __button: the gtk.Button() that called this method.
@@ -2328,8 +2349,8 @@ class Revision(object):
         reliability, limiting reliability, total cost, cost per failure, and
         cost per operating hour for the selected revision.
 
-        :param gtkToolButton __button: the gtk.ToolButton() that called this
-                                       function.
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        function.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2520,29 +2541,35 @@ class Revision(object):
         """
         Method to create reports related to the Revision class.
 
-        :param int composition: the report to create:
-                                # Mision and Environmental Profile Report
-                                # Failure Definition Report
+        :param int composition: the report to create.\n
+            * 1 = Mission and Environmental Profile Report\n
+            * 2 = Failure Definition Report
         """
+
+        import xlwt
 
         print self._dic_environments
         _filename = '/home/andrew/MissionAndEnvironmentalProfile.xls'
         _today = datetime.today().strftime('%Y-%m-%d')
 
+        # Create the workbook.
+        _workbook = xlwt.Workbook()
+
         if composition == 1:
             _title = 'Mission and Environmental Profile Report'
             _metadata = {}
-            _data = {0: ['Mission Phase', 'Description',
-                         'Phase Start', 'Phase End']}
 
             i = 0
             for _mission in self._dic_missions.keys():
+                _data = {0: ['Mission Phase', 'Description',
+                             'Phase Start', 'Phase End']}
+
                 # Create the metadata for the mission.
-                _metadata[i] = {'Mission ID:': self._dic_missions[_mission][0],
-                                'Mission:': _mission,
-                                'Mission Time:': self._dic_missions[_mission][1],
-                                'Report Date:': _today,
-                                'sheet': _mission}
+                _metadata = {'Mission ID:': self._dic_missions[_mission][0],
+                             'Mission:': _mission,
+                             'Mission Time:': self._dic_missions[_mission][1],
+                             'Report Date:': _today,
+                             'sheet': _mission}
 
                 # Retrieve the mission phases.
 # TODO: Load a mission phase dictionary when the Revision is loaded and use this dictionary rather than a SQL call.
@@ -2553,11 +2580,14 @@ class Revision(object):
                                                      self._app.ProgCnx)
                 _n_phases = len(_phases)
 
+                # [Phase Name, Phase Description, Phase Start, Phase End]
                 for j in range(_n_phases):
                     _data[i + j + 1] = [_phases[j][4], _phases[j][5],
                                         _phases[j][2], _phases[j][3]]
 
                 i += 1
 
-            simple_tabular_report(_data, _filename, _metadata, _title,
-                                  f_format=3)
+                simple_tabular_report(_workbook, _data, _filename, _metadata,
+                                      _title, f_format=3)
+
+        _workbook.save(_filename)
