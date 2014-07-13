@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-utilities contains utility functions for interacting with the RTK
+utilities.py contains utility functions for interacting with the RTK
 application.  Import this module as _util in other modules that need to
 interact with the RTK application.
 """
@@ -62,31 +62,50 @@ def read_configuration():
     elif name == 'nt':
         _homedir = environ['USERPROFILE']
 
-# Get a config instance for the site configuration file.
+    # Get a config instance for the site configuration file.
     conf = _conf.RTKConf('site')
+    if not file_exists(conf._conf_file):
+        rtk_warning(_(u"Site configuration file %s not found.  This typically "
+                      u"indicates RTK was installed improperly or RTK files "
+                      u"have been corrupted.  You may try to uninstall and "
+                      u"re-install RTK.") % conf._conf_file)
+        return True
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
 
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'socket'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'database'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'password'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+                                                            'host'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+                                                            'socket'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+                                                            'database'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+                                                            'user'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+                                                            'password'))
 
-# Get a config instance for the user configuration file.
+    # Get a config instance for the user configuration file.
     conf = _conf.RTKConf('user')
+
     _conf.BACKEND = conf.read_configuration().get('Backend', 'type')
-    _conf.FRMULT = float(conf.read_configuration().get('General', 'frmultiplier'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+                                                             'host'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+                                                             'socket'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+                                                             'database'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+                                                             'user'))
+    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+                                                             'password'))
+
+    _conf.FRMULT = float(conf.read_configuration().get('General',
+                                                       'frmultiplier'))
     _conf.PLACES = conf.read_configuration().get('General', 'decimal')
     _conf.TABPOS[0] = conf.read_configuration().get('General', 'treetabpos')
     _conf.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
     _conf.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
 
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'host'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'socket'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'database'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'user'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend', 'password'))
 
     # Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')
@@ -96,7 +115,8 @@ def read_configuration():
 
     _conf.CONF_DIR = conf.conf_dir
     if not dir_exists(_conf.CONF_DIR):
-        rtk_error(_("Configuration directory %s does not exist.  Exiting.") % _conf.CONF_DIR)
+        rtk_warning(_(u"Configuration directory %s does not exist.  "
+                      u"Exiting.") % _conf.CONF_DIR)
 
     _conf.ICON_DIR = conf.conf_dir + icondir + '/'
     if not dir_exists(_conf.ICON_DIR):
@@ -156,7 +176,7 @@ def read_configuration():
     formatfile = conf.read_configuration().get('Files', 'sfmecaformat')
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
-# Get color information.
+    # Get color information.
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionfg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'functionbg'))

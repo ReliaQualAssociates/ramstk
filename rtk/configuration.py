@@ -310,7 +310,8 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import ConfigParser
-from os import environ, path, mkdir, name
+import sys
+from os import environ, path, makedirs, name
 
 # Add localization support.
 import gettext
@@ -322,6 +323,7 @@ import widgets as _widg
 
 MODE = ''
 
+SITE_DIR = ''
 ICON_DIR = ''
 DATA_DIR = ''
 CONF_DIR = ''
@@ -383,11 +385,13 @@ class RTKConf(object):
         elif name == 'nt':
             self.OS = 'Windows'
             _HOMEDIR = environ['USERPROFILE']
-            _DATADIR = _HOMEDIR + '/.config/RTK/'
-            _SITEDIR = _HOMEDIR + '/.config/RTK/'
-            _ICONDIR = _HOMEDIR + '/.config/RTK/icons/'
-            _LOGDIR = _HOMEDIR + '/.config/RTK/logs/'
+            _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            _DATADIR = _SITEDIR + 'data/'
+            _ICONDIR = _SITEDIR + 'icons/'
+            _LOGDIR = _SITEDIR + 'logs/'
             _PROGDIR = _HOMEDIR + '/analyses/rtk/'
+
+        self.SITE_DIR = _SITEDIR
 
         if level == 'site':
             if _util.dir_exists(_SITEDIR):
@@ -410,25 +414,25 @@ class RTKConf(object):
             else:
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
 
-            self._conf_file = self.conf_dir + '/site.conf'
+            self._conf_file = self.conf_dir + 'site.conf'
 
         elif level == 'user':
             self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
-            if _util.dir_exists(_DATADIR):
-                self.data_dir = _DATADIR
-            else:
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
                 self.data_dir = _HOMEDIR + '/.config/RTK/data/'
-
-            if _util.dir_exists(_ICONDIR):
-                self.icon_dir = _ICONDIR
             else:
+                self.data_dir = _DATADIR
+
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/icons'):
                 self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
-
-            if _util.dir_exists(_LOGDIR):
-                self.log_dir = _LOGDIR
             else:
+                self.icon_dir = _ICONDIR
+
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
+            else:
+                self.log_dir = _LOGDIR
 
             if _util.dir_exists(_PROGDIR):
                 self.prog_dir = _PROGDIR
@@ -437,8 +441,8 @@ class RTKConf(object):
 
             self._conf_file = self.conf_dir + 'RTK.conf'
 
-        if not _util.file_exists(self._conf_file):
-            self.create_default_configuration()
+            if not _util.file_exists(self._conf_file):
+                self.create_default_configuration()
 
     def create_default_configuration(self):
         """
@@ -446,13 +450,23 @@ class RTKConf(object):
         directory.
         """
 
+        import glob
+        import shutil
         from os.path import basename
 
-        if _util.dir_exists(self.conf_dir):
+        config = ConfigParser.ConfigParser()
 
-            config = ConfigParser.ConfigParser()
+        if name == 'posix':
+            _SITEDIR = '/etc/RTK/'
+            _HOMEDIR = environ['HOME']
 
-            if basename(self._conf_file) == 'site.conf':
+        elif name == 'nt':
+            _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            _HOMEDIR = environ['USERPROFILE']
+
+        _PROGDIR = _HOMEDIR + '/analyses/rtk/'
+
+        if basename(self._conf_file) == 'site.conf':
                 dialog = _widg.make_dialog(_(u"RTK common database "
                                              u"information..."))
 
@@ -540,109 +554,115 @@ class RTKConf(object):
                 config.set('Backend', 'password', RTKcomlist[4])
                 config.set('Backend', 'type', RTKcomlist[5])
 
-            elif basename(self._conf_file) == 'RTK.conf':
-                config.add_section('General')
-                config.set('General', 'reportsize', 'letter')
-                config.set('General', 'failtimeunit', 'hours')
-                config.set('General', 'repairtimeunit', 'hours')
-                config.set('General', 'frmultiplier', 1000000.0)
-                config.set('General', 'calcreltime', 100.0)
-                config.set('General', 'autoaddlistitems', 'False')
-                config.set('General', 'decimal', 6)
-                config.set('General', 'parallelcalcs', 'False')
-                config.set('General', 'treetabpos', 'top')
-                config.set('General', 'listtabpos', 'bottom')
-                config.set('General', 'booktabpos', 'bottom')
+        elif basename(self._conf_file) == 'RTK.conf':
 
-                config.add_section('Backend')
-                config.set('Backend', 'type', 'sqlite3')
-                config.set('Backend', 'host', 'localhost')
-                config.set('Backend', 'socket', 3306)
-                config.set('Backend', 'database', '')
-                config.set('Backend', 'user', '')
-                config.set('Backend', 'password', '')
+            # Create the directories needed for the user.
+            if not _util.dir_exists(self.conf_dir):
+                makedirs(self.conf_dir)
 
-                config.add_section('Directories')
-                config.set('Directories', 'datadir', 'data')
-                config.set('Directories', 'icondir', 'icons')
-                config.set('Directories', 'logdir', 'log')
+            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
+                makedirs(_HOMEDIR + '/.config/RTK/data/')
 
-                config.add_section('Files')
-                config.set('Files', 'datasetformat', 'dataset_format.xml')
-                config.set('Files', 'fmecaformat', 'fmeca_format.xml')
-                config.set('Files', 'functionformat', 'function_format.xml')
-                config.set('Files', 'hardwareformat', 'hardware_format.xml')
-                config.set('Files', 'incidentformat', 'incident_format.xml')
-                config.set('Files', 'rgincidentformat',
-                           'rgincident_format.xml')
-                config.set('Files', 'partformat', 'part_format.xml')
-                config.set('Files', 'requirementformat',
-                           'requirement_format.xml')
-                config.set('Files', 'revisionformat', 'revision_format.xml')
-                config.set('Files', 'riskformat', 'risk_format.xml')
-                config.set('Files', 'siaformat', 'sia_format.xml')
-                config.set('Files', 'softwareformat', 'software_format.xml')
-                config.set('Files', 'testformat', 'testing_format.xml')
-                config.set('Files', 'validationformat',
-                           'validation_format.xml')
+            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
+                makedirs(_HOMEDIR + '/.config/RTK/logs/')
+
+            # Copy format files from _SITEDIR to the user's _CONFDIR.
+            for _file in glob.glob(_SITEDIR + '*.xml'):
+                shutil.copy(_file, self.conf_dir)
+
+            # Copy SQL files from _SITEDIR to the user's _DATADIR.
+            for _file in glob.glob(_SITEDIR + '/data/*.sql'):
+                shutil.copy(_file, self.conf_dir + '/data/')
+
+            # Copy the icons from _SITEDIR to the user's _CONFDIR.
+            shutil.copytree(_SITEDIR + '/icons/', self.conf_dir + '/icons/')
+
+            # Copy the common data base from _SITEDIR to the user's _CONFDIR.
+            shutil.copy(_SITEDIR + '/rtkcom.rfb', self.conf_dir)
+
+            # Create the default RTK configuration file.
+            config.add_section('General')
+            config.set('General', 'reportsize', 'letter')
+            config.set('General', 'failtimeunit', 'hours')
+            config.set('General', 'repairtimeunit', 'hours')
+            config.set('General', 'frmultiplier', 1000000.0)
+            config.set('General', 'calcreltime', 10.0)
+            config.set('General', 'autoaddlistitems', 'False')
+            config.set('General', 'decimal', 6)
+            config.set('General', 'parallelcalcs', 'False')
+            config.set('General', 'treetabpos', 'top')
+            config.set('General', 'listtabpos', 'bottom')
+            config.set('General', 'booktabpos', 'bottom')
+
+            config.add_section('Backend')
+            config.set('Backend', 'type', 'sqlite3')
+            config.set('Backend', 'host', 'localhost')
+            config.set('Backend', 'socket', 3306)
+            config.set('Backend', 'database', '')
+            config.set('Backend', 'user', '')
+            config.set('Backend', 'password', '')
+
+            config.add_section('Directories')
+            config.set('Directories', 'datadir', 'data')
+            config.set('Directories', 'icondir', 'icons')
+            config.set('Directories', 'logdir', 'log')
+            config.set('Directories', 'progdir', 'analyses/rtk')
+
+            config.add_section('Files')
+            config.set('Files', 'datasetformat', 'dataset_format.xml')
+            config.set('Files', 'fmecaformat', 'fmeca_format.xml')
+            config.set('Files', 'ffmecaformat', 'ffmeca_format.xml')
+            config.set('Files', 'sfmecaformat', 'sfmeca_format.xml')
+            config.set('Files', 'functionformat', 'function_format.xml')
+            config.set('Files', 'hardwareformat', 'hardware_format.xml')
+            config.set('Files', 'incidentformat', 'incident_format.xml')
+            config.set('Files', 'rgincidentformat', 'rgincident_format.xml')
+            config.set('Files', 'partformat', 'part_format.xml')
+            config.set('Files', 'requirementformat', 'requirement_format.xml')
+            config.set('Files', 'revisionformat', 'revision_format.xml')
+            config.set('Files', 'riskformat', 'risk_format.xml')
+            config.set('Files', 'siaformat', 'sia_format.xml')
+            config.set('Files', 'softwareformat', 'software_format.xml')
+            config.set('Files', 'testformat', 'testing_format.xml')
+            config.set('Files', 'validationformat', 'validation_format.xml')
 # TODO: Remove the following format files from RTK.
-                config.set('Files', 'rgformat', 'rgincident_format.xml')
-                config.set('Files', 'fracaformat', 'incident_format.xml')
-                config.set('Files', 'stakeholderformat',
-                           'stakeholder_format.xml')
-                config.set('Files', 'mechanismformat', 'incident_format.xml')
+            config.set('Files', 'rgformat', 'rgincident_format.xml')
+            config.set('Files', 'fracaformat', 'incident_format.xml')
+            config.set('Files', 'stakeholderformat', 'stakeholder_format.xml')
+            config.set('Files', 'mechanismformat', 'incident_format.xml')
 
-                config.add_section('Colors')
-                config.set('Colors', 'revisionbg', '#FFFFFF')
-                config.set('Colors', 'revisionfg', '#000000')
-                config.set('Colors', 'functionbg', '#FFFFFF')
-                config.set('Colors', 'functionfg', '#0000FF')
-                config.set('Colors', 'requirementbg', '#FFFFFF')
-                config.set('Colors', 'requirementfg', '#000000')
-                config.set('Colors', 'assemblybg', '#FFFFFF')
-                config.set('Colors', 'assemblyfg', '#000000')
-                config.set('Colors', 'validationbg', '#FFFFFF')
-                config.set('Colors', 'validationfg', '#00FF00')
-                config.set('Colors', 'rgbg', '#FFFFFF')
-                config.set('Colors', 'rgfg', '#000000')
-                config.set('Colors', 'fracabg', '#FFFFFF')
-                config.set('Colors', 'fracafg', '#000000')
-                config.set('Colors', 'partbg', '#FFFFFF')
-                config.set('Colors', 'partfg', '#000000')
-                config.set('Colors', 'overstressbg', '#FF0000')
-                config.set('Colors', 'overstressfg', '#FFFFFF')
-                config.set('Colors', 'taggedbg', '#00FF00')
-                config.set('Colors', 'taggedfg', '#FFFFFF')
-                config.set('Colors', 'nofrmodelfg', '#A52A2A')
+            config.add_section('Colors')
+            config.set('Colors', 'revisionbg', '#FFFFFF')
+            config.set('Colors', 'revisionfg', '#000000')
+            config.set('Colors', 'functionbg', '#FFFFFF')
+            config.set('Colors', 'functionfg', '#0000FF')
+            config.set('Colors', 'requirementbg', '#FFFFFF')
+            config.set('Colors', 'requirementfg', '#000000')
+            config.set('Colors', 'assemblybg', '#FFFFFF')
+            config.set('Colors', 'assemblyfg', '#000000')
+            config.set('Colors', 'validationbg', '#FFFFFF')
+            config.set('Colors', 'validationfg', '#00FF00')
+            config.set('Colors', 'rgbg', '#FFFFFF')
+            config.set('Colors', 'rgfg', '#000000')
+            config.set('Colors', 'fracabg', '#FFFFFF')
+            config.set('Colors', 'fracafg', '#000000')
+            config.set('Colors', 'partbg', '#FFFFFF')
+            config.set('Colors', 'partfg', '#000000')
+            config.set('Colors', 'overstressbg', '#FF0000')
+            config.set('Colors', 'overstressfg', '#FFFFFF')
+            config.set('Colors', 'taggedbg', '#00FF00')
+            config.set('Colors', 'taggedfg', '#FFFFFF')
+            config.set('Colors', 'nofrmodelfg', '#A52A2A')
 
-            try:
-                parser = open(self._conf_file, 'w')
-                config.write(parser)
-                parser.close()
+        try:
+            parser = open(self._conf_file, 'w')
+            config.write(parser)
+            parser.close()
+            return True
 
-                print _("RTK default configuration created.")
-                return True
-            except EnvironmentError:
-                print _("Could not save your RTK configuration.")
-                return False
-
-        else:
-            try:
-                mkdir(self.conf_dir)
-                print _("RTK configuration directory (%s) created.") % \
-                    self.conf_dir
-                mkdir(self.data_dir)
-                print _("RTK data directory (%s) created.") % \
-                    self.data_dir
-                mkdir(self.log_dir)
-                print _("RTK log file directory (%s) created.") % \
-                    self.log_dir
-                mkdir(self.icon_dir)
-                print _("RTK icon directory (%s) created.") % \
-                    self.icon_dir
-                self.__init__()
-            except EnvironmentError:
-                print _("Could not create RTK default configuration.")
+        except EnvironmentError:
+            print _(u"Could not save your RTK configuration.")
+            return False
 
     def write_configuration(self):
         """
@@ -753,14 +773,10 @@ class RTKConf(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        try:
-            if _util.file_exists(self._conf_file):
-                config = ConfigParser.ConfigParser()
-                config.read(self._conf_file)
-                return config
-            else:
-                self.create_default_configuration()
-                self.read_configuration()
-        except:
-            _util.rtk_error(_(u"There is a problem with your configuration "
-                              u"file. Please, remove %s.") % self._conf_file)
+        if _util.file_exists(self._conf_file):
+            config = ConfigParser.ConfigParser()
+            config.read(self._conf_file)
+        else:
+            config = None
+
+        return config
