@@ -2549,7 +2549,34 @@ class Revision(object):
         import xlwt
 
         print self._dic_environments
-        _filename = '/home/andrew/MissionAndEnvironmentalProfile.xls'
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Create Report"),
+                                        parent=None,
+                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(_conf.PROG_DIR)
+        _dialog.set_current_name("MissionAndEnvironmentalProfile.xls")
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"Report Name"))
+        _filter.add_pattern("*.xls")
+        _filter.add_pattern("*.xlsx")
+        _dialog.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
+
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _filename = _dialog.get_filename()
+
+        _dialog.destroy()
+
+        #_filename = '/home/andrew/MissionAndEnvironmentalProfile.xls'
         _today = datetime.today().strftime('%Y-%m-%d')
 
         # Create the workbook.
