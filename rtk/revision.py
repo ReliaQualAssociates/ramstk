@@ -41,12 +41,14 @@ try:
 except ImportError:
     sys.exit(1)
 
+import pandas as pd
+
 # Import other RTK modules.
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
 from _assistants_.adds import AddRevision
-from _reports_.tabular import simple_tabular_report
+from _reports_.tabular import ExcelReport
 
 # Add localization support.
 try:
@@ -352,12 +354,12 @@ class Revision(object):
         _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
                                       u"profile report for the currently "
                                       u"selected revision."))
-        _menu_item.connect('activate', self._create_report, 1)
+        _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"Failure Definition"))
         _menu_item.set_tooltip_text(_(u"Creates the failure definition report "
                                       u"for the currently selected revision."))
-        _menu_item.connect('activate', self._create_report, 2)
+        _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _button.set_menu(_menu)
         _menu.show_all()
@@ -835,7 +837,6 @@ class Revision(object):
             cell.set_property('wrap-width', 250)
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
-            cell.connect('edited', _widg.edit_tree, 0, _model_)
             label = gtk.Label()
             label.set_line_wrap(True)
             label.set_alignment(xalign=0.5, yalign=0.5)
@@ -851,9 +852,9 @@ class Revision(object):
             column.set_attributes(cell, text=0)
             self.tvwFailureDefinitions.append_column(column)
 
-            cell = _widg.CellRendererML()
+            cell = gtk.CellRendererText()
             cell.set_property('editable', 1)
-            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-width', 450)
             cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             cell.set_property('yalign', 0.1)
             cell.connect('edited', self._callback_edit_tree, 1, _model_)
@@ -1161,6 +1162,28 @@ class Revision(object):
             self.revision_id = _model.get_value(_row, self._lst_col_order[0])
         except TypeError:
             self.revision_id = 0
+
+        # Populate the environmental profile dictionary.
+        _query = "SELECT fld_mission_id, fld_condition_id, fld_condition_name, \
+                         fld_phase, fld_units, fld_minimum, \
+                         fld_maximum, fld_mean, fld_variance  \
+                  FROM tbl_environmental_profile"
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
+
+        try:
+            _n_conditions = len(_results)
+        except TypeError:
+            _n_conditions = 0
+            #self._app.debug_log.error("revision.py._load_environmental_"
+            #                          "profile: Failed to load environmental "
+            #                          "profile for mission %d.  The following "
+            #                          "query was passed:" % _mission_id_)
+            #self._app.debug_log.error(_query_)
+
+        for i in range(_n_conditions):
+            _data = [list(_row[1:]) for _row in _results if _row[0] == i]
+            if len(_data) > 0:
+                self._dic_environments[i] = _data
 
         return False
 
@@ -2334,11 +2357,11 @@ class Revision(object):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        _environment = model[path][0]
-        if position == 1:                   # Environmental condition.
-            self._dic_environments[_environment][0] = str(new_text)
-        elif position == 2:                 # Mission phase.
-            self._dic_environments[_environment][1] = str(new_text)
+        #_environment = model[path][0]
+        #if position == 1:                   # Environmental condition.
+        #    self._dic_environments[_environment][0] = str(new_text)
+        #elif position == 2:                 # Mission phase.
+        #    self._dic_environments[_environment][1] = str(new_text)
 
         return False
 
@@ -2537,18 +2560,21 @@ class Revision(object):
 
         return False
 
-    def _create_report(self, __menuitem, composition):
+    def _create_report(self, menuitem):
         """
         Method to create reports related to the Revision class.
 
-        :param int composition: the report to create.\n
-            * 1 = Mission and Environmental Profile Report\n
-            * 2 = Failure Definition Report
+        :param gtk.MenuItem menuitem: the gtk.MenuItem() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         import xlwt
+        from os import path
 
-        print self._dic_environments
+        # Launch a dialog to let the user select the path to the file
+        # containing the ensuing report.
         _dialog = gtk.FileChooserDialog(title=_(u"RTK - Create Report"),
                                         parent=None,
                                         action=gtk.FILE_CHOOSER_ACTION_SAVE,
@@ -2557,11 +2583,12 @@ class Revision(object):
                                                  gtk.STOCK_CANCEL,
                                                  gtk.RESPONSE_REJECT))
         _dialog.set_current_folder(_conf.PROG_DIR)
-        _dialog.set_current_name("MissionAndEnvironmentalProfile.xls")
+        _dialog.set_current_name(menuitem.get_label() + '.xls')
 
         # Set some filters to select all files or only some text files.
         _filter = gtk.FileFilter()
-        _filter.set_name(_(u"Report Name"))
+        _filter.set_name(_(u"Report Type"))
+        _filter.add_pattern("*.pdf")
         _filter.add_pattern("*.xls")
         _filter.add_pattern("*.xlsx")
         _dialog.add_filter(_filter)
@@ -2571,50 +2598,111 @@ class Revision(object):
         _filter.add_pattern("*")
         _dialog.add_filter(_filter)
 
+        # Get the path of the output file or return.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _filename = _dialog.get_filename()
+            _dialog.destroy()
+        else:
+            _dialog.destroy()
+            return False
 
-        _dialog.destroy()
+        # Using the output file extension, select the correct writer.
+        _ext = path.splitext(_filename)[-1][1:]
+        if _ext.startswith('.'):
+            _ext = _ext[1:]
 
-        #_filename = '/home/andrew/MissionAndEnvironmentalProfile.xls'
+        if _ext == 'xls':
+            _writer = ExcelReport(_filename, engine='xlwt')
+
+            # Define some styles.
+# TODO: pass the styles to the writer as a dict and have the writer convert it.
+            _font = xlwt.Font()
+            _font.name = 'Arial'
+            _font.bold = True
+            _font.height = 0x0190
+            _styTitle = xlwt.XFStyle()
+            _styTitle.font = _font
+            _font = xlwt.Font()
+            _font.name = 'Arial'
+            _font.bold = True
+            _font.height = 0x00F0
+            _styHeaders = xlwt.XFStyle()
+            _styHeaders.font = _font
+
         _today = datetime.today().strftime('%Y-%m-%d')
 
-        # Create the workbook.
-        _workbook = xlwt.Workbook()
-
-        if composition == 1:
+        # Write the correct report.
+        if menuitem.get_label() == 'Mission and Environmental Profile':
             _title = 'Mission and Environmental Profile Report'
-            _metadata = {}
 
-            i = 0
+            # Write each mission and environmental profile to a separate
+            # worksheet.
             for _mission in self._dic_missions.keys():
-                _data = {0: ['Mission Phase', 'Description',
-                             'Phase Start', 'Phase End']}
+                _data = {}
+                _mission_id = self._dic_missions[_mission][0]
 
                 # Create the metadata for the mission.
-                _metadata = {'Mission ID:': self._dic_missions[_mission][0],
-                             'Mission:': _mission,
-                             'Mission Time:': self._dic_missions[_mission][1],
-                             'Report Date:': _today,
-                             'sheet': _mission}
+                _metadata = pd.DataFrame([(_mission_id, _mission,
+                                           self._dic_missions[_mission][1],
+                                           _today)],
+                                         columns=['Mission ID', 'Mission',
+                                                  'Mission Time',
+                                                  'Report Date'])
 
                 # Retrieve the mission phases.
 # TODO: Load a mission phase dictionary when the Revision is loaded and use this dictionary rather than a SQL call.
-                _query = "SELECT * FROM tbl_mission_phase \
-                          WHERE fld_mission_id=%d" % \
-                         self._dic_missions[_mission][0]
+                _query = "SELECT fld_phase_name, fld_phase_description, \
+                                 fld_phase_start, fld_phase_end \
+                          FROM tbl_mission_phase \
+                          WHERE fld_mission_id=%d" % _mission_id
                 _phases = self._app.DB.execute_query(_query, None,
                                                      self._app.ProgCnx)
-                _n_phases = len(_phases)
 
-                # [Phase Name, Phase Description, Phase Start, Phase End]
-                for j in range(_n_phases):
-                    _data[i + j + 1] = [_phases[j][4], _phases[j][5],
-                                        _phases[j][2], _phases[j][3]]
+                _data = pd.DataFrame(_phases,
+                                     columns=['Phase Name', 'Description',
+                                              'Phase Start', 'Phase End'])
 
-                i += 1
+                try:
+                    _env = pd.DataFrame(self._dic_environments[_mission_id],
+                                        columns=['Condition ID', 'Condition',
+                                                 'Mission Phase',
+                                                 'Engineering Units',
+                                                 'Minimum Acceptable Value',
+                                                 'Maximum Acceptable Value',
+                                                 'Mean Acceptable Value',
+                                                 'Acceptable Variance'])
+                except KeyError:
+                    pass
 
-                simple_tabular_report(_workbook, _data, _filename, _metadata,
-                                      _title, f_format=3)
+                _writer.write_title(_title, _mission, _styTitle, 0, 0)
+                _writer.write_metadata(_metadata, _mission, _styHeaders, 3, 0)
+                _writer.write_content(_data, _mission, _styHeaders, 12, 0)
+                try:
+                    _writer.write_content(_env, _mission, _styHeaders, 12, 6)
+                except UnboundLocalError:
+                    pass
 
-        _workbook.save(_filename)
+        # Write a list of failure definitions.
+        elif menuitem.get_label() == 'Failure Definition':
+            _title = 'Failure Definition Report'
+
+            _model = self.tvwFailureDefinitions.get_model()
+            _row = _model.get_iter_root()
+
+            # Retrieve the list of failure definitions.
+            _defs = {}
+            while _row is not None:
+                _id = _model.get_value(_row, 0)
+                _defs[_id] = _model.get_value(_row, 1)
+                _row = _model.iter_next(_row)
+
+            _data = pd.DataFrame(_defs.items(),
+                                 columns=['Definition ID', 'Definition'])
+
+            # Write the definitions to the file.
+            _writer.write_title(_title, self.name, _styTitle, 0, 0)
+            _writer.write_content(_data, self.name, _styHeaders, 5, 0)
+
+        _writer.close()
+
+        return False

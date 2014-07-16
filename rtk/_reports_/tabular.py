@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Contains functions for creating analysis reports.
+Contains classes for creating analysis reports.
 """
 
 __author__ = 'Andrew Rowland'
@@ -14,124 +14,127 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
-import sys
-from os import name
-
 import xlwt
 
 
-def simple_tabular_report(outfile, data, filename,
-                          metadata={0: {'sheet': 'RTK Report'}}, title=None,
-                          f_format=1):
+class ExcelReport(object):
     """
-    Function to create a simple report of tabular information.  Simple, in this
-    case, means reports with one or more rows of one or more columns of
-    information.  All rows have the same number of columns of data.  Formatting
-    is minimal.
-
-    :param outfile: the file to write the report to.
-    :param dic data: the tabular data to print to the report.  Key is the index
-                     of the row to print, value is a list of the data for each
-                     column.  The first record is the list of column headings.
-    :param str filename: the full path to the file to save the report to.
-    :param dic metadata: metadata to print to the report.  This can be any
-                         information describing the reported output (e.g.,
-                         hardware assembly the report is applicable to, the
-                         date the report was generated, system revision the
-                         report is applicable to, etc.).  Key is the
-                         description of the metadata, value is the metadata
-                         itself.  Keys will be printed in bold with their
-                         associated value printed to the immediate right.
-    :param str title: the title of the report.
-    :param int f_format: the file format for the report.
-                         * 1 = comma separated variable
-                         * 2 = tab delimited
-                         * 3 = Excel
-                         * 4 = pdf
+    This class is used to write reports to Excel.
     """
 
-    _n_records = len(data.keys())
-    _n_fields = len(data[0])
+    # Set the font size with the height property.  Some common values
+    # below:
+    # Points    Decimal Value   Hex Value
+    #   10           200          0x00C8
+    #   12           240          0x00F0
+    #   14           280          0x0118
+    #   16           320          0x0140
+    #   20           400          0x0190
+    #   24           480          0x01E0
+    #   32           640          0x0280
 
-    if f_format == 3:
-        # Set the font size with the height property.  Some common values
-        # below:
-        # Points    Decimal Value   Hex Value
-        #   10           200          0x00C8
-        #   12           240          0x00F0
-        #   14           280          0x0118
-        #   16           320          0x0140
-        #   20           400          0x0190
-        #   24           480          0x01E0
-        #   32           640          0x0280
+    def __init__(self, outfile, engine='xlwt'):
+        """
+        Method to initialize an instance of the ExcelWriter class.
 
-        # Define the title font (headers, footers, etc.)
-        _fntTitle = xlwt.Font()
-        _fntTitle.name = 'Arial'
-        _fntTitle.bold = True
-        _fntTitle.height = 0x0190
+        :param str outfile: the absolute path to the Excel file to write the
+                            report to.
+        :param str engine: the python module to use to write to Excel.
+                           * xlwt for Excel 2003 (*.xls)
+                           * openpyxl for Excel 2007 and 2010 (*.xlsx)
+        """
 
-        # Define the decorator font (headers, footers, etc.)
-        _fntDecorator = xlwt.Font()
-        _fntDecorator.name = 'Arial'
-        _fntDecorator.bold = True
-        _fntDecorator.height = 0x00F0
+        self.sheets = {}
+        self.path = outfile
 
-        _alnHeaders = xlwt.Alignment()
-        _alnHeaders.horz = xlwt.Alignment.HORZ_CENTER
-        _alnHeaders.vert = xlwt.Alignment.VERT_CENTER
-        _alnHeaders.wrap = xlwt.Alignment.WRAP_AT_RIGHT
+        if engine == 'xlwt':
+            self.book = xlwt.Workbook()
 
-        # Define the font for the content (data).
-        _fntContent = xlwt.Font()
-        _fntContent.name = 'Arial'
-        _fntContent.bold = False
-        _fntContent.height = 0x00F0
+    def _get_worksheet(self, sheet_name):
+        """
+        Method to get the worksheet object from the dictionary of worksheets.
 
-        _styTitle = xlwt.XFStyle()
-        _styTitle.font = _fntTitle
+        :param str sheet_name: the name of the worksheet object to retrieve.
+        :return: _worksheet
+        :rtype: xlwt.Worksheet
+        """
 
-        _styDecorator = xlwt.XFStyle()
-        _styDecorator.font = _fntDecorator
+        if sheet_name in self.sheets:
+            _worksheet = self.sheets[sheet_name]
+        else:
+            _worksheet = self.book.add_sheet(sheet_name)
+            self.sheets[sheet_name] = _worksheet
 
-        _styHeaders = xlwt.XFStyle()
-        _styHeaders.font = _fntDecorator
-        _styHeaders.alignment = _alnHeaders
+        return _worksheet
 
-        _styContent = xlwt.XFStyle()
-        _styContent.font = _fntContent
+    def write_title(self, title, sheet_name, style, srow=0, scol=0):
+        """
+        Method to write a title to the worksheet.
 
-        # Add a sheet to the open workbook.
-        _ws = outfile.add_sheet(metadata['sheet'])
+        :param str title: the title to write to the worksheet.
+        :param str sheet_name: the name of the worksheet to write to.
+        :param xlwt.Style style: font and other formatting information.
+        :param int srow: the starting row in the worksheet.
+        :param int scol: the starting column in the worksheet.
+        """
 
-        # Initialize the row and columns variables.
-        _row = 0
-        _col = 0
+        _worksheet = self._get_worksheet(sheet_name)
+        _worksheet.write(srow, scol, title, style)
 
-        # Write the title if one was passed.
-        if title is not None:
-            _ws.write(_row, _col, title, _styTitle)
+    def write_metadata(self, metadata, sheet_name, style, srow=0, scol=0):
+        """
+        Method to write metadata to the worksheet.  Metadata is information
+        describing the contents of the report.  For example, a mission profile
+        report might contain the following metadata:
 
-        _row += 2
+        Mission ID  1
+        Mission New Mission 1
+        Mission Time    10
+        Report Date 2014-07-16
 
-        # Write the metadata if any was passed.
-        for _key in metadata.keys():
-            if _key != 'sheet':
-                _ws.write(_row, _col, _key, _styDecorator)
-                _ws.write(_row, _col + 1, metadata[_key], _styContent)
-                _row += 1
+        :param pandas.DataFram metadata: a pandas.DataFrame() containing the
+                                         metadata.  DataFrame columns are used
+                                         as the row headings in the output
+                                         file.
+        :param str sheet_name: the name of the worksheet to write to.
+        :param xlwt.Style style: font and other formatting information.
+        :param int srow: the starting row in the worksheet.
+        :param int scol: the starting column in the worksheet.
+        """
 
-        _row += 1
+        _worksheet = self._get_worksheet(sheet_name)
+        for _col in metadata.columns.values.tolist():
+            _worksheet.write(srow, scol, _col, style)
+            _worksheet.write(srow, scol + 1, metadata[_col][0])
+            srow += 1
 
-        # Write the data if any was passed.
-        for _key in data.keys():
-            i = 0
-            for j in range(len(data[_key])):
-                if _key == 0:
-                    _ws.write(_row, _col + j, data[_key][j], _styHeaders)
-                else:
-                    _ws.write(_row, _col + j, data[_key][j], _styContent)
-            i += 1
-            _row += 1
+    def write_content(self, content, sheet_name, style, srow=0, scol=0):
+        """
+        Method to write the report content to the worksheet.
 
-    return False
+        :param pandas.DataFram conent: a pandas.DataFrame() containing the
+                                       content.  DataFrame columns are used
+                                       as the column headings in the output
+                                       file.  Each row in the data frame is
+                                       written on a row in the output file.
+        :param str sheet_name: the name of the worksheet to write to.
+        :param xlwt.Style style: font and other formatting information.
+        :param int srow: the starting row in the worksheet.
+        :param int scol: the starting column in the worksheet.
+        """
+
+        _worksheet = self._get_worksheet(sheet_name)
+        for _col in content.columns.values.tolist():
+            _worksheet.write(srow, scol, _col, style)
+            i = srow + 1
+            for _row in content[_col].index.tolist():
+                _worksheet.write(i, scol, content[_col][_row])
+                i += 1
+            scol += 1
+
+    def close(self):
+        """
+        Method to save the output file.
+        """
+
+        self.book.save(self.path)
