@@ -69,6 +69,7 @@ class CellRendererML(gtk.CellRendererText):
         """
         Method to get the size of the CellRendererML.
         """
+
         size_tuple = gtk.CellRendererText.do_get_size(self, widget, cell_area)
 
         return size_tuple
@@ -85,6 +86,7 @@ class CellRendererML(gtk.CellRendererText):
         :param cell_area:
         :param __flags:
         """
+
         if not self.get_property('editable'):
             return
 
@@ -157,7 +159,6 @@ class CellRendererML(gtk.CellRendererText):
 
         if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
                 _keyname == 'Return':
-
             self.textedit_window.response(gtk.RESPONSE_OK)
 
 # Register the new widget types.
