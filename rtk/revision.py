@@ -342,7 +342,7 @@ class Revision(object):
         _toolbar.insert(_button_, _position_)
         _position_ += 1
 
-        # Calculate revision _button
+        # Create report button.
         _button = gtk.MenuToolButton(None, label="")
         _button.set_tooltip_text(_(u"Create Revision reports."))
         _image = gtk.Image()
@@ -2614,21 +2614,6 @@ class Revision(object):
         if _ext == 'xls':
             _writer = ExcelReport(_filename, engine='xlwt')
 
-            # Define some styles.
-# TODO: pass the styles to the writer as a dict and have the writer convert it.
-            _font = xlwt.Font()
-            _font.name = 'Arial'
-            _font.bold = True
-            _font.height = 0x0190
-            _styTitle = xlwt.XFStyle()
-            _styTitle.font = _font
-            _font = xlwt.Font()
-            _font.name = 'Arial'
-            _font.bold = True
-            _font.height = 0x00F0
-            _styHeaders = xlwt.XFStyle()
-            _styHeaders.font = _font
-
         _today = datetime.today().strftime('%Y-%m-%d')
 
         # Write the correct report.
@@ -2674,11 +2659,11 @@ class Revision(object):
                 except KeyError:
                     pass
 
-                _writer.write_title(_title, _mission, _styTitle, 0, 0)
-                _writer.write_metadata(_metadata, _mission, _styHeaders, 3, 0)
-                _writer.write_content(_data, _mission, _styHeaders, 12, 0)
+                _writer.write_title(_title, _mission, srow=0, scol=0)
+                _writer.write_metadata(_metadata, _mission, srow=3, scol=0)
+                _writer.write_content(_data, _mission, srow=12, scol=0)
                 try:
-                    _writer.write_content(_env, _mission, _styHeaders, 12, 6)
+                    _writer.write_content(_env, _mission, srow=12, scol=6)
                 except UnboundLocalError:
                     pass
 
@@ -2700,8 +2685,8 @@ class Revision(object):
                                  columns=['Definition ID', 'Definition'])
 
             # Write the definitions to the file.
-            _writer.write_title(_title, self.name, _styTitle, 0, 0)
-            _writer.write_content(_data, self.name, _styHeaders, 5, 0)
+            _writer.write_title(_title, self.name, srow=0, scol=0)
+            _writer.write_content(_data, self.name, srow=5, scol=0)
 
         _writer.close()
 

@@ -50,6 +50,22 @@ class ExcelReport(object):
         if engine == 'xlwt':
             self.book = xlwt.Workbook()
 
+            # Define some default styles.
+            _font = xlwt.Font()
+            _font.name = 'Arial'
+            _font.bold = True
+            _font.height = 0x0190
+            self._styTitle = xlwt.XFStyle()
+            self._styTitle.font = _font
+
+            _font = xlwt.Font()
+            _font.name = 'Arial'
+            _font.bold = True
+            _font.height = 0x00F0
+            self._styHeaders = xlwt.XFStyle()
+            self._styHeaders.font = _font
+
+
     def _get_worksheet(self, sheet_name):
         """
         Method to get the worksheet object from the dictionary of worksheets.
@@ -67,7 +83,7 @@ class ExcelReport(object):
 
         return _worksheet
 
-    def write_title(self, title, sheet_name, style, srow=0, scol=0):
+    def write_title(self, title, sheet_name, style=None, srow=0, scol=0):
         """
         Method to write a title to the worksheet.
 
@@ -78,10 +94,13 @@ class ExcelReport(object):
         :param int scol: the starting column in the worksheet.
         """
 
+        if style is None:
+            style = self._styTitle
+
         _worksheet = self._get_worksheet(sheet_name)
         _worksheet.write(srow, scol, title, style)
 
-    def write_metadata(self, metadata, sheet_name, style, srow=0, scol=0):
+    def write_metadata(self, metadata, sheet_name, style=None, srow=0, scol=0):
         """
         Method to write metadata to the worksheet.  Metadata is information
         describing the contents of the report.  For example, a mission profile
@@ -102,13 +121,16 @@ class ExcelReport(object):
         :param int scol: the starting column in the worksheet.
         """
 
+        if style is None:
+            style = self._styHeaders
+
         _worksheet = self._get_worksheet(sheet_name)
         for _col in metadata.columns.values.tolist():
             _worksheet.write(srow, scol, _col, style)
             _worksheet.write(srow, scol + 1, metadata[_col][0])
             srow += 1
 
-    def write_content(self, content, sheet_name, style, srow=0, scol=0):
+    def write_content(self, content, sheet_name, style=None, srow=0, scol=0):
         """
         Method to write the report content to the worksheet.
 
@@ -122,6 +144,9 @@ class ExcelReport(object):
         :param int srow: the starting row in the worksheet.
         :param int scol: the starting column in the worksheet.
         """
+
+        if style is None:
+            style = self._styHeaders
 
         _worksheet = self._get_worksheet(sheet_name)
         for _col in content.columns.values.tolist():

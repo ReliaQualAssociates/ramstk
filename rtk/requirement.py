@@ -19,11 +19,6 @@ import gettext
 import locale
 import sys
 
-# Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -42,6 +37,14 @@ try:
     import gobject
 except ImportError:
     sys.exit(1)
+
+import pandas as pd
+
+# Import other RTK modules.
+import configuration as _conf
+import utilities as _util
+import widgets as _widg
+from _reports_.tabular import ExcelReport
 
 # Add localization support.
 try:
@@ -358,6 +361,38 @@ class Requirement(object):
         self.btnRemove.set_icon_widget(_image)
         self.btnRemove.connect('clicked', self._toolbutton_pressed)
         _toolbar.insert(self.btnRemove, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Create report button.
+        _button = gtk.MenuToolButton(None, label="")
+        _button.set_tooltip_text(_(u"Create Requirement reports."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
+        _button.set_icon_widget(_image)
+        _menu = gtk.Menu()
+        _menu_item = gtk.MenuItem(label=_(u"Stakeholder Inputs"))
+        _menu_item.set_tooltip_text(_(u"Creates the stakeholder inputs report "
+                                      u"for the currently selected revision."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Requirements Listing"))
+        _menu_item.set_tooltip_text(_(u"Creates the requirements listing "
+                                      u"for the currently selected revision."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"V&V Task Listing"))
+        _menu_item.set_tooltip_text(_(u"Creates a report of the V&V tasks "
+                                      u"for the currently selected revision "
+                                      u"sorted by requirement."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _button.set_menu(_menu)
+        _menu.show_all()
+        _button.show()
+        _toolbar.insert(_button, _position)
         _position += 1
 
         _toolbar.insert(gtk.SeparatorToolItem(), _position)
@@ -2395,5 +2430,182 @@ class Requirement(object):
                 self._delete_vandv_task()
             elif button.get_name() == 'Save':
                 self._save_vandv_tasks()
+
+        return False
+
+    def _create_report(self, menuitem):
+        """
+        Method to create reports related to the Revision class.
+
+        :param gtk.MenuItem menuitem: the gtk.MenuItem() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        import xlwt
+        from datetime import datetime
+        from os import path
+
+        # Launch a dialog to let the user select the path to the file
+        # containing the ensuing report.
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Create Report"),
+                                        parent=None,
+                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(_conf.PROG_DIR)
+        _dialog.set_current_name(menuitem.get_label() + '.xls')
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"Report Type"))
+        _filter.add_pattern("*.pdf")
+        _filter.add_pattern("*.xls")
+        _filter.add_pattern("*.xlsx")
+        _dialog.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
+
+        # Get the path of the output file or return.
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _filename = _dialog.get_filename()
+            _dialog.destroy()
+        else:
+            _dialog.destroy()
+            return False
+
+        # Using the output file extension, select the correct writer.
+        _ext = path.splitext(_filename)[-1][1:]
+        if _ext.startswith('.'):
+            _ext = _ext[1:]
+
+        if _ext == 'xls':
+            _writer = ExcelReport(_filename, engine='xlwt')
+
+        _today = datetime.today().strftime('%Y-%m-%d')
+
+        # Write the correct report.
+        if menuitem.get_label() == 'Stakeholder Inputs':
+            _title = 'Stakeholder Input Report'
+
+            _model = self.tvwStakeholderInput.get_model()
+            _row = _model.get_iter_root()
+
+            # Retrieve the list of stakeholder inputs.
+            _defs = []
+            while _row is not None:
+                _defs.append((_model.get_value(_row, 0),
+                              _model.get_value(_row, 1),
+                              _model.get_value(_row, 2),
+                              _model.get_value(_row, 3),
+                              _model.get_value(_row, 4),
+                              _model.get_value(_row, 5),
+                              _model.get_value(_row, 6),
+                              _model.get_value(_row, 7),
+                              _model.get_value(_row, 8),
+                              _model.get_value(_row, 9)))
+                _row = _model.iter_next(_row)
+
+            # Create a pandas data frame from the results.
+            _data = pd.DataFrame(_defs,
+                                 columns=['Input ID', 'Stakeholder', 'Input',
+                                          'Affinity Group', 'Priority',
+                                          'Satisfaction w/ Exisiting Product',
+                                          'Planned Satisfaction',
+                                          'Improvement Factor',
+                                          'Overall Weighting',
+                                          'Implementing Requirement'])
+
+            # Write the stakeholder inputs to the file.
+            _writer.write_title(_title, self._app.REVISION.name,
+                                srow=0, scol=0)
+            _writer.write_content(_data, self._app.REVISION.name,
+                                  srow=5, scol=0)
+
+        # Write a list of requirements.
+        elif menuitem.get_label() == 'Requirements Listing':
+            _title = 'Requirements Listing Report'
+
+            _model = self.treeview.get_model()
+            _row = _model.get_iter_root()
+
+            # Retrieve the list of requirements.
+            _defs = []
+            while _row is not None:
+                # Convert ordinal dates to human-readable dates.
+                _vdate = _util.ordinal_to_date(
+                    _model.get_value(_row, self._lst_col_order[9]))
+                if _vdate == '1970-01-01':
+                    _vdate = ''
+                _defs.append((_model.get_value(_row, self._lst_col_order[5]),
+                              _model.get_value(_row, self._lst_col_order[3]),
+                              _model.get_value(_row, self._lst_col_order[4]),
+                              _model.get_value(_row, self._lst_col_order[52]),
+                              _model.get_value(_row, self._lst_col_order[10]),
+                              _model.get_value(_row, self._lst_col_order[11]),
+                              _model.get_value(_row, self._lst_col_order[7]),
+                              _vdate))
+                _row = _model.iter_next(_row)
+
+            _data = pd.DataFrame(_defs,
+                                 columns=['Requirement Code', 'Description',
+                                          'Requirement Type', 'Priority',
+                                          'Owner', 'Specification',
+                                          'Parent Requirement (if derived)',
+                                          'Date Validated'])
+
+            # Write the requirements list to the file.
+            _writer.write_title(_title, self._app.REVISION.name,
+                                srow=0, scol=0)
+            _writer.write_content(_data, self._app.REVISION.name,
+                                  srow=5, scol=0)
+
+        # Write a list of V&V tasks sorted by requirement.
+        elif menuitem.get_label() == 'V&V Task Listing':
+            _title = 'Verification and Validation Task Report'
+
+            _model = self.treeview.get_model()
+            _row = _model.get_iter_root()
+
+            # Retrieve all the V&V tasks sorted by requirement.
+            _query = "SELECT t2.fld_requirement_id, t1.fld_validation_id, \
+                             t1.fld_task_desc, t1.fld_start_date, \
+                             t1.fld_end_date, t1.fld_status \
+                      FROM tbl_validation AS t1 \
+                      INNER JOIN tbl_validation_matrix AS t2 \
+                      ON t2.fld_validation_id=t1.fld_validation_id \
+                      WHERE t1.fld_revision_id=%d \
+                      ORDER BY t2.fld_requirement_id" % \
+                     _model.get_value(_row, self._lst_col_order[0])
+            _results = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
+
+            # Convert ordinal dates to human-readable dates.
+            _tasks = []
+            for _record in _results:
+                _record = list(_record)
+                _record[3] = _util.ordinal_to_date(_record[3])
+                _record[4] = _util.ordinal_to_date(_record[4])
+                _tasks.append(tuple(_record))
+
+            _data = pd.DataFrame(_tasks,
+                                 columns=['Requirement ID', 'Task ID',
+                                          'Task Description',
+                                          'Start Date', 'Due Date',
+                                          '% Complete'])
+
+            # Write the requirements list to the file.
+            _writer.write_title(_title, self._app.REVISION.name,
+                                srow=0, scol=0)
+            _writer.write_content(_data, self._app.REVISION.name,
+                                  srow=5, scol=0)
+
+        _writer.close()
 
         return False

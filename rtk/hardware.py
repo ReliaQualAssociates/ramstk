@@ -19,6 +19,7 @@ import gettext
 import locale
 import sys
 
+import pandas as pd
 from datetime import datetime
 from lxml import etree
 from math import exp, log
@@ -53,12 +54,13 @@ from matplotlib.figure import Figure
 matplotlib.use('GTK')
 
 # Import other RTK modules.
-from _assistants_.exports import ExportHardware
-from _assistants_.imports import ImportHardware
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
+from _assistants_.exports import ExportHardware
+from _assistants_.imports import ImportHardware
+from _reports_.tabular import ExcelReport
 
 # Add localization support.
 try:
@@ -786,6 +788,49 @@ class Hardware(object):
         _toolbar.insert(self.btnSaveResults, _pos)
         _pos += 1
 
+        _toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+        # Create report button.
+        _button = gtk.MenuToolButton(None, label="")
+        _button.set_tooltip_text(_(u"Create Hardware reports."))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
+        _button.set_icon_widget(_image)
+        _menu = gtk.Menu()
+        _menu_item = gtk.MenuItem(label=_(u"Allocation Report"))
+        _menu_item.set_tooltip_text(_(u"Creates the reliability allocation "
+                                      u"report for the currently selected "
+                                      u"hardware item."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Hazards Analysis Report"))
+        _menu_item.set_tooltip_text(_(u"Creates the hazards analysis report "
+                                      u"for the currently selected hardware "
+                                      u"item."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"Similar Item Analysis Report"))
+        _menu_item.set_tooltip_text(_(u"Creates the similar item analysis "
+                                      u"report for the currently selected "
+                                      u"hardware item."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _menu_item = gtk.MenuItem(label=_(u"FMEA Report"))
+        _menu_item.set_tooltip_text(_(u"Creates the FMEA/FMECA "
+                                      u"report for the currently selected "
+                                      u"hardware item."))
+        _menu_item.connect('activate', self._create_report)
+        _menu.add(_menu_item)
+        _button.set_menu(_menu)
+        _menu.show_all()
+        _button.show()
+        _toolbar.insert(_button, _pos)
+        _pos += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/rollup.png')
         self.btnRollup.set_icon_widget(_image)
@@ -1179,14 +1224,12 @@ class Hardware(object):
 
         def _create_allocation_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
+            Function to create the Hardware class gtk.Notebook() page for
             displaying the reliability allocation analysis for the selected
-            HARDWARE.
+            Hardware item.
 
-            :param self: the current instance of a HARDWARE class.
-            :type self: Hardware object
-            :param notebook: the HARDWARE class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1213,6 +1256,16 @@ class Hardware(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display the allocation analysis.    #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Load the gtk.Combo()
+            _results_ = [[_(u"Reliability"), 0], [_(u"MTTF/MTBF"), 1],
+                         [_(u"Failure Intensity"), 2]]
+            _widg.load_combo(self.cmbRqmtType, _results_)
+            _results_ = [[_(u"Equal Apportionment"), 0],
+                         [_(u"AGREE Apportionment"), 1],
+                         [_(u"ARINC Apportionment"), 2],
+                         [_(u"Feasibility of Objectives"), 3]]
+            _widg.load_combo(self.cmbAllocationType, _results_)
+
             _labels_ = [_(u"Measure:"), _(u"Reliability:"), _(u"MTTF/MTBF:"),
                         _(u"Failure Rate:"), _(u"Allocation Type:"),
                         _(u"Elements:"), _(u"Operating Time:")]
@@ -1299,12 +1352,6 @@ class Hardware(object):
             self.cmbRqmtType.set_tooltip_text(_(u"Selects the reliability "
                                                 u"goal measure for the active "
                                                 u"revision."))
-            _fixed_.put(self.cmbRqmtType, _x_pos_, _y_pos_[0])
-            _results_ = [[_(u"Reliability"), 0], [_(u"MTTF/MTBF"), 1],
-                         [_(u"Failure Intensity"), 2]]
-            _widg.load_combo(self.cmbRqmtType, _results_)
-            self.cmbRqmtType.connect('changed', self._callback_combo, 500)
-
             self.txtReliabilityGoal.set_tooltip_text(_(u"Displays the "
                                                        u"reliability goal "
                                                        u"value for the active "
@@ -1312,22 +1359,10 @@ class Hardware(object):
                                                        u"if reliability goal "
                                                        u"measure is "
                                                        u"Reliability."))
-            _fixed_.put(self.txtReliabilityGoal, _x_pos_, _y_pos_[1])
-            self.txtReliabilityGoal.props.editable = 0
-            self.txtReliabilityGoal.set_sensitive(0)
-            self.txtReliabilityGoal.connect('focus-out-event',
-                                            self._callback_entry, 'float', 500)
-
             self.txtMTBFGoal.set_tooltip_text(_(u"Displays the MTBF goal for "
                                                 u"the active revision.  "
                                                 u"Editable if reliability "
                                                 u"goal measure is MTBF."))
-            _fixed_.put(self.txtMTBFGoal, _x_pos_, _y_pos_[2])
-            self.txtMTBFGoal.props.editable = 0
-            self.txtMTBFGoal.set_sensitive(0)
-            self.txtMTBFGoal.connect('focus-out-event', self._callback_entry,
-                                     'float', 501)
-
             self.txtFailureRateGoal.set_tooltip_text(_(u"Displays the failure "
                                                        u"intensity goal for "
                                                        u"the active revision. "
@@ -1335,41 +1370,46 @@ class Hardware(object):
                                                        u"reliability goal "
                                                        u"measure is Failure "
                                                        u"Intensity."))
-            _fixed_.put(self.txtFailureRateGoal, _x_pos_, _y_pos_[3])
-            self.txtFailureRateGoal.props.editable = 0
-            self.txtFailureRateGoal.set_sensitive(0)
-            self.txtFailureRateGoal.connect('focus-out-event',
-                                            self._callback_entry, 'float', 502)
-
             self.cmbAllocationType.set_tooltip_text(_(u"Select the reliability"
                                                       u" allocation method for"
                                                       u" the selected "
                                                       u"assembly."))
-            _fixed_.put(self.cmbAllocationType, _x_pos_, _y_pos_[4])
-            _results_ = [[_(u"Equal Apportionment"), 0],
-                         [_(u"AGREE Apportionment"), 1],
-                         [_(u"ARINC Apportionment"), 2],
-                         [_(u"Feasibility of Objectives"), 3]]
-            _widg.load_combo(self.cmbAllocationType, _results_)
-            self.cmbAllocationType.connect('changed',
-                                           self._callback_combo, 501)
-
             self.txtNumElements.set_tooltip_text(_(u"Display the total number "
                                                    u"of sub-systems included "
                                                    u"in the allocation "
                                                    u"analysis."))
-            _fixed_.put(self.txtNumElements, _x_pos_, _y_pos_[5])
-
             self.txtOperTime.set_tooltip_text(_(u"Displays the operating time "
                                                 u"over which the allocation "
                                                 u"is calculated."))
-            _fixed_.put(self.txtOperTime, _x_pos_, _y_pos_[6])
-
             self.chkApplyResults.set_tooltip_text(_(u"Sets the hardware's "
                                                     u"specified failure "
                                                     u"intensity to use the "
                                                     u"allocation results."))
+
+            _fixed_.put(self.cmbRqmtType, _x_pos_, _y_pos_[0])
+            _fixed_.put(self.txtReliabilityGoal, _x_pos_, _y_pos_[1])
+            self.txtReliabilityGoal.props.editable = 0
+            self.txtReliabilityGoal.set_sensitive(0)
+            _fixed_.put(self.txtMTBFGoal, _x_pos_, _y_pos_[2])
+            self.txtMTBFGoal.props.editable = 0
+            self.txtMTBFGoal.set_sensitive(0)
+            _fixed_.put(self.txtFailureRateGoal, _x_pos_, _y_pos_[3])
+            self.txtFailureRateGoal.props.editable = 0
+            self.txtFailureRateGoal.set_sensitive(0)
+            _fixed_.put(self.cmbAllocationType, _x_pos_, _y_pos_[4])
+            _fixed_.put(self.txtNumElements, _x_pos_, _y_pos_[5])
+            _fixed_.put(self.txtOperTime, _x_pos_, _y_pos_[6])
             _fixed_.put(self.chkApplyResults, 5, _y_pos_[6] + 30)
+
+            self.cmbRqmtType.connect('changed', self._callback_combo, 500)
+            self.cmbAllocationType.connect('changed',
+                                           self._callback_combo, 501)
+            self.txtReliabilityGoal.connect('focus-out-event',
+                                            self._callback_entry, 'float', 500)
+            self.txtMTBFGoal.connect('focus-out-event', self._callback_entry,
+                                     'float', 501)
+            self.txtFailureRateGoal.connect('focus-out-event',
+                                            self._callback_entry, 'float', 502)
 
             _fixed_.show_all()
 
@@ -5918,7 +5958,7 @@ class Hardware(object):
         elif index == 501:
             i = int(combo.get_active())
             _heading_ = _(u"Weighting Factor")
-            if i == 1:  # Equal apportionment selected.
+            if i == 1:                      # Equal apportionment selected.
                 for col in 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 13, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)
                 for col in 2, 12, 14, 15, 16, 17, 18, 19:
@@ -5929,7 +5969,7 @@ class Hardware(object):
                         cells[i].set_property('background', 'light gray')
                         cells[i].set_property('editable', 0)
 
-            elif i == 2:  # AGREE apportionment selected.
+            elif i == 2:                    # AGREE apportionment selected.
                 for col in 0, 1, 4, 8, 9, 10, 11, 13, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)
                 for col in 2, 6, 12, 14, 15, 16, 17, 18, 19:
@@ -5949,7 +5989,7 @@ class Hardware(object):
 
                 _heading_ = _(u"Importance Measure")
 
-            elif i == 3:  # ARINC apportionment selected.
+            elif i == 3:                    # ARINC apportionment selected.
                 for col in 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 13, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)
                 for col in 2, 12, 14, 15, 16, 17, 18, 19:
@@ -5960,7 +6000,7 @@ class Hardware(object):
                         cells[i].set_property('background', 'light gray')
                         cells[i].set_property('editable', 0)
 
-            elif i == 4:  # Feasibility of Objectives selected.
+            elif i == 4:                # Feasibility of Objectives selected.
                 for col in 0, 1, 4, 5, 6, 7, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)
                 for col in 2, 12, 13, 14, 15, 16, 17, 18, 19:
@@ -6941,7 +6981,7 @@ class Hardware(object):
         """
 
         def equal_apportionment(model, N, Ts, Rs):  # pylint: disable=C0103
-            '''
+            """
             Function to perform equal apportionment of a reliability
             requirement.
 
@@ -6953,7 +6993,7 @@ class Hardware(object):
             :param float Ts: the mission or operating time.
             :param float Rs: the reliability requirement.
             :return: False or True
-            '''
+            """
 
             try:
                 _Wi_ = 1.0 / float(N)
@@ -6984,7 +7024,7 @@ class Hardware(object):
             return False
 
         def agree_apportionment(model, N, Ts, Rs):  # pylint: disable=C0103
-            '''
+            """
             Function to perform AGREE apportionment of a reliability
             requirement.
 
@@ -6996,7 +7036,7 @@ class Hardware(object):
             :param float Ts: the mission or operating time.
             :param float Rs: the reliability requirement.
             :return: False
-            '''
+            """
 
             _row_ = model.get_iter_root()
             while _row_ is not None:
@@ -7018,17 +7058,17 @@ class Hardware(object):
             return False
 
         def arinc_apportionment(model, Ts, lambdas):  # pylint: disable=C0103
-            '''
+            """
             Function to perform ARINC apportionment of the reliability
             requirement.
 
-            :param model: the gtk.TreeModel() from which to read/write
-                          allocation data.
-            :type model: gtk.TreeModel()
+            :param gtk.TreeModel model: the gtk.TreeModel() from which to
+                                        read/write allocation data.
             :param float Ts: the mission or operating time.
             :param float lambdas: the failure rate requirement to allocate.
-            :return: False or True
-            '''
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
+            """
 
             # Calculate the current system failure rate.
             _FRs_ = 0.0
@@ -7036,6 +7076,9 @@ class Hardware(object):
             while _row_ is not None:
                 _FRs_ += float(model.get_value(_row_, 14))
                 _row_ = model.iter_next(_row_)
+
+            if _FRs_ == 0.0:
+                _FRs_ = lambdas
 
             # Now calculate the allocated values for each sub-system.
             _row_ = model.get_iter_root()
@@ -7050,6 +7093,11 @@ class Hardware(object):
                     try:
                         _MTBFi_ = 1.0 / _FRi_
                     except ZeroDivisionError:
+                        _util.rtk_warning(_(u"No failure intensity entered "
+                                            u"for hardware item %s.  Please "
+                                            u"correct this before attempting "
+                                            u"to allocate reliabilty.") %
+                                          model.get_value(_row_, 2))
                         return True
 
                     _Ri_ = exp(-1.0 * _FRi_ * Ts)
@@ -7070,7 +7118,7 @@ class Hardware(object):
             return False
 
         def foo_apportionment(model, Ts, lambdas):  # pylint: disable=C0103
-            '''
+            """
             Function to perform feasibility of objectives apportionment of the
             reliability requirement.
 
@@ -7080,7 +7128,8 @@ class Hardware(object):
             :param float Ts: the mission or operating time.
             :param float lambdas: the failure rate requirement to allocate.
             :return: False or True
-            '''
+            """
+
             # First calculate the system failure rate and weighting factor for
             # each sub-system.
             _Wght_ = 0.0
@@ -7126,23 +7175,22 @@ class Hardware(object):
         try:
             _Rs_ = float(self.txtReliabilityGoal.get_text())
         except ValueError:
-            _util.rtk_error(_(u"Missing required input: Reliability "
-                                      u"goal.\nPlease provide and try again."))
+            _util.rtk_information(_(u"Missing required input: Reliability goal.\n"
+                                    u"Please provide and try again."))
             return True
 
         try:
             _lambdas_ = float(self.txtFailureRateGoal.get_text())
         except ValueError:
-            _util.rtk_error(_(u"Missing required input: Failure "
-                                      u"rate goal.\nPlease provide and try "
-                                      u"again."))
+            _util.rtk_information(_(u"Missing required input: Failure rate goal.\n"
+                                    u"Please provide and try again."))
             return True
 
         try:
             _Ts_ = float(self.txtOperTime.get_text())
         except ValueError:
-            _util.rtk_error(_(u"Missing required input: Operating "
-                                      u"time.\nPlease provide and try again."))
+            _util.rtk_information(_(u"Missing required input: Operating time.\n"
+                                    u"Please provide and try again."))
             return True
 
         _n_assemblies_ = 0
@@ -7155,41 +7203,28 @@ class Hardware(object):
         # methodology.  Raise an application error if unsuccessful.
         if self.cmbAllocationType.get_active() == 1 and \
                 equal_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.rtk_error(_(u"Unable to allocate reliability "
-                                      u"requirement.  Check your input values "
-                                      u"and try again.  If allocation "
-                                      u"continues to fail, please report the "
-                                      u"problem to bugs@reliaqual.com."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
+                                u"Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 2 and \
                 agree_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.rtk_error(_(u"Unable to allocate reliability "
-                                      u"requirement.  Check your input values "
-                                      u"and try again.  If allocation "
-                                      u"continues to fail, please report the "
-                                      u"problem to bugs@reliaqual.com."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
+                                u"Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 3 and \
                 arinc_apportionment(_model_, _Ts_, _lambdas_):
-            _util.rtk_error(_(u"Unable to allocate reliability "
-                                      u"requirement.  Check your input values "
-                                      u"and try again.  If allocation "
-                                      u"continues to fail, please report the "
-                                      u"problem to bugs@reliaqual.com."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
+                                u"Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 4 and \
                 foo_apportionment(_model_, _Ts_, _lambdas_):
-            _util.rtk_error(_(u"Unable to allocate reliability "
-                                      u"requirement.  Check your input values "
-                                      u"and try again.  If allocation "
-                                      u"continues to fail, please report the "
-                                      u"problem to bugs@reliaqual.com."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
+                                u"Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() < 1 or \
                 self.cmbAllocationType.get_active() > 4:
-            _util.rtk_error(_(u"No allocation method selected.  "
-                                      u"Please select an allocation method "
-                                      u"and try again."))
+            _util.rtk_warning(_(u"No allocation method selected.  Please select "
+                                u"an allocation method and try again."))
 
         self.txtNumElements.set_text(str(_n_assemblies_))
 
@@ -7690,3 +7725,190 @@ class Hardware(object):
 
         return (_cost_, _lambdaa_, _lambdad_, _lambdas_, _lambdap_,
                 _partcount_, _pwrdiss_)
+
+    def _create_report(self, menuitem):
+        """
+        Method to create reports related to the Revision class.
+
+        :param gtk.MenuItem menuitem: the gtk.MenuItem() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        import xlwt
+        from datetime import datetime
+        from os import path
+
+        # Launch a dialog to let the user select the path to the file
+        # containing the ensuing report.
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Create Report"),
+                                        parent=None,
+                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(_conf.PROG_DIR)
+        _dialog.set_current_name(menuitem.get_label() + '.xls')
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"Report Type"))
+        _filter.add_pattern("*.pdf")
+        _filter.add_pattern("*.xls")
+        _filter.add_pattern("*.xlsx")
+        _dialog.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
+
+        # Get the path of the output file or return.
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _filename = _dialog.get_filename()
+            _dialog.destroy()
+        else:
+            _dialog.destroy()
+            return False
+
+        # Using the output file extension, select the correct writer.
+        _ext = path.splitext(_filename)[-1][1:]
+        if _ext.startswith('.'):
+            _ext = _ext[1:]
+
+        if _ext == 'xls':
+            _writer = ExcelReport(_filename, engine='xlwt')
+
+        _today = datetime.today().strftime('%Y-%m-%d')
+
+        # Write the correct report.
+        if menuitem.get_label() == 'Allocation Report':
+            _title = 'Reliability Allocation Report'
+
+            _metadata = pd.DataFrame([(self.txtReliabilityGoal.get_text(),
+                                       self.txtMTBFGoal.get_text(),
+                                       self.txtFailureRateGoal.get_text(),
+                                       self.cmbAllocationType.get_active_text(),
+                                       self.txtOperTime.get_text(), _today)],
+                                     columns=['Reliability', 'MTTF/MTBF',
+                                              'Failure Intensity',
+                                              'Allocation Type',
+                                              'Operating Time',
+                                              'Report Date'])
+
+            if self.allocation_type == 1:
+                _columns = [_(u"Description"),_(u"Weighting Factor"),
+                            _(u"Percent Weighting Factor"),
+                            _(u"Current Failure Rate"),
+                            _(u"Allocated Failure Rate"), _(u"Current MTBF"),
+                            _(u"Allocated MTBF"), _(u"Current Reliability"),
+                            _(u"Allocated Reliability")]
+                _positions = [2, 3, 12, 14, 15, 16, 17, 18, 19]
+            elif self.allocation_type == 2:
+                _columns = [_(u"Description"), _(u"Number of Sub-Elements"),
+                            _(u"Operating Time"), _(u"Duty Cycle"),
+                            _(u"Importance Measure"),
+                            _(u"Current Failure Rate"),
+                            _(u"Allocated Failure Rate"), _(u"Current MTBF"),
+                            _(u"Allocated MTBF"), _(u"Current Reliability"),
+                            _(u"Allocated Reliability")]
+                _positions = [2, 5, 6, 7, 12, 14, 15, 16, 17, 18, 19]
+            elif self.allocation_type == 3:
+                _columns = [_(u"Description"), _(u"Weighting Factor"),
+                            _(u"Current Failure Rate"),
+                            _(u"Allocated Failure Rate"), _(u"Current MTBF"),
+                            _(u"Allocated MTBF"), _(u"Current Reliability"),
+                            _(u"Allocated Reliability")]
+                _positions = [2, 12, 14, 15, 16, 17, 18, 19]
+            elif self.allocation_type == 4:
+                _columns = [_(u"Description"), _(u"Intricacy"),
+                            _(u"State of the Art"), _(u"Operating Time"),
+                            _(u"Environment"), _(u"Weighting Factor"),
+                            _(u"Percent Weighting Factor"),
+                            _(u"Current Failure Rate"),
+                            _(u"Allocated Failure Rate"), _(u"Current MTBF"),
+                            _(u"Allocated MTBF"), _(u"Current Reliability"),
+                            _(u"Allocated Reliability")]
+                _positions = [2, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+            _model = self.tvwAllocation.get_model()
+            _row = _model.get_iter_root()
+
+            _defs = []
+            while _row is not None:
+                _record = []
+                for _pos in _positions:
+                    _record.append(_model.get_value(_row, _pos))
+                _defs.append(tuple(_record))
+                _row = _model.iter_next(_row)
+
+            # Create a pandas data frame from the results.
+            _data = pd.DataFrame(_defs,
+                                 columns=_columns)
+
+            _writer.write_title(_title, self.name, srow=0, scol=0)
+            _writer.write_metadata(_metadata, self.name, srow=3, scol=0)
+            _writer.write_content(_data, self.name, srow=12, scol=0)
+
+        elif menuitem.get_label() == 'Hazards Analysis Report':
+            _title = 'Hazards Analysis Report'
+
+            if self.parent_assembly == '-':
+                _positions = [1, 2, 3, 4, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+            else:
+                _positions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 21]
+
+            _model = self.tvwRisk.get_model()
+            _row = _model.get_iter_root()
+
+            _defs = []
+            while _row is not None:
+                _record = []
+                for _pos in _positions:
+                    _record.append(_model.get_value(_row, _pos))
+                _defs.append(tuple(_record))
+                _row = _model.iter_next(_row)
+
+            _data = pd.DataFrame(_defs,
+                                 columns=[_(u"Hardware Item"),
+                                          _(u"Failure Intensity"),
+                                          _(u"Potential Hazard"),
+                                          _(u"Potential Cause"),
+                                          _(u"Effect"),
+                                          _(u"Severity of Effect"),
+                                          _(u"Probability of Effect"),
+                                          _(u"Hazard Risk Index (HRI)"),
+                                          _(u"Mitigation Strategy"),
+                                          _(u"Severity After Mitigation"),
+                                          _(u"Probability After Mitigation"),
+                                          _(u"HRI After Mitigation"),
+                                          _(u"Remarks")])
+
+            # Write the requirements list to the file.
+            _writer.write_title(_title, self.name, srow=0, scol=0)
+            _writer.write_content(_data, self.name, srow=5, scol=0)
+
+        elif menuitem.get_label() == 'Similar Item Analysis Report':
+            _title = 'Similar Item Analysis Report'
+
+            _model = self.tvwSIA.get_model()
+            _row = _model.get_iter_root()
+
+            _data = pd.DataFrame(_data,
+                                 columns=['Requirement ID', 'Task ID',
+                                          'Task Description',
+                                          'Start Date', 'Due Date',
+                                          '% Complete'])
+
+            # Write the requirements list to the file.
+            _writer.write_title(_title, self.name, srow=0, scol=0)
+            _writer.write_content(_data, self.name, srow=5, scol=0)
+
+        elif menuitem.get_label() == 'FMEA Report':
+            _title = 'Failure Mode and Effects Analysis Report'
+
+        _writer.close()
+
+        return False
