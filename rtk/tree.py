@@ -47,6 +47,7 @@ import imports as _impt
 import utilities as _util
 
 from _assistants_.adds import AddTestPlan
+from _assistants_.processmap import ProcessMap
 
 
 class TreeWindow(gtk.Window):
@@ -291,7 +292,7 @@ class TreeWindow(gtk.Window):
         menu = gtk.Menu()
 
         menu2 = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("_Project"), use_underline=True)
+        menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
         menu_item.connect('activate', _util.create_project, self)
         menu2.append(menu_item)
 
@@ -440,6 +441,16 @@ class TreeWindow(gtk.Window):
         mnuSearch.show()
         mnuSearch.set_submenu(menu)
 
+        # Create the View menu.
+        menu = gtk.Menu()
+        menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
+        menu_item.connect('activate', ProcessMap, self._app)
+        menu.append(menu_item)
+
+        mnuView = gtk.MenuItem(label=_(u"_View"), use_underline=True)
+        mnuView.show()
+        mnuView.set_submenu(menu)
+
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
         menu_item.connect('activate', _util.options, self._app)
@@ -466,6 +477,7 @@ class TreeWindow(gtk.Window):
         menubar.append(mnuFile)
         menubar.append(mnuEdit)
         menubar.append(mnuSearch)
+        menubar.append(mnuView)
         menubar.append(mnuTools)
 
         return menubar
@@ -477,7 +489,7 @@ class TreeWindow(gtk.Window):
 
         _pos = 0
 
-# New file button.
+        # New file button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         image = gtk.Image()
@@ -487,7 +499,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Connect button
+        # Connect button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Connect to an existing RTK Program Database."))
         image = gtk.Image()
