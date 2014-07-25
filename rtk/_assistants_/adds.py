@@ -80,10 +80,10 @@ class AddRevision(object):
         """
         Initialize on instance of the Add Revision Assistant.
 
-        @param __button: the gtk.Button() widget that called the assistant.
-        @type __button: gtk.Button
-        @param app: the instance of the RTK application calling the assistant.
-        @type app: RTK application
+        :param gtk.Button __button: the gtk.Button() widget that called the
+                                    assistant.
+        :param RTK app: the instance of the RTK application calling the
+                        assistant.
         """
 
         self._app = app
@@ -206,12 +206,11 @@ class AddRevision(object):
         self.assistant.show_all()
 
     def _forward_page_select(self, current_page):
-        '''
+        """
         Method to set the next active page in the assistant.
 
-        @param integer current_page: the currently active page in the
-                                     assistant.
-        '''
+        :param int current_page: the currently active page in the assistant.
+        """
 
         if current_page == 0:
             self.assistant.set_current_page(1)
@@ -226,7 +225,8 @@ class AddRevision(object):
         """
         Method to add the new revision to the RTK Program database.
 
-        @param __assistant: the current instance of the assistant.
+        :param gtk.Assistant __assistant: the current instance of the
+                                          assistant.
         """
 
         # Find out who is logged in and adding this revision.
@@ -291,86 +291,84 @@ class AddRevision(object):
                 _function = self._app.DB.execute_query(_query,
                                                        None,
                                                        self._app.ProgCnx)
-        else:
-            _function = [('', 0, 'New Function', 0, ''),]
+            else:
+                _function = [('', 0, 'New Function', 0, ''),]
 
-        _n_functions = len(_function)
+            _n_functions = len(_function)
 
-        # Copy the function hierarchy for the new revision.
-        for i in range(_n_functions):
-            _function_name = _(u"New Function_") + str(i)
+            # Copy the function hierarchy for the new revision.
+            for i in range(_n_functions):
+                _function_name = _(u"New Function_") + str(i)
 
-            _values = (_revision_id, _function_id, _function[i][0],
-                       _function[i][1], _function[i][2],
-                       _function[i][3], _function[i][4])
-            _query = "INSERT INTO tbl_functions \
-                      (fld_revision_id, fld_function_id, fld_code, \
-                       fld_level, fld_name, fld_parent_id, \
-                       fld_remarks) \
-                      VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % _values
-            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                       commit=True)
-
-            if self.chkFunctionMatrix.get_active():
-                _query = "INSERT INTO tbl_functional_matrix \
-                          (fld_revision_id, fld_function_id) \
-                          VALUES (%d, %d)" % (_revision_id, _function_id)
+                _values = (_revision_id, _function_id, _function[i][0],
+                           _function[i][1], _function[i][2],
+                           _function[i][3], _function[i][4])
+                _query = "INSERT INTO tbl_functions \
+                          (fld_revision_id, fld_function_id, fld_code, \
+                           fld_level, fld_name, fld_parent_id, \
+                           fld_remarks) \
+                          VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % \
+                          _values
                 self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                            commit=True)
 
-            _function_id += 1
+                if self.chkFunctionMatrix.get_active():
+                    _query = "INSERT INTO tbl_functional_matrix \
+                              (fld_revision_id, fld_function_id) \
+                              VALUES (%d, %d)" % (_revision_id, _function_id)
+                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                               commit=True)
 
-        if self.chkRequirements.get_active():
-            _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
-            _requirement_id = self._app.DB.execute_query(_query,
-                                                         None,
-                                                         self._app.ProgCnx)
+                _function_id += 1
 
-            if _requirement_id[0][0] is not None:
-                _requirement_id = _requirement_id[0][0] + 1
+            if self.chkRequirements.get_active():
+                _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
+                _requirement_id = self._app.DB.execute_query(_query, None,
+                                                             self._app.ProgCnx)
 
-                # Retrieve the information needed to copy the requirement
-                # hierarchy from the base revision to the new revision.
-                _query = "SELECT fld_requirement_desc, fld_requirement_code, \
-                                 fld_derived, fld_parent_requirement, \
-                                 fld_owner, fld_specification, \
-                                 fld_page_number, fld_figure_number \
-                          FROM tbl_requirements \
-                          WHERE fld_revision_id=%d" % _base_revision
-                _requirements = self._app.DB.execute_query(_query,
-                                                           None,
-                                                           self._app.ProgCnx)
+                if _requirement_id[0][0] is not None:
+                    _requirement_id = _requirement_id[0][0] + 1
 
-            # Copy the requirement hierarchy for the new revision.
-            for i in range(len(_requirements)):
-                _query = "INSERT INTO tbl_requirements \
-                          (fld_revision_id, fld_requirement_id, \
-                           fld_requirement_desc, fld_requirement_code, \
-                           fld_derived, fld_parent_requirement, \
-                           fld_owner, fld_specification, \
-                           fld_page_number, fld_figure_number) \
-                          VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
-                                  '{5:s}', '{6:s}', '{7:s}', '{8:s}', \
-                                  '{9:s}')".format(
-                          _revision_id, _requirement_id,
-                          _requirements[i][0], _requirements[i][1],
-                          _requirements[i][2], _requirements[i][3],
-                          _requirements[i][4], _requirements[i][5],
-                          _requirements[i][6], _requirements[i][7])
-                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                           commit=True)
+                    # Retrieve the information needed to copy the requirement
+                    # hierarchy from the base revision to the new revision.
+                    _query = "SELECT fld_requirement_desc, \
+                                     fld_requirement_code, fld_derived, \
+                                     fld_parent_requirement, fld_owner, \
+                                     fld_specification, fld_page_number, \
+                                     fld_figure_number \
+                              FROM tbl_requirements \
+                              WHERE fld_revision_id=%d" % _base_revision
+                    _requirements = self._app.DB.execute_query(_query, None,
+                                                            self._app.ProgCnx)
 
-                _requirement_id += 1
+                # Copy the requirement hierarchy for the new revision.
+                for i in range(len(_requirements)):
+                    _query = "INSERT INTO tbl_requirements \
+                              (fld_revision_id, fld_requirement_id, \
+                               fld_requirement_desc, fld_requirement_code, \
+                               fld_derived, fld_parent_requirement, \
+                               fld_owner, fld_specification, \
+                               fld_page_number, fld_figure_number) \
+                              VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
+                                      '{5:s}', '{6:s}', '{7:s}', '{8:s}', \
+                                      '{9:s}')".format(
+                              _revision_id, _requirement_id,
+                              _requirements[i][0], _requirements[i][1],
+                              _requirements[i][2], _requirements[i][3],
+                              _requirements[i][4], _requirements[i][5],
+                              _requirements[i][6], _requirements[i][7])
+                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                               commit=True)
+
+                    _requirement_id += 1
+
+        _query = "SELECT MAX(fld_assembly_id) FROM tbl_system"
+        _assembly_id = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
+        if _assembly_id[0][0] is not None:
+            _assembly_id = _assembly_id[0][0] + 1
 
         if self.chkHardware.get_active():
-            _query = "SELECT MAX(fld_assembly_id) FROM tbl_system"
-            _assembly_id = self._app.DB.execute_query(_query,
-                                                      None,
-                                                      self._app.ProgCnx)
-
-            if _assembly_id[0][0] is not None:
-                _assembly_id = _assembly_id[0][0] + 1
-
                 # Retrieve the information needed to copy the hardware
                 # hierarchy from the base revision to the new revision.
                 if self.chkFailureInfo.get_active():
@@ -452,7 +450,8 @@ class AddRevision(object):
                                           %f, %f, %d, '%s', '%s', %d, %d, \
                                           %f, '%s', '%s', '%s', '%s', %d, \
                                           '%s', %d, '%s', '%s', '%s', %d, \
-                                          %f, %f, %f, %f, %f, %f, '%s')" % _values
+                                          %f, %f, %f, %f, %f, %f, '%s')" % \
+                                 _values
                     else:
                         _values = (_revision_id, _assembly_id,
                                    _system[i][0], _system[i][1],
@@ -502,19 +501,77 @@ class AddRevision(object):
                     self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                                commit=True)
 
-                    _query = "INSERT INTO tbl_functional_matrix \
-                              (fld_revision_id, fld_assembly_id) \
-                              VALUES(%d, %d)" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
-
                     _query = "INSERT INTO tbl_fmeca \
                               (fld_revision_id, fld_assembly_id) \
                               VALUES(%d, %d)" % _values
                     self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                                commit=True)
 
+                    if self.chkFunctionMatrix.get_active():
+                        _query = "SELECT fld_function_id \
+                                  FROM tbl_functions \
+                                  WHERE fld_revision_id=%d" % _revision_id
+                        _function = self._app.DB.execute_query(_query, None,
+                                                            self._app.ProgCnx)
+                        for i in range(len(_functions)):
+                            _query = "INSERT INTO tbl_functional_matrix \
+                                      (fld_revision_id, fld_assembly_id, \
+                                       fld_function_id) \
+                                      VALUES(%d, %d, %d)" % \
+                                     (_revision_id, _assembly_id,
+                                      _function[i][0])
+                            self._app.DB.execute_query(_query, None,
+                                                       self._app.ProgCnx,
+                                                       commit=True)
+
                     _assembly_id += 1
+
+        else:
+            _values = (_revision_id, _assembly_id, _who)
+            _query = "INSERT INTO tbl_system \
+                                  (fld_revision_id, fld_assembly_id, \
+                                   fld_entered_by) \
+                      VALUES (%d, %d, '%s')" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
+
+            _values = (_revision_id, _assembly_id)
+            _query = "INSERT INTO tbl_allocation \
+                      (fld_revision_id, fld_assembly_id) \
+                      VALUES (%d, %d)" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
+
+            _query = "INSERT INTO tbl_risk_analysis \
+                      (fld_revision_id, fld_assembly_id) \
+                      VALUES (%d, %d)" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
+
+            _query = "INSERT INTO tbl_similar_item \
+                      (fld_revision_id, fld_assembly_id) \
+                      VALUES (%d, %d)" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
+
+            _query = "INSERT INTO tbl_fmeca \
+                      (fld_revision_id, fld_assembly_id) \
+                      VALUES(%d, %d)" % _values
+            self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                       commit=True)
+
+        _query = "SELECT MAX(fld_software_id) FROM tbl_software"
+        _module_id = self._app.DB.execute_query(_query, None,
+                                                self._app.ProgCnx)
+        if _module_id[0][0] is not None:
+            _module_id = _module_id[0][0] + 1
+
+        _query = "INSERT INTO tbl_software \
+                  (fld_revision_id, fld_level_id) \
+                  VALUES (%d, 0)" % _revision_id
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _util.rtk_error(_(u"Error creating system software hierarchy."))
 
         # Reload the revision tree.
         self._app.REVISION.load_tree()
@@ -524,8 +581,7 @@ class AddRevision(object):
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
         """
 
         self.assistant.destroy()
@@ -541,9 +597,9 @@ class AddIncident(object):
         """
         Initialize an instance of the Add Incident Assistant.
 
-        @param __button: the gtk.Button() that calling this Assistant.
-        @type __button: gtk.Button
-        @param app: the current instance of the RTK application.
+        :param gtk.Button __button: the gtk.Button() that called this
+                                    Assistant.
+        :param RTK app: the current instance of the RTK application.
         """
 
         self._app = app
@@ -794,12 +850,12 @@ class AddIncident(object):
         Method to check if all the required data is filled in before allowing
         the assistant to continue.
 
-        @param __widget: the gtk.Widget() calling this method.
-        @type __widget: gtk.Widget
-        @param __event: the gtk.gdkEvent() that called this method.
-        @param __event: gtk.gdk.Event
-        @param page: the page in the gtk.Assistant() to check.
-        @type page: integer
+        :param __widget: the gtk.Widget() calling this method.
+        :type __widget: gtk.Widget
+        :param __event: the gtk.gdkEvent() that called this method.
+        :param __event: gtk.gdk.Event
+        :param page: the page in the gtk.Assistant() to check.
+        :type page: integer
         @return: False if successful or True if an error is encountered.
         @rtype: boolean
         """
@@ -847,8 +903,8 @@ class AddIncident(object):
         """
         Method to add the new incident to the open RTK Program database.
 
-        @param assistant: the gtk.Assistant() that represents the wizard.
-        @type assistant: gtk.Assistant
+        :param assistant: the gtk.Assistant() that represents the wizard.
+        :type assistant: gtk.Assistant
         @return: False if successful or True if an error is encountered.
         @rtype: boolean
         """
@@ -938,8 +994,8 @@ class AddIncident(object):
         Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         @return: True
         @rtype: boolean
         """
@@ -1392,10 +1448,10 @@ class CreateDataSet(object):
         """
         Method to initialize the Dataset Creation Assistant.
 
-        @param button: the gtk.Button() that called this method.
-        @type button: gtk.Button
-        @param app: the RTK application.
-        @type app: RTK application
+        :param button: the gtk.Button() that called this method.
+        :type button: gtk.Button
+        :param app: the RTK application.
+        :type app: RTK application
         """
 
         self._app = app
@@ -1525,8 +1581,8 @@ class CreateDataSet(object):
         """
         Method to create the desired data set.
 
-        @param button: the gtk.Button() that called this method.
-        @type button: gtk.Button
+        :param button: the gtk.Button() that called this method.
+        :type button: gtk.Button
         """
 
         _window_ = self.assistant.get_root_window()
@@ -1857,10 +1913,10 @@ class CreateDataSet(object):
         """
         Function to check the consistency of the data records.
 
-        @param results1: the previous record in the data set.
-        @type results1: list
-        @param results2: the current record in the data set.
-        @type results2: list
+        :param results1: the previous record in the data set.
+        :type results1: list
+        :param results2: the current record in the data set.
+        :type results2: list
         @return: False if records are consistent or True if not.
         @rtype: boolean
         """
@@ -1889,8 +1945,8 @@ class CreateDataSet(object):
         Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         """
 
         self.assistant.destroy()
@@ -1906,10 +1962,10 @@ class AddDataset(object):
         """
         Method to initialize the blank data set creation assistant.
 
-        @param __button: the gtk.Button() that called this assistant.
-        @type __button: gtk.Button
-        @param app: the RTK application.
-        @type app: RTK application
+        :param __button: the gtk.Button() that called this assistant.
+        :type __button: gtk.Button
+        :param app: the RTK application.
+        :type app: RTK application
         """
 
         self._app = app
@@ -2040,8 +2096,8 @@ class AddDataset(object):
         Method to create the new data set and add it to the open RTK Program
         database.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         @return: False if successful or True if an error is encountered.
         @rtype: boolean
         """
@@ -2093,8 +2149,8 @@ class AddDataset(object):
         Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         """
 
         self.assistant.destroy()
@@ -2113,10 +2169,10 @@ class AddDatasetRecord(object):
         """
         Method to initialize the survival data set record addition assistant.
 
-        @param __button: the gtk.Button() that called this assistant.
-        @type __button: gtk.Button
-        @param app: the RTK application.
-        @type app: RTK application
+        :param __button: the gtk.Button() that called this assistant.
+        :type __button: gtk.Button
+        :param app: the RTK application.
+        :type app: RTK application
         """
 
         self._app = app
@@ -2201,8 +2257,8 @@ class AddDatasetRecord(object):
         Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param __button: the gtk.Button() that called this method.
+        :type __button: gtk.Button
         """
 
         self.assistant.destroy()

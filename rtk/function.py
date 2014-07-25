@@ -922,9 +922,9 @@ class Function(object):
                                                self._app.ProgCnx,
                                                commit=False)
         try:
-            _n_functions_ = len(_results_)
+            _n_functions = len(_results_)
         except TypeError:
-            _n_functions_ = 0
+            _n_functions = 0
 
         # Add a line to the functional matrix for every assembly ID.  Set the
         # cell under each function column to the appropriate relationship
@@ -934,16 +934,17 @@ class Function(object):
             _data.append(_assemblies_[i][0])
             _data.append(_assemblies_[i][1])
 
-            # Loop through all the hardware/function relationships.
-            for j in range(_n_functions_):
-                if _results_[j][2] == 'X':
-                    _color_ = 'black'
-                else:
-                    _color_ = 'white'
+            if _n_functions > 0:
+                # Loop through all the hardware/function relationships.
+                for j in range(_n_functions):
+                    if _results_[j][2] == 'X':
+                        _color_ = 'black'
+                    else:
+                        _color_ = 'white'
 
-                if _results_[j][0] == _assemblies_[i][0]:
-                    _data.append("<span foreground='black' background='%s'> "
-                                 "%s </span>" % (_color_, _results_[j][2]))
+                    if _results_[j][0] == _assemblies_[i][0]:
+                        _data.append("<span foreground='black' background='%s'> "
+                                     "%s </span>" % (_color_, _results_[j][2]))
 
             _model_.append(_data)
 
@@ -1658,7 +1659,7 @@ class Function(object):
         else:
             new_text = "<span foreground='#FD0202' background='#FD0202'>     </span>"
 
-        _model_.set_value(_row_, column, new_text)
+        _model.set_value(_row_, column, new_text)
 
         return False
 

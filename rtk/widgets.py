@@ -554,25 +554,22 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white', fg_col='black'):
+def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
+                  fg_col='black'):
     """
     Utility function to create gtk.TreeView() widgets.
 
-    :param name: the name of the gtk.TreeView() to read formatting information
-                 for.
-    :type name: string
-    :param fmt_idx: the index of the format file to use when creating the
-                    gtk.TreeView().
-    :type fmt_idx: integer
-    :param app: the RTK application.
-    :param cmblist: the list of items to load into the gtk.CellRendererCombo().
-    :type cmblist: list of strings
-    @keyword bg_col: the background color to use for each row.  Defaults to
-                     white.
-    :type bg_col: string
-    @keyword fg_col: the foreground (text) color to use for each row.  Defaults
-                     to black.
-    :type fg_col: string
+    :param str name: the name of the gtk.TreeView() to read formatting
+                     information for.
+    :param int fmt_idx: the index of the format file to use when creating the
+                        gtk.TreeView().
+    :param RTK app: the RTK application.
+    :param list cmblist: the list of items to load into the
+                         gtk.CellRendererCombo().
+    :keyword str bg_col: the background color to use for each row.  Defaults to
+                         white.
+    :keyword str fg_col: the foreground (text) color to use for each row.
+                         Defaults to black.
     :return: the gtk.TreeView() created by this method and the order of the
              gtk.TreeView() columns.
     :rtype: gtk.TreeView, list
