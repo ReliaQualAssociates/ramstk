@@ -930,7 +930,7 @@ class Revision(object):
 
         def _create_assessment_results_tab(self, notebook):
             """
-            Funciton to create the Revision class gtk.Notebook() page for
+            Function to create the Revision class gtk.Notebook() page for
             displaying assessment results for the selected Revision.
 
             :param self: the current instance of a Revision class.

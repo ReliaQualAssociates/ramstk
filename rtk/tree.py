@@ -48,6 +48,7 @@ import utilities as _util
 
 from _assistants_.adds import AddTestPlan
 from _assistants_.processmap import ProcessMap
+from _assistants_.designreview import DesignReview
 
 
 class TreeWindow(gtk.Window):
@@ -445,6 +446,10 @@ class TreeWindow(gtk.Window):
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
         menu_item.connect('activate', ProcessMap, self._app)
+        menu.append(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"_Design Reviews"),
+                                 use_underline=True)
+        menu_item.connect('activate', DesignReview, self._app)
         menu.append(menu_item)
 
         mnuView = gtk.MenuItem(label=_(u"_View"), use_underline=True)
