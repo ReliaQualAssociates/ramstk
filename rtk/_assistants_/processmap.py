@@ -54,6 +54,8 @@ class ProcessMap(gtk.Window):
 
     def __init__(self, __menuitem, application):
 
+        self._steps = {}
+
         gtk.Window.__init__(self)
         self.set_title(_(u"Process Map Navigator"))
 
@@ -69,16 +71,85 @@ class ProcessMap(gtk.Window):
         self._app = application
 
         self.lytProcessMap = gtk.Layout()
-        self.lytProcessMap.set_size_request(650, 500)
+        self.lytProcessMap.set_size_request(1000, 1000)
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add_with_viewport(self.lytProcessMap)
 
         self.add(_scrollwindow)
 
+        # Parse the process map file and layout the process map.
+        _mapfile = _conf.DATA_DIR + '/process.map'
+        self._parse_process_map(_mapfile)
         self._layout_process_map()
 
         self.show_all()
+
+    def _parse_process_map(self, mapfile):
+        """
+        Method to parse the process map file into instance variables.
+
+        :param str mapfile: the full path to the process map to parse.
+        """
+
+        from lxml import etree
+
+        # Retrieve the step identifiers for each step.
+        _step_id = etree.parse(mapfile).xpath("/root/map/step/id")
+
+        # Retrieve the x-positions for each step.
+        _x_pos = etree.parse(mapfile).xpath("/root/map/step/xposition")
+
+        # Retrieve the y-positions for each step.
+        _y_pos = etree.parse(mapfile).xpath("/root/map/step/yposition")
+
+        # Retrieve the widths for each step.
+        _width = etree.parse(mapfile).xpath("/root/map/step/width")
+
+        # Retrieve the heights for each step.
+        _height = etree.parse(mapfile).xpath("/root/map/step/height")
+
+        # Retrieve the foreground color for each step.
+        _foreground = etree.parse(mapfile).xpath("/root/map/step/foreground")
+
+        # Retrieve the background color for each step.
+        _background = etree.parse(mapfile).xpath("/root/map/step/background")
+
+        # Retrieve the description for each step.
+        _descriptions = etree.parse(mapfile).xpath("/root/map/step/description")
+
+        # Retrieve the module page to select for each step.
+        _module = etree.parse(mapfile).xpath("/root/map/step/module")
+
+        # Retrieve the work book page for each step.
+        _work = etree.parse(mapfile).xpath("/root/map/step/work")
+
+        # Retrieve the step id to connect to.
+        _next_step = etree.parse(mapfile).xpath("/root/map/step/connect")
+
+        try:
+            _n_steps = len(_descriptions)
+        except TypeError:
+            _n_steps = 0
+
+        for i in range(_n_steps):
+            try:
+                _connect = int(_next_step[i].text)
+            except TypeError:
+                _connect = -1
+
+            self._steps[int(_step_id[i].text)] = [int(_x_pos[i].text),
+                                                  int(_y_pos[i].text),
+                                                  int(_width[i].text),
+                                                  int(_height[i].text),
+                                                  _foreground[i].text,
+                                                  _background[i].text,
+                                                  _descriptions[i].text,
+                                                  int(_module[i].text),
+                                                  int(_work[i].text),
+                                                  _connect]
+
+        return False
 
     def _layout_process_map(self):
         """
@@ -88,28 +159,15 @@ class ProcessMap(gtk.Window):
         :rtype: boolean
         """
 
-        _results = [(10, 10, 200, 100, '#000000', '#C5F1FF',
-                     "Gather stakeholder inputs", 2, 0),
-                    (10, 165, 200, 100, '#000000', '#E5E5E5',
-                     "Define system reliability requirements", 2, 1),
-                    (10, 320, 200, 100, '#000000', '#E5E5E5',
-                     "Allocate system reliability requirement", 3, 1),
-                    (10, 475, 200, 100, '#000000', '#E5E5E5',
-                     "Validate sub-system reliability requirements", 2, 2 )]
-        try:
-            _n_steps = len(_results)
-        except TypeError:
-            _n_steps = 0
-
-        for i in range(_n_steps):
+        for _key in self._steps.keys():
             # Create the step.
             _step = gtk.Button(label=None)
             _step.set_relief(gtk.RELIEF_HALF)
-            _step.set_size_request(_results[i][2], _results[i][3])
+            _step.set_size_request(self._steps[_key][2], self._steps[_key][3])
 
             # Make the background color for the step.
             _map = _step.get_colormap()
-            _color = _map.alloc_color(_results[i][5])
+            _color = _map.alloc_color(self._steps[_key][5])
 
             # Copy the current step style and replace the background.
             _style = _step.get_style().copy()
@@ -125,34 +183,77 @@ class ProcessMap(gtk.Window):
             _label.set_line_wrap(True)
             _label.set_width_chars(20)
             _label.set_markup("<span weight='bold'>" +
-                              _results[i][6] + "</span>")
+                              self._steps[_key][6] + "</span>")
             _step.add(_label)
 
-            # Create the
-            _arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_ETCHED_IN)
-            _arrow.set_size_request(20, 100)
-            _line = gtk.VSeparator()
-            _line.set_size_request(10, int(0.5 * _results[i][3]))
+            # Create the lines and arrows that connect the steps together.
+            _connect_to = self._steps[_key][9]
+            if _connect_to != -1:
 
-            # Make the color for the line.
-            _map = _line.get_colormap()
-            _color = _map.alloc_color(_results[i][4])
+                if self._steps[_key][0] == self._steps[_connect_to][0]:
+                    _direction = gtk.ARROW_DOWN
 
-            # Copy the current line style and replace the background.
-            _style = _line.get_style().copy()
-            _style.bg[gtk.STATE_NORMAL] = _color
+                    # Create a vertical line.
+                    _line = gtk.VSeparator()
+                    _line_width = 10
+                    _line_height = int(0.5 * self._steps[_key][3])
 
-            # Set the line's style to the one just created.
-            _line.set_style(_style)
+                    _line_x_pos = self._steps[_key][0] + \
+                                  int(0.5 * self._steps[_key][2])
+                    _line_y_pos = self._steps[_key][1] + self._steps[_key][3]
+
+                    _arrow_width = 20
+                    _arrow_height = 100
+                    _arrow_x_pos = _line_x_pos - 5
+                    _arrow_y_pos = _line_y_pos
+
+                elif self._steps[_key][0] < self._steps[_connect_to][0]:
+                    _direction = gtk.ARROW_RIGHT
+
+                    # Create a horizontal line.
+                    _line = gtk.HSeparator()
+                    _line_width = int(0.5 * self._steps[_key][2])
+                    _line_height = 10
+
+                    _line_x_pos = self._steps[_key][0] + self._steps[_key][2]
+                    _line_y_pos = self._steps[_key][1] + \
+                                  int(0.5 * self._steps[_key][3])
+
+                    _arrow_width = 20
+                    _arrow_height = 20
+                    _arrow_x_pos = self._steps[_connect_to][0] - 13
+                    _arrow_y_pos = _line_y_pos - 5
+
+                #elif (self._steps[_key][0] != self._steps[_connect_to][0] and
+                #      self._steps[_key][1] != self._steps[_connect_to][1]):
+                #    _direction = gtk.ARROW_LEFT
+
+                _arrow = gtk.Arrow(_direction, gtk.SHADOW_ETCHED_IN)
+                _arrow.set_size_request(_arrow_width, _arrow_height)
+
+                # Make the line black.
+                _line.set_size_request(_line_width, _line_height)
+                _map = _line.get_colormap()
+                _color = _map.alloc_color('#000000')
+
+                # Copy the current line style and replace the background.
+                _style = _line.get_style().copy()
+                _style.bg[gtk.STATE_NORMAL] = _color
+
+                # Set the line's style to the style just created.
+                _line.set_style(_style)
+
+                # Place the lines and arrows.
+                self.lytProcessMap.put(_line, _line_x_pos, _line_y_pos)
+                self.lytProcessMap.put(_arrow, _arrow_x_pos, _arrow_y_pos)
 
             # Place the step.
-            self.lytProcessMap.put(_step, _results[i][0], _results[i][1])
-            self.lytProcessMap.put(_line, _results[i][0] + int(0.5 * _results[i][2]), _results[i][1] + _results[i][3])
-            self.lytProcessMap.put(_arrow, _results[i][0] + int(0.5 * _results[i][2]) - 5, _results[i][1] + _results[i][3])
+            self.lytProcessMap.put(_step, self._steps[_key][0],
+                                   self._steps[_key][1])
 
             # Connect the step to the callback method.
-            _step.connect('clicked', self._step_select, _results[i][7],
-                          _results[i][8])
+            _step.connect('clicked', self._step_select,
+                          self._steps[_key][7], self._steps[_key][8])
 
         return False
 

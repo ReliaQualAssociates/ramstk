@@ -1,0 +1,64 @@
+<!--
+-*- coding: utf-8 -*-
+
+      process.map is part of the RTK Project
+
+      Copyright (C) 2014 Andrew "Weibullguy" Rowland
+                         <andrew.rowland@reliaqual.com>
+-->
+
+<!-- This file contains information used by the RTK application to draw
+the process map. -->
+
+<root>
+    <map name="LRM">
+        <step>
+            <id>0</id>
+            <xposition>10</xposition>
+            <yposition>10</yposition>
+            <width>200</width>
+            <height>100</height>
+            <foreground>#000000</foreground>
+            <background>#FFFFFF</background>
+            <description>Gather stakeholder inputs</description>
+            <module>2</module>
+            <work>0</work>
+        </step>
+        <step>
+            <id>1</id>
+            <xposition>10</xposition>
+            <yposition>165</yposition>
+            <width>200</width>
+            <height>100</height>
+            <foreground>#000000</foreground>
+            <background>#FFFFFF</background>
+            <description>Define system reliability requirement</description>
+            <module>2</module>
+            <work>1</work>
+        </step>
+        <step>
+            <id>2</id>
+            <xposition>10</xposition>
+            <yposition>320</yposition>
+            <width>200</width>
+            <height>100</height>
+            <foreground>#000000</foreground>
+            <background>#FFFFFF</background>
+            <description>Allocate system reliability requirement</description>
+            <module>3</module>
+            <work>1</work>
+        </step>
+        <step>
+            <id>3</id>
+            <xposition>10</xposition>
+            <yposition>475</yposition>
+            <width>200</width>
+            <height>100</height>
+            <foreground>#000000</foreground>
+            <background>#FFFFFF</background>
+            <description>Validate sub-system reliability requirements</description>
+            <module>2</module>
+            <work>2</work>
+        </step>
+    </map>
+</root>
