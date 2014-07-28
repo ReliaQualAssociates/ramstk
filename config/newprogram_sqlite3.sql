@@ -48,6 +48,14 @@ CREATE TABLE "tbl_program_info" (
 );
 INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,1,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','','STANDARD');
 
+DROP TABLE IF EXISTS "tbl_reviews";
+CREATE TABLE "tbl_reviews" (
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision design review is associated with.
+    "fld_gateway_id" INTEGER NOT NULL DEFAULT(1),                   -- Design revew gateway.
+    "fld_concern_id" INTEGER NOT NULL,                              -- Criteria ID.
+    "fld_satisfied" INTEGER NOT NULL DEFAULT(0)                     -- Whether criteria is satisfied or not.
+);
+
 DROP TABLE IF EXISTS "tbl_missions";
 CREATE TABLE "tbl_missions" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- Identifier for the revision.

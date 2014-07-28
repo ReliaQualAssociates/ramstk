@@ -48,7 +48,7 @@ import utilities as _util
 
 from _assistants_.adds import AddTestPlan
 from _assistants_.processmap import ProcessMap
-from _assistants_.designreview import DesignReview
+from _assistants_.designreview import *
 
 
 class TreeWindow(gtk.Window):
@@ -464,9 +464,9 @@ class TreeWindow(gtk.Window):
                                  use_underline=True)
         menu_item.connect('activate', _util.create_comp_ref_des, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Import Project"),
+        menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                  use_underline=True)
-        menu_item.connect('activate', _util.import_project, self._app)
+        menu_item.connect('activate', ReviewCriteria, self._app)
         menu.append(menu_item)
         menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
                                  use_underline=True)
