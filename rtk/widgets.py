@@ -253,13 +253,10 @@ def make_combo(width=200, height=30, simple=True):
     """
     Utility function to create gtk.ComboBox widgets.
 
-    @keyword width: width of the gtk.ComboBox() widget.  Default is 200.
-    :type width: integer
-    @keyword height: height of the gtk.ComboBox widget.  Default is 30.
-    :type height: integer
-    @keyword simple: boolean indicating whether to create a simple text
-                     gtk.ComboBox().  Defaults is True.
-    :type simple: boolean
+    :keyword int width: width of the gtk.ComboBox() widget.  Default is 200.
+    :keyword int height: height of the gtk.ComboBox widget.  Default is 30.
+    :keyword bool simple: boolean indicating whether to create a simple text
+                          gtk.ComboBox().  Defaults is True.
     :return: _combo
     :rtype: gtk.ComboBox
     """

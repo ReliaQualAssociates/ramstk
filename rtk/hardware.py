@@ -4565,13 +4565,11 @@ class Hardware(object):
         """
         Method to add a new hardware item to the open RTK program database.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
-        :param kind: the kind of Assembly to add.
-                     0 = sibling assembly
-                     1 = child assembly
-                     2 = component
-        :type kind: integer
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param int kind: the kind of Assembly to add.
+                         * 0 = sibling assembly
+                         * 1 = child assembly
+                         * 2 = component
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -4877,7 +4875,7 @@ class Hardware(object):
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the HARDWARE class gtk.TreeView() model to the
+            Saves each row in the Hardware class gtk.TreeView() model to the
             RTK Program database.
 
             Keyword Arguments:
