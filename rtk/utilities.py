@@ -72,15 +72,13 @@ def read_configuration():
         return True
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
-
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
-                                                            'host'))
+    _conf.SITE_DIR = conf.read_configuration().get('Backend', 'path')
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
     _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'socket'))
     _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'database'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
-                                                            'user'))
+    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
     _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'password'))
 
@@ -105,7 +103,6 @@ def read_configuration():
     _conf.TABPOS[0] = conf.read_configuration().get('General', 'treetabpos')
     _conf.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
     _conf.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
-
 
     # Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')

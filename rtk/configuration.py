@@ -467,92 +467,93 @@ class RTKConf(object):
         _PROGDIR = _HOMEDIR + '/analyses/rtk/'
 
         if basename(self._conf_file) == 'site.conf':
-                dialog = _widg.make_dialog(_(u"RTK common database "
-                                             u"information..."))
+            dialog = _widg.make_dialog(_(u"RTK common database "
+                                         u"information..."))
 
-                fixed = _widg.make_fixed()
+            fixed = _widg.make_fixed()
 
-                y_pos = 10
-                label = _widg.make_label(_(u"RTK common database host name:"),
-                                         width=340)
-                txtDBHost = _widg.make_entry()
-                txtDBHost.set_text(_(u"localhost"))
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBHost, 345, y_pos)
-                y_pos += 30
+            y_pos = 10
+            label = _widg.make_label(_(u"RTK common database host name:"),
+                                     width=340)
+            txtDBHost = _widg.make_entry()
+            txtDBHost.set_text(_(u"localhost"))
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBHost, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database socket:"),
-                                         width=340)
-                txtDBSocket = _widg.make_entry()
-                txtDBSocket.set_text("3306")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBSocket, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database socket:"),
+                                     width=340)
+            txtDBSocket = _widg.make_entry()
+            txtDBSocket.set_text("3306")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBSocket, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database name:"),
-                                         width=340)
-                txtDBName = _widg.make_entry()
-                txtDBName.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBName, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database name:"),
+                                     width=340)
+            txtDBName = _widg.make_entry()
+            txtDBName.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBName, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database user name:"),
-                                         width=340)
-                txtDBUser = _widg.make_entry()
-                txtDBUser.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBUser, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database user name:"),
+                                     width=340)
+            txtDBUser = _widg.make_entry()
+            txtDBUser.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBUser, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database password:"),
-                                         width=340)
-                txtDBPassword = _widg.make_entry()
-                txtDBPassword.set_invisible_char("*")
-                txtDBPassword.set_visibility(False)
-                txtDBPassword.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBPassword, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database password:"),
+                                     width=340)
+            txtDBPassword = _widg.make_entry()
+            txtDBPassword.set_invisible_char("*")
+            txtDBPassword.set_visibility(False)
+            txtDBPassword.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBPassword, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database type:"),
-                                         width=340)
-                cmbDBType = _widg.make_combo()
-                _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
-                fixed.put(label, 5, y_pos)
-                fixed.put(cmbDBType, 345, y_pos)
+            label = _widg.make_label(_(u"RTK common database type:"),
+                                     width=340)
+            cmbDBType = _widg.make_combo()
+            _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
+            fixed.put(label, 5, y_pos)
+            fixed.put(cmbDBType, 345, y_pos)
 
-                fixed.show_all()
-                dialog.vbox.pack_start(fixed)
+            fixed.show_all()
+            dialog.vbox.pack_start(fixed)
 
-                if dialog.run() == -3:
-                    RTKcomlist = []
-                    RTKcomlist.append(txtDBHost.get_text())
-                    try:
-                        RTKcomlist.append(int(txtDBSocket.get_text()))
-                    except ValueError:
-                        RTKcomlist.append(txtDBSocket.get_text())
-                    RTKcomlist.append(txtDBName.get_text())
-                    RTKcomlist.append(txtDBUser.get_text())
-                    RTKcomlist.append(txtDBPassword.get_text())
-                    RTKcomlist.append(cmbDBType.get_active_text())
+            if dialog.run() == -3:
+                RTKcomlist = []
+                RTKcomlist.append(txtDBHost.get_text())
+                try:
+                    RTKcomlist.append(int(txtDBSocket.get_text()))
+                except ValueError:
+                    RTKcomlist.append(txtDBSocket.get_text())
+                RTKcomlist.append(txtDBName.get_text())
+                RTKcomlist.append(txtDBUser.get_text())
+                RTKcomlist.append(txtDBPassword.get_text())
+                RTKcomlist.append(cmbDBType.get_active_text())
 
-                dialog.destroy()
+            dialog.destroy()
 
-                config.add_section('Modules')
-                config.set('Modules', 'prediction', 'True')
-                config.set('Modules', 'fmeca', 'True')
-                config.set('Modules', 'maintainability', 'True')
-                config.set('Modules', 'maintenance', 'True')
-                config.set('Modules', 'fraca', 'True')
+            config.add_section('Modules')
+            config.set('Modules', 'prediction', 'True')
+            config.set('Modules', 'fmeca', 'True')
+            config.set('Modules', 'maintainability', 'True')
+            config.set('Modules', 'maintenance', 'True')
+            config.set('Modules', 'fraca', 'True')
 
-                config.add_section('Backend')
-                config.set('Backend', 'host', RTKcomlist[0])
-                config.set('Backend', 'socket', RTKcomlist[1])
-                config.set('Backend', 'database', RTKcomlist[2])
-                config.set('Backend', 'user', RTKcomlist[3])
-                config.set('Backend', 'password', RTKcomlist[4])
-                config.set('Backend', 'type', RTKcomlist[5])
+            config.add_section('Backend')
+            config.set('Backend', 'host', RTKcomlist[0])
+            config.set('Backend', 'socket', RTKcomlist[1])
+            config.set('Backend', 'database', RTKcomlist[2])
+            config.set('Backend', 'user', RTKcomlist[3])
+            config.set('Backend', 'password', RTKcomlist[4])
+            config.set('Backend', 'type', RTKcomlist[5])
+            config.set('Backend', 'path', self.SITE_DIR)
 
         elif basename(self._conf_file) == 'RTK.conf':
 

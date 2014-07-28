@@ -151,7 +151,7 @@ class RTK(object):
 
         elif _conf.COM_BACKEND == 'sqlite3':
             self.COMDB = _sqlite.SQLite3Interface(self)
-            _database = _conf.CONF_DIR + _conf.RTK_COM_INFO[2] + '.rfb'
+            _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
         # Read the license file and compare to the product key in the site
