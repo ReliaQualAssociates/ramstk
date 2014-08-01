@@ -49,6 +49,7 @@ class Capacitor(object):
 
         self._ready = False
         self.category = 4                   # Category in rtkcom database.
+        self.reason = ""
 
         # Label text for input data.
         self._in_labels = [_(u"Quality:"), (u"\u03C0<sub>Q</sub> Override:"),
@@ -230,11 +231,11 @@ class Capacitor(object):
         part.txtTJunc = _widg.make_entry(width=100, editable=False, bold=True)
         layout.put(part.txtTJunc, x_pos, _y_pos[1])
 
-        part.pltDerate.set_title(_(u"Derating Curve for %s at %s") %
+        part.graDerate.set_title(_(u"Derating Curve for %s at %s") %
                                  (part.txtPartNum.get_text(),
                                   part.txtRefDes.get_text()))
-        part.pltDerate.set_xlabel(_(u"Temperature (\u2070C)"))
-        part.pltDerate.set_ylabel(_(u"Voltage Derating Factor"))
+        part.graDerate.set_xlabel(_(u"Temperature (\u2070C)"))
+        part.graDerate.set_ylabel(_(u"Voltage Derating Factor"))
 
         layout.show_all()
 
@@ -259,31 +260,35 @@ class Capacitor(object):
         _model = part._app.winParts.tvwPartsList.get_model()
         _row = _model.get_iter(_path)
 
-        part.txtTRise.set_text(str(fmt.format(_model.get_value(_row, 107))))
+        part.txtCurrentRatio.set_text(str(fmt.format(_model.get_value(_row, 17))))
         part.txtTJunc.set_text(str(fmt.format(_model.get_value(_row, 39))))
         part.txtLambdaB.set_text(str(fmt.format(_model.get_value(_row, 46))))
-        part.txtPiQ.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 79))))
-        part.txtPiE.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 72))))
         part.txtPiCV.set_text(str(fmt.format(_model.get_value(_row, 70))))
+        part.txtPiE.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 72))))
+        part.txtPiQ.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 79))))
+        part.txtTRise.set_text(str(fmt.format(_model.get_value(_row, 107))))
+        part.txtVoltageRatio.set_text(str(fmt.format(_model.get_value(_row, 111))))
 
-        part.pltDerate.cla()
+        part.txtOSReason.set_text(self.reason)
+
+        part.graDerate.cla()
 
         # Plot the derating curve and operating point.
         _x_ = [float(part.min_temp), float(part.knee_temp),
                float(part.max_temp)]
 
         _voltage_ratio = part.op_voltage / part.rated_voltage
-        part.pltDerate.plot(_x_, self._derate_criteria[0], 'r.-', linewidth=2)
-        part.pltDerate.plot(_x_, self._derate_criteria[1], 'b.-', linewidth=2)
-        part.pltDerate.plot(part.temperature_active, _voltage_ratio, 'go')
+        part.graDerate.plot(_x_, self._derate_criteria[0], 'r.-', linewidth=2)
+        part.graDerate.plot(_x_, self._derate_criteria[1], 'b.-', linewidth=2)
+        part.graDerate.plot(part.temperature_active, _voltage_ratio, 'go')
         if(_x_[0] != _x_[2] and
            self._derate_criteria[1][0] != self._derate_criteria[1][2]):
-            part.pltDerate.axis([0.95 * _x_[0],
+            part.graDerate.axis([0.95 * _x_[0],
                                  1.05 * _x_[2],
                                  self._derate_criteria[1][2],
                                  1.05 * self._derate_criteria[1][0]])
         else:
-            part.pltDerate.axis([0.95, 1.05, 0.0, 1.05])
+            part.graDerate.axis([0.95, 1.05, 0.0, 1.05])
 
         return False
 
@@ -313,6 +318,7 @@ class Capacitor(object):
                 CpiQ = 0.0
             else:
                 CpiQ = float(part.txtCommercialPiQ.get_text())
+                _model.set_value(_row, 79, CpiQ)
 
             # Use this value for piQ if not being over-ridden.
             if CpiQ <= 0.0:

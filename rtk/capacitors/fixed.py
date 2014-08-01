@@ -80,8 +80,8 @@ class PaperBypass(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
-                                    systemmodel, systemrow):
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Paper Bypass Capacitor Component Class.
@@ -122,8 +122,8 @@ class PaperBypass(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
-                                     systemmodel, systemrow):
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Paper Bypass Capacitor Component Class.
@@ -164,6 +164,10 @@ class PaperBypass(Capacitor):
             Vapplied = partmodel.get_value(partrow, 66)
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
 
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
@@ -207,12 +211,19 @@ class PaperBypass(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -222,7 +233,7 @@ class PaperBypass(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -288,8 +299,8 @@ class PaperFeedthrough(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
-                                    systemmodel, systemrow):
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Paper Feedthrough Capacitor Component Class.
@@ -329,8 +340,8 @@ class PaperFeedthrough(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
-                                     systemmodel, systemrow):
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Paper Feedthrough Capacitor Component Class.
@@ -372,6 +383,10 @@ class PaperFeedthrough(Capacitor):
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
 
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+
             # Base hazard rate.
             idx2 = partmodel.get_value(partrow, 102)
             S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
@@ -407,12 +422,19 @@ class PaperFeedthrough(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -422,7 +444,7 @@ class PaperFeedthrough(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -491,7 +513,7 @@ class PlasticFilm(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -532,7 +554,7 @@ class PlasticFilm(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -574,6 +596,10 @@ class PlasticFilm(Capacitor):
             Vapplied = partmodel.get_value(partrow, 66)
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
 
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
@@ -628,12 +654,19 @@ class PlasticFilm(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -643,7 +676,7 @@ class PlasticFilm(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -713,7 +746,7 @@ class MetallizedPaper(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -755,8 +788,8 @@ class MetallizedPaper(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
-                                     systemmodel, systemrow):
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
@@ -798,6 +831,10 @@ class MetallizedPaper(Capacitor):
             Vapplied = partmodel.get_value(partrow, 66)
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
 
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
@@ -843,12 +880,19 @@ class MetallizedPaper(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -858,7 +902,7 @@ class MetallizedPaper(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -925,7 +969,7 @@ class Plastic(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -966,7 +1010,7 @@ class Plastic(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -1009,6 +1053,10 @@ class Plastic(Capacitor):
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
 
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+
             # Base hazard rate.
             idx2 = partmodel.get_value(partrow, 102)
             S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
@@ -1042,12 +1090,19 @@ class Plastic(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -1057,7 +1112,7 @@ class Plastic(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -1124,7 +1179,7 @@ class SuperMetallizedPlastic(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -1165,7 +1220,7 @@ class SuperMetallizedPlastic(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -1239,12 +1294,19 @@ class SuperMetallizedPlastic(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -1254,7 +1316,7 @@ class SuperMetallizedPlastic(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -1323,7 +1385,7 @@ class Mica(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -1364,7 +1426,7 @@ class Mica(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -1406,6 +1468,10 @@ class Mica(Capacitor):
             Vapplied = partmodel.get_value(partrow, 66)
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
 
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
@@ -1455,12 +1521,19 @@ class Mica(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -1470,7 +1543,7 @@ class Mica(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -1535,7 +1608,7 @@ class MicaButton(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -1576,7 +1649,7 @@ class MicaButton(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -1619,6 +1692,10 @@ class MicaButton(Capacitor):
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
 
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
             idx2 = partmodel.get_value(partrow, 102)
@@ -1656,12 +1733,19 @@ class MicaButton(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -1671,7 +1755,7 @@ class MicaButton(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -1738,7 +1822,7 @@ class Glass(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -1779,7 +1863,7 @@ class Glass(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -1822,6 +1906,10 @@ class Glass(Capacitor):
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
 
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+
             # Base hazard rate.
             idx = partmodel.get_value(partrow, 101)
             idx2 = partmodel.get_value(partrow, 102)
@@ -1861,12 +1949,19 @@ class Glass(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -1876,7 +1971,7 @@ class Glass(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -1943,7 +2038,7 @@ class CeramicGeneral(Capacitor):
                                        the RTK Hardware class gtk.TreeModel().
         """
 
-        def _calculate_mil_217_count(self, partmodel, partrow,
+        def _calculate_mil_217_count(partmodel, partrow,
                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
@@ -1982,7 +2077,7 @@ class CeramicGeneral(Capacitor):
 
             return False
 
-        def _calculate_mil_217_stress(self, partmodel, partrow,
+        def _calculate_mil_217_stress(partmodel, partrow,
                                       systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
@@ -2022,6 +2117,10 @@ class CeramicGeneral(Capacitor):
             Vapplied = partmodel.get_value(partrow, 66)
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
 
             # Base hazard rate.
             _idx = partmodel.get_value(partrow, 101)
@@ -2069,12 +2168,19 @@ class CeramicGeneral(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -2084,7 +2190,7 @@ class CeramicGeneral(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,
@@ -2152,8 +2258,8 @@ class CeramicChip(Capacitor):
         :rtype: boolean
         """
 
-        def calculate_mil_217_count(self, partmodel, partrow,
-                                    systemmodel, systemrow):
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Temperature Compensating and Chip Ceramic Capacitor Component
@@ -2194,8 +2300,8 @@ class CeramicChip(Capacitor):
 
             return False
 
-        def calculate_mil_217_stress(self, partmodel, partrow,
-                                     systemmodel, systemrow):
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Temperature Compensating and Chip Ceramic Capacitor
@@ -2236,20 +2342,24 @@ class CeramicChip(Capacitor):
             _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
             Vrated = partmodel.get_value(partrow, 94)
 
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+
             # Base hazard rate.
             spec_idx = partmodel.get_value(partrow, 101)
             temp_idx2 = partmodel.get_value(partrow, 102)
             S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-            if spec_idx == 1:                  # MIL-C-20
-                if temp_idx2 == 1:             # 85C
+            if spec_idx == 1:               # MIL-C-20
+                if temp_idx2 == 1:          # 85C
                     Tref = 358.0
-                elif temp_idx2 == 2:           # 125C
+                elif temp_idx2 == 2:        # 125C
                     Tref = 398.0
                 else:
                     Tref = 398.0
-            elif spec_idx == 2:                # MIL-C-55681
+            elif spec_idx == 2:             # MIL-C-55681
                 Tref = 398.0
-            else:                               # Default
+            else:                           # Default
                 Tref = 358.0
 
             _hrmodel['lambdab'] = 0.0000000026 * ((S / 0.3)**3 + 1) * exp(1.4 * ((Tamb + 273) / Tref))
@@ -2275,12 +2385,19 @@ class CeramicChip(Capacitor):
             _lambdap = _lambdaa + _lambdad + _lambdas
 
             # Calculate overstresses.
-            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
-                                                        systemmodel, systemrow)
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
+            # Calculate operating point ratios.
+            _i_ratio = Iapplied / Irated
+            _v_ratio = Vapplied / Vrated
+
+            partmodel.set_value(partrow, 17, _i_ratio)
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -2290,7 +2407,7 @@ class CeramicChip(Capacitor):
 
             return False
 
-        _calc_model = systemmodel.get_value(systemrow, 22)
+        _calc_model = systemmodel.get_value(systemrow, 10)
 
         if _calc_model == 1:
             _calculate_mil_217_stress(partmodel, partrow,

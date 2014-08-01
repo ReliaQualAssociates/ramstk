@@ -2467,7 +2467,7 @@ class Hardware(object):
 
             self.fraDerate.props.height_request = 350
             self.fraDerate.props.width_request = 450
-            self.pltDerate = self.figDerate.add_subplot(111)
+            self.graDerate = self.figDerate.add_subplot(111)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
@@ -7565,7 +7565,7 @@ class Hardware(object):
                     if _model_.get_value(_row_, 60) == 1:
                         _icon = _conf.ICON_DIR + '32x32/overstress.png'
                     else:
-                        _icon = _conf.ICON_DIR + '32x32/component.png'
+                        _icon = _conf.ICON_DIR + '32x32/part.png'
 
                 else:
                     (_c_, _la_, _ld_, _ls_, _lp_,
