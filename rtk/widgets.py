@@ -800,16 +800,14 @@ def cell_toggled(cell, path, position, model):
     """
     Called whenever a gtk.TreeView() gtk.CellRendererToggle() is edited.
 
-    :param cell: the gtk.CellRendererToggle() that was edited.
-    :type cell: gtk.CellRendererToggle
-    :param path: the gtk.TreeView() path of the gtk.CellRendererToggle() that
-                 was edited.
-    :type path: string
-    :param position: the column position of the edited
-                     gtk.CellRendererToggle().
-    :type position: integer
-    :param model: the gtk.TreeModel() the gtk.CellRendererToggle() belongs to.
-    :type model: gtk.TreeModel
+    :param gtk.CellRendererToggle cell: the gtk.CellRendererToggle() that was
+                                        edited.
+    :param str path: the gtk.TreeView() path of the gtk.CellRendererToggle()
+                     that was edited.
+    :param int position: the column position of the edited
+                         gtk.CellRendererToggle().
+    :param gtk.TreeModel model: the gtk.TreeModel() the
+                                gtk.CellRendererToggle() belongs to.
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """

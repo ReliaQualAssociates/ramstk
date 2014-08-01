@@ -22,20 +22,22 @@ import os
 import sys
 
 import configuration as _conf
-from dataset import Dataset
-from function import Function
-from hardware import Hardware
-from incident import Incident
 import mysql as _mysql
 import notebook as _note
 import partlist as _parts
+import sqlite as _sqlite
+import tree as _tree
+import utilities as _util
+
+from dataset import Dataset
+from component import Component
+from function import Function
+from hardware import Hardware
+from incident import Incident
 from requirement import Requirement
 from revision import Revision
 from software import Software
-import sqlite as _sqlite
 from testing import Testing
-import tree as _tree
-import utilities as _util
 from validation import Validation
 
 
@@ -203,10 +205,11 @@ class RTK(object):
         self.REQUIREMENT = Requirement(self)
         self.FUNCTION = Function(self)
         self.HARDWARE = Hardware(self)
+        # self.ASSEMBLY = Assembly(self)
+        # self.COMPONENT = Component(self)
         self.SOFTWARE = Software(self)
         self.VALIDATION = Validation(self)
         self.INCIDENT = Incident(self)
-        #self.COMPONENT = Component(self)
         self.DATASET = Dataset(self)
         self.TESTING = Testing(self)
 

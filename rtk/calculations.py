@@ -479,7 +479,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                  "125.0C.\n"
                 r_index += 1
 
-        elif subcategory == 6:             # Thyristor
+        elif subcategory == 6:              # Thyristor
             if harsh:
                 if Ioper > 0.70 * Irate:
                     overstress = True
@@ -799,16 +799,11 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     | Transformers| 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
     +-------------+-------+--------+--------+-------+-------+-------+-------+
 
-    :param category: the component category index.
-    :type category: integer
-    :param subcategory: the component subcategory index.
-    :type subcategory: integer
-    :param active_env: the active environment index.
-    :type active_env: integer
-    :param dormant_env: the dormant environment index.
-    :type dormant_env: integer
-    :param lambdaa: the active hazard rate of the component.
-    :type lambdaa: float
+    :param int category: the component category index.
+    :param int subcategory: the component subcategory index.
+    :param int active_env: the active environment index.
+    :param int dormant_env: the dormant environment index.
+    :param float lambdaa: the active hazard rate of the component.
     :return: lambdad; the dormant hazard rate.
     :rtype: float
     """
@@ -877,6 +872,8 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     try:
         lambdad = lambdaa * factor[c_index - 1][e_index]
     except IndexError:
+        lambdad = 0.0
+    except UnboundLocalError:
         lambdad = 0.0
 
     return lambdad

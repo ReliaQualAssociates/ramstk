@@ -1514,7 +1514,7 @@ class Revision(object):
                       9 =
         :type event: gtk.gdk.Event
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         if event.button == 1:

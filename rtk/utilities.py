@@ -1200,17 +1200,14 @@ def set_part_model(category, subcategory):
     This functions sets the Component class part model based on the category
     and subcategory.
 
-    :param category: the component category for part.
-    :type category: integer
-    :param subcategory: the component sub-category for the part.
-    :type subcategory: integer
+    :param int category: the component category for part.
+    :param int subcategory: the component sub-category for the part.
     :return: _part
     :rtype: Component class instance
     """
 
-    if category == 0 or subcategory == 0:  # No category or subcategory
+    if category <= 0 or subcategory <= 0:  # No category or subcategory
         _part = None
-
     elif category == 1:                    # Capacitor
         if subcategory == 1:
             from capacitors.fixed import CeramicGeneral
