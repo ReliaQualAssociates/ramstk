@@ -138,7 +138,7 @@ class Hardware(object):
         """
         Initializes the Hardware class.
 
-        :param application: the current instance of the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         # Define private Hardware class scalar attributes.
@@ -163,6 +163,8 @@ class Hardware(object):
         self._RPN = {}
 
         # Define private Hardware class list attributes.
+        self._component_x = [5, 5]
+        self._component_y = [5, 5]
         self._risk_col_order = []
         self._sia_col_order = []
         self._lst_handler_id = []
@@ -400,9 +402,9 @@ class Hardware(object):
                                                    u"for this part."),
                                                  width=400)
 
-        self.txtSpecifiedHt = _widg.make_entry()
-        self.txtSpecifiedMTBF = _widg.make_entry()
-        self.txtSoftwareHt = _widg.make_entry()
+        self.txtSpecifiedHt = _widg.make_entry(width=100)
+        self.txtSpecifiedMTBF = _widg.make_entry(width=100)
+        self.txtSoftwareHt = _widg.make_entry(width=100)
         self.txtAddAdj = _widg.make_entry(width=100)
         self.txtMultAdj = _widg.make_entry(width=100)
         self.txtAllocationWF = _widg.make_entry(width=100)
@@ -424,8 +426,11 @@ class Hardware(object):
         self.txtCost = _widg.make_entry(width=100)
 
         # Component-specific input widgets.
-        self.fxdRelInputQuad1 = gtk.Fixed()
-        self.fxdRelInputQuad4 = gtk.Fixed()
+        # TODO: Move this to the Component class.
+        self.fxdReliabilityInputs = gtk.Fixed()
+        self.fxdStressInputs = gtk.Fixed()
+        self.scwReliabilityInputs = gtk.ScrolledWindow()
+        self.scwStressInputs = gtk.ScrolledWindow()
 
         self.txtBurnInTemp = _widg.make_entry(width=100)
         self.txtBurnInTime = _widg.make_entry(width=100)
@@ -449,22 +454,39 @@ class Hardware(object):
         self.txtCaseTemp = _widg.make_entry(width=100)
 
         # Assessment Results page widgets.
-        self.txtActiveHt = _widg.make_entry(editable=False, bold=True)
-        self.txtDormantHt = _widg.make_entry(editable=False, bold=True)
-        self.txtSoftwareHt2 = _widg.make_entry(editable=False, bold=True)
-        self.txtPredictedHt = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionHt = _widg.make_entry(editable=False, bold=True)
-        self.txtHtPerCent = _widg.make_entry(editable=False, bold=True)
-        self.txtMTBF = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionMTBF = _widg.make_entry(editable=False, bold=True)
-        self.txtReliability = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionRt = _widg.make_entry(editable=False, bold=True)
-        self.txtMPMT = _widg.make_entry(editable=False, bold=True)
-        self.txtMCMT = _widg.make_entry(editable=False, bold=True)
-        self.txtMTTR = _widg.make_entry(editable=False, bold=True)
-        self.txtMMT = _widg.make_entry(editable=False, bold=True)
-        self.txtAvailability = _widg.make_entry(editable=False, bold=True)
-        self.txtMissionAt = _widg.make_entry(editable=False, bold=True)
+        # TODO: Move this to the Component class.
+        self.scwStressResults = gtk.ScrolledWindow()
+        self.scwMiscResults = gtk.ScrolledWindow()
+        self.fxdStressResults = gtk.Fixed()
+        self.fxdMiscResults = gtk.Fixed()
+
+        self.txtActiveHt = _widg.make_entry(width=100, editable=False,
+                                            bold=True)
+        self.txtDormantHt = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtSoftwareHt2 = _widg.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtPredictedHt = _widg.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtMissionHt = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtHtPerCent = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtMTBF = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMissionMTBF = _widg.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtReliability = _widg.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtMissionRt = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtMPMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMCMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMTTR = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtMMT = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtAvailability = _widg.make_entry(width=100, editable=False,
+                                                bold=True)
+        self.txtMissionAt = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
         self.txtTotalCost = _widg.make_entry(width=100, editable=False,
                                              bold=True)
         self.txtCostFailure = _widg.make_entry(width=100, editable=False,
@@ -484,8 +506,6 @@ class Hardware(object):
         self.figDerate = Figure(figsize=(6, 4))
 
         self.fraDerate = gtk.Frame()
-
-        self.fxdCalcResultsQuad4 = gtk.Fixed()
 
         self.pltDerate = FigureCanvas(self.figDerate)
 
@@ -512,23 +532,23 @@ class Hardware(object):
 
         # Add background color and editable attributes so failure mechanisms,
         # controls, and actions will not be editable in the FMECA worksheet.
-        _cols_ = len(self._FMECA_col_order)
-        _columns_ = self.tvwFMECA.get_columns()
-        for i in range(len(_columns_)):
-            _cells_ = _columns_[i].get_cell_renderers()
+        _cols = len(self._FMECA_col_order)
+        _columns = self.tvwFMECA.get_columns()
+        for i in range(len(_columns)):
+            _cells = _columns[i].get_cell_renderers()
 
             # Always allow editing of the first column since this is the
             # description column.
             if i == 1:
-                _cells_[0].set_property('background', '#FFFFFF')
-                _cells_[0].set_property('editable', True)
+                _cells[0].set_property('background', '#FFFFFF')
+                _cells[0].set_property('editable', True)
             else:
                 try:
-                    if _cells_[0].get_property('editable'):
-                        _columns_[i].add_attribute(_cells_[0], 'background',
-                                                   _cols_ + 1)
-                        _columns_[i].add_attribute(_cells_[0], 'editable',
-                                                   _cols_ + 2)
+                    if _cells[0].get_property('editable'):
+                        _columns[i].add_attribute(_cells[0], 'background',
+                                                  _cols + 1)
+                        _columns[i].add_attribute(_cells[0], 'editable',
+                                                  _cols + 2)
                 except TypeError:
                     pass
 
@@ -893,10 +913,8 @@ class Hardware(object):
             Function to create the Hardware class gtk.Notebook() page for
             displaying general data about the selected Hardware.
 
-            :param self: the current instance of a HARDWARE class.
-            :type self: Hardware object
-            :param notebook: the HARDWARE class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1743,8 +1761,8 @@ class Hardware(object):
 
         def _create_similar_item_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
-            displaying the similar item analysis for the selected HARDWARE.
+            Function to create the Haardware class gtk.Notebook() page for
+            displaying the similar item analysis for the selected Hardware.
 
             :param self: the current instance of a Hardware class.
             :type self: the current instance of the Hardware class
@@ -1892,68 +1910,105 @@ class Hardware(object):
 
         def _create_assessment_inputs_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
+            Function to create the Hardware class gtk.Notebook() page for
             displaying the assessment inputs for the selected HARDWARE.
 
-            :param self: the current instance of a Hardware class.
-            :type self: the current instance of the Hardware class
-            :param notebook: the Hardware class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook()
+                                          widget.
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            # Build the quadrant 1 (upper left) containers.
+            _hpaned = gtk.HPaned()
+
+            # --------------------------------------------------------------#
+            # Build the quadrant 1 (upper left) containers.                 #
+            # --------------------------------------------------------------#
             _fxdRelInputQuad1_ = gtk.Fixed()
 
-            _hbox_ = gtk.HBox()
+            _hpaned1 = gtk.HPaned()
+            _hpaned.pack1(_hpaned1, True, False)
 
-            _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
-                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow_.add_with_viewport(_hbox_)
+            # Add the layout for common reliability inputs.  These input
+            # widgets will be used for assembly and component inputs.
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fxdRelInputQuad1_)
 
-            _frame_ = _widg.make_frame(label=_(u"Reliability Inputs"))
-            _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame_.add(_scrollwindow_)
+            _frame = _widg.make_frame(label=_(u"Reliability Inputs"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
 
-            _hbox_.pack_start(_fxdRelInputQuad1_, expand=False)
-            _hbox_.pack_end(self.fxdRelInputQuad1, expand=False)
+            _hpaned1.pack1(_frame, True, False)
 
-            _hbox_ = gtk.HBox()
-            _hbox_.pack_start(_frame_)
+            # Add the layout for the component-only reliability inputs.
+            # TODO: Move this to the Component class.
+            _vpaned = gtk.VPaned()
+            _hpaned1.pack2(_vpaned, True, False)
 
-            # Build the quadrant 2 (upper right) containers.
-            _vpaned_ = gtk.VPaned()
-            _hbox_.pack_start(_vpaned_)
+            self.scwReliabilityInputs.set_policy(gtk.POLICY_AUTOMATIC,
+                                                 gtk.POLICY_AUTOMATIC)
+            self.scwReliabilityInputs.add_with_viewport(self.fxdReliabilityInputs)
 
+            _frame = _widg.make_frame(label=_(u"Reliability Model Inputs"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(self.scwReliabilityInputs)
+
+            _vpaned.pack1(_frame, True, False)
+
+            # Add the layout for the component-only stress inputs.
+            # TODO: Move this to the Component class.
+            self.scwStressInputs.set_policy(gtk.POLICY_AUTOMATIC,
+                                            gtk.POLICY_AUTOMATIC)
+            self.scwStressInputs.add_with_viewport(self.fxdStressInputs)
+
+            _frame = _widg.make_frame(label=_(u"Stress Inputs"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(self.scwStressInputs)
+
+            _vpaned.pack2(_frame, True, False)
+
+            # --------------------------------------------------------------#
+            # Build the quadrant 2 (upper right) containers.                #
+            # --------------------------------------------------------------#
+            _vpaned = gtk.VPaned()
+            _hpaned.pack2(_vpaned, True, False)
+
+            # Add the layout for common maintainability inputs.  These input
+            # widgets will be used for assembly and component inputs.
             _fxdRelInputQuad2_ = gtk.Fixed()
 
-            _frame_ = _widg.make_frame(label=_(u"Maintainability Inputs"))
-            _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame_.add(_fxdRelInputQuad2_)
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fxdRelInputQuad2_)
 
-            _vpaned_.pack1(_frame_)
+            _frame = _widg.make_frame(label=_(u"Maintainability Inputs"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
 
-            # Build the quadrant 4 (lower right) containers.
+            _vpaned.pack1(_frame, True, False)
+
+            # --------------------------------------------------------------#
+            # Build the quadrant 4 (lower right) containers.                #
+            # --------------------------------------------------------------#
+            # Add the layout for common miscellaneous inputs.  These input
+            # widgets will be used for assembly and component inputs.
             _fxdRelInputQuad4_ = gtk.Fixed()
 
-            _hbox1_ = gtk.HBox()
-
-            _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
                                       gtk.POLICY_AUTOMATIC)
-            _scrollwindow_.add_with_viewport(_hbox1_)
+            _scrollwindow.add_with_viewport(_fxdRelInputQuad4_)
 
-            _frame_ = _widg.make_frame(label=_(u"Miscellaneous Inputs"))
-            _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame_.add(_scrollwindow_)
+            _frame = _widg.make_frame(label=_(u"Miscellaneous Inputs"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
 
-            _hbox1_.pack_start(_fxdRelInputQuad4_, expand=False)
-            _hbox1_.pack_end(self.fxdRelInputQuad4, expand=False)
-
-            _vpaned_.pack2(_frame_)
+            _vpaned.pack2(_frame, True, False)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display the assessment inputs.      #
@@ -1993,7 +2048,6 @@ class Hardware(object):
 
             # Create the labels for quadrant #1.
             _labels = [_(u"Failure Rate [h(t)] Type:"),
-                       _(u"Calculation Model:"),
                        _(u"Specified h(t):"), _(u"Specified MTBF:"),
                        _(u"Software h(t):"), _(u"Additive Adj:"),
                        _(u"Multiplicative Adj:"), _(u"Allocation Weight:"),
@@ -2008,24 +2062,11 @@ class Hardware(object):
              _y_pos) = _widg.make_labels(_labels, _fxdRelInputQuad1_, 5, 5)
             _x_pos += 30
 
-            if not self.part:
-                _labels = [_(u"Burn-In Temp:"), _(u"Burn-In Time:"),
-                           _(u"# of Lab Devices:"), _(u"Lab Test Time:"),
-                           _(u"Lab Test Temp:"), _(u"# of Lab Failures:"),
-                           _(u"Field Op Time:"), _(u"# of Field Failures:")]
-                (_x_pos_r,
-                 _y_pos_r) = _widg.make_labels(_labels,
-                                               self.fxdRelInputQuad1, 5, 5)
-                _x_pos_r += 30
-
             # Place the quadrant #1 widgets.
             self.cmbHRType.set_tooltip_text(_(u"Selects the method of "
                                               u"assessing the failure "
                                               u"intensity for the selected "
                                               u"assembly."))
-            self.cmbCalcModel.set_tooltip_text(_(u"Selects the reliability "
-                                                 u"prediction model for the "
-                                                 u"selected assembly."))
             self.txtSpecifiedHt.set_tooltip_text(_(u"Displays the specified "
                                                    u"failure intensity for "
                                                    u"the selected assembly."))
@@ -2094,29 +2135,27 @@ class Hardware(object):
                                                    u"assembly."))
 
             _fxdRelInputQuad1_.put(self.cmbHRType, _x_pos, _y_pos[0])
-            _fxdRelInputQuad1_.put(self.cmbCalcModel, _x_pos, _y_pos[1])
-            _fxdRelInputQuad1_.put(self.txtSpecifiedHt, _x_pos, _y_pos[2])
-            _fxdRelInputQuad1_.put(self.txtSpecifiedMTBF, _x_pos, _y_pos[3])
-            _fxdRelInputQuad1_.put(self.txtSoftwareHt, _x_pos, _y_pos[4])
-            _fxdRelInputQuad1_.put(self.txtAddAdj, _x_pos, _y_pos[5])
-            _fxdRelInputQuad1_.put(self.txtMultAdj, _x_pos, _y_pos[6])
-            _fxdRelInputQuad1_.put(self.txtAllocationWF, _x_pos, _y_pos[7])
-            _fxdRelInputQuad1_.put(self.cmbFailDist, _x_pos, _y_pos[8])
-            _fxdRelInputQuad1_.put(self.txtFailScale, _x_pos, _y_pos[9])
-            _fxdRelInputQuad1_.put(self.txtFailShape, _x_pos, _y_pos[10])
-            _fxdRelInputQuad1_.put(self.txtFailLoc, _x_pos, _y_pos[11])
-            _fxdRelInputQuad1_.put(self.cmbActEnviron, _x_pos, _y_pos[12])
-            _fxdRelInputQuad1_.put(self.txtActTemp, _x_pos, _y_pos[13])
-            _fxdRelInputQuad1_.put(self.cmbDormantEnviron, _x_pos, _y_pos[14])
-            _fxdRelInputQuad1_.put(self.txtDormantTemp, _x_pos, _y_pos[15])
-            _fxdRelInputQuad1_.put(self.txtDutyCycle, _x_pos, _y_pos[16])
-            _fxdRelInputQuad1_.put(self.txtHumidity, _x_pos, _y_pos[17])
-            _fxdRelInputQuad1_.put(self.txtVibration, _x_pos, _y_pos[18])
-            _fxdRelInputQuad1_.put(self.txtRPM, _x_pos, _y_pos[19])
-            _fxdRelInputQuad1_.put(self.txtWeibullFile, _x_pos, _y_pos[20])
+            _fxdRelInputQuad1_.put(self.txtSpecifiedHt, _x_pos, _y_pos[1])
+            _fxdRelInputQuad1_.put(self.txtSpecifiedMTBF, _x_pos, _y_pos[2])
+            _fxdRelInputQuad1_.put(self.txtSoftwareHt, _x_pos, _y_pos[3])
+            _fxdRelInputQuad1_.put(self.txtAddAdj, _x_pos, _y_pos[4])
+            _fxdRelInputQuad1_.put(self.txtMultAdj, _x_pos, _y_pos[5])
+            _fxdRelInputQuad1_.put(self.txtAllocationWF, _x_pos, _y_pos[6])
+            _fxdRelInputQuad1_.put(self.cmbFailDist, _x_pos, _y_pos[7])
+            _fxdRelInputQuad1_.put(self.txtFailScale, _x_pos, _y_pos[8])
+            _fxdRelInputQuad1_.put(self.txtFailShape, _x_pos, _y_pos[9])
+            _fxdRelInputQuad1_.put(self.txtFailLoc, _x_pos, _y_pos[10])
+            _fxdRelInputQuad1_.put(self.cmbActEnviron, _x_pos, _y_pos[11])
+            _fxdRelInputQuad1_.put(self.txtActTemp, _x_pos, _y_pos[12])
+            _fxdRelInputQuad1_.put(self.cmbDormantEnviron, _x_pos, _y_pos[13])
+            _fxdRelInputQuad1_.put(self.txtDormantTemp, _x_pos, _y_pos[14])
+            _fxdRelInputQuad1_.put(self.txtDutyCycle, _x_pos, _y_pos[15])
+            _fxdRelInputQuad1_.put(self.txtHumidity, _x_pos, _y_pos[16])
+            _fxdRelInputQuad1_.put(self.txtVibration, _x_pos, _y_pos[17])
+            _fxdRelInputQuad1_.put(self.txtRPM, _x_pos, _y_pos[18])
+            _fxdRelInputQuad1_.put(self.txtWeibullFile, _x_pos, _y_pos[19])
 
             self.cmbHRType.connect('changed', self._callback_combo, 35)
-            self.cmbCalcModel.connect('changed', self._callback_combo, 10)
             self._lst_handler_id.append(
                 self.txtSpecifiedHt.connect('focus-out-event',
                                             self._callback_entry, 'float', 34))
@@ -2169,81 +2208,124 @@ class Hardware(object):
             self.txtWeibullFile.connect('focus-out-event',
                                         self._callback_entry, 'text', 86)
 
-            # Place the right column of widgets.
-            self.txtBurnInTemp.set_tooltip_text(_(u"Enter the temperature "
-                                                  u"that the selected "
-                                                  u"component will be "
-                                                  u"burned-in."))
-            self.txtBurnInTime.set_tooltip_text(_(u"Enter the total time the "
-                                                  u"selected component will "
-                                                  u"be burned-in."))
-            self.txtLabDevices.set_tooltip_text(_(u"The total number of units "
-                                                  u"that will be included in "
-                                                  u"life testing in the "
-                                                  u"laboratory."))
-            self.txtLabTime.set_tooltip_text(_(u"The total time the units "
-                                               u"will undergo life testing in "
-                                               u"the laboratory."))
-            self.txtLabTemp.set_tooltip_text(_(u"The temperature the selected "
-                                               u"component will be exposed to "
-                                               u"during life testing in the "
-                                               u"laboratory."))
-            self.txtLabFailures.set_tooltip_text(_(u"The total number of "
-                                                   u"failure observed during "
-                                                   u"life testing in the "
-                                                   u"laboratory."))
-            self.txtFieldTime.set_tooltip_text(_(u"The total time that the "
-                                                 u"selected component has "
-                                                 u"been fielded."))
-            self.txtFieldFailures.set_tooltip_text(_(u"The total number of "
-                                                     u"failures of the "
-                                                     u"selected component "
-                                                     u"that have been "
-                                                     u"observed in the "
-                                                     u"field."))
+            # Create the component-specific widgets for quadrant #1.
+            # TODO: Move to the Component class.
+            _labels = [_(u"Calculation Model:")]
 
-            self.fxdRelInputQuad1.put(self.txtBurnInTemp, _x_pos_r,
-                                      _y_pos_r[0])
-            self.fxdRelInputQuad1.put(self.txtBurnInTime, _x_pos_r,
-                                      _y_pos_r[1])
-            self.fxdRelInputQuad1.put(self.txtLabDevices, _x_pos_r,
-                                      _y_pos_r[2])
-            self.fxdRelInputQuad1.put(self.txtLabTime, _x_pos_r, _y_pos_r[3])
-            self.fxdRelInputQuad1.put(self.txtLabTemp, _x_pos_r, _y_pos_r[4])
-            self.fxdRelInputQuad1.put(self.txtLabFailures, _x_pos_r,
-                                      _y_pos_r[5])
-            self.fxdRelInputQuad1.put(self.txtFieldTime, _x_pos_r, _y_pos_r[6])
-            self.fxdRelInputQuad1.put(self.txtFieldFailures, _x_pos_r,
-                                      _y_pos_r[7])
+            (_x_pos,
+             _y_pos) = _widg.make_labels(_labels, self.fxdReliabilityInputs,
+                                         5, 5)
+            _x_pos += 30
+            self._component_x[0] = _x_pos
+            self._component_y[0] = _y_pos[0] + 35
+
+            self.cmbCalcModel.set_tooltip_text(_(u"Selects the reliability "
+                                                 u"prediction model for the "
+                                                 u"selected assembly."))
+
+            self.fxdReliabilityInputs.put(self.cmbCalcModel, _x_pos, _y_pos[0])
+
+            self.cmbCalcModel.connect('changed', self._callback_combo, 10)
+
+            # TODO: Move this to the Component class.
+            _labels = [_(u"Min Rated Temp:"), _(u"Knee Temp:"),
+                       _(u"Max Rated Temp:"), _(u"Rated Voltage:"),
+                       _(u"Operating Voltage:"), _(u"Rated Current:"),
+                       _(u"Operating Current:"), _(u"Rated Power:"),
+                       _(u"Operating Power:"), _(u"theta JC:"),
+                       _(u"Temperature Rise:"), _(u"Case Temperature:")]
+            (_x_pos,
+             _y_pos) = _widg.make_labels(_labels,
+                                         self.fxdStressInputs, 5, 5)
+            _x_pos += 30
+
+            self.txtMinTemp.set_tooltip_text(_(u"The minimum design operating "
+                                               u"temperature for the selected"
+                                               u"component."))
+            self.txtKneeTemp.set_tooltip_text(_(u"The knee temperature for "
+                                                u"the selected component."))
+            self.txtMaxTemp.set_tooltip_text(_(u"The maximum design operating "
+                                               u"temperature for the selected "
+                                               u"component."))
+            self.txtRatedVoltage.set_tooltip_text(_(u"The maximum rated "
+                                                    u"voltage for the "
+                                                    u"selected component."))
+            self.txtOpVoltage.set_tooltip_text(_(u"The operating voltage for "
+                                                 u"the selected component."))
+            self.txtRatedCurrent.set_tooltip_text(_(u"The maximum rated "
+                                                    u"current for the "
+                                                    u"selected component."))
+            self.txtOpCurrent.set_tooltip_text(_(u"The operating current for "
+                                                 u"the selected component."))
+            self.txtRatedPower.set_tooltip_text(_(u"The maximum rated power "
+                                                  u"for the selected "
+                                                  u"component."))
+            self.txtOpPower.set_tooltip_text(_(u"The operating power for the "
+                                               u"selected component."))
+            self.txtThetaJC.set_tooltip_text(_(u"The junction-to-case thermal "
+                                               u"resistance for the selected "
+                                               u"component."))
+            self.txtTempRise.set_tooltip_text(_(u"The ambient to case "
+                                                u"temperature rise for the "
+                                                u"selected component."))
+            self.txtCaseTemp.set_tooltip_text(_(u"The case temperature for "
+                                                u"the selected component."))
+
+            self.fxdStressInputs.put(self.txtMinTemp, _x_pos, _y_pos[0])
+            self.fxdStressInputs.put(self.txtKneeTemp, _x_pos, _y_pos[1])
+            self.fxdStressInputs.put(self.txtMaxTemp, _x_pos, _y_pos[2])
+            self.fxdStressInputs.put(self.txtRatedVoltage, _x_pos, _y_pos[3])
+            self.fxdStressInputs.put(self.txtOpVoltage, _x_pos, _y_pos[4])
+            self.fxdStressInputs.put(self.txtRatedCurrent, _x_pos, _y_pos[5])
+            self.fxdStressInputs.put(self.txtOpCurrent, _x_pos, _y_pos[6])
+            self.fxdStressInputs.put(self.txtRatedPower, _x_pos, _y_pos[7])
+            self.fxdStressInputs.put(self.txtOpPower, _x_pos, _y_pos[8])
+            self.fxdStressInputs.put(self.txtThetaJC, _x_pos, _y_pos[9])
+            self.fxdStressInputs.put(self.txtTempRise, _x_pos, _y_pos[10])
+            self.fxdStressInputs.put(self.txtCaseTemp, _x_pos, _y_pos[11])
 
             self._lst_handler_id.append(
-                self.txtBurnInTemp.connect('focus-out-event',
-                                           self._callback_entry, 'float', 206))
+                self.txtMinTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 256))
             self._lst_handler_id.append(
-                self.txtBurnInTime.connect('focus-out-event',
-                                           self._callback_entry, 'float', 207))
+                self.txtKneeTemp.connect('focus-out-event',
+                                         self._callback_entry, 'float', 243))
             self._lst_handler_id.append(
-                self.txtLabDevices.connect('focus-out-event',
-                                           self._callback_entry, "int", 220))
+                self.txtMaxTemp.connect('focus-out-event',
+                                        self._callback_entry, 'float', 255))
             self._lst_handler_id.append(
-                self.txtLabTime.connect('focus-out-event',
-                                        self._callback_entry, 'float', 308))
+                self.txtRatedVoltage.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 294))
             self._lst_handler_id.append(
-                self.txtLabTemp.connect('focus-out-event',
-                                        self._callback_entry, 'float', 306))
+                self.txtOpVoltage.connect('focus-out-event',
+                                          self._callback_entry, 'float', 266))
             self._lst_handler_id.append(
-                self.txtLabFailures.connect('focus-out-event',
-                                            self._callback_entry, "int", 227))
+                self.txtRatedCurrent.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 292))
             self._lst_handler_id.append(
-                self.txtFieldTime.connect('focus-out-event',
-                                          self._callback_entry, 'float', 265))
+                self.txtOpCurrent.connect('focus-out-event',
+                                          self._callback_entry, 'float', 262))
             self._lst_handler_id.append(
-                self.txtFieldFailures.connect('focus-out-event',
-                                              self._callback_entry,
-                                              'int', 226))
+                self.txtRatedPower.connect('focus-out-event',
+                                           self._callback_entry, 'float', 293))
+            self._lst_handler_id.append(
+                self.txtOpPower.connect('focus-out-event',
+                                        self._callback_entry, 'float', 264))
+            self._lst_handler_id.append(
+                self.txtThetaJC.connect('focus-out-event',
+                                        self._callback_entry, 'float', 309))
+            self._lst_handler_id.append(
+                self.txtTempRise.connect('focus-out-event',
+                                         self._callback_entry, 'float', 307))
+            self._lst_handler_id.append(
+                self.txtCaseTemp.connect('focus-out-event',
+                                         self._callback_entry, 'float', 305))
 
             _fxdRelInputQuad1_.show_all()
-            self.fxdRelInputQuad1.show_all()
+            self.fxdReliabilityInputs.show_all()
+            self.fxdStressInputs.show_all()
 
             # Create the labels for quadrant #2.
             _labels_ = [_(u"MTTR Type:"), _(u"Specified MTTR:"),
@@ -2258,18 +2340,6 @@ class Hardware(object):
             (_max2,
              _y_pos2_) = _widg.make_labels(_labels_, _fxdRelInputQuad4_, 5, 5)
             _x_pos_ = max(_max1, _max2) + 20
-
-            if not self.part:
-                _labels_ = [_(u"Min Rated Temp:"), _(u"Knee Temp:"),
-                            _(u"Max Rated Temp:"), _(u"Rated Voltage:"),
-                            _(u"Operating Voltage:"), _(u"Rated Current:"),
-                            _(u"Operating Current:"), _(u"Rated Power:"),
-                            _(u"Operating Power:"), _(u"theta JC:"),
-                            _(u"Temperature Rise:"), _(u"Case Temperature:")]
-                (_x_pos_r_,
-                 _y_pos_r_) = _widg.make_labels(_labels_,
-                                                self.fxdRelInputQuad4, 5, 5)
-                _x_pos_r_ += 30
 
             # Place the quadrant #2 widgets.
             _query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
@@ -2352,106 +2422,20 @@ class Hardware(object):
                                                 u"selected assembly."))
             self.txtCost.set_tooltip_text(_(u"The cost of the selected "
                                             u"hardware item."))
-            self.txtMinTemp.set_tooltip_text(_(u"The minimum design operating "
-                                               u"temperature for the selected"
-                                               u"component."))
-            self.txtKneeTemp.set_tooltip_text(_(u"The knee temperature for "
-                                                u"the selected component."))
-            self.txtMaxTemp.set_tooltip_text(_(u"The maximum design operating "
-                                               u"temperature for the selected "
-                                               u"component."))
-            self.txtRatedVoltage.set_tooltip_text(_(u"The maximum rated "
-                                                    u"voltage for the "
-                                                    u"selected component."))
-            self.txtOpVoltage.set_tooltip_text(_(u"The operating voltage for "
-                                                 u"the selected component."))
-            self.txtRatedCurrent.set_tooltip_text(_(u"The maximum rated "
-                                                    u"current for the "
-                                                    u"selected component."))
-            self.txtOpCurrent.set_tooltip_text(_(u"The operating current for "
-                                                 u"the selected component."))
-            self.txtRatedPower.set_tooltip_text(_(u"The maximum rated power "
-                                                  u"for the selected "
-                                                  u"component."))
-            self.txtOpPower.set_tooltip_text(_(u"The operating power for the "
-                                               u"selected component."))
-            self.txtThetaJC.set_tooltip_text(_(u"The junction-to-case thermal "
-                                               u"resistance for the selected "
-                                               u"component."))
-            self.txtTempRise.set_tooltip_text(_(u"The ambient to case "
-                                                u"temperature rise for the "
-                                                u"selected component."))
-            self.txtCaseTemp.set_tooltip_text(_(u"The case temperature for "
-                                                u"the selected component."))
 
             _fxdRelInputQuad4_.put(self.cmbCostType, _x_pos_, _y_pos2_[0])
             _fxdRelInputQuad4_.put(self.txtCost, _x_pos_, _y_pos2_[1])
-            self.fxdRelInputQuad4.put(self.txtMinTemp, _x_pos_r_, _y_pos_r_[0])
-            self.fxdRelInputQuad4.put(self.txtKneeTemp, _x_pos_r_,
-                                      _y_pos_r_[1])
-            self.fxdRelInputQuad4.put(self.txtMaxTemp, _x_pos_r_, _y_pos_r_[2])
-            self.fxdRelInputQuad4.put(self.txtRatedVoltage, _x_pos_r_,
-                                      _y_pos_r_[3])
-            self.fxdRelInputQuad4.put(self.txtOpVoltage, _x_pos_r_,
-                                      _y_pos_r_[4])
-            self.fxdRelInputQuad4.put(self.txtRatedCurrent, _x_pos_r_,
-                                      _y_pos_r_[5])
-            self.fxdRelInputQuad4.put(self.txtOpCurrent, _x_pos_r_,
-                                      _y_pos_r_[6])
-            self.fxdRelInputQuad4.put(self.txtRatedPower, _x_pos_r_,
-                                      _y_pos_r_[7])
-            self.fxdRelInputQuad4.put(self.txtOpPower, _x_pos_r_, _y_pos_r_[8])
-            self.fxdRelInputQuad4.put(self.txtThetaJC, _x_pos_r_, _y_pos_r_[9])
-            self.fxdRelInputQuad4.put(self.txtTempRise, _x_pos_r_,
-                                      _y_pos_r_[10])
-            self.fxdRelInputQuad4.put(self.txtCaseTemp, _x_pos_r_,
-                                      _y_pos_r_[11])
 
             self.cmbCostType.connect('changed', self._callback_combo, 16)
             self._lst_handler_id.append(
                 self.txtCost.connect('focus-out-event',
                                      self._callback_entry, 'float', 13))
-            self._lst_handler_id.append(
-                self.txtMinTemp.connect('focus-out-event',
-                                        self._callback_entry, 'float', 256))
-            self._lst_handler_id.append(
-                self.txtKneeTemp.connect('focus-out-event',
-                                         self._callback_entry, 'float', 243))
-            self._lst_handler_id.append(
-                self.txtMaxTemp.connect('focus-out-event',
-                                        self._callback_entry, 'float', 255))
-            self._lst_handler_id.append(
-                self.txtRatedVoltage.connect('focus-out-event',
-                                             self._callback_entry,
-                                             'float', 294))
-            self._lst_handler_id.append(
-                self.txtOpVoltage.connect('focus-out-event',
-                                          self._callback_entry, 'float', 266))
-            self._lst_handler_id.append(
-                self.txtRatedCurrent.connect('focus-out-event',
-                                             self._callback_entry,
-                                             'float', 292))
-            self._lst_handler_id.append(
-                self.txtOpCurrent.connect('focus-out-event',
-                                          self._callback_entry, 'float', 262))
-            self._lst_handler_id.append(
-                self.txtRatedPower.connect('focus-out-event',
-                                           self._callback_entry, 'float', 293))
-            self._lst_handler_id.append(
-                self.txtOpPower.connect('focus-out-event',
-                                        self._callback_entry, 'float', 264))
-            self._lst_handler_id.append(
-                self.txtThetaJC.connect('focus-out-event',
-                                        self._callback_entry, 'float', 309))
-            self._lst_handler_id.append(
-                self.txtTempRise.connect('focus-out-event',
-                                         self._callback_entry, 'float', 307))
-            self._lst_handler_id.append(
-                self.txtCaseTemp.connect('focus-out-event',
-                                         self._callback_entry, 'float', 305))
 
             _fxdRelInputQuad4_.show_all()
-            self.fxdRelInputQuad4.show_all()
+
+            # Hide the component-specific quadrants.
+            self.scwReliabilityInputs.hide()
+            self.scwStressInputs.hide()
 
             _label_ = gtk.Label()
             _heading_ = _(u"Assessment\nInputs")
@@ -2464,7 +2448,7 @@ class Hardware(object):
                                        u"assessment inputs for the selected "
                                        u"assembly."))
 
-            notebook.insert_page(_hbox_,
+            notebook.insert_page(_hpaned,
                                  tab_label=_label_,
                                  position=-1)
 
@@ -2472,59 +2456,91 @@ class Hardware(object):
 
         def _create_assessment_results_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
+            Function to create the Hardware class gtk.Notebook() page for
             displaying the assessment results for the selected HARDWARE.
 
-            :param self: the current instance of a HARDWARE class.
-            :type self: RTK application
-            :param notebook: the HARDWARE class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
-            :return: False or True
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
+            :return: False if successful or True if an error is encountered.
+            :rtype: bool
             """
+
+            self.fraDerate.props.height_request = 350
+            self.fraDerate.props.width_request = 450
+            self.pltDerate = self.figDerate.add_subplot(111)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _hbox_ = gtk.HBox()
+            _hpaned = gtk.HPaned()
 
-            # Build the quadrant #1 (upper left) containers.
-            _fxdCalcResultsQuad1_ = gtk.Fixed()
+            # --------------------------------------------------------------#
+            # Build the quadrant #1 (upper left) containers.                #
+            # --------------------------------------------------------------#
+            self.fxdReliabilityResults = gtk.Fixed()
+
+            _vpaned = gtk.VPaned()
+            _hpaned.pack1(_vpaned, True, False)
+
+            # Add the layout for common reliability results.  These result
+            # widgets will be used for assembly and component results.
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(self.fxdReliabilityResults)
 
             _frame = _widg.make_frame(label=_(u"Reliability Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame.add(_fxdCalcResultsQuad1_)
+            _frame.add(_scrollwindow)
 
-            self.fraDerate.props.height_request = 350
-            self.fraDerate.props.width_request = 450
+            _vpaned.pack1(_frame, True, False)
 
-            _hbox_.pack_start(_frame)
+            # --------------------------------------------------------------#
+            # Build the quadrant #3 (lower left) containers.                #
+            # --------------------------------------------------------------#
+            # Add the layout for component-specific stress results.
+            # TODO: Move this to the Component class.
+            self.scwStressResults.set_policy(gtk.POLICY_AUTOMATIC,
+                                             gtk.POLICY_AUTOMATIC)
+            self.scwStressResults.add_with_viewport(self.fxdStressResults)
 
-            # Build the quadrant #2 (upper right) containers.
-            _vbox = gtk.VBox()
+            _frame = _widg.make_frame(label=_(u"Operating Stress Results"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(self.scwStressResults)
+
+            _vpaned.pack2(_frame, True, False)
+
+            # --------------------------------------------------------------#
+            # Build the quadrant #2 (upper right) containers.               #
+            # --------------------------------------------------------------#
+            _vpaned = gtk.VPaned()
+            _hpaned.pack2(_vpaned, True, False)
 
             _fxdCalcResultsQuad2_ = gtk.Fixed()
 
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fxdCalcResultsQuad2_)
+
             _frame = _widg.make_frame(label=_(u"Maintainability Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame.add(_fxdCalcResultsQuad2_)
+            _frame.add(_scrollwindow)
 
-            _vbox.pack_start(_frame)
+            _vpaned.pack1(_frame, True, False)
 
-            # Build the quadrant #4 (lower right) containers.
-            _fxdCalcResultsQuad4_ = gtk.Fixed()
-
-            _hbox1_ = gtk.HBox()
+            # --------------------------------------------------------------#
+            # Build the quadrant #4 (lower right) containers.               #
+            # --------------------------------------------------------------#
+            self.scwMiscResults.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            self.scwMiscResults.add_with_viewport(self.fxdMiscResults)
 
             _frame = _widg.make_frame(label=_(u"Miscellaneous Results"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame.add(_hbox1_)
+            _frame.add(self.scwMiscResults)
 
-            _hbox1_.pack_start(_fxdCalcResultsQuad4_)
-            _hbox1_.pack_start(self.fxdCalcResultsQuad4)
-
-            _vbox.pack_start(_frame)
-
-            _hbox_.pack_start(_vbox)
+            _vpaned.pack2(_frame, True, False)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display the assessment results.      #
@@ -2536,26 +2552,30 @@ class Hardware(object):
                        _(u"MTBF:"), _(u"Mission MTBF:"), _(u"Reliability:"),
                        _(u"Mission R(t):")]
 
-            (_x_pos_,
-             _y_pos_) = _widg.make_labels(_labels, _fxdCalcResultsQuad1_, 5, 5)
-            _x_pos_ += 20
+            (_max1,
+             _y_pos1) = _widg.make_labels(_labels, self.fxdReliabilityResults, 5, 5)
+
+            # Create the labels for quadrant #3.
+            # TODO: Move this to the Component class.
+            _labels = [_(u"Total Power Used:"), _(u"Voltage Ratio:"),
+                       _(u"Current Ratio:"), _(u"Power Ratio:")]
+            (_max3,
+             _y_pos3) = _widg.make_labels(_labels,
+                                          self.fxdStressResults, 5, 5)
+            _x_pos = max(_max1, _max3) + 30
+            self._component_x[1] = _x_pos
+            self._component_y[1] = _y_pos3[3] + 170
 
             # Place the quadrant #1 widgets.
             self.txtActiveHt.set_tooltip_text(_(u"Displays the active failure "
                                                 u"intensity for the selected "
                                                 u"assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtActiveHt, _x_pos_, _y_pos_[0])
-
             self.txtDormantHt.set_tooltip_text(_(u"Displays the dormant "
                                                  u"failure intensity for the "
                                                  u"selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtDormantHt, _x_pos_, _y_pos_[1])
-
             self.txtSoftwareHt2.set_tooltip_text(_(u"Displays the software "
                                                    u"failure intensity for "
                                                    u"the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtSoftwareHt2, _x_pos_, _y_pos_[2])
-
             self.txtPredictedHt.set_tooltip_text(_(u"Displays the predicted "
                                                    u"failure intensity for "
                                                    u"the selected assembly.  "
@@ -2563,44 +2583,81 @@ class Hardware(object):
                                                    u"active, dormant, and "
                                                    u"software failure "
                                                    u"intensities."))
-            _fxdCalcResultsQuad1_.put(self.txtPredictedHt, _x_pos_, _y_pos_[3])
-
             self.txtMissionHt.set_tooltip_text(_(u"Displays the mission "
                                                  u"failure intensity for the "
                                                  u"selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtMissionHt, _x_pos_, _y_pos_[4])
-
             self.txtHtPerCent.set_tooltip_text(_(u"Displays the percent of "
-                                                 u"the total system failure intensity attributable to the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtHtPerCent, _x_pos_, _y_pos_[5])
+                                                 u"the total system failure "
+                                                 u"intensity attributable to "
+                                                 u"the selected assembly."))
+            self.txtMTBF.set_tooltip_text(_(u"Displays the limiting mean time "
+                                            u"between failure (MTBF) for the "
+                                            u"selected assembly."))
+            self.txtMissionMTBF.set_tooltip_text(_(u"Displays the mission "
+                                                   u"mean time between "
+                                                   u"failure (MTBF) for the "
+                                                   u"selected assembly."))
+            self.txtReliability.set_tooltip_text(_(u"Displays the limiting "
+                                                   u"reliability for the "
+                                                   u"selected assembly."))
+            self.txtMissionRt.set_tooltip_text(_(u"Displays the mission "
+                                                 u"reliability for the "
+                                                 u"selected assembly."))
 
-            self.txtMTBF.set_tooltip_text(_(
-                u"Displays the limiting mean time between failure (MTBF) for the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtMTBF, _x_pos_, _y_pos_[6])
+            self.fxdReliabilityResults.put(self.txtActiveHt, _x_pos, _y_pos1[0])
+            self.fxdReliabilityResults.put(self.txtDormantHt, _x_pos, _y_pos1[1])
+            self.fxdReliabilityResults.put(self.txtSoftwareHt2, _x_pos, _y_pos1[2])
+            self.fxdReliabilityResults.put(self.txtPredictedHt, _x_pos, _y_pos1[3])
+            self.fxdReliabilityResults.put(self.txtMissionHt, _x_pos, _y_pos1[4])
+            self.fxdReliabilityResults.put(self.txtHtPerCent, _x_pos, _y_pos1[5])
+            self.fxdReliabilityResults.put(self.txtMTBF, _x_pos, _y_pos1[6])
+            self.fxdReliabilityResults.put(self.txtMissionMTBF, _x_pos, _y_pos1[7])
+            self.fxdReliabilityResults.put(self.txtReliability, _x_pos, _y_pos1[8])
+            self.fxdReliabilityResults.put(self.txtMissionRt, _x_pos, _y_pos1[9])
 
-            self.txtMissionMTBF.set_tooltip_text(_(
-                u"Displays the mission mean time between failure (MTBF) for the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtMissionMTBF, _x_pos_, _y_pos_[7])
+            self.fxdReliabilityResults.show_all()
 
-            self.txtReliability.set_tooltip_text(_(
-                u"Displays the limiting reliability for the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtReliability, _x_pos_, _y_pos_[8])
+            # Place the quadrant #3 widgets.
+            # TODO: Move this to the Component class.
+            self.txtTotalPwr.set_tooltip_text(_(u"The total power of the "
+                                                u"selected assembly."))
+            self.txtVoltageRatio.set_tooltip_text(_(u"The ratio of operating "
+                                                    u"voltage to rated "
+                                                    u"voltage for the "
+                                                    u"selected component."))
+            self.txtCurrentRatio.set_tooltip_text(_(u"The ratio of operating "
+                                                    u"current to rated "
+                                                    u"current for the "
+                                                    u"selected component."))
+            self.txtPwrRatio.set_tooltip_text(_(u"The ratio of operating "
+                                                u"power to rated power for "
+                                                u"the selected component."))
+            self.chkOverstressed.set_tooltip_text(_(u"Indicates whether the "
+                                                    u"selected component is "
+                                                    u"overstressed."))
 
-            self.txtMissionRt.set_tooltip_text(_(
-                u"Displays the mission reliability for the selected assembly."))
-            _fxdCalcResultsQuad1_.put(self.txtMissionRt, _x_pos_, _y_pos_[9])
+            self.fxdStressResults.put(self.txtTotalPwr, _x_pos, _y_pos3[0])
+            self.fxdStressResults.put(self.txtVoltageRatio, _x_pos, _y_pos3[1])
+            self.fxdStressResults.put(self.txtCurrentRatio, _x_pos, _y_pos3[2])
+            self.fxdStressResults.put(self.txtPwrRatio, _x_pos, _y_pos3[3])
+
+            _label_ = _widg.make_label(text=_(u"Overstressed?:"))
+            self.fxdStressResults.put(_label_, 5, _y_pos3[3] + 30)
+            self.fxdStressResults.put(self.chkOverstressed, _x_pos,
+                                      _y_pos3[3] + 30)
+
+            _textview_ = _widg.make_text_view(txvbuffer=self.txtOSReason,
+                                              width=250)
+            _textview_.set_tooltip_text(_(u"The reason(s) the selected "
+                                          u"component is overstressed."))
+            self.fxdStressResults.put(_textview_, 4, _y_pos3[3] + 60)
 
             self.fraDerate.add(self.pltDerate)
-            _fxdCalcResultsQuad1_.put(self.fraDerate, _x_pos_ + 210, 5)
-
-            _fxdCalcResultsQuad1_.show_all()
+            self.fxdStressResults.put(self.fraDerate, _x_pos + 125, 5)
 
             # Create the labels for quadrant #2.
             _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
                        _(u"Availability:"), _(u"Mission A(t):")]
-
-            _max1_ = 0
-            _max2_ = 0
             (_max1_, _y_pos1_) = _widg.make_labels(_labels,
                                                    _fxdCalcResultsQuad2_, 5, 5)
 
@@ -2609,41 +2666,35 @@ class Hardware(object):
                        _(u"Cost/Hour:"), _(u"Total Part Count:"),
                        _(u"Assembly Criticality:")]
             (_max2_, _y_pos2_) = _widg.make_labels(_labels,
-                                                   _fxdCalcResultsQuad4_, 5, 5)
-            _x_pos_ = max(_max1_, _max2_) + 20
-
-            if self.part:
-                _labels = [_(u"Total Power Used:"), _(u"Voltage Ratio:"),
-                           _(u"Current Ratio:"), _(u"Power Ratio:")]
-            (_x_pos_r_,
-             _y_pos_r_) = _widg.make_labels(_labels,
-                                            self.fxdCalcResultsQuad4, 5, 5)
-            _x_pos_r_ += 30
+                                                   self.fxdMiscResults, 5, 5)
+            _x_pos_ = max(_max1_, _max2_) + 30
 
             # Place the quadrant #2 widgets.
-            self.txtMPMT.set_tooltip_text(_(
-                u"Displays the mean preventive maintenance time (MPMT) for the selected assembly."))
+            self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive "
+                                            u"maintenance time (MPMT) for the "
+                                            u"selected assembly."))
+            self.txtMCMT.set_tooltip_text(_(u"Displays the mean corrective "
+                                            u"maintenance time (MCMT) for the "
+                                            u"selected assembly."))
+            self.txtMTTR.set_tooltip_text(_(u"Displays the mean time to "
+                                            u"repair (MTTR) for the selected "
+                                            u"assembly."))
+            self.txtMMT.set_tooltip_text(_(u"Displays the mean maintenance "
+                                           u"time (MMT) for the selected "
+                                           u"assembly."))
+            self.txtAvailability.set_tooltip_text(_(u"Displays the logistics "
+                                                    u"availability for the "
+                                                    u"selected assembly."))
+            self.txtMissionAt.set_tooltip_text(_(u"Displays the mission "
+                                                 u"availability for the "
+                                                 u"selected assembly."))
+
             _fxdCalcResultsQuad2_.put(self.txtMPMT, _x_pos_, _y_pos1_[0])
-
-            self.txtMCMT.set_tooltip_text(_(
-                u"Displays the mean corrective maintenance time (MCMT) for the selected assembly."))
             _fxdCalcResultsQuad2_.put(self.txtMCMT, _x_pos_, _y_pos1_[1])
-
-            self.txtMTTR.set_tooltip_text(_(
-                u"Displays the mean time to repair (MTTR) for the selected assembly."))
             _fxdCalcResultsQuad2_.put(self.txtMTTR, _x_pos_, _y_pos1_[2])
-
-            self.txtMMT.set_tooltip_text(_(
-                u"Displays the mean maintenance time (MMT) for the selected assembly."))
             _fxdCalcResultsQuad2_.put(self.txtMMT, _x_pos_, _y_pos1_[3])
-
-            self.txtAvailability.set_tooltip_text(_(
-                u"Displays the logistics availability for the selected assembly."))
             _fxdCalcResultsQuad2_.put(self.txtAvailability, _x_pos_,
                                       _y_pos1_[4])
-
-            self.txtMissionAt.set_tooltip_text(_(
-                u"Displays the mission availability for the selected assembly."))
             _fxdCalcResultsQuad2_.put(self.txtMissionAt, _x_pos_, _y_pos1_[5])
 
             _fxdCalcResultsQuad2_.show_all()
@@ -2651,73 +2702,33 @@ class Hardware(object):
             # Place the quadrant #4 widgets.
             self.txtTotalCost.set_tooltip_text(_(u"Displays the total cost of "
                                                  u"the selected assembly."))
-            _fxdCalcResultsQuad4_.put(self.txtTotalCost, _x_pos_, _y_pos2_[0])
-
             self.txtCostFailure.set_tooltip_text(_(u"Displays the cost per "
                                                    u"failure of the selected "
                                                    u"assembly."))
-            _fxdCalcResultsQuad4_.put(self.txtCostFailure, _x_pos_,
-                                      _y_pos2_[1])
-
             self.txtCostHour.set_tooltip_text(_(u"Displays the cost per "
                                                 u"mission hour of the "
                                                 u"selected assembly."))
-            _fxdCalcResultsQuad4_.put(self.txtCostHour, _x_pos_, _y_pos2_[2])
-
             self.txtPartCount.set_tooltip_text(_(u"The total number of "
                                                  u"components used to "
                                                  u"construct the selected "
                                                  u"assembly."))
-            _fxdCalcResultsQuad4_.put(self.txtPartCount, _x_pos_, _y_pos2_[3])
-
             self.txtAssemblyCrit.set_tooltip_text(_(u"The criticality of the "
-                                                    u"selected hardware item.  "
-                                                    u"This is calculated by "
-                                                    u"the FMEA."))
-            _fxdCalcResultsQuad4_.put(self.txtAssemblyCrit, _x_pos_,
-                                      _y_pos2_[4])
+                                                    u"selected hardware "
+                                                    u"item.  This is "
+                                                    u"calculated by the "
+                                                    u"FMEA."))
 
-            self.txtTotalPwr.set_tooltip_text(_(u"The total power of the "
-                                                u"selected assembly."))
-            self.fxdCalcResultsQuad4.put(self.txtTotalPwr, _x_pos_,
-                                         _y_pos2_[0])
+            self.fxdMiscResults.put(self.txtTotalCost, _x_pos_, _y_pos2_[0])
+            self.fxdMiscResults.put(self.txtCostFailure, _x_pos_, _y_pos2_[1])
+            self.fxdMiscResults.put(self.txtCostHour, _x_pos_, _y_pos2_[2])
+            self.fxdMiscResults.put(self.txtPartCount, _x_pos_, _y_pos2_[3])
+            self.fxdMiscResults.put(self.txtAssemblyCrit, _x_pos_, _y_pos2_[4])
 
-            self.txtVoltageRatio.set_tooltip_text(_(u"The ratio of operating "
-                                                    u"voltage to rated "
-                                                    u"voltage for the "
-                                                    u"selected component."))
-            self.fxdCalcResultsQuad4.put(self.txtVoltageRatio, _x_pos_,
-                                         _y_pos2_[1])
+            self.fxdStressResults.show_all()
+            self.fxdMiscResults.show_all()
 
-            self.txtCurrentRatio.set_tooltip_text(_(u"The ratio of operating "
-                                                    u"current to rated "
-                                                    u"current for the "
-                                                    u"selected component."))
-            self.fxdCalcResultsQuad4.put(self.txtCurrentRatio, _x_pos_,
-                                         _y_pos2_[2])
-
-            self.txtPwrRatio.set_tooltip_text(_(u"The ratio of operating "
-                                                u"power to rated power for "
-                                                u"the selected component."))
-            self.fxdCalcResultsQuad4.put(self.txtPwrRatio, _x_pos_,
-                                         _y_pos2_[3])
-
-            _label_ = _widg.make_label(text=_(u"Overstressed?:"))
-            self.chkOverstressed.set_tooltip_text(_(u"Indicates whether the "
-                                                    u"selected component is "
-                                                    u"overstressed."))
-            self.fxdCalcResultsQuad4.put(_label_, _x_pos_ + 210, _y_pos2_[0])
-            self.fxdCalcResultsQuad4.put(self.chkOverstressed, _x_pos_ + 360,
-                                         _y_pos2_[0])
-
-            _textview_ = _widg.make_text_view(txvbuffer=self.txtOSReason,
-                                              width=250)
-            _textview_.set_tooltip_text(_(u"The reason(s) the selected "
-                                          u"component is overstressed."))
-            self.fxdCalcResultsQuad4.put(_textview_, _x_pos_ + 390, _y_pos_[0])
-
-            _fxdCalcResultsQuad4_.show_all()
-            self.fxdCalcResultsQuad4.show_all()
+            self.scwStressResults.hide()
+            self.scwMiscResults.hide()
 
             _label = gtk.Label()
             _label.set_markup(_(u"<span weight='bold'>"
@@ -2727,10 +2738,11 @@ class Hardware(object):
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.show_all()
             _label.set_tooltip_text(_(u"Displays the results the reliability, "
-                                      u"maintainability, and other assessments "
-                                      u"for the selected assembly."))
+                                      u"maintainability, and other "
+                                      u"assessments for the selected "
+                                      u"assembly."))
 
-            notebook.insert_page(_hbox_,
+            notebook.insert_page(_hpaned,
                                  tab_label=_label,
                                  position=-1)
 
@@ -2741,9 +2753,8 @@ class Hardware(object):
             Function to create the Hardware class gtk.Notebook() page for
             displaying the FMEA/FMECA for the selected HARDWARE.
 
-            :param self: the current instance of a Hardware class.
-            :param notebook: the Hardware class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.hardware self: the current instance of a Hardware class.
+            :param gtk.NoteBooknotebook: the Hardware class gtk.Notebook().
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -3238,8 +3249,9 @@ class Hardware(object):
                 _piter_ = _model_.get_iter_from_string(_results_[i][62])
 
             # Select the image to display.  If there is a problem with the part
-            # (overstressed, etc.), display the !.  If it is an assembly, display the
-            # assembly icon.  If it is a part, display the part icon.
+            # (overstressed, etc.), display the !.  If it is an assembly,
+            # display the assembly icon.  If it is a part, display the part
+            # icon.
             if _results_[i][60] == 1:
                 _icon_ = _conf.ICON_DIR + '32x32/overstress.png'
             elif _results_[i][63] == 0:
@@ -3247,13 +3259,12 @@ class Hardware(object):
             else:
                 _icon_ = _conf.ICON_DIR + '32x32/part.png'
 
-            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16,
-                                                          16)  # @UndefinedVariable
+            _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
             _data_ = _results_[i] + (_icon_,)
 
             _row_ = _model_.append(_piter_, _data_)
 
-            #            self.dicHARDWARE[_results_[i][1]] = _data_ + (_model_.get_string_from_iter(_row_),)
+            # self.dicHARDWARE[_results_[i][1]] = _data_ + (_model_.get_string_from_iter(_row_),)
             self._treepaths[_results_[i][68]] = _model_.get_path(_row_)
 
         _root = _model_.get_iter_root()
@@ -3274,8 +3285,7 @@ class Hardware(object):
             """
             Function to load the widgets on the General Data page.
 
-            Keyword Arguments:
-            self -- the current instance of an HARDWARE class.
+            :param rtk.hardware self: the current instance of a Hardware class.
             """
 
             self.txtRevisionID.set_text(str(self.revision_id))
@@ -3294,9 +3304,9 @@ class Hardware(object):
             self.txtPartNum.set_text(self.part_number)
             self.txtQuantity.set_text(str(self.quantity))
             self.txtRefDes.set_text(self.ref_des)
-            _text_ = _util.none_to_string(self.remarks)
+            _text = _util.none_to_string(self.remarks)
             _buffer = self.txtRemarks.get_child().get_child().get_buffer()
-            _buffer.set_text(_text_)
+            _buffer.set_text(_text)
             self.chkRepairable.set_active(self.repairable)
             self.txtSpecification.set_text(self.specification)
             self.chkTagged.set_active(self.tagged)
@@ -3304,16 +3314,20 @@ class Hardware(object):
 
             # Show/hide the assembly-specific or component-specific widgets as
             # appropriate.
-            if not self.part:
-                self.cmbCategory.hide()
-                self.cmbSubcategory.hide()
-                self.lblCategory.hide()
-                self.lblSubcategory.hide()
-            else:
+            if self.part:
+                self.cmbCategory.set_active(self.category_id)
+                self.cmbSubcategory.set_active(self.subcategory_id)
+                self._component = _util.set_part_model(self.category_id,
+                                                       self.subcategory_id)
                 self.cmbCategory.show()
                 self.cmbSubcategory.show()
                 self.lblCategory.show()
                 self.lblSubcategory.show()
+            else:
+                self.cmbCategory.hide()
+                self.cmbSubcategory.hide()
+                self.lblCategory.hide()
+                self.lblSubcategory.hide()
 
             return False
 
@@ -3321,13 +3335,10 @@ class Hardware(object):
             """
             Function to load the widgets on the Allocation page.
 
-            :param self: the current instance of a HARDWARE class.
-            :type self: Hardware class object
-            :param model: the HARDWARE class gtk.TreeModel()
-            :type model: gtk.TreeModel
-            :param row: the currently selected row in the HARDWARE class
-                        gtk.TreeModel()
-            :type row: gtk.Iter
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.TreeModel model: the Hardware class gtk.TreeModel()
+            :param gtk.TreeIter row: the currently selected gtk.TreeIter() in
+                                     the Hardware class gtk.TreeModel()
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -3427,8 +3438,10 @@ class Hardware(object):
             """
             Function to load the widgets on the Hazard Analysis page.
 
-            :param self: the current instance of an HARDWARE class.
-            :return: False
+            :param rtk.Hardware self: the current instance of an Hardware
+                                      class.
+            :return: False if successful or True if an error occurs.
+            :rtype: bool
             """
 
             # Get the hazard analysis for the assembly selected in the
@@ -3516,7 +3529,7 @@ class Hardware(object):
                                                   self._app.ProgCnx)
 
             _model = self.tvwRiskMap.get_model()
-            #for i in range(len(_results)):
+            # for i in range(len(_results)):
             #   model.set(row, _results[i][2])
 
             return False
@@ -3525,8 +3538,10 @@ class Hardware(object):
             """
             Function to load the widgets on the Similar Item Analysis page.
 
-            :param self: the current instance of an HARDWARE class.
-            :return: False
+            :param rtk.Hardware self: the current instance of an Hardware
+                                      class.
+            :return: False if successful or True if an error occurs.
+            :rtype: bool
             """
 
             (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -3583,14 +3598,15 @@ class Hardware(object):
             """
             Function to load the widgets on the Assessment Inputs page.
 
-            :param self: the current instance of an HARDWARE class.
-            :return: False
+            :param rtk.Hardware self: the current instance of an Hardware
+                                      class.
+            :return: False if successful or True if an error occurs.
+            :rtype: bool
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
             self.cmbHRType.set_active(int(self.failure_rate_type))
-            self.cmbCalcModel.set_active(int(self.calculation_model))
             self.txtSpecifiedHt.set_text(
                 str(fmt.format(self.failure_rate_specified)))
             self.txtSpecifiedMTBF.set_text(str(self.mtbf_specified))
@@ -3629,6 +3645,7 @@ class Hardware(object):
 
             # Load the component-specific information.
             if self.part:
+                self.cmbCalcModel.set_active(int(self.calculation_model))
                 self.txtBurnInTemp.set_text(
                     str('{0:0.2g}'.format(self.burnin_temp)))
                 self.txtBurnInTime.set_text(
@@ -3660,15 +3677,17 @@ class Hardware(object):
                 self.txtTempRise.set_text(str(fmt.format(self.temp_rise)))
                 self.txtCaseTemp.set_text(str(fmt.format(self.case_temp)))
 
-                self.fxdRelInputQuad1.show()
-                self.fxdRelInputQuad4.show()
+                self.scwReliabilityInputs.show_all()
+                self.scwStressInputs.show_all()
+                self.scwReliabilityInputs.get_parent().show()
+                self.scwStressInputs.get_parent().show()
 
-                #if self._component is not None:
-                #    self.part.assessment_inputs_load(self)
+                if self.part:
+                    self._component.assessment_inputs_load(self)
 
             else:
-                self.fxdRelInputQuad1.hide()
-                self.fxdRelInputQuad4.hide()
+                self.scwReliabilityInputs.get_parent().hide()
+                self.scwStressInputs.get_parent().hide()
 
             # Let the user know if the selected part does not have a part
             # category selected.
@@ -3690,7 +3709,7 @@ class Hardware(object):
 
         self.assembly_id = _model.get_value(_row, 1)
 
-        if _model.get_value(_row, 63) == 1:  # Is a component.
+        if _model.get_value(_row, 63) == 1:     # Is a component.
             try:
                 self.ht_model = dict(_model.get_value(_row, 88))
             except:
@@ -3715,7 +3734,7 @@ class Hardware(object):
             _load_allocation_tab(self, _model, _row)
             _load_hazard_analysis_tab(self)
             _load_similar_item_tab(self)
-            #_load_maintenance_planning_tab(self)
+            # _load_maintenance_planning_tab(self)
             if self.notebook.get_nth_page(1) != self.hbxAllocation:
                 self.notebook.insert_page(self.hbxAllocation,
                                           tab_label=self.lblAllocation,
@@ -3791,47 +3810,16 @@ class Hardware(object):
 
             self.chkOverstressed.set_active(self.overstress)
 
-            #self._component.assessment_results_load(self)
+            self._component.assessment_results_load(self)
 
-            _derate = self.figDerate.add_subplot(111)
-            _derate.set_title(_(u"Derating Curve for %s at %s") %
-                              (self.txtPartNum.get_text(),
-                               self.txtRefDes.get_text()))
-            _derate.set_xlabel(_(u"Temperature (\u2070C)"))
-            _derate.set_ylabel(_(u"Power (Watts)"))
-
-            # Set up the x, y coordinates for the operating point plot.
-            _x_ = []
-            _y_ = []
-            _x_.append(float(self.min_temp))
-            _x_.append(float(self.knee_temp))
-            _x_.append(float(self.max_temp))
-            _y_.append(float(self.rated_power))
-            _y_.append(float(self.rated_power))
-            _y_.append(0.0)
-
-            _derate.plot(_x_, _y_, 'r.-', linewidth=2)
-            _derate.plot(self.case_temp, self.op_power, 'go')
-            if _x_[0] != _x_[2] and _y_[0] != _y_[2]:
-                _derate.axis(
-                    [0.95 * _x_[0], 1.05 * _x_[2], _y_[2], 1.05 * _y_[0]])
-            else:
-                _derate.axis([0.95, 1.05, 0.0, 1.05])
-
-            self.chkOverstressed.show()
-            self.fraDerate.show()
-            self.fxdCalcResultsQuad4.show()
-            self.txtCurrentRatio.show()
-            self.txtPwrRatio.show()
-            self.txtVoltageRatio.show()
+            self.scwStressResults.show_all()
+            self.scwMiscResults.show_all()
+            self.scwStressResults.get_parent().show()
+            self.scwMiscResults.get_parent().show()
 
         else:
-            self.chkOverstressed.hide()
-            self.fraDerate.hide()
-            self.fxdCalcResultsQuad4.hide()
-            self.txtCurrentRatio.hide()
-            self.txtPwrRatio.hide()
-            self.txtVoltageRatio.hide()
+            self.scwStressResults.get_parent().hide()
+            self.scwMiscResults.get_parent().hide()
 
         return False
 
@@ -3907,10 +3895,10 @@ class Hardware(object):
         _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
         for i in range(_n_modes_):
             self._dicModeCA[_results_[i][0]] = [_results_[i][15],
-                                         _results_[i][16],
-                                         _results_[i][25],
-                                         _results_[i][18],
-                                         _results_[i][12], 0.0, 0.0]
+                                                _results_[i][16],
+                                                _results_[i][25],
+                                                _results_[i][18],
+                                                _results_[i][12], 0.0, 0.0]
             try:
                 self._ItemCA[self.assembly_id].append([_results_[i][0],
                                                        _results_[i][12], ''])
@@ -4212,126 +4200,111 @@ class Hardware(object):
         Method to update the Hardware class attributes.
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        self._add_adj_factor = _model_.get_value(_row_, self._col_order[2])
-        self.allocation_type = _model_.get_value(_row_, self._col_order[3])
-        self.alt_part_num = _model_.get_value(_row_, self._col_order[4])
-        self.assembly_criticality = _model_.get_value(_row_,
-                                                      self._col_order[5])
-        self.attachments = _model_.get_value(_row_, self._col_order[6])
-        self.availability = _model_.get_value(_row_, self._col_order[7])
-        self.availability_mission = _model_.get_value(_row_,
-                                                      self._col_order[8])
-        self.cage_code = _model_.get_value(_row_, self._col_order[9])
-        self.calculation_model = _model_.get_value(_row_, self._col_order[10])
-        self.category_id = _model_.get_value(_row_, self._col_order[11])
-        self.comp_ref_des = _model_.get_value(_row_, self._col_order[12])
-        self.cost = _model_.get_value(_row_, self._col_order[13])
-        self.cost_per_failure = _model_.get_value(_row_, self._col_order[14])
-        self.cost_per_hour = _model_.get_value(_row_, self._col_order[15])
-        self.cost_type = _model_.get_value(_row_, self._col_order[16])
-        self.description = _model_.get_value(_row_, self._col_order[17])
-        self.detection_fr = _model_.get_value(_row_, self._col_order[18])
-        self.detection_percent = _model_.get_value(_row_, self._col_order[19])
-        self.duty_cycle = _model_.get_value(_row_, self._col_order[20])
-        self.entered_by = _model_.get_value(_row_, self._col_order[21])
-        self.environment_active = _model_.get_value(_row_, self._col_order[22])
-        self.environment_dormant = _model_.get_value(_row_,
-                                                     self._col_order[23])
-        self.failure_dist = _model_.get_value(_row_, self._col_order[24])
-        self.failure_parameter_1 = _model_.get_value(_row_,
-                                                     self._col_order[25])
-        self.failure_parameter_2 = _model_.get_value(_row_,
-                                                     self._col_order[26])
-        self.failure_parameter_3 = _model_.get_value(_row_,
-                                                     self._col_order[27])
-        self.failure_rate = _model_.get_value(_row_, self._col_order[32])
-        self.failure_rate_lcl = _model_.get_value(_row_, self._col_order[93])
-        self.failure_rate_ucl = _model_.get_value(_row_, self._col_order[94])
-        self.failure_rate_active = _model_.get_value(_row_,
-                                                     self._col_order[28])
-        self.failure_rate_dormant = _model_.get_value(_row_,
-                                                      self._col_order[29])
-        self.failure_rate_mission = _model_.get_value(_row_,
-                                                      self._col_order[30])
-        self.failure_rate_percent = _model_.get_value(_row_,
-                                                      self._col_order[31])
-        self.failure_rate_software = _model_.get_value(_row_,
+        self._add_adj_factor = _model.get_value(_row, self._col_order[2])
+        self.allocation_type = _model.get_value(_row, self._col_order[3])
+        self.alt_part_num = _model.get_value(_row, self._col_order[4])
+        self.assembly_criticality = _model.get_value(_row, self._col_order[5])
+        self.attachments = _model.get_value(_row, self._col_order[6])
+        self.availability = _model.get_value(_row, self._col_order[7])
+        self.availability_mission = _model.get_value(_row, self._col_order[8])
+        self.cage_code = _model.get_value(_row, self._col_order[9])
+        self.calculation_model = _model.get_value(_row, self._col_order[10])
+        self.category_id = _model.get_value(_row, self._col_order[11])
+        self.comp_ref_des = _model.get_value(_row, self._col_order[12])
+        self.cost = _model.get_value(_row, self._col_order[13])
+        self.cost_per_failure = _model.get_value(_row, self._col_order[14])
+        self.cost_per_hour = _model.get_value(_row, self._col_order[15])
+        self.cost_type = _model.get_value(_row, self._col_order[16])
+        self.description = _model.get_value(_row, self._col_order[17])
+        self.detection_fr = _model.get_value(_row, self._col_order[18])
+        self.detection_percent = _model.get_value(_row, self._col_order[19])
+        self.duty_cycle = _model.get_value(_row, self._col_order[20])
+        self.entered_by = _model.get_value(_row, self._col_order[21])
+        self.environment_active = _model.get_value(_row, self._col_order[22])
+        self.environment_dormant = _model.get_value(_row, self._col_order[23])
+        self.failure_dist = _model.get_value(_row, self._col_order[24])
+        self.failure_parameter_1 = _model.get_value(_row, self._col_order[25])
+        self.failure_parameter_2 = _model.get_value(_row, self._col_order[26])
+        self.failure_parameter_3 = _model.get_value(_row, self._col_order[27])
+        self.failure_rate = _model.get_value(_row, self._col_order[32])
+        self.failure_rate_lcl = _model.get_value(_row, self._col_order[93])
+        self.failure_rate_ucl = _model.get_value(_row, self._col_order[94])
+        self.failure_rate_active = _model.get_value(_row, self._col_order[28])
+        self.failure_rate_dormant = _model.get_value(_row, self._col_order[29])
+        self.failure_rate_mission = _model.get_value(_row, self._col_order[30])
+        self.failure_rate_percent = _model.get_value(_row, self._col_order[31])
+        self.failure_rate_software = _model.get_value(_row,
                                                        self._col_order[33])
-        self.failure_rate_specified = _model_.get_value(_row_,
+        self.failure_rate_specified = _model.get_value(_row,
                                                         self._col_order[34])
-        self.failure_rate_type = _model_.get_value(_row_, self._col_order[35])
-        self.figure_number = _model_.get_value(_row_, self._col_order[36])
-        self.humidity = _model_.get_value(_row_, self._col_order[37])
-        self.image_file = _model_.get_value(_row_, self._col_order[38])
-        self.isolation_fr = _model_.get_value(_row_, self._col_order[39])
-        self.isolation_percent = _model_.get_value(_row_, self._col_order[40])
-        self.lcn = _model_.get_value(_row_, self._col_order[41])
-        self.level = _model_.get_value(_row_, self._col_order[42])
-        self.manufacturer = _model_.get_value(_row_, self._col_order[43])
-        self.mission_time = _model_.get_value(_row_, self._col_order[45])
-        self.modified_by = _model_.get_value(_row_, self._col_order[47])
-        self.mcmt = _model_.get_value(_row_, self._col_order[44])
-        self.mmt = _model_.get_value(_row_, self._col_order[46])
-        self.mpmt = _model_.get_value(_row_, self._col_order[48])
-        self.mtbf = _model_.get_value(_row_, self._col_order[50])
-        self.mtbf_lcl = _model_.get_value(_row_, self._col_order[91])
-        self.mtbf_ucl = _model_.get_value(_row_, self._col_order[92])
-        self.mtbf_mission = _model_.get_value(_row_, self._col_order[49])
-        self.mtbf_specified = _model_.get_value(_row_, self._col_order[51])
-        self.mttr = _model_.get_value(_row_, self._col_order[52])
-        self.mttr_specified = _model_.get_value(_row_, self._col_order[55])
-        self.mttr_add_adj_factor = _model_.get_value(_row_,
-                                                     self._col_order[53])
-        self.mttr_mult_adj_factor = _model_.get_value(_row_,
-                                                      self._col_order[54])
-        self.mttr_type = _model_.get_value(_row_, self._col_order[56])
-        self.mult_adj_factor = _model_.get_value(_row_, self._col_order[57])
-        self.name = _model_.get_value(_row_, self._col_order[58])
-        self.nsn = _model_.get_value(_row_, self._col_order[59])
-        self.overstress = _model_.get_value(_row_, self._col_order[60])
-        self.page_number = _model_.get_value(_row_, self._col_order[61])
-        self.parent_assembly = _model_.get_value(_row_, self._col_order[62])
-        self.part = _model_.get_value(_row_, self._col_order[63])
-        self.part_number = _model_.get_value(_row_, self._col_order[64])
-        self.percent_isolation_group_ri = _model_.get_value(_row_,
-                                                            self._col_order[
-                                                                65])
-        self.percent_isolation_single_ri = _model_.get_value(_row_,
-                                                             self._col_order[
-                                                                 66])
-        self.quantity = _model_.get_value(_row_, self._col_order[67])
-        self.ref_des = _model_.get_value(_row_, self._col_order[68])
-        self.reliability_mission = _model_.get_value(_row_,
-                                                     self._col_order[69])
-        self.reliability = _model_.get_value(_row_, self._col_order[70])
-        self.remarks = _model_.get_value(_row_, self._col_order[71])
-        self.repair_dist = _model_.get_value(_row_, self._col_order[72])
-        self.repair_parameter_1 = _model_.get_value(_row_, self._col_order[73])
-        self.repair_parameter_2 = _model_.get_value(_row_, self._col_order[74])
-        self.repairable = _model_.get_value(_row_, self._col_order[75])
-        self.rpm = _model_.get_value(_row_, self._col_order[76])
-        self.specification = _model_.get_value(_row_, self._col_order[77])
-        self.subcategory_id = _model_.get_value(_row_, self._col_order[78])
-        self.tagged = _model_.get_value(_row_, self._col_order[79])
-        self.temperature_active = _model_.get_value(_row_, self._col_order[80])
-        self.temperature_dormant = _model_.get_value(_row_,
-                                                     self._col_order[81])
-        self.n_parts = _model_.get_value(_row_, self._col_order[82])
-        self.total_power = _model_.get_value(_row_, self._col_order[83])
-        self.vibration = _model_.get_value(_row_, self._col_order[84])
-        self.weibull_data_set = _model_.get_value(_row_, self._col_order[85])
-        self.weibull_file = _model_.get_value(_row_, self._col_order[86])
-        self.year_of_manufacture = _model_.get_value(_row_,
-                                                     self._col_order[87])
-        self.ht_model = _model_.get_value(_row_, self._col_order[88])
-        self.rel_goal_measure = _model_.get_value(_row_, self._col_order[89])
-        self.rel_goal = _model_.get_value(_row_, self._col_order[90])
+        self.failure_rate_type = _model.get_value(_row, self._col_order[35])
+        self.figure_number = _model.get_value(_row, self._col_order[36])
+        self.humidity = _model.get_value(_row, self._col_order[37])
+        self.image_file = _model.get_value(_row, self._col_order[38])
+        self.isolation_fr = _model.get_value(_row, self._col_order[39])
+        self.isolation_percent = _model.get_value(_row, self._col_order[40])
+        self.lcn = _model.get_value(_row, self._col_order[41])
+        self.level = _model.get_value(_row, self._col_order[42])
+        self.manufacturer = _model.get_value(_row, self._col_order[43])
+        self.mission_time = _model.get_value(_row, self._col_order[45])
+        self.modified_by = _model.get_value(_row, self._col_order[47])
+        self.mcmt = _model.get_value(_row, self._col_order[44])
+        self.mmt = _model.get_value(_row, self._col_order[46])
+        self.mpmt = _model.get_value(_row, self._col_order[48])
+        self.mtbf = _model.get_value(_row, self._col_order[50])
+        self.mtbf_lcl = _model.get_value(_row, self._col_order[91])
+        self.mtbf_ucl = _model.get_value(_row, self._col_order[92])
+        self.mtbf_mission = _model.get_value(_row, self._col_order[49])
+        self.mtbf_specified = _model.get_value(_row, self._col_order[51])
+        self.mttr = _model.get_value(_row, self._col_order[52])
+        self.mttr_specified = _model.get_value(_row, self._col_order[55])
+        self.mttr_add_adj_factor = _model.get_value(_row, self._col_order[53])
+        self.mttr_mult_adj_factor = _model.get_value(_row, self._col_order[54])
+        self.mttr_type = _model.get_value(_row, self._col_order[56])
+        self.mult_adj_factor = _model.get_value(_row, self._col_order[57])
+        self.name = _model.get_value(_row, self._col_order[58])
+        self.nsn = _model.get_value(_row, self._col_order[59])
+        self.overstress = _model.get_value(_row, self._col_order[60])
+        self.page_number = _model.get_value(_row, self._col_order[61])
+        self.parent_assembly = _model.get_value(_row, self._col_order[62])
+        self.part = _model.get_value(_row, self._col_order[63])
+        self.part_number = _model.get_value(_row, self._col_order[64])
+        self.percent_isolation_group_ri = _model.get_value(_row,
+                                                        self._col_order[65])
+        self.percent_isolation_single_ri = _model.get_value(_row,
+                                                        self._col_order[66])
+        self.quantity = _model.get_value(_row, self._col_order[67])
+        self.ref_des = _model.get_value(_row, self._col_order[68])
+        self.reliability_mission = _model.get_value(_row, self._col_order[69])
+        self.reliability = _model.get_value(_row, self._col_order[70])
+        self.remarks = _model.get_value(_row, self._col_order[71])
+        self.repair_dist = _model.get_value(_row, self._col_order[72])
+        self.repair_parameter_1 = _model.get_value(_row, self._col_order[73])
+        self.repair_parameter_2 = _model.get_value(_row, self._col_order[74])
+        self.repairable = _model.get_value(_row, self._col_order[75])
+        self.rpm = _model.get_value(_row, self._col_order[76])
+        self.specification = _model.get_value(_row, self._col_order[77])
+        self.subcategory_id = _model.get_value(_row, self._col_order[78])
+        self.tagged = _model.get_value(_row, self._col_order[79])
+        self.temperature_active = _model.get_value(_row, self._col_order[80])
+        self.temperature_dormant = _model.get_value(_row, self._col_order[81])
+        self.n_parts = _model.get_value(_row, self._col_order[82])
+        self.total_power = _model.get_value(_row, self._col_order[83])
+        self.vibration = _model.get_value(_row, self._col_order[84])
+        self.weibull_data_set = _model.get_value(_row, self._col_order[85])
+        self.weibull_file = _model.get_value(_row, self._col_order[86])
+        self.year_of_manufacture = _model.get_value(_row, self._col_order[87])
+        self.ht_model = _model.get_value(_row, self._col_order[88])
+        self.rel_goal_measure = _model.get_value(_row, self._col_order[89])
+        self.rel_goal = _model.get_value(_row, self._col_order[90])
 
+        # TODO: Move this to the Component class.
         if self.part:
-            _selection = self._app.winParts.tvwPartsList.get_selection()
-            (_model_, _row_) = _selection.get_selected()
+            _path = self._app.winParts._treepaths[self.assembly_id]
+            _model = self._app.winParts.tvwPartsList.get_model()
+            _row = _model.get_iter(_path)
 
             self.burnin_temp = 0.0
             self.burnin_time = 0.0
@@ -4341,21 +4314,22 @@ class Hardware(object):
             self.lab_failures = 0.0
             self.field_time = 0.0
             self.field_failures = 0.0
-            self.min_temp = 0.0
-            self.knee_temp = 0.0
-            self.max_temp = 0.0
-            self.rated_current = 0.0
-            self.rated_power = 0.0
-            self.rated_voltage = 0.0
-            self.op_current = 0.0
-            self.op_power = 0.0
-            self.op_voltage = 0.0
-            self.current_ratio = 1.0
-            self.voltage_ratio = 1.0
-            self.power_ratio = 1.0
-            self.theta_jc = 0.0
-            self.temp_rise = 0.0
-            self.case_temp = 0.0
+
+            self.current_ratio = _model.get_value(_row, 17)
+            self.knee_temp = _model.get_value(_row, 43)
+            self.max_temp = _model.get_value(_row, 55)
+            self.min_temp = _model.get_value(_row, 56)
+            self.op_current = _model.get_value(_row, 62)
+            self.op_power = _model.get_value(_row, 64)
+            self.op_voltage = _model.get_value(_row, 66)
+            self.power_ratio = _model.get_value(_row, 84)
+            self.rated_current = _model.get_value(_row, 92)
+            self.rated_power = _model.get_value(_row, 93)
+            self.rated_voltage = _model.get_value(_row, 94)
+            self.case_temp = _model.get_value(_row, 105)
+            self.temp_rise = _model.get_value(_row, 107)
+            self.theta_jc = _model.get_value(_row, 109)
+            self.voltage_ratio = _model.get_value(_row, 111)
 
         return False
 
@@ -4386,77 +4360,71 @@ class Hardware(object):
 
     def _treeview_row_changed(self, __treeview, __path, __column):
         """
-        Callback function to handle events for the HARDWARE class
-        gtk.TreeView().  It is called whenever the HARDWARE class
-        gtk.TreeView() is clicked or a row is activated.  It loads the HARDWARE
+        Callback function to handle events for the Hardware class
+        gtk.TreeView().  It is called whenever the Hardware class
+        gtk.TreeView() is clicked or a row is activated.  It loads the Hardware
         class.
 
-        Keyword Arguments:
-        __treeview -- the HARDWARE class gtk.TreeView().
-        __path     -- the activated row gtk.TreeView() path.
-        __column   -- the activated gtk.TreeViewColumn().
+        :param gtk.TreeView __treeview: the Hardware class gtk.TreeView().
+        :param str __path: the activated row gtk.TreeView() path.
+        :param gtk.TreeViewColumn __column: the activated gtk.TreeViewColumn().
         """
 
         # Save the previously selected row in the Hardware tree.
-        #if self.selected_row is not None:
-        #_path_ = self.model.get_path(self.selected_row)
-        #self._save_line(self.model, _path_, self.selected_row)
+        # if self.selected_row is not None:
+        # _path_ = self.model.get_path(self.selected_row)
+        # self._save_line(self.model, _path_, self.selected_row)
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        # Save the previously selected row in the Parts List.
-        (_partmodel_,
-         _partrow_) = self._app.winParts.tvwPartsList.get_selection().get_selected()
+        if _row is not None:
+            if _model.get_value(_row, 63) == 0:     # Is an assembly.
+                self.part = False
+                _path = _model.get_string_from_iter(_row)
+                self.assembly = _path
 
-        if _partrow_ is not None and \
-                        _row_ is not None and \
-                        _model_.get_value(_row_, 63) == 1:
-            _path_ = _partmodel_.get_path(_partrow_)
-            self._app.winParts.save_line_item(_partmodel_, _path_, _partrow_)
+            elif _model.get_value(_row, 63) == 1:   # Is a component.
+                self.part = True
+                _path = _model.get_string_from_iter(_model.iter_parent(_row))
+                self.assembly = _model.get_value(_row, 62)
+                #self._set_parts_list_row()
 
-        if _row_ is not None:
-            self.revision_id = _model_.get_value(_row_, self._col_order[0])
-            self.assembly_id = _model_.get_value(_row_, self._col_order[1])
+                # Save the previously selected row in the Parts List.
+                (_partmodel,
+                 _partrow) = self._app.winParts.tvwPartsList.get_selection().get_selected()
+
+                if _partrow is not None and \
+                   _row is not None and \
+                   self.part:
+                    _part_path = _partmodel.get_path(_partrow)
+                    self._app.winParts.save_line_item(_partmodel, _part_path,
+                                                      _partrow)
+
+            self.revision_id = _model.get_value(_row, self._col_order[0])
+            self.assembly_id = _model.get_value(_row, self._col_order[1])
+
+            # Build the queries to select the reliability tests and program
+            # incidents associated with the selected HARDWARE item.
+            _qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
+                         FROM tbl_prediction AS t1 \
+                         INNER JOIN tbl_system AS t2 \
+                         ON t1.fld_assembly_id=t2.fld_assembly_id \
+                         WHERE t2.fld_revision_id=%d \
+                         AND t2.fld_parent_assembly='%s'" % \
+                        (self.revision_id, _path)
+            _qryIncidents = "SELECT * FROM tbl_incident \
+                             WHERE fld_revision_id=%d \
+                             AND fld_hardware_id=%d \
+                             ORDER BY fld_incident_id" % \
+                            (self.revision_id, self.assembly_id)
+            _qryDatasets = "SELECT * FROM tbl_dataset \
+                            WHERE fld_assembly_id=%d" % self.assembly_id
+
+            self._app.winParts.load_part_tree(_qryParts)
+            self._app.winParts.load_incident_tree(_qryIncidents, None)
+            self._app.winParts.load_dataset_tree(_qryDatasets, None)
 
             self._update_attributes()
-
-        if _model_.get_value(_row_, 63) == 0:   # Is an assembly.
-            _path_ = _model_.get_string_from_iter(_row_)
-        elif _model_.get_value(_row_, 63) == 1: # Is a component.
-            _row_ = _model_.iter_parent(_row_)
-            _path_ = _model_.get_string_from_iter(_row_)
-
-        # Build the queries to select the reliability tests and program
-        # incidents associated with the selected HARDWARE item.
-        qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
-                    FROM tbl_prediction AS t1 \
-                    INNER JOIN tbl_system AS t2 \
-                    ON t1.fld_assembly_id=t2.fld_assembly_id \
-                    WHERE t2.fld_revision_id=%d \
-                    AND t2.fld_parent_assembly='%s'" % \
-                   (self._app.REVISION.revision_id, _path_)
-        qryIncidents = "SELECT * FROM tbl_incident \
-                        WHERE fld_revision_id=%d \
-                        AND fld_hardware_id=%d \
-                        ORDER BY fld_incident_id" % \
-                       (self._app.REVISION.revision_id, self.assembly_id)
-        qryDatasets = "SELECT * FROM tbl_dataset \
-                       WHERE fld_assembly_id=%d" % self.assembly_id
-
-        self._app.winParts.load_part_tree(qryParts)
-        self._app.winParts.load_incident_tree(qryIncidents, None)
-        self._app.winParts.load_dataset_tree(qryDatasets, None)
-
-        if _row_ is not None:
-            if _model_.get_value(_row_, 63) == 0:  # Is an assembly.
-                self.part = False
-                self.assembly = _path_
-
-            elif _model_.get_value(_row_, 63) == 1:  # Is a component.
-                self.part = True
-                self.assembly = _model_.get_value(_row_, 62)
-                self._set_parts_list_row()
-
             self.load_notebook()
 
             return False
@@ -4654,8 +4622,8 @@ class Hardware(object):
                                                    commit=True)
 
             if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error(
-                    "assembly.py: Failed to add new assembly to allocation table.")
+                self._app.debug_log.error("assembly.py: Failed to add new "
+                                          "assembly to allocation table.")
                 return True
 
             if _part == 0:
@@ -4693,8 +4661,8 @@ class Hardware(object):
                                                        commit=True)
 
                 if _results_ == '' or not _results_ or _results_ is None:
-                    self._app.debug_log.error(
-                        "hardware.py: Failed to add new component to prediction table.")
+                    self._app.debug_log.error("hardware.py: Failed to add new "
+                                              "component to prediction table.")
 
             # Retrieve the list of function id's in the open RTK program
             # database.
@@ -4718,8 +4686,9 @@ class Hardware(object):
                                                        commit=True)
 
                 if _results_ == '' or not _results_ or _results_ is None:
-                    self._app.debug_log.error(
-                        "assembly.py: Failed to add new assembly to functional matrix table.")
+                    self._app.debug_log.error("assembly.py: Failed to add new "
+                                              "assembly to functional matrix "
+                                              "table.")
 
         self.load_tree()
 
@@ -4740,14 +4709,11 @@ class Hardware(object):
         _query_ = "DELETE FROM tbl_system \
                    WHERE fld_parent_assembly='%s'" % \
                   _model_.get_string_from_iter(_row_)
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from system table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from system table." %
+                                      self.assembly_id)
             return True
 
         # Second delete the parent from the system table, then from the
@@ -4757,92 +4723,71 @@ class Hardware(object):
         _query_ = "DELETE FROM tbl_system \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from system table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from system table." %
+                                      self.assembly_id)
             return True
 
         _query_ = "DELETE FROM tbl_allocation \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from allocation table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from allocation table." %
+                                      self.assembly_id)
             return True
 
         _query_ = "DELETE FROM tbl_risk_analysis \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from risk analysis table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from risk analysis table." %
+                                      self.assembly_id)
             return True
 
         _query_ = "DELETE FROM tbl_risk_matrix \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from risk matrix table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from risk matrix table." %
+                                      self.assembly_id)
             return True
 
         _query_ = "DELETE FROM tbl_similar_item \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from similar item table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from similar item table." %
+                                      self.assembly_id)
             return True
 
         _query_ = "DELETE FROM tbl_functional_matrix \
                    WHERE fld_revision_id=%d \
                    AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
-            self._app.debug_log.error(
-                "assembly.py: Failed to delete assembly %d from functional matrix table." % self.assembly_id)
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.debug_log.error("assembly.py: Failed to delete assembly "
+                                      "%d from functional matrix table." %
+                                      self.assembly_id)
             return True
 
         if self.part:
             _query_ = "DELETE FROM tbl_prediction \
                        WHERE fld_revision_id=%d \
                        AND fld_assembly_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
-                self._app.debug_log.error(
-                    "hardware.py: Failed to delete component from prediction table.")
+            if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                              commit=True):
+                self._app.debug_log.error("hardware.py: Failed to delete "
+                                          "component from prediction table.")
                 return True
 
         self.load_tree()
@@ -4852,25 +4797,24 @@ class Hardware(object):
     def _set_parts_list_row(self):
         """
         Sets the corresponding row in the Parts List when a selected row in
-        the HARDWARE class gtk.TreeView() is a component.
+        the Hardware class gtk.TreeView() is a component.
         """
 
-        _model_ = self._app.winParts.tvwPartsList.get_model()
-        _row_ = _model_.get_iter_first()
-        while _model_.get_value(_row_, 1) != self.assembly_id:
-            _row_ = _model_.iter_next(_row_)
+        _model = self._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter_first()
+        while _model.get_value(_row, 1) != self.assembly_id:
+            _row = _model.iter_next(_row)
 
-        if _row_ is not None:
-            self._app.winParts.selected_row = _row_
-            _path_ = _model_.get_path(_row_)
-            self._app.winParts.tvwPartsList.set_cursor(_path_)
+        if _row is not None:
+            self._app.winParts.selected_row = _row
+            self._app.winParts.tvwPartsList.set_cursor(_model.get_path(_row))
 
         return False
 
     def save_hardware(self):
         """
-        Saves the HARDWARE class gtk.TreeView information to the Program's
-        MySQL or SQLite3 database.
+        Saves the Hardware class gtk.TreeView information to the open RTK
+        Program database.
         """
 
         def _save_line(model, __path, row, self):
@@ -4878,186 +4822,193 @@ class Hardware(object):
             Saves each row in the Hardware class gtk.TreeView() model to the
             RTK Program database.
 
-            Keyword Arguments:
-            model  -- the HARDWARE class gtk.TreeModel().
-            __path -- the path of the active row in the HARDWARE class
-                      gtk.Treemodel().
-            row    -- the selected row in the HARDWARE class gtk.TreeView().
+            :param gtk.TreeModel model: the Hardware class gtk.TreeModel().
+            :param str __path: the path of the active row in the Hardware class
+                               gtk.Treemodel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class gtk.TreeView().
             """
 
+            _ht_model = ''
             if _conf.BACKEND == 'mysql':
-                ht_model = self._app.ProgCnx.escape_string(
+                _ht_model = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._col_order[88]))
             elif _conf.BACKEND == 'sqlite3':
-                ht_model = model.get_value(row, self._col_order[88])
+                _ht_model = model.get_value(row, self._col_order[88])
+                _ht_model = _ht_model.replace("'", "''")
 
-            _values_ = (model.get_value(row, self._col_order[2]),
-                        model.get_value(row, self._col_order[3]),
-                        model.get_value(row, self._col_order[4]),
-                        model.get_value(row, self._col_order[5]),
-                        model.get_value(row, self._col_order[6]),
-                        model.get_value(row, self._col_order[7]),
-                        model.get_value(row, self._col_order[8]),
-                        model.get_value(row, self._col_order[9]),
-                        model.get_value(row, self._col_order[10]),
-                        model.get_value(row, self._col_order[11]),
-                        model.get_value(row, self._col_order[12]),
-                        model.get_value(row, self._col_order[13]),
-                        model.get_value(row, self._col_order[14]),
-                        model.get_value(row, self._col_order[15]),
-                        model.get_value(row, self._col_order[16]),
-                        model.get_value(row, self._col_order[17]),
-                        model.get_value(row, self._col_order[18]),
-                        model.get_value(row, self._col_order[19]),
-                        model.get_value(row, self._col_order[20]),
-                        model.get_value(row, self._col_order[21]),
-                        model.get_value(row, self._col_order[22]),
-                        model.get_value(row, self._col_order[23]),
-                        model.get_value(row, self._col_order[24]),
-                        model.get_value(row, self._col_order[25]),
-                        model.get_value(row, self._col_order[26]),
-                        model.get_value(row, self._col_order[27]),
-                        model.get_value(row, self._col_order[28]),
-                        model.get_value(row, self._col_order[29]),
-                        model.get_value(row, self._col_order[30]),
-                        model.get_value(row, self._col_order[31]),
-                        model.get_value(row, self._col_order[32]),
-                        model.get_value(row, self._col_order[33]),
-                        model.get_value(row, self._col_order[34]),
-                        model.get_value(row, self._col_order[35]),
-                        model.get_value(row, self._col_order[36]),
-                        model.get_value(row, self._col_order[37]),
-                        model.get_value(row, self._col_order[38]),
-                        model.get_value(row, self._col_order[39]),
-                        model.get_value(row, self._col_order[40]),
-                        model.get_value(row, self._col_order[41]),
-                        model.get_value(row, self._col_order[42]),
-                        model.get_value(row, self._col_order[43]),
-                        model.get_value(row, self._col_order[44]),
-                        model.get_value(row, self._col_order[45]),
-                        model.get_value(row, self._col_order[46]),
-                        model.get_value(row, self._col_order[47]),
-                        model.get_value(row, self._col_order[48]),
-                        model.get_value(row, self._col_order[49]),
-                        model.get_value(row, self._col_order[50]),
-                        model.get_value(row, self._col_order[51]),
-                        model.get_value(row, self._col_order[52]),
-                        model.get_value(row, self._col_order[53]),
-                        model.get_value(row, self._col_order[54]),
-                        model.get_value(row, self._col_order[55]),
-                        model.get_value(row, self._col_order[56]),
-                        model.get_value(row, self._col_order[57]),
-                        model.get_value(row, self._col_order[58]),
-                        model.get_value(row, self._col_order[59]),
-                        model.get_value(row, self._col_order[60]),
-                        model.get_value(row, self._col_order[61]),
-                        model.get_value(row, self._col_order[62]),
-                        model.get_value(row, self._col_order[63]),
-                        model.get_value(row, self._col_order[64]),
-                        model.get_value(row, self._col_order[65]),
-                        model.get_value(row, self._col_order[66]),
-                        model.get_value(row, self._col_order[67]),
-                        model.get_value(row, self._col_order[68]),
-                        model.get_value(row, self._col_order[69]),
-                        model.get_value(row, self._col_order[70]),
-                        model.get_value(row, self._col_order[71]),
-                        model.get_value(row, self._col_order[72]),
-                        model.get_value(row, self._col_order[73]),
-                        model.get_value(row, self._col_order[74]),
-                        model.get_value(row, self._col_order[75]),
-                        model.get_value(row, self._col_order[76]),
-                        model.get_value(row, self._col_order[77]),
-                        model.get_value(row, self._col_order[78]),
-                        model.get_value(row, self._col_order[79]),
-                        model.get_value(row, self._col_order[80]),
-                        model.get_value(row, self._col_order[81]),
-                        model.get_value(row, self._col_order[82]),
-                        model.get_value(row, self._col_order[83]),
-                        model.get_value(row, self._col_order[84]),
-                        model.get_value(row, self._col_order[85]),
-                        model.get_value(row, self._col_order[86]),
-                        model.get_value(row, self._col_order[87]),
-                        ht_model,
-                        model.get_value(row, self._col_order[89]),
-                        model.get_value(row, self._col_order[90]),
-                        self.revision_id,
-                        model.get_value(row, self._col_order[1]))
+            _values = (model.get_value(row, self._col_order[2]),
+                       model.get_value(row, self._col_order[3]),
+                       model.get_value(row, self._col_order[4]),
+                       model.get_value(row, self._col_order[5]),
+                       model.get_value(row, self._col_order[6]),
+                       model.get_value(row, self._col_order[7]),
+                       model.get_value(row, self._col_order[8]),
+                       model.get_value(row, self._col_order[9]),
+                       model.get_value(row, self._col_order[10]),
+                       model.get_value(row, self._col_order[11]),
+                       model.get_value(row, self._col_order[12]),
+                       model.get_value(row, self._col_order[13]),
+                       model.get_value(row, self._col_order[14]),
+                       model.get_value(row, self._col_order[15]),
+                       model.get_value(row, self._col_order[16]),
+                       model.get_value(row, self._col_order[17]),
+                       model.get_value(row, self._col_order[18]),
+                       model.get_value(row, self._col_order[19]),
+                       model.get_value(row, self._col_order[20]),
+                       model.get_value(row, self._col_order[21]),
+                       model.get_value(row, self._col_order[22]),
+                       model.get_value(row, self._col_order[23]),
+                       model.get_value(row, self._col_order[24]),
+                       model.get_value(row, self._col_order[25]),
+                       model.get_value(row, self._col_order[26]),
+                       model.get_value(row, self._col_order[27]),
+                       model.get_value(row, self._col_order[28]),
+                       model.get_value(row, self._col_order[29]),
+                       model.get_value(row, self._col_order[30]),
+                       model.get_value(row, self._col_order[31]),
+                       model.get_value(row, self._col_order[32]),
+                       model.get_value(row, self._col_order[33]),
+                       model.get_value(row, self._col_order[34]),
+                       model.get_value(row, self._col_order[35]),
+                       model.get_value(row, self._col_order[36]),
+                       model.get_value(row, self._col_order[37]),
+                       model.get_value(row, self._col_order[38]),
+                       model.get_value(row, self._col_order[39]),
+                       model.get_value(row, self._col_order[40]),
+                       model.get_value(row, self._col_order[41]),
+                       model.get_value(row, self._col_order[42]),
+                       model.get_value(row, self._col_order[43]),
+                       model.get_value(row, self._col_order[44]),
+                       model.get_value(row, self._col_order[45]),
+                       model.get_value(row, self._col_order[46]),
+                       model.get_value(row, self._col_order[47]),
+                       model.get_value(row, self._col_order[48]),
+                       model.get_value(row, self._col_order[49]),
+                       model.get_value(row, self._col_order[50]),
+                       model.get_value(row, self._col_order[51]),
+                       model.get_value(row, self._col_order[52]),
+                       model.get_value(row, self._col_order[53]),
+                       model.get_value(row, self._col_order[54]),
+                       model.get_value(row, self._col_order[55]),
+                       model.get_value(row, self._col_order[56]),
+                       model.get_value(row, self._col_order[57]),
+                       model.get_value(row, self._col_order[58]),
+                       model.get_value(row, self._col_order[59]),
+                       model.get_value(row, self._col_order[60]),
+                       model.get_value(row, self._col_order[61]),
+                       model.get_value(row, self._col_order[62]),
+                       model.get_value(row, self._col_order[63]),
+                       model.get_value(row, self._col_order[64]),
+                       model.get_value(row, self._col_order[65]),
+                       model.get_value(row, self._col_order[66]),
+                       model.get_value(row, self._col_order[67]),
+                       model.get_value(row, self._col_order[68]),
+                       model.get_value(row, self._col_order[69]),
+                       model.get_value(row, self._col_order[70]),
+                       model.get_value(row, self._col_order[71]),
+                       model.get_value(row, self._col_order[72]),
+                       model.get_value(row, self._col_order[73]),
+                       model.get_value(row, self._col_order[74]),
+                       model.get_value(row, self._col_order[75]),
+                       model.get_value(row, self._col_order[76]),
+                       model.get_value(row, self._col_order[77]),
+                       model.get_value(row, self._col_order[78]),
+                       model.get_value(row, self._col_order[79]),
+                       model.get_value(row, self._col_order[80]),
+                       model.get_value(row, self._col_order[81]),
+                       model.get_value(row, self._col_order[82]),
+                       model.get_value(row, self._col_order[83]),
+                       model.get_value(row, self._col_order[84]),
+                       model.get_value(row, self._col_order[85]),
+                       model.get_value(row, self._col_order[86]),
+                       model.get_value(row, self._col_order[87]),
+                       _ht_model,
+                       model.get_value(row, self._col_order[89]),
+                       model.get_value(row, self._col_order[90]),
+                       model.get_value(row, self._col_order[0]),
+                       model.get_value(row, self._col_order[1]))
 
-            _query_ = "UPDATE tbl_system \
-                       SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
-                           fld_alt_part_number='%s', \
-                           fld_assembly_criticality='%s', \
-                           fld_attachments='%s', fld_availability=%f, \
-                           fld_availability_mission=%f, fld_cage_code='%s', \
-                           fld_calculation_model=%d, fld_category_id=%d, \
-                           fld_comp_ref_des='%s', fld_cost=%f, \
-                           fld_cost_failure=%f, fld_cost_hour=%f, \
-                           fld_cost_type=%f, fld_description='%s', \
-                           fld_detection_fr=%f, fld_detection_percent=%f, \
-                           fld_duty_cycle=%f, fld_entered_by='%s', \
-                           fld_environment_active=%d, \
-                           fld_environment_dormant=%d, fld_failure_dist=%d, \
-                           fld_failure_parameter_1=%f, \
-                           fld_failure_parameter_2=%f, \
-                           fld_failure_parameter_3=%f, \
-                           fld_failure_rate_active=%f, \
-                           fld_failure_rate_dormant=%f, \
-                           fld_failure_rate_mission=%f, \
-                           fld_failure_rate_percent=%f, \
-                           fld_failure_rate_predicted=%f, \
-                           fld_failure_rate_software=%f, \
-                           fld_failure_rate_specified=%f, \
-                           fld_failure_rate_type=%d, \
-                           fld_figure_number='%s', fld_humidity=%f, \
-                           fld_image_file='%s', fld_isolation_fr=%f, \
-                           fld_isolation_percent=%f, fld_lcn='%s', \
-                           fld_level=%d, fld_manufacturer=%d, \
-                           fld_mcmt=%f, fld_mission_time=%f, \
-                           fld_mmt=%f, fld_modified_by='%s', \
-                           fld_mpmt=%f, fld_mtbf_mission=%f, \
-                           fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
-                           fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
-                           fld_mttr_mult_adj_factor=%f, \
-                           fld_mttr_specified=%f, \
-                           fld_mttr_type=%d, fld_mult_adj_factor=%f, \
-                           fld_name='%s', fld_nsn='%s', \
-                           fld_overstress=%d, fld_page_number='%s', \
-                           fld_parent_assembly='%s', fld_part=%d, \
-                           fld_part_number='%s', \
-                           fld_percent_isolation_group_ri=%f, \
-                           fld_percent_isolation_single_ri=%f, \
-                           fld_quantity=%d, \
-                           fld_ref_des='%s', fld_reliability_mission=%f, \
-                           fld_reliability_predicted=%f, fld_remarks='%s', \
-                           fld_repair_dist=%d, fld_repair_parameter_1=%f, \
-                           fld_repair_parameter_2=%f, fld_repairable=%d, \
-                           fld_rpm=%f, fld_specification_number='%s', \
-                           fld_subcategory_id=%d, fld_tagged_part=%d, \
-                           fld_temperature_active=%f, \
-                           fld_temperature_dormant=%f, \
-                           fld_total_part_quantity=%d, \
-                           fld_total_power_dissipation=%f, \
-                           fld_vibration=%f, fld_weibull_data_set=%d, \
-                           fld_weibull_file='%s', \
-                           fld_year_of_manufacture=%d, \
-                           fld_ht_model='%s', \
-                           fld_reliability_goal_measure=%d, \
-                           fld_reliability_goal=%f \
-                   WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values_
+            _query = "UPDATE tbl_system \
+                      SET fld_add_adj_factor=%f, fld_allocation_type=%d, \
+                          fld_alt_part_number='%s', \
+                          fld_assembly_criticality='%s', \
+                          fld_attachments='%s', fld_availability=%f, \
+                          fld_availability_mission=%f, fld_cage_code='%s', \
+                          fld_calculation_model=%d, fld_category_id=%d, \
+                          fld_comp_ref_des='%s', fld_cost=%f, \
+                          fld_cost_failure=%f, fld_cost_hour=%f, \
+                          fld_cost_type=%f, fld_description='%s', \
+                          fld_detection_fr=%f, fld_detection_percent=%f, \
+                          fld_duty_cycle=%f, fld_entered_by='%s', \
+                          fld_environment_active=%d, \
+                          fld_environment_dormant=%d, fld_failure_dist=%d, \
+                          fld_failure_parameter_1=%f, \
+                          fld_failure_parameter_2=%f, \
+                          fld_failure_parameter_3=%f, \
+                          fld_failure_rate_active=%f, \
+                          fld_failure_rate_dormant=%f, \
+                          fld_failure_rate_mission=%f, \
+                          fld_failure_rate_percent=%f, \
+                          fld_failure_rate_predicted=%f, \
+                          fld_failure_rate_software=%f, \
+                          fld_failure_rate_specified=%f, \
+                          fld_failure_rate_type=%d, \
+                          fld_figure_number='%s', fld_humidity=%f, \
+                          fld_image_file='%s', fld_isolation_fr=%f, \
+                          fld_isolation_percent=%f, fld_lcn='%s', \
+                          fld_level=%d, fld_manufacturer=%d, \
+                          fld_mcmt=%f, fld_mission_time=%f, \
+                          fld_mmt=%f, fld_modified_by='%s', \
+                          fld_mpmt=%f, fld_mtbf_mission=%f, \
+                          fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
+                          fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
+                          fld_mttr_mult_adj_factor=%f, \
+                          fld_mttr_specified=%f, \
+                          fld_mttr_type=%d, fld_mult_adj_factor=%f, \
+                          fld_name='%s', fld_nsn='%s', \
+                          fld_overstress=%d, fld_page_number='%s', \
+                          fld_parent_assembly='%s', fld_part=%d, \
+                          fld_part_number='%s', \
+                          fld_percent_isolation_group_ri=%f, \
+                          fld_percent_isolation_single_ri=%f, \
+                          fld_quantity=%d, \
+                          fld_ref_des='%s', fld_reliability_mission=%f, \
+                          fld_reliability_predicted=%f, fld_remarks='%s', \
+                          fld_repair_dist=%d, fld_repair_parameter_1=%f, \
+                          fld_repair_parameter_2=%f, fld_repairable=%d, \
+                          fld_rpm=%f, fld_specification_number='%s', \
+                          fld_subcategory_id=%d, fld_tagged_part=%d, \
+                          fld_temperature_active=%f, \
+                          fld_temperature_dormant=%f, \
+                          fld_total_part_quantity=%d, \
+                          fld_total_power_dissipation=%f, \
+                          fld_vibration=%f, fld_weibull_data_set=%d, \
+                          fld_weibull_file='%s', \
+                          fld_year_of_manufacture=%d, \
+                          fld_ht_model='%s', \
+                          fld_reliability_goal_measure=%d, \
+                          fld_reliability_goal=%f \
+                  WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values
 
-            _results_ = self._app.DB.execute_query(_query_, None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving hardware item %d to the RTK "
+                                  u"program database.") % self.assembly_id)
                 self._app.debug_log.error("hardware.py: Failed to save "
-                                          "hardware to system table.")
+                                          "hardware item %d to system table."
+                                          % self.assembly_id)
                 return True
 
             return False
 
-        _model_ = self.treeview.get_model()
-        _model_.foreach(_save_line, self)
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+        _model = self.treeview.get_model()
+        _model.foreach(_save_line, self)
+
+        self._app.winParts.save_component()
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 
@@ -5072,14 +5023,12 @@ class Hardware(object):
             Saves a single row in the Hardware class allocation gtk.TreeModel()
             to the open RTK Program database.
 
-            :param model: the Hardware class allocation gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path: the path of the selected row in the Hardware class
-                           allocation gtk.TreeModel().
-            :type __path: string
-            :param row: the selected row in the Hardware class allocation
-                        gtk.TreeView().
-            :type row: gtk.TreeIter
+            :param gtk.TreeModel model: the Hardware class allocation
+                                        gtk.TreeModel().
+            :param str __path: the path of the selected row in the Hardware
+                               class allocation gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class allocation gtk.TreeView().
             :return False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -5146,7 +5095,7 @@ class Hardware(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        # Update the HARDWARE class gtk.TreeView() with the reliability goals.
+        # Update the Hardware class gtk.TreeView() with the reliability goals.
         _measure = self.cmbRqmtType.get_active()
         i = self.cmbAllocationType.get_active()
         _operating_time = float(self.txtOperTime.get_text())
@@ -5194,15 +5143,17 @@ class Hardware(object):
 
         def _save_line(model, __path, row, self):
             """
-            Saves each row in the Hardware class risk analysis gtk.TreeModel
+            Saves each row in the Hardware class risk analysis gtk.TreeModel()
             to the open RTK Program database.
 
-            Keyword Arguments:
-            model  -- the Hardware class hazard analysis gtk.TreeModel().
-            __path -- the path of the selected row in the Hardware class hazard
-                       analysis gtk.TreeModel().
-            row    -- the selected row in the Hardware class hazard analysis
-                      gtk.TreeView().
+            :param gtk.TreeModel model: the Hardware class hazard analysis
+                                        gtk.TreeModel().
+            :param str __path: the path of the selected row in the Hardware
+                               class hazard analysis gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class hazard analysis
+                                     gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
             """
 
             if _conf.BACKEND == 'mysql':
@@ -5395,42 +5346,42 @@ class Hardware(object):
                 _equation4_ = model.get_value(row, self._sia_col_order[22])
                 _equation5_ = model.get_value(row, self._sia_col_order[23])
 
-            _values_ = (model.get_value(row, self._sia_col_order[3]), \
-                        model.get_value(row, self._sia_col_order[4]), \
-                        model.get_value(row, self._sia_col_order[5]), \
-                        model.get_value(row, self._sia_col_order[6]), \
-                        model.get_value(row, self._sia_col_order[7]), \
-                        model.get_value(row, self._sia_col_order[8]), \
-                        model.get_value(row, self._sia_col_order[9]), \
-                        model.get_value(row, self._sia_col_order[10]), \
-                        model.get_value(row, self._sia_col_order[11]), \
-                        model.get_value(row, self._sia_col_order[12]), \
-                        model.get_value(row, self._sia_col_order[13]), \
-                        model.get_value(row, self._sia_col_order[14]), \
-                        model.get_value(row, self._sia_col_order[15]), \
-                        model.get_value(row, self._sia_col_order[16]), \
-                        model.get_value(row, self._sia_col_order[17]), \
-                        model.get_value(row, self._sia_col_order[18]), \
-                        _equation1_, \
-                        _equation2_, \
-                        _equation3_, \
-                        _equation4_, \
-                        _equation5_, \
-                        model.get_value(row, self._sia_col_order[24]), \
-                        model.get_value(row, self._sia_col_order[25]), \
-                        model.get_value(row, self._sia_col_order[26]), \
-                        model.get_value(row, self._sia_col_order[27]), \
-                        model.get_value(row, self._sia_col_order[28]), \
-                        model.get_value(row, self._sia_col_order[29]), \
-                        model.get_value(row, self._sia_col_order[30]), \
-                        model.get_value(row, self._sia_col_order[31]), \
-                        model.get_value(row, self._sia_col_order[32]), \
-                        model.get_value(row, self._sia_col_order[33]), \
-                        model.get_value(row, self._sia_col_order[34]), \
-                        model.get_value(row, self._sia_col_order[35]), \
-                        model.get_value(row, self._sia_col_order[36]), \
-                        model.get_value(row, self._sia_col_order[37]), \
-                        self._app.REVISION.revision_id, \
+            _values_ = (model.get_value(row, self._sia_col_order[3]),
+                        model.get_value(row, self._sia_col_order[4]),
+                        model.get_value(row, self._sia_col_order[5]),
+                        model.get_value(row, self._sia_col_order[6]),
+                        model.get_value(row, self._sia_col_order[7]),
+                        model.get_value(row, self._sia_col_order[8]),
+                        model.get_value(row, self._sia_col_order[9]),
+                        model.get_value(row, self._sia_col_order[10]),
+                        model.get_value(row, self._sia_col_order[11]),
+                        model.get_value(row, self._sia_col_order[12]),
+                        model.get_value(row, self._sia_col_order[13]),
+                        model.get_value(row, self._sia_col_order[14]),
+                        model.get_value(row, self._sia_col_order[15]),
+                        model.get_value(row, self._sia_col_order[16]),
+                        model.get_value(row, self._sia_col_order[17]),
+                        model.get_value(row, self._sia_col_order[18]),
+                        _equation1_,
+                        _equation2_,
+                        _equation3_,
+                        _equation4_,
+                        _equation5_,
+                        model.get_value(row, self._sia_col_order[24]),
+                        model.get_value(row, self._sia_col_order[25]),
+                        model.get_value(row, self._sia_col_order[26]),
+                        model.get_value(row, self._sia_col_order[27]),
+                        model.get_value(row, self._sia_col_order[28]),
+                        model.get_value(row, self._sia_col_order[29]),
+                        model.get_value(row, self._sia_col_order[30]),
+                        model.get_value(row, self._sia_col_order[31]),
+                        model.get_value(row, self._sia_col_order[32]),
+                        model.get_value(row, self._sia_col_order[33]),
+                        model.get_value(row, self._sia_col_order[34]),
+                        model.get_value(row, self._sia_col_order[35]),
+                        model.get_value(row, self._sia_col_order[36]),
+                        model.get_value(row, self._sia_col_order[37]),
+                        self._app.REVISION.revision_id,
                         model.get_value(row, self._sia_col_order[0]))
 
             _query_ = "UPDATE tbl_similar_item \
@@ -5461,8 +5412,8 @@ class Hardware(object):
                                                    commit=True)
 
             if not _results_:
-                self._app.debug_log.error(
-                    "assembly.py: Failed to save assembly to similar item table.")
+                self._app.debug_log.error("assembly.py: Failed to save "
+                                          "assembly to similar item table.")
                 return True
 
             return False
@@ -5557,7 +5508,7 @@ class Hardware(object):
 
             elif _type_ == 1:  # Failure mechanism.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
-                _values_ = (model.get_value(row, 1), \
+                _values_ = (model.get_value(row, 1),
                             self._mechanisms[model.get_value(row, 0)][1],
                             self._mechanisms[model.get_value(row, 0)][2],
                             self._mechanisms[model.get_value(row, 0)][3],
@@ -5576,8 +5527,8 @@ class Hardware(object):
 
             elif _type_ == 2:  # Control.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
-                _values_ = (model.get_value(row, 1), \
-                            self._fmeca_controls[model.get_value(row, 0)][1], \
+                _values_ = (model.get_value(row, 1),
+                            self._fmeca_controls[model.get_value(row, 0)][1],
                             _parent_, model.get_value(row, 0))
 
                 _query = "UPDATE tbl_fmeca_controls \
@@ -5629,11 +5580,10 @@ class Hardware(object):
         Method to edit the Hazard Analysis or the Similar Item Analysis
         functions.
 
-        :param index: the index indicating whether to edit a Hazard Analysis or
-                      a Similar Item Analysis function.
-                      0 = hazard analysis
-                      1 = similar item analysis
-        :type index: integer
+        :param int index: the index indicating whether to edit a Hazard
+                          Analysis or a Similar Item Analysis function.
+                          0 = hazard analysis
+                          1 = similar item analysis
         :returns: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -5826,53 +5776,51 @@ class Hardware(object):
         """
         Callback function to retrieve and save combobox changes.
 
-        Keyword Arguments:
-        combo -- the gtk.Combo that called the function.
-        index -- the position in the applicable treeview associated with the
-                 data from the calling gtk.Combo.
+        :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
+        :param int index: the position in the applicable treeview associated
+                          with the data from the calling gtk.ComboBox().
         """
 
         i = combo.get_active()
 
-        if index < 200:  # Hardware information.
-            # Get the Hardware Tree model/selected row and update the
-            # Hardware TreeView.
-            (_model_, _row_) = self.treeview.get_selection().get_selected()
+        # Get the Hardware Tree gtk.TreeMoel() and selected gtk.TreeIter().
+        (_model_, _row_) = self.treeview.get_selection().get_selected()
+
+        if index < 200:                     # Hardware information.
             _model_.set_value(_row_, index, int(combo.get_active()))
 
-            if index == 10:  # Calculation model
+            if index == 10:                 # Calculation model
                 self._trickledown(_model_, _row_, index,
                                   int(combo.get_active()))
                 if int(combo.get_active()) > 2:
                     _title_ = _(u"RTK Information")
 
                     dialog = _widg.make_dialog(_title_,
-                                               dlgflags=(
-                                                   gtk.DIALOG_MODAL |
-                                                   gtk.DIALOG_DESTROY_WITH_PARENT),
-                                               dlgbuttons=(gtk.STOCK_OK,
-                                                           gtk.RESPONSE_ACCEPT))
+                                  dlgflags=(gtk.DIALOG_MODAL |
+                                            gtk.DIALOG_DESTROY_WITH_PARENT),
+                                  dlgbuttons=(gtk.STOCK_OK,
+                                              gtk.RESPONSE_ACCEPT))
 
                     _text_ = _(u"%s model not yet implemented.  Contact "
                                u"andrew.rowland@reliaqual.com if you would "
                                u"like to help." % combo.get_active_text())
                     label = _widg.make_label(_text_,
                                              width=250, height=75)
-                    dialog.vbox.pack_start(label)  # pylint: disable=E1101
+                    dialog.vbox.pack_start(label)
                     label.show()
 
                     dialog.run()
                     dialog.destroy()
 
-            elif index == 22:  # Active Environment
-                self._trickledown(_model_, _row_, index,
-                                  int(combo.get_active()))
+            # elif index == 22:               # Active Environment
+            #     self._trickledown(_model_, _row_, index,
+            #                       int(combo.get_active()))
 
-            elif index == 23:  # Dormant environment
-                self._trickledown(_model_, _row_, index,
-                                  int(combo.get_active()))
+            # elif index == 23:               # Dormant environment
+            #     self._trickledown(_model_, _row_, index,
+            #                       int(combo.get_active()))
 
-            elif index == 35:  # Hazard rate type
+            elif index == 35:               # Hazard rate type
                 self.failure_rate_type = i
                 # If selected type is hazard rate specified or MTBF specified,
                 # set active and predicted values equal to specified values.
@@ -5897,7 +5845,7 @@ class Hardware(object):
                     _model_.set_value(_row_, 34, self.failure_rate_specified)
                     _model_.set_value(_row_, 50, self.mtbf_specified)
 
-            elif index == 43:  # Manufacturer
+            elif index == 43:               # Manufacturer
                 _cmbmodel_ = combo.get_model()
                 _cmbrow_ = combo.get_active_iter()
                 try:
@@ -5905,14 +5853,8 @@ class Hardware(object):
                         str(_cmbmodel_.get_value(_cmbrow_, 2)))
                     _model_.set_value(_row_, 9,
                                       str(_cmbmodel_.get_value(_cmbrow_, 2)))
-                except TypeError:  # No row is selected
+                except TypeError:           # No row is selected
                     pass
-
-            if self.part:  # Update the parts list.
-                #self.model.set_value(self.selected_row,
-                #                     _index_,
-                #                     int(combo.get_active()))
-                print "TODO: Write code to update parts list."
 
             self._update_attributes()
 
@@ -6035,7 +5977,9 @@ class Hardware(object):
             _label_.set_markup(_text_)
             column.set_widget(_label_)
 
-        elif index == 511:  # Component category
+        elif index == 511:                  # Component category
+            _model_.set_value(_row_, 11, int(combo.get_active()))
+
             self.category_id = combo.get_active()
 
             # Get the model and iter from the parts category gtk.ComboBox()
@@ -6047,8 +5991,8 @@ class Hardware(object):
             _query = "SELECT fld_subcategory_id, fld_subcategory_noun \
                       FROM tbl_subcategory \
                       WHERE fld_category_id=%d \
-                      ORDER BY fld_subcategory_noun ASC".format(
-                      (_model.get_value(_row, 1)))
+                      ORDER BY fld_subcategory_noun ASC" % \
+                      int(_model.get_value(_row, 1))
             _results = self._app.COMDB.execute_query(_query, None,
                                                      self._app.ComCnx)
 
@@ -6063,43 +6007,47 @@ class Hardware(object):
             for i in range(_n_subcategories):
                 _model.append(None, [_results[i][1], _results[i][0], ''])
 
-                # self._load_part_subcategory_combo(combo)
+        elif index == 578:                  # Component subcategory
+            _model_.set_value(_row_, 78, int(combo.get_active()))
 
-        elif index == 578:  # Component subcategory
             if combo.get_active() > 0:
                 self.subcategory_id = combo.get_active()
-                # self.part = _util.set_part_model(self.category,
-                #                                 self.subcategory)
-                # if(self.part is not None):
-                #     hbox = self.notebook.get_nth_page(1)
-                #     fixed = hbox.get_children()[0].get_children()[0].get_children()[0].get_children()
-                #     self.part.assessment_inputs_create(self,
-                #                                        fixed,
-                #                                        205,
-                #                                        self.y_pos[0][0])
-                #     hbox = self.notebook.get_nth_page(2)
-                #     fixed = hbox.get_children()[0].get_children()[0].get_children()[0].get_children()
-                #     self.part.assessment_inputs_load(self)
-                #     self.part.assessment_results_create(self,
-                #                                         fixed,
-                #                                         205,
-                #                                         self.y_pos[1][0])
-                #     self.part.assessment_results_load(self)
+                self._component = _util.set_part_model(self.category_id,
+                                                       self.subcategory_id)
+                if self.part:
+                    self._component.assessment_inputs_create(self,
+                                                    self.fxdReliabilityInputs,
+                                                    self._component_x[0],
+                                                    self._component_y[0])
+                    self._component.assessment_inputs_load(self)
+
+                    self._component.reliability_results_create(self,
+                                                    self.fxdReliabilityResults,
+                                                    self._component_x[1] + 125,
+                                                    5)
+                    self._component.stress_results_create(self,
+                                                        self.fxdStressResults,
+                                                        self._component_x[1],
+                                                        self._component_y[1])
+                    self._component.assessment_results_load(self)
+
+                    self.fxdReliabilityInputs.show_all()
+                    self.fxdStressResults.show_all()
 
         elif index >= 1000:
-            selection = self.tvwFMECA.get_selection()
-            (model, row) = selection.get_selected()
-            _id_ = model.get_value(row, 0)
-            _type_ = model.get_value(row, len(self._FMECA_col_order))
+            (_model, _row) = self.tvwFMECA.get_selection().get_selected()
 
-            _index_ = index - 1000
+            _id = _model.get_value(_row, 0)
+            _type = _model.get_value(_row, len(self._FMECA_col_order))
 
-            if _type_ == 1:  # Failure mechanism
-                self._mechanisms[_id_][_index_] = i
-            elif _type_ == 2:  # Control
-                self._fmeca_controls[_id_][_index_] = i
-            elif _type_ == 3:  # Action
-                self._fmeca_actions[_id_][_index_] = i
+            _index = index - 1000
+
+            if _type == 1:  # Failure mechanism
+                self._mechanisms[_id][_index] = i
+            elif _type == 2:  # Control
+                self._fmeca_controls[_id][_index] = i
+            elif _type == 3:  # Action
+                self._fmeca_actions[_id][_index] = i
 
         return False
 
@@ -6204,6 +6152,11 @@ class Hardware(object):
 
         elif index >= 200 and index < 500:  # Component specific information.
             index -= 200
+            _path = self._app.winParts._treepaths[self.assembly_id]
+            _model = self._app.winParts.tvwPartsList.get_model()
+            _row = _model.get_iter(_path)
+
+            _model.set_value(_row, index, _text_)
 
         elif index >= 500 and index < 1000: # Allocation goals.
             if index == 500:
@@ -6256,16 +6209,16 @@ class Hardware(object):
         value -- the value to update the children with.
         """
 
-        _n_children_ = model.iter_n_children(row)
+        _n_children = model.iter_n_children(row)
 
-        for i in range(_n_children_):
-            _chrow_ = model.iter_nth_child(row, i)
-            if model.iter_has_child(_chrow_):
-                self._trickledown(model, _chrow_, index, value)
-            model.set_value(_chrow_, index, value)
-            if model.get_value(_chrow_, 63) == 1:
-                self.category_id = model.get_value(_chrow_, 11)
-                self.subcategory_id = model.get_value(_chrow_, 78)
+        for i in range(_n_children):
+            _row = model.iter_nth_child(row, i)
+            if model.iter_has_child(_row):
+                self._trickledown(model, _row, index, value)
+            model.set_value(_row, index, value)
+            if model.get_value(_row, 63) == 1:
+                self.category_id = model.get_value(_row, 11)
+                self.subcategory_id = model.get_value(_row, 78)
 
         return False
 
@@ -6371,21 +6324,22 @@ class Hardware(object):
         """
         Called whenever the Work Book notebook page is changed.
 
-        :param __notebook: the Hardware class gtk.Notebook().
-        :type __notebook: gtk.Notebook
-        :param __page: the newly selected page widget.
-        :type __page: gtk.Widget
-        :param page_num: the newly selected page number.
-                         0 = General Data
-                         1 = Allocation
-                         2 = Hazard Analysis
-                         3 = Similar Items Analysis
-                         4 = Assessment Inputs
-                         5 = Assessment Results
-                         6 = FMEA
-                         7 = Maintenance Planning
-        :type page_num: integer
+        :param gtk.Notebook __notebook: the Hardware class gtk.Notebook().
+        :param gtk.Widget __page: the newly selected page widget.
+        :param int page_num: the newly selected page number.
+                             * 0 = General Data
+                             * 1 = Allocation
+                             * 2 = Hazard Analysis
+                             * 3 = Similar Items Analysis
+                             * 4 = Assessment Inputs
+                             * 5 = Assessment Results
+                             * 6 = FMEA
+                             * 7 = Maintenance Planning
         """
+
+        if self.part:
+            if page_num in [1, 2, 3]:
+                page_num += 3
 
         if page_num == 0:                   # General data tab.
             self.btnAddItem.show()
@@ -7201,28 +7155,28 @@ class Hardware(object):
         # methodology.  Raise an application error if unsuccessful.
         if self.cmbAllocationType.get_active() == 1 and \
                 equal_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
-                                u"Check your input values and try again."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement. "
+                                u" Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 2 and \
                 agree_apportionment(_model_, _n_assemblies_, _Ts_, _Rs_):
-            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
-                                u"Check your input values and try again."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement. "
+                                u" Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 3 and \
                 arinc_apportionment(_model_, _Ts_, _lambdas_):
-            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
-                                u"Check your input values and try again."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement. "
+                                u" Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() == 4 and \
                 foo_apportionment(_model_, _Ts_, _lambdas_):
-            _util.rtk_warning(_(u"Unable to allocate reliability requirement.  "
-                                u"Check your input values and try again."))
+            _util.rtk_warning(_(u"Unable to allocate reliability requirement. "
+                                u" Check your input values and try again."))
 
         elif self.cmbAllocationType.get_active() < 1 or \
                 self.cmbAllocationType.get_active() > 4:
-            _util.rtk_warning(_(u"No allocation method selected.  Please select "
-                                u"an allocation method and try again."))
+            _util.rtk_warning(_(u"No allocation method selected.  Please "
+                                u"select an allocation method and try again."))
 
         self.txtNumElements.set_text(str(_n_assemblies_))
 
@@ -7233,11 +7187,10 @@ class Hardware(object):
         Calculates the other two reliability metrics from the HARDWARE class
         similar item analysis goal provided.
 
-        Keyword Arguments:
-        measure -- the reliability goal measurement:
-                   1. Reliability
-                   2. MTBF
-                   3. Hazard Rate
+        :param int measure: the reliability goal measurement:
+                            * 500 = Reliability
+                            * 501 = MTBF
+                            * 503 = Hazard Rate
         """
 
         op_time = float(self.txtOperTime.get_text())
@@ -7285,6 +7238,7 @@ class Hardware(object):
         """
         Calculates the Assembly class risk analysis.
         """
+
         import pandas as pd
         # Get the list of failure probability names then create a dictionary
         # using these probability names as the keys.  The values for each key
@@ -7590,16 +7544,39 @@ class Hardware(object):
         _row_ = _model_.iter_children(row)
 
         if _model_.get_value(row, self._col_order[35]) == 1:  # Assessed
-            # Assemblies should not show as overstressed.
-            _model_.set_value(row, 60, False)
-            _icon = _conf.ICON_DIR + '32x32/assembly.png'
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
-            _model_.set_value(row, 95, _icon)
-
             # Calculate all the children and the sum of their results.
             for i in range(_n_children_):
-                (_c_, _la_, _ld_, _ls_, _lp_,
-                 _n_parts_, _power_) = self.calculate(_row_)
+                # If it's a component, calculate the model.
+                if _model_.get_value(_row_, self._col_order[63]) == 1:
+                    _part_path = self._app.winParts._treepaths[_model_.get_value(_row_, self._col_order[1])]
+                    _partmodel = self._app.winParts.tvwPartsList.get_model()
+                    _partrow = _partmodel.get_iter(_part_path)
+                    self._component.calculate(_partmodel, _partrow,
+                                              _model_, _row_)
+
+                    _c_ = _model_.get_value(row, self._col_order[13])
+                    _la_ = _model_.get_value(_row_, self._col_order[28])
+                    _ld_ = _model_.get_value(row, self._col_order[29])
+                    _ls_ = _model_.get_value(row, self._col_order[33])
+                    _lp_ = _la_
+                    _n_parts_ = 1
+                    _power_ = _model_.get_value(row, self._col_order[83])
+
+                    if _model_.get_value(_row_, 60) == 1:
+                        _icon = _conf.ICON_DIR + '32x32/overstress.png'
+                    else:
+                        _icon = _conf.ICON_DIR + '32x32/component.png'
+
+                else:
+                    (_c_, _la_, _ld_, _ls_, _lp_,
+                     _n_parts_, _power_) = self.calculate(_row_)
+
+                    # Assemblies should not show as overstressed.
+                    _model_.set_value(row, 60, False)
+                    _icon = _conf.ICON_DIR + '32x32/assembly.png'
+
+                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+                _model_.set_value(_row_, 95, _icon)
 
                 _cost_ += _c_
                 _lambdaa_ += _la_
@@ -7797,7 +7774,7 @@ class Hardware(object):
                                               'Report Date'])
 
             if self.allocation_type == 1:
-                _columns = [_(u"Description"),_(u"Weighting Factor"),
+                _columns = [_(u"Description"), _(u"Weighting Factor"),
                             _(u"Percent Weighting Factor"),
                             _(u"Current Failure Rate"),
                             _(u"Allocated Failure Rate"), _(u"Current MTBF"),

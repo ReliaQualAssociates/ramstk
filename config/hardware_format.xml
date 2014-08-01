@@ -516,7 +516,8 @@ experience. -->
             <defaulttitle>Parent Assembly</defaulttitle>
             <usertitle>Parent Assembly</usertitle>
             <datatype>gchararray</datatype>
-            <position>62</position><widget>text</widget>
+            <position>62</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -524,7 +525,8 @@ experience. -->
             <defaulttitle>Part</defaulttitle>
             <usertitle>Part</usertitle>
             <datatype>gint</datatype>
-            <position>63</position><widget>text</widget>
+            <position>63</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -532,7 +534,8 @@ experience. -->
             <defaulttitle>Part Number</defaulttitle>
             <usertitle>Part Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>64</position><widget>text</widget>
+            <position>64</position>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>

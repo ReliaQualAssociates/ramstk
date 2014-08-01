@@ -120,7 +120,7 @@ class ListWindow(gtk.Window):
 
         self.notebook.connect('switch-page', self.notebook_page_switched)
 
-# Create the parts list tab for the LIST Object.
+        # Create the parts list tab for the LIST Object.
         bg_color = _conf.RTK_COLORS[14]
         fg_color = _conf.RTK_COLORS[15]
         (self.tvwPartsList, self._col_order) = _widg.make_treeview('Parts', 7,
@@ -130,9 +130,10 @@ class ListWindow(gtk.Window):
                                                                    fg_color)
         self.objPartModel = self.tvwPartsList.get_model()
         if self._parts_list_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Parts List tab.")
+            self._app.debug_log.error("partlist.py: Failed to create Parts "
+                                      "List tab.")
 
-# Create the reliability testing tab for the LIST Object.
+        # Create the reliability testing tab for the List class.
         bg_color = _conf.RTK_COLORS[14]
         fg_color = _conf.RTK_COLORS[15]
         (self.tvwRG, self._rg_col_order) = _widg.make_treeview('RGIncidents',
@@ -411,24 +412,21 @@ class ListWindow(gtk.Window):
         Populates the part list treeview with the parts associated with the
         currently selected Revision, Function, or Assembly.
 
-        Keyword Arguments:
-        query  -- the SQL query to execute to retrieve the list of parts
-                  associated with the calling Revision, Function, or
-                  Assembly.
+        :param str query: the SQL query to execute to retrieve the list of
+                          parts associated with the calling Revision, Function,
+                          or Assembly.
         """
 
-        _results_ = self._app.DB.execute_query(query,
-                                               None,
-                                               self._app.ProgCnx)
-
-        if(_results_ == '' or not _results_ or _results_ is None):
-            return True
+        _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
+        try:
+            _n_parts = len(_results)
+        except TypeError:
+            _n_parts = 0
 
         self.objPartModel.clear()
-        _n_parts = len(_results)
         for i in range(_n_parts):
-            row = self.objPartModel.append(None, _results[i])
-            self._treepaths[_results[i][1]] = self.objPartModel.get_path(row)
+            _row = self.objPartModel.append(None, _results[i])
+            self._treepaths[_results[i][1]] = self.objPartModel.get_path(_row)
 
         self.tvwPartsList.set_model(model=self.objPartModel)
 
@@ -537,17 +535,16 @@ class ListWindow(gtk.Window):
         being clicked or activated.
         """
 
-# First save the previously selected row.
-        if self.selected_row is not None:
-            _path_ = _model_.get_path(self.selected_row)
-            self.save_line_item(self.objPartsList, _path_, self.selected_row)
+        # First save the previously selected row.
+        #if self.selected_row is not None:
+        #    _path_ = _model_.get_path(self.selected_row)
+        #    self.save_line_item(self.objPartsList, _path_, self.selected_row)
 
-# Now set the new selection.
-        selection = self.tvwPartsList.get_selection()
-        (_model_, self.selected_row) = selection.get_selected()
+        # Now set the new selection.
+        (_model, _row) = self.tvwPartsList.get_selection().get_selected()
 
-        if(self.selected_row is not None):
-            self._assembly_id = self.objPartsList.get_value(self.selected_row, 1)
+        if _row is not None:
+            self._assembly_id = _model.get_value(_row, 1)
             self._app.HARDWARE.model.foreach(self.find_hardware_tree_row)
             self._app.HARDWARE.part = True
             self._app.COMPONENT.load_notebook()
@@ -570,7 +567,7 @@ class ListWindow(gtk.Window):
                  tree model.
         """
 
-        if(model.get_value(row, 1) == self._assembly_id):
+        if model.get_value(row, 1) == self._assembly_id:
             self._app.HARDWARE.selected_row = row
             self._app.HARDWARE.treeview.set_cursor(model.get_path(row),
                                                    None, False)
@@ -605,14 +602,13 @@ class ListWindow(gtk.Window):
 
     def save_component(self):
         """
-        Saves the Hardware Tree information to the project's MySQL or SQLite3
-        database.
+        Saves the List Tree information to the RTK Program database.
         """
 
-        model = self.tvwPartsList.get_model()
+        _model = self.tvwPartsList.get_model()
 
-        if(model is not None):
-            model.foreach(self.save_line_item)
+        if _model is not None:
+            _model.foreach(self.save_line_item)
 
         return False
 

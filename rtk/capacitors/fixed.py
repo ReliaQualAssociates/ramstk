@@ -1,33 +1,35 @@
 #!/usr/bin/env python
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       fixed.py is part of The RTK Project
+#       fixed.py is part of the RTK Project
 #
 # All rights reserved.
 
 import pango
 
-try:
-    import relkit.calculations as _calc
-except ImportError:
-    import calculations as _calc
-
 from math import exp, sqrt
 
+try:
+    import rtk.calculations as _calc
+except ImportError:
+    import calculations as _calc
 from capacitor import Capacitor
 
 
 class PaperBypass(Capacitor):
     """
     Fixed Paper Bypass Capacitor Component Class.
+
     Covers specifications MIL-C-25 and MIL-C-12889.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.1
+        # MIL-HDBK-217F, section 10.1
     """
 
     _quality = ["", "MIL-SPEC", "Lower"]
@@ -36,11 +38,13 @@ class PaperBypass(Capacitor):
                   ["", u"85\u00B0C"]]
 
     def __init__(self):
-        """ Initializes the Fixed Paper Bypass Capacitor Component Class. """
+        """
+        Initializes the Fixed Paper Bypass Capacitor Component Class.
+        """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 40               # Subcategory ID in relkitcom database.
+        self.subcategory = 40               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -59,108 +63,173 @@ class PaperBypass(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Paper Bypass Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Paper Bypass Capacitor
+        class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-        Sidx = partmodel.get_value(partrow, 102)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Sidx - 1][Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Paper Bypass Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Paper Bypass Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-25
-            if(idx2 == 1):                  # 85C
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+            _Sidx = partmodel.get_value(partrow, 102)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Sidx - 1][_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Paper Bypass Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-25
+                if idx2 == 1:               # 85C
+                    Tref = 358.0
+                elif idx2 == 2:             # 125C
+                    Tref = 398.0
+                else:
+                    Tref = 358.0
+            elif idx == 2:                  # MIL-C-12889
                 Tref = 358.0
-            elif(idx2 == 2):                # 125C
-                Tref = 398.0
             else:
                 Tref = 358.0
-        elif(idx == 2):                     # MIL-C-12889
-            Tref = 358.0
-        else:
-            Tref = 358.0
 
-        _hrmodel['lambdab'] = 0.00086 * ((S / 0.4)**5.0 + 1.0) * exp(2.5 * ((Tamb + 273.0) / Tref)**18.0)
+            _hrmodel['lambdab'] = 0.00086 * ((S / 0.4)**5.0 + 1.0) * exp(2.5 * ((Tamb + 273.0) / Tref)**18.0)
 
-        # Capacitance correction factor.
-        if(idx == 1):
-            _hrmodel['piCV'] = 1.2 * C**0.095
-        else:
-            _hrmodel['piCV'] = 1.0
+            # Capacitance correction factor.
+            if idx == 1:
+                _hrmodel['piCV'] = 1.2 * C**0.095
+            else:
+                _hrmodel['piCV'] = 1.0
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -168,10 +237,11 @@ class PaperBypass(Capacitor):
 class PaperFeedthrough(Capacitor):
     """
     Fixed Paper Feedthrough Capacitor Component Class.
+
     Covers specification MIL-C-11693.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.2
+        # MIL-HDBK-217F, section 10.2
     """
 
     _quality = ["", "M", "Non-Est. Rel.", "Lower"]
@@ -180,13 +250,12 @@ class PaperFeedthrough(Capacitor):
 
     def __init__(self):
         """
-        Initializes the Fixed Paper Feedthrough Bypass Capacitor
-        Component Class.
+        Initializes the Fixed Paper Feedthrough Bypass Capacitor class.
         """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 41               # Subcategory ID in relkitcom database.
+        self.subcategory = 41               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -202,100 +271,165 @@ class PaperFeedthrough(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Paper Feedthrough Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Paper Feedthrough
+        Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        lambdab = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Paper Feedthrough Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Paper Feedthrough Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx2 == 1):                      # 85C
-            Tref = 358.0
-        elif(idx2 == 2):                    # 125C
-            Tref = 398.0
-        elif(idx2 == 3):                    # 150C
-            Tref = 423.0
-        else:                               # Default
-            Tref = 358.0
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        _hrmodel['lambdab'] = 0.00115 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 1.4 * C**0.12
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Paper Feedthrough Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx2 == 1:                   # 85C
+                Tref = 358.0
+            elif idx2 == 2:                 # 125C
+                Tref = 398.0
+            elif idx2 == 3:                 # 150C
+                Tref = 423.0
+            else:                           # Default
+                Tref = 358.0
+
+            _hrmodel['lambdab'] = 0.00115 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 1.4 * C**0.12
+
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -303,10 +437,11 @@ class PaperFeedthrough(Capacitor):
 class PlasticFilm(Capacitor):
     """
     Fixed Paper and Plastic Film Capacitor Component Class.
+
     Covers specifications MIL-C-14157 and MIL-C-19978.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.3
+        # MIL-HDBK-217F, section 10.3
     """
 
     _quality = ["", "S", "R", "P", "M", "L",
@@ -318,13 +453,12 @@ class PlasticFilm(Capacitor):
 
     def __init__(self):
         """
-        Initializes the Fixed Paper and Plastic Film Capacitor
-        Component Class.
+        Initializes the Fixed Paper and Plastic Film Capacitor Component Class.
         """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 42               # Subcategory ID in relkitcom database.
+        self.subcategory = 42               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -340,118 +474,183 @@ class PlasticFilm(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Paper and Plastic Film Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Paper and Plastic Film
+        Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        lambdab = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, lambdab)
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Paper and Plastic Film Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Paper and Plastic Film Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-14157
-            if(idx2 == 1):                  # 65C
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _htmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Paper and Plastic Film Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-14157
+                if idx2 == 1:               # 65C
+                    Tref = 338.0
+                elif idx2 == 2:             # 85C
+                    Tref = 398.0
+                elif idx2 == 3:             # 125C
+                    Tref = 358.0
+                else:                       # Default
+                    Tref = 338.0
+            elif idx == 2:                  # MIL-C-19978
+                if idx2 == 1:               # 65C
+                    Tref = 358.0
+                elif idx2 == 2:             # 85C
+                    Tref = 398.0
+                elif idx2 == 3:             # 125C
+                    Tref = 338.0
+                elif idx2 == 4:             # 170C
+                    Tref = 443.0
+                else:                       # Default
+                    Tref = 338.0
+            else:
                 Tref = 338.0
-            elif(idx2 == 2):                # 85C
-                Tref = 398.0
-            elif(idx2 == 3):                # 125C
-                Tref = 358.0
-            else:                           # Default
-                Tref = 338.0
-        elif(idx == 2):                     # MIL-C-19978
-            if(idx2 == 1):                  # 65C
-                Tref = 358.0
-            elif(idx2 == 2):                # 85C
-                Tref = 398.0
-            elif(idx2 == 3):                # 125C
-                Tref = 338.0
-            elif(idx2 == 4):                # 170C
-                Tref = 443.0
-            else:                           # Default
-                Tref = 338.0
-        else:
-            Tref = 338.0
 
-        _hrmodel['lambdab'] = 0.0005 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+            _hrmodel['lambdab'] = 0.0005 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
 
-        # Capacitance correction factor.
-        if(idx == 1):
-            _hrmodel['piCV'] = 1.6 * C**0.13
-        else:
-            _hrmodel['piCV'] = 1.3 * C**0.077
+            # Capacitance correction factor.
+            if idx == 1:
+                _hrmodel['piCV'] = 1.6 * C**0.13
+            else:
+                _hrmodel['piCV'] = 1.3 * C**0.077
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -459,12 +658,12 @@ class PlasticFilm(Capacitor):
 class MetallizedPaper(Capacitor):
     """
     Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
-    Componnt Class.
+    Component Class.
 
     Covers specifications MIL-C-18312 and MIL-C-39022.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.4
+        #. MIL-HDBK-217F, section 10.4
     """
 
     _quality = ["", "S", "R", "P", "M", "L",
@@ -481,7 +680,7 @@ class MetallizedPaper(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 43               # Subcategory ID in relkitcom database.
+        self.subcategory = 43               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -497,111 +696,176 @@ class MetallizedPaper(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
-        Component Class.
+        Performs hazard rate calculations for the Fixed Metallized Paper,
+        Paper-Plastic, and Plastic Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        lambdab = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
-        Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
+            Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-18312
-            if(idx2 == 1):                  # 85C
-                Tref = 358.0
-            elif(idx2 == 2):                # 125C
-                Tref = 398.0
-            else:                           # Default
-                Tref = 358.0
-        elif(idx == 2):                     # MIL-C-39022
-            if(idx2 == 1):                  # 85C
-                Tref = 358.0
-            elif(idx2 == 2):                # 125C
-                Tref = 398.0
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
+            Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-18312
+                if idx2 == 1:               # 85C
+                    Tref = 358.0
+                elif idx2 == 2:             # 125C
+                    Tref = 398.0
+                else:                       # Default
+                    Tref = 358.0
+            elif idx == 2:                  # MIL-C-39022
+                if idx2 == 1:               # 85C
+                    Tref = 358.0
+                elif idx2 == 2:             # 125C
+                    Tref = 398.0
+                else:
+                    Tref = 358.0            # Default
             else:
-                Tref = 358.0                # Default
-        else:
-            Tref = 358.0
+                Tref = 358.0
 
-        _hrmodel['lambdab'] = 0.00069 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+            _hrmodel['lambdab'] = 0.00069 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 1.2 * C**0.092
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 1.2 * C**0.092
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -609,10 +873,11 @@ class MetallizedPaper(Capacitor):
 class Plastic(Capacitor):
     """
     Fixed Plastic and Metallized Plastic Capacitor Component Class.
+
     Covers specifications MIL-C-55514.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.5
+        # MIL-HDBK-217F, section 10.5
     """
 
     _quality = ["", "S", "R", "P", "M", "Lower"]
@@ -627,7 +892,7 @@ class Plastic(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 44               # Subcategory ID in relkitcom database.
+        self.subcategory = 44               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -643,98 +908,163 @@ class Plastic(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Plastic and Metallized Plastic Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Plastic and Metallized
+        Plastic Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Plastic and Metallized Plastic Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Plastic and Metallized Plastic Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx2 == 1 or idx2 == 2):
-            Tref = 358.0
-        elif(idx2 == 3 or idx2 == 4 or idx2 == 5):
-            Tref = 398.0
-        else:
-            Tref = 358.0
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        _hrmodel['lambdab'] = 0.00099 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 1.1 * C**0.086
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Plastic and Metallized Plastic Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx2 == 1 or idx2 == 2:
+                Tref = 358.0
+            elif idx2 == 3 or idx2 == 4 or idx2 == 5:
+                Tref = 398.0
+            else:
+                Tref = 358.0
+
+            _hrmodel['lambdab'] = 0.00099 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 1.1 * C**0.086
+
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -742,10 +1072,11 @@ class Plastic(Capacitor):
 class SuperMetallizedPlastic(Capacitor):
     """
     Fixed Super-Metallized Plastic Capacitor Component Class.
+
     Covers specifications MIL-C-83421.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.6
+        # MIL-HDBK-217F, section 10.6
     """
 
     _quality = ["", "S", "R", "P", "M", "Lower"]
@@ -754,13 +1085,13 @@ class SuperMetallizedPlastic(Capacitor):
 
     def __init__(self):
         """
-        Initializes the Fixed Super-Metallized Plastic Capacitor
-        Component Class.
+        Initializes the Fixed Super-Metallized Plastic Capacitor Component
+        Class.
         """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 45               # Subcategory ID in relkitcom database.
+        self.subcategory = 45               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -776,96 +1107,161 @@ class SuperMetallizedPlastic(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Super-Metallized Plastic Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Super-Metallized
+        Plastic Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Super-Metallized Plastic Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Super-Metallized Plastic Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx2 == 1):                      # 125C
-            Tref = 398
-        else:                               # Default
-            Tref = 398
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        _hrmodel['lambdab'] = 0.00055 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 1.2 * C**0.092
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Super-Metallized Plastic Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx2 == 1:                   # 125C
+                Tref = 398
+            else:                           # Default
+                Tref = 398
+
+            _hrmodel['lambdab'] = 0.00055 * ((S / 0.4)**5.0 + 1) * exp(2.5 * ((Tamb + 273) / Tref)**18)
+
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 1.2 * C**0.092
+
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -873,10 +1269,11 @@ class SuperMetallizedPlastic(Capacitor):
 class Mica(Capacitor):
     """
     Fixed Mica Capacitor Component Class.
+
     Covers specifications MIL-C-5 and MIL-C-39001.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.7
+        # MIL-HDBK-217F, section 10.7
     """
 
     _quality = ["", "T", "S", "R", "P", "M", "L",
@@ -888,11 +1285,13 @@ class Mica(Capacitor):
                    u"150\u00B0C"], ["", u"125\u00B0C", u"150\u00B0C"]]
 
     def __init__(self):
-        """ Initializes the Fixed Mica Capacitor Component Class. """
+        """
+        Initializes the Fixed Mica Capacitor Component Class.
+        """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 46               # Subcategory ID in relkitcom database.
+        self.subcategory = 46               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -908,113 +1307,177 @@ class Mica(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Mica Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Mica Capacitor class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Mica Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Mica Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-5
-            if(idx2 == 1):                  # 70C
-                Tref = 343.0
-            elif(idx2 == 2):                # 85C
-                Tref = 358.0
-            elif(idx2 == 3):                # 125C
-                Tref = 398.0
-            elif(idx2 == 4):                # 150C
-                Tref = 423.0
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Mica Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-5
+                if idx2 == 1:               # 70C
+                    Tref = 343.0
+                elif idx2 == 2:             # 85C
+                    Tref = 358.0
+                elif idx2 == 3:             # 125C
+                    Tref = 398.0
+                elif idx2 == 4:             # 150C
+                    Tref = 423.0
+                else:
+                    Tref = 343.0            # Default
+            elif idx == 2:                  # MIL-C-39001
+                if idx2 == 1:               # 125C
+                    Tref = 398.0
+                elif idx2 == 2:             # 150C
+                    Tref = 423.0
+                else:                       # Default
+                    Tref = 398.0
             else:
-                Tref = 343.0                # Default
-        elif(idx == 2):                     # MIL-C-39001
-            if(idx2 == 1):                  # 125C
-                Tref = 398.0
-            elif(idx2 == 2):                # 150C
-                Tref = 423.0
-            else:                           # Default
-                Tref = 398.0
-        else:
-            Tref = 343.0
+                Tref = 343.0
 
-        _hrmodel['lambdab'] = 0.00000000086 * ((S / 0.4)**3.0 + 1.0) * exp(16.0 * (Tamb + 273.0) / Tref)
+            _hrmodel['lambdab'] = 0.00000000086 * ((S / 0.4)**3.0 + 1.0) * exp(16.0 * (Tamb + 273.0) / Tref)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 0.45 * C**0.14
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 0.45 * C**0.14
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -1022,10 +1485,11 @@ class Mica(Capacitor):
 class MicaButton(Capacitor):
     """
     Fixed Mica Button Capacitor Component Class.
+
     Covers specification MIL-C-10950.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.8
+        # MIL-HDBK-217F, section 10.8
     """
 
     _quality = ["", "MIL-C-10950", "Lower"]
@@ -1033,11 +1497,13 @@ class MicaButton(Capacitor):
     _specsheet = [["", u"85\u00B0C", u"150\u00B0C"]]
 
     def __init__(self):
-        """ Initializes the Fixed Mica Button Capacitor Component Class. """
+        """
+        Initializes the Fixed Mica Button Capacitor Component Class.
+        """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 46               # Subcategory ID in relkitcom database.
+        self.subcategory = 46               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1052,102 +1518,167 @@ class MicaButton(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Mica Button Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Mica Button Capacitor
+        class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Mica Button Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Mica Button Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-1950
-            if(idx2 == 1):                  # 85C
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Mica Button Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-1950
+                if idx2 == 1:               # 85C
+                    Tref = 358.0
+                elif idx2 == 2:             # 150C
+                    Tref = 423.0
+                else:                       # Default for MIL-C-1950
+                    Tref = 358.0
+            else:                           # Default
                 Tref = 358.0
-            elif(idx2 == 2):                # 150C
-                Tref = 423.0
-            else:                           # Default for MIL-C-1950
-                Tref = 358.0
-        else:                               # Default
-            Tref = 358.0
 
-        _hrmodel['lambdab'] = 0.0053 * ((S / 0.4)**3.0 + 1) * exp(1.2 * ((Tamb + 273) / Tref)**6.3)
+            _hrmodel['lambdab'] = 0.0053 * ((S / 0.4)**3.0 + 1) * exp(1.2 * ((Tamb + 273) / Tref)**6.3)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 0.31 * C**0.23
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 0.31 * C**0.23
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -1155,10 +1686,11 @@ class MicaButton(Capacitor):
 class Glass(Capacitor):
     """
     Fixed Glass Capacitor Component Class.
+
     Covers specifications MIL-C-11272 and MIL-C-23269.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.9
+        # MIL-HDBK-217F, section 10.9
     """
 
     _quality = ["", "S", "R", "P", "M", "L", "MIL-C-11272, Non-Est. Rel.",
@@ -1167,11 +1699,13 @@ class Glass(Capacitor):
     _specsheet = [["", u"125\u00B0C", u"200\u00B0C"], ["", u"125\u00B0C"]]
 
     def __init__(self):
-        """ Initializes the Fixed Glass Capacitor Component Class. """
+        """
+        Initializes the Fixed Glass Capacitor Component Class.
+        """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 48               # Subcategory ID in relkitcom database.
+        self.subcategory = 48               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1187,108 +1721,169 @@ class Glass(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Glass Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed Glass Capacitor
+        Component Class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow,
-                                           28, lambdap)
-        systemmodel.set_value(systemrow,
-                                           88, list(_hrmodel.items()))
-
-        part._assessment_results_tab_load()
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Glass Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Glass Capacitor Component Class.
 
-        # Retrieve junction temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
-        Trise = partmodel.get_value(partrow, 107)
-        thetaJC = partmodel.get_value(partrow, 109)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-11272
-            if(idx2 == 1):                  # 125C
-                Tref = 398.0
-            elif(idx2 == 2):                # 200C
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Glass Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve junction temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+            Trise = partmodel.get_value(partrow, 107)
+            thetaJC = partmodel.get_value(partrow, 109)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            idx = partmodel.get_value(partrow, 101)
+            idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if idx == 1:                    # MIL-C-11272
+                if idx2 == 1:               # 125C
+                    Tref = 398.0
+                elif idx2 == 2:             # 200C
+                    Tref = 473.0
+                else:                       # Default
+                    Tref = 398.0
+            elif idx == 2:                  # MIL-C-23269
                 Tref = 473.0
             else:                           # Default
                 Tref = 398.0
-        elif(idx == 2):                     # MIL-C-23269
-            Tref = 473.0
-        else:                               # Default
-            Tref = 398.0
 
-        _hrmodel['lambdab'] = 0.000000000825 * ((S / 0.5)**4.0 + 1) * exp(16 * ((Tamb + 273) / Tref)**18)
+            _hrmodel['lambdab'] = 0.000000000825 * ((S / 0.5)**4.0 + 1) * exp(16 * ((Tamb + 273) / Tref)**18)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 0.62 * C**0.14
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 0.62 * C**0.14
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -1296,10 +1891,11 @@ class Glass(Capacitor):
 class CeramicGeneral(Capacitor):
     """
     Fixed General Purpose Ceramic Capacitor Component Class.
+
     Covers specifications MIL-C-11015 and MIL-C-39014.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.10
+        # MIL-HDBK-217F, section 10.10
 
     """
 
@@ -1312,131 +1908,190 @@ class CeramicGeneral(Capacitor):
     def __init__(self):
         """
         Initializes the Fixed General Purpose Ceramic Capacitor Component
-        Class.
-
+        class.
         """
 
         Capacitor.__init__(self)
 
-        self.subcategory = 39               # Subcategory ID in relkitcom database.
+        self.subcategory = 39               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+        # ----------------------------------------------------------------- #
         self._piE = [1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0, 8.0, 12.0, 20.0, 0.4,
                      13.0, 34.0, 610.0]
         self._piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 3.0, 10.0]
         self._lambdab_count = [0.0036, 0.0074, 0.034, 0.019, 0.056, 0.015,
                                0.015, 0.032, 0.048, 0.077, 0.0014, 0.049,
                                0.13, 2.3]
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+        # ----------------------------------------------------------------- #
 
         self._in_labels[3] = u"Temperature Rating:"
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                 systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed General Purpose Ceramic Capacitor Component Class.
+        Performs hazard rate calculations for the Fixed General Purpose Ceramic
+        Capacitor Component Class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systenrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed General Purpose Ceramic Capacitor Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter() in
+                                     the List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected gtk.TreeIter() in
+                                       the RTK Hardware class gtk.TreeModel().
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def _calculate_mil_217_count(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed General Purpose Ceramic Capacitor Component Class.
 
-        # Retrieve temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in the List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        idx = partmodel.get_value(partrow, 101)
-        idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(idx == 1):                       # MIL-C-11015
-            if(idx2 == 1):                  # 85C
-                Tref = 358.0
-            elif(idx2 == 2):                # 125C
-                Tref = 398.0
-            elif(idx2 == 3):                # 150C
-                Tref = 423.0
-            else:                           # Default
-                Tref = 358.0
-        elif(idx == 2):                     # MIL-C-39014
-            if(idx2 == 1):
-                Tref = 358.0
-            elif(idx2 == 2):
-                Tref = 398.0
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def _calculate_mil_217_stress(self, partmodel, partrow,
+                                      systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed General Purpose Ceramic Capacitor Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            _idx = partmodel.get_value(partrow, 101)
+            _idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if _idx == 1:                       # MIL-C-11015
+                if _idx2 == 1:                  # 85C
+                    Tref = 358.0
+                elif _idx2 == 2:                # 125C
+                    Tref = 398.0
+                elif _idx2 == 3:                # 150C
+                    Tref = 423.0
+                else:                           # Default
+                    Tref = 358.0
+            elif _idx == 2:                     # MIL-C-39014
+                if _idx2 == 1:
+                    Tref = 358.0
+                elif _idx2 == 2:
+                    Tref = 398.0
+                else:
+                    Tref = 358.0
             else:
                 Tref = 358.0
-        else:
-            Tref = 358.0
 
-        _hrmodel['lambdab'] = 0.0003 * ((S / 0.3)**3 + 1) * exp((Tamb + 273) / Tref)
+            _hrmodel['lambdab'] = 0.0003 * ((S / 0.3)**3 + 1) * exp((Tamb + 273) / Tref)
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 0.41 * C**0.11
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 0.41 * C**0.11
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            _idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[_idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
 
@@ -1449,7 +2104,7 @@ class CeramicChip(Capacitor):
     Covers specifications MIL-C-20 and MIL-C-55681.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 10.11
+        # MIL-HDBK-217F, section 10.11
     """
 
     _quality = ["", "S", "R", "P", "M", "Non-Est. Rel.", "Lower"]
@@ -1464,7 +2119,7 @@ class CeramicChip(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 50               # Subcategory ID in relkitcom database.
+        self.subcategory = 50               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -1480,103 +2135,168 @@ class CeramicChip(Capacitor):
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Fixed Temperature Compensating and Chip Ceramic Capacitor Component
-        Class.
+        Performs hazard rate calculations for the Fixed Temperature
+        Compensating and Chip Ceramic Capacitor Component Class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systenmodel.get_value(systemrow, 22)
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systenmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Fixed Temperature Compensating and Chip Ceramic Capacitor
-        Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+        def calculate_mil_217_count(self, partmodel, partrow,
+                                    systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Fixed Temperature Compensating and Chip Ceramic Capacitor Component
+            Class.
 
-        # Retrieve temperature inputs.
-        Tamb = partmodel.get_value(partrow, 37)
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        C = partmodel.get_value(partrow, 15)
-        VappliedAC = partmodel.get_value(partrow, 64)
-        Vapplied = partmodel.get_value(partrow, 66)
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Vrated = partmodel.get_value(partrow, 94)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        spec_idx = partmodel.get_value(partrow, 101)
-        temp_idx2 = partmodel.get_value(partrow, 102)
-        S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
-        if(spec_idx == 1):                  # MIL-C-20
-            if(temp_idx2 == 1):             # 85C
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            _Eidx = systenmodel.get_value(systemrow, 22)
+
+            _hrmodel['lambdab'] = self._lambdab_count[_Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def calculate_mil_217_stress(self, partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Fixed Temperature Compensating and Chip Ceramic Capacitor
+            Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCV * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve temperature inputs.
+            Tamb = partmodel.get_value(partrow, 37)
+
+            # Retrieve hazard rate inputs.
+            C = partmodel.get_value(partrow, 15)
+            VappliedAC = partmodel.get_value(partrow, 64)
+            Vapplied = partmodel.get_value(partrow, 66)
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            spec_idx = partmodel.get_value(partrow, 101)
+            temp_idx2 = partmodel.get_value(partrow, 102)
+            S = (Vapplied + sqrt(2) * VappliedAC) / Vrated
+            if spec_idx == 1:                  # MIL-C-20
+                if temp_idx2 == 1:             # 85C
+                    Tref = 358.0
+                elif temp_idx2 == 2:           # 125C
+                    Tref = 398.0
+                else:
+                    Tref = 398.0
+            elif spec_idx == 2:                # MIL-C-55681
+                Tref = 398.0
+            else:                               # Default
                 Tref = 358.0
-            elif(temp_idx2 == 2):           # 125C
-                Tref = 398.0
-            else:
-                Tref = 398.0
-        elif(spec_idx == 2):                # MIL-C-55681
-            Tref = 398.0
-        else:                               # Default
-            Tref = 358.0
 
-        _hrmodel['lambdab'] = 0.0000000026 * ((S / 0.3)**3 + 1) * exp(1.4 * ((Tamb + 273) / Tref))
+            _hrmodel['lambdab'] = 0.0000000026 * ((S / 0.3)**3 + 1) * exp(1.4 * ((Tamb + 273) / Tref))
 
-        # Capacitance correction factor.
-        _hrmodel['piCV'] = 0.59 * C**0.12
+            # Capacitance correction factor.
+            _hrmodel['piCV'] = 0.59 * C**0.12
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 70, _hrmodel['piCV'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+            _lambdad = _lambdad * _quantity
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress, _reason) = _calc.overstressed(partmodel, partrow,
+                                                        systemmodel, systemrow)
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 70, _hrmodel['piCV'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 22)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
