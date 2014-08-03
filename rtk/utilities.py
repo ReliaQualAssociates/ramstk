@@ -355,8 +355,7 @@ def file_exists(_file):
     """
     Helper function to check if a file exists.
 
-    :param _file: a string representing the filepath to check for.
-    :type _file: string
+    :param str _file: a string representing the filepath to check for.
     :return: True if the file exists or False if not.
     :rtype: boolean
     """
@@ -368,11 +367,13 @@ def create_project(widget, app):
     """
     Creates a new RTK Project.
 
-    :param widget: the gtk.Widget() that called this function.
-    :type widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget widget: the gtk.Widget() that called this function.
+    :param rtk app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
+
+    set_cursor(self._app, gtk.gdk.WATCH)
 
     if _conf.BACKEND == 'mysql':
 
@@ -504,6 +505,8 @@ def create_project(widget, app):
 
         _dialog.destroy()
 
+    set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
     return False
 
 
@@ -513,10 +516,10 @@ def open_project(__widget, app, dlg=1, filename=''):
     user to select the one he/she wishes to use.
 
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param app: the current instance of the RTK application.
+    :param rtk app: the current instance of the RTK application.
     :param int dlg: whether or not to display a file chooser dialog.
-                    0=No
-                    1=Yes (default)
+                    * 0 = No
+                    * 1 = Yes (default)
     :param str filename: the full path to the RTK Program database to open.
     """
 

@@ -3242,10 +3242,10 @@ class Hardware(object):
         # Load the model with the returned results.
         for i in range(_n_assemblies_):
 
-            if _results_[i][62] == '-':  # Its the top level element.
+            if _results_[i][62] == '-':     # Its the top level element.
                 _piter_ = None
                 self.system_ht = _results_[i][32]
-            elif _results_[i][62] != '-':  # Its a child element.
+            elif _results_[i][62] != '-':   # Its a child element.
                 _piter_ = _model_.get_iter_from_string(_results_[i][62])
 
             # Select the image to display.  If there is a problem with the part
@@ -5003,6 +5003,7 @@ class Hardware(object):
             return False
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
+
         _model = self.treeview.get_model()
         _model.foreach(_save_line, self)
 

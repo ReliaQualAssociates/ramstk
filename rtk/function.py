@@ -800,7 +800,7 @@ class Function(object):
             _types_.append('gchararray')
         _types_ = [gobject.type_from_name(_types_[i])
                    for i in range(len(_types_))]
-        _model_ = gtk.ListStore(*_types_)
+        _model_ = gtk.TreeStore(*_types_)
 
         self.tvwFunctionMatrix.set_model(_model_)
 
@@ -883,20 +883,20 @@ class Function(object):
         # Select the assembly id and name for only components, only assemblies,
         # or both components and assemblies.  The default is to select both.
         if self.chkParts.get_active() and not self.chkAssemblies.get_active():
-            _query = "SELECT fld_assembly_id, fld_name \
+            _query = "SELECT fld_assembly_id, fld_name, fld_parent_assembly \
                       FROM tbl_system \
                       WHERE fld_revision_id=%d \
                       AND fld_part=1" % \
                      self._app.REVISION.revision_id
-        elif(not self.chkParts.get_active() and
-             self.chkAssemblies.get_active()):
-            _query = "SELECT fld_assembly_id, fld_name \
+        elif (not self.chkParts.get_active() and
+              self.chkAssemblies.get_active()):
+            _query = "SELECT fld_assembly_id, fld_name, fld_parent_assembly \
                       FROM tbl_system \
                       WHERE fld_revision_id=%d \
                       AND fld_part=0" % \
                      self._app.REVISION.revision_id
         elif self.chkParts.get_active() and self.chkAssemblies.get_active():
-            _query = "SELECT fld_assembly_id, fld_name \
+            _query = "SELECT fld_assembly_id, fld_name, fld_parent_assembly \
                       FROM tbl_system \
                       WHERE fld_revision_id=%d" % \
                      self._app.REVISION.revision_id
@@ -930,6 +930,11 @@ class Function(object):
         # cell under each function column to the appropriate relationship
         # value for each assembly.
         for i in range(_n_items_):          # Loop through all the hardware.
+            if _assemblies_[i][2] == '-':     # Its the top level element.
+                _piter = None
+            elif _assemblies_[i][2] != '-':   # Its a child element.
+                _piter = _model_.get_iter_from_string(_assemblies_[i][2])
+
             _data = []
             _data.append(_assemblies_[i][0])
             _data.append(_assemblies_[i][1])
@@ -938,15 +943,22 @@ class Function(object):
                 # Loop through all the hardware/function relationships.
                 for j in range(_n_functions):
                     if _results_[j][2] == 'X':
-                        _color_ = 'black'
+                        _color = 'black'
                     else:
-                        _color_ = 'white'
+                        _color = 'white'
 
                     if _results_[j][0] == _assemblies_[i][0]:
                         _data.append("<span foreground='black' background='%s'> "
-                                     "%s </span>" % (_color_, _results_[j][2]))
+                                     "%s </span>" % (_color, _results_[j][2]))
 
-            _model_.append(_data)
+            _model_.append(_piter, _data)
+
+        if _model_.get_iter_root() is not None:
+            _path = _model_.get_path(_model_.get_iter_root())
+            self.tvwFunctionMatrix.set_cursor(_path, None, False)
+            self.tvwFunctionMatrix.row_activated(_path,
+                                                 self.treeview.get_column(0))
+            self.tvwFunctionMatrix.expand_all()
 
         return False
 
@@ -1659,7 +1671,7 @@ class Function(object):
         else:
             new_text = "<span foreground='#FD0202' background='#FD0202'>     </span>"
 
-        _model.set_value(_row_, column, new_text)
+        _model.set_value(_row, column, new_text)
 
         return False
 
