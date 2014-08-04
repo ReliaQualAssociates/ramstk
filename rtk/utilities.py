@@ -127,9 +127,9 @@ def read_configuration():
     if not dir_exists(_conf.LOG_DIR):
         _conf.LOG_DIR = conf.log_dir
 
-    _conf.PROG_DIR = _homedir + '/' + progdir + '/'
+    _conf.PROG_DIR = progdir
     if not dir_exists(_conf.PROG_DIR):
-        _conf.PROG_DIR = conf.prog_dir
+        _conf.PROG_DIR = _homedir + '/Analyses/RTK/'
 
     # Get list of format files.
     formatfile = conf.read_configuration().get('Files', 'revisionformat')

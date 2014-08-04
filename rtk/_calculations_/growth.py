@@ -340,10 +340,10 @@ def growth_potential(mtbfi, avems, avefef):
         _mtbfgp = mtbfi
         _util.rtk_error(_(u"To calculate the growth potential MTBF, "
                           u"you must provide the following inputs with "
-                          u"values greater than zero:"
-                          u"1. Initial MTBF (MI): %f"
-                          u"2. Management strategy (MS): %f"
-                          u"3. Fix Effectiveness Factor (FEF): %f")
+                          u"values greater than zero:\n\n"
+                          u"1. Initial MTBF (MI): %f\n"
+                          u"2. Management strategy (MS): %f\n"
+                          u"3. Fix Effectiveness Factor (FEF): %f\n\n")
                         % (mtbfi, avems, avefef))
         return True
 
@@ -485,18 +485,13 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
     """
     Function to calculate the values for the idealized growth curve.
 
-    :param ttt: the total time on test for the program.
-    :type ttt: float
-    :param ti: the growth start time (i.e., the time the first fix is
-               implemented on a test article).
-    :type ti: float
-    :param mtbfi: the initial MTBF for the test program.
-    :type mtbfi: float
-    :param avggr: the average growth rate across the entire test program.
-    :type avggr: float
-    :param mtbf: indicates whether to calculate MTBF (default) or failure
-                 intensity values.
-    :type mtbf: boolean
+    :param float ttt: the total time on test for the program.
+    :param float ti: the growth start time (i.e., the time the first fix is
+                     implemented on a test article).
+    :param float mtbfi: the initial MTBF for the test program.
+    :param float avggr: the average growth rate across the entire test program.
+    :param bool mtbf: indicates whether to calculate MTBF (default) or failure
+                      intensity values.
     :return: _ideal
     :rtype: list of floats
     """
@@ -515,7 +510,7 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)   # pylint: disable=E1101
+                _ideal.append(np.nan)       # pylint: disable=E1101
             else:
                 _ideal.append((mtbfi * (_time / ti) ** gr) /
                               (1.0 - gr))
@@ -526,7 +521,7 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(1.0 / mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)   # pylint: disable=E1101
+                _ideal.append(np.nan)       # pylint: disable=E1101
             else:
                 _ideal.append((1.0 - gr) /
                               (mtbfi * (_time / ti) ** gr))

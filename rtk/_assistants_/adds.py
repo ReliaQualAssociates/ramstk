@@ -1370,7 +1370,7 @@ class AddRGRecord(gtk.Assistant):
         """
 
         (_model_, _row_) = self._app.TESTING.treeview.get_selection().get_selected()
-        _idx_ = self._app.TESTING._col_order[0]
+        _idx_ = self._app.TESTING._lst_col_order[0]
 
         _query_ = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
                    FROM tbl_survival_data \

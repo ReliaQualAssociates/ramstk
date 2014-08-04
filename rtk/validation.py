@@ -1015,7 +1015,7 @@ class Validation(object):
         # identified as a Reliability Assessment.  Add an annotation box
         # showing the minimum required and goal values for each milestone.
         for i in range(len(_assess_dates)):
-            self.axAxis1.axvline(x=_assess_dates[i], ymin=0, color='m',
+            self.axAxis1.axvline(x=_assess_dates[i], ymin=0, ymax=1.05 * _y3[0], color='m',
                                  linewidth=2.5, linestyle=':')
 
         for i in range(len(_targets)):
@@ -1043,6 +1043,8 @@ class Validation(object):
                  _(u"Minimum Expected Time"), _(u"Actual Remaining Time"))
         create_legend(self.axAxis1, _text, fontsize='medium',
                       legframeon=True, location='lower left', legshadow=True)
+
+        self.axAxis1.set_ylim(bottom=0.0, top=1.05 * _y3[0])
 
         return False
 
@@ -1478,8 +1480,7 @@ class Validation(object):
         Method to calculate the expected task time, lower limit, and upper
         limit on task time.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
         """
 
         from operator import itemgetter
@@ -1542,11 +1543,16 @@ class Validation(object):
 # TODO: Remove this hackish way to save program time/cost info when it is moved into the Revision class.
         self._app.REVISION.program_time = sum([_m[3] for _m in _tasks])
         self._app.REVISION.program_time_se = sum([_m[5] for _m in _tasks])
-        (_model, _row) = self._app.REVISION.treeview.get_selection().get_selected()
-        _model.set_value(_row, self._app.REVISION._lst_col_order[23], self._app.REVISION.program_time)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[24], self._app.REVISION.program_time_se)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[25], self._app.REVISION.program_cost)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[26], self._app.REVISION.program_cost_se)
+        (_model,
+         _row) = self._app.REVISION.treeview.get_selection().get_selected()
+        _model.set_value(_row, self._app.REVISION._lst_col_order[23],
+                         self._app.REVISION.program_time)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[24],
+                         self._app.REVISION.program_time_se)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[25],
+                         self._app.REVISION.program_cost)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[26],
+                         self._app.REVISION.program_cost_se)
 
         self.txtProjectTimeLL.set_text(str(fmt.format(
             self._app.REVISION.program_time -
