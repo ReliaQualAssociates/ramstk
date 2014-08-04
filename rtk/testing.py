@@ -2112,6 +2112,12 @@ class Testing(object):
         if not isinstance(self.mgp, (int, long, float)):
             self.mgp = MTBFF
 
+        # Calculate the ideal growth curve from 0 - TTT in steps of one.
+        _times = range(int(TTT))
+        _ideal = idealized_values(TTT, t1, MTBFI, AvgGR,
+                                  self.optMTBF.get_active())
+        self.mgp = min(self.mgp, _ideal[-1])
+
         _model.set_value(_row, 6, MTBFI)
         _model.set_value(_row, 9, MTBFF)
         _model.set_value(_row, 8, self.mgp)
@@ -2127,11 +2133,6 @@ class Testing(object):
         self.txtAverageGR.set_text(str(fmt.format(AvgGR)))
         self.txtProgramMS.set_text(str(fmt.format(AvgMS)))
         self.txtProgramProb.set_text(str(fmt.format(Prob)))
-
-        # Calculate the ideal growth curve from 0 - TTT in steps of one.
-        _times = range(int(TTT))
-        _ideal = idealized_values(TTT, t1, MTBFI, AvgGR,
-                                  self.optMTBF.get_active())
 
         # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         # Reliability growth planning phase specific calculations.          #
