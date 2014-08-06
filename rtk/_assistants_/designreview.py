@@ -179,19 +179,24 @@ class DesignReview(gtk.Window):
         # Create the gtk.TreeView() used to display the review criteria.
         _model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                gobject.TYPE_STRING, gobject.TYPE_INT,
-                               gobject.TYPE_STRING)
+                               gobject.TYPE_STRING, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING, gobject.TYPE_STRING)
         self.treeview.set_model(_model)
         self.treeview.set_enable_tree_lines(True)
         self.treeview.set_grid_lines(True)
         self.treeview.set_reorderable(True)
         self.treeview.set_search_column(0)
 
-
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
 
+        # Get the list of groups.
+        _query = "SELECT fld_group_name, fld_group_id FROM tbl_groups"
+        _owners = self._app.COMDB.execute_query(_query, None, self._app.ComCnx)
+
         _headers = [_(u"Criteria ID"), _(u"Criteria"), _(u"Rationale"),
-                    _(u"Satisfied"), _(u"Remarks")]
+                    _(u"Satisfied"), _(u"Remarks"), _(u"Actions"),
+                    _(u"Due Date"), _(u"Owner")]
         for j in range(len(_headers)):
             _column = gtk.TreeViewColumn()
             _label = _widg.make_column_heading(_headers[j])
@@ -209,6 +214,22 @@ class DesignReview(gtk.Window):
                 _cell.connect('toggled', _design_review_edit, '', j, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, active=j)
+            elif j == 7:
+                _cell = gtk.CellRendererCombo()
+                _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+                _cellmodel.append([""])
+                for i in range(len(_owners)):
+                    _cellmodel.append([_owners[i][0]])
+                _cell.set_property('editable', 1)
+                _cell.set_property('has-entry', True)
+                _cell.set_property('model', _cellmodel)
+                _cell.set_property('text-column', 0)
+                _cell.set_property('wrap-width', 250)
+                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+                _cell.set_property('yalign', 0.1)
+                _cell.connect('edited', _design_review_edit, j, _model)
+                _column.pack_start(_cell, True)
+                _column.set_attributes(_cell, text=j)
             else:
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
@@ -288,7 +309,8 @@ class DesignReview(gtk.Window):
             _n_criteria = 0
 
         # Retrieve the status of each criteria for the open RTK program.
-        _query = "SELECT fld_satisfied, fld_concern_id \
+        _query = "SELECT fld_satisfied, fld_concern_id, fld_action, \
+                         fld_due_date, fld_owner \
                   FROM tbl_reviews \
                   WHERE fld_revision_id=%d \
                   AND fld_gateway_id=%d \
@@ -312,7 +334,10 @@ class DesignReview(gtk.Window):
                 _stat = 0
             _data = [_criteria[j][0], _util.none_to_string(_criteria[j][1]),
                      _util.none_to_string(_criteria[j][2]), _stat,
-                     _util.none_to_string(_criteria[j][3])]
+                     _util.none_to_string(_criteria[j][3]),
+                     _util.none_to_string(_status[j][2]),
+                     _util.ordinal_to_date(_status[j][3]),
+                     _status[j][4]]
             _model.append(_parent, _data)
 
             # Add the RTK program database concern ID to the list.
@@ -354,25 +379,32 @@ class DesignReview(gtk.Window):
 
             _concern_id = model.get_value(row, 0)
             _satisfied = model.get_value(row, 3)
+            _action = model.get_value(row, 5)
+            _due_date = _util.date_to_ordinal(model.get_value(row, 6))
+            _owner = model.get_value(row, 7)
 
             # Update the review criteria in the open RTK Program database if
             # the criteria already exists.  Otherwise add the new criteria to
             # the open RTK Program database.
             if _concern_id in self._lst_concern_id:
                 _query = "UPDATE tbl_reviews \
-                          SET fld_satisfied=%d \
+                          SET fld_satisfied=%d, fld_action='%s', \
+                              fld_due_date='%s', fld_owner='%s' \
                           WHERE fld_revision_id=%d \
                           AND fld_gateway_id=%d \
                           AND fld_concern_id=%d" % \
-                         (_satisfied, self._app.REVISION.revision_id,
-                          self.gateway_id, _concern_id)
+                         (_satisfied, _action, _due_date, _owner,
+                          self._app.REVISION.revision_id, self.gateway_id,
+                          _concern_id)
             else:
                 _query = "INSERT INTO tbl_reviews \
                           (fld_revision_id, fld_gateway_id, \
-                           fld_concern_id, fld_satisfied) \
-                          VALUES (%d, %d, %d, %d)" % \
+                           fld_concern_id, fld_satisfied, fld_action, \
+                           fld_due_date, fld_owner) \
+                          VALUES (%d, %d, %d, %d, '%s', '%s', '%s')" % \
                          (self._app.REVISION.revision_id,
-                          self.gateway_id, _concern_id, _satisfied)
+                          self.gateway_id, _concern_id, _satisfied, _action,
+                          _due_date, _owner)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
                 _util.rtk_error(_(u"Error saving review criteria %d for "

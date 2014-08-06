@@ -53,27 +53,30 @@ CREATE TABLE "tbl_reviews" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision design review is associated with.
     "fld_gateway_id" INTEGER NOT NULL DEFAULT(1),                   -- Design revew gateway.
     "fld_concern_id" INTEGER NOT NULL,                              -- Criteria ID.
-    "fld_satisfied" INTEGER NOT NULL DEFAULT(0)                     -- Whether criteria is satisfied or not.
+    "fld_satisfied" INTEGER NOT NULL DEFAULT(0),                    -- Whether criteria is satisfied or not.
+    "fld_action" BLOB DEFAULT(''),                                  -- Any action(s) needing to be taken.
+    "fld_due_date" INTEGER NOT NULL DEFAULT(719163),                -- The due date of any action(s).
+    "fld_owner" VARCHAR(128) DEFAULT('')                            -- The responsible group or individual for the action(s).
 );
 
 DROP TABLE IF EXISTS "tbl_missions";
 CREATE TABLE "tbl_missions" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- Identifier for the revision.
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Identifier for the revision.
     "fld_mission_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Identifier for the mission.
-    "fld_mission_time" REAL DEFAULT(0),                 -- Total length of the mission.
-    "fld_mission_units" INTEGER DEFAULT(0),             -- Unit of time measure for the mission.
-    "fld_mission_description" BLOB                      -- Description of the mission.
+    "fld_mission_time" REAL DEFAULT(0),                             -- Total length of the mission.
+    "fld_mission_units" INTEGER DEFAULT(0),                         -- Unit of time measure for the mission.
+    "fld_mission_description" BLOB                                  -- Description of the mission.
 );
 INSERT INTO "tbl_missions" VALUES(0, 0, 100.0, 0, "Default mission");
 
 DROP TABLE IF EXISTS "tbl_mission_phase";
 CREATE TABLE "tbl_mission_phase" (
-    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),       -- Identifier for the mission.
-    "fld_phase_id" INTEGER NOT NULL,                    -- Identifier for the mission phase.
-    "fld_phase_start" REAL,                             -- Start time of mission phase.
-    "fld_phase_end" REAL,                               -- End time of mission phase.
-    "fld_phase_name" VARCHAR(64),                       -- Noun name of the mission phase.
-    "fld_phase_description" BLOB,                       -- Description of the mission phase.
+    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),                   -- Identifier for the mission.
+    "fld_phase_id" INTEGER NOT NULL,                                -- Identifier for the mission phase.
+    "fld_phase_start" REAL,                                         -- Start time of mission phase.
+    "fld_phase_end" REAL,                                           -- End time of mission phase.
+    "fld_phase_name" VARCHAR(64),                                   -- Noun name of the mission phase.
+    "fld_phase_description" BLOB,                                   -- Description of the mission phase.
     FOREIGN KEY("fld_mission_id") REFERENCES "tbl_missions"("fld_mission_id") ON DELETE CASCADE
     PRIMARY KEY("fld_mission_id", "fld_phase_id")
 );
@@ -83,15 +86,15 @@ INSERT INTO "tbl_mission_phase" VALUES(0, 3, 90.5, 100.0, 'Phase III', 'This is 
 
 DROP TABLE IF EXISTS "tbl_environmental_profile";
 CREATE TABLE "tbl_environmental_profile" (
-    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),       -- Identifier for the mission.
-    "fld_phase" VARCHAR(128) NOT NULL DEFAULT('All'),   -- Name of the mission phase.
-    "fld_condition_id" INTEGER,                         -- Identifier for the environmental condition.
-    "fld_condition_name" VARCHAR(128),                  -- Noun name of the environmental condition.
-    "fld_units" VARCHAR(64),                            -- Units of measure for the environmental condition.
-    "fld_minimum" REAL,                                 -- Minimum value of the environmental condition.
-    "fld_maximum" REAL,                                 -- Maximum value of the environmental condition.
-    "fld_mean" REAL,                                    -- Mean value of the environmental condition.
-    "fld_variance" REAL,                                -- Variance of the environmental condition.
+    "fld_mission_id" INTEGER NOT NULL DEFAULT(0),                   -- Identifier for the mission.
+    "fld_phase" VARCHAR(128) NOT NULL DEFAULT('All'),               -- Name of the mission phase.
+    "fld_condition_id" INTEGER,                                     -- Identifier for the environmental condition.
+    "fld_condition_name" VARCHAR(128),                              -- Noun name of the environmental condition.
+    "fld_units" VARCHAR(64),                                        -- Units of measure for the environmental condition.
+    "fld_minimum" REAL,                                             -- Minimum value of the environmental condition.
+    "fld_maximum" REAL,                                             -- Maximum value of the environmental condition.
+    "fld_mean" REAL,                                                -- Mean value of the environmental condition.
+    "fld_variance" REAL,                                            -- Variance of the environmental condition.
     FOREIGN KEY("fld_mission_id") REFERENCES "tbl_missions"("fld_mission_id") ON DELETE CASCADE
     PRIMARY KEY("fld_mission_id", "fld_condition_id")
 );
@@ -154,11 +157,11 @@ DROP TABLE IF EXISTS "tbl_functions";
 CREATE TABLE "tbl_functions" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_function_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_availability" FLOAT NOT NULL DEFAULT(1),           -- Assessed availability of the function.
-    "fld_availability_mission" FLOAT NOT NULL DEFAULT(1),   -- Assessed mission availability of the function.
-    "fld_code" VARCHAR(16) NOT NULL DEFAULT('Function Code'),   -- Tracking code for the function.
-    "fld_cost" FLOAT NOT NULL DEFAULT(0),                   -- Assessed cost of the function.
-    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),   -- Assessed mission failure intensity of the function.
+    "fld_availability" FLOAT NOT NULL DEFAULT(1),                   -- Assessed availability of the function.
+    "fld_availability_mission" FLOAT NOT NULL DEFAULT(1),           -- Assessed mission availability of the function.
+    "fld_code" VARCHAR(16) NOT NULL DEFAULT('Function Code'),       -- Tracking code for the function.
+    "fld_cost" FLOAT NOT NULL DEFAULT(0),                           -- Assessed cost of the function.
+    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),           -- Assessed mission failure intensity of the function.
     "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0), -- Assessed limiting failure intensity of the function.
     "fld_mmt" FLOAT NOT NULL DEFAULT(0),                    -- Assessed mean maintenance time of the function.
     "fld_mcmt" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mean corrective maintenance time of the function.

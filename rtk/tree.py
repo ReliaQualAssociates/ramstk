@@ -452,7 +452,7 @@ class TreeWindow(gtk.Window):
         menu_item.connect('activate', DesignReview, self._app)
         menu.append(menu_item)
 
-        mnuView = gtk.MenuItem(label=_(u"_View"), use_underline=True)
+        mnuView = gtk.MenuItem(label=_(u"_Process"), use_underline=True)
         mnuView.show()
         mnuView.set_submenu(menu)
 
