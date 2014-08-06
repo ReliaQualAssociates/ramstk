@@ -782,11 +782,10 @@ class Function(object):
 
         import pango
 
-        _query_ = "SELECT fld_function_id, fld_code, fld_name \
-                   FROM tbl_functions \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _functions_ = self._app.DB.execute_query(_query_,
-                                                 None,
+        _query = "SELECT fld_function_id, fld_code, fld_name \
+                  FROM tbl_functions \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        _functions_ = self._app.DB.execute_query(_query, None,
                                                  self._app.ProgCnx,
                                                  commit=False)
         try:
@@ -795,14 +794,14 @@ class Function(object):
             _n_functions_ = 0
 
         # Make the treeview to display the functional matrix.
-        _types_ = ['gint']
+        _types = ['gint']
         for i in range(_n_functions_ + 1):
-            _types_.append('gchararray')
-        _types_ = [gobject.type_from_name(_types_[i])
-                   for i in range(len(_types_))]
-        _model_ = gtk.TreeStore(*_types_)
+            _types.append('gchararray')
+        _types = [gobject.type_from_name(_types[i])
+                   for i in range(len(_types))]
+        _model = gtk.TreeStore(*_types)
 
-        self.tvwFunctionMatrix.set_model(_model_)
+        self.tvwFunctionMatrix.set_model(_model)
 
         # Add the column to display the assembly/component name.
         _column_ = self.tvwFunctionMatrix.get_column(0)
@@ -903,58 +902,57 @@ class Function(object):
         else:
             _query = ""
 
-        _assemblies_ = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=False)
+        _assemblies = self._app.DB.execute_query(_query, None,
+                                                 self._app.ProgCnx,
+                                                 commit=False)
 
         try:
-            _n_items_ = len(_assemblies_)
+            _n_items = len(_assemblies)
         except TypeError:
-            _n_items_ = 0
+            _n_items = 0
 
         # Select the assembly id, function id, and the relationship between the
         # two for the selected revision.
-        _query_ = "SELECT fld_assembly_id, fld_function_id, fld_relationship \
-                   FROM tbl_functional_matrix \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=False)
+        _query = "SELECT fld_assembly_id, fld_function_id, fld_relationship \
+                  FROM tbl_functional_matrix \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=False)
         try:
-            _n_functions = len(_results_)
+            _n_functions = len(_results)
         except TypeError:
             _n_functions = 0
 
         # Add a line to the functional matrix for every assembly ID.  Set the
         # cell under each function column to the appropriate relationship
         # value for each assembly.
-        for i in range(_n_items_):          # Loop through all the hardware.
-            if _assemblies_[i][2] == '-':     # Its the top level element.
+        for i in range(_n_items):           # Loop through all the hardware.
+            if _assemblies[i][2] == '-':    # Its the top level element.
                 _piter = None
-            elif _assemblies_[i][2] != '-':   # Its a child element.
-                _piter = _model_.get_iter_from_string(_assemblies_[i][2])
+            elif _assemblies[i][2] != '-':  # Its a child element.
+                _piter = _model.get_iter_from_string(_assemblies[i][2])
 
             _data = []
-            _data.append(_assemblies_[i][0])
-            _data.append(_assemblies_[i][1])
+            _data.append(_assemblies[i][0])
+            _data.append(_assemblies[i][1])
 
             if _n_functions > 0:
                 # Loop through all the hardware/function relationships.
                 for j in range(_n_functions):
-                    if _results_[j][2] == 'X':
-                        _color = 'black'
+                    if _results[j][2] == '':
+                        _color = '#E5E5E5'
                     else:
-                        _color = 'white'
+                        _color = 'black'
 
-                    if _results_[j][0] == _assemblies_[i][0]:
-                        _data.append("<span foreground='black' background='%s'> "
-                                     "%s </span>" % (_color, _results_[j][2]))
+                    if _results[j][0] == _assemblies[i][0]:
+                        _data.append("<span foreground='%s' background='%s'> "
+                                     "%s </span>" %
+                                     (_color, _color, _results[j][2]))
 
-            _model_.append(_piter, _data)
+            _model.append(_piter, _data)
 
-        if _model_.get_iter_root() is not None:
-            _path = _model_.get_path(_model_.get_iter_root())
+        if _model.get_iter_root() is not None:
+            _path = _model.get_path(_model.get_iter_root())
             self.tvwFunctionMatrix.set_cursor(_path, None, False)
             self.tvwFunctionMatrix.row_activated(_path,
                                                  self.treeview.get_column(0))
