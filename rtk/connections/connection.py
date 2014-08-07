@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 """ This is the electrical connection meta-class. """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -10,27 +12,27 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import locale
+import gettext
 import pango
 
 try:
-    import relkit.configuration as _conf
-    import relkit.widgets as _widg
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 except ImportError:
     import configuration as _conf
     import widgets as _widg
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except ImportError:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 
-class Connection:
+class Connection(object):
     """
     Connections meta class.
 
@@ -39,23 +41,20 @@ class Connection:
     """
 
     def __init__(self):
-        """ Initializes the Connections Component Class. """
+        """
+        Initializes the Connection Class.
+        """
 
         self._ready = False
 
-        self._in_labels = []
-        self._out_labels = []
-
-        self.category = 8                   # Category in relkitcom database.
+        self.category = 8                   # Category in the rtkcom database.
 
         # Label text for input data.
-        self._in_labels.append(_("Quality:"))
-        self._in_labels.append(u"\u03C0<sub>Q</sub> Override:")
+        self._in_labels = [_("Quality:"), (u"\u03C0<sub>Q</sub> Override:")]
 
         # Label text for output data.
-        self._out_labels.append("")
-        self._out_labels.append(u"\u03BB<sub>b</sub>:")
-        self._out_labels.append(u"\u03C0<sub>E</sub>:")
+        self._out_labels = [(""), (u"\u03BB<sub>b</sub>:"),
+                            (u"\u03C0<sub>E</sub>:")]
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
@@ -63,34 +62,33 @@ class Connection:
         widgets needed to select inputs for Connections Component Class
         prediction calculations.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the Component class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
         # Create and place all the labels for the inputs.
-        numlabels = len(self._in_labels)
-        for i in range(numlabels):
-            label = _widg.make_label(self._in_labels[i], 200, 25)
-            layout.put(label, 5, (i * 30 + y_pos))
+        (_x_pos, _y_pos) = _widg.make_labels(self._in_labels, layout,
+                                             x_pos, y_pos)
 
         part.cmbQuality = _widg.make_combo(simple=True)
         for i in range(len(self._quality)):
             part.cmbQuality.insert_text(i, self._quality[i])
-        part.cmbQuality.connect('changed',
-                                self._callback_combo,
-                                part, 85)
-        layout.put(part.cmbQuality, x_pos, y_pos)
-        y_pos += 30
-
         part.txtCommercialPiQ = _widg.make_entry()
+
+        layout.put(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.put(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+
         part.txtCommercialPiQ.connect('focus-out-event',
                                       self._callback_entry,
                                       part, 'float', 79)
-        layout.put(part.txtCommercialPiQ, x_pos, y_pos)
-        y_pos += 30
+        part.cmbQuality.connect('changed',
+                                self._callback_combo,
+                                part, 85)
 
         layout.show_all()
 
@@ -101,34 +99,48 @@ class Connection:
         Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        quality = part.model.get_value(part.selected_row, 85)
-        part.cmbQuality.set_active(int(quality))
-        if (int(part.model.get_value(part.selected_row, 85)) <= 0):
-            commpiq = part.model.get_value(part.selected_row, 79)
-            part.txtCommercialPiQ.set_text(str(fmt.format(commpiq)))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
+
+        part.cmbQuality.set_active(int(_model.get_value(_row, 85)))
+        if int(_model.get_value(_row, 85)) <= 0:
+            _commercial_piq = _model.get_value(_row, 79)
+            part.txtCommercialPiQ.set_text(str(fmt.format(_commercial_piq)))
         else:
             part.txtCommercialPiQ.set_text("0.0")
 
         return False
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
         Populates the RTK Workbook calculation results tab with the
         widgets to display Connections Component Class calculation results.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
         # Create and place all the labels.
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[1:],
+                                             layout, x_pos, y_pos)
+        _x_pos += x_pos
+        _x_pos -= 30
+
         numlabels = len(self._out_labels)
         for i in range(numlabels):
             if(i == 2):
@@ -140,14 +152,13 @@ class Connection:
                 label = _widg.make_label(self._out_labels[i])
             layout.put(label, 5, (i * 30 + y_pos))
 
-        y_pos += 30
-
         part.txtLambdaB = _widg.make_entry(editable=False, bold=True)
-        layout.put(part.txtLambdaB, x_pos, y_pos)
+        part.txtPiE = _widg.make_entry(editable=False, bold=True)
+
+        layout.put(part.txtLambdaB, x_pos, y_pos[0])
         y_pos += 30
 
-        part.txtPiE = _widg.make_entry(editable=False, bold=True)
-        layout.put(part.txtPiE, x_pos, y_pos)
+        layout.put(part.txtPiE, x_pos, y_pos[1])
         y_pos += 30
 
         layout.show_all()

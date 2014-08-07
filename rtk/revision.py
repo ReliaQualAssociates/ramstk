@@ -1778,7 +1778,7 @@ class Revision(object):
 
         return False
 
-    def delete_revision(self, __menuitem, __event):
+    def delete_revision(self, __menuitem, __event=None):
         """
         Deletes the currently selected Revision from the open RTK Program
         database.
@@ -1792,27 +1792,19 @@ class Revision(object):
         """
 
         # First delete the hardware items associated with the revision.
-        _query_ = "DELETE FROM tbl_system \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
+        _query = "DELETE FROM tbl_system \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("revision.py: Failed to delete revision "
                                       "from tbl_system.")
             return True
 
-        # Then delete the revision iteself.
-        _query_ = "DELETE FROM tbl_revisions \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
-
-        if not _results_:
+        # Then delete the revision itself.
+        _query = "DELETE FROM tbl_revisions \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("revision.py: Failed to delete revision "
                                       "from tbl_revisions.")
             return True
