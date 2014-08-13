@@ -278,7 +278,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                  "rated current.\n"
                 r_index += 1
 
-    elif category == 3:                    # Inductive Device
+    elif category == 3:                     # Inductive Device
         Ths = partmodel.get_value(partrow, 39)
         Ioper = partmodel.get_value(partrow, 62)
         Voper = partmodel.get_value(partrow, 66)
@@ -322,7 +322,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         Irate = partmodel.get_value(partrow, 92)
         Vrate = partmodel.get_value(partrow, 94)
 
-        if subcategory < 3:                # GaAs
+        if subcategory < 3:                 # GaAs
             if harsh:
                 if Tjunc > 135.0:
                     overstress = True
@@ -847,7 +847,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6:         # Naval
+    elif active_env > 3 and active_env < 6: # Naval
         if dormant_env == 1:                # Ground
             e_index = 4
         elif dormant_env == 2:              # Naval

@@ -15,11 +15,12 @@ from math import exp, sqrt
 
 try:
     import rtk.calculations as _calc
+    import rtk.configuration as _conf
     import rtk.widgets as _widg
 except:
     import calculations as _calc
+    import configuration as _conf
     import widgets as _widg
-
 from capacitor import Capacitor
 
 
@@ -51,11 +52,11 @@ class Ceramic(Capacitor):
         self._piE = [1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0,
                      0.4, 20.0, 52.0, 950.0]
         self._piQ = [4.0, 20.0]
-        self._lambdab_count =[0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2, 12.0,
-                              4.1, 0.032, 1.9, 5.9, 85.0]
+        self._lambdab_count = [0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2,
+                               12.0, 4.1, 0.032, 1.9, 5.9, 85.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels[3] = u"Temperature Rating:"
+        self._in_labels[3] = _(u"Temperature Rating:")
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
         self._out_labels.remove(u"\u03C0<sub>CV</sub>:")
@@ -73,9 +74,12 @@ class Ceramic(Capacitor):
         :param int y_pos: the y position of the first display widget.
         """
 
-        y_pos = Capacitor.assessment_results_create(self, part, layout,
-                                                    x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.reliability_results_create(self, part, layout,
+                                                        x_pos, y_pos)
 
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
         # Remove the capacitance correction factor entry.  It is not
         # needed for this type of capacitor.
         layout.remove(part.txtPiCV)
@@ -100,7 +104,7 @@ class Ceramic(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Variable Ceramic Capacitor Component Class.
@@ -141,7 +145,7 @@ class Ceramic(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Variable Ceramic Capacitor Component Class.
@@ -279,8 +283,8 @@ class Piston(Capacitor):
         self._piE = [1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0, 20.0, 30.0, 32.0,
                      0.5, 18.0, 46.0, 830.0]
         self._piQ = [3.0, 10.0]
-        self._lambdab_count =[0.033, 0.13, 0.62, 0.31, 0.93, 0.21, 0.28, 2.2,
-                              3.3, 2.2, 0.16, 0.93, 3.2, 37.0]
+        self._lambdab_count = [0.033, 0.13, 0.62, 0.31, 0.93, 0.21, 0.28, 2.2,
+                               3.3, 2.2, 0.16, 0.93, 3.2, 37.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         self._in_labels[3] = u"Temperature Rating:"
@@ -302,9 +306,12 @@ class Piston(Capacitor):
         :param int y_pos: the y position of the first display widget.
         """
 
-        y_pos = Capacitor.assessment_results_create(self, part, layout,
-                                                    x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.reliability_results_create(self, part, layout,
+                                                        x_pos, y_pos)
 
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
         # Remove the capacitance correction factor entry.  It is not
         # needed for this type of capacitor.
         layout.remove(part.txtPiCV)
@@ -329,7 +336,7 @@ class Piston(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Variable Piston Type Capacitor Component Class.
@@ -370,7 +377,7 @@ class Piston(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for the
             Variable Piston Type Capacitor Component Class.
@@ -512,7 +519,7 @@ class AirTrimmer(Capacitor):
                                8.1, 0.032, 2.5, 8.9, 100.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels[3] = u"Temperature Rating:"
+        self._in_labels[3] = _(u"Temperature Rating:")
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
         self._out_labels.remove(u"\u03C0<sub>CV</sub>:")
@@ -520,7 +527,8 @@ class AirTrimmer(Capacitor):
     def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
         Populates the RTK Workbook calculation results tab with the widgets to
-        display Variable Air Trimmer Capacitor Component Class calculation results.
+        display Variable Air Trimmer Capacitor Component Class calculation
+        results.
 
         :param rtk.Component part: the current instance of the rtk.Component()
                                    class.
@@ -530,9 +538,12 @@ class AirTrimmer(Capacitor):
         :param int y_pos: the y position of the first display widget.
         """
 
-        y_pos = Capacitor.assessment_results_create(self, part, layout,
-                                                    x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.reliability_results_create(self, part, layout,
+                                                        x_pos, y_pos)
 
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
         # Remove the capacitance correction factor entry.  It is not
         # needed for this type of capacitor.
         layout.remove(part.txtPiCV)
@@ -557,7 +568,7 @@ class AirTrimmer(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Variable Air Trimmer Capacitor Component Class.
@@ -598,7 +609,7 @@ class AirTrimmer(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for the
             Variable Air Trimmer Capacitor Component Class.
@@ -761,16 +772,26 @@ class Gas(Capacitor):
         :param int y_pos: the y position of the first display widget.
         """
 
-        _y_pos = Capacitor.assessment_inputs_create(self, part, layout,
-                                                   x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.assessment_inputs_create(self, part, layout,
+                                                      x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
+        # Create the component specific display widgets.
         part.cmbConstruction = rtk.widgets.make_combo(simple=True)
+
+        # Load all the gtk.ComboBox().
         for i in range(len(self._construction)):
             part.cmbConstruction.insert_text(i, self._construction[i])
-        layout.put(part.cmbConstruction, x_pos, _y_pos)
-        part.cmbConstruction.connect("changed",
-                                     self.combo_callback,
-                                     part, 16)
+
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.move(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.cmbConstruction, _x_pos, _y_pos[2])
+
+        # Connect to callback methods.
+        part.cmbConstruction.connect("changed", self.combo_callback, part, 16)
 
         layout.show_all()
 
@@ -785,11 +806,7 @@ class Gas(Capacitor):
                                    class.
         """
 
-        Capacitor.assessment_inputs_load(self, part)
-
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
+        (_model, _row) = Capacitor.assessment_inputs_load(self, part)
 
         part.cmbConstruction.set_active(int(_model.get_value(_row, 16)))
 
@@ -813,7 +830,7 @@ class Gas(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Variable and Fixed Gas or Vacuum Capacitor Component Class.
@@ -854,7 +871,7 @@ class Gas(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for the
             Variable and Fixed Gas or Vacuum Capacitor Component Class.
@@ -909,7 +926,7 @@ class Gas(Capacitor):
             elif idx == 2:                  # 100C
                 Tref = 373.0
             elif idx == 3:                  # 125C
-                Tref =398.0
+                Tref = 398.0
             else:                           # Default
                 Tref = 358.0
 

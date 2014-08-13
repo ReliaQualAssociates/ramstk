@@ -11,15 +11,27 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import pango
 
 from math import exp, sqrt
 
 try:
+    import rtk.configuration as _conf
     import rtk.calculations as _calc
 except ImportError:
+    import configuration as _conf
     import calculations as _calc
 from capacitor import Capacitor
+
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except ImportError:
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 class PaperBypass(Capacitor):
@@ -32,10 +44,10 @@ class PaperBypass(Capacitor):
         # MIL-HDBK-217F, section 10.1
     """
 
-    _quality = ["", "MIL-SPEC", "Lower"]
+    _quality = ["", "MIL-SPEC", _(u"Lower")]
     _specification = ["", "MIL-C-25 (CP)", "MIL-C-12889 (CA)"]
-    _specsheet = [["", u"85\u00B0C", u"125\u00B0C"],
-                  ["", u"85\u00B0C"]]
+    _specsheet = [["", "85\u00B0C", "125\u00B0C"],
+                  ["", "85\u00B0C"]]
 
     def __init__(self):
         """
@@ -59,7 +71,7 @@ class PaperBypass(Capacitor):
                                 2.5]]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels[3] = u"Temperature Rating:"
+        self._in_labels[3] = _(u"Temperature Rating:")
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
@@ -278,7 +290,7 @@ class PaperFeedthrough(Capacitor):
                                2.7]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels[3] = u"Temperature Rating:"
+        self._in_labels[3] = _(u"Temperature Rating:")
 
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
@@ -514,7 +526,7 @@ class PlasticFilm(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Paper and Plastic Film Capacitor Component Class.
@@ -555,7 +567,7 @@ class PlasticFilm(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Paper and Plastic Film Capacitor Component Class.
@@ -703,7 +715,7 @@ class MetallizedPaper(Capacitor):
                 "MIL-C-18312, Non-Est. Rel.", "Lower"]
     _specification = ["", "MIL-C-18312 (CH)", "MIL-C-39022 (CHR)"]
     _specsheet = [["", u"85\u00B0C", u"125\u00B0C"],
-                  ["", u"85\u00B0C", u"125\u00B0C",]]
+                  ["", u"85\u00B0C", u"125\u00B0C"]]
 
     def __init__(self):
         """
@@ -747,7 +759,7 @@ class MetallizedPaper(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Metallized Paper, Paper-Plastic, and Plastic Capacitor
@@ -970,7 +982,7 @@ class Plastic(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Plastic and Metallized Plastic Capacitor Component Class.
@@ -1011,7 +1023,7 @@ class Plastic(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Plastic and Metallized Plastic Capacitor Component Class.
@@ -1180,7 +1192,7 @@ class SuperMetallizedPlastic(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Super-Metallized Plastic Capacitor Component Class.
@@ -1221,7 +1233,7 @@ class SuperMetallizedPlastic(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Super-Metallized Plastic Capacitor Component Class.
@@ -1386,7 +1398,7 @@ class Mica(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Mica Capacitor Component Class.
@@ -1427,7 +1439,7 @@ class Mica(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Mica Capacitor Component Class.
@@ -1609,7 +1621,7 @@ class MicaButton(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Mica Button Capacitor Component Class.
@@ -1650,7 +1662,7 @@ class MicaButton(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Mica Button Capacitor Component Class.
@@ -1823,7 +1835,7 @@ class Glass(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Glass Capacitor Component Class.
@@ -1864,7 +1876,7 @@ class Glass(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Glass Capacitor Component Class.

@@ -11,16 +11,29 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
+import pango
+
 from math import exp, sqrt
 
 try:
     import rtk.calculations as _calc
+    import rtk.configuration as _conf
     import rtk.widgets as _widg
 except:
     import calculations as _calc
+    import configuration as _conf
     import widgets as _widg
-
 from capacitor import Capacitor
+
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except ImportError:
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 class TantalumSolid(Capacitor):
@@ -33,9 +46,9 @@ class TantalumSolid(Capacitor):
         # MIL-HDBK-217F, section 10.12
     """
 
-    _quality = ["", "D", "C", "S", "B", "R", "P", "M", "L", "Lower"]
+    _quality = ["", "D", "C", "S", "B", "R", "P", "M", "L", _(u"Lower")]
     _specification = ["", "MIL-C-39003 (CSR)"]
-    _specsheet = [["", "All"]]
+    _specsheet = [["", _(u"All")]]
 
     def __init__(self):
         """
@@ -45,7 +58,7 @@ class TantalumSolid(Capacitor):
 
         Capacitor.__init__(self)
 
-        self.subcategory = 51                   # Subcategory ID in rtkcom DB.
+        self.subcategory = 51               # Subcategory ID in the rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -75,36 +88,25 @@ class TantalumSolid(Capacitor):
         :param int y_pos: the y position of the first display widget.
         """
 
-        y_pos = Capacitor.assessment_inputs_create(self, part, layout,
-                                                   x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.assessment_inputs_create(self, part, layout,
+                                                      x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
-        part.txtEffResistance = _widg.make_entry()
-        part.txtEffResistance.connect("focus-out-event",
-                                      self._callback_entry,
+        # Create input display widgets specific to this class.
+        part.txtEffResistance = _widg.make_entry(width=100)
+
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.move(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.txtEffResistance, _x_pos, _y_pos[2])
+
+        # Connect to callback methods.
+        part.txtEffResistance.connect("focus-out-event", self._callback_entry,
                                       part, "float", 95)
-        layout.put(part.txtEffResistance, x_pos, y_pos)
 
         layout.show_all()
-
-        return False
-
-    def assessment_inputs_load(self, part):
-        """
-        Loads the RTK Workbook calculation input widgets with calculation input
-        information.
-
-        :param rtk.Component part: the current instance of the rtk.Component().
-        """
-
-        fmt = "{0:0." + str(part.fmt) + "g}"
-
-        Capacitor.assessment_inputs_load(self, part)
-
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
-        part.txtEffResistance.set_text(str(fmt.format(_model.get_value(_row, 95))))
 
         return False
 
@@ -119,15 +121,36 @@ class TantalumSolid(Capacitor):
                                  widgets.
         :param int x_pos: the x position of the display widgets.
         :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _y_pos = Capacitor.assessment_results_create(self, part, layout,
-                                                    x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.assessment_results_create(self, part, layout,
+                                                       x_pos, y_pos)
 
         part.txtPiSR = _widg.make_entry(editable=False, bold=True)
-        layout.put(part.txtPiSR, x_pos, _y_pos)
+
+        layout.put(part.txtPiSR, _x_pos, _y_pos[3])
 
         layout.show_all()
+
+        return False
+
+    def assessment_inputs_load(self, part):
+        """
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
+
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_model, _row) = Capacitor.assessment_inputs_load(self, part)
+
+        part.txtEffResistance.set_text(str(fmt.format(
+            _model.get_value(_row, 95))))
 
         return False
 
@@ -137,15 +160,14 @@ class TantalumSolid(Capacitor):
         results.
 
         :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        Capacitor.assessment_results_load(self, part)
+        (_model, _row) = Capacitor.assessment_results_load(self, part)
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
-        part.txtPiSR.set_text(str("{0:0.2g}".format(_model.get_value(_row, 81))))
+        part.txtPiSR.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 81))))
 
         return False
 
@@ -167,7 +189,7 @@ class TantalumSolid(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Solid Tantalum Electrolytic Capacitor Component Class.
@@ -210,7 +232,7 @@ class TantalumSolid(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Solid Tantalum Electrolytic Capacitor Component Class.
@@ -226,8 +248,6 @@ class TantalumSolid(Capacitor):
             :return: False if succussful or True if an error is encountered.
             :rtype: boolean
             """
-
-            from math import exp, sqrt
 
             _hrmodel = {}
             _hrmodel['equation'] = "lambdab * piCV * piSR * piQ * piE"
@@ -313,8 +333,8 @@ class TantalumSolid(Capacitor):
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
             partmodel.set_value(partrow, 70, _hrmodel['piCV'])
             partmodel.set_value(partrow, 72, _hrmodel['piE'])
-            partmodel.set_value(partrow, 111, _v_ratio)
             partmodel.set_value(partrow, 81, _hrmodel['piSR'])
+            partmodel.set_value(partrow, 111, _v_ratio)
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
@@ -371,8 +391,8 @@ class TantalumNonSolid(Capacitor):
         self._piE = [1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0,
                      23.0, 0.5, 13.0, 34.0, 610.0]
         self._piQ = [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0]
-        self._lambdab_count =[0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061,
-                              0.13, 0.29, 0.18, 0.0030, 0.069, 0.26, 4.0]
+        self._lambdab_count = [0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061,
+                               0.13, 0.29, 0.18, 0.0030, 0.069, 0.26, 4.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         self._in_labels[3] = u"Temperature Rating:"
@@ -392,18 +412,30 @@ class TantalumNonSolid(Capacitor):
                                  widgets.
         :param int x_pos: the x position of the display widgets.
         :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        y_pos = Capacitor.assessment_inputs_create(self, part, layout,
-                                                   x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.assessment_inputs_create(self, part, layout,
+                                                      x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
+        # Create the input widgets specific to the tantalum nonsolid capacitor.
         part.cmbConstruction = _widg.make_combo(simple=True)
+
+        # Load the gtk.Combobox().
         for i in range(len(self._construction)):
             part.cmbConstruction.insert_text(i, self._construction[i])
-        part.cmbConstruction.connect("changed",
-                                     self._callback_combo,
-                                     part, 16)
-        layout.put(part.cmbConstruction, x_pos, y_pos)
+
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.move(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.cmbConstruction, _x_pos, _y_pos[2])
+
+        # Connect to callback methods.
+        part.cmbConstruction.connect("changed", self._callback_combo, part, 16)
 
         layout.show_all()
 
@@ -415,13 +447,13 @@ class TantalumNonSolid(Capacitor):
         information.
 
         :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        Capacitor.assessment_inputs_load(self, part)
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
+        (_model, _row) = Capacitor.assessment_inputs_load(self, part)
 
         part.cmbConstruction.set_active(int(_model.get_value(_row, 16)))
 
@@ -438,13 +470,17 @@ class TantalumNonSolid(Capacitor):
                                  widgets.
         :param int x_pos: the x position of the display widgets.
         :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _y_pos = Capacitor.reliability_results_create(self, part, layout,
-                                                      x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Capacitor.reliability_results_create(self, part, layout,
+                                                        x_pos, y_pos)
 
         part.txtPiC = _widg.make_entry(editable=False, bold=True)
-        layout.put(part.txtPiC, x_pos, _y_pos)
+
+        layout.put(part.txtPiC, _x_pos, _y_pos[3])
 
         layout.show_all()
 
@@ -456,15 +492,14 @@ class TantalumNonSolid(Capacitor):
         results.
 
         :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        Capacitor.assessment_results_load(self, part)
+        (_model, _row) = Capacitor.assessment_results_load(self, part)
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
-        part.txtPiC.set_text(str("{0:0.2g}".format(_model.get_value(_row, 69))))
+        part.txtPiC.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 69))))
 
         return False
 
@@ -486,7 +521,7 @@ class TantalumNonSolid(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Non-Solid Tantalum Electrolytic Capacitor Component Class.
@@ -529,7 +564,7 @@ class TantalumNonSolid(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Non-Solid Tantalum Electrolytic Capacitor Component
@@ -681,8 +716,8 @@ class Aluminum(Capacitor):
         self._piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0,
                      27.0, 0.5, 14.0, 38.0, 690.0]
         self._piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
-        self._lambdab_count =[0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55,
-                              2.1, 2.6, 1.2, .012, 0.49, 1.7, 21.0]
+        self._lambdab_count = [0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55,
+                               2.1, 2.6, 1.2, .012, 0.49, 1.7, 21.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         self._in_labels[3] = u"Temperature Rating:"
@@ -707,7 +742,7 @@ class Aluminum(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Wet Aluminum Electrolytic Capacitor Component Class.
@@ -748,7 +783,7 @@ class Aluminum(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Wet Aluminum Electrolytic Capacitor Component Class.
@@ -894,8 +929,8 @@ class AluminumDry(Capacitor):
         self._piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0,
                      27.0, 0.5, 14.0, 38.0, 690.0]
         self._piQ = [3.0, 10.0]
-        self._lambdab_count =[0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3,
-                              5.4, 2.0, 0.015, 0.68, 2.8, 28.0]
+        self._lambdab_count = [0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3,
+                               5.4, 2.0, 0.015, 0.68, 2.8, 28.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         self._in_labels[3] = u"Temperature Rating:"
@@ -920,7 +955,7 @@ class AluminumDry(Capacitor):
         """
 
         def _calculate_mil_217_count(partmodel, partrow,
-                                    systemmodel, systemrow):
+                                     systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part count hazard rate calculations for the
             Fixed Dry Aluminum Electrolytic Capacitor Component Class.
@@ -961,7 +996,7 @@ class AluminumDry(Capacitor):
             return False
 
         def _calculate_mil_217_stress(partmodel, partrow,
-                                     systemmodel, systemrow):
+                                      systemmodel, systemrow):
             """
             Performs MIL-HDBK-217F part stress hazard rate calculations for
             the Fixed Dry Aluminum Electrolytic Capacitor Component Class.

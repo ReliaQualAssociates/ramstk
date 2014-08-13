@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-""" These are the memory integrated circuit classes. """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -10,14 +11,29 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
-try:
-    import relkit.calculations as _calc
-    import relkit.widgets as _widg
-except ImportError:
-    import calculations as _calc
-    import widgets as _widg
+import gettext
+import locale
+import pango
 
+from math import exp, sqrt
+
+try:
+    import rtk.calculations as _calc
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
+except:
+    import calculations as _calc
+    import configuration as _conf
+    import widgets as _widg
 from ic import IntegratedCircuit
+
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except ImportError:
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 class MemoryDRAM(IntegratedCircuit):
@@ -25,16 +41,17 @@ class MemoryDRAM(IntegratedCircuit):
     DRAM memory class.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 5.2
+        # MIL-HDBK-217F, section 5.2
     """
 
     def __init__(self):
-        """ Initializes the Memory, DRAM Integrated Circuit Component Class.
+        """
+        Initializes the Memory, DRAM Integrated Circuit Component Class.
         """
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 7                    # Subcategory ID in relkitcom database.
+        self.subcategory = 7                # Subcategory ID in the rtkcom DB.
 
         self._B = [16384, 65536, 262144, 1024000]
 
@@ -43,13 +60,22 @@ class MemoryDRAM(IntegratedCircuit):
         self._C1 = [[0.0, 0.0, 0.0, 0.0],
                     [0.0013, 0.0025, 0.005, 0.01]]
 
-        self._lambdab_count = [[0.0040, 0.014, 0.027, 0.027, 0.040, 0.029, 0.035, 0.040, 0.059, 0.055, 0.0040, 0.034, 0.080, 1.4],
-                               [0.0055, 0.019, 0.039, 0.034, 0.051, 0.039, 0.047, 0.056, 0.079, 0.070, 0.0055, 0.043, 0.100, 1.7],
-                               [0.0074, 0.023, 0.043, 0.040, 0.060, 0.049, 0.058, 0.076, 0.100, 0.084, 0.0074, 0.051, 0.120, 1.9],
-                               [0.0110, 0.032, 0.057, 0.053, 0.077, 0.070, 0.080, 0.120, 0.150, 0.110, 0.0110, 0.067, 0.150, 2.3]]
+        self._lambdab_count = [[0.0040, 0.014, 0.027, 0.027, 0.040, 0.029,
+                                0.035, 0.040, 0.059, 0.055, 0.0040, 0.034,
+                                0.080, 1.4],
+                               [0.0055, 0.019, 0.039, 0.034, 0.051, 0.039,
+                                0.047, 0.056, 0.079, 0.070, 0.0055, 0.043,
+                                0.100, 1.7],
+                               [0.0074, 0.023, 0.043, 0.040, 0.060, 0.049,
+                                0.058, 0.076, 0.100, 0.084, 0.0074, 0.051,
+                                0.120, 1.9],
+                               [0.0110, 0.032, 0.057, 0.053, 0.077, 0.070,
+                                0.080, 0.120, 0.150, 0.110, 0.0110, 0.067,
+                                0.150, 2.3]]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels[2] = "# of Bits:"
+        self._in_labels[2] = _(u"# of Bits:")
+
         self._out_labels[2] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = (C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>"
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
@@ -58,40 +84,39 @@ class MemoryDRAM(IntegratedCircuit):
         widgets needed to select inputs for Memory, DRAM Integrated
         Circuit prediction calculations.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
+        :param int x_pos: the x position of the input widgets.
+        :param int y_pos: the y position of the first input widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        y_pos = IntegratedCircuit.assessment_inputs_create(self, part, layout,
-                                                           x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = IntegratedCircuit.assessment_inputs_create(self, part,
+                                                              layout,
+                                                              x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
-        # Load the number of elements combo.
+        # Update the number of elements gtk.ComboBox().
         part.cmbElements.append_text("")
         part.cmbElements.append_text("Up to 16K")
         part.cmbElements.append_text("16K to 64K")
         part.cmbElements.append_text("64K to 256K")
         part.cmbElements.append_text("256K to 1M")
 
-        return False
+        # Place the input widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.move(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.move(part.cmbTechnology, _x_pos, _y_pos[2])
+        layout.move(part.cmbElements, _x_pos, _y_pos[3])
+        layout.move(part.cmbPackage, _x_pos, _y_pos[4])
+        layout.move(part.txtNumPins, _x_pos, _y_pos[5])
+        layout.move(part.txtYears, _x_pos, _y_pos[6])
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
-        """
-        Populates the RTK Workbook calculation results tab with the
-        widgets to display Memory, DRAM Integrated Circuit calculation
-        results.
-
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
-        """
-
-        y_pos = IntegratedCircuit.assessment_results_create(self, part, layout,
-                                                            x_pos, y_pos)
+        layout.show_all()
 
         return False
 
@@ -100,13 +125,14 @@ class MemoryDRAM(IntegratedCircuit):
         Loads the RTK Workbook calculation input widgets with
         calculation input information.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        IntegratedCircuit.assessment_inputs_load(self, part)
+        (_model, _row) = IntegratedCircuit.assessment_inputs_load(self, part)
 
-        part.cmbElements.set_active(int(part.model.get_value(part.selected_row, 24)))
+        part.cmbElements.set_active(int(_model.get_value(_row, 24)))
 
         return False
 

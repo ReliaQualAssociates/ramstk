@@ -7555,13 +7555,13 @@ class Hardware(object):
                     self._component.calculate(_partmodel, _partrow,
                                               _model_, _row_)
 
-                    _c_ = _model_.get_value(row, self._col_order[13])
+                    _c_ = _model_.get_value(_row_, self._col_order[13])
                     _la_ = _model_.get_value(_row_, self._col_order[28])
-                    _ld_ = _model_.get_value(row, self._col_order[29])
-                    _ls_ = _model_.get_value(row, self._col_order[33])
+                    _ld_ = _model_.get_value(_row_, self._col_order[29])
+                    _ls_ = _model_.get_value(_row_, self._col_order[33])
                     _lp_ = _la_
-                    _n_parts_ = 1
-                    _power_ = _model_.get_value(row, self._col_order[83])
+                    _n_parts_ = _model_.get_value(_row_, self._col_order[67])
+                    _power_ = _model_.get_value(_row_, self._col_order[83])
 
                     if _model_.get_value(_row_, 60) == 1:
                         _icon = _conf.ICON_DIR + '32x32/overstress.png'

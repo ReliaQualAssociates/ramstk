@@ -14,9 +14,9 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
-import pango
-import locale
 import gettext
+import locale
+import pango
 
 try:
     import rtk.configuration as _conf
@@ -26,12 +26,12 @@ except:
     import widgets as _widg
 
 # Add localization support.
-_ = gettext.gettext
-
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 class Capacitor(object):
@@ -79,9 +79,14 @@ class Capacitor(object):
         :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
         :param int x_pos: the x position of the input widgets.
         :param int y_pos: the y position of the first input widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
+
+        # Clear all the display widgets from the gtk.Fixed() except the
+        # calculation model gtk.Label() and gtk.ComboBox().
+        for _child in layout.get_children()[2:]:
+            layout.remove(_child)
 
         # Create the input widgets.
         part.cmbQuality = _widg.make_combo(simple=True)
@@ -92,11 +97,11 @@ class Capacitor(object):
         part.txtVoltRated = _widg.make_entry(width=100)
         part.txtVoltApplied = _widg.make_entry(width=100)
         # Create the applied voltage entry.  We store this in the
-        # Operating power field in the program database.
+        # operating power field in the program database.
         part.txtACVoltApplied = _widg.make_entry(width=100)
         part.txtCapacitance = _widg.make_entry(width=100)
 
-        # Populate the gtk.ComboBox().
+        # Populate all the gtk.ComboBox().
         for i in range(len(self._quality)):
             part.cmbQuality.insert_text(i, self._quality[i])
         for i in range(len(self._specification)):
@@ -134,39 +139,7 @@ class Capacitor(object):
 
         layout.show_all()
 
-        return _y_pos[2]
-
-    def assessment_inputs_load(self, part):
-        """
-        Loads the RTK Workbook calculation input widgets with calculation
-        input information.
-
-        :param rtk.Component part: the current instance of the RTK Component
-                                   class.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
-        part.cmbQuality.set_active(int(_model.get_value(_row, 85)))
-        part.cmbSpecification.set_active(int(_model.get_value(_row, 101)))
-        part.cmbSpecSheet.set_active(int(_model.get_value(_row, 102)))
-        part.txtVoltRated.set_text(str(fmt.format(_model.get_value(_row, 94))))
-        part.txtVoltApplied.set_text(str(fmt.format(_model.get_value(_row, 66))))
-        part.txtACVoltApplied.set_text(str(fmt.format(_model.get_value(_row, 64))))
-        part.txtCapacitance.set_text(str(fmt.format(_model.get_value(_row, 15))))
-
-        if int(_model.get_value(_row, 85)) != 0:
-            part.txtCommercialPiQ.set_text(str(fmt.format(_model.get_value(_row, 79))))
-        else:
-            part.txtCommercialPiQ.set_text("0.0")
-
-        return False
+        return _x_pos, _y_pos
 
     def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
@@ -179,16 +152,15 @@ class Capacitor(object):
                                  widgets.
         :param int x_pos: the x position of the display widgets.
         :param int y_pos: the y position of the first display widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        # Create and place all the labels.
-        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[2:],
-                                             layout, x_pos, y_pos)
-        _x_pos += x_pos
-        _x_pos -= 30
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[20:]:
+            layout.remove(_child)
 
+        # Create the reliability result display widgets.
         part.txtLambdaB = _widg.make_entry(width=100, editable=False,
                                            bold=True)
         part.txtPiQ = _widg.make_entry(width=100, editable=False, bold=True)
@@ -197,6 +169,13 @@ class Capacitor(object):
         # pi_cf field in the program database.
         part.txtPiCV = _widg.make_entry(width=100, editable=False, bold=True)
 
+        # Create and place all the labels.
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[2:],
+                                             layout, x_pos, y_pos)
+        _x_pos += x_pos
+        _x_pos -= 30
+
+        # Place the reliability result display widgets.
         layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
         layout.put(part.txtPiQ, _x_pos, _y_pos[2])
         layout.put(part.txtPiE, _x_pos, _y_pos[3])
@@ -204,7 +183,7 @@ class Capacitor(object):
 
         layout.show_all()
 
-        return _y_pos[4]
+        return _x_pos, _y_pos
 
     def stress_results_create(self, part, layout, x_pos, y_pos):
         """
@@ -217,18 +196,24 @@ class Capacitor(object):
                                  widgets.
         :param int x_pos: the x position of the widgets.
         :param int y_pos: the y position of the first widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[16:]:
+            layout.remove(_child)
+
         # Create and place all the labels.
-        (__, _y_pos) = _widg.make_labels(self._out_labels[:2], layout,
-                                         5, y_pos)
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[:2], layout,
+                                             5, y_pos)
 
+        # Create the stress result display widgets.
         part.txtTRise = _widg.make_entry(width=100, editable=False, bold=True)
-        layout.put(part.txtTRise, x_pos, _y_pos[0])
-
         part.txtTJunc = _widg.make_entry(width=100, editable=False, bold=True)
+
+        # Place the stress result display widgets.
+        layout.put(part.txtTRise, x_pos, _y_pos[0])
         layout.put(part.txtTJunc, x_pos, _y_pos[1])
 
         part.graDerate.set_title(_(u"Derating Curve for %s at %s") %
@@ -241,17 +226,18 @@ class Capacitor(object):
 
         self._ready = True
 
-        return False
+        return _x_pos, _y_pos
 
-    def assessment_results_load(self, part):
+    def assessment_inputs_load(self, part):
         """
-        Loads the RTK Workbook calculation results widgets with calculation
-        results.
+        Loads the RTK Workbook calculation input widgets with calculation
+        input information.
 
         :param rtk.Component part: the current instance of the RTK Component
                                    class.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -260,14 +246,55 @@ class Capacitor(object):
         _model = part._app.winParts.tvwPartsList.get_model()
         _row = _model.get_iter(_path)
 
-        part.txtCurrentRatio.set_text(str(fmt.format(_model.get_value(_row, 17))))
+        part.cmbQuality.set_active(int(_model.get_value(_row, 85)))
+        part.cmbSpecification.set_active(int(_model.get_value(_row, 101)))
+        part.cmbSpecSheet.set_active(int(_model.get_value(_row, 102)))
+        part.txtVoltRated.set_text(str(fmt.format(_model.get_value(_row, 94))))
+        part.txtVoltApplied.set_text(str(fmt.format(
+            _model.get_value(_row, 66))))
+        part.txtACVoltApplied.set_text(str(fmt.format(
+            _model.get_value(_row, 64))))
+        part.txtCapacitance.set_text(str(fmt.format(
+            _model.get_value(_row, 15))))
+
+        if int(_model.get_value(_row, 85)) != 0:
+            part.txtCommercialPiQ.set_text(str(fmt.format(
+                _model.get_value(_row, 79))))
+        else:
+            part.txtCommercialPiQ.set_text("0.0")
+
+        return _model, _row
+
+    def assessment_results_load(self, part):
+        """
+        Loads the RTK Workbook calculation results widgets with calculation
+        results.
+
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
+        """
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
+
+        part.txtCurrentRatio.set_text(str(fmt.format(
+            _model.get_value(_row, 17))))
         part.txtTJunc.set_text(str(fmt.format(_model.get_value(_row, 39))))
         part.txtLambdaB.set_text(str(fmt.format(_model.get_value(_row, 46))))
         part.txtPiCV.set_text(str(fmt.format(_model.get_value(_row, 70))))
-        part.txtPiE.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 72))))
-        part.txtPiQ.set_text(str('{0:0.2g}'.format(_model.get_value(_row, 79))))
+        part.txtPiE.set_text(str('{0:0.2g}'.format(
+            _model.get_value(_row, 72))))
+        part.txtPiQ.set_text(str('{0:0.2g}'.format(
+            _model.get_value(_row, 79))))
         part.txtTRise.set_text(str(fmt.format(_model.get_value(_row, 107))))
-        part.txtVoltageRatio.set_text(str(fmt.format(_model.get_value(_row, 111))))
+        part.txtVoltageRatio.set_text(str(fmt.format(
+            _model.get_value(_row, 111))))
 
         part.txtOSReason.set_text(self.reason)
 
@@ -290,7 +317,7 @@ class Capacitor(object):
         else:
             part.graDerate.axis([0.95, 1.05, 0.0, 1.05])
 
-        return False
+        return _model, _row
 
     def _callback_combo(self, combo, part, idx):
         """
@@ -301,7 +328,7 @@ class Capacitor(object):
                                    class.
         :param int idx: the user-defined index for the calling combobx.
         :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :rtype: boolean
         """
 
         _path = part._app.winParts._treepaths[part.assembly_id]
@@ -346,7 +373,7 @@ class Capacitor(object):
                         associated with the data from the gtk.Entry() that
                         called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :rtype: boolean
         """
 
         _path = part._app.winParts._treepaths[part.assembly_id]
