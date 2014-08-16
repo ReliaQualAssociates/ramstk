@@ -135,6 +135,7 @@ class IntegratedCircuit(object):
         layout.put(part.txtNumPins, _x_pos, _y_pos[5])
         layout.put(part.txtYears, _x_pos, _y_pos[6])
 
+        # Connect to callback methods.
         part.cmbQuality.connect("changed", self._callback_combo, part, 85)
         part.cmbTechnology.connect("changed", self._callback_combo, part, 104)
         part.cmbElements.connect("changed", self._callback_combo, part, 24)
@@ -184,6 +185,7 @@ class IntegratedCircuit(object):
         _x_pos += x_pos
         _x_pos -= 30
 
+        # Place the reliability result display widgets.
         layout.put(part.txtC1, _x_pos, _y_pos[1])
         layout.put(part.txtPiT, _x_pos, _y_pos[2])
         layout.put(part.txtC2, _x_pos, _y_pos[3])

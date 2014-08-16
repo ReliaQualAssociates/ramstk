@@ -51,7 +51,7 @@ class Linear(IntegratedCircuit):
 
         IntegratedCircuit.__init__(self)
 
-        self.subcategory = 1                # Subcategory ID in rtkcom DB.
+        self.subcategory = 1                # Subcategory ID in the rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -99,10 +99,10 @@ class Linear(IntegratedCircuit):
 
         # Update the number of elements gtk.ComboBox().
         part.cmbElements.append_text("")
-        part.cmbElements.append_text("1 to 100")
-        part.cmbElements.append_text("101 to 300")
-        part.cmbElements.append_text("301 to 1000")
-        part.cmbElements.append_text("1001 to 10000")
+        part.cmbElements.append_text(_(u"1 to 100"))
+        part.cmbElements.append_text(_(u"101 to 300"))
+        part.cmbElements.append_text(_(u"301 to 1000"))
+        part.cmbElements.append_text(_(u"1001 to 10000"))
 
         # Place the input widgets.
         layout.move(part.cmbCalcModel, _x_pos, 5)

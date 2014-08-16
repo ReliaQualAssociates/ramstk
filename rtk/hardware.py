@@ -3682,8 +3682,7 @@ class Hardware(object):
                 self.scwReliabilityInputs.get_parent().show()
                 self.scwStressInputs.get_parent().show()
 
-                if self.part:
-                    self._component.assessment_inputs_load(self)
+                self._component.assessment_inputs_load(self)
 
             else:
                 self.scwReliabilityInputs.get_parent().hide()
@@ -3817,7 +3816,12 @@ class Hardware(object):
             self.scwStressResults.get_parent().show()
             self.scwMiscResults.get_parent().show()
 
+            self.fxdReliabilityResults.show_all()
+
         else:
+            # Hide the component-specific display widgets.
+            for _child in self.fxdReliabilityResults.get_children()[20:]:
+                _child.hide()
             self.scwStressResults.get_parent().hide()
             self.scwMiscResults.get_parent().hide()
 
@@ -6033,6 +6037,7 @@ class Hardware(object):
                     self._component.assessment_results_load(self)
 
                     self.fxdReliabilityInputs.show_all()
+                    self.fxdReliabilityResults.show_all()
                     self.fxdStressResults.show_all()
 
         elif index >= 1000:
