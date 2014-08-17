@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-""" These are the meter classes. """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -10,36 +11,49 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import pango
 
+from math import exp, sqrt
+
 try:
-    import relkit.calculations as _calc
-    import relkit.widgets as _widg
-except ImportError:
+    import rtk.calculations as _calc
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
+except:
     import calculations as _calc
+    import configuration as _conf
     import widgets as _widg
 
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except locale.Error:
+    locale.setlocale(locale.LC_ALL, '')
 
-class ElapsedTime:
+_ = gettext.gettext
+
+
+class ElapsedTime(object):
     """
     Elapsed Time Meter Component Class.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, sections 12.3.
+        # MIL-HDBK-217F, sections 12.3.
     """
 
-    _type = [u"", u"A.C.", u"Inverter Driven", u"Cummutator D.C."]
+    _type = [u"", u"A.C.", _(u"Inverter Driven"), _(u"Cummutator D.C.")]
 
     def __init__(self):
-        """ Initializes the Elapsed Time Meter Component Class. """
+        """
+        Initializes the Elapsed Time Meter Component Class.
+        """
 
         self._ready = False
 
-        self._in_labels = []
-        self._out_labels = []
-
-        self.category = 9                   # Category in relkitcom database.
-        self.subcategory = 77               # Subcategory ID in relkitcom database.
+        self.category = 9                   # Category in the rtkcom database.
+        self.subcategory = 77               # Subcategory ID in the rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -56,344 +70,404 @@ class ElapsedTime:
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         # Label text for input data.
-        self._in_labels.append(u"Type:")
-        self._in_labels.append(u"Operating Temperature (\u00B0C):")
-        self._in_labels.append(u"Rated Temperature (\u00B0C):")
+        self._in_labels = [_(u"Type:"), _(u"Operating Temperature (\u00B0C):"),
+                           _(u"Rated Temperature (\u00B0C):")]
 
         # Label text for output data.
-        self._out_labels.append(u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>")
-        self._out_labels.append(u"\u03BB<sub>b</sub>:")
-        self._out_labels.append(u"\u03C0<sub>T</sub>:")
-        self._out_labels.append(u"\u03C0<sub>E</sub>:")
+        self._out_labels = [u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>",
+                            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>T</sub>:",
+                            u"\u03C0<sub>E</sub>:"]
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
-        Populates the RTK Workbook calculation input tab with the
-        widgets needed to select inputs for Elapsed Time Meter Component
-        Class prediction calculations.
+        Populates the RTK Workbook calculation input tab with the widgets
+        needed to select inputs for Elapsed Time Meter Component Class
+        prediction calculations.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
+        :param int x_pos: the x position of the input widgets.
+        :param int y_pos: the y position of the first input widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed() except the
+        # calculation model gtk.Label() and gtk.ComboBox().
+        for _child in layout.get_children()[2:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is SWITCH,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
-
-        # Create and place all the labels for the inputs.
-        numlabels = len(self._in_labels)
-        for i in range(numlabels):
-            label = _widg.make_label(self._in_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
-
+        # Create the input widgets.
         # Create the Meter Type ComboBox.  We store the index in the
-        # technology_id filed in the program database.
+        # technology_id field in the program database.
         part.cmbType = _widg.make_combo(simple=True)
+        part.txtOperatingTemp = _widg.make_entry(width=100)
+        part.txtRatedTemp = _widg.make_entry(width=100)
+
+        # Load all the gtk.ComboBox().
         for i in range(len(self._type)):
             part.cmbType.insert_text(i, self._type[i])
-        part.cmbType.connect("changed",
-                             self.combo_callback,
-                             part, 104)
-        layout.put(part.cmbType, x_pos, y_pos)
-        y_pos += 30
 
-        part.txtOperatingTemp = _widg.make_entry(width=entry_width)
-        part.txtOperatingTemp.connect("focus-out-event",
-                                      self.entry_callback,
+        # Create and place all the labels for the inputs.
+        (_x_pos, _y_pos) = _widg.make_labels(self._in_labels, layout, 5, y_pos)
+        _x_pos += 35
+
+        # Place the input widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.put(part.cmbType, _x_pos, _y_pos[0])
+        layout.put(part.txtOperatingTemp, _x_pos, _y_pos[1])
+        layout.put(part.txtRatedTemp, _x_pos, _y_pos[2])
+
+        # Connect to callback methods.
+        part.cmbType.connect("changed", self._callback_combo, part, 104)
+        part.txtOperatingTemp.connect("focus-out-event", self._callback_entry,
                                       part, "float", 105)
-        layout.put(part.txtOperatingTemp, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtRatedTemp = _widg.make_entry(width=entry_width)
-        part.txtRatedTemp.connect("focus-out-event",
-                                  self.entry_callback,
+        part.txtRatedTemp.connect("focus-out-event", self._callback_entry,
                                   part, "float", 55)
-        layout.put(part.txtRatedTemp, x_pos, y_pos)
 
         layout.show_all()
 
         return False
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
         Populates the RTK Workbook calculation results tab with the
         widgets to display Elapsed Time Meter Component Class calculation
         results.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[20:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is SWITCH,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
-
-        # Create and place all the labels.
-        y_pos = 305
-        numlabels = len(self._out_labels)
-        for i in range(numlabels):
-            if(i == 2):
-                label = _widg.make_label(self._out_labels[i], width=400)
-                llayout = label.get_layout()
-                llayout.set_alignment(pango.ALIGN_CENTER)
-                label.show_all()
-            else:
-                label = _widg.make_label(self._out_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
-
-        y_pos += 30
-
-        part.txtLambdaB = _widg.make_entry(width=entry_width,
-                                           editable=False, bold=True)
-        layout.put(part.txtLambdaB, x_pos, y_pos)
-        y_pos += 30
-
+        # Create the reliability result display widgets.
+        part.txtLambdaB = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
         # Create the piT Entry.  We store this value in the pi_sr field in the
         # program database.
-        part.txtPiT = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiT, x_pos, y_pos)
-        y_pos += 30
+        part.txtPiT = _widg.make_entry(width=100, editable=False, bold=True)
+        part.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
 
-        part.txtPiE = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiE, x_pos, y_pos)
-        y_pos += 30
+        # Create and place all the labels.
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels,
+                                             layout, x_pos, y_pos)
+        _x_pos += x_pos
+        _x_pos -= 30
+
+        # Place the reliability result display widgets.
+        layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
+        layout.put(part.txtPiT, _x_pos, _y_pos[2])
+        layout.put(part.txtPiE, _x_pos, _y_pos[3])
 
         layout.show_all()
 
-        self._ready = True
+        return _x_pos, _y_pos
+
+    def stress_results_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook stress calculation results tab with the
+        widgets to display Capacitor Component Class stress results.
+
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the widgets.
+        :param int y_pos: the y position of the first widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
+        """
+
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[16:]:
+            layout.remove(_child)
 
         return False
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RTK Workbook calculation input widgets with
-        calculation input information.
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.txtRatedTemp.set_text(str(fmt.format(part.model.get_value(part.selected_row, 55))))
-        part.cmbType.set_active(int(part.model.get_value(part.selected_row, 104)))
-        part.txtOperatingTemp.set_text(str(fmt.format(part.model.get_value(part.selected_row, 105))))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        return False
+        part.txtRatedTemp.set_text(str(fmt.format(_model.get_value(_row, 55))))
+        part.cmbType.set_active(int(_model.get_value(_row, 104)))
+        part.txtOperatingTemp.set_text(str(fmt.format(
+            _model.get_value(_row, 105))))
+
+        return _model, _row
 
     def assessment_results_load(self, part):
         """
         Loads the RTK Workbook calculation results widgets with
         calculation results.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.txtLambdaB.set_text(str(fmt.format(part.model.get_value(part.selected_row, 46))))
-        part.txtPiE.set_text(str("{0:0.2g}".format(part.model.get_value(part.selected_row, 72))))
-        part.txtPiT.set_text(str(fmt.format(part.model.get_value(part.selected_row, 81))))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        return False
+        part.txtLambdaB.set_text(str(fmt.format(_model.get_value(_row, 46))))
+        part.txtPiE.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 72))))
+        part.txtPiT.set_text(str(fmt.format(_model.get_value(_row, 81))))
 
-    def combo_callback(self, combo, part, _index_):
+        return _model, _row
+
+    def _callback_combo(self, combo, part, idx):
         """
         Callback function for handling Elapsed Time Meter Component Class
         ComboBox changes.
 
-        Keyword Arguments:
-        combo   -- the combobox widget calling this function.
-        part    -- the RTK COMPONENT object.
-        _index_ -- the user-definded index for the calling combobx.
+        :param gtk.ComboBox combo: the gtk.ComboBox() calling this method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param int idx: the user-defined index for the calling combobx.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        idx = combo.get_active()
+        _index = combo.get_active()
 
         # Update the Component object property and the Parts List treeview.
-        model.set_value(row, _index_, int(idx))
+        _model.set_value(_row, idx, int(_index))
 
         return False
 
-    def entry_callback(self, entry, event, part, convert, _index_):
+    def _callback_entry(self, entry, event, part, convert, idx):
         """
         Callback function for handling Elapsed Time Meter Component Class
         Entry changes.
 
-        Keyword Arguments:
-        entry   -- the entry widget calling this function.
-        event   -- the event that triggered calling this function.
-        part    -- the RTK COMPONENT object.
-        convert -- the data type to convert the entry contents to.
-        _index_ -- the position in the Component property array
-                   associated with the data from the entry that called
-                   this function.
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param str convert: the data type to convert the gtk.Entry() contents.
+        :param int idx: the position in the Component property array
+                        associated with the data from the gtk.Entry() that
+                        called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            # Get the Parts List treeview full model and full model iter.
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
         # Update the Component object property.
-        if(convert == "text"):
-            model.set_value(row, _index_, entry.get_text())
+        if convert == "text":
+            _model.set_value(_row, idx, entry.get_text())
 
-        elif(convert == "int"):
-            model.set_value(row, _index_, int(entry.get_text()))
+        elif convert == "int":
+            _model.set_value(_row, idx, int(entry.get_text()))
 
-        elif(convert == "float"):
-            model.set_value(row, _index_, float(entry.get_text()))
-
-        return False
-
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Elapsed Time Meter Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab"
-
-        # Retrieve hazard rate inputs.
-        Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
-        Tidx = partmodel.get_value(partrow, 104)        # Type index
-
-        _hrmodel['lambdab'] = self._lambdab_count[Tidx - 1][Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+        elif convert == "float":
+            _model.set_value(_row, idx, float(entry.get_text()))
 
         return False
 
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Elapsed Time Meter Component Class.
+        Performs hazard rate calculations for the Elapsed Time Meter class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        from math import exp
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Linear Integrated Circuit Class.
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piT * piE"
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
-        Trate = partmodel.get_value(partrow, 55)
-        Tidx = partmodel.get_value(partrow, 104)        # Type index
-        Toper = partmodel.get_value(partrow, 105)
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab"
 
-        # Base hazard rate.
-        _hrmodel['lambdab'] = self._lambdab[Tidx - 1]
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        # Temperature stress correction factor.
-        try:
-            S = Toper / Trate
-        except:
-            S = 1.0
+            # Retrieve hazard rate inputs.
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
+            Tidx = partmodel.get_value(partrow, 104)        # Type index
 
-        if(S <= 0.5):
-            _hrmodel['piT'] = 0.5
-        elif(S > 0.5 and S <= 0.6):
-            _hrmodel['piT'] = 0.6
-        elif(S > 0.6 and S <= 0.8):
-            _hrmodel['piT'] = 0.8
-        else:
-            _hrmodel['piT'] = 1.0
+            _hrmodel['lambdab'] = self._lambdab_count[Tidx - 1][Eidx - 1]
 
-        # Environmental correction factor.
-        _hrmodel['piE'] = self._piE[Eidx - 1]
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
-        partmodel.set_value(partrow, 81, _hrmodel['piT'])
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-        print lambdap
+            return False
+
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Linear Integrated Circuit Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piT * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
+            Trate = partmodel.get_value(partrow, 55)
+            Tidx = partmodel.get_value(partrow, 104)        # Type index
+            Toper = partmodel.get_value(partrow, 105)
+
+            # Base hazard rate.
+            _hrmodel['lambdab'] = self._lambdab[Tidx - 1]
+
+            # Temperature stress correction factor.
+            try:
+                S = Toper / Trate
+            except:
+                S = 1.0
+
+            if S <= 0.5:
+                _hrmodel['piT'] = 0.5
+            elif S > 0.5 and S <= 0.6:
+                _hrmodel['piT'] = 0.6
+            elif S > 0.6 and S <= 0.8:
+                _hrmodel['piT'] = 0.8
+            else:
+                _hrmodel['piT'] = 1.0
+
+            # Environmental correction factor.
+            _hrmodel['piE'] = self._piE[Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdas
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 81, _hrmodel['piT'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, 0.0)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 10)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
+
         return False
 
-class Panel:
+
+class Panel(object):
     """
     Panel Meter Component Class.
     Covers specifications MIL-M-10304.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, sections 18.1.
+        # MIL-HDBK-217F, sections 18.1.
     """
 
-    _application = [u"", u"Direct Current", u"Alternating Current"]
-    _quality = [u"", u"MIL-M-10304", u"Lower"]
-    _type = [u"", u"Ammeter", u"Voltmeter", u"Other"]
+    _application = [u"", _(u"Direct Current"), _(u"Alternating Current")]
+    _quality = [u"", u"MIL-M-10304", _(u"Lower")]
+    _type = [u"", _(u"Ammeter"), _(u"Voltmeter"), _(u"Other")]
 
     def __init__(self):
-        """ Initializes the Panel Meter Component Class. """
+        """
+        Initializes the Panel Meter Component Class.
+        """
 
         self._ready = False
-
-        self._in_labels = []
-        self._out_labels = []
-
-        self.category = 9                       # Category in relkitcom database.
-        self.subcategory = 78                   # Subcategory ID in relkitcom database.
+        self.category = 9                   # Category in the rtkcom database.
+        self.subcategory = 78               # Subcategory ID in the rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -409,18 +483,14 @@ class Panel:
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         # Label text for input data.
-        self._in_labels.append(u"Quality:")
-        self._in_labels.append(u"\u03C0<sub>Q</sub> Override:")
-        self._in_labels.append(u"Application:")
-        self._in_labels.append(u"Function:")
+        self._in_labels = [_(u"Quality:"), _(u"\u03C0<sub>Q</sub> Override:"),
+                           _(u"Application:"), _(u"Function:")]
 
         # Label text for output data.
-        self._out_labels.append(u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>")
-        self._out_labels.append(u"\u03BB<sub>b</sub>:")
-        self._out_labels.append(u"\u03C0<sub>A</sub>:")
-        self._out_labels.append(u"\u03C0<sub>F</sub>:")
-        self._out_labels.append(u"\u03C0<sub>Q</sub>:")
-        self._out_labels.append(u"\u03C0<sub>E</sub>:")
+        self._out_labels = [u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+                            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>A</sub>:",
+                            u"\u03C0<sub>F</sub>:", u"\u03C0<sub>Q</sub>:",
+                            u"\u03C0<sub>E</sub>:"]
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
         """
@@ -428,327 +498,378 @@ class Panel:
         widgets needed to select inputs for Panel Meter Component
         Class prediction calculations.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
+        :param int x_pos: the x position of the input widgets.
+        :param int y_pos: the y position of the first input widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed() except the
+        # calculation model gtk.Label() and gtk.ComboBox().
+        for _child in layout.get_children()[2:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is SWITCH,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
-
-        # Create and place all the labels for the inputs.
-        numlabels = len(self._in_labels)
-        for i in range(numlabels):
-            label = _widg.make_label(self._in_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
-
+        # Create the input widgets.
         part.cmbQuality = _widg.make_combo(simple=True)
-        for i in range(len(self._quality)):
-            part.cmbQuality.insert_text(i, self._quality[i])
-        part.cmbQuality.connect("changed",
-                                self.combo_callback,
-                                part, 85)
-        layout.put(part.cmbQuality, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtCommercialPiQ = _widg.make_entry(width=entry_width)
-        part.txtCommercialPiQ.connect("focus-out-event",
-                                      self.entry_callback,
-                                      part, "float", 79)
-        layout.put(part.txtCommercialPiQ, x_pos, y_pos)
-        y_pos += 30
-
+        part.txtCommercialPiQ = _widg.make_entry(width=100)
         part.cmbApplication = _widg.make_combo(simple=True)
-        for i in range(len(self._application)):
-            part.cmbApplication.insert_text(i, self._application[i])
-        part.cmbApplication.connect("changed",
-                                    self.combo_callback,
-                                    part, 5)
-        layout.put(part.cmbApplication, x_pos, y_pos)
-        y_pos += 30
-
         # Create the Meter Type ComboBox.  We store the index in the
         # technology_id filed in the program database.
         part.cmbType = _widg.make_combo(simple=True)
+
+        # Load all the gtk.ComboBox().
+        for i in range(len(self._quality)):
+            part.cmbQuality.insert_text(i, self._quality[i])
+        for i in range(len(self._application)):
+            part.cmbApplication.insert_text(i, self._application[i])
         for i in range(len(self._type)):
             part.cmbType.insert_text(i, self._type[i])
-        part.cmbType.connect("changed",
-                                self.combo_callback,
-                                part, 104)
-        layout.put(part.cmbType, x_pos, y_pos)
-        y_pos += 30
+
+        # Create and place all the labels for the inputs.
+        (_x_pos, _y_pos) = _widg.make_labels(self._in_labels, layout, 5, y_pos)
+        _x_pos = max(_x_pos, x_pos)
+
+        # Place the input widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.put(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.put(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.cmbApplication, _x_pos, _y_pos[2])
+        layout.put(part.cmbType, _x_pos, _y_pos[3])
+
+        # Connect to callback methods.
+        part.cmbQuality.connect("changed", self._callback_combo, part, 85)
+        part.cmbApplication.connect("changed", self._callback_combo, part, 5)
+        part.cmbType.connect("changed", self._callback_combo, part, 104)
+        part.txtCommercialPiQ.connect("focus-out-event", self._callback_entry,
+                                      part, "float", 79)
 
         layout.show_all()
 
         return False
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
         Populates the RTK Workbook calculation results tab with the
         widgets to display Panel Meter Component Class calculation
         results.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[20:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is SWITCH,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
+        # Create the reliability result display widgets.
+        part.txtLambdaB = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+        part.txtPiA = _widg.make_entry(width=100, editable=False, bold=True)
+        part.txtPiF = _widg.make_entry(width=100, editable=False, bold=True)
+        part.txtPiQ = _widg.make_entry(width=100, editable=False, bold=True)
+        part.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
 
         # Create and place all the labels.
-        numlabels = len(self._out_labels)
-        for i in range(numlabels):
-            if(i == 2):
-                label = _widg.make_label(self._out_labels[i], width=400)
-                llayout = label.get_layout()
-                llayout.set_alignment(pango.ALIGN_CENTER)
-                label.show_all()
-            else:
-                label = _widg.make_label(self._out_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels,
+                                             layout, x_pos, y_pos)
+        _x_pos += x_pos
+        _x_pos -= 30
 
-        y_pos += 30
-        part.txtLambdaB = _widg.make_entry(width=entry_width,
-                                           editable=False, bold=True)
-        layout.put(part.txtLambdaB, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtPiA = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiA, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtPiF = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiF, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtPiQ = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiQ, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtPiE = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiE, x_pos, y_pos)
+        # Place the reliability result display widgets.
+        layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
+        layout.put(part.txtPiA, _x_pos, _y_pos[2])
+        layout.put(part.txtPiF, _x_pos, _y_pos[3])
+        layout.put(part.txtPiQ, _x_pos, _y_pos[4])
+        layout.put(part.txtPiE, _x_pos, _y_pos[5])
 
         layout.show_all()
 
-        self._ready = True
+        return False
+
+    def stress_results_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook stress calculation results tab with the
+        widgets to display Capacitor Component Class stress results.
+
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the widgets.
+        :param int y_pos: the y position of the first widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
+        """
+
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[16:]:
+            layout.remove(_child)
 
         return False
 
     def assessment_inputs_load(self, part):
         """
-        Loads the RTK Workbook calculation input widgets with
-        calculation input information.
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.cmbApplication.set_active(int(part.model.get_value(part.selected_row, 5)))
-        part.cmbQuality.set_active(int(part.model.get_value(part.selected_row, 85)))
-        part.cmbType.set_active(int(part.model.get_value(part.selected_row, 104)))
-        if (int(part.model.get_value(part.selected_row, 85)) <= 0):
-            part.txtCommercialPiQ.set_text(str(fmt.format(part.model.get_value(part.selected_row, 79))))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
+
+        part.cmbApplication.set_active(int(_model.get_value(_row, 5)))
+        part.cmbQuality.set_active(int(_model.get_value(_row, 85)))
+        part.cmbType.set_active(int(_model.get_value(_row, 104)))
+        if int(_model.get_value(_row, 85)) <= 0:
+            part.txtCommercialPiQ.set_text(str(fmt.format(
+                _model.get_value(_row, 79))))
         else:
             part.txtCommercialPiQ.set_text("0.0")
 
-        return False
+        return _model, _row
 
     def assessment_results_load(self, part):
         """
         Loads the RTK Workbook calculation results widgets with
         calculation results.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.txtLambdaB.set_text(str(fmt.format(part.model.get_value(part.selected_row, 46))))
-        part.txtPiA.set_text(str(fmt.format(part.model.get_value(part.selected_row, 68))))
-        part.txtPiE.set_text(str("{0:0.2g}".format(part.model.get_value(part.selected_row, 72))))
-        part.txtPiF.set_text(str(fmt.format(part.model.get_value(part.selected_row, 74))))
-        part.txtPiQ.set_text(str("{0:0.2g}".format(part.model.get_value(part.selected_row, 79))))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        return False
+        part.txtLambdaB.set_text(str(fmt.format(_model.get_value(_row, 46))))
+        part.txtPiA.set_text(str(fmt.format(_model.get_value(_row, 68))))
+        part.txtPiE.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 72))))
+        part.txtPiF.set_text(str(fmt.format(_model.get_value(_row, 74))))
+        part.txtPiQ.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 79))))
 
-    def combo_callback(self, combo, part, _index_):
+        return _model, _row
+
+    def _callback_combo(self, combo, part, idx):
         """
         Callback function for handling Panel Meter Component Class ComboBox
         changes.
 
-        Keyword Arguments:
-        combo   -- the combobox widget calling this function.
-        part    -- the RTK COMPONENT object.
-        _index_ -- the user-definded index for the calling combobx.
+        :param gtk.ComboBox combo: the gtk.ComboBox() calling this method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param int idx: the user-defined index for the calling combobx.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        idx = combo.get_active()
+        _index = combo.get_active()
 
         # Update the Component object property and the Parts List treeview.
-        model.set_value(row, _index_, int(idx))
+        _model.set_value(_row, idx, int(_index))
 
         return False
 
-    def entry_callback(self, entry, event, part, convert, _index_):
+    def _callback_entry(self, entry, event, part, convert, idx):
         """
         Callback function for handling Panel Meter Component Class
         Entry changes.
 
-        Keyword Arguments:
-        entry   -- the entry widget calling this function.
-        event   -- the event that triggered calling this function.
-        part    -- the RTK COMPONENT object.
-        convert -- the data type to convert the entry contents to.
-        _index_ -- the position in the Component property array
-                   associated with the data from the entry that called
-                    this function.
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param str convert: the data type to convert the gtk.Entry() contents.
+        :param int idx: the position in the Component property array
+                        associated with the data from the gtk.Entry() that
+                        called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
         # Update the Component object property.
-        if(convert == "text"):
-            model.set_value(row, _index_, entry.get_text())
-        elif(convert == "int"):
-            model.set_value(row, _index_, int(entry.get_text()))
-
-        elif(convert == "float"):
-            model.set_value(row, _index_, float(entry.get_text()))
+        if convert == "text":
+            _model.set_value(_row, idx, entry.get_text())
+        elif convert == "int":
+            _model.set_value(_row, idx, int(entry.get_text()))
+        elif convert == "float":
+            _model.set_value(_row, idx, float(entry.get_text()))
 
         # Commercial PiQ entry called the function.
-        if(_index_ == 79):
+        if _index_ == 79:
             CpiQ = float(entry.get_text())
 
-            # Use this value for piQ if it is greater than zero.
-            if(CpiQ > 0):
-                model.set_value(row, 79, CpiQ)
-
         return False
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        Panel Meter Component Class.
+        Performs hazard rate calculations for the Elapsed Time Meter class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piQ"
-
-        # Retrieve hazard rate inputs.
-        Aidx = partmodel.get_value(partrow, 5)          # Application index
-        _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
-        Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
-
-        _hrmodel['lambdab'] = self._lambdab_count[Aidx - 1][Eidx - 1]
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the Panel Meter Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        from math import exp
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            Linear Integrated Circuit Class.
 
-        _hrmodel = {}
-        _hrmodel['equation'] = "lambdab * piA * piF * piQ * piE"
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        Aidx = partmodel.get_value(partrow, 5)          # Application index
-        Qidx = partmodel.get_value(partrow, 85)         # Quality index
-        Tidx = partmodel.get_value(partrow, 104)        # Type index
-        Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        # Base hazard rate.
-        _hrmodel['lambdab'] = 0.090
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        # Application correction factor.
-        _hrmodel['piA'] = self._piA[Aidx - 1]
+            # Retrieve hazard rate inputs.
+            Aidx = partmodel.get_value(partrow, 5)          # Application index
+            _hrmodel['piQ'] = partmodel.get_value(partrow, 79)
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
 
-        # Function correction factor.
-        _hrmodel['piF'] = self._piF[Tidx - 1]
+            _hrmodel['lambdab'] = self._lambdab_count[Aidx - 1][Eidx - 1]
 
-        # Quality correction factor.
-        _hrmodel['piQ'] = self._piQ[Qidx - 1]
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
 
-        # Environmental correction factor.
-        _hrmodel['piE'] = self._piE[Eidx - 1]
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 68, _hrmodel['piA'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
-        partmodel.set_value(partrow, 74, _hrmodel['piF'])
-        partmodel.set_value(partrow, 79, _hrmodel['piQ'])
+            return False
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Linear Integrated Circuit Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piA * piF * piQ * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            Aidx = partmodel.get_value(partrow, 5)          # Application index
+            Qidx = partmodel.get_value(partrow, 85)         # Quality index
+            Tidx = partmodel.get_value(partrow, 104)        # Type index
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
+
+            # Base hazard rate.
+            _hrmodel['lambdab'] = 0.090
+
+            # Application correction factor.
+            _hrmodel['piA'] = self._piA[Aidx - 1]
+
+            # Function correction factor.
+            _hrmodel['piF'] = self._piF[Tidx - 1]
+
+            # Quality correction factor.
+            _hrmodel['piQ'] = self._piQ[Qidx - 1]
+
+            # Environmental correction factor.
+            _hrmodel['piE'] = self._piE[Eidx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdas
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 68, _hrmodel['piA'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 74, _hrmodel['piF'])
+            partmodel.set_value(partrow, 79, _hrmodel['piQ'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, 0.0)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 10)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
