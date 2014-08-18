@@ -282,7 +282,6 @@ class TreeWindow(gtk.Window):
         #if(_conf.RTK_MODULES[12] == 1):
             # This determines whether FTAs are active.
 
-
         self.notebook.show_all()
 
         return False
@@ -301,7 +300,7 @@ class TreeWindow(gtk.Window):
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert_sibling.png')
+        image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         menu_item.set_label(_(u"Sibling Assembly"))
         menu_item.set_image(image)
         menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
@@ -514,6 +513,9 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
         # Save button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Save the currently open RTK Program Database."))
@@ -575,10 +577,10 @@ class TreeWindow(gtk.Window):
         if _conf.RTK_PAGE_NUMBER[page_num] == 0:
             try:
                 self._app.REVISION.treeview.grab_focus()
-                (_model_, _row_) = self._app.REVISION.treeview.get_selection().get_selected()
-                _path_ = _model_.get_path(_model_.get_iter_root())
-                _column_ = self._app.REVISION.treeview.get_column(0)
-                self._app.REVISION.treeview.row_activated(_path_, _column_)
+                _model = self._app.REVISION.treeview.get_model()
+                _path = _model.get_path(_model.get_iter_root())
+                _column = self._app.REVISION.treeview.get_column(0)
+                self._app.REVISION.treeview.row_activated(_path, _column)
             except TypeError:               # There are no revisions.
                 pass
         elif _conf.RTK_PAGE_NUMBER[page_num] == 1:

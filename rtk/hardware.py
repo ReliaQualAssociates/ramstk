@@ -668,7 +668,7 @@ class Hardware(object):
         :rtype: gtk.ScrolledWindow
         """
 
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+        self.treeview.set_tooltip_text(_(u"Displays an indented list (tree) "
                                          u"of hardware."))
         self.treeview.set_enable_tree_lines(True)
         self.treeview.set_search_column(0)
@@ -4408,7 +4408,7 @@ class Hardware(object):
             self.assembly_id = _model.get_value(_row, self._col_order[1])
 
             # Build the queries to select the reliability tests and program
-            # incidents associated with the selected HARDWARE item.
+            # incidents associated with the selected Hardware item.
             _qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
                          FROM tbl_prediction AS t1 \
                          INNER JOIN tbl_system AS t2 \

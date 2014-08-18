@@ -189,7 +189,7 @@ class Function(object):
         set using the user-defined values in the RTK configuration file.
         """
 
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+        self.treeview.set_tooltip_text(_(u"Displays an indented list (tree) "
                                          u"of functions."))
         self.treeview.set_enable_tree_lines(True)
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
@@ -886,19 +886,19 @@ class Function(object):
                       FROM tbl_system \
                       WHERE fld_revision_id=%d \
                       AND fld_part=1" % \
-                     self._app.REVISION.revision_id
+                     self.revision_id
         elif (not self.chkParts.get_active() and
               self.chkAssemblies.get_active()):
             _query = "SELECT fld_assembly_id, fld_name, fld_parent_assembly \
                       FROM tbl_system \
                       WHERE fld_revision_id=%d \
                       AND fld_part=0" % \
-                     self._app.REVISION.revision_id
+                     self.revision_id
         elif self.chkParts.get_active() and self.chkAssemblies.get_active():
             _query = "SELECT fld_assembly_id, fld_name, fld_parent_assembly \
                       FROM tbl_system \
                       WHERE fld_revision_id=%d" % \
-                     self._app.REVISION.revision_id
+                     self.revision_id
         else:
             _query = ""
 
@@ -915,7 +915,7 @@ class Function(object):
         # two for the selected revision.
         _query = "SELECT fld_assembly_id, fld_function_id, fld_relationship \
                   FROM tbl_functional_matrix \
-                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+                  WHERE fld_revision_id=%d" % self.revision_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=False)
         try:
@@ -1437,7 +1437,7 @@ class Function(object):
         (_model, _row) = self.treeview.get_selection().get_selected()
 
         _query = "DELETE FROM tbl_functions \
-                  WHERE fld_parent_id=%d" % \
+                  WHERE fld_parent_id='%s'" % \
                  _model.get_string_from_iter(_row)
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):

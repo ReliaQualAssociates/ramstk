@@ -1047,7 +1047,7 @@ class Revision(object):
             # Maintainability results widgets.
             _labels_ = [_(u"Mean Preventive Maintenance Time [MPMT]:"),
                         _(u"Mean Corrective Maintenance Time [MCMT]:"),
-                        _(u"Mean Time to Rrepair [MTTR]:"),
+                        _(u"Mean Time to Repair [MTTR]:"),
                         _(u"Mean Maintenance Time [MMT]:"),
                         _(u"Availability [A(t)]:"), _(u"Mission A(t):")]
 
@@ -1162,6 +1162,14 @@ class Revision(object):
             self.revision_id = _model.get_value(_row, self._lst_col_order[0])
         except TypeError:
             self.revision_id = 0
+
+        # Load the parts tree for the selected revision.
+        _query = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
+                  FROM tbl_prediction AS t1 \
+                  INNER JOIN tbl_system AS t2 \
+                  ON t1.fld_assembly_id=t2.fld_assembly_id \
+                  WHERE t2.fld_revision_id=%d" % self.revision_id
+        self._app.winParts.load_part_tree(_query)
 
         # Populate the environmental profile dictionary.
         _query = "SELECT fld_mission_id, fld_condition_id, fld_condition_name, \
@@ -1530,11 +1538,9 @@ class Revision(object):
         gtk.TreeView().  It is called whenever the Revision class
         gtk.TreeView() row is activated.
 
-        :param treeview: the Revision classt gtk.TreeView().
-        :type treeview: gtk.TreeView
-        :param string __path: the actived row gtk.TreeView() path.
-        :param __column: the actived gtk.TreeViewColumn().
-        :type __column: gtk.TreeViewColumn
+        :param gtk.TreeView treeview: the Revision classt gtk.TreeView().
+        :param str __path: the actived row gtk.TreeView() path.
+        :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """

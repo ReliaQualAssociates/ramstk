@@ -807,13 +807,13 @@ class ListWindow(gtk.Window):
                     3 = Survival Analyses List
         """
 
-        if(page_num == 0):
+        if page_num == 0:
             self.set_title(_(u"RTK Parts List"))
-        elif(page_num == 1):
+        elif page_num == 1:
             self.set_title(_(u"RTK Reliability Tests List"))
-        elif(page_num == 2):
+        elif page_num == 2:
             self.set_title(_(u"RTK Program Incidents List"))
-        elif(page_num == 3):
+        elif page_num == 3:
             self.set_title(_(u"RTK Survival Analyses Lists"))
         else:
             self.set_title(_(u"RTK List Book"))

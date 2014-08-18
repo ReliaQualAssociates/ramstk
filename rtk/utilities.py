@@ -523,6 +523,13 @@ def open_project(__widget, app, dlg=1, filename=''):
     :param str filename: the full path to the RTK Program database to open.
     """
 
+    if app.LOADED:
+        rtk_information(_(u"A database is already open.  Only one database "
+                          u"can be open at a time in RTK.  You must quit the "
+                          u"RTK application before a new database can be "
+                          u"opened."))
+        return True
+
     if _conf.BACKEND == 'mysql':
 
         login = _login.Login(_(u"RTK Program Database Login"))
@@ -643,7 +650,6 @@ def save_project(__widget, app):
                _conf.RTK_PREFIX[9], _conf.RTK_PREFIX[11],
                _conf.RTK_PREFIX[13], _conf.RTK_PREFIX[15],
                _conf.RTK_PREFIX[17], 1)
-
 
     query = "UPDATE tbl_program_info \
              SET fld_revision_next_id=%d, fld_function_next_id=%d, \
@@ -830,15 +836,15 @@ def rtk_information(prompt, _parent=None):
     """
     Dialog to display runtime information to the user.
 
-    :param prompt: the prompt to display in the dialog.
-    :type prompt: string
-    :param _parent: the parent gtk.Window(), if any, for the dialog.
-    :type _parent: gtk.Window
+    :param str prompt: the prompt to display in the dialog.
+    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
                                 message_format=prompt)
+    _dialog.set_markup(prompt)
+
     _dialog.run()
     _dialog.destroy()
 

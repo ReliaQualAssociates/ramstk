@@ -1338,7 +1338,7 @@ class Software(object):
         :rtype: gtk.ScrolledWindow
         """
 
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+        self.treeview.set_tooltip_text(_(u"Displays an indented list (tree) "
                                          u"of software."))
         self.treeview.set_enable_tree_lines(True)
 

@@ -99,7 +99,7 @@ class AddRevision(object):
         _text = _(u"This is the RTK Revision Addition Assistant.  It will "
                   u"help you add a new revision to the database.  Press "
                   u"'Forward' to continue or 'Cancel' to quit the assistant.")
-        _label = _widg.make_label(_text, width=-1, height=150)
+        _label = _widg.make_label(_text, width=500, height=-1, wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -292,7 +292,7 @@ class AddRevision(object):
                                                        None,
                                                        self._app.ProgCnx)
             else:
-                _function = [('', 0, 'New Function', 0, ''),]
+                _function = [('', 0, 'New Function', 0, ''), ]
 
             _n_functions = len(_function)
 
@@ -308,7 +308,7 @@ class AddRevision(object):
                            fld_level, fld_name, fld_parent_id, \
                            fld_remarks) \
                           VALUES (%d, %d, '%s', %d, '%s', '%s', '%s')" % \
-                          _values
+                         _values
                 self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                            commit=True)
 
@@ -352,11 +352,11 @@ class AddRevision(object):
                               VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
                                       '{5:s}', '{6:s}', '{7:s}', '{8:s}', \
                                       '{9:s}')".format(
-                              _revision_id, _requirement_id,
-                              _requirements[i][0], _requirements[i][1],
-                              _requirements[i][2], _requirements[i][3],
-                              _requirements[i][4], _requirements[i][5],
-                              _requirements[i][6], _requirements[i][7])
+                             _revision_id, _requirement_id,
+                             _requirements[i][0], _requirements[i][1],
+                             _requirements[i][2], _requirements[i][3],
+                             _requirements[i][4], _requirements[i][5],
+                             _requirements[i][6], _requirements[i][7])
                     self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                                commit=True)
 
@@ -369,162 +369,175 @@ class AddRevision(object):
             _assembly_id = _assembly_id[0][0] + 1
 
         if self.chkHardware.get_active():
-                # Retrieve the information needed to copy the hardware
-                # hierarchy from the base revision to the new revision.
+            # Retrieve the information needed to copy the hardware
+            # hierarchy from the base revision to the new revision.
+            if self.chkFailureInfo.get_active():
+                _query = "SELECT fld_cage_code, fld_category_id, \
+                                 fld_description, fld_failure_rate_active, \
+                                 fld_failure_rate_dormant, \
+                                 fld_failure_rate_software, \
+                                 fld_failure_rate_specified, \
+                                 fld_failure_rate_type, fld_figure_number, \
+                                 fld_lcn, fld_level, fld_manufacturer, \
+                                 fld_mission_time, fld_name, fld_nsn, \
+                                 fld_page_number, fld_parent_assembly, \
+                                 fld_part, fld_part_number, \
+                                 fld_quantity, fld_ref_des, fld_remarks, \
+                                 fld_specification_number, \
+                                 fld_subcategory_id, fld_mtbf_predicted, \
+                                 fld_mtbf_specified, fld_mtbf_lcl, \
+                                 fld_mtbf_ucl, fld_failure_rate_lcl, \
+                                 fld_failure_rate_ucl \
+                          FROM tbl_system \
+                          WHERE fld_revision_id=%d" % _base_revision
+            else:
+                _query = "SELECT fld_cage_code, fld_category_id, \
+                                 fld_description, fld_figure_number, \
+                                 fld_lcn, fld_level, fld_manufacturer, \
+                                 fld_mission_time, fld_name, fld_nsn, \
+                                 fld_page_number, fld_parent_assembly, \
+                                 fld_part, fld_part_number, \
+                                 fld_quantity, fld_ref_des, fld_remarks, \
+                                 fld_specification_number, \
+                                 fld_subcategory_id \
+                          FROM tbl_system \
+                          WHERE fld_revision_id=%d" % _base_revision
+            _system = self._app.DB.execute_query(_query, None,
+                                                 self._app.ProgCnx)
+
+            # Copy the hardware hierarchy for the new revision.
+            for i in range(len(_system)):
                 if self.chkFailureInfo.get_active():
-                    _query = "SELECT fld_cage_code, fld_category_id, \
-                                     fld_description, \
-                                     fld_failure_rate_active, \
-                                     fld_failure_rate_dormant, \
-                                     fld_failure_rate_software, \
-                                     fld_failure_rate_specified, \
-                                     fld_failure_rate_type, \
-                                     fld_figure_number, \
-                                     fld_lcn, fld_level, fld_manufacturer, \
-                                     fld_mission_time, fld_name, fld_nsn, \
-                                     fld_page_number, fld_parent_assembly, \
-                                     fld_part, fld_part_number, \
-                                     fld_quantity, \
-                                     fld_ref_des, fld_remarks, \
-                                     fld_specification_number, \
-                                     fld_subcategory_id, fld_mtbf_predicted, \
-                                     fld_mtbf_specified, fld_mtbf_lcl, \
-                                     fld_mtbf_ucl, fld_failure_rate_lcl, \
-                                     fld_failure_rate_ucl \
-                              FROM tbl_system \
-                              WHERE fld_revision_id=%d" % _base_revision
-                else:
-                    _query = "SELECT fld_cage_code, fld_category_id, \
-                                     fld_description, fld_figure_number, \
-                                     fld_lcn, fld_level, fld_manufacturer, \
-                                     fld_mission_time, fld_name, fld_nsn, \
-                                     fld_page_number, fld_parent_assembly, \
-                                     fld_part, fld_part_number, \
-                                     fld_quantity, fld_ref_des, fld_remarks, \
-                                     fld_specification_number, \
-                                     fld_subcategory_id \
-                              FROM tbl_system \
-                              WHERE fld_revision_id=%d" % _base_revision
-                _system = self._app.DB.execute_query(_query,
-                                                     None,
-                                                     self._app.ProgCnx)
-
-                # Copy the hardware hierarchy for the new revision.
-                for i in range(len(_system)):
-                    if self.chkFailureInfo.get_active():
-                        _values = (_revision_id, _assembly_id,
-                                   _system[i][0], _system[i][1],
-                                   _system[i][2], _system[i][3],
-                                   _system[i][4], _system[i][5],
-                                   _system[i][6], _system[i][7],
-                                   _system[i][8], _system[i][9],
-                                   _system[i][10], _system[i][11],
-                                   _system[i][12], _system[i][13],
-                                   _system[i][14], _system[i][15],
-                                   _system[i][16], _system[i][17],
-                                   _system[i][18], _system[i][19],
-                                   _system[i][20], _system[i][21],
-                                   _system[i][22], _system[i][23],
-                                   _system[i][24], _system[i][25],
-                                   _system[i][26], _system[i][27],
-                                   _system[i][28], _system[i][29], _who)
-                        _query = "INSERT INTO tbl_system \
-                                  (fld_revision_id, fld_assembly_id, \
-                                   fld_cage_code, fld_category_id, \
-                                   fld_description, fld_failure_rate_active, \
-                                   fld_failure_rate_dormant, \
-                                   fld_failure_rate_software, \
-                                   fld_failure_rate_specified, \
-                                   fld_failure_rate_type, fld_figure_number, \
-                                   fld_lcn, fld_level, fld_manufacturer, \
-                                   fld_mission_time, fld_name, fld_nsn, \
-                                   fld_page_number, fld_parent_assembly, \
-                                   fld_part, fld_part_number, fld_quantity, \
-                                   fld_ref_des, fld_remarks, \
-                                   fld_specification_number, \
-                                   fld_subcategory_id, fld_mtbf_predicted, \
-                                   fld_mtbf_specified, fld_mtbf_lcl, \
-                                   fld_mtbf_ucl, fld_failure_rate_lcl, \
-                                   fld_failure_rate_ucl, fld_entered_by) \
-                                  VALUES (%d, %d, '%s', %d, '%s', %f, %f, \
-                                          %f, %f, %d, '%s', '%s', %d, %d, \
-                                          %f, '%s', '%s', '%s', '%s', %d, \
-                                          '%s', %d, '%s', '%s', '%s', %d, \
-                                          %f, %f, %f, %f, %f, %f, '%s')" % \
-                                 _values
+                    _values = (_revision_id, _assembly_id,
+                               _system[i][0], _system[i][1],
+                               _system[i][2], _system[i][3],
+                               _system[i][4], _system[i][5],
+                               _system[i][6], _system[i][7],
+                               _system[i][8], _system[i][9],
+                               _system[i][10], _system[i][11],
+                               _system[i][12], _system[i][13],
+                               _system[i][14], _system[i][15],
+                               _system[i][16], _system[i][17],
+                               _system[i][18], _system[i][19],
+                               _system[i][20], _system[i][21],
+                               _system[i][22], _system[i][23],
+                               _system[i][24], _system[i][25],
+                               _system[i][26], _system[i][27],
+                               _system[i][28], _system[i][29], _who)
+                    _query = "INSERT INTO tbl_system \
+                              (fld_revision_id, fld_assembly_id, \
+                               fld_cage_code, fld_category_id, \
+                               fld_description, fld_failure_rate_active, \
+                               fld_failure_rate_dormant, \
+                               fld_failure_rate_software, \
+                               fld_failure_rate_specified, \
+                               fld_failure_rate_type, fld_figure_number, \
+                               fld_lcn, fld_level, fld_manufacturer, \
+                               fld_mission_time, fld_name, fld_nsn, \
+                               fld_page_number, fld_parent_assembly, \
+                               fld_part, fld_part_number, fld_quantity, \
+                               fld_ref_des, fld_remarks, \
+                               fld_specification_number, \
+                               fld_subcategory_id, fld_mtbf_predicted, \
+                               fld_mtbf_specified, fld_mtbf_lcl, \
+                               fld_mtbf_ucl, fld_failure_rate_lcl, \
+                               fld_failure_rate_ucl, fld_entered_by) \
+                              VALUES (%d, %d, '%s', %d, '%s', %f, %f, \
+                                      %f, %f, %d, '%s', '%s', %d, %d, \
+                                      %f, '%s', '%s', '%s', '%s', %d, \
+                                      '%s', %d, '%s', '%s', '%s', %d, \
+                                      %f, %f, %f, %f, %f, %f, '%s')" % \
+                             _values
+                    if _system[i][17] == 1:
+                        _part = True
                     else:
-                        _values = (_revision_id, _assembly_id,
-                                   _system[i][0], _system[i][1],
-                                   _system[i][2], _system[i][3],
-                                   _system[i][4], _system[i][5],
-                                   _system[i][6], _system[i][7],
-                                   _system[i][8], _system[i][9],
-                                   _system[i][10], _system[i][11],
-                                   _system[i][12], _system[i][13],
-                                   _system[i][14], _system[i][15],
-                                   _system[i][16], _system[i][17],
-                                   _system[i][18], _who)
-                        _query = "INSERT INTO tbl_system \
-                                  (fld_revision_id, fld_assembly_id, \
-                                   fld_cage_code, fld_category_id, \
-                                   fld_description, fld_figure_number, \
-                                   fld_lcn, fld_level, fld_manufacturer, \
-                                   fld_mission_time, fld_name, fld_nsn, \
-                                   fld_page_number, fld_parent_assembly, \
-                                   fld_part, fld_part_number, fld_quantity, \
-                                   fld_ref_des, fld_remarks, \
-                                   fld_specification_number, \
-                                   fld_subcategory_id, fld_entered_by) \
-                                  VALUES (%d, %d, '%s', %d, '%s', '%s', \
-                                          '%s', %d, %d, %f, '%s', '%s', \
-                                          '%s', '%s', %d, '%s', %d, '%s', \
-                                          '%s', '%s', %d, '%s')" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+                        _part = False
+                else:
+                    _values = (_revision_id, _assembly_id,
+                               _system[i][0], _system[i][1],
+                               _system[i][2], _system[i][3],
+                               _system[i][4], _system[i][5],
+                               _system[i][6], _system[i][7],
+                               _system[i][8], _system[i][9],
+                               _system[i][10], _system[i][11],
+                               _system[i][12], _system[i][13],
+                               _system[i][14], _system[i][15],
+                               _system[i][16], _system[i][17],
+                               _system[i][18], _who)
+                    _query = "INSERT INTO tbl_system \
+                              (fld_revision_id, fld_assembly_id, \
+                               fld_cage_code, fld_category_id, \
+                               fld_description, fld_figure_number, \
+                               fld_lcn, fld_level, fld_manufacturer, \
+                               fld_mission_time, fld_name, fld_nsn, \
+                               fld_page_number, fld_parent_assembly, \
+                               fld_part, fld_part_number, fld_quantity, \
+                               fld_ref_des, fld_remarks, \
+                               fld_specification_number, \
+                               fld_subcategory_id, fld_entered_by) \
+                              VALUES (%d, %d, '%s', %d, '%s', '%s', \
+                                      '%s', %d, %d, %f, '%s', '%s', \
+                                      '%s', '%s', %d, '%s', %d, '%s', \
+                                      '%s', '%s', %d, '%s')" % _values
+                    if _system[i][17] == 1:
+                        _part = True
+                    else:
+                        _part = False
 
-                    _values = (_revision_id, _assembly_id)
-                    _query = "INSERT INTO tbl_allocation \
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+
+                _values = (_revision_id, _assembly_id)
+
+                # Add the item to the prediction table if it's a part.
+                if _part:
+                    _query = "INSERT INTO tbl_prediction \
                               (fld_revision_id, fld_assembly_id) \
                               VALUES (%d, %d)" % _values
                     self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                                commit=True)
 
-                    _query = "INSERT INTO tbl_risk_analysis \
-                              (fld_revision_id, fld_assembly_id) \
-                              VALUES (%d, %d)" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+                _query = "INSERT INTO tbl_allocation \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
 
-                    _query = "INSERT INTO tbl_similar_item \
-                              (fld_revision_id, fld_assembly_id) \
-                              VALUES (%d, %d)" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+                _query = "INSERT INTO tbl_risk_analysis \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
 
-                    _query = "INSERT INTO tbl_fmeca \
-                              (fld_revision_id, fld_assembly_id) \
-                              VALUES(%d, %d)" % _values
-                    self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                               commit=True)
+                _query = "INSERT INTO tbl_similar_item \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES (%d, %d)" % _values
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
 
-                    if self.chkFunctionMatrix.get_active():
-                        _query = "SELECT fld_function_id \
-                                  FROM tbl_functions \
-                                  WHERE fld_revision_id=%d" % _revision_id
-                        _function = self._app.DB.execute_query(_query, None,
+                _query = "INSERT INTO tbl_fmeca \
+                          (fld_revision_id, fld_assembly_id) \
+                          VALUES(%d, %d)" % _values
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+
+                if self.chkFunctionMatrix.get_active():
+                    _query = "SELECT fld_function_id \
+                              FROM tbl_functions \
+                              WHERE fld_revision_id=%d" % _revision_id
+                    _functions = self._app.DB.execute_query(_query, None,
                                                             self._app.ProgCnx)
-                        for i in range(len(_functions)):
-                            _query = "INSERT INTO tbl_functional_matrix \
-                                      (fld_revision_id, fld_assembly_id, \
-                                       fld_function_id) \
-                                      VALUES(%d, %d, %d)" % \
-                                     (_revision_id, _assembly_id,
-                                      _function[i][0])
-                            self._app.DB.execute_query(_query, None,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                    for i in range(len(_functions)):
+                        _query = "INSERT INTO tbl_functional_matrix \
+                                  (fld_revision_id, fld_assembly_id, \
+                                   fld_function_id) \
+                                  VALUES(%d, %d, %d)" % \
+                                 (_revision_id, _assembly_id, _functions[i][0])
+                        self._app.DB.execute_query(_query, None,
+                                                   self._app.ProgCnx,
+                                                   commit=True)
 
-                    _assembly_id += 1
+                _assembly_id += 1
 
         else:
             _values = (_revision_id, _assembly_id, _who)
@@ -567,8 +580,9 @@ class AddRevision(object):
             _module_id = _module_id[0][0] + 1
 
         _query = "INSERT INTO tbl_software \
-                  (fld_revision_id, fld_level_id) \
-                  VALUES (%d, 0)" % _revision_id
+                  (fld_revision_id, fld_level_id, fld_description, \
+                   fld_parent_module) \
+                  VALUES (%d, 0, 'System Software', '-')" % _revision_id
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             _util.rtk_error(_(u"Error creating system software hierarchy."))
