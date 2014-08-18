@@ -6048,11 +6048,11 @@ class Hardware(object):
 
             _index = index - 1000
 
-            if _type == 1:  # Failure mechanism
+            if _type == 1:                  # Failure mechanism
                 self._mechanisms[_id][_index] = i
-            elif _type == 2:  # Control
+            elif _type == 2:                # Control
                 self._fmeca_controls[_id][_index] = i
-            elif _type == 3:  # Action
+            elif _type == 3:                # Action
                 self._fmeca_actions[_id][_index] = i
 
         return False

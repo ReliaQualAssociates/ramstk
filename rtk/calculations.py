@@ -102,7 +102,6 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     |            | Cable Tension              |   50%   |   50%   |
     +------------+----------------------------+---------+---------+
     | Fuses      | Current (Maximum           |   50%   |   70%   |
-    |            +----------------------------+---------+---------+
     |            | Capability)                |         |         |
     +------------+----------------------------+---------+---------+
     | Inductors  | Operating Current          |   60%   |   90%   |
@@ -368,10 +367,10 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                      "90% rated current.\n"
                     r_index += 1
 
-    elif category == 6:                    # Miscellaneous
-        if subcategory == 80:              # Crystal
+    elif category == 6:                     # Miscellaneous
+        if subcategory == 80:               # Crystal
             print "Bug #113: No overstress calculations for crystals."
-        elif subcategory == 81:            # Lamps
+        elif subcategory == 81:             # Lamps
             Voper = partmodel.get_value(partrow, 66)
             Vrated = partmodel.get_value(partrow, 94)
             if Voper >= 0.94 * Vrated:
@@ -379,12 +378,23 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                 reason = reason + str(r_index) + ". Operating voltage > 94% " \
                                                  "rated voltage.\n"
                 r_index += 1
-        elif subcategory == 82:            # Fuse
-            print "Bug #114: No overstress calculations for fuses."
-        elif subcategory == 83:            # Filter
+        elif subcategory == 82:             # Fuse
+            Ioper = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+            if harsh and Ioper >= 0.50 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 50% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Ioper >= 0.70 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 70% " \
+                                                 "rated current.\n"
+                r_index += 1
+        elif subcategory == 83:             # Filter
             print "Bug #115: No overstress calculations for filters."
 
-    elif category == 7:                    # Relay
+    elif category == 7:                     # Relay
         Aidx = partmodel.get_value(partrow, 30)
         Ioper = partmodel.get_value(partrow, 62)
         Irated = partmodel.get_value(partrow, 92)

@@ -1337,7 +1337,7 @@ def set_part_model(category, subcategory):
             from integrated_circuits.vlsi import VLSI
             _part = VLSI()
 
-    elif category == 5:              # Meter
+    elif category == 5:                     # Meter
         if subcategory == 1:
             from meters.meter import ElapsedTime
             _part = ElapsedTime()
@@ -1345,14 +1345,17 @@ def set_part_model(category, subcategory):
             from meters.meter import Panel
             _part = Panel()
 
-    elif category == 6:              # Miscellaneous
+    elif category == 6:                     # Miscellaneous
         if subcategory == 1:
             from miscellaneous.crystal import Crystal
             _part = Crystal()
         elif subcategory == 2:
+            from miscellaneous.filter import Filter
+            _part = Filter()
+        elif subcategory == 3:
             from miscellaneous.fuse import Fuse
             _part = Fuse()
-        elif subcategory == 3:
+        elif subcategory == 4:
             from miscellaneous.lamp import Lamp
             _part = Lamp()
 
