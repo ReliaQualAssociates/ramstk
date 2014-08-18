@@ -104,16 +104,18 @@ class ListWindow(gtk.Window):
         self.set_position(gtk.WIN_POS_NONE)
         self.move((2 * width / 3), 0)
 
+        self.connect('delete_event', self.delete_event)
+
 # Create the gtk.Notebook widget to hold the parts list, RG tests list, program
 # incidents, and survival analyses list.
         self.notebook = gtk.Notebook()
 
-# Find the user's preferred gtk.Notebook tab position.
-        if(_conf.TABPOS[1] == 'left'):
+        # Find the user's preferred gtk.Notebook tab position.
+        if _conf.TABPOS[1] == 'left':
             self.notebook.set_tab_pos(gtk.POS_LEFT)
-        elif(_conf.TABPOS[1] == 'right'):
+        elif _conf.TABPOS[1] == 'right':
             self.notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif(_conf.TABPOS[1] == 'top'):
+        elif _conf.TABPOS[1] == 'top':
             self.notebook.set_tab_pos(gtk.POS_TOP)
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -815,3 +817,18 @@ class ListWindow(gtk.Window):
             self.set_title(_(u"RTK Survival Analyses Lists"))
         else:
             self.set_title(_(u"RTK List Book"))
+
+    def delete_event(self, widget, event, data=None):
+        """
+        Used to quit the RTK application when the X in the upper
+        right corner is pressed.
+
+        :param rtk.winTree winmain: the RTK application main window widget.
+        "param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method.
+        :param str data: any data to pass when exiting the application.
+        """
+
+        gtk.main_quit()
+
+        return False

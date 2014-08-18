@@ -87,4 +87,21 @@ class WorkBookWindow(gtk.Window):
         self.set_position(gtk.WIN_POS_NONE)
         self.move((width / 2), (height / 3))
 
+        self.connect('delete_event', self.delete_event)
+
         self.show_all()
+
+    def delete_event(self, widget, event, data=None):
+        """
+        Used to quit the RTK application when the X in the upper
+        right corner is pressed.
+
+        :param rtk.winTree winmain: the RTK application main window widget.
+        "param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method.
+        :param str data: any data to pass when exiting the application.
+        """
+
+        gtk.main_quit()
+
+        return False
