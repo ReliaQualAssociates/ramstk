@@ -373,7 +373,7 @@ def create_project(widget, app):
     :rtype: boolean
     """
 
-    set_cursor(self._app, gtk.gdk.WATCH)
+    set_cursor(app, gtk.gdk.WATCH)
 
     if _conf.BACKEND == 'mysql':
 
@@ -505,7 +505,7 @@ def create_project(widget, app):
 
         _dialog.destroy()
 
-    set_cursor(self._app, gtk.gdk.LEFT_PTR)
+    set_cursor(app, gtk.gdk.LEFT_PTR)
 
     return False
 
