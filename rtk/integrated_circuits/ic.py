@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-IC is the meta class for all integrated circuit types.
+ic.py is the meta-class for all integrated circuit types.
 """
 
 __author__ = 'Andrew Rowland'

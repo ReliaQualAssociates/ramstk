@@ -782,12 +782,8 @@ class ListWindow(gtk.Window):
                        fld_test_time_lab=%f, fld_thermal_resistance=%f, \
                        fld_tref=%f, fld_voltage_ratio=%f, fld_years=%d \
                    WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                              None,
-                                              self._app.ProgCnx,
-                                              commit=True)
-
-        if not _results_:
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("partlist.py:save_line_item - Failed to save part list information for Assembly ID %d to RTK Program database." % model.get_value(row, self._col_order[1]))
             return True
 

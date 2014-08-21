@@ -3685,8 +3685,11 @@ class Hardware(object):
                 self._component.assessment_inputs_load(self)
 
             else:
-                self.scwReliabilityInputs.get_parent().hide()
-                self.scwStressInputs.get_parent().hide()
+                if self.scwReliabilityInputs.get_parent() is not None:
+                    self.scwReliabilityInputs.get_parent().hide()
+
+                if self.scwStressInputs.get_parent() is not None:
+                    self.scwStressInputs.get_parent().hide()
 
             # Let the user know if the selected part does not have a part
             # category selected.
@@ -4240,9 +4243,9 @@ class Hardware(object):
         self.failure_rate_mission = _model.get_value(_row, self._col_order[30])
         self.failure_rate_percent = _model.get_value(_row, self._col_order[31])
         self.failure_rate_software = _model.get_value(_row,
-                                                       self._col_order[33])
+                                                      self._col_order[33])
         self.failure_rate_specified = _model.get_value(_row,
-                                                        self._col_order[34])
+                                                       self._col_order[34])
         self.failure_rate_type = _model.get_value(_row, self._col_order[35])
         self.figure_number = _model.get_value(_row, self._col_order[36])
         self.humidity = _model.get_value(_row, self._col_order[37])
@@ -4950,32 +4953,32 @@ class Hardware(object):
                           fld_failure_parameter_1=%f, \
                           fld_failure_parameter_2=%f, \
                           fld_failure_parameter_3=%f, \
-                          fld_failure_rate_active=%f, \
-                          fld_failure_rate_dormant=%f, \
-                          fld_failure_rate_mission=%f, \
-                          fld_failure_rate_percent=%f, \
-                          fld_failure_rate_predicted=%f, \
-                          fld_failure_rate_software=%f, \
-                          fld_failure_rate_specified=%f, \
+                          fld_failure_rate_active=%g, \
+                          fld_failure_rate_dormant=%g, \
+                          fld_failure_rate_mission=%g, \
+                          fld_failure_rate_percent=%g, \
+                          fld_failure_rate_predicted=%g, \
+                          fld_failure_rate_software=%g, \
+                          fld_failure_rate_specified=%g, \
                           fld_failure_rate_type=%d, \
                           fld_figure_number='%s', fld_humidity=%f, \
-                          fld_image_file='%s', fld_isolation_fr=%f, \
+                          fld_image_file='%s', fld_isolation_fr=%g, \
                           fld_isolation_percent=%f, fld_lcn='%s', \
                           fld_level=%d, fld_manufacturer=%d, \
-                          fld_mcmt=%f, fld_mission_time=%f, \
-                          fld_mmt=%f, fld_modified_by='%s', \
-                          fld_mpmt=%f, fld_mtbf_mission=%f, \
-                          fld_mtbf_predicted=%f, fld_mtbf_specified=%f, \
-                          fld_mttr=%f, fld_mttr_add_adj_factor=%f, \
-                          fld_mttr_mult_adj_factor=%f, \
-                          fld_mttr_specified=%f, \
-                          fld_mttr_type=%d, fld_mult_adj_factor=%f, \
+                          fld_mcmt=%g, fld_mission_time=%f, \
+                          fld_mmt=%g, fld_modified_by='%s', \
+                          fld_mpmt=%g, fld_mtbf_mission=%g, \
+                          fld_mtbf_predicted=%g, fld_mtbf_specified=%g, \
+                          fld_mttr=%g, fld_mttr_add_adj_factor=%g, \
+                          fld_mttr_mult_adj_factor=%g, \
+                          fld_mttr_specified=%g, \
+                          fld_mttr_type=%d, fld_mult_adj_factor=%g, \
                           fld_name='%s', fld_nsn='%s', \
                           fld_overstress=%d, fld_page_number='%s', \
                           fld_parent_assembly='%s', fld_part=%d, \
                           fld_part_number='%s', \
-                          fld_percent_isolation_group_ri=%f, \
-                          fld_percent_isolation_single_ri=%f, \
+                          fld_percent_isolation_group_ri=%g, \
+                          fld_percent_isolation_single_ri=%g, \
                           fld_quantity=%d, \
                           fld_ref_des='%s', fld_reliability_mission=%f, \
                           fld_reliability_predicted=%f, fld_remarks='%s', \
@@ -7549,7 +7552,8 @@ class Hardware(object):
         _n_children_ = _model_.iter_n_children(row)
         _row_ = _model_.iter_children(row)
 
-        if _model_.get_value(row, self._col_order[35]) == 1:  # Assessed
+        # Assessed
+        if _model_.get_value(row, self._col_order[35]) == 1:
             # Calculate all the children and the sum of their results.
             for i in range(_n_children_):
                 # If it's a component, calculate the model.
@@ -7561,9 +7565,12 @@ class Hardware(object):
                                               _model_, _row_)
 
                     _c_ = _model_.get_value(_row_, self._col_order[13])
-                    _la_ = _model_.get_value(_row_, self._col_order[28])
-                    _ld_ = _model_.get_value(_row_, self._col_order[29])
-                    _ls_ = _model_.get_value(_row_, self._col_order[33])
+                    _la_ = _conf.FRMULT * _model_.get_value(_row_,
+                                                            self._col_order[28])
+                    _ld_ = _conf.FRMULT * _model_.get_value(_row_,
+                                                            self._col_order[29])
+                    _ls_ = _conf.FRMULT * _model_.get_value(_row_,
+                                                            self._col_order[33])
                     _lp_ = _la_
                     _n_parts_ = _model_.get_value(_row_, self._col_order[67])
                     _power_ = _model_.get_value(_row_, self._col_order[83])
@@ -7620,14 +7627,14 @@ class Hardware(object):
 
         # Adjust the active hazard rate with the additive adjustment factor,
         # quantity of items, multiplicative adjustment factor, and duty cycle.
-        _lambdaa_ = ((_lambdaa_ + _aaf_) * _quantity_ * _maf_ * (
-            _duty_cycle_ / 100.0)) / _conf.FRMULT
+        _lambdaa_ = ((_lambdaa_ + _aaf_) * _quantity_ * _maf_ *
+                     (_duty_cycle_ / 100.0))
 
         # Adjust the dormant hazard rate by the quantity of items.
-        _lambdad_ = _lambdad_ * _quantity_ / _conf.FRMULT
+        _lambdad_ = _lambdad_ * _quantity_
 
         # Calculate the software hazard rate.
-        _lambdas_ = _lambdas_ * _quantity_ / _conf.FRMULT
+        _lambdas_ = _lambdas_ * _quantity_
 
         # Calculate the predicted (total) hazard rate.
         _lambdap_ = _lambdaa_ + _lambdad_ + _lambdas_
@@ -7646,6 +7653,7 @@ class Hardware(object):
             _failure_rate_percent_ = 0.0
 
         # Calculate the MTBF and mission MTBF.
+        print _ref_des, _lambdaa_, _lambdad_, _lambdas_, _lambdap_
         try:
             _mtbf_ = 1.0 / _lambdap_
         except ZeroDivisionError:
