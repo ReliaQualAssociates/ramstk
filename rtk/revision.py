@@ -44,11 +44,18 @@ except ImportError:
 import pandas as pd
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
-from _assistants_.adds import AddRevision
-from _reports_.tabular import ExcelReport
+try:
+    import rtk.configuration as _conf
+    import rtk.utilities as _util
+    import rtk.widgets as _widg
+    from rtk._assistants_.adds import AddRevision
+    from rtk._reports_.tabular import ExcelReport
+except ImportError:
+    import configuration as _conf
+    import utilities as _util
+    import widgets as _widg
+    from _assistants_.adds import AddRevision
+    from _reports_.tabular import ExcelReport
 
 # Add localization support.
 try:
@@ -1136,7 +1143,7 @@ class Revision(object):
         :rtype: boolean
         """
 
-        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model = self.treeview.get_model()
 
         _query = "SELECT * FROM tbl_revisions"
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
@@ -1150,10 +1157,11 @@ class Revision(object):
         for i in range(_n_records):
             _model.append(None, _results[i])
 
+        _row = _model.get_iter_root()
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        if _model.get_iter_root() is not None:
-            _path = _model.get_path(_model.get_iter_root())
+        if _row is not None:
+            _path = _model.get_path(_row)
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
@@ -1456,6 +1464,38 @@ class Revision(object):
         self._app.winWorkBook.set_title(_title)
 
         # self.notebook.set_page(0)
+
+        return False
+
+    def _update_tree(self):
+        """
+        Updates the values in the Revision class gtk.TreeView().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_model, _row) = self.treeview.get_selection().get_selected()
+
+        _model.set_value(_row, 1, self.availability)
+        _model.set_value(_row, 2, self.mission_availability)
+        _model.set_value(_row, 3, self.cost)
+        _model.set_value(_row, 4, self.cost_per_failure)
+        _model.set_value(_row, 5, self.cost_per_hour)
+        _model.set_value(_row, 6, self.active_hazard_rate)
+        _model.set_value(_row, 7, self.dormant_hazard_rate)
+        _model.set_value(_row, 8, self.mission_hazard_rate)
+        _model.set_value(_row, 9, self.hazard_rate)
+        _model.set_value(_row, 10, self.software_hazard_rate)
+        _model.set_value(_row, 11, self.mmt)
+        _model.set_value(_row, 12, self.mcmt)
+        _model.set_value(_row, 13, self.mpmt)
+        _model.set_value(_row, 14, self.mission_mtbf)
+        _model.set_value(_row, 15, self.mtbf)
+        _model.set_value(_row, 16, self.mttr)
+        _model.set_value(_row, 18, self.mission_reliability)
+        _model.set_value(_row, 19, self.reliability)
+        _model.set_value(_row, 21, self.n_parts)
 
         return False
 
@@ -2041,13 +2081,13 @@ class Revision(object):
                       SET fld_availability=%f, fld_availability_mission=%f, \
                           fld_cost=%f, fld_cost_failure=%f, \
                           fld_cost_hour=%f, \
-                          fld_failure_rate_active=%f, \
-                          fld_failure_rate_dormant=%f, \
-                          fld_failure_rate_mission=%f, \
-                          fld_failure_rate_predicted=%f, \
-                          fld_failure_rate_software=%f, fld_mmt=%f, \
-                          fld_mcmt=%f, fld_mpmt=%f, fld_mtbf_mission=%f, \
-                          fld_mtbf_predicted=%f, fld_mttr=%f, fld_name='%s', \
+                          fld_failure_rate_active=%g, \
+                          fld_failure_rate_dormant=%g, \
+                          fld_failure_rate_mission=%g, \
+                          fld_failure_rate_predicted=%g, \
+                          fld_failure_rate_software=%g, fld_mmt=%g, \
+                          fld_mcmt=%g, fld_mpmt=%g, fld_mtbf_mission=%g, \
+                          fld_mtbf_predicted=%g, fld_mttr=%g, fld_name='%s', \
                           fld_reliability_mission=%f, \
                           fld_reliability_predicted=%f, fld_remarks='%s', \
                           fld_total_part_quantity=%d, \
@@ -2059,8 +2099,8 @@ class Revision(object):
                                               commit=True):
                 self._app.debug_log.error("revision.py: Failed to save "
                                           "revision %d." %
-                                          model.get_value(
-                                              row, self._lst_col_order[0]))
+                                          model.get_value(row,
+                                                self._lst_col_order[0]))
                 return True
             else:
                 return False
@@ -2378,14 +2418,13 @@ class Revision(object):
 
         from math import exp
 
-        _util.set_cursor(self._app, gtk.gdk.WATCH)
-
         # First attempt to calculate results based on components associated
         # with the selected revision.
         if _conf.MODE == 'developer':
             _results = ([199.03, 0.0000542, 0.00000342, 0.00142, 112,
                          0.0014542, 0.05, 0.4762, 0.416667, 0.08929],)
         else:
+            _util.set_cursor(self._app, gtk.gdk.WATCH)
             _query = "SELECT SUM(fld_cost), SUM(fld_failure_rate_active), \
                              SUM(fld_failure_rate_dormant), \
                              SUM(fld_failure_rate_software), \
@@ -2416,8 +2455,6 @@ class Revision(object):
             _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx,
                                                   commit=False)
-            if _results == '' or not _results or _results is None:
-                return True
 
         # Finally, if that doesn't work, use the system results for the
         # revision.
@@ -2529,32 +2566,10 @@ class Revision(object):
         self.cost_per_failure = self.cost * self.hazard_rate
         self.cost_per_hour = self.cost / _conf.RTK_MTIME
 
-        # Update the Revision class gtk.TreeView().
-        (_model, _row) = self.treeview.get_selection().get_selected()
-
-        _model.set_value(_row, 1, self.availability)
-        _model.set_value(_row, 2, self.mission_availability)
-        _model.set_value(_row, 3, self.cost)
-        _model.set_value(_row, 4, self.cost_per_failure)
-        _model.set_value(_row, 5, self.cost_per_hour)
-        _model.set_value(_row, 6, self.active_hazard_rate)
-        _model.set_value(_row, 7, self.dormant_hazard_rate)
-        _model.set_value(_row, 8, self.mission_hazard_rate)
-        _model.set_value(_row, 9, self.hazard_rate)
-        _model.set_value(_row, 10, self.software_hazard_rate)
-        _model.set_value(_row, 11, self.mmt)
-        _model.set_value(_row, 12, self.mcmt)
-        _model.set_value(_row, 13, self.mpmt)
-        _model.set_value(_row, 14, self.mission_mtbf)
-        _model.set_value(_row, 15, self.mtbf)
-        _model.set_value(_row, 16, self.mttr)
-        _model.set_value(_row, 18, self.mission_reliability)
-        _model.set_value(_row, 19, self.reliability)
-        _model.set_value(_row, 21, self.n_parts)
-
-        self.load_notebook()
-
-        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        if _conf.MODE != 'developer':
+            self._update_tree()
+            self.load_notebook()
+            _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         return False
 

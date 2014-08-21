@@ -23,6 +23,8 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import os
 import sys
 import pango
@@ -51,22 +53,20 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import rtk.configuration as _conf       # pylint: disable=F0401
-    import rtk.utilities as _util           # pylint: disable=F0401
-    import rtk.widgets as _widg             # pylint: disable=F0401
+    import configuration as _conf
+    import utilities as _util
+    import widgets as _widg
 except ImportError:
-    import configuration as _conf           # pylint: disable=F0401
-    import utilities as _util               # pylint: disable=F0401
-    import widgets as _widg                 # pylint: disable=F0401
+    import rtk.configuration as _conf
+    import rtk.utilities as _util
+    import rtk.widgets as _widg
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
 
 

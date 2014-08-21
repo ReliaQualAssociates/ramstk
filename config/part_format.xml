@@ -833,7 +833,8 @@ All rights reserved. -->
             <defaulttitle>Spec. Sheet ID</defaulttitle>
             <usertitle>Spec. Sheet ID</usertitle>
             <datatype>gint</datatype>
-            <position>102</position><widget>text</widget>
+            <position>102</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

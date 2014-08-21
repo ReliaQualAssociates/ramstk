@@ -42,9 +42,14 @@ except ImportError:
 import pango
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
+try:
+    import configuration as _conf
+    import utilities as _util
+    import widgets as _widg
+except ImportError:
+    import rtk.configuration as _conf
+    import rtk.utilities as _util
+    import rtk.widgets as _widg
 
 _ = gettext.gettext
 
