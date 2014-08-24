@@ -21,7 +21,7 @@ try:
     import rtk.calculations as _calc
     import rtk.configuration as _conf
     import rtk.widgets as _widg
-except:
+except ImportError:
     import calculations as _calc
     import configuration as _conf
     import widgets as _widg

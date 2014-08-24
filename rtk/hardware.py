@@ -7653,7 +7653,6 @@ class Hardware(object):
             _failure_rate_percent_ = 0.0
 
         # Calculate the MTBF and mission MTBF.
-        print _ref_des, _lambdaa_, _lambdad_, _lambdas_, _lambdap_
         try:
             _mtbf_ = 1.0 / _lambdap_
         except ZeroDivisionError:

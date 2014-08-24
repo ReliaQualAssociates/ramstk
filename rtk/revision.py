@@ -1725,8 +1725,8 @@ class Revision(object):
         """
         Method to add a new phase to the selected mission.
 
-        :param gtk.Button__button: the gtk.Button() widget that called this
-                                   method.
+        :param gtk.Button __button: the gtk.Button() widget that called this
+                                    method.
         :param gdk.gtk.Event __event: the gdk.gtk.Event() that called this
                                       function.
         :return: False if successful or True if an error is encountered
@@ -2100,7 +2100,7 @@ class Revision(object):
                 self._app.debug_log.error("revision.py: Failed to save "
                                           "revision %d." %
                                           model.get_value(row,
-                                                self._lst_col_order[0]))
+                                                    self._lst_col_order[0]))
                 return True
             else:
                 return False

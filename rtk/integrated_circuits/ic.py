@@ -140,7 +140,6 @@ class IntegratedCircuit(object):
         part.cmbTechnology.connect("changed", self._callback_combo, part, 104)
         part.cmbElements.connect("changed", self._callback_combo, part, 24)
         part.cmbPackage.connect("changed", self._callback_combo, part, 67)
-
         part.txtCommercialPiQ.connect("focus-out-event", self._callback_entry,
                                       part, "float", 79)
         part.txtNumPins.connect("focus-out-event", self._callback_entry,
@@ -327,7 +326,7 @@ class IntegratedCircuit(object):
     def _callback_combo(self, combo, part, idx):
         """
         Callback function for handling Integrated Circuit Class
-        ComboBox changes.
+        gtk.ComboBox() changes.
 
         :param gtk.ComboBox combo: the gtk.ComboBox() calling this method.
         :param rtk.Component part: the current instance of the RTK Component
@@ -376,7 +375,7 @@ class IntegratedCircuit(object):
 
     def _callback_entry(self, entry, event, part, convert, idx):
         """
-        Callback function for handling Integrated Circuit Class Entry
+        Callback function for handling Integrated Circuit Class gtk.Entry()
         changes.
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.

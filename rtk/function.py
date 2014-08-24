@@ -184,7 +184,7 @@ class Function(object):
 
     def create_tree(self):
         """
-        Creates the FUNCTION gtk.TreeView() and connects it to callback
+        Creates the Function gtk.TreeView() and connects it to callback
         functions to handle editting.  Background and foreground colors can be
         set using the user-defined values in the RTK configuration file.
         """
@@ -1309,24 +1309,23 @@ class Function(object):
                 if _prow_ is not None:
                     _parent_ = _model_.get_string_from_iter(_prow_)
 
-            _title_ = _(u"RTK - Add Sibling Functions")
-            _prompt_ = _(u"How many sibling functions to add?")
+            _title = _(u"RTK - Add Sibling Functions")
+            _prompt = _(u"How many sibling functions to add?")
 
         elif level == 1:
             _parent_ = "-"
             if _row_ is not None:
                 _parent_ = _model_.get_string_from_iter(_row_)
 
-            _title_ = _(u"RTK - Add Child Functions")
-            _prompt_ = _(u"How many child functions to add?")
+            _title = _(u"RTK - Add Child Functions")
+            _prompt = _(u"How many child functions to add?")
 
-        _n_functions_ = _util.add_items(_title_, _prompt_)
+        _n_functions_ = _util.add_items(_title, _prompt)
 
-        _query_ = "SELECT fld_assembly_id \
-                   FROM tbl_system \
-                   WHERE fld_revision_id=%d" % self.revision_id
-        _assembly_id_ = self._app.DB.execute_query(_query_,
-                                                   None,
+        _query = "SELECT fld_assembly_id \
+                  FROM tbl_system \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        _assembly_id_ = self._app.DB.execute_query(_query, None,
                                                    self._app.ProgCnx)
 
         for i in range(_n_functions_):
@@ -1334,48 +1333,49 @@ class Function(object):
 
             _conf.RTK_PREFIX[3] = _conf.RTK_PREFIX[3] + 1
 
-            _values_ = (self.revision_id,
-                        "New Function_" + str(i), '', _code, _parent_)
+            _values = (self.revision_id, "New Function_" + str(i), '',
+                       _code, _parent_)
 
-            _query_ = "INSERT INTO tbl_functions \
-                       (fld_revision_id, fld_name, fld_remarks, fld_code, \
-                        fld_parent_id) \
-                       VALUES (%d, '%s', '%s', '%s', '%s')" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
-
-            if _results_ == '' or not _results_ or _results_ is None:
+            _query = "INSERT INTO tbl_functions \
+                      (fld_revision_id, fld_name, fld_remarks, fld_code, \
+                       fld_parent_id) \
+                      VALUES (%d, '%s', '%s', '%s', '%s')" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error adding new function to the open "
+                                  u"RTK program database."))
                 self._app.debug_log.error("function.py: Failed to add new "
                                           "function to function table.")
                 return True
 
             if _conf.BACKEND == 'mysql':
-                _query_ = "SELECT LAST_INSERT_ID()"
+                _query = "SELECT LAST_INSERT_ID()"
             elif _conf.BACKEND == 'sqlite3':
-                _query_ = "SELECT seq \
-                           FROM sqlite_sequence \
-                           WHERE name='tbl_functions'"
-            _function_id_ = self._app.DB.execute_query(_query_,
-                                                       None,
-                                                       self._app.ProgCnx)
+                _query = "SELECT seq \
+                          FROM sqlite_sequence \
+                          WHERE name='tbl_functions'"
+            _function_id = self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx)
 
-            try:
-                for i in range(len(_assembly_id_)):
-                    _query = "INSERT INTO tbl_functional_matrix \
-                              (fld_assembly_id, fld_function_id, \
-                               fld_revision_id) \
-                              VALUES (%d, %d, %d)" % \
-                             (_assembly_id_[i][0], _function_id_[0][0],
-                              self.revision_id)
-                    _results = self._app.DB.execute_query(_query, None,
-                                                          self._app.ProgCnx,
-                                                          commit=True)
-            except TypeError:
-                self._app.debug_log.error("function.py: Failed to add new "
-                                          "function %d to the functional "
-                                          "matrix." % _function_id_[0][0])
+            _err_cnt = 0
+            for i in range(len(_assembly_id_)):
+                _query = "INSERT INTO tbl_functional_matrix \
+                          (fld_assembly_id, fld_function_id, \
+                           fld_revision_id) \
+                          VALUES (%d, %d, %d)" % \
+                         (_assembly_id_[i][0], _function_id[0][0],
+                          self.revision_id)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _err_cnt += 1
+                    self._app.debug_log.error("function.py: Failed to add new "
+                                              "function %d to the functional "
+                                              "matrix." % _function_id_[0][0])
+            if _err_cnt > 0:
+                _util.rtk_error(_(u"Error adding one or more new functions to "
+                                  u"the functional matrix in the RTK program "
+                                  u"database."))
 
         self.load_tree()
         self._load_functional_matrix()
