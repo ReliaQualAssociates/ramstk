@@ -3317,6 +3317,7 @@ class Hardware(object):
             if self.part:
                 self.cmbCategory.set_active(self.category_id)
                 self.cmbSubcategory.set_active(self.subcategory_id)
+
                 self._component = _util.set_part_model(self.category_id,
                                                        self.subcategory_id)
                 self.cmbCategory.show()
@@ -3640,11 +3641,11 @@ class Hardware(object):
             self.cmbCostType.set_active(int(self.cost_type))
             self.txtCost.set_text(str(locale.currency(self.cost)))
 
-            self._component = _util.set_part_model(self.category_id,
-                                                   self.subcategory_id)
-
             # Load the component-specific information.
             if self.part:
+                self._component = _util.set_part_model(self.category_id,
+                                                       self.subcategory_id)
+
                 self.cmbCalcModel.set_active(int(self.calculation_model))
                 self.txtBurnInTemp.set_text(
                     str('{0:0.2g}'.format(self.burnin_temp)))
@@ -4427,7 +4428,7 @@ class Hardware(object):
             _qryDatasets = "SELECT * FROM tbl_dataset \
                             WHERE fld_assembly_id=%d" % self.assembly_id
 
-            self._app.winParts.load_part_tree(_qryParts)
+            #self._app.winParts.load_part_tree(_qryParts)
             self._app.winParts.load_incident_tree(_qryIncidents, None)
             self._app.winParts.load_dataset_tree(_qryDatasets, None)
 
@@ -6020,9 +6021,10 @@ class Hardware(object):
 
             if combo.get_active() > 0:
                 self.subcategory_id = combo.get_active()
-                self._component = _util.set_part_model(self.category_id,
-                                                       self.subcategory_id)
                 if self.part:
+                    self._component = _util.set_part_model(self.category_id,
+                                                           self.subcategory_id)
+
                     self._component.assessment_inputs_create(self,
                                                     self.fxdReliabilityInputs,
                                                     self._component_x[0],
@@ -7534,7 +7536,7 @@ class Hardware(object):
         """
 
         _model_ = self.treeview.get_model()
-
+        _assembly_id = _model_.get_value(row, self._col_order[1])
         _aaf_ = _model_.get_value(row, self._col_order[2])
         _duty_cycle_ = _model_.get_value(row, self._col_order[20])
         _cost_ = _model_.get_value(row, self._col_order[13])
@@ -7554,23 +7556,37 @@ class Hardware(object):
 
         # Assessed
         if _model_.get_value(row, self._col_order[35]) == 1:
+            _lambdad_ = 0.0
             # Calculate all the children and the sum of their results.
             for i in range(_n_children_):
                 # If it's a component, calculate the model.
                 if _model_.get_value(_row_, self._col_order[63]) == 1:
-                    _part_path = self._app.winParts._treepaths[_model_.get_value(_row_, self._col_order[1])]
-                    _partmodel = self._app.winParts.tvwPartsList.get_model()
-                    _partrow = _partmodel.get_iter(_part_path)
-                    self._component.calculate(_partmodel, _partrow,
+                    _assembly_id = _model_.get_value(_row_, self._col_order[1])
+                    _category = _model_.get_value(_row_, self._col_order[11])
+                    _subcategory = _model_.get_value(_row_,
+                                                     self._col_order[78])
+
+                    # Get the full gtk.TreeModel() for the parts list and
+                    # the gtk.TreeIter() in that gtk.TreeModel() associated
+                    # with the assembly ID to be calculated.
+                    _part_model = self._app.winParts.objPartModel
+                    _part_path = self._app.winParts._treepaths[_assembly_id]
+                    _part_row = _part_model.get_iter(_part_path)
+
+                    # Get an instance of the correct component type and pass
+                    # the necessary information to it's calculate method.
+                    self._component = _util.set_part_model(_category,
+                                                           _subcategory)
+                    self._component.calculate(_part_model, _part_row,
                                               _model_, _row_)
 
                     _c_ = _model_.get_value(_row_, self._col_order[13])
                     _la_ = _conf.FRMULT * _model_.get_value(_row_,
-                                                            self._col_order[28])
+                        self._col_order[28])
                     _ld_ = _conf.FRMULT * _model_.get_value(_row_,
-                                                            self._col_order[29])
+                        self._col_order[29])
                     _ls_ = _conf.FRMULT * _model_.get_value(_row_,
-                                                            self._col_order[33])
+                        self._col_order[33])
                     _lp_ = _la_
                     _n_parts_ = _model_.get_value(_row_, self._col_order[67])
                     _power_ = _model_.get_value(_row_, self._col_order[83])
@@ -7630,9 +7646,6 @@ class Hardware(object):
         _lambdaa_ = ((_lambdaa_ + _aaf_) * _quantity_ * _maf_ *
                      (_duty_cycle_ / 100.0))
 
-        # Adjust the dormant hazard rate by the quantity of items.
-        _lambdad_ = _lambdad_ * _quantity_
-
         # Calculate the software hazard rate.
         _lambdas_ = _lambdas_ * _quantity_
 
@@ -7689,6 +7702,7 @@ class Hardware(object):
 
         _cost_per_hour_ = _cost_ / _mission_time_
 
+        #print _assembly_id, _lambdad_
         _model_.set_value(row, 13, _cost_)
         _model_.set_value(row, 14, _cost_per_failure_)
         _model_.set_value(row, 15, _cost_per_hour_)

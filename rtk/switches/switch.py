@@ -47,7 +47,6 @@ class Switch(object):
         Initializes the Switches Component Class.
         """
 
-        self._ready = False
         self.category = 7                   # Category in the rtkcom database.
         self.reason = ''
 

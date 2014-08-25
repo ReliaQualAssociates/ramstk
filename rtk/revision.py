@@ -1177,7 +1177,7 @@ class Revision(object):
                   INNER JOIN tbl_system AS t2 \
                   ON t1.fld_assembly_id=t2.fld_assembly_id \
                   WHERE t2.fld_revision_id=%d" % self.revision_id
-        self._app.winParts.load_part_tree(_query)
+        #self._app.winParts.load_part_tree(_query)
 
         # Populate the environmental profile dictionary.
         _query = "SELECT fld_mission_id, fld_condition_id, fld_condition_name, \
@@ -1621,7 +1621,7 @@ class Revision(object):
             self._app.VALIDATION.load_tree()
             self._app.TESTING.revision_id = self.revision_id
             self._app.TESTING.load_tree()
-            self._app.winParts.load_part_tree(_qryParts_)
+            #self._app.winParts.load_part_tree(_qryParts_)
             # self._app.winParts.load_test_tree(_qryTests_, values)
             # self._app.winParts.load_incident_tree(_qryIncidents_,
             #                                       self.revision_id)

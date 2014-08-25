@@ -79,6 +79,7 @@ class ListWindow(gtk.Window):
 
         # Define public dictionary variables.
         self.parttreepaths = {}
+        self.dicPartValues = {}
 
         # Define public object variables.
         self.objPartModel = None
@@ -131,6 +132,7 @@ class ListWindow(gtk.Window):
                                                                    bg_color,
                                                                    fg_color)
         self.objPartModel = self.tvwPartsList.get_model()
+        self.objFilteredPartModel = self.objPartModel.filter_new()
         if self._parts_list_tab_create():
             self._app.debug_log.error("partlist.py: Failed to create Parts "
                                       "List tab.")
@@ -200,6 +202,9 @@ class ListWindow(gtk.Window):
 
         self.tvwPartsList.connect('button_release_event', self._tree_clicked)
         self.tvwPartsList.connect('row_activated', self._row_activated)
+        #self.objFilteredPartModel.set_visible_func(self._show_part_tree)
+
+        #self.tvwPartsList.set_model(model=self.objFilteredPartModel)
 
         # Create the Parts list.
         scrollwindow = gtk.ScrolledWindow()
@@ -218,9 +223,7 @@ class ListWindow(gtk.Window):
         label.show_all()
         label.set_tooltip_text(_("Displays the list of parts for the selected Revision, Requirement, Function, or Assembly."))
 
-        self.notebook.insert_page(frame,
-                                  tab_label=label,
-                                  position=-1)
+        self.notebook.insert_page(frame, tab_label=label, position=-1)
 
         return False
 
@@ -433,6 +436,13 @@ class ListWindow(gtk.Window):
         self.tvwPartsList.set_model(model=self.objPartModel)
 
         return False
+
+    #def _show_part_tree(self, model, row, data=None):
+    #    """
+    #    """
+
+    #    value = model.get_value(row, 1)
+    #    return value in data
 
     def load_test_tree(self, _query_, _values_):
         """

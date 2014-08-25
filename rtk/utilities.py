@@ -1212,12 +1212,12 @@ def set_part_model(category, subcategory):
     :param int category: the component category for part.
     :param int subcategory: the component sub-category for the part.
     :return: _part
-    :rtype: Component class instance
+    :rtype: rtk.Component()
     """
 
-    if category <= 0 or subcategory <= 0:  # No category or subcategory
+    if category <= 0 or subcategory <= 0:   # No category or subcategory
         _part = None
-    elif category == 1:                    # Capacitor
+    elif category == 1:                     # Capacitor
         if subcategory == 1:
             from capacitors.fixed import CeramicGeneral
             _part = CeramicGeneral()

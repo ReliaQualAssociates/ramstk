@@ -293,14 +293,14 @@ class Sensitive(Switch):
             _quantity = systemmodel.get_value(systemrow, 67)
 
             # Retrieve hazard rate inputs.
-            Aidx = partmodel[5] #.get_value(partrow, 5)
-            Cidx = partmodel[16] #.get_value(partrow, 16)
-            Cycles = partmodel[19] #.get_value(partrow, 19)
-            AD = partmodel[40] #.get_value(partrow, 40)
-            n = partmodel[57] #.get_value(partrow, 57)
-            Ioper = partmodel[62] #.get_value(partrow, 62)
-            Qidx = partmodel[85] #.get_value(partrow, 85)
-            Irated = partmodel[92] #.get_value(partrow, 92)
+            Aidx = partmodel.get_value(partrow, 5)
+            Cidx = partmodel.get_value(partrow, 16)
+            Cycles = partmodel.get_value(partrow, 19)
+            AD = partmodel.get_value(partrow, 40)
+            n = partmodel.get_value(partrow, 57)
+            Ioper = partmodel.get_value(partrow, 62)
+            Qidx = partmodel.get_value(partrow, 85)
+            Irated = partmodel.get_value(partrow, 92)
 
             if AD > 0.002 and Qidx == 1:
                 lambda_b = 0.00045
@@ -356,10 +356,10 @@ class Sensitive(Switch):
              self.reason) = _calc.overstressed(partmodel, partrow,
                                                systemmodel, systemrow)
 
-            partmodel[46] = _hrmodel['lambdab'] #.set_value(partrow, 46, _hrmodel['lambdab'])
-            partmodel[71] = _hrmodel['piCYC'] #.set_value(partrow, 71, _hrmodel['piCYC'])
-            partmodel[72] = _hrmodel['piE'] #.set_value(partrow, 72, _hrmodel['piE'])
-            partmodel[82] = _hrmodel['piL'] #.set_value(partrow, 82, _hrmodel['piL'])
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 71, _hrmodel['piCYC'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 82, _hrmodel['piL'])
 
             systemmodel.set_value(systemrow, 28, _lambdaa)
             systemmodel.set_value(systemrow, 29, _lambdad)
