@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+rotary.py contains the rotary switch component class.
+"""
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
 #       rotary.py is part of The RTK Project
@@ -7,38 +16,51 @@
 #
 # All rights reserved.
 
-import pango
+import gettext
+import locale
+
+from math import exp
 
 try:
-    import relkit.calculations as _calc
-    import relkit.widgets as _widg
-except:
     import calculations as _calc
+    import configuration as _conf
     import widgets as _widg
-
+except ImportError:
+    import rtk.calculations as _calc
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 from switch import Switch
 
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except ImportError:
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
+
+
 class Rotary(Switch):
+    """
+    Rotary Switch Component Class.
+    Covers specifications MIL-S-3786.
 
-    """ Rotary Switch Component Class.
-        Covers specifications MIL-S-3786.
-
-        Hazard Rate Models:
-            1. MIL-HDBK-217F, section 14.3.
-
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 14.3.
     """
 
-    _application = ["", u"Resistive", u"Inductive", u"Lamp"]
-    _construction = ["", u"Ceramic RF Wafers", u"Medium Power Wafers"]
-    _quality = ["", u"MIL-SPEC", u"Lower"]
+    _application = ["", _(u"Resistive"), _(u"Inductive"), _(u"Lamp")]
+    _construction = ["", _(u"Ceramic RF Wafers"), _(u"Medium Power Wafers")]
+    _quality = ["", u"MIL-SPEC", _(u"Lower")]
 
     def __init__(self):
-
-        """ Initializes the Rotary Switch Component Class. """
+        """
+        Initializes the Rotary Switch Component Class.
+        """
 
         Switch.__init__(self)
 
-        self.subcategory = 69                   # Subcategory ID in relkitcom database.
+        self.subcategory = 69               # Subcategory ID in the rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -48,229 +70,310 @@ class Rotary(Switch):
                                15.0, 0.16, 8.2, 22.0, 390.0]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels.append(u"Construction:")
+        self._in_labels.append(_(u"Construction:"))
 
         self._out_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>"
         self._out_labels.append(u"\u03C0<sub>CYC</sub>:")
         self._out_labels.append(u"\u03C0<sub>L</sub>:")
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook calculation input tab with the widgets
+        needed to select inputs for Rotary Switch Component Class prediction
+        calculations.
 
-        """ Populates the RTK Workbook calculation input tab with the
-            widgets needed to select inputs for Rotary Switch Component Class
-            prediction calculations.
-
-            Keyword Arguments:
-            part   -- the RTK COMPONENT object.
-            layout -- the layout widget to contain the display widgets.
-            x_pos  -- the x position of the widgets.
-            y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
+        :param int x_pos: the x position of the input widgets.
+        :param int y_pos: the y position of the first input widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        y_pos = Switch.assessment_inputs_create(self, part, layout,
-                                                x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Switch.assessment_inputs_create(self, part, layout,
+                                                   x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
+        # Create the component specific input widgets.
         part.cmbConstruction = _widg.make_combo(simple=True)
+
+        # Load the gtk.ComboBox()
         for i in range(len(self._construction)):
             part.cmbConstruction.insert_text(i, self._construction[i])
-        part.cmbConstruction.connect("changed",
-                                     self.combo_callback,
-                                     part, 16)
-        layout.put(part.cmbConstruction, x_pos, y_pos)
+
+        # Place the component specific input widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbApplication, _x_pos, _y_pos[0])
+        layout.move(part.txtCycleRate, _x_pos, _y_pos[1])
+        layout.move(part.txtCurrentRated, _x_pos, _y_pos[2])
+        layout.move(part.txtCurrentOper, _x_pos, _y_pos[3])
+        layout.put(part.cmbConstruction, _x_pos, _y_pos[4])
+
+        # Connect the component specific widgets to callback methods.
+        part.cmbConstruction.connect("changed", self._callback_combo, part, 16)
 
         layout.show_all()
 
         return False
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook calculation results tab with the widgets to
+        display Rotary Switch Component Class calculation results.
 
-        """ Populates the RTK Workbook calculation results tab with the
-            widgets to display Toggle and Pushbutton Switch Component Class
-            calculation results.
-
-            Keyword Arguments:
-            part   -- the RTK COMPONENT object.
-            layout -- the layout widget to contain the display widgets.
-            x_pos  -- the x position of the widgets.
-            y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        y_pos = Switch.assessment_results_create(self, part, layout,
-                                                 x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Switch.reliability_results_create(self, part, layout,
+                                                     x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos)
 
-        entry_width = int((int(part.fmt) + 5) * 8)
-
-        part.txtPiCYC = _widg.make_entry(width=entry_width,
-                                         editable=False, bold=True)
-        layout.put(part.txtPiCYC, x_pos, y_pos)
-        y_pos += 30
-
+        # Create the component specific reliability result display widgets.
+        part.txtPiCYC = _widg.make_entry(width=100, editable=False, bold=True)
         # Create the piL Entry.  This value is stored in the pi_u field in the
         # program database.
-        part.txtPiL = _widg.make_entry(width=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiL, x_pos, y_pos)
+        part.txtPiL = _widg.make_entry(width=100, editable=False, bold=True)
+
+        # Place the component specific reliability result display widgets.
+        layout.move(part.txtLambdaB, _x_pos, _y_pos[1])
+        layout.move(part.txtPiE, _x_pos, _y_pos[2])
+        layout.put(part.txtPiCYC, _x_pos, _y_pos[3])
+        layout.put(part.txtPiL, _x_pos, _y_pos[4])
 
         layout.show_all()
 
         return False
 
     def assessment_inputs_load(self, part):
+        """
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
 
-        """ Loads the RTK Workbook calculation input widgets with
-            calculation input information.
-
-            Keyword Arguments:
-            part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        Switch.assessment_inputs_load(self, part)
+        (_model, _row) = Switch.assessment_inputs_load(self, part)
 
-        part.cmbConstruction.set_active(int(part.model.get_value(part.selected_row, 16)))
+        part.cmbConstruction.set_active(int(_model.get_value(_row, 16)))
 
         return False
 
     def assessment_results_load(self, part):
+        """
+        Loads the RTK Workbook calculation results widgets with calculation
+        results.
 
-        """ Loads the RTK Workbook calculation results widgets with
-            calculation results.
-
-            Keyword Arguments:
-            part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        Switch.assessment_results_load(self, part)
+        (_model, _row) = Switch.assessment_results_load(self, part)
 
-        part.txtPiCYC.set_text(str("{0:0.2g}".format(part.model.get_value(part.selected_row, 71))))
-        part.txtPiL.set_text(str(fmt.format(part.model.get_value(part.selected_row, 82))))
+        part.txtPiCYC.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 71))))
+        part.txtPiL.set_text(str(fmt.format(_model.get_value(_row, 82))))
 
         return False
 
-    def calculate_mil_217_count(self, part):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
+        """
+        Performs hazard rate calculations for the Fixed Paper Bypass Capacitor
+        class.
 
-        """ Performs MIL-HDBK-217F part count hazard rate calculations for the
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
             Rotary Switch Component Class.
 
-            Keyword Arguments:
-            part -- the RTK COMPONENT object.
-        """
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        part._hrmodel = {}
-        part._hrmodel['equation'] = "lambdab * piQ"
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piQ"
 
-        model = part.model
-        row = part.selected_row
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        # Retrieve hazard rate inputs.
-        Qidx =model.get_value(row, 85)
-        Eidx = part._app.HARDWARE.model.get_value(part._app.HARDWARE.selected_row, 22)              # Environment index
+            # Retrieve hazard rate inputs.
+            Qidx = partmodel.get_value(partrow, 85)
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
 
-        part._hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
+            _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
 
-        if(Qidx == 1):
-            part._hrmodel['piQ'] = 1.0
-        else:
-            part._hrmodel['piQ'] = 50.0
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(part._hrmodel)
-
-        model.set_value(row, 46, part._hrmodel['lambdab'])
-
-        model = part._app.HARDWARE.model
-        row = part._app.HARDWARE.selected_row
-
-        model.set_value(row, 28, lambdap)
-        model.set_value(row, 88, list(part._hrmodel.items()))
-
-        part._assessment_results_tab_load()
-
-        return False
-
-    def calculate_mil_217_stress(self, part):
-
-        """ Performs MIL-HDBK-217F part stress hazard rate calculations for
-            the Toggle or Pushbutton Switch Component Class.
-
-            Keyword Arguments:
-            part -- the RTK COMPONENT object.
-        """
-
-        from math import exp
-
-        part._hrmodel = {}
-        part._hrmodel['equation'] = "lambdab * piCYC * piL * piE"
-
-        model = part.model
-        row = part.selected_row
-
-        # Retrieve hazard rate inputs.
-        Aidx = model.get_value(row, 5)
-        Cidx = model.get_value(row, 16)
-        Cycles = model.get_value(row, 19)
-        n = model.get_value(row, 40)
-        Ioper = model.get_value(row, 62)
-        Qidx = model.get_value(row, 85)
-        Irated = model.get_value(row, 92)
-
-        # Base hazard rate.
-        if(Qidx == 1):
-            lambda_be = 0.0067
-            if(Cidx == 1):
-                lambda_b = 0.00003
+            if Qidx == 1:
+                _hrmodel['piQ'] = 1.0
             else:
-                lambda_b = 0.00003
-        elif(Qidx == 2):
-            lambda_be = 0.10
-            if(Cidx == 1):
-                lambda_b = 0.02
+                _hrmodel['piQ'] = 50.0
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity / 1000000.0
+
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the Rotary Switch Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _hrmodel = {}
+            _hrmodel['equation'] = "lambdab * piCYC * piL * piE"
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            Aidx = partmodel.get_value(partrow, 5)
+            Cidx = partmodel.get_value(partrow, 16)
+            Cycles = partmodel.get_value(partrow, 19)
+            n = partmodel.get_value(partrow, 40)
+            Ioper = partmodel.get_value(partrow, 62)
+            Qidx = partmodel.get_value(partrow, 85)
+            Irated = partmodel.get_value(partrow, 92)
+
+            # Base hazard rate.
+            if Qidx == 1:
+                lambda_be = 0.0067
+                if Cidx == 1:
+                    lambda_b = 0.00003
+                else:
+                    lambda_b = 0.00003
+            elif Qidx == 2:
+                lambda_be = 0.10
+                if Cidx == 1:
+                    lambda_b = 0.02
+                else:
+                    lambda_b = 0.06
             else:
+                lambda_be = 0.10
                 lambda_b = 0.06
-        else:
-            lambda_be = 0.10
-            lambda_b = 0.06
 
-        part._hrmodel['lambdab'] = lambda_be + n * lambda_b
+            _hrmodel['lambdab'] = lambda_be + n * lambda_b
 
-        # Cycling Rate correction factor.
-        if(Cycles <= 1.0):
-            part._hrmodel['piCYC'] = 1.0
-        else:
-            part._hrmodel['piCYC'] = Cycles
+            # Cycling Rate correction factor.
+            if Cycles <= 1.0:
+                _hrmodel['piCYC'] = 1.0
+            else:
+                _hrmodel['piCYC'] = Cycles
 
-        # Load Stress correction factor.
-        if(Aidx == 1):                          # Resistive
-            K = 0.8
-        elif(Aidx == 2):                        # Inductive
-            K = 0.4
-        elif(Aidx == 3):                        # Lamp
-            K = 0.2
-        else:                                   # Default
-            K = 1.0
+            # Load Stress correction factor.
+            if Aidx == 1:                   # Resistive
+                K = 0.8
+            elif Aidx == 2:                 # Inductive
+                K = 0.4
+            elif Aidx == 3:                 # Lamp
+                K = 0.2
+            else:                           # Default
+                K = 1.0
 
-        S = Ioper / Irated
-        part._hrmodel['piL'] = exp((S / K) ** 2)
+            S = Ioper / Irated
+            _hrmodel['piL'] = exp((S / K) ** 2)
 
-        # Environmental correction factor.
-        idx = part._app.HARDWARE.model.get_value(part._app.HARDWARE.selected_row, 22)
-        part._hrmodel['piE'] = self._piE[idx - 1]
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(part._hrmodel)
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
-        model.set_value(row, 46, part._hrmodel['lambdab'])
-        model.set_value(row, 71, part._hrmodel['piCYC'])
-        model.set_value(row, 72, part._hrmodel['piE'])
-        model.set_value(row, 82, part._hrmodel['piL'])
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
 
-        model = part._app.HARDWARE.model
-        row = part._app.HARDWARE.selected_row
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
 
-        model.set_value(row, 28, lambdap)
-        model.set_value(row, 88, list(part._hrmodel.items()))
+            # Calculate overstresses.
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
 
-        part._assessment_results_tab_load()
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 71, _hrmodel['piCYC'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 82, _hrmodel['piL'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 10)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False
