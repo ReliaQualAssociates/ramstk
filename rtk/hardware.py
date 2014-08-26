@@ -7536,7 +7536,7 @@ class Hardware(object):
         """
 
         _model_ = self.treeview.get_model()
-        _assembly_id = _model_.get_value(row, self._col_order[1])
+
         _aaf_ = _model_.get_value(row, self._col_order[2])
         _duty_cycle_ = _model_.get_value(row, self._col_order[20])
         _cost_ = _model_.get_value(row, self._col_order[13])
@@ -7702,7 +7702,6 @@ class Hardware(object):
 
         _cost_per_hour_ = _cost_ / _mission_time_
 
-        #print _assembly_id, _lambdad_
         _model_.set_value(row, 13, _cost_)
         _model_.set_value(row, 14, _cost_per_failure_)
         _model_.set_value(row, 15, _cost_per_hour_)

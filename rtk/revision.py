@@ -2411,7 +2411,7 @@ class Revision(object):
         cost per operating hour for the selected revision.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                        function.
+                                        method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
