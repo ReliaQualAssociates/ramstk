@@ -604,6 +604,10 @@ class Incident(object):
                                         self._lst_col_order[6])
             self.cmbStatus.connect('changed', self._callback_combo,
                                    self._lst_col_order[9])
+            self.cmbHardware.connect('changed', self._callback_combo,
+                                     self._lst_col_order[16])
+            self.cmbSoftware.connect('changed', self._callback_combo,
+                                     self._lst_col_order[17])
             self.cmbRequestBy.connect('changed', self._callback_combo,
                                       self._lst_col_order[18])
             self.cmbLifeCycle.connect('changed', self._callback_combo,
@@ -1000,8 +1004,8 @@ class Incident(object):
                     self._dic_life_cycle[self.life_cycle])
             except KeyError:
                 self.cmbLifeCycle.set_active(0)
-            self.cmbHardware.set_active(self.hardware_id + 1)
-            self.cmbSoftware.set_active(self.software_id + 1)
+            self.cmbHardware.set_active(self.hardware_id)
+            self.cmbSoftware.set_active(self.software_id)
 
             try:
                 self.cmbRequestBy.set_active(self._dic_users[self.request_by])
@@ -1204,13 +1208,10 @@ class Incident(object):
         gtk.Treeview().  It is called whenever the Incident class
         gtk.TreeView() is clicked or a row is activated.
 
-        :param __treeview: the Incident class gtk.TreeView().
-        :type __treeview: gtk.TreeView
-        :param __path: the path of the activated gtk.TreeIter() in the Incident
-                       class gtk.TreeView().
-        :type __path: string
-        :param __column: the activated gtk.TreeViewColumn().
-        :type __column: gtk.TreeViewColumn
+        :param gtk.TreeView __treeview: the Incident class gtk.TreeView().
+        :param str __path: the path of the activated gtk.TreeIter() in the Incident
+                           class gtk.TreeView().
+        :param gtk.TreeViewColumn __column: the activated gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1309,7 +1310,7 @@ class Incident(object):
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
-
+            print self.hardware_id
             _query = "UPDATE tbl_incident \
                       SET fld_incident_category='%s', fld_incident_type='%s', \
                           fld_short_description='%s', \
@@ -1448,7 +1449,10 @@ class Incident(object):
         #  27       Complete By
         #  29       Life cycle
         (_model, _row) = self.treeview.get_selection().get_selected()
-        _model.set_value(_row, index, combo.get_active_text())
+        if index == 16 or index == 17:
+            _model.set_value(_row, index, combo.get_active())
+        else:
+            _model.set_value(_row, index, combo.get_active_text())
 
         self._update_attributes()
 
