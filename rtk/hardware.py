@@ -4427,10 +4427,9 @@ class Hardware(object):
                             (self.revision_id, self.assembly_id)
             _qryDatasets = "SELECT * FROM tbl_dataset \
                             WHERE fld_assembly_id=%d" % self.assembly_id
-
-            #self._app.winParts.load_part_tree(_qryParts)
-            self._app.winParts.load_incident_tree(_qryIncidents, None)
-            self._app.winParts.load_dataset_tree(_qryDatasets, None)
+            self._app.winParts.load_part_tree(_qryParts)
+            self._app.winParts.load_incident_tree(_qryIncidents)
+            self._app.winParts.load_dataset_tree(_qryDatasets)
 
             self._update_attributes()
             self.load_notebook()

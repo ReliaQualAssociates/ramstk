@@ -1177,7 +1177,15 @@ class Revision(object):
                   INNER JOIN tbl_system AS t2 \
                   ON t1.fld_assembly_id=t2.fld_assembly_id \
                   WHERE t2.fld_revision_id=%d" % self.revision_id
-        #self._app.winParts.load_part_tree(_query)
+        self._app.winParts.load_part_tree(_query)
+
+        _query = "SELECT * FROM tbl_tests \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        self._app.winParts.load_test_tree(_query)
+
+        _query = "SELECT * FROM tbl_incident \
+                  WHERE fld_revision_id=%d" % self.revision_id
+        self._app.winParts.load_incident_tree(_query)
 
         # Populate the environmental profile dictionary.
         _query = "SELECT fld_mission_id, fld_condition_id, fld_condition_name, \
@@ -1190,11 +1198,6 @@ class Revision(object):
             _n_conditions = len(_results)
         except TypeError:
             _n_conditions = 0
-            #self._app.debug_log.error("revision.py._load_environmental_"
-            #                          "profile: Failed to load environmental "
-            #                          "profile for mission %d.  The following "
-            #                          "query was passed:" % _mission_id_)
-            #self._app.debug_log.error(_query_)
 
         for i in range(_n_conditions):
             _data = [list(_row[1:]) for _row in _results if _row[0] == i]
@@ -1598,13 +1601,15 @@ class Revision(object):
 
             # Build the queries to select the components, reliability tests,
             # and program incidents associated with the selected Revision.
-            _qryParts_ = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
-                          FROM tbl_prediction AS t1 \
-                          INNER JOIN tbl_system AS t2 \
-                          ON t1.fld_assembly_id=t2.fld_assembly_id \
-                          WHERE t2.fld_revision_id=%d" % self.revision_id
-            _qryIncidents_ = "SELECT * FROM tbl_incident \
-                              WHERE fld_revision_id=%d" % self.revision_id
+            _qryParts = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
+                         FROM tbl_prediction AS t1 \
+                         INNER JOIN tbl_system AS t2 \
+                         ON t1.fld_assembly_id=t2.fld_assembly_id \
+                         WHERE t2.fld_revision_id=%d" % self.revision_id
+            _qryTests = "SELECT * FROM tbl_tests \
+                         WHERE fld_revision_id=%d" % self.revision_id
+            _qryIncidents = "SELECT * FROM tbl_incident \
+                             WHERE fld_revision_id=%d" % self.revision_id
 
             self._app.REQUIREMENT.save_requirement()
             self._app.REQUIREMENT.load_tree()
@@ -1621,10 +1626,9 @@ class Revision(object):
             self._app.VALIDATION.load_tree()
             self._app.TESTING.revision_id = self.revision_id
             self._app.TESTING.load_tree()
-            #self._app.winParts.load_part_tree(_qryParts_)
-            # self._app.winParts.load_test_tree(_qryTests_, values)
-            # self._app.winParts.load_incident_tree(_qryIncidents_,
-            #                                       self.revision_id)
+            self._app.winParts.load_part_tree(_qryParts)
+            self._app.winParts.load_test_tree(_qryTests)
+            self._app.winParts.load_incident_tree(_qryIncidents)
 
         self._update_attributes()
         self.load_notebook()

@@ -119,7 +119,7 @@ experience. -->
             <datatype>gint</datatype>
             <position>11</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -128,7 +128,7 @@ experience. -->
             <datatype>gint</datatype>
             <position>12</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -137,7 +137,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>13</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -146,7 +146,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>14</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -155,7 +155,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>15</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -164,7 +164,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>16</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -173,7 +173,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>17</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -182,7 +182,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>18</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -191,7 +191,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>19</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -199,7 +199,7 @@ experience. -->
             <usertitle>Location Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>20</position>
-            <editable>1</editable>
+            <editable>0</editable>
             <widget>text</widget>
             <visible>1</visible>
         </column>
@@ -209,7 +209,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>21</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -218,7 +218,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>22</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -227,7 +227,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>23</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -236,7 +236,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>24</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -245,7 +245,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>25</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -254,7 +254,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>26</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -263,7 +263,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>27</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -272,7 +272,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>28</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -281,7 +281,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>29</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -290,7 +290,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>30</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -299,7 +299,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>31</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -308,7 +308,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>32</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
@@ -317,7 +317,7 @@ experience. -->
             <datatype>gfloat</datatype>
             <position>33</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>

@@ -285,13 +285,17 @@ class RTK(object):
 
         self.winTree.load_trees(self)
 
-        # TODO: Its a hack.  Need to fix this.
+# TODO: Loading these trees is a hack.  Need to fix this once I understand WTF is going on.
         _query = "SELECT t1.*, t2.fld_part_number, t2.fld_ref_des \
                   FROM tbl_prediction AS t1 \
                   INNER JOIN tbl_system AS t2 \
                   ON t1.fld_assembly_id=t2.fld_assembly_id \
                   WHERE t2.fld_revision_id=%d" % self.REVISION.revision_id
         self.winParts.load_part_tree(_query)
+
+        _query = "SELECT * FROM tbl_incident \
+                  WHERE fld_revision_id=%d" % self.REVISION.revision_id
+        self.winParts.load_incident_tree(_query)
 
         #if _conf.RTK_MODULES[0] == 1:       # Revisions
         #    self.REVISION.treeview.grab_focus()

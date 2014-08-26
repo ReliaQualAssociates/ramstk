@@ -1506,11 +1506,9 @@ class Testing(object):
         :rtype: boolean
         """
 
-        _query_ = "SELECT * FROM tbl_tests \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_tests \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results_ = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             self.n_tests = len(_results_)
         except TypeError:
