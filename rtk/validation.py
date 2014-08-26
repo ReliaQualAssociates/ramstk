@@ -72,6 +72,36 @@ class Validation(object):
     """
     The Validation class is used to represent the verification and validation
     tasks for the system being analyzed.
+
+    :ivar _dic_tasks: Dictionary to to carry the validation task type indices.
+    Key is the task ID; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Ordinal Start Date        |
+    +-------+---------------------------+
+    |   1   | Ordinal End Date          |
+    +-------+---------------------------+
+    |   2   | Minimum Task Time         |
+    +-------+---------------------------+
+    |   3   | Likely Task Time          |
+    +-------+---------------------------+
+    |   4   | Maximum Task Time         |
+    +-------+---------------------------+
+    |   5   | % Complete                |
+    +-------+---------------------------+
+    |   6   | |
+    +-------+---------------------------+
+    |   7   | Minimum Task Cost         |
+    +-------+---------------------------+
+    |   8   | Likely Task Cost          |
+    +-------+---------------------------+
+    |   9   | Maximum Task Cost         |
+    +-------+---------------------------+
+    |  10   | |
+    +-------+---------------------------+
+
     """
 
     #_ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
@@ -99,8 +129,6 @@ class Validation(object):
 
         # Define private VALIDATION class dictionary attributes.
         self._dic_types = {}
-        """Dictionary to carry the validation task type indices.  Key is the
-        noun name of the task type; value is the integer index."""
         self._dic_tasks = {}                # All task information.
         self._dic_status = {}               # Status of tasks.
 
@@ -829,6 +857,7 @@ class Validation(object):
                 _index_ = 0
 
             try:
+                self.validation_id = _model_.get_value(_row_, 1)
                 self.txtID.set_text(str(_model_.get_value(_row_, 1)))
                 _textbuffer = self.txtTask.get_child().get_child().get_buffer()
                 _textbuffer.set_text(_model_.get_value(_row_, 2))
@@ -969,6 +998,7 @@ class Validation(object):
             _y3 = [sum([_a[4] for _a in _tasks])]
             _y4 = [sum([_a[3] for _a in _tasks])]
         except ValueError:
+
             _x = [719163]
             _y1 = [0]
             _y2 = [0]
@@ -1417,12 +1447,18 @@ class Validation(object):
             except ValueError:
                 _text_ = ""
 
-                # Update the Validation Tree.
+        # Update the Validation Tree.
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         try:
             _model_.set_value(_row_, index, _text_)
         except TypeError:
             print index
+
+        # Update the ordinal start and end dates in the task dictionary.
+        if index == 10 or index == 11:
+            _text_ = datetime.strptime(entry.get_text(),
+                                       '%Y-%m-%d').toordinal()
+            self._dic_tasks[self.validation_id][index - 10] = _text_
 
         # Calculate task time estimates.
         if index == 13 or index == 14 or index == 15:
