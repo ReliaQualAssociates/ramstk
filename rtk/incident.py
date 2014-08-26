@@ -127,6 +127,16 @@ class Incident(object):
     """
     The Incident class is used to represent the field incidents tasks logged
     against a system being analyzed.
+
+    :ivar _dic_assemblies: Dictionary to keep the hardware item names and id's
+                           in-sync with the system table in the database.  The
+                           key is the assembly ID from the system table and the
+                           value is the noun name of the assembly.  This
+                           dictionary is used to set the value displayed in the
+                           affected hardware gtk.ComboBox() and ensures the
+                           assembly ID saved to the incidents table is the
+                           same as the one in the system table rather than the
+                           index in the affected hardware gtk.ComboBox().
     """
 
     def __init__(self, application):
@@ -147,6 +157,7 @@ class Incident(object):
         self._dic_status = {"": 0}
         self._dic_life_cycle = {"": 0}
         self._dic_users = {"": 0}
+        self._dic_assemblies = {}
 
         # Define private Incident class list attributes.
         self._lst_col_order = []
@@ -206,7 +217,7 @@ class Incident(object):
         self.chkAccepted = _widg.make_check_button(label=_(u"Accepted"))
         self.chkReviewed = _widg.make_check_button(label=_(u"Reviewed"))
 
-        self.cmbHardware = _widg.make_combo()
+        self.cmbHardware = _widg.make_combo(simple=False)
         self.cmbSoftware = _widg.make_combo()
         self.cmbCategory = _widg.make_combo()
         self.cmbType = _widg.make_combo()
@@ -421,8 +432,8 @@ class Incident(object):
             displaying general information related to the selected incident.
 
             :param rtk.Incident self: the current instance of a Incident class.
-            :param notebook: the Incident class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param gtk.Notebook notebook: the Incident class gtk.Notebook()
+                                          widget.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -604,8 +615,7 @@ class Incident(object):
                                         self._lst_col_order[6])
             self.cmbStatus.connect('changed', self._callback_combo,
                                    self._lst_col_order[9])
-            self.cmbHardware.connect('changed', self._callback_combo,
-                                     self._lst_col_order[16])
+            self.cmbHardware.connect('changed', self._callback_combo, 16)
             self.cmbSoftware.connect('changed', self._callback_combo,
                                      self._lst_col_order[17])
             self.cmbRequestBy.connect('changed', self._callback_combo,
@@ -707,10 +717,10 @@ class Incident(object):
             Function to create the Incident class gtk.Notebook() page for
             displaying the analysis of the selected incident.
 
-            :param self: the current instance of the Incident class.
-            :type self: rtk.Incident
-            :param notebook: the Incident class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Incident self: the current instance of the
+                                      rtk.Incident() class.
+            :param gtk.Notebook notebook: the Incident class gtk.Notebook()
+                                          widget.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -959,11 +969,14 @@ class Incident(object):
             _col = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _col)
 
-        _query = "SELECT fld_name \
+        _query = "SELECT fld_name, fld_assembly_id, fld_parent_assembly \
                   FROM tbl_system \
-                  WHERE fld_part=0"
+                  WHERE fld_part=0 \
+                  AND fld_revision_id=%d" % self.revision_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
-        _widg.load_combo(self.cmbHardware, _results, simple=True)
+        _widg.load_combo(self.cmbHardware, _results, simple=False)
+        for i in range(len(_results)):
+            self._dic_assemblies[_results[i][1]] = i + 1
 
         return False
 
@@ -986,6 +999,11 @@ class Incident(object):
             self.chkAccepted.set_active(self.accepted)
 
             try:
+                self.cmbHardware.set_active(
+                    self._dic_assemblies[self.hardware_id])
+            except KeyError:
+                self.cmbHardware.set_active(0)
+            try:
                 self.cmbCategory.set_active(
                     self._dic_category[self.incident_category])
             except KeyError:
@@ -1004,7 +1022,6 @@ class Incident(object):
                     self._dic_life_cycle[self.life_cycle])
             except KeyError:
                 self.cmbLifeCycle.set_active(0)
-            self.cmbHardware.set_active(self.hardware_id)
             self.cmbSoftware.set_active(self.software_id)
 
             try:
@@ -1310,7 +1327,7 @@ class Incident(object):
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
-            print self.hardware_id
+
             _query = "UPDATE tbl_incident \
                       SET fld_incident_category='%s', fld_incident_type='%s', \
                           fld_short_description='%s', \
@@ -1449,8 +1466,17 @@ class Incident(object):
         #  27       Complete By
         #  29       Life cycle
         (_model, _row) = self.treeview.get_selection().get_selected()
-        if index == 16 or index == 17:
-            _model.set_value(_row, index, combo.get_active())
+        if index == 16: # or index == 17:
+            _combo_model = combo.get_model()
+            _combo_row = combo.get_active_iter()
+            try:
+                _item_id = int(_combo_model.get_value(_combo_row, 1))
+            except TypeError:
+                _item_id = 0
+            _model.set_value(_row, index, _item_id)
+
+        elif index == 17:
+            pass
         else:
             _model.set_value(_row, index, combo.get_active_text())
 

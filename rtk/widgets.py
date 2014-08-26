@@ -286,16 +286,14 @@ def load_combo(combo, entries, simple=True, index=0):
     """
     Utility function to load gtk.ComboBox widgets.
 
-    :param combo: the gtk.ComboBox() to load.
-    :type combo: gtk.ComboBox
-    :param entries: the information to load into the gtk.ComboBox().
-    :type entries: list of strings
-    @keyword simple: indicates whether the load is simple (single column)
-                     or complex (multiple columns).
-    :type simple: boolean
-    @keyword index: the index in the list to display.  Only used when doing a
-                    simple load.  Default is 0.
-    :type index: integer
+    :param gtk.ComboBox combo: the gtk.ComboBox() to load.
+    :param list entries: the information to load into the gtk.ComboBox().
+    :keyword boolean simple: indicates whether the load is simple (single
+                             column) or complex (multiple columns).  For
+                             complex gtk.ComboBox(), the displayed value will
+                             be in column 0.
+    :keyword int index: the index in the list to display.  Only used when doing
+                        a simple load.  Default is 0.
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
