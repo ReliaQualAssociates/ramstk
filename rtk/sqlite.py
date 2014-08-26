@@ -42,8 +42,7 @@ class SQLite3Interface(object):
         """
         Opens a connections to a database.
 
-        @param database: the absolute path to the database to be opened.
-        @type database: string
+        :param STR database: the absolute path to the database to be opened.
         """
 # TODO: Make the connection object an instance attribute.
         cnx = sqlite3.connect(database, isolation_level=None)
@@ -82,22 +81,31 @@ class SQLite3Interface(object):
                 if not commit:
                     try:
                         results = cur.fetchall()
-                    except sqlite3.Error, e:    # pylint: disable=C0103
-                        self._app.debug_log.error(e)
-                        self._app.debug_log.error(query)
+                    except sqlite3.Error, e:
+                        try:
+                            self._app.debug_log.error(e)
+                            self._app.debug_log.error(query)
+                        except AttributeError:
+                            pass
                         results = False
                 else:
                     try:
                         cnx.commit()
                         results = True
-                    except sqlite3.Error, e:    # pylint: disable=C0103
-                        self._app.debug_log.error(e.args[0])
-                        self._app.debug_log.error(query)
+                    except sqlite3.Error, e:
+                        try:
+                            self._app.debug_log.error(e.args[0])
+                            self._app.debug_log.error(query)
+                        except AttributeError:
+                            pass
                         results = False
 
-            except sqlite3.Error, e:            # pylint: disable=C0103
-                self._app.debug_log.error(e)
-                self._app.debug_log.error(query)
+            except sqlite3.Error, e:
+                try:
+                    self._app.debug_log.error(e)
+                    self._app.debug_log.error(query)
+                except AttributeError:
+                    pass
                 results = False
 
             cur.close()

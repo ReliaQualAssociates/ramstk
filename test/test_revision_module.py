@@ -47,6 +47,9 @@ class TestRevision(unittest.TestCase):
         _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
         self.ComCnx = self.COMDB.get_connection(_database)
 
+        self.DB = _sqlite.SQLite3Interface(self)
+        self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO[2])
+
         self._revision = Revision(self)
 
     def test_revision_create(self):

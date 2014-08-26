@@ -47,6 +47,10 @@ class TestFunction(unittest.TestCase):
         _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
         self.ComCnx = self.COMDB.get_connection(_database)
 
+        self.DB = _sqlite.SQLite3Interface(self)
+        _database = _conf.PROG_DIR + '/TestDB.rtk'
+        self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO[2])
+
         self._DUT = Function(self)
 
     def test_function_create(self):
@@ -84,4 +88,12 @@ class TestFunction(unittest.TestCase):
         self.assertEqual(self._DUT.level, 0)
         self.assertEqual(self._DUT.safety_critical, 1)
 
+    def test_calculate(self):
+        """
+        Test of the Function class calculations.
+        """
+
+        _results = self._DUT.calculate(None)
+
+        self.assertEqual(_results, 1)
 
