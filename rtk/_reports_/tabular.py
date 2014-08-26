@@ -65,7 +65,6 @@ class ExcelReport(object):
             self._styHeaders = xlwt.XFStyle()
             self._styHeaders.font = _font
 
-
     def _get_worksheet(self, sheet_name):
         """
         Method to get the worksheet object from the dictionary of worksheets.
@@ -92,6 +91,8 @@ class ExcelReport(object):
         :param xlwt.Style style: font and other formatting information.
         :param int srow: the starting row in the worksheet.
         :param int scol: the starting column in the worksheet.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if style is None:
@@ -99,6 +100,8 @@ class ExcelReport(object):
 
         _worksheet = self._get_worksheet(sheet_name)
         _worksheet.write(srow, scol, title, style)
+
+        return False
 
     def write_metadata(self, metadata, sheet_name, style=None, srow=0, scol=0):
         """
@@ -119,6 +122,8 @@ class ExcelReport(object):
         :param xlwt.Style style: font and other formatting information.
         :param int srow: the starting row in the worksheet.
         :param int scol: the starting column in the worksheet.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if style is None:
@@ -129,6 +134,8 @@ class ExcelReport(object):
             _worksheet.write(srow, scol, _col, style)
             _worksheet.write(srow, scol + 1, metadata[_col][0])
             srow += 1
+
+        return False
 
     def write_content(self, content, sheet_name, style=None, srow=0, scol=0):
         """
@@ -143,6 +150,8 @@ class ExcelReport(object):
         :param xlwt.Style style: font and other formatting information.
         :param int srow: the starting row in the worksheet.
         :param int scol: the starting column in the worksheet.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if style is None:
@@ -156,6 +165,8 @@ class ExcelReport(object):
                 _worksheet.write(i, scol, content[_col][_row])
                 i += 1
             scol += 1
+
+        return False
 
     def close(self):
         """

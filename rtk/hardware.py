@@ -7893,14 +7893,31 @@ class Hardware(object):
         elif menuitem.get_label() == 'Similar Item Analysis Report':
             _title = 'Similar Item Analysis Report'
 
+            _metadata = pd.DataFrame([(self.name, _today)],
+                                     columns=['Parent Assembly',
+                                              'Report Date'])
+
             _model = self.tvwSIA.get_model()
             _row = _model.get_iter_root()
 
-            _data = pd.DataFrame(_data,
-                                 columns=['Requirement ID', 'Task ID',
-                                          'Task Description',
-                                          'Start Date', 'Due Date',
-                                          '% Complete'])
+            i = 0
+            _position = []
+            _headers = []
+            for _column in self.tvwSIA.get_columns():
+                if _column.get_visible():
+                    _position.append(i)
+                    _headers.append(_column.get_widget().get_text())
+                i += 1
+
+            _data = []
+            while _row is not None:
+                _record = []
+                for _pos in _position:
+                    _record.append(_model.get_value(_row, _pos))
+                _data.append(tuple(_record))
+                _row = _model.iter_next(_row)
+
+            _data = pd.DataFrame(_data, columns=_headers)
 
             # Write the requirements list to the file.
             _writer.write_title(_title, self.name, srow=0, scol=0)

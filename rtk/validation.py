@@ -67,7 +67,6 @@ _ = gettext.gettext
 matplotlib.use('GTK')
 
 
-# noinspection PyUnresolvedReferences
 class Validation(object):
     """
     The Validation class is used to represent the verification and validation
@@ -104,32 +103,32 @@ class Validation(object):
 
     """
 
-    #_ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
-    #                  _(u"Does this activity provide quantitative strength information as an output?"),
-    #                  _(u"Does this activity provide operating environment information as an output?"),
-    #                  _(u"Hardware item configuration/architecture"),
-    #                  _(u"Hardware item failure modes"),
-    #                  _(u"Hardware item failure mechanisms"),
-    #                  _(u"Hardware item failure causes"),
-    #                  _(u"Hardware item failure times"),
-    #                  _(u"Hardware item Part quality"),
-    #                  _(u"Hardware item aging/degradation information"),
-    #                  _(u"Hardware item design requirements and/or goals"),
-    #                  _(u"")]
+    # _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
+    #                   _(u"Does this activity provide quantitative strength information as an output?"),
+    #                   _(u"Does this activity provide operating environment information as an output?"),
+    #                   _(u"Hardware item configuration/architecture"),
+    #                   _(u"Hardware item failure modes"),
+    #                   _(u"Hardware item failure mechanisms"),
+    #                   _(u"Hardware item failure causes"),
+    #                   _(u"Hardware item failure times"),
+    #                   _(u"Hardware item Part quality"),
+    #                   _(u"Hardware item aging/degradation information"),
+    #                   _(u"Hardware item design requirements and/or goals"),
+    #                   _(u"")]
 
     def __init__(self, application):
         """
         Initializes the Validation class.
 
-        :param application: the current instance of the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
-        # Define private VALIDATION class attributes.
+        # Define private Validation class attributes.
         self._app = application
 
         # Define private VALIDATION class dictionary attributes.
         self._dic_types = {}
-        self._dic_tasks = {}                # All task information.
+        self._dic_tasks = {}
         self._dic_status = {}               # Status of tasks.
 
         # Define private Validation class list attributes.
@@ -998,7 +997,6 @@ class Validation(object):
             _y3 = [sum([_a[4] for _a in _tasks])]
             _y4 = [sum([_a[3] for _a in _tasks])]
         except ValueError:
-
             _x = [719163]
             _y1 = [0]
             _y2 = [0]
@@ -1045,7 +1043,8 @@ class Validation(object):
         # identified as a Reliability Assessment.  Add an annotation box
         # showing the minimum required and goal values for each milestone.
         for i in range(len(_assess_dates)):
-            self.axAxis1.axvline(x=_assess_dates[i], ymin=0, ymax=1.05 * _y3[0], color='m',
+            self.axAxis1.axvline(x=_assess_dates[i], ymin=0,
+                                 ymax=1.05 * _y3[0], color='m',
                                  linewidth=2.5, linestyle=':')
 
         for i in range(len(_targets)):
@@ -1065,8 +1064,7 @@ class Validation(object):
                                       alpha=0.5,
                                       patchA=None,
                                       patchB=Ellipse((2, -1), 0.5, 0.5),
-                                      relpos=(0.2, 0.5))
-                                  )
+                                      relpos=(0.2, 0.5)))
 
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),

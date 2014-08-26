@@ -17,42 +17,64 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 import unittest
 import os
 import sys
+import pandas as pd
 sys.path.insert(0, os.path.abspath(".."))
 
-from rtk.revision import Revision
-from rtk._reports_.tabular import *
+from rtk._reports_.tabular import ExcelReport
 
 
 class TestAnalysisReports(unittest.TestCase):
 
-    xcloutfile = '/home/andrew/RTKTestOutput'
+    xcloutfile = '/home/andrew/RTKTestOutput.xls'
 
-    data = {0: ['Assembly', 'Failure Intensity',
-                'Design Change Description', 'Design Factor',
-                'Manufacturing Change Description', 'Manufacturing Factor',
-                'Operation Change Description', 'Operation Factor',
-                'Loads/Stresses Change Description', 'Loading Factor',
-                'Serviceability Change Description', 'Serviceability Factor',
-                'Supply Chain Change Description', 'Supply Chain Factor'],
-            1: ['Example Sub-System 1', 0.00036,
-                'No changes', 1.0,
-                'No changes', 1.0,
-                'No changes', 1.0,
-                'No changes', 1.0,
-                'No changes', 1.0,
-                'No changes', 1.0]}
+    data = pd.DataFrame([['Example Sub-System 1', 0.00036],
+                         ['No changes', 1.0], ['No changes', 1.0],
+                         ['No changes', 1.0], ['No changes', 1.0],
+                         ['No changes', 1.0], ['No changes', 1.0]],
+                        columns=['Assembly', 'Failure Intensity'])
 
-    metadata = {0: {'Assembly:': 'Example Sub-System 1',
-                    'Report Date:': '2014-06-28', 'sheet': 'Test Sheet'}}
+    metadata = pd.DataFrame([(0, 'Test Metadata', 100.0, '2014-01-01')],
+                            columns=['Test Output ID', 'Test',
+                                     'Test Time', 'Report Date'])
 
-    def test_tabular_report_data_metadata_title(self):
+    def setUp(self):
         """
-        Test of the simple tabular report generation function
-        passing data, metadata, and a title.
+        Setting up the analysis reports test fixtures.
         """
 
-        self.assertFalse(simple_tabular_report(self.data,
-                                               self.xcloutfile + '1.xls',
-                                               metadata=self.metadata,
-                                               title='Test Report',
-                                               f_format=3))
+        self._DUT = ExcelReport(self.xcloutfile, engine='xlwt')
+
+    def test_create_excel_writer(self):
+        """
+        Test that the tabular report __init__ function returns an instance
+        of ExcelReport.
+        """
+
+        self.assertTrue(isinstance(self._DUT, ExcelReport))
+
+    def test_write_title(self):
+        """
+        Test that the ExcelReport class can write the report title to file.
+        """
+
+        self.assertFalse(self._DUT.write_title("Test Report", 'Sheet 1',
+                                               srow=0, scol=0))
+        self._DUT.book.save(self.xcloutfile)
+
+    def test_write_metadata(self):
+        """
+        Test that the ExcelReport class can write the metadata to file.
+        """
+
+        self.assertFalse(self._DUT.write_metadata(self.metadata, 'Sheet 1',
+                                                  srow=3, scol=0))
+        self._DUT.book.save(self.xcloutfile)
+
+    def test_write_content(self):
+        """
+        Test that the ExcelReport class can write the contents to file.
+        """
+
+        self.assertFalse(self._DUT.write_content(self.data, 'Sheet 1',
+                                                 srow=12, scol=0))
+        self._DUT.book.save(self.xcloutfile)
