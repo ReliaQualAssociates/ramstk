@@ -102,18 +102,18 @@ class Mechanical(object):
                      [2.0, 5.0, 44.0, 24.0, 78.0,
                       15.0, 20.0, 28.0, 38.0, 140.0, 1.0, 72.0, 200.0, 0.0]]
         self._piQ = [0.10, 0.30, 0.45, 0.60, 1.0, 1.5, 3.0, 3.0]
-        self._lambdab_count = [[0.13, 0.28, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0,
-                                7.0, 0.66, 3.5, 10.0, 0.0],
-                               [0.43, 0.89, 6.9, 3.6, 12.0, 3.4, 4.4, 6.2, 6.7,
-                                22.0, 0.21, 11.0, 32.0, 0.0],
-                               [0.13, 0.26, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0,
-                                7.0, 0.66, 3.5, 10.0, 0.0],
-                               [0.11, 0.23, 1.8, 0.92, 3.3, 0.96, 1.2, 2.1,
-                                2.3, 6.5, 0.54, 3.0, 9.0, 0.0],
-                               [0.29, 0.60, 4.8, 2.4, 8.2, 2.3, 2.9, 4.1, 4.5,
-                                15.0, 0.14, 7.6, 22.0, 0.0],
-                               [0.88, 1.8, 14.0, 7.4, 26.0, 7.1, 9.1, 13.0,
-                                14.0, 46.0, 0.44, 24.0, 67.0, 0.0]]
+        self._lambdab_count =[[0.13, 0.28, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0,
+                               7.0, 0.66, 3.5, 10.0, 0.0],
+                              [0.43, 0.89, 6.9, 3.6, 12.0, 3.4, 4.4, 6.2, 6.7,
+                               22.0, 0.21, 11.0, 32.0, 0.0],
+                              [0.13, 0.26, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0,
+                               7.0, 0.66, 3.5, 10.0, 0.0],
+                              [0.11, 0.23, 1.8, 0.92, 3.3, 0.96, 1.2, 2.1, 2.3,
+                               6.5, 0.54, 3.0, 9.0, 0.0],
+                              [0.29, 0.60, 4.8, 2.4, 8.2, 2.3, 2.9, 4.1, 4.5,
+                               15.0, 0.14, 7.6, 22.0, 0.0],
+                              [0.88, 1.8, 14.0, 7.4, 26.0, 7.1, 9.1, 13.0,
+                               14.0, 46.0, 0.44, 24.0, 67.0, 0.0]]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
         # Label text for input data.
@@ -297,18 +297,18 @@ class Mechanical(object):
             layout.remove(_child)
 
         # Create and place all the labels.
-        # (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[:2], layout,
-        #                                      5, y_pos)
+        #(_x_pos, _y_pos) = _widg.make_labels(self._out_labels[:2], layout,
+        #                                     5, y_pos)
 
         # Create the stress result display widgets.
-        # part.txtTRise = _widg.make_entry(editable=False, bold=True)
-        # part.txtTJunc = _widg.make_entry(editable=False, bold=True)
+        #part.txtTRise = _widg.make_entry(editable=False, bold=True)
+        #part.txtTJunc = _widg.make_entry(editable=False, bold=True)
 
         # Place the stress result display widgets.
-        # layout.put(part.txtTRise, 155, 305)
-        # layout.put(part.txtTJunc, 155, 335)
+        #layout.put(part.txtTRise, 155, 305)
+        #layout.put(part.txtTJunc, 155, 335)
 
-        # layout.show_all()
+        #layout.show_all()
 
         return False
 
@@ -412,7 +412,8 @@ class Mechanical(object):
             part.cmbConstruction.get_model().clear()
             for i in range(len(self._construction[_index2 - 1][_index - 1])):
                 part.cmbConstruction.insert_text(i,
-                                self._construction[_index2 - 1][_index - 1][i])
+                    self._construction[_index2 - 1][_index - 1][i])
+
 
         elif idx == 85:                     # Quality
             if part.txtCommercialPiQ.get_text() == "":
@@ -428,7 +429,7 @@ class Mechanical(object):
             part.cmbApplication.get_model().clear()
             for i in range(len(self._application[_index - 1])):
                 part.cmbApplication.insert_text(i,
-                                            self._application[_index - 1][i])
+                    self._application[_index - 1][i])
 
         return False
 
@@ -555,14 +556,6 @@ class Mechanical(object):
                         Sidx = 0
                 else:
                     Sidx = 0
-            elif Ridx == 3:
-                if Aidx == 2:
-                    if Cidx == 4 or Cidx == 5:
-                        Sidx = 2
-                    else:
-                        Sidx = 0
-                else:
-                    Sidx = 0
             elif Ridx == 4:
                 if Cidx == 2:
                     Sidx = 2
@@ -669,13 +662,6 @@ class Mechanical(object):
                     _hrmodel['piCYC'] = (Cyc / 100.0)**2.0
                 elif Cyc >= 10 and Cyc < 1000.0:
                     _hrmodel['piCYC'] = Cyc / 10.0
-                else:
-                    _hrmodel['piCYC'] = 1.0
-            else:
-                if Cyc >= 1.0:
-                    _hrmodel['piCYC'] = Cyc / 10.0
-                else:
-                    _hrmodel['piCYC'] = 1.0
 
             # Application and construction correction factor.
             _hrmodel['piF'] = 1.0
@@ -916,7 +902,6 @@ class Mechanical(object):
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
 
-
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
 
@@ -1132,7 +1117,14 @@ class SolidState(object):
 
         # layout.show_all()
 
-        return False
+        # Place the reliability result display widgets.
+        layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
+        layout.put(part.txtPiQ, _x_pos, _y_pos[2])
+        layout.put(part.txtPiE, _x_pos, _y_pos[3])
+
+        layout.show_all()
+
+        return _x_pos, _y_pos
 
     def assessment_inputs_load(self, part):
         """
@@ -1385,7 +1377,6 @@ class SolidState(object):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
