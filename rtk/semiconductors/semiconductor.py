@@ -294,8 +294,9 @@ class Semiconductor(object):
         :param rtk.Component part: the current instance of the RTK Component
                                    class.
         :param int idx: the user-defined index for the calling combobx.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
         _path = part._app.winParts._treepaths[part.assembly_id]
@@ -316,7 +317,7 @@ class Semiconductor(object):
             if CpiQ <= 0.0:
                 _model.set_value(_row, 79, self._piQ[_index - 1])
 
-        return False
+        return _model, _row
 
     def _callback_entry(self, entry, event, part, convert, idx):
         """
@@ -332,8 +333,9 @@ class Semiconductor(object):
         :param int idx: the position in the Component property array
                         associated with the data from the gtk.Entry() that
                         called this method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
         _path = part._app.winParts._treepaths[part.assembly_id]
@@ -358,4 +360,4 @@ class Semiconductor(object):
             if CpiQ > 0:
                 _model.set_value(_row, 79, CpiQ)
 
-        return False
+        return _model, _row

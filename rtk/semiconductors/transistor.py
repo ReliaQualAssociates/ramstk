@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+transistor.py contains the classes for all transistor types.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -13,15 +16,14 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 import gettext
 import locale
-import pango
 
-from math import exp, sqrt
+from math import exp
 
 try:
     import rtk.calculations as _calc
     import rtk.configuration as _conf
     import rtk.widgets as _widg
-except:
+except ImportError:
     import calculations as _calc
     import configuration as _conf
     import widgets as _widg
@@ -41,7 +43,7 @@ class LFBipolar(Semiconductor):
     Low Frequency Bipolar Transistor Component Class.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 6.3
+        1. MIL-HDBK-217F, section 6.3
     """
 
     _application = ["", _(u"Linear Amplification"), _(u"Switching")]
@@ -216,13 +218,9 @@ class LFBipolar(Semiconductor):
         :rtype: boolean
         """
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
         _index = combo.get_active()
 
-        Semiconductor._callback_combo(self, combo, part, idx)
+        (_model, _row) = Semiconductor._callback_combo(self, combo, part, idx)
 
         if idx == 5:                        # Application
             _model.set_value(_row, 68, self._piA[_index - 1])
@@ -326,7 +324,7 @@ class LFBipolar(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -356,7 +354,7 @@ class LFBipolar(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Base hazard rate.
             _hrmodel['lambdab'] = 0.00074
@@ -374,7 +372,7 @@ class LFBipolar(Semiconductor):
             # Voltage stress correction factor.
             try:
                 Vs = Vapplied / Vrated
-            except:
+            except ZeroDivisionError:
                 Vs = 1
 
             _hrmodel['piS'] = 0.045 * exp(3.1 * Vs)
@@ -391,7 +389,6 @@ class LFBipolar(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -571,8 +568,6 @@ class LFSiFET(Semiconductor):
         :rtype: boolean
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
         (_model, _row) = Semiconductor.assessment_results_load(self, part)
 
         part.txtPiA.set_text(str("{0:0.2g}".format(
@@ -593,13 +588,9 @@ class LFSiFET(Semiconductor):
         :rtype: boolean
         """
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
         _index = combo.get_active()
 
-        Semiconductor._callback_combo(self, combo, part, idx)
+        (_model, _row) = Semiconductor._callback_combo(self, combo, part, idx)
 
         if idx == 104:                      # Technology
             _model.set_value(_row, 46, self._lambdab[_index - 1])
@@ -697,7 +688,7 @@ class LFSiFET(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -725,7 +716,7 @@ class LFSiFET(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Temperature correction factor.  We store this in the pi_u
             # field in the Program Database.
@@ -760,7 +751,6 @@ class LFSiFET(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -915,7 +905,7 @@ class Unijunction(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -943,7 +933,7 @@ class Unijunction(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Temperature correction factor.  We store this in the pi_u
             # field in the Program Database.
@@ -961,7 +951,6 @@ class Unijunction(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1237,7 +1226,7 @@ class HFLNBipolar(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -1266,7 +1255,7 @@ class HFLNBipolar(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Base hazard rate.
             _hrmodel['lambdab'] = 0.18
@@ -1284,7 +1273,7 @@ class HFLNBipolar(Semiconductor):
             # Voltage stress correction factor.
             try:
                 Vs = Vapplied / Vrated
-            except:
+            except ZeroDivisionError:
                 Vs = 1
 
             _hrmodel['piS'] = 0.45 * exp(3.1 * Vs)
@@ -1301,7 +1290,6 @@ class HFLNBipolar(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1514,8 +1502,6 @@ class HFHPBipolar(Semiconductor):
         :rtype: boolean
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
         (_model, _row) = Semiconductor.assessment_results_load(self, part)
 
         part.txtPiA.set_text(str("{0:0.2g}".format(
@@ -1538,13 +1524,9 @@ class HFHPBipolar(Semiconductor):
         :rtype: boolean
         """
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
         _index = combo.get_active()
 
-        Semiconductor._callback_combo(self, combo, part, idx)
+        (_model, _row) = Semiconductor._callback_combo(self, combo, part, idx)
 
         if idx == 5:                        # Application
             if _index == 1:
@@ -1648,7 +1630,7 @@ class HFHPBipolar(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -1679,16 +1661,16 @@ class HFHPBipolar(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Base hazard rate.
-            _hrmodel['lambdab'] = 0.032 * exp(0.354 * Fop + 0.00558 * P)
+            _hrmodel['lambdab'] = 0.032 * exp(0.354 * Fop + 0.00558 * Poper)
 
             # Temperature correction factor.  We store this in the pi_u
             # field in the Program Database.
             try:
                 Vs = Vop / VBD
-            except:
+            except ZeroDivisionError:
                 Vs = 0.0
 
             if Vs <= 0.4 and partmodel.get_value(partrow, 16) == 1:
@@ -1722,7 +1704,6 @@ class HFHPBipolar(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1929,13 +1910,9 @@ class HFGaAsFET(Semiconductor):
         :rtype: boolean
         """
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
         _index = combo.get_active()
 
-        Semiconductor._callback_combo(self, combo, part, idx)
+        (_model, _row) = Semiconductor._callback_combo(self, combo, part, idx)
 
         if idx == 5:                        # Application
             _model.set_value(_row, 68, self._piA[_index - 1])
@@ -2042,7 +2019,7 @@ class HFGaAsFET(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -2071,13 +2048,13 @@ class HFGaAsFET(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Base hazard rate.
-            if Fop >= 1.0 and Fop <= 10.0 and P < 0.1:
+            if Fop >= 1.0 and Fop <= 10.0 and Poper < 0.1:
                 _hrmodel['lambdab'] = 0.052
-            elif Fop >= 4.0 and Fop <= 10.0 and P >= 0.1 and P <= 6:
-                _hrmodel['lambdab'] = 0.0093 * exp(0.429 * Fop + 0.486 * P)
+            elif Fop >= 4.0 and Fop <= 10.0 and Poper >= 0.1 and Poper <= 6:
+                _hrmodel['lambdab'] = 0.0093 * exp(0.429 * Fop + 0.486 * Poper)
             else:
                 _hrmodel['lambdab'] = 0.0
 
@@ -2097,7 +2074,6 @@ class HFGaAsFET(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -2219,8 +2195,6 @@ class HFSiFET(Semiconductor):
         :rtype: boolean
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
         (_model, _row) = Semiconductor.assessment_inputs_load(self, part)
 
         part.cmbTechnology.set_active(int(_model.get_value(_row, 104)))
@@ -2240,13 +2214,9 @@ class HFSiFET(Semiconductor):
         :rtype: boolean
         """
 
-        _path = part._app.winParts._treepaths[part.assembly_id]
-        _model = part._app.winParts.tvwPartsList.get_model()
-        _row = _model.get_iter(_path)
-
         _index = combo.get_active()
 
-        Semiconductor._callback_combo(self, combo, part, idx)
+        (_model, _row) = Semiconductor._callback_combo(self, combo, part, idx)
 
         if idx == 104:                      # Technology
             _model.set_value(_row, 46, self._lambdab[_index - 1])
@@ -2344,7 +2314,7 @@ class HFSiFET(Semiconductor):
 
             # Retrieve junction temperature inputs.
             Tamb = partmodel.get_value(partrow, 37)
-            P = partmodel.get_value(partrow, 64)
+            Poper = partmodel.get_value(partrow, 64)
             Trise = partmodel.get_value(partrow, 107)
             thetaJC = partmodel.get_value(partrow, 109)
 
@@ -2371,7 +2341,7 @@ class HFSiFET(Semiconductor):
                 partmodel.set_value(partrow, 109, thetaJC)
 
             # Junction temperature.
-            Tj = Tcase + thetaJC * P
+            Tj = Tcase + thetaJC * Poper
 
             # Temperature correction factor.  We store this in the pi_u
             # field in the Program Database.
@@ -2389,7 +2359,6 @@ class HFSiFET(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas

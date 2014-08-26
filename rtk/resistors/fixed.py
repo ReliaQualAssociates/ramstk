@@ -186,7 +186,7 @@ class Composition(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -445,7 +445,7 @@ class Film(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -741,7 +741,7 @@ class FilmNetwork(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -923,7 +923,7 @@ class FilmPower(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1105,7 +1105,7 @@ class Wirewound(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1471,7 +1471,7 @@ class WirewoundPower(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1811,7 +1811,7 @@ class WirewoundPowerChassis(Resistor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas

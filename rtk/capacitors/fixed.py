@@ -124,7 +124,7 @@ class PaperBypass(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -211,13 +211,13 @@ class PaperBypass(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -342,7 +342,7 @@ class PaperFeedthrough(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -422,13 +422,13 @@ class PaperFeedthrough(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -556,7 +556,7 @@ class PlasticFilm(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -654,13 +654,13 @@ class PlasticFilm(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -790,7 +790,7 @@ class MetallizedPaper(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -880,13 +880,13 @@ class MetallizedPaper(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1012,7 +1012,7 @@ class Plastic(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1090,13 +1090,13 @@ class Plastic(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1222,7 +1222,7 @@ class SuperMetallizedPlastic(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1294,13 +1294,13 @@ class SuperMetallizedPlastic(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1428,7 +1428,7 @@ class Mica(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1521,13 +1521,13 @@ class Mica(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1651,7 +1651,7 @@ class MicaButton(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1733,13 +1733,13 @@ class MicaButton(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -1865,7 +1865,7 @@ class Glass(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1949,13 +1949,13 @@ class Glass(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -2079,7 +2079,7 @@ class CeramicGeneral(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -2168,13 +2168,13 @@ class CeramicGeneral(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -2302,7 +2302,7 @@ class CeramicChip(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -2385,13 +2385,13 @@ class CeramicChip(Capacitor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas

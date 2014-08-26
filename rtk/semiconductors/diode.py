@@ -406,7 +406,7 @@ class LowFrequency(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -792,7 +792,7 @@ class HighFrequency(Semiconductor):
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas

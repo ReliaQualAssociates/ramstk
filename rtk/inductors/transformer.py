@@ -149,7 +149,7 @@ class Audio(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -257,13 +257,13 @@ class Audio(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -418,7 +418,7 @@ class Power(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -526,13 +526,13 @@ class Power(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -689,7 +689,7 @@ class LowPowerPulse(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -797,13 +797,13 @@ class LowPowerPulse(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas
@@ -957,7 +957,7 @@ class RF(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -1065,13 +1065,13 @@ class RF(Inductor):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component dormant hazard rate.
             _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
                                                  _active_env, _dormant_env,
                                                  _lambdaa)
-            _lambdad = _lambdad * _quantity
+
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa + _lambdad + _lambdas

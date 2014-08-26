@@ -360,7 +360,7 @@ class Crystal(object):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
 
@@ -416,7 +416,7 @@ class Crystal(object):
 
             # Calculate component active hazard rate.
             _lambdaa = _calc.calculate_part(_hrmodel)
-            _lambdaa = _lambdaa * _quantity
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
             # Calculate the component predicted hazard rate.
             _lambdap = _lambdaa
