@@ -947,7 +947,7 @@ class SolidState(object):
     Covers specifications MIL-R-28750 and MIL-R-83726.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 13.2
+        1. MIL-HDBK-217F, section 13.2
     """
 
     _quality = ["", "MIL-SPEC", _(u"Lower")]
@@ -1117,14 +1117,8 @@ class SolidState(object):
 
         # layout.show_all()
 
-        # Place the reliability result display widgets.
-        layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
-        layout.put(part.txtPiQ, _x_pos, _y_pos[2])
-        layout.put(part.txtPiE, _x_pos, _y_pos[3])
-
-        layout.show_all()
-
-        return _x_pos, _y_pos
+        # return _x_pos, _y_pos
+        return False
 
     def assessment_inputs_load(self, part):
         """

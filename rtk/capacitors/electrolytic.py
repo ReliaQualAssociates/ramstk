@@ -126,8 +126,8 @@ class TantalumSolid(Capacitor):
         """
 
         (_x_pos,
-         _y_pos) = Capacitor.assessment_results_create(self, part, layout,
-                                                       x_pos, y_pos)
+         _y_pos) = Capacitor.reliability_results_create(self, part, layout,
+                                                        x_pos, y_pos)
 
         part.txtPiSR = _widg.make_entry(editable=False, bold=True)
 
@@ -146,6 +146,8 @@ class TantalumSolid(Capacitor):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         (_model, _row) = Capacitor.assessment_inputs_load(self, part)
 

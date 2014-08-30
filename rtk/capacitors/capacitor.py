@@ -109,16 +109,17 @@ class Capacitor(object):
 
         # Create and place all the labels for the inputs.
         (_x_pos, _y_pos) = _widg.make_labels(self._in_labels, layout, 5, y_pos)
+        _x_pos = max(x_pos, _x_pos)
 
         # Place the input widgets.
-        layout.put(part.cmbQuality, x_pos, _y_pos[0])
-        layout.put(part.txtCommercialPiQ, x_pos, _y_pos[1])
-        layout.put(part.cmbSpecification, x_pos, _y_pos[2])
-        layout.put(part.cmbSpecSheet, x_pos, _y_pos[3])
-        layout.put(part.txtVoltRated, x_pos, _y_pos[4])
-        layout.put(part.txtVoltApplied, x_pos, _y_pos[5])
-        layout.put(part.txtACVoltApplied, x_pos, _y_pos[6])
-        layout.put(part.txtCapacitance, x_pos, _y_pos[7])
+        layout.put(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.put(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.cmbSpecification, _x_pos, _y_pos[2])
+        layout.put(part.cmbSpecSheet, _x_pos, _y_pos[3])
+        layout.put(part.txtVoltRated, _x_pos, _y_pos[4])
+        layout.put(part.txtVoltApplied, _x_pos, _y_pos[5])
+        layout.put(part.txtACVoltApplied, _x_pos, _y_pos[6])
+        layout.put(part.txtCapacitance, _x_pos, _y_pos[7])
 
         # Connect signals to callback functions.
         part.cmbQuality.connect('changed', self._callback_combo, part, 85)
