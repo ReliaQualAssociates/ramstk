@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 This is the Class that is used to represent and hold information related to
-the hardware of the Program.
+the hardware items under development.
 """
 
 __author__ = 'Andrew Rowland'
@@ -132,6 +132,118 @@ class Hardware(object):
     +-------+---------------------------------------+
     |   7   | RPN after taking action               |
     +-------+---------------------------------------+
+
+    :ivar _dicFMECA: Dictionary to carry all the rows for the FMECA.  Key is
+                     the assembly ID; value is a list with the following:
+
+    +-------+--------------------------------------------------------------+
+    | Index | Information                                                  |
+    +=======+==============================================================+
+    |   0   | Dictionary with the failure mode rows for the assembly.  The |
+    |       | failure mode dictionary uses the mode ID for the key and the |
+    |       | the values are a list with the information in the table      |
+    |       | below.                                                       |
+    +-------+--------------------------------------------------------------+
+    |   1   |                                                              |
+    +-------+--------------------------------------------------------------+
+    |   2   |                                                              |
+    +-------+--------------------------------------------------------------+
+    |   3   |                                                              |
+    +-------+--------------------------------------------------------------+
+
+    +-------+---------------------------------------+
+    | Index | Failure Mode Dictionary Information   |
+    +=======+=======================================+
+    |   0   | Composite reference designator        |
+    +-------+---------------------------------------+
+    |   1   | Mode description                      |
+    +-------+---------------------------------------+
+    |   2   | Applicable mission                    |
+    +-------+---------------------------------------+
+    |   3   | Applicable mission phase              |
+    +-------+---------------------------------------+
+    |   4   | Local effect                          |
+    +-------+---------------------------------------+
+    |   5   | Next level effect                     |
+    +-------+---------------------------------------+
+    |   6   | End effect                            |
+    +-------+---------------------------------------+
+    |   7   | Detection method                      |
+    +-------+---------------------------------------+
+    |   8   | Other indications                     |
+    +-------+---------------------------------------+
+    |   9   | Isolation method                      |
+    +-------+---------------------------------------+
+    |  10   | Design provisions                     |
+    +-------+---------------------------------------+
+    |  11   | Operator actions                      |
+    +-------+---------------------------------------+
+    |  12   | Severity class                        |
+    +-------+---------------------------------------+
+    |  13   | Hazard rate data source               |
+    +-------+---------------------------------------+
+    |  14   | Failure probability                   |
+    +-------+---------------------------------------+
+    |  15   | Effect probability                    |
+    +-------+---------------------------------------+
+    |  16   | Mode ratio                            |
+    +-------+---------------------------------------+
+    |  17   | Mode failure rate                     |
+    +-------+---------------------------------------+
+    |  18   | Mode operating time                   |
+    +-------+---------------------------------------+
+    |  19   | RPN severity                          |
+    +-------+---------------------------------------+
+    |  20   | RPN severity after action             |
+    +-------+---------------------------------------+
+    |  21   | Critical item                         |
+    +-------+---------------------------------------+
+    |  22   | Single point                          |
+    +-------+---------------------------------------+
+    |  23   | Remarks                               |
+    +-------+---------------------------------------+
+    |  24   | Active failure rate                   |
+    +-------+---------------------------------------+
+    |  25   | Assembly criticality                  |
+    +-------+---------------------------------------+
+
+    :ivar _dicMechanisms: Dictionary to carry the failure mechanism rows for
+                          the FMECA.  Key is the failure mechanism ID; value is
+                          a list with the following:
+
+    +-------+---------------------------------------+
+    | Index | Information                           |
+    +=======+=======================================+
+    |   0   | Failure mechanism description         |
+    +-------+---------------------------------------+
+    |   1   | Failure mechanism RPN occurence       |
+    +-------+---------------------------------------+
+    |   2   | Failure mechanism RPN detection       |
+    +-------+---------------------------------------+
+    |   3   | Failure mechanism RPN                 |
+    +-------+---------------------------------------+
+    |   4   | Failure mechanism new RPN occurence   |
+    +-------+---------------------------------------+
+    |   5   | Failure mechanism new RPN detection   |
+    +-------+---------------------------------------+
+    |   6   | Failure mechanism new RPN             |
+    +-------+---------------------------------------+
+    |   7   | Parent failure mode ID                |
+    +-------+---------------------------------------+
+
+    :ivar _dicControls: Dictionary to carry the control action rows for the
+                        FMECA.  Key is the control ID; value is a list with
+                        the following:
+
+    +-------+---------------------------------------+
+    | Index | Information                           |
+    +=======+=======================================+
+    |   0   | Control description                   |
+    +-------+---------------------------------------+
+    |   1   | Control type                          |
+    +-------+---------------------------------------+
+    |   2   | Path of the parent failure mechanism  |
+    +-------+---------------------------------------+
     """
 
     def __init__(self, application):
@@ -153,12 +265,12 @@ class Hardware(object):
         self._assembly_risks_ = {}          # Assembly risk matrix values.
         self._system_risks_ = {}            # System risk matrix values.
         self._hrmodel = {}
-        self._fmeca = {}
-        self._mechanisms = {}
-        self._fmeca_controls = {}
-        self._fmeca_actions = {}
-        self._dicModeCA = {}
-        self._ItemCA = {}
+        self._dicFMECA = {}                 # FMECA failure mode rows.
+        self._dicMechanisms = {}            # FMECA failure mechanism rows.
+        self._dicControls = {}              # FMECA control rows.
+        self._fmeca_actions = {}            # FMECA action rows.
+        self._dicModeCA = {}                # Failure mode criticality numbers.
+        self._ItemCA = {}                   # Hardware item criticality.
         self._rpnsev = {'': 0}              # Carries RPN severity values.
         self._RPN = {}
 
@@ -523,9 +635,9 @@ class Hardware(object):
         self.txtOSReason = gtk.TextBuffer()
 
         # FMEA/FMECA page widgets.
+        # TODO: Create a TreeModelFilter for the FMECA and use this to show the proper FMECA rows when a hardware item is selected.
         (self.tvwFMECA,
-         self._FMECA_col_order) = _widg.make_treeview('FMECA', 9,
-                                                      self._app,
+         self._FMECA_col_order) = _widg.make_treeview('FMECA', 9, self._app,
                                                       None,
                                                       _conf.RTK_COLORS[6],
                                                       _conf.RTK_COLORS[7])
@@ -1722,8 +1834,8 @@ class Hardware(object):
                     _risk = _severity_[i][1] * _probability_[j][1]
                     if _risk <= _conf.RTK_RISK_POINTS[0]:
                         _color_ = '#90EE90'  # Green
-                    elif _risk > _conf.RTK_RISK_POINTS[0] and \
-                         _risk <= _conf.RTK_RISK_POINTS[1]:
+                    elif(_risk > _conf.RTK_RISK_POINTS[0] and
+                         _risk <= _conf.RTK_RISK_POINTS[1]):
                         _color_ = '#FFFF79'  # Yellow
                     else:
                         _color_ = '#FFC0CB'  # Red
@@ -2001,7 +2113,7 @@ class Hardware(object):
 
             _scrollwindow = gtk.ScrolledWindow()
             _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                      gtk.POLICY_AUTOMATIC)
+                                     gtk.POLICY_AUTOMATIC)
             _scrollwindow.add_with_viewport(_fxdRelInputQuad4_)
 
             _frame = _widg.make_frame(label=_(u"Miscellaneous Inputs"))
@@ -2533,7 +2645,7 @@ class Hardware(object):
             # Build the quadrant #4 (lower right) containers.               #
             # --------------------------------------------------------------#
             self.scwMiscResults.set_policy(gtk.POLICY_AUTOMATIC,
-                                     gtk.POLICY_AUTOMATIC)
+                                           gtk.POLICY_AUTOMATIC)
             self.scwMiscResults.add_with_viewport(self.fxdMiscResults)
 
             _frame = _widg.make_frame(label=_(u"Miscellaneous Results"))
@@ -2762,17 +2874,17 @@ class Hardware(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             _hpaned_ = gtk.HPaned()
 
-            _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
-                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow_.add_with_viewport(self.tvwFMECA)
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add(self.tvwFMECA)
 
-            _frame_ = _widg.make_frame(label=_(u"Failure Mode, Effects, and "
-                                               u"Criticality Analysis"))
-            _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame_.add(_scrollwindow_)
+            _frame = _widg.make_frame(label=_(u"Failure Mode, Effects, and "
+                                              u"Criticality Analysis"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
 
-            _hpaned_.pack1(_frame_, resize=True, shrink=False)
+            _hpaned_.pack1(_frame, resize=True, shrink=False)
 
             self.fraFMECADetails.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
@@ -2801,11 +2913,10 @@ class Hardware(object):
             _cell_ = _column_.get_cell_renderers()
             _cellmodel_ = _cell_[0].get_property('model')
             _cellmodel_.clear()
-            _query_ = "SELECT fld_criticality_id, fld_criticality_name, \
-                              fld_criticality_cat \
-                       FROM tbl_criticality"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
+            _query = "SELECT fld_criticality_id, fld_criticality_name, \
+                             fld_criticality_cat \
+                      FROM tbl_criticality"
+            _results_ = self._app.COMDB.execute_query(_query, None,
                                                       self._app.ComCnx)
 
             try:
@@ -3206,6 +3317,9 @@ class Hardware(object):
         _create_fmeca_tab(self, _notebook)
 
         return _notebook
+
+    def show_fmeca(self, model, iter, data):
+        return model.get_value(iter, 1) in data
 
     def load_tree(self):
         """
@@ -3678,19 +3792,15 @@ class Hardware(object):
                 self.txtTempRise.set_text(str(fmt.format(self.temp_rise)))
                 self.txtCaseTemp.set_text(str(fmt.format(self.case_temp)))
 
-                self.scwReliabilityInputs.show_all()
-                self.scwStressInputs.show_all()
-                self.scwReliabilityInputs.get_parent().show()
-                self.scwStressInputs.get_parent().show()
+                if self._component is not None:
+                    self._component.assessment_inputs_load(self)
 
-                self._component.assessment_inputs_load(self)
+                    self.scwReliabilityInputs.show_all()
+                    self.scwStressInputs.show_all()
 
             else:
-                if self.scwReliabilityInputs.get_parent() is not None:
-                    self.scwReliabilityInputs.get_parent().hide()
-
-                if self.scwStressInputs.get_parent() is not None:
-                    self.scwStressInputs.get_parent().hide()
+                self.scwReliabilityInputs.hide()
+                self.scwStressInputs.hide()
 
             # Let the user know if the selected part does not have a part
             # category selected.
@@ -3751,15 +3861,17 @@ class Hardware(object):
                                           tab_label=self.lblSIA,
                                           position=3)
         else:
-            _page_num_ = self.notebook.page_num(self.hbxAllocation)
-            self.notebook.remove_page(_page_num_)
-            _page_num_ = self.notebook.page_num(self.hpnHazardAnalysis)
-            self.notebook.remove_page(_page_num_)
-            _page_num_ = self.notebook.page_num(self.fraSIA)
-            self.notebook.remove_page(_page_num_)
+            _n_pages = self.notebook.get_n_pages()
+            if _n_pages > 4:
+                _page_num = self.notebook.page_num(self.hbxAllocation)
+                self.notebook.remove_page(_page_num)
+                _page_num = self.notebook.page_num(self.hpnHazardAnalysis)
+                self.notebook.remove_page(_page_num)
+                _page_num = self.notebook.page_num(self.fraSIA)
+                self.notebook.remove_page(_page_num)
 
-        _title_ = _(u"RTK Work Book: Analyzing %s") % self.name
-        self._app.winWorkBook.set_title(_title_)
+        _title = _(u"RTK Work Book: Analyzing %s") % self.name
+        self._app.winWorkBook.set_title(_title)
 
         self.notebook.set_current_page(self._selected_tab)
         self._notebook_page_switched(self.notebook, None, self._selected_tab)
@@ -3813,14 +3925,13 @@ class Hardware(object):
 
             self.chkOverstressed.set_active(self.overstress)
 
-            self._component.assessment_results_load(self)
+            if self._component is not None:
+                self._component.assessment_results_load(self)
 
-            self.scwStressResults.show_all()
-            self.scwMiscResults.show_all()
-            self.scwStressResults.get_parent().show()
-            self.scwMiscResults.get_parent().show()
+                self.fxdReliabilityResults.show_all()
 
-            self.fxdReliabilityResults.show_all()
+                self.scwStressResults.show_all()
+                self.scwMiscResults.show_all()
 
         else:
             # Hide the component-specific display widgets.
@@ -3865,268 +3976,243 @@ class Hardware(object):
             self._mission[_results[i][0]] = [_results[i][1], _results[i][2]]
             _cellmodel.append([_results[i][0]])
 
-        _model_ = self.tvwFMECA.get_model()
-        _model_.clear()
+        _model = self.tvwFMECA.get_model()
+        _model.clear()
 
         # Load the failure modes to the gtk.TreeView.
-        _query_ = "SELECT t1.fld_mode_id, t1.fld_mode_description, \
-                          t1.fld_mission, t1.fld_mission_phase, \
-                          t1.fld_local_effect, t1.fld_next_effect, \
-                          t1.fld_end_effect, t1.fld_detection_method, \
-                          t1.fld_other_indications, t1.fld_isolation_method, \
-                          t1.fld_design_provisions, \
-                          t1.fld_operator_actions, t1.fld_severity_class, \
-                          t1.fld_hazard_rate_source, \
-                          t1.fld_failure_probability, \
-                          t1.fld_effect_probability, t1.fld_mode_ratio, \
-                          t1.fld_mode_failure_rate, t1.fld_mode_op_time, \
-                          t1.fld_mode_criticality, t1.fld_rpn_severity, \
-                          t1.fld_rpn_severity_new, t1.fld_critical_item, \
-                          t1.fld_single_point, t1.fld_remarks, \
-                          t2.fld_failure_rate_active, \
-                          t2.fld_assembly_criticality \
-                   FROM tbl_fmeca AS t1 \
-                   INNER JOIN tbl_system AS t2 \
-                   ON t2.fld_assembly_id=t1.fld_assembly_id \
-                   WHERE t1.fld_assembly_id=%d \
-                   AND t1.fld_function_id=0" % self.assembly_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT t1.fld_mode_id, t1.fld_mode_description, \
+                         t1.fld_mission, t1.fld_mission_phase, \
+                         t1.fld_local_effect, t1.fld_next_effect, \
+                         t1.fld_end_effect, t1.fld_detection_method, \
+                         t1.fld_other_indications, t1.fld_isolation_method, \
+                         t1.fld_design_provisions, \
+                         t1.fld_operator_actions, t1.fld_severity_class, \
+                         t1.fld_hazard_rate_source, \
+                         t1.fld_failure_probability, \
+                         t1.fld_effect_probability, t1.fld_mode_ratio, \
+                         t1.fld_mode_failure_rate, t1.fld_mode_op_time, \
+                         t1.fld_mode_criticality, t1.fld_rpn_severity, \
+                         t1.fld_rpn_severity_new, t1.fld_critical_item, \
+                         t1.fld_single_point, t1.fld_remarks, \
+                         t2.fld_failure_rate_active, \
+                         t2.fld_assembly_criticality \
+                  FROM tbl_fmeca AS t1 \
+                  INNER JOIN tbl_system AS t2 \
+                  ON t2.fld_assembly_id=t1.fld_assembly_id \
+                  WHERE t1.fld_assembly_id=%d \
+                  AND t1.fld_function_id=0" % self.assembly_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_modes_ = len(_results_)
+            _n_modes = len(_results)
         except TypeError:
-            _n_modes_ = 0
+            _n_modes = 0
 
-        _icon_ = _conf.ICON_DIR + '32x32/mode.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
-        for i in range(_n_modes_):
-            self._dicModeCA[_results_[i][0]] = [_results_[i][15],
-                                                _results_[i][16],
-                                                _results_[i][25],
-                                                _results_[i][18],
-                                                _results_[i][12], 0.0, 0.0]
+        _icon = _conf.ICON_DIR + '32x32/mode.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        for i in range(_n_modes):
+            self._dicModeCA[_results[i][0]] = [_results[i][15],
+                                               _results[i][16],
+                                               _results[i][25],
+                                               _results[i][18],
+                                               _results[i][12], 0.0, 0.0]
             try:
-                self._ItemCA[self.assembly_id].append([_results_[i][0],
-                                                       _results_[i][12], ''])
+                self._ItemCA[self.assembly_id].append([_results[i][0],
+                                                       _results[i][12], ''])
             except KeyError:
-                self._ItemCA[self.assembly_id] = [[_results_[i][0],
-                                                   _results_[i][12], '']]
+                self._ItemCA[self.assembly_id] = [[_results[i][0],
+                                                   _results[i][12], '']]
 
-            _data_ = [_results_[i][self._FMECA_col_order[0]],
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[1]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[2]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[3]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[4]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[5]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[6]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[7]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[8]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[9]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[10]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[11]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[12]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[13]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[14]]),
-                      str(_results_[i][self._FMECA_col_order[15]]),
-                      str(_results_[i][self._FMECA_col_order[16]]),
-                      str(_results_[i][self._FMECA_col_order[17]]),
-                      str(_results_[i][self._FMECA_col_order[18]]),
-                      _util.none_to_string(_results_[i][25]),
-                      str(_results_[i][self._FMECA_col_order[19]]),
-                      str(_results_[i][self._FMECA_col_order[20]]),
-                      _results_[i][self._FMECA_col_order[21]],
-                      _results_[i][self._FMECA_col_order[22]],
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[23]]),
-                      _util.none_to_string(
-                          _results_[i][self._FMECA_col_order[24]]),
-                      0, '#FFFFFF', True, _icon_]
+            _data = [_results[i][self._FMECA_col_order[0]],
+                     _util.none_to_string(_results[i][self._FMECA_col_order[1]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[2]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[3]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[4]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[5]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[6]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[7]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[8]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[9]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[10]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[11]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[12]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[13]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[14]]),
+                     str(_results[i][self._FMECA_col_order[15]]),
+                     str(_results[i][self._FMECA_col_order[16]]),
+                     str(_results[i][self._FMECA_col_order[17]]),
+                     str(_results[i][self._FMECA_col_order[18]]),
+                     _util.none_to_string(_results[i][25]),
+                     str(_results[i][self._FMECA_col_order[19]]),
+                     str(_results[i][self._FMECA_col_order[20]]),
+                     _results[i][self._FMECA_col_order[21]],
+                     _results[i][self._FMECA_col_order[22]],
+                     _util.none_to_string(_results[i][self._FMECA_col_order[23]]),
+                     _util.none_to_string(_results[i][self._FMECA_col_order[24]]),
+                     0, '#FFFFFF', True, _icon]
 
             # Load the FMECA gtk.TreeView with the data.
             try:
-                _model_.append(None, _data_)
+                _model.append(None, _data)
             except TypeError:
-                _util.rtk_error(_(u"Failed to load FMEA/FMECA failure "
-                                  u"mode %d" % _results_[i][1]))
+                _util.rtk_warning(_(u"Failed to load FMEA/FMECA failure "
+                                    u"mode %d" % _results[i][1]))
 
-            # Load the FMECA dictionary with the data.
-            self._fmeca[_results_[i][self._FMECA_col_order[0]]] = _data_[1:26]
+            # Load the FMECA dictionary with the data.  The key is the failure
+            # mode ID.  We add the composite reference designator to the
+            # beginning of the list so it can be printed to the FMECA report.
+            _data.insert(1, self.comp_ref_des)
+            self._dicFMECA[_results[i][self._FMECA_col_order[0]]] = _data[1:27]
 
         # Load the failure consequences to the FMECA dictionary.
-        _query_ = "SELECT * FROM tbl_failure_consequences \
-                   WHERE fld_assembly_id=%d" % self.assembly_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_failure_consequences \
+                  WHERE fld_assembly_id=%d" % self.assembly_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_modes_ = len(_results_)
+            _n_modes = len(_results)
         except TypeError:
-            _n_modes_ = 0
+            _n_modes = 0
 
-        for i in range(_n_modes_):
-            self._fmeca[_results_[i][1]].append(_results_[i][2])
-            self._fmeca[_results_[i][1]].append(_results_[i][3])
-            self._fmeca[_results_[i][1]].append(_results_[i][4])
-            self._fmeca[_results_[i][1]].append(_results_[i][5])
-            self._fmeca[_results_[i][1]].append(_results_[i][6])
-            self._fmeca[_results_[i][1]].append(_results_[i][7])
-            self._fmeca[_results_[i][1]].append(_results_[i][8])
-            self._fmeca[_results_[i][1]].append(_results_[i][9])
-            self._fmeca[_results_[i][1]].append(_results_[i][10])
+        for i in range(_n_modes):
+            # TODO: Hardware needs a huge re-write to simplify everything.  Maybe we need all these dictionaries maybe we won't.
+            try:
+                self._dicFMECA[_results[i][1]].append(_results[i][2])
+                self._dicFMECA[_results[i][1]].append(_results[i][3])
+                self._dicFMECA[_results[i][1]].append(_results[i][4])
+                self._dicFMECA[_results[i][1]].append(_results[i][5])
+                self._dicFMECA[_results[i][1]].append(_results[i][6])
+                self._dicFMECA[_results[i][1]].append(_results[i][7])
+                self._dicFMECA[_results[i][1]].append(_results[i][8])
+                self._dicFMECA[_results[i][1]].append(_results[i][9])
+                self._dicFMECA[_results[i][1]].append(_results[i][10])
+            except KeyError:
+                pass
 
         # Load the failure mechanisms to the gtk.TreeView.
-        _query_ = "SELECT t1.fld_assembly_id, t1.fld_mode_id, \
-                          t1.fld_mechanism_id, t1.fld_mechanism_description, \
-                          t1.fld_rpn_occurrence, t1.fld_rpn_detection, \
-                          t1.fld_rpn, t1.fld_rpn_occurrence_new, \
-                          t1.fld_rpn_detection_new, t1.fld_rpn_new, \
-                          t1.fld_parent, t2.fld_rpn_severity, \
-                          t2.fld_rpn_severity_new \
-                   FROM tbl_fmeca_mechanisms AS t1 \
-                   INNER JOIN tbl_fmeca AS t2 \
-                   ON t2.fld_mode_id=t1.fld_mode_id \
-                   WHERE t1.fld_assembly_id=%d" % self.assembly_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT t1.fld_assembly_id, t1.fld_mode_id, \
+                         t1.fld_mechanism_id, t1.fld_mechanism_description, \
+                         t1.fld_rpn_occurrence, t1.fld_rpn_detection, \
+                         t1.fld_rpn, t1.fld_rpn_occurrence_new, \
+                         t1.fld_rpn_detection_new, t1.fld_rpn_new, \
+                         t1.fld_parent, t2.fld_rpn_severity, \
+                         t2.fld_rpn_severity_new \
+                  FROM tbl_fmeca_mechanisms AS t1 \
+                  INNER JOIN tbl_fmeca AS t2 \
+                  ON t2.fld_mode_id=t1.fld_mode_id \
+                  WHERE t1.fld_assembly_id=%d" % self.assembly_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_mechanisms_ = len(_results_)
+            _n_mechanisms = len(_results)
         except TypeError:
-            _n_mechanisms_ = 0
+            _n_mechanisms = 0
 
         _icon = _conf.ICON_DIR + '32x32/mechanism.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
-        for i in range(_n_mechanisms_):
-            _piter_ = _model_.get_iter_from_string(_results_[i][10])
-            self._mechanisms[_results_[i][2]] = [_results_[i][3],
-                                                 _results_[i][4],
-                                                 _results_[i][5],
-                                                 _results_[i][6],
-                                                 _results_[i][7],
-                                                 _results_[i][8],
-                                                 _results_[i][9],
-                                                 _results_[i][10]]
-            self._RPN[_results_[i][2]] = [self._rpnsev[_results_[i][11]],
-                                          _results_[i][4],
-                                          _results_[i][5],
-                                          _results_[i][6],
-                                          self._rpnsev[_results_[i][12]],
-                                          _results_[i][7],
-                                          _results_[i][8],
-                                          _results_[i][9]]
-            _data_ = [_results_[i][2],
-                      _util.none_to_string(_results_[i][3]), "", "", "", "",
-                      "", "", "", "", "", "", "", "", "", "", "", "", "",
-                      "", "", "", "", 0, 0, "", 1, '#D3D3D3', False,
-                      _icon]
+        for i in range(_n_mechanisms):
+            _piter = _model.get_iter_from_string(_results[i][10])
+            self._dicMechanisms[_results[i][2]] = [_results[i][3],
+                                                   _results[i][4],
+                                                   _results[i][5],
+                                                   _results[i][6],
+                                                   _results[i][7],
+                                                   _results[i][8],
+                                                   _results[i][9],
+                                                   _results[i][10]]
+            self._RPN[_results[i][2]] = [self._rpnsev[_results[i][11]],
+                                         _results[i][4], _results[i][5],
+                                         _results[i][6],
+                                         self._rpnsev[_results[i][12]],
+                                         _results[i][7], _results[i][8],
+                                         _results[i][9]]
+            _data = [_results[i][2],
+                     _util.none_to_string(_results[i][3]), "", "", "", "",
+                     "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, "", 1, '#D3D3D3', False,
+                     _icon]
 
             try:
-                _model_.insert(_piter_, i, _data_)
+                _model.insert(_piter, i, _data)
             except TypeError:
-                _util.rtk_error(_(
-                    u"Failed to load FMEA/FMECA failure mechanism %d" %
-                    _results_[i][2]))
+                _util.rtk_warning(_(u"Failed to load FMEA/FMECA failure "
+                                    u"mechanism %d" % _results[i][2]))
 
         # Load the actions to the gtk.TreeView.
-        _query_ = "SELECT * FROM tbl_fmeca_actions \
-                   WHERE fld_assembly_id=%d" % self.assembly_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_fmeca_actions \
+                  WHERE fld_assembly_id=%d" % self.assembly_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_actions_ = len(_results_)
+            _n_actions = len(_results)
         except TypeError:
-            _n_actions_ = 0
+            _n_actions = 0
 
-        _icon_ = _conf.ICON_DIR + '32x32/action.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
-        for i in range(_n_actions_):
-            _piter_ = _model_.get_iter_from_string(_results_[i][14])
-            self._fmeca_actions[_results_[i][3]] = [_results_[i][4],
-                                                    _results_[i][5],
-                                                    _results_[i][6],
-                                                    _results_[i][7],
-                                                    _results_[i][8],
-                                                    _results_[i][9],
-                                                    _results_[i][10],
-                                                    _results_[i][11],
-                                                    _results_[i][12],
-                                                    _results_[i][13],
-                                                    _results_[i][14]]
-            _data_ = [_results_[i][3],
-                      _util.none_to_string(_results_[i][4]), "", "", "", "",
-                      "", "", "", "", "", "", "", "", "", "", "", "", "",
-                      "", "", "", "", 0, 0, "", 3, '#D3D3D3', False,
-                      _icon_]
+        _icon = _conf.ICON_DIR + '32x32/action.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        for i in range(_n_actions):
+            _piter = _model.get_iter_from_string(_results[i][14])
+            self._fmeca_actions[_results[i][3]] = [_results[i][4],
+                                                   _results[i][5],
+                                                   _results[i][6],
+                                                   _results[i][7],
+                                                   _results[i][8],
+                                                   _results[i][9],
+                                                   _results[i][10],
+                                                   _results[i][11],
+                                                   _results[i][12],
+                                                   _results[i][13],
+                                                   _results[i][14]]
+            _data = [_results[i][3],
+                     _util.none_to_string(_results[i][4]), "", "", "", "",
+                     "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, "", 3, '#D3D3D3', False,
+                     _icon]
 
             try:
-                _model_.insert(_piter_, i, _data_)
+                _model.insert(_piter, i, _data)
             except TypeError:
-                _util.rtk_error(_(
-                    u"Failed to load FMEA/FMECA action %d" % _results_[i][3]))
+                _util.rtk_warning(_(u"Failed to load FMEA/FMECA "
+                                    u"action %d" % _results[i][3]))
 
         # Load the controls to the gtk.TreeView.
-        _query_ = "SELECT * FROM tbl_fmeca_controls \
-                   WHERE fld_assembly_id=%d" % self.assembly_id
-
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_fmeca_controls \
+                  WHERE fld_assembly_id=%d" % self.assembly_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
-            _n_controls_ = len(_results_)
+            _n_controls = len(_results)
         except TypeError:
-            _n_controls_ = 0
+            _n_controls = 0
 
-        _icon_ = _conf.ICON_DIR + '32x32/control.png'
-        _icon_ = gtk.gdk.pixbuf_new_from_file_at_size(_icon_, 16, 16)
-        for i in range(_n_controls_):
+        _icon = _conf.ICON_DIR + '32x32/control.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        for i in range(_n_controls):
             try:
-                _piter_ = _model_.get_iter_from_string(_results_[i][6])
+                _piter = _model.get_iter_from_string(_results[i][6])
             except ValueError:
-                _piter_ = None
-            self._fmeca_controls[_results_[i][3]] = [_results_[i][4],
-                                                     _results_[i][5],
-                                                     _results_[i][6]]
-            _data_ = [_results_[i][3],
-                      _util.none_to_string(_results_[i][4]), "", "", "", "",
-                      "", "", "", "", "", "", "", "", "", "", "", "", "",
-                      "", "", "", "", 0, 0, "", 2, '#D3D3D3', False,
-                      _icon_]
+                _piter = None
+            self._dicControls[_results[i][3]] = [_results[i][4],
+                                                 _results[i][5],
+                                                 _results[i][6]]
+            _data = [_results[i][3],
+                     _util.none_to_string(_results[i][4]), "", "", "", "",
+                     "", "", "", "", "", "", "", "", "", "", "", "", "",
+                     "", "", "", "", 0, 0, "", 2, '#D3D3D3', False,
+                     _icon]
 
             try:
-                _model_.insert(_piter_, i, _data_)
+                _model.insert(_piter, i, _data)
             except TypeError:
-                _util.rtk_error(_(u"Failed to load FMEA/FMECA control %d" %
-                                  _results_[i][3]))
+                _util.rtk_warning(_(u"Failed to load FMEA/FMECA control %d" % \
+                                  _results[i][3]))
 
         # Fully expand the FMECA gtk.TreeView.
-        _root_ = _model_.get_iter_root()
-        if _root_ is not None:
-            _path_ = _model_.get_path(_root_)
+        if _model.get_iter_root() is not None:
+            _path = _model.get_path(_model.get_iter_root())
             self.tvwFMECA.expand_all()
-            _col_ = self.tvwFMECA.get_column(1)
-            self.tvwFMECA.set_cursor(_path_, _col_, False)
-            self.tvwFMECA.row_activated(_path_, _col_)
+            self.tvwFMECA.set_cursor(_path, self.tvwFMECA.get_column(1), False)
+            self.tvwFMECA.row_activated(_path, self.tvwFMECA.get_column(1))
 
         return False
 
@@ -4135,16 +4221,14 @@ class Hardware(object):
         Method to load the mission phase gtk.CellRendererCombo() in the FMECA
         when the mission gtk.CellRendererCombo() is changed.
 
-        :param cell: the gtk.CellRendererCombo() that was edited.
-        :type cell: gtk.CellRendererCombo
-        :param path: the gtk.TreeView() path of the gtk.CellRendererCombo()
-                     that was edited.
-        :type path: string
-        :param row: the gtk.TreeIter() in the edited gtk.CellRendererCombo().
-        :type row: gtk.TreeIter
-        :param model: the gtk.TreeModel() from the mission
-                      gtk.CellRendererCombo().
-        :type model: gtk.TreeModel
+        :param gtk.CellRendererCombo cell: the gtk.CellRendererCombo() that was
+                                           edited.
+        :param str path: the gtk.TreeView() path of the gtk.CellRendererCombo()
+                         that was edited.
+        :param gtk.TreeIter row: the gtk.TreeIter() in the edited
+                                 gtk.CellRendererCombo().
+        :param gtk.TreeModel model: the gtk.TreeModel() from the mission
+                                    gtk.CellRendererCombo().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -4280,9 +4364,9 @@ class Hardware(object):
         self.part = _model.get_value(_row, self._col_order[63])
         self.part_number = _model.get_value(_row, self._col_order[64])
         self.percent_isolation_group_ri = _model.get_value(_row,
-                                                        self._col_order[65])
+                                                           self._col_order[65])
         self.percent_isolation_single_ri = _model.get_value(_row,
-                                                        self._col_order[66])
+                                                            self._col_order[66])
         self.quantity = _model.get_value(_row, self._col_order[67])
         self.ref_des = _model.get_value(_row, self._col_order[68])
         self.reliability_mission = _model.get_value(_row, self._col_order[69])
@@ -4395,7 +4479,7 @@ class Hardware(object):
                 self.part = True
                 _path = _model.get_string_from_iter(_model.iter_parent(_row))
                 self.assembly = _model.get_value(_row, 62)
-                #self._set_parts_list_row()
+                # self._set_parts_list_row()
 
                 # Save the previously selected row in the Parts List.
                 (_partmodel,
@@ -4473,12 +4557,12 @@ class Hardware(object):
             _id_ = _model_.get_value(_row_, 0)
             self.txtMechanismID.set_text(str(_id_))
             self.txtMechanismDescription.set_text(_model_.get_value(_row_, 1))
-            self.cmbOccurenceI.set_active(self._mechanisms[_id_][1])
-            self.cmbDetectionI.set_active(self._mechanisms[_id_][2])
-            self.txtRPNI.set_text(str(self._mechanisms[_id_][3]))
-            self.cmbOccurrenceN.set_active(self._mechanisms[_id_][4])
-            self.cmbDetectionN.set_active(self._mechanisms[_id_][5])
-            self.txtRPNN.set_text(str(self._mechanisms[_id_][6]))
+            self.cmbOccurenceI.set_active(self._dicMechanisms[_id_][1])
+            self.cmbDetectionI.set_active(self._dicMechanisms[_id_][2])
+            self.txtRPNI.set_text(str(self._dicMechanisms[_id_][3]))
+            self.cmbOccurrenceN.set_active(self._dicMechanisms[_id_][4])
+            self.cmbDetectionN.set_active(self._dicMechanisms[_id_][5])
+            self.txtRPNN.set_text(str(self._dicMechanisms[_id_][6]))
 
             self.fraFMECADetails.add(self.fxdMechanism)
             _label_ = self.fraFMECADetails.get_label_widget()
@@ -4489,8 +4573,8 @@ class Hardware(object):
             _id_ = _model_.get_value(_row_, 0)
             self.txtControlID.set_text(str(_id_))
             self.txtControlDescription.set_text(
-                _util.none_to_string(self._fmeca_controls[_id_][0]))
-            self.cmbControlType.set_active(self._fmeca_controls[_id_][1])
+                _util.none_to_string(self._dicControls[_id_][0]))
+            self.cmbControlType.set_active(self._dicControls[_id_][1])
 
             self.fraFMECADetails.add(self.fxdControl)
             _label_ = self.fraFMECADetails.get_label_widget()
@@ -5516,14 +5600,14 @@ class Hardware(object):
 
             elif _type_ == 1:  # Failure mechanism.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
-                _values_ = (model.get_value(row, 1),
-                            self._mechanisms[model.get_value(row, 0)][1],
-                            self._mechanisms[model.get_value(row, 0)][2],
-                            self._mechanisms[model.get_value(row, 0)][3],
-                            self._mechanisms[model.get_value(row, 0)][4],
-                            self._mechanisms[model.get_value(row, 0)][5],
-                            self._mechanisms[model.get_value(row, 0)][6],
-                            _parent_, model.get_value(row, 0))
+                _values = (model.get_value(row, 1),
+                           self._dicMechanisms[model.get_value(row, 0)][1],
+                           self._dicMechanisms[model.get_value(row, 0)][2],
+                           self._dicMechanisms[model.get_value(row, 0)][3],
+                           self._dicMechanisms[model.get_value(row, 0)][4],
+                           self._dicMechanisms[model.get_value(row, 0)][5],
+                           self._dicMechanisms[model.get_value(row, 0)][6],
+                           _parent_, model.get_value(row, 0))
 
                 _query = "UPDATE tbl_fmeca_mechanisms \
                           SET fld_mechanism_description='%s', \
@@ -5531,12 +5615,12 @@ class Hardware(object):
                               fld_rpn=%d, fld_rpn_occurrence_new=%d, \
                               fld_rpn_detection_new=%d, fld_rpn_new=%d, \
                               fld_parent='%s' \
-                          WHERE fld_mechanism_id=%d" % _values_
+                          WHERE fld_mechanism_id=%d" % _values
 
             elif _type_ == 2:  # Control.
                 _parent_ = model.get_string_from_iter(model.iter_parent(row))
                 _values_ = (model.get_value(row, 1),
-                            self._fmeca_controls[model.get_value(row, 0)][1],
+                            self._dicControls[model.get_value(row, 0)][1],
                             _parent_, model.get_value(row, 0))
 
                 _query = "UPDATE tbl_fmeca_controls \
@@ -5801,13 +5885,13 @@ class Hardware(object):
                 self._trickledown(_model_, _row_, index,
                                   int(combo.get_active()))
                 if int(combo.get_active()) > 2:
-                    _title_ = _(u"RTK Information")
+                    _title = _(u"RTK Information")
 
-                    dialog = _widg.make_dialog(_title_,
-                                  dlgflags=(gtk.DIALOG_MODAL |
-                                            gtk.DIALOG_DESTROY_WITH_PARENT),
-                                  dlgbuttons=(gtk.STOCK_OK,
-                                              gtk.RESPONSE_ACCEPT))
+                    dialog = _widg.make_dialog(_title,
+                                               dlgflags=(gtk.DIALOG_MODAL |
+                                                         gtk.DIALOG_DESTROY_WITH_PARENT),
+                                               dlgbuttons=(gtk.STOCK_OK,
+                                                           gtk.RESPONSE_ACCEPT))
 
                     _text_ = _(u"%s model not yet implemented.  Contact "
                                u"andrew.rowland@reliaqual.com if you would "
@@ -5967,8 +6051,8 @@ class Hardware(object):
                         cells[i].set_property('editable', 1)
 
             elif i == 5:  # Repairable System apportionment selected.
-                for col in 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, \
-                           17, 18, 19:
+                for col in [0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16,
+                            17, 18, 19]:
                     self.tvwAllocation.get_column(col).set_visible(0)
                 for col in 2, 12, 14, 15, 16, 17, 18, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(1)
@@ -6000,7 +6084,7 @@ class Hardware(object):
                       FROM tbl_subcategory \
                       WHERE fld_category_id=%d \
                       ORDER BY fld_subcategory_noun ASC" % \
-                      int(_model.get_value(_row, 1))
+                     int(_model.get_value(_row, 1))
             _results = self._app.COMDB.execute_query(_query, None,
                                                      self._app.ComCnx)
 
@@ -6025,19 +6109,19 @@ class Hardware(object):
                                                            self.subcategory_id)
 
                     self._component.assessment_inputs_create(self,
-                                                    self.fxdReliabilityInputs,
-                                                    self._component_x[0],
-                                                    self._component_y[0])
+                                                             self.fxdReliabilityInputs,
+                                                             self._component_x[0],
+                                                             self._component_y[0])
                     self._component.assessment_inputs_load(self)
 
                     self._component.reliability_results_create(self,
-                                                    self.fxdReliabilityResults,
-                                                    self._component_x[1] + 125,
-                                                    5)
+                                                               self.fxdReliabilityResults,
+                                                               self._component_x[1] + 125,
+                                                               5)
                     self._component.stress_results_create(self,
-                                                        self.fxdStressResults,
-                                                        self._component_x[1],
-                                                        self._component_y[1])
+                                                          self.fxdStressResults,
+                                                          self._component_x[1],
+                                                          self._component_y[1])
                     self._component.assessment_results_load(self)
 
                     self.fxdReliabilityInputs.show_all()
@@ -6053,9 +6137,9 @@ class Hardware(object):
             _index = index - 1000
 
             if _type == 1:                  # Failure mechanism
-                self._mechanisms[_id][_index] = i
+                self._dicMechanisms[_id][_index] = i
             elif _type == 2:                # Control
-                self._fmeca_controls[_id][_index] = i
+                self._dicControls[_id][_index] = i
             elif _type == 3:                # Action
                 self._fmeca_actions[_id][_index] = i
 
@@ -6168,7 +6252,7 @@ class Hardware(object):
 
             _model.set_value(_row, index, _text_)
 
-        elif index >= 500 and index < 1000: # Allocation goals.
+        elif index >= 500 and index < 1000:     # Allocation goals.
             if index == 500:
                 (MTBFg, FRg) = self._calculate_goals(500)
 
@@ -6195,9 +6279,9 @@ class Hardware(object):
             _index = index - 1000
 
             if _type == 1:                  # Failure mechanism
-                self._mechanisms[_id][_index] = _text_
+                self._dicMechanisms[_id][_index] = _text_
             elif _type == 2:                # Control
-                self._fmeca_controls[_id][_index] = _text_
+                self._dicControls[_id][_index] = _text_
             elif _type == 3:                # Action
                 if _index == 0:
                     _model.set_value(_row, self._FMECA_col_order[1], _text_)
@@ -6319,9 +6403,9 @@ class Hardware(object):
                     _query = "INSERT INTO tbl_risk_analysis " \
                              "(fld_revision_id, fld_assembly_id, " \
                              "fld_potential_hazard) " \
-                            "VALUES (%d, %d, '%s')" % \
-                    (self._app.REVISION.revision_id,
-                     _model.get_value(_child, 1), _hazards[j])
+                             "VALUES (%d, %d, '%s')" % \
+                             (self._app.REVISION.revision_id,
+                              _model.get_value(_child, 1), _hazards[j])
                     self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                                commit=True)
 
@@ -6619,12 +6703,7 @@ class Hardware(object):
                                                   self._app.ProgCnx,
                                                   commit=True):
                     _util.rtk_error(_(u"Error adding new failure mode to the "
-                                      u"open RTK Program database.  Check the "
-                                      u"error log %s for additional "
-                                      u"information (if any).  You may e-mail "
-                                      u"bugs@reliaqual.com with the error log "
-                                      u"attached if the problem persists.") %
-                                      _conf.LOG_DIR + 'RTK_error.log')
+                                      u"open RTK Program database."))
                     return True
 
                 # Insert a new line in the failure consequence table.
@@ -6635,12 +6714,7 @@ class Hardware(object):
                                                   self._app.ProgCnx,
                                                   commit=True):
                     _util.rtk_error(_(u"Error adding new failure mode to the "
-                                      u"open RTK Program database.  Check the "
-                                      u"error log %s for additional "
-                                      u"information (if any).  You may e-mail "
-                                      u"bugs@reliaqual.com with the error log "
-                                      u"attached if the problem persists.") %
-                                      _conf.LOG_DIR + 'RTK_error.log')
+                                      u"open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
 
@@ -6660,9 +6734,8 @@ class Hardware(object):
                 # Find the id of the next failure mechanism.
                 _query = "SELECT MAX(fld_mechanism_id) \
                           FROM tbl_fmeca_mechanisms"
-                _next_id = self._app.DB.execute_query(_query,
-                                                       None,
-                                                       self._app.ProgCnx)
+                _next_id = self._app.DB.execute_query(_query, None,
+                                                      self._app.ProgCnx)
 
                 try:
                     _next_id = _next_id[0][0] + 1
@@ -6680,12 +6753,7 @@ class Hardware(object):
                                                   self._app.ProgCnx,
                                                   commit=True):
                     _util.rtk_error(_(u"Error adding new failure mechanism to "
-                                      u"the open RTK Program database.  Check "
-                                      u"the error log %s for additional "
-                                      u"information (if any).  You may e-mail "
-                                      u"bugs@reliaqual.com with the error log "
-                                      u"attached if the problem persists.") %
-                                      _conf.LOG_DIR + 'RTK_error.log')
+                                      u"the open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
 
@@ -6729,12 +6797,7 @@ class Hardware(object):
                                                   self._app.ProgCnx,
                                                   commit=True):
                     _util.rtk_error(_(u"Error adding new failure control to "
-                                      u"the open RTK Program database.  Check "
-                                      u"the error log %s for additional "
-                                      u"information (if any).  You may e-mail "
-                                      u"bugs@reliaqual.com with the error log "
-                                      u"attached if the problem persists.") %
-                                      _conf.LOG_DIR + 'RTK_error.log')
+                                      u"the open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
 
@@ -6778,12 +6841,7 @@ class Hardware(object):
                                                   self._app.ProgCnx,
                                                   commit=True):
                     _util.rtk_error(_(u"Error adding new FMEA/FMECA action to "
-                                      u"the open RTK Program database.  Check "
-                                      u"the error log %s for additional "
-                                      u"information (if any).  You may e-mail "
-                                      u"bugs@reliaqual.com with the error log "
-                                      u"attached if the problem persists.") %
-                                      _conf.LOG_DIR + 'RTK_error.log')
+                                      u"the open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
 
@@ -6887,13 +6945,8 @@ class Hardware(object):
                                                       self._app.ProgCnx,
                                                       commit=True):
                         _util.rtk_error(_(u"Error updating the RTK Program "
-                                          u"database for failure mode %d.  "
-                                          u"Check the error log %s for more "
-                                          u"information (if any).  You may "
-                                          u"e-mail bugs@reliaqual.com with "
-                                          u"the error log attached if the "
-                                          u"problem persists.") % (_keys[i],
-                                          _conf.LOG_DIR + "RTK_error.log"))
+                                          u"database for failure mode %d.") %
+                                        _keys[i])
 
                 # Update the RTK program database with the automotive RPN
                 # results.
@@ -7249,7 +7302,6 @@ class Hardware(object):
         Calculates the Assembly class risk analysis.
         """
 
-        import pandas as pd
         # Get the list of failure probability names then create a dictionary
         # using these probability names as the keys.  The values for each key
         # are a list where the list contains:
@@ -7581,11 +7633,11 @@ class Hardware(object):
 
                     _c_ = _model_.get_value(_row_, self._col_order[13])
                     _la_ = _conf.FRMULT * _model_.get_value(_row_,
-                        self._col_order[28])
+                                                            self._col_order[28])
                     _ld_ = _conf.FRMULT * _model_.get_value(_row_,
-                        self._col_order[29])
+                                                            self._col_order[29])
                     _ls_ = _conf.FRMULT * _model_.get_value(_row_,
-                        self._col_order[33])
+                                                            self._col_order[33])
                     _lp_ = _la_
                     _n_parts_ = _model_.get_value(_row_, self._col_order[67])
                     _power_ = _model_.get_value(_row_, self._col_order[83])
@@ -7737,7 +7789,6 @@ class Hardware(object):
         """
 
         import xlwt
-        from datetime import datetime
         from os import path
 
         # Launch a dialog to let the user select the path to the file
@@ -7919,12 +7970,38 @@ class Hardware(object):
 
             _data = pd.DataFrame(_data, columns=_headers)
 
-            # Write the requirements list to the file.
+            # Write the similiar items analysis to the file.
             _writer.write_title(_title, self.name, srow=0, scol=0)
             _writer.write_content(_data, self.name, srow=5, scol=0)
 
         elif menuitem.get_label() == 'FMEA Report':
             _title = 'Failure Mode and Effects Analysis Report'
+
+            _metadata = pd.DataFrame([(self.name, _today)],
+                                     columns=['Parent Assembly',
+                                              'Report Date'])
+
+            i = 0
+            _position = []
+            _headers = ["Hardware Item"]
+            for _column in self.tvwFMECA.get_columns():
+                if _column.get_visible():
+                    _position.append(i)
+                    _headers.append(_column.get_widget().get_text())
+                i += 1
+
+            _data = []
+            for _key in self._dicFMECA.keys():
+                _record = [self._dicFMECA[_key][0], _key]
+                for _pos in _position[1:]:
+                    _record.append(self._dicFMECA[_key][_pos])
+                _data.append(tuple(_record))
+
+            _data = pd.DataFrame(_data, columns=_headers)
+
+            # Write the FMEA to the file.
+            _writer.write_title(_title, self.name, srow=0, scol=0)
+            _writer.write_content(_data, self.name, srow=5, scol=0)
 
         _writer.close()
 
