@@ -1324,9 +1324,11 @@ class Revision(object):
         _data = []
         for i in range(_n_conditions_):
             _data.append([_results_[i][0], _results_[i][1], _results_[i][2],
-                          _results_[i][3], _results_[i][4], _results_[i][5],
-                          _results_[i][6], _results_[i][7]])
-            _model_.append(_data)
+                         _results_[i][3], _results_[i][4], _results_[i][5],
+                         _results_[i][6], _results_[i][7]])
+            _model_.append([_results_[i][0], _results_[i][1], _results_[i][2],
+                            _results_[i][3], _results_[i][4], _results_[i][5],
+                            _results_[i][6], _results_[i][7]])
 
         self._dic_environments[_mission_id_] = _data
 
