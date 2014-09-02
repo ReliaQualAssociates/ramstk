@@ -136,9 +136,12 @@ class ProcessMap(gtk.Window):
             _n_steps = 0
 
         for i in range(_n_steps):
+            _connect = _next_step[i].text
             try:
-                _connect = int(_next_step[i].text)
+                _connect = [int(x.strip()) for x in _connect.split(',')]
             except TypeError:
+                _connect = -1
+            except AttributeError:
                 _connect = -1
 
             self._steps[int(_step_id[i].text)] = [int(_x_pos[i].text),
@@ -192,63 +195,88 @@ class ProcessMap(gtk.Window):
             # Create the lines and arrows that connect the steps together.
             _connect_to = self._steps[_key][9]
             if _connect_to != -1:
+                for i in range(len(_connect_to)):
+                    # The step is above the step to be connected to.
+                    if(self._steps[_key][0] == self._steps[_connect_to[i]][0] and
+                       self._steps[_key][1] < self._steps[_connect_to[i]][1]):
+                        _direction = gtk.ARROW_DOWN
 
-                if self._steps[_key][0] == self._steps[_connect_to][0]:
-                    _direction = gtk.ARROW_DOWN
+                        # Create a vertical line.
+                        _line = gtk.VSeparator()
+                        _line_width = 10
+                        _line_height = int(0.5 * self._steps[_key][3])
 
-                    # Create a vertical line.
-                    _line = gtk.VSeparator()
-                    _line_width = 10
-                    _line_height = int(0.5 * self._steps[_key][3])
+                        _line_x_pos = self._steps[_key][0] + \
+                                      int(0.5 * self._steps[_key][2])
+                        _line_y_pos = self._steps[_key][1] + \
+                                      self._steps[_key][3]
 
-                    _line_x_pos = self._steps[_key][0] + \
-                                  int(0.5 * self._steps[_key][2])
-                    _line_y_pos = self._steps[_key][1] + self._steps[_key][3]
+                        _arrow_width = 20
+                        _arrow_height = 100
+                        _arrow_x_pos = _line_x_pos - 5
+                        _arrow_y_pos = _line_y_pos
 
-                    _arrow_width = 20
-                    _arrow_height = 100
-                    _arrow_x_pos = _line_x_pos - 5
-                    _arrow_y_pos = _line_y_pos
+                    # The step is below the step to be connected to.
+                    elif(self._steps[_key][0] == self._steps[_connect_to[i]][0] and
+                         self._steps[_key][1] > self._steps[_connect_to[i]][1]):
+                        _direction = gtk.ARROW_UP
 
-                elif self._steps[_key][0] < self._steps[_connect_to][0]:
-                    _direction = gtk.ARROW_RIGHT
+                        # Create a vertical line.
+                        _line = gtk.VSeparator()
+                        _line_width = 10
+                        _line_height = int(0.5 * self._steps[_key][3])
 
-                    # Create a horizontal line.
-                    _line = gtk.HSeparator()
-                    _line_width = int(0.5 * self._steps[_key][2])
-                    _line_height = 10
+                        _line_x_pos = self._steps[_key][0] + \
+                                      int(0.5 * self._steps[_key][2])
+                        _line_y_pos = self._steps[_key][1] + \
+                                      self._steps[_key][3]
 
-                    _line_x_pos = self._steps[_key][0] + self._steps[_key][2]
-                    _line_y_pos = self._steps[_key][1] + \
-                                  int(0.5 * self._steps[_key][3])
+                        _arrow_width = 20
+                        _arrow_height = 100
+                        _arrow_x_pos = _line_x_pos - 5
+                        _arrow_y_pos = _line_y_pos
 
-                    _arrow_width = 20
-                    _arrow_height = 20
-                    _arrow_x_pos = self._steps[_connect_to][0] - 13
-                    _arrow_y_pos = _line_y_pos - 5
+                    # The step is to the left of the step to be connected to.
+                    elif self._steps[_key][0] < self._steps[_connect_to[i]][0]:
+                        _direction = gtk.ARROW_RIGHT
 
-                #elif (self._steps[_key][0] != self._steps[_connect_to][0] and
-                #      self._steps[_key][1] != self._steps[_connect_to][1]):
-                #    _direction = gtk.ARROW_LEFT
+                        # Create a horizontal line.
+                        _line = gtk.HSeparator()
+                        _line_width = int(0.5 * self._steps[_key][2])
+                        _line_height = 10
 
-                _arrow = gtk.Arrow(_direction, gtk.SHADOW_ETCHED_IN)
-                _arrow.set_size_request(_arrow_width, _arrow_height)
+                        _line_x_pos = self._steps[_key][0] + \
+                                      self._steps[_key][2]
+                        _line_y_pos = self._steps[_key][1] + \
+                                      int(0.5 * self._steps[_key][3])
 
-                # Make the line black.
-                _line.set_size_request(_line_width, _line_height)
-                _map = _line.get_colormap()
-                _color = _map.alloc_color('#000000')
+                        _arrow_width = 20
+                        _arrow_height = 20
+                        _arrow_x_pos = self._steps[_connect_to[i]][0] - 13
+                        _arrow_y_pos = _line_y_pos - 5
 
-                # Copy the current line style and replace the background.
-                _style = _line.get_style().copy()
-                _style.bg[gtk.STATE_NORMAL] = _color
+                    #elif (self._steps[_key][0] != self._steps[_connect_to[i]][0] and
+                    #      self._steps[_key][1] != self._steps[_connect_to[i]][1]):
+                    #    _direction = gtk.ARROW_LEFT
 
-                # Set the line's style to the style just created.
-                _line.set_style(_style)
+                    _arrow = gtk.Arrow(_direction, gtk.SHADOW_ETCHED_IN)
+                    _arrow.set_size_request(_arrow_width, _arrow_height)
 
-                # Place the lines and arrows.
-                self.lytProcessMap.put(_line, _line_x_pos, _line_y_pos)
-                self.lytProcessMap.put(_arrow, _arrow_x_pos, _arrow_y_pos)
+                    # Make the line black.
+                    _line.set_size_request(_line_width, _line_height)
+                    _map = _line.get_colormap()
+                    _color = _map.alloc_color('#000000')
+
+                    # Copy the current line style and replace the background.
+                    _style = _line.get_style().copy()
+                    _style.bg[gtk.STATE_NORMAL] = _color
+
+                    # Set the line's style to the style just created.
+                    _line.set_style(_style)
+
+                    # Place the lines and arrows.
+                    self.lytProcessMap.put(_line, _line_x_pos, _line_y_pos)
+                    self.lytProcessMap.put(_arrow, _arrow_x_pos, _arrow_y_pos)
 
             # Place the step.
             self.lytProcessMap.put(_step, self._steps[_key][0],
