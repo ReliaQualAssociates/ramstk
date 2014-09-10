@@ -244,6 +244,127 @@ class Hardware(object):
     +-------+---------------------------------------+
     |   2   | Path of the parent failure mechanism  |
     +-------+---------------------------------------+
+
+    :ivar revision_id: initial_value: 0
+    :ivar assembly_id: initial_value: 0
+    :ivar _add_adj_factor: initial_value: 0.0
+    :ivar allocation_type: initial_value: 0
+    :ivar alt_part_num: initial_value: ''
+    :ivar assembly_criticality: initial_value: ''
+    :ivar attachments: initial_value: ''
+    :ivar availability: initial_value: 1.0
+    :ivar availability_mission: initial_value: 1.0
+    :ivar cage_code: initial_value: ''
+    :ivar calculation_model: initial_value: 1
+    :ivar category_id: initial_value: 0
+    :ivar comp_ref_des: initial_value: ''
+    :ivar cost: initial_value: 0.0
+    :ivar cost_per_failure: initial_value: 0.0
+    :ivar cost_per_hour: initial_value: 0.0
+    :ivar cost_type: initial_value: 0
+    :ivar description: initial_value: ''
+    :ivar detection_fr: initial_value: 0.0
+    :ivar detection_percent: initial_value: 100.0
+    :ivar duty_cycle: initial_value: 100.0
+    :ivar entered_by: initial_value: ''
+    :ivar environment_active: initial_value: 0
+    :ivar environment_dormant: initial_value: 0
+    :ivar failure_dist: initial_value: 0
+    :ivar failure_parameter_1: initial_value: 0.0
+    :ivar failure_parameter_2: initial_value: 0.0
+    :ivar failure_parameter_3: initial_value: 0.0
+    :ivar failure_rate: initial_value: 0.0
+    :ivar failure_rate_lcl: initial_value: 0.0
+    :ivar failure_rate_ucl: initial_value: 0.0
+    :ivar failure_rate_active: initial_value: 0.0
+    :ivar failure_rate_dormant: initial_value: 0.0
+    :ivar failure_rate_mission: initial_value: 0.0
+    :ivar failure_rate_percent: initial_value: 0.0
+    :ivar failure_rate_software: initial_value: 0.0
+    :ivar failure_rate_specified: initial_value: 0.0
+    :ivar failure_rate_type: initial_value: 1
+    :ivar figure_number: initial_value: ''
+    :ivar humidity: initial_value: 50.0
+    :ivar image_file: initial_value: ''
+    :ivar isolation_fr: initial_value: 0.0
+    :ivar isolation_percent: initial_value: 0.0
+    :ivar lcn: initial_value: ''
+    :ivar level: initial_value: 0
+    :ivar manufacturer: initial_value: 0
+    :ivar mission_time: initial_value: 100.0
+    :ivar modified_by: initial_value: ''
+    :ivar mcmt: initial_value: 0.0
+    :ivar mmt: initial_value: 0.0
+    :ivar mpmt: initial_value: 0.0
+    :ivar mtbf: initial_value: 0.0
+    :ivar mtbf_lcl: initial_value: 0.0
+    :ivar mtbf_ucl: initial_value: 0.0
+    :ivar mtbf_mission: initial_value: 0.0
+    :ivar mtbf_specified: initial_value: 0.0
+    :ivar mttr: initial_value: 0.0
+    :ivar mttr_specified: initial_value: 0.0
+    :ivar mttr_add_adj_factor: initial_value: 0.0
+    :ivar mttr_mult_adj_factor: initial_value: 1.0
+    :ivar mttr_type: initial_value: 1
+    :ivar mult_adj_factor: initial_value: 1.0
+    :ivar name: initial_value: ''
+    :ivar nsn: initial_value: ''
+    :ivar overstress: initial_value: False
+    :ivar page_number: initial_value: ''
+    :ivar parent_assembly: initial_value: '0'
+    :ivar part: initial_value: False
+    :ivar part_number: initial_value: ''
+    :ivar percent_isolation_group_ri: initial_value: 0.0
+    :ivar percent_isolation_single_ri: initial_value: 0.0
+    :ivar quantity: initial_value: 1
+    :ivar ref_des: initial_value: ''
+    :ivar reliability_mission: initial_value: 1.0
+    :ivar reliability: initial_value: 1.0
+    :ivar remarks: initial_value: ''
+    :ivar repair_dist: initial_value: 0
+    :ivar repair_parameter_1: initial_value: 0.0
+    :ivar repair_parameter_2: initial_value: 0.0
+    :ivar repairable: initial_value: False
+    :ivar rpm: initial_value: 0.0
+    :ivar specification: initial_value: ''
+    :ivar subcategory_id: initial_value: 0
+    :ivar tagged: initial_value: False
+    :ivar temperature_active: initial_value: 30.0
+    :ivar temperature_dormant: initial_value: 30.0
+    :ivar n_parts: initial_value: 0
+    :ivar total_power: initial_value: 0.0
+    :ivar vibration: initial_value: 0.0
+    :ivar weibull_data_set: initial_value: 1
+    :ivar weibull_file: initial_value: ''
+    :ivar year_of_manufacture: initial_value: 2002
+    :ivar ht_model: initial_value: ''
+    :ivar rel_goal_measure: initial_value: 0
+    :ivar rel_goal: initial_value: 1.0
+    :ivar assembly: initial_value: None
+    :ivar system_ht: initial_value: 0.0
+    :ivar burnin_temp: initial_value: 0.0
+    :ivar burnin_time: initial_value: 0.0
+    :ivar lab_devices: initial_value: 0.0
+    :ivar lab_time: initial_value: 0.0
+    :ivar lab_temp: initial_value: 0.0
+    :ivar lab_failures: initial_value: 0.0
+    :ivar field_time: initial_value: 0.0
+    :ivar field_failures: initial_value: 0.0
+    :ivar min_temp: initial_value: 0.0
+    :ivar knee_temp: initial_value: 0.0
+    :ivar max_temp: initial_value: 0.0
+    :ivar rated_current: initial_value: 0.0
+    :ivar rated_power: initial_value: 0.0
+    :ivar rated_voltage: initial_value: 0.0
+    :ivar op_current: initial_value: 0.0
+    :ivar op_power: initial_value: 0.0
+    :ivar op_voltage: initial_value: 0.0
+    :ivar current_ratio: initial_value: 1.0
+    :ivar voltage_ratio: initial_value: 1.0
+    :ivar power_ratio: initial_value: 1.0
+    :ivar theta_jc: initial_value: 0.0
+    :ivar temp_rise: initial_value: 0.0
+    :ivar case_temp: initial_value: 0.0
     """
 
     def __init__(self, application):
@@ -1017,7 +1138,7 @@ class Hardware(object):
         Method to create the Hardware class gtk.Notebook().
 
         :return: _notebook
-        :rtype : gtk.Notebook
+        :rtype: gtk.Notebook
         """
 
         def _create_general_data_tab(self, notebook):
@@ -7247,13 +7368,13 @@ class Hardware(object):
 
     def _calculate_goals(self, measure=500):
         """
-        Calculates the other two reliability metrics from the HARDWARE class
+        Calculates the other two reliability metrics from the Hardware class
         similar item analysis goal provided.
 
-        :param int measure: the reliability goal measurement:
-                            * 500 = Reliability
-                            * 501 = MTBF
-                            * 503 = Hazard Rate
+        :keyword int measure: the reliability goal measurement.\n
+                              - 500 = Reliability
+                              - 501 = MTBF
+                              - 503 = Hazard Rate
         """
 
         op_time = float(self.txtOperTime.get_text())

@@ -110,13 +110,67 @@ class Requirement(object):
     """
     The Requirement class is used to represent the requirements in a
     system being analyzed.
+
+    :ivar revision_id: initial_value: 0
+    :ivar requirement_id: initial_value: 0
+    :ivar assembly_id: initial_value: 0
+    :ivar requirement_desc: initial_value: ''
+    :ivar requirement_type: initial_value: 0
+    :ivar requirement_code: initial_value: ''
+    :ivar derived: initial_value: False
+    :ivar parent_requirement: initial_value: ''
+    :ivar validated: initial_value: False
+    :ivar validated_date: initial_value: ''
+    :ivar owner: initial_value: 0
+    :ivar specification: initial_value: ''
+    :ivar page_number: initial_value: ''
+    :ivar figure_number: initial_value: ''
+    :ivar parent_id: initial_value: 0
+    :ivar software_id: initial_value: 0
+    :ivar clear_q1: initial_value: 0
+    :ivar clear_q2: initial_value: 0
+    :ivar clear_q3: initial_value: 0
+    :ivar clear_q4: initial_value: 0
+    :ivar clear_q5: initial_value: 0
+    :ivar clear_q6: initial_value: 0
+    :ivar clear_q7: initial_value: 0
+    :ivar clear_q8: initial_value: 0
+    :ivar clear_q9: initial_value: 0
+    :ivar clear_q10: initial_value: 0
+    :ivar complete_q1: initial_value: 0
+    :ivar complete_q2: initial_value: 0
+    :ivar complete_q3: initial_value: 0
+    :ivar complete_q4: initial_value: 0
+    :ivar complete_q5: initial_value: 0
+    :ivar complete_q6: initial_value: 0
+    :ivar complete_q7: initial_value: 0
+    :ivar complete_q8: initial_value: 0
+    :ivar complete_q9: initial_value: 0
+    :ivar complete_q10: initial_value: 0
+    :ivar consistent_q1: initial_value: 0
+    :ivar consistent_q2: initial_value: 0
+    :ivar consistent_q3: initial_value: 0
+    :ivar consistent_q4: initial_value: 0
+    :ivar consistent_q5: initial_value: 0
+    :ivar consistent_q6: initial_value: 0
+    :ivar consistent_q7: initial_value: 0
+    :ivar consistent_q8: initial_value: 0
+    :ivar consistent_q9: initial_value: 0
+    :ivar consistent_q10: initial_value: 0
+    :ivar verifiable_q1: initial_value: 0
+    :ivar verifiable_q2: initial_value: 0
+    :ivar verifiable_q3: initial_value: 0
+    :ivar verifiable_q4: initial_value: 0
+    :ivar verifiable_q5: initial_value: 0
+    :ivar verifiable_q6: initial_value: 0
+    :ivar priority: initial_value: 1
     """
 
     def __init__(self, application):
         """
         Initializes the Requirement class.
 
-        :param application: the current instance of the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
         # Define private Requirement class attributes.

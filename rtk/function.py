@@ -79,7 +79,7 @@ class Function(object):
         """
         Initializes the Function class.
 
-        :param application: the current instance of the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
         # Define private Function class attributes.

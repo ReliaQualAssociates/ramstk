@@ -1488,15 +1488,13 @@ class Incident(object):
         """
         Callback function to retrieve and save gtk.Entry() changes.
 
-        :param entry: the gtk.Entry() that called the function.
-        :type entry: gtk.Entry
-        :param __event: the gtk.gdk.Event() that called the function.
-        :type __event: gtk.gdk.Event
-        :param convert: the data type to convert the gtk.Entry() contents to.
-        :type convert: string
-        :param index: the position in the applicable gtk.TreeModel() associated
-                      with the data from the calling gtk.Entry().
-        :type index: integer
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param str convert: the data type to convert the gtk.Entry() contents.
+        :param int index: the position in the applicable gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Entry().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """

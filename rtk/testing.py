@@ -80,14 +80,11 @@ def _close_plot(__window, __event, plot, parent):
     """
     Function to close the plot and return it to its original parent widget.
 
-    :param __window: the gtk.Window() that is being destroyed.
-    :type __window: gtk.Window
-    :param __event: the gtk.gdk.Event() that called this method.
-    :type __event: gtk.gdk.Event
-    :param plot: the matplotlib FigureCanvas that was expaneded.
-    :type plot: matplotlib.FigureCanvas
-    :param parent: the original parent widget for the plot.
-    :type parent: gtk.Widget
+    :param gtk.Window __window: the gtk.Window() that is being destroyed.
+    :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this method.
+    :param matplotlib.FigureCanvas plot: the matplotlib FigureCanvas that was
+                                         expanded.
+    :param gtk.Widget parent: the original parent widget for the plot.
     :return: False if successful or True if an error is encountered
     :rtype: boolean
     """
@@ -2083,7 +2080,7 @@ class Testing(object):
         if not self.chkFixMTBFI.get_active():
             MTBFI = initial_mtbf(TTT, t1, MTBFF, AvgGR, AvgMS, Prob)
 
-        # Calculate final MTBF.
+        # Calculate final, goal MTBF.
         if not self.chkFixMTBFG.get_active():
             MTBFF = final_mtbf(TTT, t1, MTBFI, AvgGR)
 
@@ -2106,9 +2103,17 @@ class Testing(object):
         if not self.chkFixProgramProb.get_active():
             Prob = prob(t1, MTBFI, AvgMS)
 
+        # Calculate the growth potential MTBF.
         self.mgp = growth_potential(MTBFI, AvgMS, AvgFEF)
         if not isinstance(self.mgp, (int, long, float)):
             self.mgp = MTBFF
+        if self.mgp < MTBFF:
+            _util.rtk_warning(_(u"The goal MTBF is greater than the growth "
+                                u"potential MTBF.  It is recommended that you "
+                                u"review the Initial Program MTBF, Average "
+                                u"FEF, and Average Management Strategy for "
+                                u"the test program.  Growth potential is a "
+                                u"function of these three parameters."))
 
         # Calculate the ideal growth curve from 0 - TTT in steps of one.
         _times = range(int(TTT))

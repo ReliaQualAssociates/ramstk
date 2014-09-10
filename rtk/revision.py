@@ -158,7 +158,7 @@ class Revision(object):
         """
         Initializes the Revision class.
 
-        :param application: the current instance of the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
         # Define private Revision class attributes.

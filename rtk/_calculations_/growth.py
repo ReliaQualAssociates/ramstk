@@ -324,12 +324,9 @@ def growth_potential(mtbfi, avems, avefef):
     """
     Function to calculate the growth potential MTBF.
 
-    :param mtbfi: the initial MTBF.
-    :type mtbfi: float
-    :param avems: the management strategy.
-    :type avems: float
-    :param avefef: the fix effectiveness factor.
-    :type avefef: float
+    :param float mtbfi: the initial MTBF.
+    :param float avems: the management strategy.
+    :param float avefef: the fix effectiveness factor.
     :return: _mtbfgp: the growth potnetial MTBF.
     :rtype: float
     """
