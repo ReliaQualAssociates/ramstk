@@ -273,6 +273,7 @@ class AddRevision(object):
         _row = self.cmbBaseRevision.get_active_iter()
         _base_revision = int(_model.get_value(_row, 2))
 
+        # TODO: Move this to the Function class and simply call it from here.
         if self.chkFunction.get_active():
             _query = "SELECT MAX(fld_function_id) FROM tbl_functions"
             _function_id = self._app.DB.execute_query(_query,
@@ -368,6 +369,7 @@ class AddRevision(object):
         if _assembly_id[0][0] is not None:
             _assembly_id = _assembly_id[0][0] + 1
 
+        # TODO: Move this to the Hardware class and simply call it from here.
         if self.chkHardware.get_active():
             # Retrieve the information needed to copy the hardware
             # hierarchy from the base revision to the new revision.
@@ -538,7 +540,6 @@ class AddRevision(object):
                                                    commit=True)
 
                 _assembly_id += 1
-
         else:
             _values = (_revision_id, _assembly_id, _who)
             _query = "INSERT INTO tbl_system \
@@ -573,6 +574,8 @@ class AddRevision(object):
             self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                        commit=True)
 
+        # TODO: Add a checkbox to the assistant to allow the user to select whether or not to duplicate the software structure.
+        # TODO: Move this to the Software class and simply call it from here.
         _query = "SELECT MAX(fld_software_id) FROM tbl_software"
         _module_id = self._app.DB.execute_query(_query, None,
                                                 self._app.ProgCnx)
@@ -586,6 +589,38 @@ class AddRevision(object):
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             _util.rtk_error(_(u"Error creating system software hierarchy."))
+        else:
+            # Add the new software module to each of risk analysis tables.
+            for i in range(43):
+                _query = "INSERT INTO tbl_software_development \
+                         (fld_software_id, fld_question_id, fld_y) \
+                         VALUES (%d, %d, 0)" % (_module_id, i)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+            for i in range(50):
+                _query = "INSERT INTO tbl_srr_ssr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_module_id, i)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+            for i in range(39):
+                _query = "INSERT INTO tbl_pdr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_module_id, i)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+            for i in range(72):
+                _query = "INSERT INTO tbl_cdr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_module_id, i)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+            for i in range(24):
+                _query = "INSERT INTO tbl_trr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_module_id, i)
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
 
         # Reload the revision tree.
         self._app.REVISION.load_tree()
