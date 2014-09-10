@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Contains functions for creating analysis reports.
+Contains functions for creating the process map navigator.
 """
 
 __author__ = 'Andrew Rowland'
@@ -228,8 +228,8 @@ class ProcessMap(gtk.Window):
 
                         _line_x_pos = self._steps[_key][0] + \
                                       int(0.5 * self._steps[_key][2])
-                        _line_y_pos = self._steps[_key][1] + \
-                                      self._steps[_key][3]
+                        _line_y_pos = self._steps[_key][1] #+ \
+                                      #self._steps[_key][3]
 
                         _arrow_width = 20
                         _arrow_height = 100
@@ -242,7 +242,7 @@ class ProcessMap(gtk.Window):
 
                         # Create a horizontal line.
                         _line = gtk.HSeparator()
-                        _line_width = int(0.5 * self._steps[_key][2])
+                        _line_width = int(0.5 * self._steps[_key][2]) + 10
                         _line_height = 10
 
                         _line_x_pos = self._steps[_key][0] + \
@@ -252,7 +252,7 @@ class ProcessMap(gtk.Window):
 
                         _arrow_width = 20
                         _arrow_height = 20
-                        _arrow_x_pos = self._steps[_connect_to[i]][0] - 13
+                        _arrow_x_pos = self._steps[_connect_to[i]][0] - 15
                         _arrow_y_pos = _line_y_pos - 5
 
                     #elif (self._steps[_key][0] != self._steps[_connect_to[i]][0] and
