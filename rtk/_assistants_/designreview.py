@@ -323,6 +323,28 @@ class DesignReview(gtk.Window):
                                               self.gateway_id)
         _status = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
+        # If not already loaded into the current RTK Program database, load the
+        # concern ID's from the common RTK database.
+        if not _status:
+            for i in range(_n_criteria):
+                _query = "INSERT INTO tbl_reviews \
+                          (fld_revision_id, fld_gateway_id, fld_concern_id) \
+                          VALUES (%d, %d, %d)" % \
+                         (self._app.REVISION.revision_id, self.gateway_id,
+                          _criteria[i][0])
+                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                           commit=True)
+
+            _query = "SELECT fld_satisfied, fld_concern_id, fld_action, \
+                             fld_due_date, fld_owner \
+                      FROM tbl_reviews \
+                      WHERE fld_revision_id=%d \
+                      AND fld_gateway_id=%d \
+                      ORDER BY fld_concern_id" % \
+                     (self._app.REVISION.revision_id, self.gateway_id)
+            _status = self._app.DB.execute_query(_query, None,
+                                                 self._app.ProgCnx)
+
         # Load the criteria for the selected review gateway into the
         # gtk.TreeView()
         _model = self.treeview.get_model()
