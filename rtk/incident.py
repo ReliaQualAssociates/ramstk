@@ -649,17 +649,18 @@ class Incident(object):
                     _cell.set_property('editable', 0)
                     _cell.set_property('background', 'light gray')
                     _cell.set_property('foreground', 'black')
+                    _column.pack_start(_cell, True)
                     _column.set_attributes(_cell, text=i)
                 else:
                     _cell = gtk.CellRendererToggle()
                     _cell.set_property('activatable', 1)
                     _cell.connect('toggled', _component_list_edit,
                                   None, i, _model)
+                    _column.pack_start(_cell, True)
                     _column.set_attributes(_cell, active=i)
 
                 _label = _widg.make_column_heading(_heading[i])
                 _column.set_widget(_label)
-                _column.pack_start(_cell, True)
                 _column.set_clickable(True)
                 _column.set_resizable(True)
                 _column.set_sort_column_id(i)
