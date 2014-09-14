@@ -87,11 +87,10 @@ def _select_source_file(assistant):
     Function to select the file containing the data to import to the open RTK
     Program database.
 
-    @param assistant: the gtk.Assistant() calling this function.
-    @type assistant: gtk.Assistant
-    @return: _headers, _contents; lists containing the column headings and
+    :param gtk.Assistant assistant: the gtk.Assistant() calling this function.
+    :return: _headers, _contents; lists containing the column headings and
              each line from the source file.
-    @rtype: lists
+    :rtype: lists
     """
 
     # Get the user's selected file and write the results.
@@ -121,6 +120,7 @@ def _select_source_file(assistant):
     _dialog.add_filter(_filter)
 
     # Run the dialog and write the file.
+    _headers = []
     _contents = []
     if _dialog.run() == gtk.RESPONSE_ACCEPT:
         _filename = _dialog.get_filename()

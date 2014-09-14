@@ -689,7 +689,7 @@ class Testing(object):
                        _(u"Consumer Risk:")]
             (_x_pos,
              _y_pos) = _widg.make_labels(_labels, self.fxdRGPlan, 5, 5)
-            _x_pos += 20
+            _x_pos += 40
 
             _label = _widg.make_label(_(u"Fix\nValue"), 150, 50)
 

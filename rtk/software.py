@@ -2368,19 +2368,19 @@ class Software(object):
             _hbox_left.pack_end(_frame)
 
             _labels = [_(u"1. Standards are defined and will be enforced."),
-                       _(u"Software will be developed using a higher order "
+                       _(u"2. Software will be developed using a higher order "
                          u"language."),
-                       _(u"2. The development process will include formal "
+                       _(u"3. The development process will include formal "
                          u"reviews (PDR, CDR, etc.)."),
-                       _(u"3. The development process will include frequent "
+                       _(u"4. The development process will include frequent "
                          u"walkthroughs."),
-                       _(u"4. Development will take a top-down and "
+                       _(u"5. Development will take a top-down and "
                          u"structured approach."),
-                       _(u"5. Unit development folders will be used."),
-                       _(u"6. A software development library will be used."),
-                       _(u"7. A formal change and error reporting process "
+                       _(u"6. Unit development folders will be used."),
+                       _(u"7. A software development library will be used."),
+                       _(u"8. A formal change and error reporting process "
                          u"will be used."),
-                       _(u"8. Progress and status will routinely be "
+                       _(u"9. Progress and status will routinely be "
                          u"reported.")]
             (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
