@@ -1338,7 +1338,31 @@ CREATE TABLE "tbl_fmeca_actions" (
 
 
 --
--- Create tables for storing maintenance planning analyses information.
+-- Create tables for storing accelerated test planning information.
+--
+CREATE TABLE "tbl_pof" (
+    "fld_assembly_id" INTEGER DEFAULT(0),               -- ID of the hardware assembly.
+    "fld_mode_id" INTEGER DEFAULT(0),                   -- ID of the failure mode.
+    "fld_mechanism_id" INTEGER DEFAULT(0),              -- ID of the failure mechanism.
+    "fld_load_id" INTEGER DEFAULT(0),                   -- ID of the operating load condition.
+    "fld_load_description" VARCHAR(512) DEFAULT(''),    -- Description of the operating load condition.
+    "fld_primary_stress" VARCHAR(256) DEFAULT(''),      -- Description of the primary operational stress.
+    "fld_secondary_stress" VARCHAR(256) DEFAULT(''),    -- Description of the secondary operational stress.
+    "fld_tertiary_stress" VARCHAR(256) DEFAULT(''),     -- Description of the tertiary operational stress.
+    "fld_priority" VARCHAR(256) DEFAULT(''),            -- Priority of the failure mechanism.
+    "fld_primary_measurable" VARCHAR(256) DEFAULT(''),  -- Description of the measurable parameter for the primary stress.
+    "fld_primary_load_history" VARCHAR(256) DEFAULT(''),    -- Description of the method for quantifying the primary stress.
+    "fld_secondary_measureable" VARCHAR(256) DEFAULT(''),   -- Description of the measurable parameter for the secondary stress.
+    "fld_secondary_load_history" VARCHAR(256) DEFAULT(''),  -- Description of the method for quantifying the secondary stress.
+    "fld_tertiary_measurable" VARCHAR(256) DEFAULT(''), -- Description of the measurable parameter for the tertiary stress.
+    "fld_tertiary_load_history" VARCHAR(256) DEFAULT(''),   -- Description of the method for quantifying the tertiary stress.
+    "fld_remarks" BLOB,                                 -- User remarks/notes.
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT('0')      -- Path of the parent failure mode or failure mechanism.
+);
+
+
+--
+-- Create tables for storing maintenance planning analysis information.
 --
 CREATE TABLE "tbl_significant_item" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),

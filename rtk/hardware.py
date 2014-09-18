@@ -849,6 +849,9 @@ class Hardware(object):
         self.txtActionRecommended = _widg.make_text_view(width=375, height=75)
         self.txtActionTaken = _widg.make_text_view(width=375, height=75)
 
+        # Physics of Failure analysis page widgets.
+        self.tvwPoF = gtk.TreeView()
+
         # Maintenance Planning page widgets.
         # SSI and FSI status widgets.
         _labels = [_(u"This item is a major load carrying element."),
@@ -3417,6 +3420,93 @@ class Hardware(object):
 
             return False
 
+        def _create_pof_tab(self, notebook):
+            """
+            Function to create the Hardware class gtk.Notebook() page for
+            displaying the physics of failure analysis for the selected
+            Hardware.
+
+            :param rtk.hardware self: the current instance of a Hardware class.
+            :param gtk.NoteBook notebook: the Hardware class gtk.Notebook().
+            """
+
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Build-up the containers for the tab.                          #
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            _hpaned_ = gtk.HPaned()
+
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add(self.tvwPoF)
+
+            _frame = _widg.make_frame(label=_(u"Physics of Failure Analysis"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
+
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Place the widgets used to display the PoF analysis.           #
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            self.tvwPoF.set_tooltip_text(_(u"Displays the physics of "
+                                           u"failure analysis for the "
+                                           u"selected assembly or "
+                                           u"component."))
+            self.tvwPoF.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+            _model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING)
+            self.tvwPoF.set_model(_model)
+
+            _labels = [_(u"Failure Mode"), _(u"Failure Mechanism"),
+                       _(u"Relevant\nLoading\nCondition"), _(u"Primary Stress"),
+                       _(u"Secondary Stress"), _(u"Tertiary Stress"),
+                       _(u"Priority"),
+                       _(u"Primary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Secondary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Tertiary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Remarks")]
+            for i in range(14):
+                _cell = gtk.CellRendererText()
+                if i > 1:
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('background', 'white')
+                    #_cell.connect('edited', self._pof_edit, i)
+                else:
+                    _cell.set_property('editable', 0)
+                    _cell.set_property('background', 'grey')
+
+                _column = gtk.TreeViewColumn()
+                _label = _widg.make_column_heading(_labels[i])
+                _column.set_widget(_label)
+                _column.pack_start(_cell, True)
+                _column.set_attributes(_cell, text=i)
+                _column.set_resizable(True)
+                _column.connect('notify::width', _widg.resize_wrap, _cell)
+                self.tvwPoF.append_column(_column)
+
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"PoF\nWorksheet") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Physics of failure analysis for the "
+                                      u"selected assembly."))
+
+            notebook.insert_page(_frame,
+                                 tab_label=_label,
+                                 position=-1)
+
+            return False
+
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
@@ -3436,6 +3526,7 @@ class Hardware(object):
         _create_assessment_inputs_tab(self, _notebook)
         _create_assessment_results_tab(self, _notebook)
         _create_fmeca_tab(self, _notebook)
+        _create_pof_tab(self, _notebook)
 
         return _notebook
 
@@ -3938,6 +4029,17 @@ class Hardware(object):
                 self.lblNoSubCategory.hide()
 
             return False
+
+        def _load_pof_page(self):
+            """
+            Method to load the Physics of Failure analysis page.
+
+            :param rtk.Hardware self: the current instance of the
+                                      rtk.Hardware() class.
+            """
+
+            _query = "SELECT * FROM tbl_pof "
+                     "WHERE fld_assembly_id=%d" % self.assembly_id
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
@@ -6827,7 +6929,7 @@ class Hardware(object):
                                       u"open RTK Program database."))
                     return True
 
-                # Insert a new line in the failure consequence table.
+                # Insert a new record in the failure consequence table.
                 _query_ = "INSERT INTO tbl_failure_consequences \
                            (fld_assembly_id, fld_mode_id) \
                            VALUES (%d, %d)" % (self.assembly_id, _last_id)
@@ -6877,6 +6979,18 @@ class Hardware(object):
                                       u"the open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
+
+                # Insert a new record in the physics of failure table.
+                _query = "INSERT INTO tbl_pof \
+                          (fld_assembly_id, fld_mode_id, fld_mechnism_id) \
+                          VALUES (%d, %d, %d)" % (self.assembly_id,
+                                                  _mode_id, _next_id)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure mechanism to "
+                                      u"the open RTK Program database physics "
+                                      u"of failure table."))
 
             elif button.get_label() == 'Control':
                 # Find the id and gtk.TreeIter of the parent failure mechanism.

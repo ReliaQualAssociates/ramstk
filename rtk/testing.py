@@ -2199,7 +2199,7 @@ class Testing(object):
 
             # If the user-suppled test termination time is less than the latest
             # observed time, then use the latest observed time.
-            if self._flt_test_termination_time < _X[-1]:
+            if self._flt_test_termination_time != _X[-1]:
                 self._flt_test_termination_time = _X[-1]
 
             # Estimate model parameters and bounds.
@@ -2247,7 +2247,7 @@ class Testing(object):
 
             _mu_i[0] = 1.0 / _rho_i[2]
             _mu_i[2] = 1.0 / _rho_i[0]
-
+            print _mu_i[1], self._flt_test_termination_time
             # Append calculated MTBF and failure intensity values to the lists
             # passed to the plotting method.
             _plot_mtbfi.append([_mu_i[0], _mu_i[1], _mu_i[2]])
