@@ -110,29 +110,6 @@ class Hardware(object):
     |   2   | Item criticality          |
     +-------+---------------------------+
 
-    :ivar _dicRPN: Dictionary to carry RPN hardware item values.
-    Key is the failure mechanism ID; value is a list with the following:
-
-    +-------+---------------------------------------+
-    | Index | Information                           |
-    +=======+=======================================+
-    |   0   | Severity rating                       |
-    +-------+---------------------------------------+
-    |   1   | Occurrence rating                     |
-    +-------+---------------------------------------+
-    |   2   | Detection rating                      |
-    +-------+---------------------------------------+
-    |   3   | RPN                                   |
-    +-------+---------------------------------------+
-    |   4   | Severity rating after taking action   |
-    +-------+---------------------------------------+
-    |   5   | Occurrence rating after taking action |
-    +-------+---------------------------------------+
-    |   6   | Detection rating after taking action  |
-    +-------+---------------------------------------+
-    |   7   | RPN after taking action               |
-    +-------+---------------------------------------+
-
     :ivar _dicFMECA: Dictionary to carry all the rows for the FMECA.  Key is
                      the assembly ID; value is a list with the following:
 
@@ -243,6 +220,32 @@ class Hardware(object):
     |   1   | Control type                          |
     +-------+---------------------------------------+
     |   2   | Path of the parent failure mechanism  |
+    +-------+---------------------------------------+
+
+    :ivar _dicrpnsev: Dictionart to carry RPN severity IDs.  Key is the
+    severity description; value is the RPN severity ID.
+
+    :ivar _dicRPN: Dictionary to carry RPN hardware item values.
+    Key is the failure mechanism ID; value is a list with the following:
+
+    +-------+---------------------------------------+
+    | Index | Information                           |
+    +=======+=======================================+
+    |   0   | Severity rating                       |
+    +-------+---------------------------------------+
+    |   1   | Occurrence rating                     |
+    +-------+---------------------------------------+
+    |   2   | Detection rating                      |
+    +-------+---------------------------------------+
+    |   3   | RPN                                   |
+    +-------+---------------------------------------+
+    |   4   | Severity rating after taking action   |
+    +-------+---------------------------------------+
+    |   5   | Occurrence rating after taking action |
+    +-------+---------------------------------------+
+    |   6   | Detection rating after taking action  |
+    +-------+---------------------------------------+
+    |   7   | RPN after taking action               |
     +-------+---------------------------------------+
 
     :ivar revision_id: initial_value: 0
@@ -848,6 +851,9 @@ class Hardware(object):
         self.txtActionCloseDate = _widg.make_entry(width=100)
         self.txtActionRecommended = _widg.make_text_view(width=375, height=75)
         self.txtActionTaken = _widg.make_text_view(width=375, height=75)
+
+        # Physics of Failure analysis page widgets.
+        self.tvwPoF = gtk.TreeView()
 
         # Maintenance Planning page widgets.
         # SSI and FSI status widgets.
@@ -3092,15 +3098,14 @@ class Hardware(object):
             _cell_ = _column_.get_cell_renderers()
             _cellmodel2_ = _cell_[0].get_property('model')
             _cellmodel2_.clear()
-            _query_ = "SELECT fld_severity_name \
-                       FROM tbl_rpn_severity \
-                       WHERE fld_fmeca_type=0"
-            _results_ = self._app.COMDB.execute_query(_query_,
-                                                      None,
-                                                      self._app.ComCnx)
-
+            _query = "SELECT fld_severity_name, fld_severity_id \
+                      FROM tbl_rpn_severity \
+                      WHERE fld_fmeca_type=0 \
+                      ORDER BY fld_severity_id"
+            _results = self._app.COMDB.execute_query(_query, None,
+                                                     self._app.ComCnx)
             try:
-                _n_sev = len(_results_)
+                _n_sev = len(_results)
             except TypeError:
                 _util.rtk_error(_(u"There was a problem loading the RPN "
                                   u"Severity list in the Assembly Work Book "
@@ -3112,9 +3117,9 @@ class Hardware(object):
             _cellmodel1_.append([""])
             _cellmodel2_.append([""])
             for i in range(_n_sev):
-                self._rpnsev[_results_[i][0]] = i
-                _cellmodel1_.append([_results_[i][0]])
-                _cellmodel2_.append([_results_[i][0]])
+                self._rpnsev[_results[i][0]] = _results[i][1]
+                _cellmodel1_.append([_results[i][0]])
+                _cellmodel2_.append([_results[i][0]])
 
             # Load the RPN occurrence and RPN ocurrence new gtk.ComboBox().
             _cellmodel1_ = self.cmbOccurenceI.get_model()
@@ -3417,6 +3422,93 @@ class Hardware(object):
 
             return False
 
+        def _create_pof_tab(self, notebook):
+            """
+            Function to create the Hardware class gtk.Notebook() page for
+            displaying the physics of failure analysis for the selected
+            Hardware.
+
+            :param rtk.hardware self: the current instance of a Hardware class.
+            :param gtk.NoteBook notebook: the Hardware class gtk.Notebook().
+            """
+
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Build-up the containers for the tab.                          #
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            _hpaned_ = gtk.HPaned()
+
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add(self.tvwPoF)
+
+            _frame = _widg.make_frame(label=_(u"Physics of Failure Analysis"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
+
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Place the widgets used to display the PoF analysis.           #
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            self.tvwPoF.set_tooltip_text(_(u"Displays the physics of "
+                                           u"failure analysis for the "
+                                           u"selected assembly or "
+                                           u"component."))
+            self.tvwPoF.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+            _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                   gobject.TYPE_STRING)
+            self.tvwPoF.set_model(_model)
+
+            _labels = [_(u"Failure Mechanism"),
+                       _(u"Relevant\nLoading\nCondition"), _(u"Primary Stress"),
+                       _(u"Secondary Stress"), _(u"Tertiary Stress"),
+                       _(u"Priority"),
+                       _(u"Primary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Secondary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Tertiary Stress\nMeasurable\nParameter"),
+                       _(u"Method to\nClassify\nLoad History"),
+                       _(u"Remarks")]
+            for i in range(13):
+                _cell = gtk.CellRendererText()
+                if i > 0:
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('background', 'white')
+                    #_cell.connect('edited', self._pof_edit, i)
+                else:
+                    _cell.set_property('editable', 0)
+                    _cell.set_property('background', 'grey')
+
+                _column = gtk.TreeViewColumn()
+                _label = _widg.make_column_heading(_labels[i])
+                _column.set_widget(_label)
+                _column.pack_start(_cell, True)
+                _column.set_attributes(_cell, text=i)
+                _column.set_resizable(True)
+                _column.connect('notify::width', _widg.resize_wrap, _cell)
+                self.tvwPoF.append_column(_column)
+
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"PoF\nWorksheet") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Physics of failure analysis for the "
+                                      u"selected assembly."))
+
+            notebook.insert_page(_frame,
+                                 tab_label=_label,
+                                 position=-1)
+
+            return False
+
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
@@ -3436,6 +3528,7 @@ class Hardware(object):
         _create_assessment_inputs_tab(self, _notebook)
         _create_assessment_results_tab(self, _notebook)
         _create_fmeca_tab(self, _notebook)
+        #_create_pof_tab(self, _notebook)
 
         return _notebook
 
@@ -3780,51 +3873,49 @@ class Hardware(object):
             :rtype: bool
             """
 
-            (_model_, _row_) = self.treeview.get_selection().get_selected()
+            (_model, _row) = self.treeview.get_selection().get_selected()
 
-            if _row_ is not None:
-                _path_ = _model_.get_string_from_iter(_row_)
+            if _row is not None:
+                _path = _model.get_string_from_iter(_row)
 
-            _query_ = "SELECT t1.fld_sia_id, t2.fld_name, \
-                              t2.fld_failure_rate_predicted, \
-                              t1.fld_change_desc_1, t1.fld_change_factor_1, \
-                              t1.fld_change_desc_2, t1.fld_change_factor_2, \
-                              t1.fld_change_desc_3, t1.fld_change_factor_3, \
-                              t1.fld_change_desc_4, t1.fld_change_factor_4, \
-                              t1.fld_change_desc_5, t1.fld_change_factor_5, \
-                              t1.fld_change_desc_6, t1.fld_change_factor_6, \
-                              t1.fld_change_desc_7, t1.fld_change_factor_7, \
-                              t1.fld_change_desc_8, t1.fld_change_factor_8, \
-                              t1.fld_function_1, t1.fld_function_2, \
-                              t1.fld_function_3, t1.fld_function_4, \
-                              t1.fld_function_5, \
-                              t1.fld_result_1, t1.fld_result_2, \
-                              t1.fld_result_3, t1.fld_result_4, \
-                              t1.fld_result_5, t1.fld_user_blob_1, \
-                              t1.fld_user_blob_2, t1.fld_user_blob_3, \
-                              t1.fld_user_float_1, t1.fld_user_float_2, \
-                              t1.fld_user_float_3, t1.fld_user_int_1, \
-                              t1.fld_user_int_2, t1.fld_user_int_3 \
-                       FROM tbl_similar_item AS t1 \
-                       INNER JOIN tbl_system AS t2 \
-                       ON t2.fld_assembly_id=t1.fld_assembly_id \
-                       WHERE t1.fld_revision_id=%d \
-                       AND t2.fld_parent_assembly='%s'" % \
-                      (self.revision_id, _path_)
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx)
-
+            _query = "SELECT t1.fld_sia_id, t2.fld_name, \
+                             t2.fld_failure_rate_predicted, \
+                             t1.fld_change_desc_1, t1.fld_change_factor_1, \
+                             t1.fld_change_desc_2, t1.fld_change_factor_2, \
+                             t1.fld_change_desc_3, t1.fld_change_factor_3, \
+                             t1.fld_change_desc_4, t1.fld_change_factor_4, \
+                             t1.fld_change_desc_5, t1.fld_change_factor_5, \
+                             t1.fld_change_desc_6, t1.fld_change_factor_6, \
+                             t1.fld_change_desc_7, t1.fld_change_factor_7, \
+                             t1.fld_change_desc_8, t1.fld_change_factor_8, \
+                             t1.fld_function_1, t1.fld_function_2, \
+                             t1.fld_function_3, t1.fld_function_4, \
+                             t1.fld_function_5, \
+                             t1.fld_result_1, t1.fld_result_2, \
+                             t1.fld_result_3, t1.fld_result_4, \
+                             t1.fld_result_5, t1.fld_user_blob_1, \
+                             t1.fld_user_blob_2, t1.fld_user_blob_3, \
+                             t1.fld_user_float_1, t1.fld_user_float_2, \
+                             t1.fld_user_float_3, t1.fld_user_int_1, \
+                             t1.fld_user_int_2, t1.fld_user_int_3 \
+                      FROM tbl_similar_item AS t1 \
+                      INNER JOIN tbl_system AS t2 \
+                      ON t2.fld_assembly_id=t1.fld_assembly_id \
+                      WHERE t1.fld_revision_id=%d \
+                      AND t2.fld_parent_assembly='%s'" % \
+                     (self.revision_id, _path)
+            _results = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
             try:
-                _n_assemblies_ = len(_results_)
+                _n_assemblies = len(_results)
             except TypeError:
-                _n_assemblies_ = 0
+                _n_assemblies = 0
 
-            _model_ = self.tvwSIA.get_model()
-            _model_.clear()
-            for i in range(_n_assemblies_):
+            _model = self.tvwSIA.get_model()
+            _model.clear()
+            for i in range(_n_assemblies):
                 try:
-                    _model_.append(None, _results_[i])
+                    _model.append(None, _results[i])
                 except TypeError:
                     pass
 
@@ -3939,6 +4030,49 @@ class Hardware(object):
 
             return False
 
+        def _load_pof_page(self):
+            """
+            Method to load the Physics of Failure analysis page.
+
+            :param rtk.Hardware self: the current instance of the
+                                      rtk.Hardware() class.
+            :return: False if successful or True if an error occurs.
+            :rtype: bool
+            """
+
+            _query = "SELECT t2.fld_mechanism_description, \
+                             t1.fld_load_description, t1.fld_primary_stress, \
+                             t1.fld_secondary_stress, t1.fld_tertiary_stress, \
+                             t1.fld_priority, t1.fld_primary_measurable, \
+                             t1.fld_primary_load_history, \
+                             t1.fld_secondary_measureable, \
+                             t1.fld_secondary_load_history, \
+                             t1.fld_tertiary_measurable, \
+                             t1.fld_tertiary_load_history, t1.fld_remarks \
+                      FROM tbl_pof AS t1 \
+                      INNER JOIN tbl_fmeca_mechanisms AS t2 \
+                      ON t2.fld_mechanism_id=t1.fld_mechanism_id \
+                      WHERE t1.fld_assembly_id=%d" % self.assembly_id
+            _results = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx)
+            try:
+                _n_mechanisms = len(_results)
+            except TypeError:
+                _n_mechanisms = 0
+
+            _model = self.tvwPoF.get_model()
+            _model.clear()
+            for i in range(_n_mechanisms):
+                _data = [_util.none_to_string(_results[i][0]), _results[i][1],
+                         _results[i][2], _results[i][3], _results[i][4],
+                         _results[i][5], _results[i][6], _results[i][7],
+                         _results[i][8], _results[i][9], _results[i][10],
+                         _results[i][11],
+                         _util.none_to_string(_results[i][12])]
+                _model.append(_data)
+
+            return False
+
         (_model, _row) = self.treeview.get_selection().get_selected()
 
         self.assembly_id = _model.get_value(_row, 1)
@@ -3961,6 +4095,7 @@ class Hardware(object):
         _load_assessment_inputs_tab(self)
         self.load_assessment_results_tab()
         self._load_fmeca_tab()
+        #_load_pof_page(self)
 
         # Load and show the assembly-specific pages if the selected hardware
         # item is an assembly.  Otherwise, hide the assembly-specific pages.
@@ -4223,7 +4358,6 @@ class Hardware(object):
                   ON t2.fld_mode_id=t1.fld_mode_id \
                   WHERE t1.fld_assembly_id=%d" % self.assembly_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
-
         try:
             _n_mechanisms = len(_results)
         except TypeError:
@@ -4296,7 +4430,7 @@ class Hardware(object):
                 _util.rtk_warning(_(u"Failed to load FMEA/FMECA "
                                     u"action %d" % _results[i][3]))
 
-        # Load the controls to the gtk.TreeView.
+        # Load the controls to the gtk.TreeView().
         _query = "SELECT * FROM tbl_fmeca_controls \
                   WHERE fld_assembly_id=%d" % self.assembly_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
@@ -6827,7 +6961,7 @@ class Hardware(object):
                                       u"open RTK Program database."))
                     return True
 
-                # Insert a new line in the failure consequence table.
+                # Insert a new record in the failure consequence table.
                 _query_ = "INSERT INTO tbl_failure_consequences \
                            (fld_assembly_id, fld_mode_id) \
                            VALUES (%d, %d)" % (self.assembly_id, _last_id)
@@ -6840,7 +6974,7 @@ class Hardware(object):
                     self._load_fmeca_tab()
 
             elif button.get_label() == 'Mechanism':
-                # Find the id and gtk.TreeIter of the parent failure mode.
+                # Find the id and gtk.TreeIter() of the parent failure mode.
                 (_model, _row) = self.tvwFMECA.get_selection().get_selected()
                 _mode_id = _model.get_value(_row, 0)
                 _parent = _model.get_string_from_iter(_row)
@@ -6877,6 +7011,18 @@ class Hardware(object):
                                       u"the open RTK Program database."))
                 else:
                     self._load_fmeca_tab()
+
+                # Insert a new record in the physics of failure table.
+                #_query = "INSERT INTO tbl_pof \
+                #          (fld_assembly_id, fld_mode_id, fld_mechanism_id) \
+                #          VALUES (%d, %d, %d)" % (self.assembly_id,
+                #                                  _mode_id, _next_id)
+                #if not self._app.DB.execute_query(_query, None,
+                #                                  self._app.ProgCnx,
+                #                                  commit=True):
+                #    _util.rtk_error(_(u"Error adding new failure mechanism to "
+                #                      u"the open RTK Program database physics "
+                #                      u"of failure table."))
 
             elif button.get_label() == 'Control':
                 # Find the id and gtk.TreeIter of the parent failure mechanism.

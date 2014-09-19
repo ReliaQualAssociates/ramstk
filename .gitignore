@@ -7,6 +7,9 @@
 .ropeproject
 *.swp
 *.idea
+*.goutputstream*
+*.geanyprj
+
 
 # Python specific files to ignore
 *.pyc
