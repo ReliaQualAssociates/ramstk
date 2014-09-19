@@ -3465,7 +3465,8 @@ class Hardware(object):
             self.tvwPoF.set_model(_model)
 
             _labels = [_(u"Failure Mechanism"),
-                       _(u"Relevant\nLoading\nCondition"), _(u"Primary Stress"),
+                       _(u"Relevant\nLoading\nCondition"),
+                       _(u"Primary Stress"),
                        _(u"Secondary Stress"), _(u"Tertiary Stress"),
                        _(u"Priority"),
                        _(u"Primary Stress\nMeasurable\nParameter"),
