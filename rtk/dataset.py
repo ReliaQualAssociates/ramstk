@@ -62,7 +62,9 @@ from _assistants_.adds import AddDataset
 from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
-from _calculations_.growth import crow_bounds, fisher_bounds, nhpp_mean_variance, power_law
+from _calculations_.growth import crow_bounds, fisher_bounds, \
+                                  nhpp_mean_variance, power_law, \
+                                  cramer_von_mises
 from _calculations_.survival import *
 
 # Add localization support.
@@ -2528,13 +2530,13 @@ class Dataset(object):
                   WHERE fld_dataset_id=%d \
                   AND fld_right_interval <= %f AND fld_right_interval > %f \
                   AND fld_request_date >= %d AND fld_request_date < %d \
-                  ORDER BY fld_request_date ASC, \
-                           fld_unit ASC, \
-                           fld_left_interval ASC" % (self.dataset_id,
-                                                     self.rel_time,
-                                                     self.start_time,
-                                                     self.start_date,
-                                                     self.end_date)
+                  ORDER BY fld_unit ASC, \
+                           fld_left_interval ASC, \
+                           fld_request_date ASC" % (self.dataset_id,
+                                                    self.rel_time,
+                                                    self.start_time,
+                                                    self.start_date,
+                                                    self.end_date)
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         _censdata = []
@@ -2847,7 +2849,32 @@ class Dataset(object):
         # Fit the data to a power law (Duane) model and estimate it's       #
         # parameters.                                                       #
         # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
-        elif self.distribution_id == 3:     # NHPP - Power Law
+        elif self.distribution_id == 3:
+
+            # Verify that the fit method and the confidence method are
+            # compatible before continuing.
+            if (self.fit_method == 1 and
+                self.confidence_method not in [1, 3, 5]):
+                _util.rtk_information(_(u"Selected confidence method is "
+                                        u"incompatible with NHPP MLE "
+                                        u"analysis.  Select from Crow, "
+                                        u"Fisher, or Bootstrap methods and "
+                                        u"try again."))
+
+                _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+                return True
+
+            elif (self.fit_method == 2 and
+                  self.confidence_method != 2):
+                _util.rtk_information(_(u"Selected confidence method is "
+                                        u"incompatible with NHPP regression "
+                                        u"analysis.  Select the Duane method "
+                                        u"and try again."))
+
+                _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+                return True
 
             _running_results = []
 
@@ -2907,6 +2934,8 @@ class Dataset(object):
                            _mtbfi_ll, _mtbfi, _mtbfi_ul]
                 _running_results.append(_record)
                 _model.append(_record)
+# TODO: Implement Cramer-von Mises GoF results.
+            _cvm = cramer_von_mises(_X, self.shape[1], _T_star, type2=False)
 
             # Load the non-parametric results gtk.TreeView
             _col_headings = [_(u"Time"), _(u"Cumulative\nFailures"),
@@ -3264,7 +3293,7 @@ class Dataset(object):
         # Find the percent of records belonging to each sub-assembly and then
         # allocate this percent of the overall failure rate to each
         # sub-assembly.
-        if self.chkGroup.get_active():
+        if self.chkGroup.get_active() and self.distribution_id != 1:
             _query = "SELECT t2.fld_name, SUM(t1.fld_quantity), \
                              t2.fld_assembly_id \
                       FROM tbl_survival_data AS t1 \
@@ -3296,6 +3325,8 @@ class Dataset(object):
                 else:
                     _color = 'light gray'
 
+                try:
+
                 _values = (_results[i][0], _results[i][1], _results[i][2],
                            (_mtbfi_ll * _total) / float(_results[i][1]),
                            (_mtbfi * _total) / float(_results[i][1]),
@@ -3310,7 +3341,7 @@ class Dataset(object):
 
         # Find the percent of records belonging to each component and then
         # allocate this percent of the overall failure rate to each component.
-        if self.chkParts.get_active():
+        if self.chkParts.get_active() and self.distribution_id != 1:
             _query = "SELECT t1.fld_part_num, COUNT(t1.fld_part_num) \
                       FROM tbl_incident_detail AS t1 \
                       INNER JOIN tbl_incident AS t2 ON \
@@ -3415,14 +3446,14 @@ class Dataset(object):
         self.load_analyses_results_page()
 
         # Display the cumulative MTBF results.
-        self.txtMTBFLL.set_text(str(fmt.format(_mtbfc_ll)))
-        self.txtMTBF.set_text(str(fmt.format(_mtbfc)))
-        self.txtMTBFUL.set_text(str(fmt.format(_mtbfc_ul)))
+        self.txtMTBFLL.set_text(str('{0:0.2f}'.format(_mtbfc_ll)))
+        self.txtMTBF.set_text(str('{0:0.2f}'.format(_mtbfc)))
+        self.txtMTBFUL.set_text(str('{0:0.2f}'.format(_mtbfc_ul)))
 
         # Display the instananeous MTBF results.
-        self.txtMTBFiLL.set_text(str(fmt.format(_mtbfi_ll)))
-        self.txtMTBFi.set_text(str(fmt.format(_mtbfi)))
-        self.txtMTBFiUL.set_text(str(fmt.format(_mtbfi_ul)))
+        self.txtMTBFiLL.set_text(str('{0:0.2f}'.format(_mtbfi_ll)))
+        self.txtMTBFi.set_text(str('{0:0.2f}'.format(_mtbfi)))
+        self.txtMTBFiUL.set_text(str('{0:0.2f}'.format(_mtbfi_ul)))
 
         # Display the cumulative hazard rate/failure instensity results.
         try:

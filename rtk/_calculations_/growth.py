@@ -570,10 +570,8 @@ def duane_parameters(F, X):
     .. note:: instantaneous failure intensity = lambda_i = (1 - alpha) * lambda_c
     .. note:: instantaneous MTBF = MTBFi = MTBFc / (1 - alpha)
 
-    :param F: list of the number of failures at each failure time.
-    :type F: list of integers
-    :param X: list of failure times
-    :type X: list of floats
+    :param int F: list of the number of failures at each failure time.
+    :param float X: list of failure times
     :return: _b_hat, _alpha_hat
     :rtype: tuple of floats
     """
@@ -590,7 +588,10 @@ def duane_parameters(F, X):
     except ZeroDivisionError:
         _alpha_hat = 0.0
 
-    _b_hat = exp((1.0 / sum(F)) * (_logM - _alpha_hat * _logT))
+    try:
+        _b_hat = exp((1.0 / sum(F)) * (_logM - _alpha_hat * _logT))
+    except OverflowError:
+        _b_hat = 1.0
 
     return _b_hat, _alpha_hat
 
@@ -801,15 +802,11 @@ def cramer_von_mises(X, beta, T_star=0.0, type2=True):
     .. note:: The null hypothesis is rejected if the statistic exceeds the
               critical value for a chosen significance level.
 
-    :param X: list of failure times
-    :type X: list of floats
-    :param beta: the Crow-AMSAA model shape parameter.
-    :type beta: float
-    :param T_star: termination time.
-    :type T_star: float
-    :param type2: whether or not the test is time terminated (Type I) or
-                  failure terminated (Type II).
-    :type type2: boolean
+    :param float X: list of failure times
+    :param float beta: the Crow-AMSAA model shape parameter.
+    :param float T_star: termination time.
+    :param boolean type2: whether or not the test is time terminated (Type I)
+                          or failure terminated (Type II).
     :return: _Cvm, the Cramer-von Mises GoF statistic.
     :rtype: float
     """
@@ -1120,15 +1117,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
         _N = sum(F) - 2
 
     if fitmeth == 1:                        # MLE
-        # Make sure we're using a compatible method of calculating confidence
-        # bounds.
-        if confmeth not in [1, 3, 5]:
-            _util.rtk_information(_(u"Selected confidence method is "
-                                    u"incompatible with NHPP MLE analysis.  "
-                                    u"Select from Crow, Fisher, or "
-                                    u"Bootstrap methods and try again."))
-            return ([0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
         # Estimate the Crow-AMASAA parameters using exact failure time data.
         _alpha_hat, _beta_hat = crow_amsaa_parameters(F, X, T_star)
 
@@ -1158,15 +1146,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
                                                      alpha)
 
     elif fitmeth == 2:                        # Regression
-        # Make sure we're using a compatible method of calculating confidence
-        # bounds.
-        if confmeth != 2:
-            _util.rtk_information(_(u"Selected confidence method is "
-                                    u"incompatible with NHPP regression "
-                                    u"analysis.  Select the Duane method and "
-                                    u"try again."))
-            return ([0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
         # Estimate the Duane parameters and transform to the NHPP - Power Law
         # parameters.
         _b_hat, _beta_hat = duane_parameters(F, X)
@@ -1177,8 +1156,14 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
                                                           _beta_hat)
 
         # Calculate the bounding values for the alpha (scale) parameter.
-        _alpha_lower = 1.0 / (_b_hat * exp(_critical_value_t * _se_lnb))
-        _alpha_upper = 1.0 / (_b_hat * exp(-_critical_value_t * _se_lnb))
+        try:
+            _alpha_lower = 1.0 / (_b_hat * exp(_critical_value_t * _se_lnb))
+        except (OverflowError, ZeroDivisionError):
+            _alpha_lower = _alpha_hat
+        try:
+            _alpha_upper = 1.0 / (_b_hat * exp(-_critical_value_t * _se_lnb))
+        except (OverflowError, ZeroDivisionError):
+            _alpha_upper = _alpha_hat
 
         # Calculate the bounding values for the beta (shape) parameter.
         _beta_lower = _beta_hat - _critical_value_t * _se_beta

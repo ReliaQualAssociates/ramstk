@@ -2185,8 +2185,8 @@ class Revision(object):
 
             _mission = self.txtMission.get_text()
             _mission_id = self._dic_missions[_mission][0]
-            _condition = self._dic_environments[model.get_value(row, 0)][0]
-            _phase = self._dic_environments[model.get_value(row, 0)][1]
+            _condition = self._dic_environments[model.get_value(row, 0)][0][0]
+            _phase = self._dic_environments[model.get_value(row, 0)][0][1]
 
             _query = "UPDATE tbl_environmental_profile \
                       SET fld_phase='%s', fld_condition_name='%s', \
