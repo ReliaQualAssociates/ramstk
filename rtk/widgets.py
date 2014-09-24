@@ -94,7 +94,7 @@ class CellRendererML(gtk.CellRendererText):
         self.treestore, self.treeiter = self.selection.get_selected()
 
         self.textedit_window = gtk.Dialog(parent=treeview.get_toplevel())
-        self.textedit_window.action_area.hide()     # pylint: disable=E1101
+        self.textedit_window.action_area.hide()
         self.textedit_window.set_decorated(False)
         self.textedit_window.set_property('skip-taskbar-hint', True)
         self.textedit_window.set_transient_for(None)
@@ -111,7 +111,7 @@ class CellRendererML(gtk.CellRendererText):
         #self.textedit_window.vbox.pack_start(scrolled_window)
 
         scrolled_window.add(self.textedit)
-        self.textedit_window.vbox.add(scrolled_window)  # pylint: disable=E1101
+        self.textedit_window.vbox.add(scrolled_window)
         self.textedit_window.realize()
 
         # Position the popup below the edited cell (and try hard to keep the
@@ -119,10 +119,10 @@ class CellRendererML(gtk.CellRendererText):
 
         (tree_x, tree_y) = treeview.get_bin_window().get_origin()
         (tree_w, tree_h) = treeview.window.get_geometry()[2:4]
-        (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]    # pylint: disable=E1101
-        x = tree_x + min(cell_area.x,           # pylint: disable=C0103
+        (t_w, t_h) = self.textedit_window.window.get_geometry()[2:4]
+        x = tree_x + min(cell_area.x,
                          tree_w - t_w + treeview.get_visible_rect().x)
-        y = tree_y + min(cell_area.y,           # pylint: disable=C0103
+        y = tree_y + min(cell_area.y,
                          tree_h - t_h + treeview.get_visible_rect().y)
         self.textedit_window.move(x, y)
         self.textedit_window.resize(cell_area.width, cell_area.height)
@@ -155,14 +155,14 @@ class CellRendererML(gtk.CellRendererText):
         :param __widget:
         :param event:
         """
-        _keyname = gtk.gdk.keyval_name(event.keyval)
 
+        _keyname = gtk.gdk.keyval_name(event.keyval)
         if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
                 _keyname == 'Return':
             self.textedit_window.response(gtk.RESPONSE_OK)
 
 # Register the new widget types.
-gobject.type_register(CellRendererML)       # @UndefinedVariable
+gobject.type_register(CellRendererML)
 
 
 def make_button(height=40, width=200, label="", image='default'):
@@ -708,12 +708,11 @@ def format_cell(__column, cell, model, row, data):
                                 gtk.TreeViewColumn().
     :param gtk.TreeIter row: the gtk.TreeIter() pointing to the row containing
                              the gtk.CellRenderer() to format.
-    :param data: a tuple containing the position and the data type.
-    :type data: tuple
+    :param tuple data: a tuple containing the position and the data type.
     """
 
     if data[1] == 'gfloat':
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(_conf.PLACES) + 'f}'
     elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:

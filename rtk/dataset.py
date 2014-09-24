@@ -63,8 +63,7 @@ from _assistants_.updates import AssignMTBFResults
 
 # Import other RTK calculation functions.
 from _calculations_.growth import crow_bounds, fisher_bounds, \
-                                  nhpp_mean_variance, power_law, \
-                                  cramer_von_mises
+    nhpp_mean_variance, power_law, cramer_von_mises
 from _calculations_.survival import *
 
 # Add localization support.
@@ -2734,7 +2733,7 @@ class Dataset(object):
         elif self.distribution_id == 2:
             _nonpar, _rank = kaplan_meier(_results, self.start_time,
                                           self.rel_time, conf=_confidence)
-            #turnbull(_results, self.rel_time, _confidence)
+            # turnbull(_results, self.rel_time, _confidence)
 
             _times = _nonpar[:, 0]
             _S_hat_ll = _nonpar[:, 1]
@@ -3324,8 +3323,6 @@ class Dataset(object):
                     _color = 'white'
                 else:
                     _color = 'light gray'
-
-                try:
 
                 _values = (_results[i][0], _results[i][1], _results[i][2],
                            (_mtbfi_ll * _total) / float(_results[i][1]),
