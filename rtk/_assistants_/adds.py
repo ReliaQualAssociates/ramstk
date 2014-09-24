@@ -295,7 +295,10 @@ class AddRevision(object):
             else:
                 _function = [('', 0, 'New Function', 0, ''), ]
 
-            _n_functions = len(_function)
+            try:
+                _n_functions = len(_function)
+            except TypeError:
+                _n_functions = 0
 
             # Copy the function hierarchy for the new revision.
             for i in range(_n_functions):
@@ -342,8 +345,13 @@ class AddRevision(object):
                     _requirements = self._app.DB.execute_query(_query, None,
                                                             self._app.ProgCnx)
 
+                try:
+                    _n_requirements = len(_requirements)
+                except(TypeError, UnboundLocalError):
+                    _n_requirements = 0
+
                 # Copy the requirement hierarchy for the new revision.
-                for i in range(len(_requirements)):
+                for i in range(_n_requirements):
                     _query = "INSERT INTO tbl_requirements \
                               (fld_revision_id, fld_requirement_id, \
                                fld_requirement_desc, fld_requirement_code, \
@@ -407,8 +415,12 @@ class AddRevision(object):
             _system = self._app.DB.execute_query(_query, None,
                                                  self._app.ProgCnx)
 
+            try:
+                _n_hardware = len(_system)
+            except TypeError:
+                _n_hardware = 0
             # Copy the hardware hierarchy for the new revision.
-            for i in range(len(_system)):
+            for i in range(_n_hardware):
                 if self.chkFailureInfo.get_active():
                     _values = (_revision_id, _assembly_id,
                                _system[i][0], _system[i][1],
