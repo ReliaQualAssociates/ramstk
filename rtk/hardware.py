@@ -2003,10 +2003,9 @@ class Hardware(object):
             Function to create the Haardware class gtk.Notebook() page for
             displaying the similar item analysis for the selected Hardware.
 
-            :param self: the current instance of a Hardware class.
-            :type self: the current instance of the Hardware class
-            :param notebook: the Hardware class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook()
+                                          widget.
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2083,8 +2082,8 @@ class Hardware(object):
                     _adjustment_ = gtk.Adjustment(upper=5.0, step_incr=0.05)
                     _cell_.set_property('adjustment', _adjustment_)
                     _cell_.set_property('digits', 2)
-                elif _widget_[i].text == 'blob':
-                    _cell_ = _widg.CellRendererML()
+                #elif _widget_[i].text == 'blob':
+                #    _cell_ = _widg.CellRendererML()
                 else:
                     _cell_ = gtk.CellRendererText()
 
@@ -3544,9 +3543,7 @@ class Hardware(object):
 
         _query = "SELECT * FROM tbl_system WHERE fld_revision_id=%d" % \
                  self.revision_id
-        _results_ = self._app.DB.execute_query(_query,
-                                               None,
-                                               self._app.ProgCnx)
+        _results_ = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         try:
             _n_assemblies_ = len(_results_)
@@ -6578,35 +6575,34 @@ class Hardware(object):
         descriptions to the selected parent Assembly.
         """
 
-        (_model_, _row_) = self.treeview.get_selection().get_selected()
+        (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _values_ = _model_.get_string_from_iter(_row_)
+        _values = (_model.get_string_from_iter(_row), self.revision_id)
 
         # Select all of the lower level element change descriptions for the
         # selected parent assembly.
-        _query_ = "SELECT t2.fld_name, t1.fld_change_desc_1, \
-                          t1.fld_change_desc_2, t1.fld_change_desc_3, \
-                          t1.fld_change_desc_4, t1.fld_change_desc_5, \
-                          t1.fld_change_desc_6, t1.fld_change_desc_7, \
-                          t1.fld_change_desc_8 \
-                   FROM tbl_similar_item AS t1 \
-                   INNER JOIN tbl_system AS t2 \
-                   ON t1.fld_assembly_id=t2.fld_assembly_id \
-                   WHERE t2.fld_parent_assembly='%s'" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT t2.fld_name, t1.fld_change_desc_1, \
+                         t1.fld_change_desc_2, t1.fld_change_desc_3, \
+                         t1.fld_change_desc_4, t1.fld_change_desc_5, \
+                         t1.fld_change_desc_6, t1.fld_change_desc_7, \
+                         t1.fld_change_desc_8 \
+                  FROM tbl_similar_item AS t1 \
+                  INNER JOIN tbl_system AS t2 \
+                  ON t1.fld_assembly_id=t2.fld_assembly_id \
+                  WHERE t2.fld_parent_assembly='%s' \
+                  AND t2.fld_revision_id=%d" % _values
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
 
         # Combine the changes descriptions into a single change description for
         # each change category.
-        _summary_ = ["", "", "", "", "", "", "", ""]
-        for i in range(len(_results_)):
-            _system_ = _results_[i][0]
+        _summary = ["", "", "", "", "", "", "", ""]
+        for i in range(len(_results)):
+            _system = _results[i][0]
             for j in range(8):
-                if _results_[i][j + 1] != '' and \
-                        _results_[i][j + 1] is not None:
-                    _summary_[j] = _summary_[j] + _system_ + ":\n" + \
-                        _results_[i][j + 1] + "\n"
+                if _results[i][j + 1] != '' and \
+                        _results[i][j + 1] is not None:
+                    _summary[j] = _summary[j] + _system + ":\n" + \
+                        _results[i][j + 1] + "\n"
 
         # Update the selected parent assembly's change descriptions with the
         # combined change description.
@@ -6621,12 +6617,10 @@ class Hardware(object):
                       fld_change_desc_8='{7:s}' \
                   WHERE fld_revision_id={8:d} \
                   AND fld_assembly_id={9:d}".format(
-            _summary_[0], _summary_[1], _summary_[2], _summary_[3],
-            _summary_[4], _summary_[5], _summary_[6], _summary_[7],
+            _summary[0], _summary[1], _summary[2], _summary[3],
+            _summary[4], _summary[5], _summary[6], _summary[7],
             self.revision_id, self.assembly_id)
-        self._app.DB.execute_query(_query,
-                                   None,
-                                   self._app.ProgCnx,
+        self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                    commit=True)
 
         return False
