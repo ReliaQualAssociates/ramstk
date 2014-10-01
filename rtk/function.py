@@ -424,12 +424,12 @@ class Function(object):
             _fixed_ = gtk.Fixed()
             _vbox_.pack_start(_fixed_, expand=False)
 
-            _scrollwindow_ = gtk.ScrolledWindow()
-            _scrollwindow_.set_policy(gtk.POLICY_AUTOMATIC,
-                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow_.add(self.tvwFunctionMatrix)
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add(self.tvwFunctionMatrix)
 
-            _vbox_.pack_end(_scrollwindow_)
+            _vbox_.pack_end(_scrollwindow)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display and control the functional  #
@@ -936,18 +936,16 @@ class Function(object):
             _data.append(_assemblies[i][0])
             _data.append(_assemblies[i][1])
 
-            if _n_functions > 0:
-                # Loop through all the hardware/function relationships.
-                for j in range(_n_functions):
+            # Loop through all the hardware/function relationships.
+            for j in range(_n_functions):
+                if _results[j][0] == _assemblies[i][0]:
                     if _results[j][2] == '':
                         _color = '#E5E5E5'
                     else:
                         _color = 'black'
-
-                    if _results[j][0] == _assemblies[i][0]:
-                        _data.append("<span foreground='%s' background='%s'> "
-                                     "%s </span>" %
-                                     (_color, _color, _results[j][2]))
+                    _data.append("<span foreground='%s' background='%s'> "
+                                 "%s </span>" %
+                                 (_color, _color, _results[j][2]))
 
             _model.append(_piter, _data)
 
@@ -1436,14 +1434,17 @@ class Function(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
+        _error = False
+
         _query = "DELETE FROM tbl_functions \
                   WHERE fld_parent_id='%s'" % \
                  _model.get_string_from_iter(_row)
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             self._app.user_log.error("function.py: Failed to delete function "
-                                     "from function table.")
-            return True
+                                     "%d from function table." %
+                                     _model.get_value(_row, 1))
+            _error = True
 
         _query = "DELETE FROM tbl_functions \
                   WHERE fld_revision_id=%d \
@@ -1452,7 +1453,24 @@ class Function(object):
         if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                           commit=True):
             self._app.user_log.error("function.py: Failed to delete function "
-                                     "from function table.")
+                                     "%d from function table." %
+                                     _model.get_value(_row, 1))
+            _error = True
+
+        _query = "DELETE FROM tbl_functional_matrix \
+                  WHERE fld_revision_id=%d \
+                  AND fld_function_id=%d" % \
+                  (self._app.REVISION.revision_id, _model.get_value(_row, 1))
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            self._app.user_log.error("function.py: Failed to delete function "
+                                     "%d from functional matrix table." %
+                                     _model.get_value(_row, 1))
+            _error = True
+
+        if _error:
+            _util.rtk_error(_(u"Error deleting function from the RTK Program "
+                              u"database."))
             return True
 
         self.load_tree()
