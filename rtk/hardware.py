@@ -1689,13 +1689,14 @@ class Hardware(object):
 
         def _create_hazard_analysis_tab(self, notebook):
             """
-            Function to create the HARDWARE class gtk.Notebook() page for
-            displaying the hazard analysis for the selected HARDWARE.
+            Function to create the Hardware class gtk.Notebook() page for
+            displaying the hazard analysis for the selected Hardware.
 
-            :param self: the current instance of a HARDWARE class.
-            :type self: HARDWARE object instance
-            :param notebook: the HARDWARE class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Hardware self: the current instance of a Hardware class.
+            :param gtk.Notebook notebook: the Hardware class gtk.Notebook()
+                                          widget.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1950,7 +1951,6 @@ class Hardware(object):
             _column_ = gtk.TreeViewColumn()
             _column_.set_visible(True)
             self.tvwRiskMap.append_column(_column_)
-
             for i in range(len(_severity_)):
                 self._assembly_risks_[_severity_[i][0]] = [_severity_[i][1]]
                 self._system_risks_[_severity_[i][0]] = [_severity_[i][1]]
@@ -7609,27 +7609,37 @@ class Hardware(object):
             if _assembly_crit not in _index:
                 _index.append(_assembly_crit)
 
+            # Calculate initial HRI for the assembly.
             try:
                 _c = self._assembly_risks_[_assembly_crit][0]
                 _p = self._assembly_risks_[_assembly_crit][1][_assembly_prob][1]
                 _assembly_hri = _c * _p
+            except KeyError:
+                _assembly_hri = 0
+
+            # Calculate final NRI for the assembly.
+            try:
                 _c = self._assembly_risks_[_assembly_crit_f][0]
                 _p = self._assembly_risks_[_assembly_crit_f][1][_assembly_prob_f][1]
                 _assembly_hri_f = _c * _p
             except KeyError:
-                _assembly_hri = 0
                 _assembly_hri_f = 0
 
+            # Calculate initial HRI for the system.
             try:
                 _c = self._system_risks_[_system_crit][0]
                 _p = self._system_risks_[_system_crit][1][_system_prob][1]
                 _system_hri = _c * _p
+            except KeyError:
+                _system_hri = 0
+
+            # Calculate final HRI for the system.
+            try:
                 _c = self._system_risks_[_system_crit_f][0]
                 _p = self._system_risks_[_system_crit_f][1][_system_prob_f][
                     1]
                 _system_hri_f = _c * _p
             except KeyError:
-                _system_hri = 0
                 _system_hri_f = 0
 
             _model.set_value(_row, 8, _assembly_hri)
@@ -7647,7 +7657,10 @@ class Hardware(object):
         while _row is not None:
             _assembly_crit = _model.get_value(_row, 6)
             _assembly_prob = _model.get_value(_row, 7)
-            _risk_map.loc[_assembly_crit, _assembly_prob] += 1
+            try:
+                _risk_map.loc[_assembly_crit, _assembly_prob] += 1
+            except KeyError:
+                pass
             _row = _model.iter_next(_row)
 
         # Update the counts in the risk matrix gtk.TreeView().
