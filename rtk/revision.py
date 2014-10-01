@@ -29,11 +29,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk                              # @UnusedImport
+    import gtk
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade                        # @UnusedImport
+    import gtk.glade
 except ImportError:
     sys.exit(1)
 try:
@@ -504,9 +504,8 @@ class Revision(object):
             Function to create the Revision class gtk.Notebook() page for
             displaying usage profiles for the selected Revision.
 
-            :param self: the current instance of a Revision class.
-            :param notebook: the gtk.Notebook() to add the page to.
-            :type notebook: gtk.Notebook
+            :param rtk.Revision self: the current instance of a Revision class.
+            :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -2170,15 +2169,14 @@ class Revision(object):
             Method to save each line item in the environmental profile
             gtk.TreeView()
 
-            :param model: the Environmental Profile gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path: the selected path in the Environmental Profile
-                           gtk.TreeModel().
-            :type __path: string
-            :param row: the selected gtk.TreeIter() in the Environmental
-                        Profile gtk.TreeModel().
-            :type row: gtk.TreeIter
-            :param self: the current instance of the Revision class.
+            :param gtk.TreeModel model: the Environmental Profile
+                                        gtk.TreeModel().
+            :param str __path: the selected path in the Environmental Profile
+                               gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Environmental Profile gtk.TreeModel().
+            :param rtk.Revision self: the current instance of the Revision
+                                      class.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
