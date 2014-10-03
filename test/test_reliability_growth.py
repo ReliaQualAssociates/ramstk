@@ -555,7 +555,7 @@ class TestCrowBounds(unittest.TestCase):
                                0.5827364,
                                msg="FAIL: Crow scale parameter upper bound.")
 
-    def test_crow_cun_failure_rate_bounds(self):
+    def test_crow_cum_failure_rate_bounds(self):
         """
         Test of the Crow confidence bounds function for calculating the
         alpha % bounds on the cumulative failure intensity.

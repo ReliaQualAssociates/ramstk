@@ -1065,26 +1065,19 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
 
         * cumulative failure intensity = m(t) = alpha * t^(-beta)
 
-    :param F: list of failure counts.
-    :type F: list of integers
-    :param X: list of individual failures times.
-    :type X: list of floats
-    :param confmeth: the method for calculating confidence bounds.
-    :type confmeth: integer
-    :param fitmeth: method used to fit the data
-                    1=MLE (default)
-                    2=regression
-    :type fitmeth: integer
-    :param conftype: the confidence level type
-                     1=lower one-sided
-                     2=upper one-sided
-                     3=two-sided (default)
-    :type conftype: integer
-    :param alpha: the confidence level.
-    :type alpha: float
-    :param T_star: the end of the observation period for time terminated, or
-                   Type I, tests.  Defaults to 0.0.
-    :type T_star: float
+    :param int F: list of failure counts.
+    :param float X: list of individual failures times.
+    :param int confmeth: the method for calculating confidence bounds.
+    :param int fitmeth: method used to fit the data
+                        1 = MLE (default)
+                        2 = regression
+    :param int conftype: the confidence level type
+                         1 = lower one-sided
+                         2 = upper one-sided
+                         3 = two-sided (default)
+    :param float alpha: the confidence level.
+    :param float T_star: the end of the observation period for time terminated,
+                         or Type I, tests.  Defaults to 0.0.
     :return: [_alpha_lower, _alpha_hat, _alpha_upper],
              [_beta_lower, _beta_hat, _beta_upper]
     :rtype: tuple of lists

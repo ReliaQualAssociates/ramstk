@@ -278,7 +278,7 @@ class Testing(object):
         self.confidence = 0.75
         self.n_tests = 0
 
-        # Create the main TESTING class treeview.
+        # Create the main Testing class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Testing', 11, self._app,
                                                     None, _conf.RTK_COLORS[10],
@@ -1542,6 +1542,9 @@ class Testing(object):
     def load_test_assessment_tree(self):
         """
         Method to load the Testing class test data gtk.TreeView().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT fld_record_id, fld_request_date, \
@@ -2023,12 +2026,43 @@ class Testing(object):
 
         return False
 
+    def _delete_test_record(self):
+        """
+        Method to remove the selected test record.
+
+        :return: False if successful or True if an error occurs.
+        :rtype: boolean
+        """
+
+        (_model, _row) = self.tvwTestAssessment.get_selection().get_selected()
+        _record_id = _model.get_value(_row, 0)
+
+        _err = False
+
+        _query = "DELETE FROM tbl_survival_data \
+                  WHERE fld_record_id=%d \
+                  AND fld_dataset_id=%d" % (_record_id, self.test_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _err = True
+
+        self.load_test_assessment_tree()
+
+        if _err:
+            _util.rtk_error(_(u"Problem deleting record %d from the RTK "
+                              u"Program database."))
+            return True
+
+        return False
+
     def _calculate(self, __button):
         """
         Method to perform calculations for the Testing class.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
+        :return: False if successful or True if an error occurs.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2247,7 +2281,7 @@ class Testing(object):
 
             _mu_i[0] = 1.0 / _rho_i[2]
             _mu_i[2] = 1.0 / _rho_i[0]
-            print _mu_i[1], self._flt_test_termination_time
+
             # Append calculated MTBF and failure intensity values to the lists
             # passed to the plotting method.
             _plot_mtbfi.append([_mu_i[0], _mu_i[1], _mu_i[2]])
@@ -2255,7 +2289,6 @@ class Testing(object):
 
             __row = __model.iter_next(__row)
 
-        self.cum_time = sum(_X)
         self.cum_failures = _N
 
         if _N > 1:
@@ -2267,6 +2300,7 @@ class Testing(object):
             _cvm_critical = _probs.get(2.0 * _alpha_half, _probs[min(_probs.keys(), key=lambda k: abs(k - 2.0 * _alpha_half))])
 
             if not self.optGrouped.get_active():    # Exact failure times.
+                self.cum_time = sum(_X)
                 # Test the hypothesis that the data fits the Crow-AMSAA model.
                 #
                 #       Ho: the data fits the Crow-AMSAA model
@@ -2286,6 +2320,7 @@ class Testing(object):
                                                   u"Poor Fit</span>"))
 
             elif self.optGrouped.get_active():      # Grouped failure times.
+                self.cum_time = max(_X)
                 # Test the hypothesis that the data fits the Crow-AMSAA model.
                 #
                 #       Ho: the data fits the Crow-AMSAA model
@@ -2682,33 +2717,30 @@ class Testing(object):
         """
         Method to save the reliability growth testing field data.
 
-        :param model: the TESTING class reliability growth field data
-                      gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param __path: the path of the active row in the TESTING class
-                       reliability growth field data gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
-                    reliability growth field data gtk.TreeView().
-        :type row: gtk.TreeIter
+        :param gtk.TreeModel model: the Testing class reliability growth field
+                                    data gtk.TreeModel().
+        :param str __path: the path of the active row in the Testing class
+                           reliability growth field data gtk.TreeModel().
+        :param gtk.TreeIter row: the gtk.TreeIter() of the active row in the
+                                 Testing class reliability growth field data
+                                 gtk.TreeView().
         """
 
-        _date_ = datetime.strptime(model.get_value(row, 1),
-                                   '%Y-%m-%d').toordinal()
-        _values_ = (_date_, model.get_value(row, 2),
-                    model.get_value(row, 3), model.get_value(row, 4),
-                    model.get_value(row, 0), self.test_id)
+        _date = datetime.strptime(model.get_value(row, 1),
+                                  '%Y-%m-%d').toordinal()
+        _values = (_date, model.get_value(row, 2),
+                   model.get_value(row, 3), model.get_value(row, 4),
+                   model.get_value(row, 0), self.test_id)
 
-        _query_ = "UPDATE tbl_survival_data \
-                   SET fld_request_date=%d, fld_left_interval=%f, \
-                       fld_right_interval=%f, fld_quantity=%d \
-                   WHERE fld_record_id=%d \
-                   AND fld_dataset_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
+        _query = "UPDATE tbl_survival_data \
+                  SET fld_request_date=%d, fld_left_interval=%f, \
+                      fld_right_interval=%f, fld_quantity=%d \
+                  WHERE fld_record_id=%d \
+                  AND fld_dataset_id=%d" % _values
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True)
 
-        if not _results_:
+        if not _results:
             self._app.debug_log.error("testing.py: Failed to save reliability "
                                       "growth field data.")
             return True
@@ -3028,6 +3060,8 @@ class Testing(object):
         elif _page == 2:                   # Test assessment
             if button.get_name() == 'Add':
                 AddRGRecord(self._app)
+            elif button.get_name() == 'Remove':
+                self._delete_test_record()
 
         return False
 
