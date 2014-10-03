@@ -61,6 +61,42 @@ except ImportError:
 
 
 # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+# Following are utility calculations that may be required to coerce raw   #
+# data.                                                                   #
+# +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
+def time_between_failures(previous, current):
+    """
+    Function to calculate times between failure (interarrival times).
+
+    :param list previous: the previous data set record.
+    :param list current: the current data set record.
+                         0 = record ID
+                         1 = unit
+                         2 = left interval
+                         3 = right interval
+                         4 = quantity
+                         5 = status
+    :return: _tbf
+    :rtype: float
+    """
+
+    if(current[5] == 'Right Censored' or str(current[5]) == '2'):
+        _tbf = np.inf
+    elif(current[5] == 'Left Censored' or current[5] == 'Interval Censored' or
+         str(current[5]) == '3'):
+        _time1 = (previous[3] - previous[2]) / 2.0 + previous[2]
+        _time2 = (current[3] - current[2]) / 2.0 + current[2]
+        if current[1] == previous[1]:
+            _tbf = _time2 - _time1
+        else:
+            _tbf = _time2
+    else:
+        _tbf = current[3]
+
+    return _tbf
+
+
+# +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
 # Following are the functions for mean cumulative function calculations.  #
 # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
 def d_matrix(data, times):
@@ -1415,37 +1451,49 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
     _data = sorted(data, key=lambda x: float(x[2]))
     _data = [_rec for _rec in _data if float(_rec[1]) >= start]
     _data = [_rec for _rec in _data if float(_rec[2]) <= end]
-    _data = np.array(_data)
+
+    # Expand the data set so there is one record for each failure.  Loop
+    # through the failure quantity passed for each record.
+    _data2 = []
+    for i in range(len(_data)):
+        for j in range(int(_data[i][5])):
+            _data2.append((_data[i][0], _data[i][1], _data[i][2], _data[i][3],
+                          _data[i][4], 1))
+    _data = np.array(_data2)
 
     # Replace the string status with integer status.
     for _record in _data:
-        if _record[4] == 'Right Censored' or _record[4] == '2':
+        if(_record[4] == 'Right Censored' or str(_record[4]) == '2'):
+            _record[2] = np.inf
             _record[4] = 2
-        elif (_record[4] == 'Left Censored' or
-              _record[4] == 'Interval Censored' or
-              _record[4] == '3'):
+        elif(_record[4] == 'Left Censored' or
+             _record[4] == 'Interval Censored' or str(_record[4]) == '3'):
             _record[4] = 3
         else:
             _record[4] = 1
 
     # Coerce the data set into the form necessary for fitting to functions.
-    _data = np.vstack((_data[:, 1], _data[:, 2], _data[:, 5], _data[:, 4]))
+    _data = np.vstack((_data[:, 1], _data[:, 2], _data[:, 5],
+                       _data[:, 4], _data[:, 3]))
     _data = np.array(np.transpose(_data), dtype=float)
     _n_records = len(_data)
-
     if fitmeth == 1:
         if dist == 'exponential':
             # Provide an estimate of theta assuming no suspensions and using
             # the right of the interval.  Use this as the starting value to
             # scipy.optimize.fsolve.
-            _theta = 1.0 / expon.fit(np.array(_data[:, 1], dtype=float),
-                                     floc=0)[1]
+            # _theta = 1.0 / expon.fit(np.array(_data[:, 1], dtype=float),
+            #                          floc=0)[1]
 
-            _parameters[0] = optim.fsolve(exponential_partial_derivs, _theta,
-                                          args=np.array(_data, dtype=float))[0]
+            # _parameters[0] = optim.fsolve(exponential_partial_derivs, _theta,
+            #                               args=np.array(_data, dtype=float))[0]
+
+            # Estimate the scale parameter using the fit function from
+            # scipy.stats.
+            _parameters[0] = 1.0 / expon.fit(_data[:, 4], floc=0)[1]
 
             _fI = fisher_information(exponential_log_pdf,
-                                     _parameters, _data[:, 1])
+                                     _parameters, _data[:, 4])
             _variance[0] = 1.0 / _fI[0, 0]
 
             _gof[0] = exponential_log_likelihood([_parameters[0]], _data)
@@ -1471,13 +1519,13 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _data[np.where(_data[:, 3] == 3), 1] = _interval_t
 
             (_sigma, __,
-             _mu) = lognorm.fit(np.array(_data[:, 1], dtype=float), floc=0)
+             _mu) = lognorm.fit(np.array(_data[:, 4], dtype=float), floc=0)
 
             _parameters[0] = np.log(_mu)
             _parameters[1] = _sigma
 
             _fI = fisher_information(lognormal_log_pdf,
-                                     _parameters, _data[:, 1])
+                                     _parameters, _data[:, 4])
             _variance[0] = 1.0 / np.diag(_fI)[0]
             _variance[1] = 1.0 / np.diag(_fI)[1]
 
@@ -1504,7 +1552,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _interval_t = (_interval_lt + _interval_rt) / 2.0
             _data[np.where(_data[:, 3] == 3), 1] = _interval_t
 
-            (_mu, _sigma) = norm.fit(np.array(_data[:, 1], dtype=float))
+            (_mu, _sigma) = norm.fit(np.array(_data[:, 4], dtype=float))
             # optim.fsolve(gaussian_partial_derivs,
             #                               [_mu, _sigma],
             #                               args=np.array(_data, dtype=float))
@@ -1513,7 +1561,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _parameters[1] = _sigma
 
             _fI = fisher_information(gaussian_log_pdf,
-                                     _parameters, _data[:, 1])
+                                     _parameters, _data[:, 4])
             _variance[0] = 1.0 / np.diag(_fI)[0]
             _variance[1] = 1.0 / np.diag(_fI)[1]
 
@@ -1527,16 +1575,16 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             # using the right of the interval.  Use these as the starting
             # values to scipy.optimize.fsolve.
             (__, _beta,
-             __, _eta) = exponweib.fit(np.array(_data[:, 1], dtype=float),
+             __, _eta) = exponweib.fit(np.array(_data[:, 4], dtype=float),
                                        f0=1, floc=0)
 
-            (_eta, _beta) = optim.fsolve(weibull_partial_derivs, [_eta, _beta],
-                                         args=np.array(_data, dtype=float))
+            #(_eta, _beta) = optim.fsolve(weibull_partial_derivs, [_eta, _beta],
+            #                             args=np.array(_data, dtype=float))
             _parameters[0] = _eta
             _parameters[1] = _beta
 
             _fI = fisher_information(weibull_log_pdf,
-                                     _parameters, _data[:, 1])
+                                     _parameters, _data[:, 4])
             _variance[0] = 1.0 / np.diag(_fI)[0]
             _variance[1] = 1.0 / np.diag(_fI)[1]
             _variance[2] = 1.0 / _fI[0, 1]

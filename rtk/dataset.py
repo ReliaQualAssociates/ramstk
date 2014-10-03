@@ -500,9 +500,9 @@ class Dataset(object):
             Function to create the Dataset class gtk.Notebook() page for
             displaying assessment inputs for the selected data set.
 
-            :param self: the current instance of a Dataset class.
-            :param notebook: the Dataset class gtk.Notebook() widget.
-            :type notebook: gtk.Notebook
+            :param rtk.Dataset self: the current instance of a Dataset class.
+            :param gtk.Notebook notebook: the Dataset class gtk.Notebook()
+                                          widget.
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -511,6 +511,36 @@ class Dataset(object):
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             _hbox = gtk.HBox()
+
+            _vbox = gtk.VBox()
+            _toolbar = gtk.Toolbar()
+
+            _pos = 0
+
+            # Calculate button.
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
+            _button.set_icon_widget(_image)
+            _button.set_name('Calculate')
+            _button.connect('clicked', self._interarrival_times)
+            _button.set_tooltip_text(_(u"Calculates interarrival times for "
+                                       u"selected data set."))
+            _toolbar.insert(_button, _pos)
+            _pos += 1
+
+            # Save button.
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+            _button.set_icon_widget(_image)
+            _button.set_name('Save')
+            _button.connect('clicked', self._save_records)
+            _button.set_tooltip_text(_(u"Saves the selected data set "
+                                       u"records."))
+            _toolbar.insert(_button, _pos)
+            _vbox.pack_start(_toolbar, False, False)
+            _vbox.pack_end(self.fraDataset)
 
             self.tvwDataset.set_rubber_banding(True)
             self.tvwDataset.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
@@ -531,7 +561,7 @@ class Dataset(object):
             self.fraNevadaChart.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             self.fraNevadaChart.add(_scrollwindow)
 
-            _hbox.pack_start(self.fraDataset, True, True)
+            _hbox.pack_start(_vbox, True, True)
 
             _fixed = gtk.Fixed()
 
@@ -1419,7 +1449,7 @@ class Dataset(object):
         if _row is not None:
             _load_analyses_input_page(self)
             self.load_analyses_results_page()
-            #self._load_component_list()
+            # self._load_component_list()
 
         if self._app.winWorkBook.get_child() is not None:
             self._app.winWorkBook.remove(self._app.winWorkBook.get_child())
@@ -2236,19 +2266,36 @@ class Dataset(object):
 
             return False
 
-        def _save_survival_record(model, __path, row, self):
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+        _model = self.treeview.get_model()
+        _model.foreach(_save_line_item, self)
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        return False
+
+    def _save_records(self, __button):
+        """
+        Method to save the Dataset records to the open RTK Program database.
+
+        :param gtk.Button __button: the gtk.Button() widget that called this
+                                    method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        def _save_line_item(model, __path, row, self):
             """
             Function to save each of the survival data records that comprise
             the selected Dataset to the open RTK Program database.
 
-            :param model: the Dataset class records gtk.TreeModel().
-            :type model: gtk.TreeModel
-            :param __path: the path of the active gtk.TreeIter() in the Dataset
-                           class records gtk.TreeModel().
-            :type __Path: string
-            :param row: the selected gtk.TreeIter() in the Dataset records
-                        gtk.TreeModel().
-            :type row: gtk.TreeIter
+            :param gtk.TreeModel model: the Dataset class records
+                                        gtk.TreeModel().
+            :param str __path: the path of the active gtk.TreeIter() in the
+                               Dataset class records gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the Dataset
+                                     records gtk.TreeModel().
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
             """
@@ -2257,10 +2304,12 @@ class Dataset(object):
                       SET fld_unit='%s', fld_left_interval=%f, \
                           fld_right_interval=%f, fld_quantity=%d, \
                           fld_status='%s' \
-                      WHERE fld_record_id=%d" % \
+                      WHERE fld_record_id=%d \
+                      AND fld_dataset_id=%d" % \
                      (model.get_value(row, 1), model.get_value(row, 2),
                       model.get_value(row, 3), model.get_value(row, 4),
-                      model.get_value(row, 5), model.get_value(row, 0))
+                      model.get_value(row, 5), model.get_value(row, 0),
+                      self.dataset_id)
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
                 _util.rtk_error(_(u"Error saving data set record %d.") %
@@ -2270,11 +2319,8 @@ class Dataset(object):
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
 
-        _model = self.treeview.get_model()
-        _model.foreach(_save_line_item, self)
-
         _model = self.tvwDataset.get_model()
-        _model.foreach(_save_survival_record, self)
+        _model.foreach(_save_line_item, self)
 
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
@@ -2490,8 +2536,8 @@ class Dataset(object):
         """
         Method to execute the selected analysis.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: gtk.ToolButton
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -2529,9 +2575,7 @@ class Dataset(object):
                   WHERE fld_dataset_id=%d \
                   AND fld_right_interval <= %f AND fld_right_interval > %f \
                   AND fld_request_date >= %d AND fld_request_date < %d \
-                  ORDER BY fld_unit ASC, \
-                           fld_left_interval ASC, \
-                           fld_request_date ASC" % (self.dataset_id,
+                  ORDER BY fld_request_date ASC" % (self.dataset_id,
                                                     self.rel_time,
                                                     self.start_time,
                                                     self.start_date,
@@ -2552,12 +2596,12 @@ class Dataset(object):
         _N = [x[5] for x in _results if x[4] != 'Right Censored']
         _T.sort()
 
-        # Create a list of interarrivale times.
-        _tbf = [_results[i][3] - _results[i - 1][3]
-                for i, __ in enumerate(_results)]
-
         # Create a list of failure dates.
         _dates = [x[6] for x in _results]
+
+        # Create a list of interarrival times.
+        _tbf = [_results[i][3] - _results[i - 1][3]
+                for i, __ in enumerate(_results)]
 
         # Initialize variables.
         self.n_failures = 0
@@ -2933,6 +2977,7 @@ class Dataset(object):
                            _mtbfi_ll, _mtbfi, _mtbfi_ul]
                 _running_results.append(_record)
                 _model.append(_record)
+
 # TODO: Implement Cramer-von Mises GoF results.
             _cvm = cramer_von_mises(_X, self.shape[1], _T_star, type2=False)
 
@@ -3286,8 +3331,7 @@ class Dataset(object):
             _qqplot = probplot(_T, sparams=(self.shape[1], self.scale[1],),
                                dist='exponweib', plot=self.axAxis4)
 
-
-        #elif self.distribution_id == 9:     # Fit to a WeiBayes.
+        # elif self.distribution_id == 9:     # Fit to a WeiBayes.
 
         # Find the percent of records belonging to each sub-assembly and then
         # allocate this percent of the overall failure rate to each
@@ -3487,6 +3531,52 @@ class Dataset(object):
         self.txtRhoPValue.set_text(str(fmt.format(_p_value[3])))
 
         _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        return False
+
+    def _interarrival_times(self, __button):
+        """
+        Method to calculate the interarrival times from the data set.
+
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+        _query = "SELECT fld_record_id, fld_unit, fld_left_interval, \
+                         fld_right_interval, fld_quantity, fld_status \
+                  FROM tbl_survival_data \
+                  WHERE fld_dataset_id=%s \
+                  ORDER BY fld_unit ASC, \
+                           fld_left_interval ASC" % self.dataset_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
+
+        try:
+            _n_events = len(_results)
+        except TypeError:
+            _n_events = 0
+
+        _err = False
+        for i in range(_n_events):
+            _tbf = time_between_failures(_results[i - 1], _results[i])
+            _query = "UPDATE tbl_survival_data \
+                      SET fld_tbf=%f \
+                      WHERE fld_record_id=%d \
+                      AND fld_dataset_id=%s" % \
+                      (_tbf, _results[i][0], self.dataset_id)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _err = True
+
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        if _err:
+            _util.rtk_error(_(u"Problem calculating one or more interarrival "
+                              u"times."))
+            return True
 
         return False
 

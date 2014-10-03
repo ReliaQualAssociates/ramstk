@@ -86,6 +86,35 @@ class TestMedianRanks(unittest.TestCase):
                                  0.86764705882352944, 0.96568627450980393])
 
 
+class TestTBF(unittest.TestCase):
+    """
+    Class to test time between failure calculations.
+    """
+
+    # Data set of alpha particle interarrival times.
+    # Data is from Table 7.1 in Meeker and Excobar.
+    ALPHA = [(u'A', 0.0, 100.0, 0.0, 3, 1609, 3),
+             (u'B', 100.0, 300.0, 0.0, 3, 2424, 3),
+             (u'A', 300.0, 500.0, 0.0, 3, 1770, 3),
+             (u'B', 500.0, 700.0, 0.0, 3, 1306, 3),
+             (u'B', 700.0, 1000.0, 0.0, 3, 1213, 3),
+             (u'A', 1000.0, 2000.0, 0.0, 3, 1528, 3),
+             (u'C', 2000.0, 4000.0, 0.0, 3, 354, 3),
+             (u'C', 4000.0, 100000.0, 0.0, 3, 16, 3)]
+
+    def test_tbf(self):
+        """
+        """
+
+        np.testing.assert_allclose(time_between_failures(self.ALPHA),
+                                   [[u'', 0.0, 100.0, 50.0, 3, 1609, 3],
+                                    [u'', 100.0, 300.0, 150.0, 3, 2424, 3],
+                                    [u'', 300.0, 500.0, 200.0, 3, 1770, 3],
+                                    [u'', 500.0, 700.0, 200.0, 3, 1306, 3],
+                                    [u'', 700.0, 1000.0, 250.0, 3, 1213, 3],
+                                    [u'', 1000.0, 2000.0, 650.0, 3, 1528, 3],
+                                    [u'', 2000.0, 4000.0, 1500.0, 3, 354, 3],
+                                    [u'', 4000.0, 100000.0, 49000.0, 3, 16, 3]])
 
 class TestExponential(unittest.TestCase):
     """
@@ -191,6 +220,17 @@ class TestExponential(unittest.TestCase):
                 (u'', 143.687, 143.687, 0.0, 1, 1), (u'', 134.763, 134.763, 0.0, 1, 1),
                 (u'', 88.862, 88.862, 0.0, 1, 1), (u'', 143.918, 143.918, 0.0, 1, 1)]
 
+    # Data set of alpha particle interarrival times.
+    # Data is from Table 7.1 in Meeker and Excobar.
+    ALPHA = [(u'', 0.0, 100.0, 50.0, 3, 1609, 3),
+             (u'', 100.0, 300.0, 200.0, 3, 2424, 3),
+             (u'', 300.0, 500.0, 400.0, 3, 1770, 3),
+             (u'', 500.0, 700.0, 600.0, 3, 1306, 3),
+             (u'', 700.0, 1000.0, 850.0, 3, 1213, 3),
+             (u'', 1000.0, 2000.0, 1500.0, 3, 1528, 3),
+             (u'', 2000.0, 4000.0, 3000.0, 3, 354, 3),
+             (u'', 4000.0, 0.0, np.inf, 2, 16, 2)]
+
     def test_exponential_partial_derivs_exact(self):
         """
         Test of the exponential log likelihood partial derivative with exact data only.
@@ -231,20 +271,24 @@ class TestExponential(unittest.TestCase):
 
     def test_exponential_mle_fit(self):
         """
-        Test of maximum likelihood extimate (MLE) fit of the exponential parameters.
+        Test of maximum likelihood estimate (MLE) fit of the exponential
+        parameters.
         """
 
-        # Check the mean.
+        # Check the mean for exact failure time data.
         self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
                                               10000000.0, 1)[0][0],
-                               0.0106235,
-                               msg='FAIL: Exponential scale parameter (lambda) test using MLE.')
+                               0.0106235)
+
+        # Check the mean for interval-censored failure time data.
+        self.assertAlmostEqual(parametric_fit(self.ALPHA, 0.0,
+                                              10000000.0, 1)[0][0],
+                               0.001584005)
 
         # Check the variance.
         self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
                                               10000000.0, 1)[1][0],
-                               1.3219492619921581e-06,
-                               msg='FAIL: Exponential scale parameter (lambda) variance test using MLE.')
+                               1.3219492619921581e-06)
 
     def test_exponential_regression_fit(self):
         """
@@ -254,14 +298,12 @@ class TestExponential(unittest.TestCase):
         # Test the parameter estimation.
         self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
                                               10000000.0, 2)[0][0],
-                               0.0108368,
-                               msg='FAIL: Exponential scale parameter (lambda) test using RRY.')
+                               0.0108368)
 
         # Test the variance estimation.
         self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
                                               10000000.0, 2)[1][0],
-                               2.8792752e-08,
-                               msg='FAIL: Exponential scale parameter (lambda) variance test using RRY.')
+                               2.8792752e-08)
 
         # Test the correlation coefficient.
         self.assertAlmostEqual(parametric_fit(self.EXP_TEST, 0.0,
