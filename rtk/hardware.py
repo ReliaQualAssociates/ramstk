@@ -5661,98 +5661,111 @@ class Hardware(object):
 
         def _save_line(model, __path, row, self):
             """
-            Saves a single row in the HARDWARE class similar item analysis
+            Saves a single row in the Hardware class similar item analysis
             gtk.TreeModel() to the open RTK Program database.
 
-            Keyword Arguments:
-            model  -- the HARDWARE class similar item analysis gtk.TreeModel().
-            __path -- the path of the selected row in the HARDWARE class
-                      similar item analysis gtk.TreeModel().
-            row    -- the selected row in the HARDWARE class similar item
-                      analysis gtk.TreeView().
+            :param gtk.TreeModel model: the Hardware class similar item
+                                        analysis gtk.TreeModel().
+            :param str __path: the path of the selected row in the Hardware
+                               class similar item analysis gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class similar item analysis
+                                     gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             if _conf.BACKEND == 'mysql':
-                _equation1_ = self._app.ProgCnx.escape_string(
+                _equation1 = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._sia_col_order[19]))
-                _equation2_ = self._app.ProgCnx.escape_string(
+                _equation2 = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._sia_col_order[20]))
-                _equation3_ = self._app.ProgCnx.escape_string(
+                _equation3 = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._sia_col_order[21]))
-                _equation4_ = self._app.ProgCnx.escape_string(
+                _equation4 = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._sia_col_order[22]))
-                _equation5_ = self._app.ProgCnx.escape_string(
+                _equation5 = self._app.ProgCnx.escape_string(
                     model.get_value(row, self._sia_col_order[23]))
 
             elif _conf.BACKEND == 'sqlite3':
-                _equation1_ = model.get_value(row, self._sia_col_order[19])
-                _equation2_ = model.get_value(row, self._sia_col_order[20])
-                _equation3_ = model.get_value(row, self._sia_col_order[21])
-                _equation4_ = model.get_value(row, self._sia_col_order[22])
-                _equation5_ = model.get_value(row, self._sia_col_order[23])
+                _equation1 = model.get_value(row, self._sia_col_order[19])
+                _equation2 = model.get_value(row, self._sia_col_order[20])
+                _equation3 = model.get_value(row, self._sia_col_order[21])
+                _equation4 = model.get_value(row, self._sia_col_order[22])
+                _equation5 = model.get_value(row, self._sia_col_order[23])
 
-            _values_ = (model.get_value(row, self._sia_col_order[3]),
-                        model.get_value(row, self._sia_col_order[4]),
-                        model.get_value(row, self._sia_col_order[5]),
-                        model.get_value(row, self._sia_col_order[6]),
-                        model.get_value(row, self._sia_col_order[7]),
-                        model.get_value(row, self._sia_col_order[8]),
-                        model.get_value(row, self._sia_col_order[9]),
-                        model.get_value(row, self._sia_col_order[10]),
-                        model.get_value(row, self._sia_col_order[11]),
-                        model.get_value(row, self._sia_col_order[12]),
-                        model.get_value(row, self._sia_col_order[13]),
-                        model.get_value(row, self._sia_col_order[14]),
-                        model.get_value(row, self._sia_col_order[15]),
-                        model.get_value(row, self._sia_col_order[16]),
-                        model.get_value(row, self._sia_col_order[17]),
-                        model.get_value(row, self._sia_col_order[18]),
-                        _equation1_,
-                        _equation2_,
-                        _equation3_,
-                        _equation4_,
-                        _equation5_,
-                        model.get_value(row, self._sia_col_order[24]),
-                        model.get_value(row, self._sia_col_order[25]),
-                        model.get_value(row, self._sia_col_order[26]),
-                        model.get_value(row, self._sia_col_order[27]),
-                        model.get_value(row, self._sia_col_order[28]),
-                        model.get_value(row, self._sia_col_order[29]),
-                        model.get_value(row, self._sia_col_order[30]),
-                        model.get_value(row, self._sia_col_order[31]),
-                        model.get_value(row, self._sia_col_order[32]),
-                        model.get_value(row, self._sia_col_order[33]),
-                        model.get_value(row, self._sia_col_order[34]),
-                        model.get_value(row, self._sia_col_order[35]),
-                        model.get_value(row, self._sia_col_order[36]),
-                        model.get_value(row, self._sia_col_order[37]),
-                        self._app.REVISION.revision_id,
-                        model.get_value(row, self._sia_col_order[0]))
+            # Escape any apostrophes in the string values.
+            _d1 = model.get_value(row,
+                                  self._sia_col_order[3]).replace("'", "''")
+            _d2 = model.get_value(row,
+                                  self._sia_col_order[5]).replace("'", "''")
+            _d3 = model.get_value(row,
+                                  self._sia_col_order[7]).replace("'", "''")
+            _d4 = model.get_value(row,
+                                  self._sia_col_order[9]).replace("'", "''")
+            _d5 = model.get_value(row,
+                                  self._sia_col_order[11]).replace("'", "''")
+            _d6 = model.get_value(row,
+                                  self._sia_col_order[13]).replace("'", "''")
+            _d7 = model.get_value(row,
+                                  self._sia_col_order[15]).replace("'", "''")
+            _d8 = model.get_value(row,
+                                  self._sia_col_order[17]).replace("'", "''")
+            _b1 = model.get_value(row,
+                                  self._sia_col_order[29]).replace("'", "''")
+            _b2 = model.get_value(row,
+                                  self._sia_col_order[30]).replace("'", "''")
+            _b3 = model.get_value(row,
+                                  self._sia_col_order[31]).replace("'", "''")
 
-            _query_ = "UPDATE tbl_similar_item \
-                       SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
-                           fld_change_desc_2='%s', fld_change_factor_2=%f, \
-                           fld_change_desc_3='%s', fld_change_factor_3=%f, \
-                           fld_change_desc_4='%s', fld_change_factor_4=%f, \
-                           fld_change_desc_5='%s', fld_change_factor_5=%f, \
-                           fld_change_desc_6='%s', fld_change_factor_6=%f, \
-                           fld_change_desc_7='%s', fld_change_factor_7=%f, \
-                           fld_change_desc_8='%s', fld_change_factor_8=%f, \
-                           fld_function_1='%s', fld_function_2='%s', \
-                           fld_function_3='%s', fld_function_4='%s', \
-                           fld_function_5='%s', \
-                           fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
-                           fld_result_4=%f, fld_result_5=%f, \
-                           fld_user_blob_1='%s', fld_user_blob_2='%s', \
-                           fld_user_blob_3='%s', fld_user_float_1=%f, \
-                           fld_user_float_2=%f, fld_user_float_3=%f, \
-                           fld_user_int_1=%d, fld_user_int_2=%d, \
-                           fld_user_int_3=%d \
-                       WHERE fld_revision_id=%d \
-                       AND fld_sia_id=%d" % _values_
+            _values = (_d1, model.get_value(row, self._sia_col_order[4]),
+                       _d2, model.get_value(row, self._sia_col_order[6]),
+                       _d3, model.get_value(row, self._sia_col_order[8]),
+                       _d4, model.get_value(row, self._sia_col_order[10]),
+                       _d5, model.get_value(row, self._sia_col_order[12]),
+                       _d6, model.get_value(row, self._sia_col_order[14]),
+                       _d7, model.get_value(row, self._sia_col_order[16]),
+                       _d8, model.get_value(row, self._sia_col_order[18]),
+                       _equation1, _equation2, _equation3,
+                       _equation4, _equation5,
+                       model.get_value(row, self._sia_col_order[24]),
+                       model.get_value(row, self._sia_col_order[25]),
+                       model.get_value(row, self._sia_col_order[26]),
+                       model.get_value(row, self._sia_col_order[27]),
+                       model.get_value(row, self._sia_col_order[28]),
+                       _b1, _b2, _b3,
+                       model.get_value(row, self._sia_col_order[32]),
+                       model.get_value(row, self._sia_col_order[33]),
+                       model.get_value(row, self._sia_col_order[34]),
+                       model.get_value(row, self._sia_col_order[35]),
+                       model.get_value(row, self._sia_col_order[36]),
+                       model.get_value(row, self._sia_col_order[37]),
+                       self._app.REVISION.revision_id,
+                       model.get_value(row, self._sia_col_order[0]))
 
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
+            _query = "UPDATE tbl_similar_item \
+                      SET fld_change_desc_1='%s', fld_change_factor_1=%f, \
+                          fld_change_desc_2='%s', fld_change_factor_2=%f, \
+                          fld_change_desc_3='%s', fld_change_factor_3=%f, \
+                          fld_change_desc_4='%s', fld_change_factor_4=%f, \
+                          fld_change_desc_5='%s', fld_change_factor_5=%f, \
+                          fld_change_desc_6='%s', fld_change_factor_6=%f, \
+                          fld_change_desc_7='%s', fld_change_factor_7=%f, \
+                          fld_change_desc_8='%s', fld_change_factor_8=%f, \
+                          fld_function_1='%s', fld_function_2='%s', \
+                          fld_function_3='%s', fld_function_4='%s', \
+                          fld_function_5='%s', \
+                          fld_result_1=%f, fld_result_2=%f, fld_result_3=%f, \
+                          fld_result_4=%f, fld_result_5=%f, \
+                          fld_user_blob_1='%s', fld_user_blob_2='%s', \
+                          fld_user_blob_3='%s', fld_user_float_1=%f, \
+                          fld_user_float_2=%f, fld_user_float_3=%f, \
+                          fld_user_int_1=%d, fld_user_int_2=%d, \
+                          fld_user_int_3=%d \
+                      WHERE fld_revision_id=%d \
+                      AND fld_sia_id=%d" % _values
+
+            _results_ = self._app.DB.execute_query(_query, None,
                                                    self._app.ProgCnx,
                                                    commit=True)
 
