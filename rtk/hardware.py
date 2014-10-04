@@ -1154,6 +1154,8 @@ class Hardware(object):
 
             :param rtk.Hardware self: the current instance of a Hardware class.
             :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1487,6 +1489,8 @@ class Hardware(object):
 
             :param rtk.Hardware self: the current instance of a Hardware class.
             :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2006,6 +2010,8 @@ class Hardware(object):
             :param rtk.Hardware self: the current instance of a Hardware class.
             :param gtk.Notebook notebook: the Hardware class gtk.Notebook()
                                           widget.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2082,8 +2088,8 @@ class Hardware(object):
                     _adjustment_ = gtk.Adjustment(upper=5.0, step_incr=0.05)
                     _cell_.set_property('adjustment', _adjustment_)
                     _cell_.set_property('digits', 2)
-                #elif _widget_[i].text == 'blob':
-                #    _cell_ = _widg.CellRendererML()
+                # elif _widget_[i].text == 'blob':
+                #     _cell_ = _widg.CellRendererML()
                 else:
                     _cell_ = gtk.CellRendererText()
 
@@ -2154,6 +2160,8 @@ class Hardware(object):
             :param rtk.hardware self: the current instance of a Hardware class.
             :param gtk.Notebook notebook: the Hardware class gtk.Notebook()
                                           widget.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2791,7 +2799,8 @@ class Hardware(object):
                        _(u"Mission R(t):")]
 
             (_max1,
-             _y_pos1) = _widg.make_labels(_labels, self.fxdReliabilityResults, 5, 5)
+             _y_pos1) = _widg.make_labels(_labels,
+                                          self.fxdReliabilityResults, 5, 5)
 
             # Create the labels for quadrant #3.
             # TODO: Move this to the Component class.
@@ -2842,16 +2851,25 @@ class Hardware(object):
                                                  u"reliability for the "
                                                  u"selected assembly."))
 
-            self.fxdReliabilityResults.put(self.txtActiveHt, _x_pos, _y_pos1[0])
-            self.fxdReliabilityResults.put(self.txtDormantHt, _x_pos, _y_pos1[1])
-            self.fxdReliabilityResults.put(self.txtSoftwareHt2, _x_pos, _y_pos1[2])
-            self.fxdReliabilityResults.put(self.txtPredictedHt, _x_pos, _y_pos1[3])
-            self.fxdReliabilityResults.put(self.txtMissionHt, _x_pos, _y_pos1[4])
-            self.fxdReliabilityResults.put(self.txtHtPerCent, _x_pos, _y_pos1[5])
+            self.fxdReliabilityResults.put(self.txtActiveHt, _x_pos,
+                                           _y_pos1[0])
+            self.fxdReliabilityResults.put(self.txtDormantHt, _x_pos,
+                                           _y_pos1[1])
+            self.fxdReliabilityResults.put(self.txtSoftwareHt2, _x_pos,
+                                           _y_pos1[2])
+            self.fxdReliabilityResults.put(self.txtPredictedHt, _x_pos,
+                                           _y_pos1[3])
+            self.fxdReliabilityResults.put(self.txtMissionHt, _x_pos,
+                                           _y_pos1[4])
+            self.fxdReliabilityResults.put(self.txtHtPerCent, _x_pos,
+                                           _y_pos1[5])
             self.fxdReliabilityResults.put(self.txtMTBF, _x_pos, _y_pos1[6])
-            self.fxdReliabilityResults.put(self.txtMissionMTBF, _x_pos, _y_pos1[7])
-            self.fxdReliabilityResults.put(self.txtReliability, _x_pos, _y_pos1[8])
-            self.fxdReliabilityResults.put(self.txtMissionRt, _x_pos, _y_pos1[9])
+            self.fxdReliabilityResults.put(self.txtMissionMTBF, _x_pos,
+                                           _y_pos1[7])
+            self.fxdReliabilityResults.put(self.txtReliability, _x_pos,
+                                           _y_pos1[8])
+            self.fxdReliabilityResults.put(self.txtMissionRt, _x_pos,
+                                           _y_pos1[9])
 
             self.fxdReliabilityResults.show_all()
 
@@ -2980,9 +2998,7 @@ class Hardware(object):
                                       u"assessments for the selected "
                                       u"assembly."))
 
-            notebook.insert_page(_hpaned,
-                                 tab_label=_label,
-                                 position=-1)
+            notebook.insert_page(_hpaned, tab_label=_label, position=-1)
 
             return False
 
@@ -2993,6 +3009,8 @@ class Hardware(object):
 
             :param rtk.hardware self: the current instance of a Hardware class.
             :param gtk.NoteBooknotebook: the Hardware class gtk.Notebook().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -3429,6 +3447,8 @@ class Hardware(object):
 
             :param rtk.hardware self: the current instance of a Hardware class.
             :param gtk.NoteBook notebook: the Hardware class gtk.Notebook().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -3539,6 +3559,9 @@ class Hardware(object):
         """
         Method to load the Hardware class gtk.TreeView() model with system
         information.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT * FROM tbl_system WHERE fld_revision_id=%d" % \
@@ -3605,6 +3628,9 @@ class Hardware(object):
     def load_notebook(self):
         """
         Method to load the Hardware class gtk.Notebook().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_general_data_tab(self):
@@ -3612,6 +3638,8 @@ class Hardware(object):
             Function to load the widgets on the General Data page.
 
             :param rtk.hardware self: the current instance of a Hardware class.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             self.txtRevisionID.set_text(str(self.revision_id))
@@ -3666,6 +3694,8 @@ class Hardware(object):
             :param gtk.TreeModel model: the Hardware class gtk.TreeModel()
             :param gtk.TreeIter row: the currently selected gtk.TreeIter() in
                                      the Hardware class gtk.TreeModel()
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -4135,6 +4165,9 @@ class Hardware(object):
     def load_assessment_results_tab(self):
         """
         Method to load the widgets on the Assessment Results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -4199,6 +4232,9 @@ class Hardware(object):
     def _load_fmeca_tab(self):
         """
         Method to load the widgets on the FMEA/FMECA page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         self._ItemCA = {}
@@ -4527,10 +4563,10 @@ class Hardware(object):
         """
         Updates the values in the HARDWARE class gtk.TreeView().
 
-        Keyword Arguments:
-        columns -- a list of integers representing the column numbers to
-                   update.
-        values  -- a list of new values for the HARDWARE class TreeView().
+        :param int columns: a list of integers representing the column numbers
+                            to update.
+        :param list values: a list of new values for the Hardware class
+                            gtk.TreeView().
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -4543,6 +4579,9 @@ class Hardware(object):
     def _update_attributes(self):
         """
         Method to update the Hardware class attributes.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4683,17 +4722,19 @@ class Hardware(object):
         Callback function for handling mouse clicks on the HARDWARE class
         gtk.TreeView().
 
-        Keyword Arguments:
-        treeview -- the HARDWARE class gtkTreeView().
-        event    -- a gtk.gdk.Event() that called this function (the
-                    important attribute is which mouse button was clicked).
-                    1 = left
-                    2 = scrollwheel
-                    3 = right
-                    4 = forward
-                    5 = backward
-                    8 =
-                    9 =
+        :param gtk.TreeView treeview: the Hardware class gtkTreeView().
+        :param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method (the important attribute is which
+                                    mouse button was clicked).
+                                    1 = left
+                                    2 = scrollwheel
+                                    3 = right
+                                    4 = forward
+                                    5 = backward
+                                    8 =
+                                    9 =
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -4713,6 +4754,8 @@ class Hardware(object):
         :param gtk.TreeView __treeview: the Hardware class gtk.TreeView().
         :param str __path: the activated row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the activated gtk.TreeViewColumn().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Save the previously selected row in the Hardware tree.
@@ -5043,8 +5086,10 @@ class Hardware(object):
         Deletes the currently selected hardware item from the open RTK Program
         database.
 
-        Keyword Arguments:
-        __menuitem -- the gtk.MenuItem() that called this function.
+        :param gtk.MenuItem __menuitem: the gtk.MenuItem() that called this
+                                        method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -5142,6 +5187,9 @@ class Hardware(object):
         """
         Sets the corresponding row in the Parts List when a selected row in
         the Hardware class gtk.TreeView() is a component.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _model = self._app.winParts.tvwPartsList.get_model()
@@ -5159,6 +5207,9 @@ class Hardware(object):
         """
         Saves the Hardware class gtk.TreeView information to the open RTK
         Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -5171,6 +5222,8 @@ class Hardware(object):
                                gtk.Treemodel().
             :param gtk.TreeIter row: the selected gtk.TreeIter() in the
                                      Hardware class gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _ht_model = ''
@@ -5361,6 +5414,9 @@ class Hardware(object):
         """
         Saves the Hardware class allocation analysis information to the open
         RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -5394,14 +5450,14 @@ class Hardware(object):
                           fld_mtbf_alloc={12:f} \
                       WHERE fld_revision_id={13:d} \
                       AND fld_assembly_id={14:d}".format(
-                     model.get_value(row, 3), model.get_value(row, 4),
-                model.get_value(row, 5), model.get_value(row, 12),
-                model.get_value(row, 13), model.get_value(row, 8),
-                model.get_value(row, 9), model.get_value(row, 10),
-                model.get_value(row, 11), model.get_value(row, 21),
-                model.get_value(row, 19), model.get_value(row, 15),
-                model.get_value(row, 17), model.get_value(row, 0),
-                model.get_value(row, 1))
+                      model.get_value(row, 3), model.get_value(row, 4),
+                      model.get_value(row, 5), model.get_value(row, 12),
+                      model.get_value(row, 13), model.get_value(row, 8),
+                      model.get_value(row, 9), model.get_value(row, 10),
+                      model.get_value(row, 11), model.get_value(row, 21),
+                      model.get_value(row, 19), model.get_value(row, 15),
+                      model.get_value(row, 17), model.get_value(row, 0),
+                      model.get_value(row, 1))
 
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
@@ -5484,6 +5540,9 @@ class Hardware(object):
         """
         Saves the Hardware class risk analysis information to the open RKT
         Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -5499,6 +5558,7 @@ class Hardware(object):
                                      Hardware class hazard analysis
                                      gtk.TreeView().
             :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             if _conf.BACKEND == 'mysql':
@@ -5599,15 +5659,17 @@ class Hardware(object):
 
         def _risk_map_save_line(model, __path, row, self):
             """
-            Saves each row in the HARDWARE clas risk map to the open RTK
+            Saves each row in the Hardware class risk map to the open RTK
             Program database.
 
-            Keyword Arguments:
-            model  -- the HARDWARE class risk matrix gtk.TreeModel().
-            __path -- the path of the selected row in the HARDWARE class risk
-                      matrix gtk.TreeModel().
-            row    -- the selected row in the HARDWARE class risk matrix
-                      gtk.TreeView().
+            :param gtk.TreeModel model: the Hardware class risk matrix
+                                        gtk.TreeModel().
+            :param str __path: the path of the selected row in the Hardware
+                               class risk matrix gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class risk matrix gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _crit_ = model.get_value(row, 1)
@@ -5655,8 +5717,11 @@ class Hardware(object):
 
     def _save_sia(self):
         """
-        Saves the Assembly Object similar item analysis gtk.TreeView
-        information to the Program's MySQL or SQLite3 database.
+        Saves the Hardware class similar item analysis gtk.TreeView()
+        information to the open RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -5783,21 +5848,26 @@ class Hardware(object):
 
     def _save_fmeca(self):
         """
-        Saves the HARDWARE class FMEA/FMECA information to the open RTK
+        Saves the Hardware class FMEA/FMECA information to the open RTK
         Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        def _save_line(model, __path, row, self):
+        def _save_line_item(model, __path, row, self):
             """
             Saves a single row in the HARDWARE class FMEA/FMECA gtk.TreeModel
             to the open RTK Program database.
 
-            Keyword Arguments:
-            model  -- the Assembly Object similar item analysis gtk.TreeModel.
-            __path -- the path of the active row in the Assembly Object
-                      similar item analysis gtk.TreeModel.
-            row    -- the selected row in the Assembly Object similar item
-                      analysis gtk.TreeView.
+            :param gtk.TreeModel model: the Hardware class FMEA/FMECA
+                                        gtk.TreeModel().
+            :param str __path: the path of the active row in the Hardware class
+                               FMEA/FMECA gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class FMEA/FMECA gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # Find the type of information in the row.
@@ -5805,43 +5875,43 @@ class Hardware(object):
             #   1 = failure mechanism
             #   2 = design control
             #   3 = action
-            _type_ = model.get_value(row, len(self._FMECA_col_order))
+            _type = model.get_value(row, len(self._FMECA_col_order))
 
-            if _type_ == 0:  # Failure mode.
+            if _type == 0:  # Failure mode.
                 # Update the FMECA table.
-                _values_ = (model.get_value(row, self._FMECA_col_order[1]),
-                            model.get_value(row, self._FMECA_col_order[2]),
-                            model.get_value(row, self._FMECA_col_order[3]),
-                            model.get_value(row, self._FMECA_col_order[4]),
-                            model.get_value(row, self._FMECA_col_order[5]),
-                            model.get_value(row, self._FMECA_col_order[6]),
-                            model.get_value(row, self._FMECA_col_order[7]),
-                            model.get_value(row, self._FMECA_col_order[8]),
-                            model.get_value(row, self._FMECA_col_order[9]),
-                            model.get_value(row, self._FMECA_col_order[10]),
-                            model.get_value(row, self._FMECA_col_order[11]),
-                            model.get_value(row, self._FMECA_col_order[12]),
-                            model.get_value(row, self._FMECA_col_order[13]),
-                            model.get_value(row, self._FMECA_col_order[14]),
-                            float(model.get_value(row,
-                                                  self._FMECA_col_order[15])),
-                            float(model.get_value(row,
-                                                  self._FMECA_col_order[16])),
-                            float(model.get_value(row,
-                                                  self._FMECA_col_order[17])),
-                            float(model.get_value(row,
-                                                  self._FMECA_col_order[18])),
-                            float(model.get_value(row,
-                                                  self._FMECA_col_order[20])),
-                            model.get_value(row, self._FMECA_col_order[21]),
-                            model.get_value(row, self._FMECA_col_order[22]),
-                            int(model.get_value(row,
-                                                self._FMECA_col_order[23])),
-                            int(model.get_value(row,
-                                                self._FMECA_col_order[24])),
-                            model.get_value(row, self._FMECA_col_order[25]),
-                            int(model.get_value(row,
-                                                self._FMECA_col_order[0])))
+                _values = (model.get_value(row, self._FMECA_col_order[1]),
+                           model.get_value(row, self._FMECA_col_order[2]),
+                           model.get_value(row, self._FMECA_col_order[3]),
+                           model.get_value(row, self._FMECA_col_order[4]),
+                           model.get_value(row, self._FMECA_col_order[5]),
+                           model.get_value(row, self._FMECA_col_order[6]),
+                           model.get_value(row, self._FMECA_col_order[7]),
+                           model.get_value(row, self._FMECA_col_order[8]),
+                           model.get_value(row, self._FMECA_col_order[9]),
+                           model.get_value(row, self._FMECA_col_order[10]),
+                           model.get_value(row, self._FMECA_col_order[11]),
+                           model.get_value(row, self._FMECA_col_order[12]),
+                           model.get_value(row, self._FMECA_col_order[13]),
+                           model.get_value(row, self._FMECA_col_order[14]),
+                           float(model.get_value(row,
+                                                 self._FMECA_col_order[15])),
+                           float(model.get_value(row,
+                                                 self._FMECA_col_order[16])),
+                           float(model.get_value(row,
+                                                 self._FMECA_col_order[17])),
+                           float(model.get_value(row,
+                                                 self._FMECA_col_order[18])),
+                           float(model.get_value(row,
+                                                 self._FMECA_col_order[20])),
+                           model.get_value(row, self._FMECA_col_order[21]),
+                           model.get_value(row, self._FMECA_col_order[22]),
+                           int(model.get_value(row,
+                                               self._FMECA_col_order[23])),
+                           int(model.get_value(row,
+                                               self._FMECA_col_order[24])),
+                           model.get_value(row, self._FMECA_col_order[25]),
+                           int(model.get_value(row,
+                                               self._FMECA_col_order[0])))
 
                 _query = "UPDATE tbl_fmeca \
                           SET fld_mode_description='%s', \
@@ -5862,10 +5932,10 @@ class Hardware(object):
                               fld_rpn_severity_new='%s', \
                               fld_critical_item=%d, fld_single_point=%d, \
                               fld_remarks='%s' \
-                          WHERE fld_mode_id=%d" % _values_
+                          WHERE fld_mode_id=%d" % _values
 
-            elif _type_ == 1:  # Failure mechanism.
-                _parent_ = model.get_string_from_iter(model.iter_parent(row))
+            elif _type == 1:  # Failure mechanism.
+                _parent = model.get_string_from_iter(model.iter_parent(row))
                 _values = (model.get_value(row, 1),
                            self._dicMechanisms[model.get_value(row, 0)][1],
                            self._dicMechanisms[model.get_value(row, 0)][2],
@@ -5873,7 +5943,7 @@ class Hardware(object):
                            self._dicMechanisms[model.get_value(row, 0)][4],
                            self._dicMechanisms[model.get_value(row, 0)][5],
                            self._dicMechanisms[model.get_value(row, 0)][6],
-                           _parent_, model.get_value(row, 0))
+                           _parent, model.get_value(row, 0))
 
                 _query = "UPDATE tbl_fmeca_mechanisms \
                           SET fld_mechanism_description='%s', \
@@ -5883,18 +5953,18 @@ class Hardware(object):
                               fld_parent='%s' \
                           WHERE fld_mechanism_id=%d" % _values
 
-            elif _type_ == 2:  # Control.
-                _parent_ = model.get_string_from_iter(model.iter_parent(row))
-                _values_ = (model.get_value(row, 1),
-                            self._dicControls[model.get_value(row, 0)][1],
-                            _parent_, model.get_value(row, 0))
+            elif _type == 2:  # Control.
+                _parent = model.get_string_from_iter(model.iter_parent(row))
+                _values = (model.get_value(row, 1),
+                           self._dicControls[model.get_value(row, 0)][1],
+                           _parent, model.get_value(row, 0))
 
                 _query = "UPDATE tbl_fmeca_controls \
                           SET fld_control_description='%s', \
                               fld_control_type=%d, fld_parent='%s' \
-                          WHERE fld_control_id=%d" % _values_
+                          WHERE fld_control_id=%d" % _values
 
-            elif _type_ == 3:  # Action.
+            elif _type == 3:  # Action.
                 _parent = model.get_string_from_iter(model.iter_parent(row))
                 _query = "UPDATE tbl_fmeca_actions \
                           SET fld_action_recommended='{0:s}', \
@@ -5921,15 +5991,16 @@ class Hardware(object):
                     self._fmeca_actions[model.get_value(row, 0)][9],
                     _parent, model.get_value(row, 0))
 
-            self._app.DB.execute_query(_query,
-                                       None,
-                                       self._app.ProgCnx,
-                                       commit=True)
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Problem saving FMEA/FMECA to the open "
+                                  u"RTK Program database."))
+                return True
 
             return False
 
-        _model_ = self.tvwFMECA.get_model()
-        _model_.foreach(_save_line, self)
+        _model = self.tvwFMECA.get_model()
+        _model.foreach(_save_line_item, self)
 
         return False
 
@@ -6091,12 +6162,15 @@ class Hardware(object):
 
     def _callback_check(self, check, index):
         """
-        Callback function to retrieve and save checkbutton changes.
+        Callback function to retrieve and save gtk.CheckButton() changes.
 
-        Keyword Arguments:
-        check -- the checkbutton that called the function.
-        index -- the position in the Assembly Object _attribute list
-                 associated with the data from the calling checkbutton.
+        :param gtk.CheckButton check: the gtk.CheckButton() that called this
+                                      method.
+        :param int index: the position in the Hardware class attribute list
+                          associated with the data from the calling
+                          gtk.CheckButton().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if index > 87:
@@ -6132,11 +6206,13 @@ class Hardware(object):
 
     def _callback_combo(self, combo, index):
         """
-        Callback function to retrieve and save combobox changes.
+        Callback function to retrieve and save gtk.ComboBox() changes.
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the position in the applicable treeview associated
                           with the data from the calling gtk.ComboBox().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         i = combo.get_active()
@@ -6413,16 +6489,17 @@ class Hardware(object):
 
     def _callback_entry(self, entry, __event, convert, index):
         """
-        Callback function to retrieve and save entry changes.
+        Callback function to retrieve and save gtk.Entry() changes.
 
-        :param entry: the gtk.Entry() that called the function.
-        :type entry: gtk.Entry
-        :param __event: the gtk.gdk.Event() that called the function.
-        :type __event: gtk.gdk.Event
+        :param gtk.Entry entry: the gtk.Entry() that called the function.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
         :param str convert: the data type to convert the entry contents to.
         :param int index: the position in the applicable treeview
                           associated with the data from the calling
                           gtk.Entry().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -6561,12 +6638,15 @@ class Hardware(object):
         Updates child assemblies and components when certain information is
         changed in the parent assembly.
 
-        Keyword Arguments:
-        model -- the HARDWARE class gtk.TreeModel().
-        row   -- the selected row in the HARDWARE class gtk.TreeModel().
-        index -- the position (column) in the HARDWARE class gtk.TreeModel()
-                 associated with the data to be trickled down.
-        value -- the value to update the children with.
+        :param gtk.TreeModel model: the Hardware class gtk.TreeModel().
+        :param gtk.TreeIter row: the selected gtk.TreeIter() in the Hardware
+                                 class gtk.TreeModel().
+        :param int index: the position (column) in the Hardware class
+                          gtk.TreeModel() associated with the data to be
+                          trickled down.
+        :param any value: the value to update the children with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _n_children = model.iter_n_children(row)
@@ -6586,6 +6666,9 @@ class Hardware(object):
         """
         Method to 'roll-up' the lower level Similar Item Analysis change
         descriptions to the selected parent Assembly.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -6642,6 +6725,9 @@ class Hardware(object):
         """
         Method to 'trickle down' the higher level Hazard Analysis potential
         hazards to an assembly's immediate children.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Retrieve the currently selected assembly potential hazards to
@@ -6692,6 +6778,8 @@ class Hardware(object):
                              * 5 = Assessment Results
                              * 6 = FMEA
                              * 7 = Maintenance Planning
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if self.part:
@@ -6837,10 +6925,9 @@ class Hardware(object):
 
     def _toolbutton_pressed(self, button):
         """
-        Method to react to the HARDWARE class gtk.ToolButton() clicked events.
+        Method to react to the Hardware class gtk.ToolButton() clicked events.
 
-        :param button:the gtk.ToolButton() that was pressed.
-        :type button: gtk.Toolbutton
+        :param gtk.ToolButton button:the gtk.ToolButton() that was pressed.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -7268,6 +7355,9 @@ class Hardware(object):
         """
         Method to allocate reliability of selected assembly to lower level
         assemblies.  Only allocates one indenture level down.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def equal_apportionment(model, N, Ts, Rs):  # pylint: disable=C0103
@@ -7275,14 +7365,14 @@ class Hardware(object):
             Function to perform equal apportionment of a reliability
             requirement.
 
-            :param model: the gtk.TreeModel() from which to read/write
-                          allocation data.
-            :type model: gtk.TreeModel()
+            :param gtk.TreeModel model: the gtk.TreeModel() from which to
+                                        read/write allocation data.
             :param integer N: the number of assemblies to which the reliability
                               requirement is allocated.
             :param float Ts: the mission or operating time.
             :param float Rs: the reliability requirement.
-            :return: False or True
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             try:
@@ -7318,14 +7408,14 @@ class Hardware(object):
             Function to perform AGREE apportionment of a reliability
             requirement.
 
-            :param model: the gtk.TreeModel() from which to read/write
-                          allocation data.
-            :type model: gtk.TreeModel()
+            :param gtk.TreeModel model: the gtk.TreeModel() from which to
+                                        read/write allocation data.
             :param integer N: the number of assemblies to which the reliability
                               requirement is allocated.
             :param float Ts: the mission or operating time.
             :param float Rs: the reliability requirement.
-            :return: False
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _row_ = model.get_iter_root()
@@ -7412,12 +7502,12 @@ class Hardware(object):
             Function to perform feasibility of objectives apportionment of the
             reliability requirement.
 
-            :param model: the gtk.TreeModel() from which to read/write
-                          allocation data.
-            :type model: gtk.TreeModel()
+            :param gtk.TreeModel model: the gtk.TreeModel() from which to
+                                        read/write allocation data.
             :param float Ts: the mission or operating time.
             :param float lambdas: the failure rate requirement to allocate.
-            :return: False or True
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # First calculate the system failure rate and weighting factor for
@@ -7525,10 +7615,12 @@ class Hardware(object):
         Calculates the other two reliability metrics from the Hardware class
         similar item analysis goal provided.
 
-        :keyword int measure: the reliability goal measurement.\n
+        :keyword int measure: the reliability goal measurement.
                               - 500 = Reliability
                               - 501 = MTBF
                               - 503 = Hazard Rate
+        :return: the two other reliability metrics.
+        :rtype: tuple
         """
 
         op_time = float(self.txtOperTime.get_text())
@@ -7575,6 +7667,9 @@ class Hardware(object):
     def _calculate_risk(self):
         """
         Calculates the Assembly class risk analysis.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Get the list of failure probability names then create a dictionary
@@ -7780,7 +7875,12 @@ class Hardware(object):
         return False
 
     def _calculate_sia(self):
-        """ Calculates the Assembly Object similar item analysis. """
+        """
+        Calculates the Assembly Object similar item analysis.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
 
         model = self.tvwSIA.get_model()
         row = model.get_iter_first()
@@ -7872,6 +7972,8 @@ class Hardware(object):
 
         :param gtk.TreeIter row: the gtk.TreeIter() from the Hardware class
                                  gtk.TreeView() to calculate results for.
+        :return:
+        :rtype: tuple
         """
 
         _model_ = self.treeview.get_model()
