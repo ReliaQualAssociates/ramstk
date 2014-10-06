@@ -173,9 +173,8 @@ class RTK(object):
 
         _query = "SELECT fld_product_key, fld_expire_date \
                   FROM tbl_site_info"
-        _results = self.COMDB.execute_query(_query,
-                                            None,
-                                            self.ComCnx)
+        _results = self.COMDB.execute_query(_query, None, self.ComCnx)
+
         if _license_key != _results[0][0]:
             _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
                               u"key is incorrect.  Closing the RTK "
