@@ -1267,7 +1267,7 @@ CREATE TABLE "tbl_fmeca" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system revision.
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system assembly.
     "fld_function_id" INTEGER NOT NULL DEFAULT(0),      -- ID of the associated system function.
-    "fld_mode_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_mode_id" INTEGER NOT NULL,                     -- ID of the failure mode.
     "fld_mode_description" VARCHAR(512),                -- Noun description of the failure mode.
     "fld_mission_phase" VARCHAR(64),                    -- Mission phase during which the failure mode is of concern.
     "fld_local_effect" VARCHAR(512),                    -- Local effect of the failure mode.
@@ -1291,7 +1291,8 @@ CREATE TABLE "tbl_fmeca" (
     "fld_critical_item" TINYINT DEFAULT(0),             -- Whether or not failure mode causes item under analysis to be critical.
     "fld_single_point" TINYINT DEFAULT(0),              -- Whether or not failure mode causes item under analysis to be a single point of vulnerability.
     "fld_remarks" BLOB,                                 -- Remarks associated with the failure mode.
-    "fld_mission" VARCHAR(64) DEFAULT('Default Mission') -- Mission during which the failure mode is of concern.
+    "fld_mission" VARCHAR(64) DEFAULT('Default Mission'),   -- Mission during which the failure mode is of concern.
+    PRIMARY KEY ("fld_revision_id", "fld_assembly_id", "fld_mode_id")
 );
 
 CREATE TABLE "tbl_fmeca_mechanisms" (

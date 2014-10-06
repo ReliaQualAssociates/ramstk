@@ -2,31 +2,34 @@
 """
 This file contains configuration information and functions for RTK.
 
-:const ICON_DIR:
+:const ICON_DIR: Default value: ''
 Path to the directory containing icon files used by RTK. \n
 POSIX default: /usr/share/pixmaps/RTK \n
 Windows default: None
 
-:const DATA_DIR:
+:const DATA_DIR: Default value: ''
 Path to the directory containing data files used by RTK. \n
 POSIX default: /usr/share/RTK \n
 Windows default: None
 
-:const CONF_DIR:
+:const CONF_DIR: Default value: ''
 Path to the directory containing configuration files used by RTK.\n
 POSIX default: $HOME/.config/RTK \n
 Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK
 
-:const LOG_DIR:
+:const LOG_DIR: Default value: ''
 Path to the directory containing log files used by RTK. \n
 POSIX default: $HOME/.config/RTK/logs \n
 Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs
 
-:const PROG_DIR:
+:const PROG_DIR: Default value: ''
 Path to the base directory containing RTK Program database files.  This is only
 used when the backend is SQLite3. \n
 POSIX default: $HOME/analyses/rtk \n
 Windows default: C:\\\Users\\\<USER NAME>\\\analyses\\\rtk
+
+:const RTK_MODE_SOURCE: Default value: 1
+Indicator variable used to determine which failure mode source to use.
 
 :const RTK_FORMAT_FILE: Default value: []
 Global list containing the path to the format files to use for various widgets.
@@ -330,6 +333,8 @@ CONF_DIR = ''
 LOG_DIR = ''
 PROG_DIR = ''
 
+RTK_MODE_SOURCE = 1
+
 RTK_FORMAT_FILE = []
 RTK_COLORS = []
 RTK_PREFIX = []
@@ -590,6 +595,7 @@ class RTKConf(object):
             config.set('General', 'calcreltime', 10.0)
             config.set('General', 'autoaddlistitems', 'False')
             config.set('General', 'decimal', 6)
+            config.set('General', 'modesource', 1)
             config.set('General', 'parallelcalcs', 'False')
             config.set('General', 'treetabpos', 'top')
             config.set('General', 'listtabpos', 'bottom')
@@ -681,6 +687,7 @@ class RTKConf(object):
             config.set('General', 'calcreltime', RTK_MTIME)
             config.set('General', 'autoaddlistitems', 'False')
             config.set('General', 'decimal', PLACES)
+            config.set('General', 'modesource', RTK_MODE_SOURCE)
             config.set('General', 'treetabpos', TABPOS[0])
             config.set('General', 'listtabpos', TABPOS[1])
             config.set('General', 'booktabpos', TABPOS[2])

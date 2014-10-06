@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-utilities.py contains utility functions for interacting with the RTK
-application.  Import this module as _util in other modules that need to
-interact with the RTK application.
+Contains utility functions for interacting with the RTK application.  Import
+this module as _util in other modules that need to interact with the RTK
+application.
 """
 
 __author__ = 'Andrew Rowland'
@@ -100,6 +100,8 @@ def read_configuration():
     _conf.FRMULT = float(conf.read_configuration().get('General',
                                                        'frmultiplier'))
     _conf.PLACES = conf.read_configuration().get('General', 'decimal')
+    _conf.RTK_MODE_SOURCE = conf.read_configuration().get('General',
+                                                          'modesource')
     _conf.TABPOS[0] = conf.read_configuration().get('General', 'treetabpos')
     _conf.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
     _conf.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
@@ -203,69 +205,73 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     """
     This function creates a logger instance.
 
-    Keyword Arguments:
-    log_name  -- the name of the log used in the application.
-    log_level -- the level of messages to log.
-    log_file  -- the full path of the log file for this logger instance
-                 to write to.
-    to_tty    -- boolean indicating whether this logger will also dump
-                 messages to the terminal.
+    :param str log_name: the name of the log used in the application.
+    :param str log_level: the level of messages to log.
+    :param str log_file: the full path of the log file for this logger instance
+                         to write to.
+    :param boolean to_tty: boolean indicating whether this logger will also
+                           dump messages to the terminal.
+    :return: _logger
+    :rtype:
     """
 
     import logging
 
-    logger = logging.getLogger(log_name)
+    _logger = logging.getLogger(log_name)
 
-    fh = logging.FileHandler(log_file)
-    fh.setLevel(log_level)
+    _fh = logging.FileHandler(log_file)
+    _fh.setLevel(log_level)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
+    _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    _fh.setFormatter(_formatter)
 
-    logger.addHandler(fh)
+    _logger.addHandler(_fh)
 
     if to_tty:
-        ch = logging.StreamHandler()
-        ch.setLevel(log_level)
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
+        _ch = logging.StreamHandler()
+        _ch.setLevel(log_level)
+        _ch.setFormatter(_formatter)
+        _logger.addHandler(_ch)
 
-    return logger
+    return _logger
 
 
 def parse_config(configfile):
     """
     This function parses the XML configuration file passed as a parameter.
 
-    :param configfile: the configuration file that needs to be parsed.
+    :param str configfile: the configuration file that needs to be parsed.
     """
 
     from lxml import etree
 
-    tree = etree.parse(configfile)
+    _tree = etree.parse(configfile)
 
-    return tree
+    return _tree
 
 
 def split_string(string):
     """
     Splits a colon-delimited string into its constituent parts.
 
-    :param string: the colon delimited string that needs to be split into a
-                   list.
-    :type string: list of strings
+    :param list string: the colon delimited string that needs to be split into
+                        a list.
+    :return: _strlist
+    :rtype: list of strings
     """
 
-    strlist = string.rsplit(':')
+    _strlist = string.rsplit(':')
 
-    return strlist
+    return _strlist
 
 
 def none_to_string(string):
     """
     Converts None types to an empty string.
 
-    :param string: the string to convert.
+    :param str string: the string to convert.
+    :return: string; the converted string.
+    :rtype: str
     """
 
     if string is None:
@@ -279,27 +285,29 @@ def string_to_boolean(string):
     Converts string representations of TRUE/FALSE to an integer value for use
     in the database.
 
-    :param string: the string to convert.
-    :type string: string
+    :param str string: the string to convert.
+    :return: _result
+    :rtype: int
     """
 
-    result = 0
+    _result = 0
 
-    string = str(string)
+    _string = str(string)
 
-    if(string.lower() == 'true' or string.lower() == 'yes' or
-       string.lower() == 't' or string.lower() == 'y'):
-        result = 1
+    if(_string.lower() == 'true' or _string.lower() == 'yes' or
+       _string.lower() == 't' or _string.lower() == 'y'):
+        _result = 1
 
-    return result
+    return _result
 
 
 def date_to_ordinal(date):
     """
     Converts date strings to ordinal dates for use in the database.
 
-    :param date: the date string to convert.
-    :type date: string
+    :param str date: the date string to convert.
+    :return: ordinal representation of the passed date.
+    :rtype: int
     """
 
     from dateutil.parser import parse
@@ -312,10 +320,11 @@ def date_to_ordinal(date):
 
 def ordinal_to_date(ordinal):
     """
-    Converts ordinal dates to date strings in ISO 8601 format.
+    Converts ordinal dates to date strings in ISO-8601 format.
 
-    :param ordinal: the ordinal date to convert.
-    :type ordinal: date
+    :param int ordinal: the ordinal date to convert.
+    :return: the ISO-8601 date representation of the passed ordinal.
+    :rtype: date
     """
 
     from datetime import datetime
@@ -326,26 +335,30 @@ def ordinal_to_date(ordinal):
         return str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
 
 
-def tuple_to_list(_tuple, _list):
+def tuple_to_list(tuple, list):
     """
     Appends a tuple to a list.
 
-    :param _tuple: the tuple to add to the list.
-    :param _list: the existing list to add the tuple elements to.
+    :param tuple _tuple: the tuple to add to the list.
+    :param list _list: the existing list to add the tuple elements to.
+    :return: list; the orginal list with the tuple items added.
+    :rtype: list
     """
 
-    for i in range(len(_tuple)):
-        _list.append(_tuple[i])
+    for i in range(len(tuple)):
+        list.append(tuple[i])
 
-    return _list
+    return list
 
 
 def dir_exists(directory):
     """
     Helper function to check if a directory exists.
 
-    :param directory: a string representing the directory path to check for.
-    :type directory: string
+    :param str directory: a string representing the directory path to check
+                          for.
+    :return: False if the directory does not exist, True otherwise.
+    :rtype: boolean
     """
 
     return os.path.isdir(directory)
@@ -356,7 +369,7 @@ def file_exists(_file):
     Helper function to check if a file exists.
 
     :param str _file: a string representing the filepath to check for.
-    :return: True if the file exists or False if not.
+    :return: True if the file exists, False otherwise.
     :rtype: boolean
     """
 
@@ -623,9 +636,10 @@ def save_project(__widget, app):
     """
     Saves the RTK information to the open RTK Program database.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param rtk app: the current instance of the RTK application.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 # TODO: Only save the active module in the Tree Book.
     if not app.LOADED:
@@ -676,9 +690,10 @@ def delete_project(__widget, app):
     """
     Deletes an existing RTK Project.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param rtk app: the current instance of the RTK application.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     if _conf.BACKEND == 'mysql':
@@ -759,9 +774,10 @@ def import_project(__widget, app):
     Imports project information from external files such as Excel, CVS, other
     delimited text files, etc.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param rtk app: the current instance of the RTK application.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
 # TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
@@ -782,10 +798,10 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
     """
     Dialog to confirm user actions such as deleting a Project.
 
-    Keyword Arguments:
-    _prompt_ -- the prompt to display in the dialog.
-    _image_  -- the icon to display in the dialog.
-    _parent_ -- the parent window, if any, for the dialog.
+    :param str _prompt_: the prompt to display in the dialog.
+    :param str _image_: the icon to display in the dialog.
+    :param gtk.Window _parent_: the parent gtk.Window(), if any, for the
+                                dialog.
     """
 
     dialog = _widg.make_dialog("")
@@ -815,8 +831,7 @@ def rtk_error(prompt, _parent=None):
     Dialog to display runtime errors to the user.
 
     :param str prompt: the prompt to display in the dialog.
-    :param _parent: the parent gtk.Window(), if any, for the dialog.
-    :type _parent: gtk.Window
+    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     """
 
     prompt = prompt + u"  Check the error log %s for additional information " \
@@ -853,10 +868,8 @@ def rtk_question(prompt, _parent=None):
     """
     Dialog to display runtime questions to the user.
 
-    :param prompt: the prompt to display in the dialog.
-    :type prompt: string
-    :param _parent: the parent gtk.Window(), if any, for the dialog.
-    :type _parent: gtk.Window
+    :param str prompt: the prompt to display in the dialog.
+    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     :return: gtk.RESPONSE_YES or gtk.RESPONSE_NO
     :rtype: GTK response type
     """
@@ -874,10 +887,8 @@ def rtk_warning(prompt, _parent=None):
     """
     Dialog to display runtime warnings to the user.
 
-    :param prompt: the prompt to display in the dialog.
-    :type prompt: string
-    :param _parent: the parent gtk.Window(), if any, for the dialog.
-    :type _parent: gtk.Window
+    :param str prompt: the prompt to display in the dialog.
+    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     """
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -891,10 +902,8 @@ def add_items(title, prompt=""):
     """
     Adds one or more items to a treeview hierarchy.
 
-    :param title: the string to put in the title bar of the dialog.
-    :type title: string
-    :param prompt: the prompt to put on the dialog.
-    :type prompt: string
+    :param str title: the string to put in the title bar of the dialog.
+    :param str prompt: the prompt to put on the dialog.
     """
 
     _dialog = _widg.make_dialog(title)
@@ -926,12 +935,11 @@ def cut_copy_paste(__widget, action):
     """
     Cuts, copies, and pastes.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param action: whether to cut, copy, or paste
-                   0 = cut
-                   1 = copy
-                   2 = paste
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param int action: whether to cut, copy, or paste
+                       0 = cut
+                       1 = copy
+                       2 = paste
     """
 
     # TODO: Write code to cut/copy/paste.
@@ -953,10 +961,10 @@ def paste(clipboard, contents, user_data):
     """
     Callback function to paste text from the clipboard.
 
-    Keyword Arguments:
-    clipboard -- the gtk.Clipboard that called this function.
-    contents  -- the contents of the clipboard.
-    user_data -- user data.
+    :param gtk.Clipboard clipboard: the gtk.Clipboard() that called this
+                                    function.
+    :param str contents: the contents of the clipboard.
+    :param any user_data: user data.
     """
 
     print contents
@@ -966,8 +974,7 @@ def select_all(widget):
     """
     Selects all the rows in a treeview.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
+    :param gtk.Widget widget: the gtk.Widget() that called this function.
     """
 
     # TODO: Write code to select all items in treeviews.
@@ -978,10 +985,9 @@ def find(widget, action):
     """
     Finds records in the open project.
 
-    Keyword Arguments:
-    widget -- the widget that called this function.
-    action -- whether to find (0), find next (1), find previous (2),
-              or replace(3).
+    :param gtk.Widget widget: the gtk.Widget() that called this function.
+    :param int action: whether to find (0), find next (1), find previous (2),
+                       or replace(3).
     """
 
     # TODO: Write code to find, find next, find previous, and replace search terms.
@@ -992,12 +998,11 @@ def find_all_in_list(_list, value, start=0):
     """
     Finds all instances of value in the list starting at position start.
 
-    :param _list: the list to search.
-    :type _list: list
-    :param value: the value to search for in the list.
-    :type value: any of same type found in list
-    :param start: the position in the list to start the search.
-    :type start: integer
+    :param list _list: the list to search.
+    :param any value: the value to search for in the list.
+    :param int start: the position in the list to start the search.
+    :return: positions; the list of positions where the value is found.
+    :rtype: int
     """
 
     positions = []
@@ -1030,9 +1035,9 @@ def create_comp_ref_des(__widget, app):
     """
     Iterively creates composite reference designators.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param rtk app: the current instance of the RTK application.
+    :return: False if successful or True if an error is encounterd.
     """
 
     _model = app.HARDWARE.treeview.get_model()
@@ -1040,19 +1045,19 @@ def create_comp_ref_des(__widget, app):
 
     return False
 
+
 def build_comp_ref_des(model, __path, row):
     """
     Creates the composite reference designator for the currently selected row
     in the System gtk.Treemodel.
 
-    :param model: the Hardware class gtk.TreeModel().
-    :type model: gtk.TreeModel
-    :param __path: the path of the currently selected gtk.TreeIter() in the
-                   Hardware class gtk.TreeModel().
-    :param __path: tuple
-    :param row: the currently selected gtk.TreeIter() in the Hardware class
-                gtk.TreeModel().
-    :type row: gtk.TreeIter
+    :param gtk.Treemodel model: the Hardware class gtk.TreeModel().
+    :param tuple __path: the path of the currently selected gtk.TreeIter() in
+                         the Hardware class gtk.TreeModel().
+    :param gtk.TreeIter row: the currently selected gtk.TreeIter() in the
+                             Hardware class gtk.TreeModel().
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     _ref_des = model.get_value(row, 68)
@@ -1080,10 +1085,13 @@ def add_parts_system_hierarchy(__widget, app):
     already exist.  This function will populate the hierarchy with the parts
     in the program incident data.
 
-    :param __widget: the gtk.Widget() that called the function.
-    :type __widget: gtk.Widget
-    :param app: the current instance of the RTK application.
+    :param gtk.Widget __widget: the gtk.Widget() that called the function.
+    :param rtk app: the current instance of the RTK application.
+    :return: False if successul or True if an error is encountered.
+    :rtype: boolean
     """
+
+    set_cursor(self._app, gtk.gdk.WATCH)
 
     # Find the revision id.
     if _conf.RTK_MODULES[0] == 1:
@@ -1094,9 +1102,7 @@ def add_parts_system_hierarchy(__widget, app):
     # Find the last assembly id being used and increment it by one as the
     # starting assembly id.
     _query = "SELECT MAX(fld_assembly_id) FROM tbl_system"
-    _assembly_id = app.DB.execute_query(_query,
-                                        None,
-                                        app.ProgCnx)
+    _assembly_id = app.DB.execute_query(_query, None, app.ProgCnx)
     _assembly_id = _assembly_id[0][0] + 1
 
     # Get the list of part numbers to add to the system hierarchy and their
@@ -1107,14 +1113,10 @@ def add_parts_system_hierarchy(__widget, app):
               ON t1.fld_incident_id=t2.fld_incident_id \
               WHERE t2.fld_revision_id=%d \
               ORDER BY t2.fld_hardware_id" % _revision_id
-    _results = app.DB.execute_query(_query,
-                                    None,
-                                    app.ProgCnx)
+    _results = app.DB.execute_query(_query, None, app.ProgCnx)
 
     _n_added = 0
     for i in range(len(_results)):
-        _tmp = app.HARDWARE.dicHARDWARE[_results[i][1]]
-
         # Create a description from the part prefix and part index.
         _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + \
                      str(_conf.RTK_PREFIX[7])
@@ -1128,13 +1130,11 @@ def add_parts_system_hierarchy(__widget, app):
         #   Parent Assembly
         #   Part Number
         _values = (_revision_id, _assembly_id, _part_name, 1,
-                   _tmp[len(_tmp) - 1], _results[i][0])
+                   _results[i][1], _results[i][0])
 
         # Add the new component to each table needing a new entry and increment
         # the count of components added.
-        _added = component_add(app, _values)
-
-        if not _added:
+        if not component_add(app, _values):
             _n_added += 1
 
         # Increment the part index and assembly id.
@@ -1142,13 +1142,14 @@ def add_parts_system_hierarchy(__widget, app):
         _assembly_id += 1
 
     if _n_added != len(_results):
-        rtk_error(_(u"There was an error adding one or more "
-                            u"components to the database.  Check the RTK "
-                            u"error log for more details."))
+        rtk_error(_(u"There was an error adding one or more components to the "
+                    u"open RTK database."))
 
     app.REVISION.load_tree()
     #TODO: Need to find and select the previously selected revision before loading the hardware tree.
     app.HARDWARE.load_tree()
+
+    set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
     return False
 
@@ -1157,9 +1158,10 @@ def component_add(app, values):
     """
     Function to add a component to the RTK Program database.
 
-    Keyword Arguments:
-    app     -- the running instances of the RTK application.
-    values -- tuple containing the values to pass to the queries.
+    :param rtk app: the running instance of the RTK application.
+    :param tuple values: tuple containing the values to pass to the queries.
+    :return: False if successul or True if an error is encountered.
+    :rtype: boolean
     """
 
     # Insert the new part into tbl_system.
@@ -1168,38 +1170,31 @@ def component_add(app, values):
                                       fld_parent_assembly, \
                                       fld_part_number) \
               VALUES (%d, %d, '%s', %d, '%s', '%s')" % values
-    _inserted = app.DB.execute_query(_query,
-                                     None,
-                                     app.ProgCnx,
-                                     commit=True)
-
-    if not _inserted:
+    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
         app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component to system table.")
+                            "component %s as a child of assembly %d to the "
+                            "system table." % (values[5], values[4]))
+        return True
 
     # Insert the new component into tbl_prediction.
     _query = "INSERT INTO tbl_prediction \
               (fld_revision_id, fld_assembly_id) \
               VALUES (%d, %d)" % (values[0], values[1])
-    _inserted = app.DB.execute_query(_query,
-                                     None,
-                                     app.ProgCnx,
-                                     commit=True)
-    if not _inserted:
+    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
         app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component to prediction table.")
+                            "component %s as a child of assembly %d to the "
+                            "prediction table." % (values[5], values[4]))
+        return True
 
     # Insert the new component into tbl_fmeca.
     _query = "INSERT INTO tbl_fmeca \
               (fld_assembly_id) \
               VALUES (%d)" % values[1]
-    _inserted = app.DB.execute_query(_query,
-                                     None,
-                                     app.ProgCnx,
-                                     commit=True)
-    if not _inserted:
+    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
         app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component to FMECA table.")
+                            "component %s as a child of assembly %d to the "
+                            "FMECA table." % (values[5], values[4]))
+        return True
 
     return False
 
@@ -1481,17 +1476,64 @@ def set_part_model(category, subcategory):
     return _part
 
 
+def add_failure_modes(app, revision_id, assembly_id, category_id,
+                      subcategory_id):
+    """
+    Function to add default failure modes to the selected component.
+
+    :param rtk app: the running instance of the RTK application.
+    :param int revision_id: the component revision ID.
+    :param int assembly_id: the component assembly ID.
+    :param int category_id: the component category ID.
+    :param int subcategory_id: the component subcategory ID.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
+    """
+# TODO: Add capability to remove existing failure modes in the event the component category/sub-category are changed.  This depends on updating the API to include returning integer error codes.
+    _err = False
+
+    # Retrieve the default failure modes for the component from the common
+    # database.
+    _query = "SELECT fld_mode_id, fld_mode_description, fld_mode_ratio \
+              FROM tbl_failure_modes \
+              WHERE fld_category_id=%d \
+              AND fld_subcategory_id=%d \
+              AND fld_source=%d" % (category_id, subcategory_id,
+                                    int(_conf.RTK_MODE_SOURCE))
+    _modes = app.COMDB.execute_query(_query, None, app.ComCnx)
+    try:
+        _n_modes = len(_modes)
+    except TypeError:
+        _n_modes = 0
+
+    # Add the default failure modes to the open RTK Program database.
+    _base_query = "INSERT INTO tbl_fmeca \
+                   (fld_revision_id, fld_assembly_id, fld_mode_id, \
+                    fld_mode_description, fld_mode_ratio) \
+                   VALUES (%d, %d, %d, '%s', %f)"
+    for i in range(_n_modes):
+        _query = _base_query % (revision_id, assembly_id,
+                                _modes[i][0], _modes[i][1], _modes[i][2])
+        if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
+            _err = True
+
+    if _err:
+        rtk_error(_(u"Problem adding one or more failure modes to the open "
+                    u"RTK Program database."))
+        return True
+
+    return False
+
+
 def calculate_max_text_width(text, font):
     """
     Function to calculate the maximum width of the text string that is using a
     particular font.
 
-    :param text: the text string to calculate.
-    :type text: string
-    :param font: the font being used.
-    :type font: string
+    :param str text: the text string to calculate.
+    :param str font: the font being used.
     :return: _max
-    :rtype: integer
+    :rtype: int
     """
 
     _max = 0
@@ -1507,13 +1549,15 @@ def trickledown(model, row, index_, value_):
     Iteratively trickles down a particular parameter value from a parent to
     it's children.
 
-    Keyword Arguments:
-    model  -- the gtkTreemodel containing the information to trickle down.
-    row    -- the selected row in the model containing the information to
-              trickle down.
-    index_ -- the column in the model containing the information to
-              trickle down.
-    value_ -- the value of the parameter to trickle down.
+    :param gtkTreeModel model: the gtkTreeModel() containing the information to
+                               trickle down.
+    :param gtk.TreeIter row: the selected gtk.TreeIter() in the gtk.TreeModel()
+                             containing the information to trickle down.
+    :param int index_: the column in the gtk.TreeModel() containing the
+                       information to trickle down.
+    :param any value_: the value of the parameter to trickle down.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     _n_children = model.iter_n_children(row)

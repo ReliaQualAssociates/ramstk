@@ -4688,7 +4688,10 @@ class Hardware(object):
         if self.part:
             _path = self._app.winParts._treepaths[self.assembly_id]
             _model = self._app.winParts.tvwPartsList.get_model()
-            _row = _model.get_iter(_path)
+            try:
+                _row = _model.get_iter(_path)
+            except AttributeError:
+                return True
 
             self.burnin_temp = 0.0
             self.burnin_time = 0.0
@@ -6466,6 +6469,12 @@ class Hardware(object):
                                                           self._component_y[1])
                     self._component.assessment_results_load(self)
 
+                    # Add the failure modes for the selected component.
+                    _util.add_failure_modes(self._app, self.revision_id,
+                                            self.assembly_id, self.category_id,
+                                            self.subcategory_id)
+
+                    self._load_fmeca_tab()
                     self.fxdReliabilityInputs.show_all()
                     self.fxdReliabilityResults.show_all()
                     self.fxdStressResults.show_all()
