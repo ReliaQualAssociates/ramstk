@@ -52,7 +52,7 @@ except ImportError:
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except ImportError:
+except(ImportError, locale.Error):
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
