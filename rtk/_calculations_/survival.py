@@ -80,7 +80,12 @@ def time_between_failures(previous, current):
     :rtype: float
     """
 
-    if(current[5] == 'Right Censored' or str(current[5]) == '2'):
+    if current[5] == 'Event' or str(current[5]) == '1':
+        if current[1] == previous[1]:
+            _tbf = current[3] - previous[3]
+        else:
+            _tbf = current[3]
+    elif current[5] == 'Right Censored' or str(current[5]) == '2':
         _tbf = np.inf
     elif(current[5] == 'Left Censored' or current[5] == 'Interval Censored' or
          str(current[5]) == '3'):
@@ -91,7 +96,7 @@ def time_between_failures(previous, current):
         else:
             _tbf = _time2
     else:
-        _tbf = current[3]
+        _tbf = current[3] - previous[3]
 
     return _tbf
 
@@ -105,11 +110,9 @@ def d_matrix(data, times):
     function.  The d.(tk) array is the total number of system recurrences at
     time tk.
 
-    :param data: a dictionary containing the failure/censoring data for a
-                 population of systems.
-    :type data: dictionary with the system id as the key and a list of the
-                failure/censoring times as the value.
-    :param times: a list of unique and sorted failures times.
+    :param dict data: a dictionary with the system id as the key and a list of
+                      the failure/censoring times as the value.
+    :param float times: a list of unique and sorted failures times.
     :return: _d_matrix; matrix of total number of system recurrences at each
              unique failure time.
     :rtype: numpy 1-D matrix of integers
@@ -191,14 +194,13 @@ def mean_cumulative_function(data, conf=0.75):
     This function estimates the mean cumulative function for a population of
     items.
 
-    :param data: a dictionary where the key is the system id and the value is a
-                 list of failure/censoring times.  The last entry in this list
-                 is the censoring time.  Failures times are float or integer
-                 and the censoring time is a string.  For example:
-                 [88., 92., 227., '350+']
-    :type data: dictionary.
-    :param conf: the confidence level of the MCF estimates (default is 75%).
-    :type conf: float
+    :param dict data: a dictionary where the key is the system id and the value
+                      is a list of failure/censoring times.  The last entry in
+                      this list is the censoring time.  Failures times are
+                      float or integer and the censoring time is a string.
+                      For example: [88., 92., 227., '350+']
+    :param float conf: the confidence level of the MCF estimates (default
+                       is 75%).
     :return: _mcf; matrix of lists containing MCF values.  There is one row
              for each unique failure time.  Each row contains the following:
              - Unique failure time (t).
@@ -1559,7 +1561,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
 
             _parameters[0] = _mu
             _parameters[1] = _sigma
-
+            print _parameters
             _fI = fisher_information(gaussian_log_pdf,
                                      _parameters, _data[:, 4])
             _variance[0] = 1.0 / np.diag(_fI)[0]
@@ -1655,7 +1657,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
         elif dist == 'weibull':
             _df = _n_records - 2
             _x = np.log(_x)
-            _y_linear = np.log(-1.0 * np.log(1.0 - _median_rank))
+            _y_linear = np.log(np.log(-1.0 * (1.0 - _median_rank)))
 
             _p, _covar, _info, __, __ = optim.leastsq(_error_function,
                                                       [1.0, 1.0],
