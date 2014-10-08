@@ -632,7 +632,6 @@ class RTKConf(object):
             config.set('Files', 'softwareformat', 'software_format.xml')
             config.set('Files', 'testformat', 'testing_format.xml')
             config.set('Files', 'validationformat', 'validation_format.xml')
-# TODO: Remove the following format files from RTK.
             config.set('Files', 'rgformat', 'rgincident_format.xml')
             config.set('Files', 'fracaformat', 'incident_format.xml')
             config.set('Files', 'stakeholderformat', 'stakeholder_format.xml')

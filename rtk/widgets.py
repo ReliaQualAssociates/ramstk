@@ -470,7 +470,6 @@ def make_text_view(txvbuffer=None, width=200, height=100):
     :rtype: gtk.ScrolledWindow
     """
 
-# FIXME: Re-write this so it returns the TextBuffer and the scrollwindow is added by the calling class.
     _view = gtk.TextView(buffer=txvbuffer)
     _view.set_wrap_mode(gtk.WRAP_WORD)
 

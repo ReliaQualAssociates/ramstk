@@ -222,7 +222,7 @@ class Hardware(object):
     |   2   | Path of the parent failure mechanism  |
     +-------+---------------------------------------+
 
-    :ivar _dicrpnsev: Dictionart to carry RPN severity IDs.  Key is the
+    :ivar _dicrpnsev: Dictionary to carry RPN severity IDs.  Key is the
     severity description; value is the RPN severity ID.
 
     :ivar _dicRPN: Dictionary to carry RPN hardware item values.
