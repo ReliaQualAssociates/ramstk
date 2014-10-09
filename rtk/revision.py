@@ -2652,7 +2652,6 @@ class Revision(object):
                                                   'Report Date'])
 
                 # Retrieve the mission phases.
-# TODO: Load a mission phase dictionary when the Revision is loaded and use this dictionary rather than a SQL call.
                 _query = "SELECT fld_phase_name, fld_phase_description, \
                                  fld_phase_start, fld_phase_end \
                           FROM tbl_mission_phase \
