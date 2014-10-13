@@ -21,6 +21,8 @@ import logging
 import os
 import sys
 
+from time import sleep
+
 import configuration as _conf
 import mysql as _mysql
 import notebook as _note
@@ -63,17 +65,73 @@ _ = gettext.gettext
 
 
 def main():
-    """ This is the main function for the RTK application. """
+    """
+    This is the main function for the RTK application.
+    """
+
+    # splScr = SplashScreen()
+
+    # If you don't do this, the splash screen will show, but wont render it's
+    # contents
+    # while gtk.events_pending():
+    #     gtk.main_iteration()
+
+    # sleep(3)
 
     RTK()
+
+    # splScr.window.destroy()
 
     gtk.main()
 
     return 0
 
 
+class SplashScreen():
+    """
+    This is the splash screen class.
+    """
+
+    def __init__(self):
+
+        # DO NOT connect 'destroy' event here!
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        _color = gtk.gdk.color_parse('#234fdb')
+        self.window.modify_bg(gtk.STATE_NORMAL, _color)
+
+        self.window.set_title('The Reliability ToolKit (RTK)')
+        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.set_resizable(True)
+        self.window.set_deletable(False)
+        self.window.set_decorated(False)
+        self.window.set_skip_pager_hint(True)
+        self.window.set_skip_taskbar_hint(True)
+
+        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
+        _width = gtk.gdk.screen_width() / _n_screens
+        _height = gtk.gdk.screen_height()
+
+        self.window.set_default_size((_width / 3) - 10, (2 * _height / 7))
+        self.window.set_border_width(5)
+
+        _vbox = gtk.VBox(False, 1)
+        self.window.add(_vbox)
+
+        #_image = gtk.Image()
+        #_image.set_from_file("/home/andrew/.config/RTK/icons/ReliaFree.png")
+        #_vbox.pack_start(_image, True, True)
+
+        _label = gtk.Label(_(u"Copyright 2007 - 2014, Andrew Rowland"))
+        _label.set_alignment(0, 0.5)
+        _vbox.pack_start(_label, True, True)
+
+        self.window.show_all()
+
+
 class RTK(object):
-    """ This is the RTK class. """
+    """
+    This is the RTK class.
+    """
 
     def __init__(self):
 
