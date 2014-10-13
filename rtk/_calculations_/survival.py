@@ -792,11 +792,9 @@ def bernard_ranks(data, grouped=False):
 
     if not grouped:
         _n_failures = len(data)
-        _col = 4
         _status = 1
     else:
         _n_failures = _cum_failures[-1, 0]
-        _col = 5
         _status = 3
 
     # Calculate Bernard's approximation.
@@ -804,7 +802,7 @@ def bernard_ranks(data, grouped=False):
         if _record[0, 3] != _status:
             _mr.append(np.nan)
         else:
-            _b_rank = (_record[0, _col] - 0.3) / (_n_failures + 0.4)
+            _b_rank = (_record[0, 5] - 0.3) / (_n_failures + 0.4)
             _mr.append(_b_rank)
 
     return np.array(_mr, dtype=float)
@@ -1508,7 +1506,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             # values to scipy.optimize.fsolve.
 
             # Adjust the right-censored times to be the mid-point between the
-            # censored time and the maximum oberserved time in the data set.
+            # censored time and the maximum obeserved time in the data set.
             _adj_right = (max(_data[:, 1]) +
                           _data[np.where(_data[:, 3] == 2), 1]) / 2.0
             _data[np.where(_data[:, 3] == 2), 1] = _adj_right
@@ -1521,7 +1519,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _data[np.where(_data[:, 3] == 3), 1] = _interval_t
 
             (_sigma, __,
-             _mu) = lognorm.fit(np.array(_data[:, 4], dtype=float), floc=0)
+             _mu) = lognorm.fit(np.array(_data[:, 1], dtype=float), floc=0)
 
             _parameters[0] = np.log(_mu)
             _parameters[1] = _sigma
@@ -1561,7 +1559,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
 
             _parameters[0] = _mu
             _parameters[1] = _sigma
-            print _parameters
+
             _fI = fisher_information(gaussian_log_pdf,
                                      _parameters, _data[:, 4])
             _variance[0] = 1.0 / np.diag(_fI)[0]
@@ -1657,7 +1655,7 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
         elif dist == 'weibull':
             _df = _n_records - 2
             _x = np.log(_x)
-            _y_linear = np.log(np.log(-1.0 * (1.0 - _median_rank)))
+            _y_linear = np.log(-1.0 * np.log((1.0 - _median_rank)))
 
             _p, _covar, _info, __, __ = optim.leastsq(_error_function,
                                                       [1.0, 1.0],
@@ -1666,8 +1664,10 @@ def parametric_fit(data, start, end, fitmeth, dist='exponential'):
             _parameters[1] = _p[1]
             _parameters[0] = np.exp(-_p[0] / _p[1])
 
+        _info = np.array([x for x in _info['fvec'] if np.logical_not(np.isnan(x))])
+
         # Calculate the variance and covariance of the parameters.
-        _RSS = np.sum(_info['fvec']**2.0)
+        _RSS = np.sum(_info**2.0)
         _MSE = _RSS / _df
         _cov = _MSE * _covar
         _variance[0] = _cov[1][1]
