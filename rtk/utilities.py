@@ -44,6 +44,8 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
+from ConfigParser import SafeConfigParser, NoOptionError
+
 # Import other RTK modules.
 import configuration as _conf
 import login as _login
@@ -197,6 +199,16 @@ def read_configuration():
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedbg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedfg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'nofrmodelfg'))
+    try:
+        _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                              'softwarebg'))
+    except NoOptionError:
+        _conf.RTK_COLORS.append('#FFFFFF')
+    try:
+        _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                              'softwarefg'))
+    except NoOptionError:
+        _conf.RTK_COLORS.append('#FFFFFF')
 
     return(icondir, datadir, logdir)
 
@@ -1689,7 +1701,7 @@ class Options(gtk.Window):
         """
         Allows a user to set site-wide options.
 
-        :param application: the current instance of the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         import pango
@@ -1699,11 +1711,18 @@ class Options(gtk.Window):
         gtk.Window.__init__(self)
         self.set_title(_(u"RTK - Options"))
 
-        notebook = gtk.Notebook()
+        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
+        _width = gtk.gdk.screen_width() / _n_screens
+        _height = gtk.gdk.screen_height()
+
+        self.set_default_size((_width / 3) - 10, (2 * _height / 7))
+
+        self.notebook = gtk.Notebook()
 
         # ----- ----- ----- -- RTK module options - ----- ----- ----- #
+        # Only show the active modules page if a RTK Program database is open.
         if _conf.RTK_PROG_INFO[2] != '':
-            fixed = gtk.Fixed()
+            _fixed = gtk.Fixed()
 
             self.chkRevisions = _widg.make_check_button(_(u"Revisions"))
             self.chkFunctions = _widg.make_check_button(_(u"Functions"))
@@ -1717,43 +1736,45 @@ class Options(gtk.Window):
             self.chkSurvivalAnalysis = _widg.make_check_button(_(u"Survival "
                                                                  u"Analysis"))
 
-            self.btnSaveOptions = gtk.Button(stock=gtk.STOCK_SAVE)
-            self.btnSaveOptions.connect('clicked', self.save_options)
+            self.btnSaveModules = gtk.Button(stock=gtk.STOCK_SAVE)
 
-            fixed.put(self.chkRevisions, 5, 5)
-            fixed.put(self.chkFunctions, 5, 35)
-            fixed.put(self.chkRequirements, 5, 65)
-            fixed.put(self.chkSoftware, 5, 95)
-            fixed.put(self.chkValidation, 5, 125)
-            fixed.put(self.chkRG, 5, 155)
-            fixed.put(self.chkIncidents, 5, 185)
-            fixed.put(self.chkSurvivalAnalysis, 5, 215)
+            _fixed.put(self.chkRevisions, 5, 5)
+            _fixed.put(self.chkFunctions, 5, 35)
+            _fixed.put(self.chkRequirements, 5, 65)
+            _fixed.put(self.chkSoftware, 5, 95)
+            _fixed.put(self.chkValidation, 5, 125)
+            _fixed.put(self.chkRG, 5, 155)
+            _fixed.put(self.chkIncidents, 5, 185)
+            _fixed.put(self.chkSurvivalAnalysis, 5, 215)
 
-            fixed.put(self.btnSaveOptions, 5, 305)
+            _fixed.put(self.btnSaveModules, 5, 305)
 
-            query = "SELECT fld_revision_active, fld_function_active, \
-                            fld_requirement_active, fld_hardware_active, \
-                            fld_software_active, fld_vandv_active, \
-                            fld_testing_active, fld_rcm_active, \
-                            fld_fraca_active, fld_fmeca_active, \
-                            fld_survival_active, fld_rbd_active, \
-                            fld_fta_active \
-                     FROM tbl_program_info"
-            results = self._app.DB.execute_query(query, None, self._app.ProgCnx,
-                                                commit=False)
+            self.btnSaveModules.connect('clicked', self._save_modules)
 
-            self.chkRevisions.set_active(results[0][0])
-            self.chkFunctions.set_active(results[0][1])
-            self.chkRequirements.set_active(results[0][2])
-            self.chkSoftware.set_active(results[0][4])
-            self.chkValidation.set_active(results[0][5])
-            self.chkRG.set_active(results[0][6])
-            self.chkIncidents.set_active(results[0][8])
-            self.chkSurvivalAnalysis.set_active(results[0][10])
+            _query = "SELECT fld_revision_active, fld_function_active, \
+                             fld_requirement_active, fld_hardware_active, \
+                             fld_software_active, fld_vandv_active, \
+                             fld_testing_active, fld_rcm_active, \
+                             fld_fraca_active, fld_fmeca_active, \
+                             fld_survival_active, fld_rbd_active, \
+                             fld_fta_active \
+                      FROM tbl_program_info"
+            _results = self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=False)
 
-            label = gtk.Label(_(u"RTK Modules"))
-            label.set_tooltip_text(_(u"Select active RTK modules."))
-            notebook.insert_page(fixed, tab_label=label, position=-1)
+            self.chkRevisions.set_active(_results[0][0])
+            self.chkFunctions.set_active(_results[0][1])
+            self.chkRequirements.set_active(_results[0][2])
+            self.chkSoftware.set_active(_results[0][4])
+            self.chkValidation.set_active(_results[0][5])
+            self.chkRG.set_active(_results[0][6])
+            self.chkIncidents.set_active(_results[0][8])
+            self.chkSurvivalAnalysis.set_active(_results[0][10])
+
+            _label = gtk.Label(_(u"RTK Modules"))
+            _label.set_tooltip_text(_(u"Select active RTK modules."))
+            self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- Create default value options ----- ----- ----- #
@@ -1767,8 +1788,23 @@ class Options(gtk.Window):
         self.txtDecimalPlaces = _widg.make_entry(width=75)
         self.txtMissionTime = _widg.make_entry(width=75)
 
-        self.btnDefaultsSave = gtk.Button(stock=gtk.STOCK_SAVE)
-        self.btnDefaultsSave.connect('clicked', self._save_defaults)
+        # Create color selection buttons.
+        self.btnRevisionBGColor = gtk.ColorButton()
+        self.btnRevisionFGColor = gtk.ColorButton()
+        self.btnFunctionBGColor = gtk.ColorButton()
+        self.btnFunctionFGColor = gtk.ColorButton()
+        self.btnRequirementsBGColor = gtk.ColorButton()
+        self.btnRequirementsFGColor = gtk.ColorButton()
+        self.btnHardwareBGColor = gtk.ColorButton()
+        self.btnHardwareFGColor = gtk.ColorButton()
+        self.btnSoftwareBGColor = gtk.ColorButton()
+        self.btnSoftwareFGColor = gtk.ColorButton()
+        self.btnValidationBGColor = gtk.ColorButton()
+        self.btnValidationFGColor = gtk.ColorButton()
+        self.btnIncidentBGColor = gtk.ColorButton()
+        self.btnIncidentFGColor = gtk.ColorButton()
+        self.btnTestingBGColor = gtk.ColorButton()
+        self.btnTestingFGColor = gtk.ColorButton()
 
         for _position in ["Bottom", "Left", "Right", "Top"]:
             self.cmbModuleBookTabPosition.append_text(_position)
@@ -1781,7 +1817,7 @@ class Options(gtk.Window):
         _label = _widg.make_label(_(u"Work Book tab position:"))
         _fixed.put(_label, 5, 35)
         _fixed.put(self.cmbWorkBookTabPosition, 310, 35)
-        _label = _widg.make_label(_(u"List and Matrix Book tab position:"))
+        _label = _widg.make_label(_(u"List Book tab position:"))
         _fixed.put(_label, 5, 65)
         _fixed.put(self.cmbListBookTabPosition, 310, 65)
         _label = _widg.make_label(_(u"Failure rate multiplier:"))
@@ -1794,15 +1830,108 @@ class Options(gtk.Window):
         _fixed.put(_label, 5, 185)
         _fixed.put(self.txtMissionTime, 310, 185)
 
-        _fixed.put(self.btnDefaultsSave, 5, 305)
+        _label = _widg.make_label(_(u"Revision Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 225)
+        _fixed.put(self.btnRevisionBGColor, 340, 225)
+        _label = _widg.make_label(_(u"Revision Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 255)
+        _fixed.put(self.btnRevisionFGColor, 340, 255)
+        _label = _widg.make_label(_(u"Function Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 285)
+        _fixed.put(self.btnFunctionBGColor, 340, 285)
+        _label = _widg.make_label(_(u"Function Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 315)
+        _fixed.put(self.btnFunctionFGColor, 340, 315)
+        _label = _widg.make_label(_(u"Requirements Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 345)
+        _fixed.put(self.btnRequirementsBGColor, 340, 345)
+        _label = _widg.make_label(_(u"Requirements Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 375)
+        _fixed.put(self.btnRequirementsFGColor, 340, 375)
+        _label = _widg.make_label(_(u"Hardware Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 405)
+        _fixed.put(self.btnHardwareBGColor, 340, 405)
+        _label = _widg.make_label(_(u"Hardware Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 435)
+        _fixed.put(self.btnHardwareFGColor, 340, 435)
+        _label = _widg.make_label(_(u"Software Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 465)
+        _fixed.put(self.btnSoftwareBGColor, 340, 465)
+        _label = _widg.make_label(_(u"Software Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 495)
+        _fixed.put(self.btnSoftwareFGColor, 340, 495)
+        _label = _widg.make_label(_(u"Validation  Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 525)
+        _fixed.put(self.btnValidationBGColor, 340, 525)
+        _label = _widg.make_label(_(u"Validation Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 555)
+        _fixed.put(self.btnValidationFGColor, 340, 555)
+        _label = _widg.make_label(_(u"Incident Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 585)
+        _fixed.put(self.btnIncidentBGColor, 340, 585)
+        _label = _widg.make_label(_(u"Incident Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 615)
+        _fixed.put(self.btnIncidentFGColor, 340, 615)
+        _label = _widg.make_label(_(u"Testing Tree Background Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 645)
+        _fixed.put(self.btnTestingBGColor, 340, 645)
+        _label = _widg.make_label(_(u"Testing Tree Foreground Color:"),
+                                  width=350)
+        _fixed.put(_label, 5, 675)
+        _fixed.put(self.btnTestingFGColor, 340, 675)
+
+        self.btnRevisionBGColor.connect('color-set', self._set_color, 0)
+        self.btnRevisionFGColor.connect('color-set', self._set_color, 1)
+        self.btnFunctionBGColor.connect('color-set', self._set_color, 2)
+        self.btnFunctionFGColor.connect('color-set', self._set_color, 3)
+        self.btnRequirementsBGColor.connect('color-set', self._set_color, 4)
+        self.btnRequirementsFGColor.connect('color-set', self._set_color, 5)
+        self.btnHardwareBGColor.connect('color-set', self._set_color, 6)
+        self.btnHardwareFGColor.connect('color-set', self._set_color, 7)
+        self.btnSoftwareBGColor.connect('color-set', self._set_color, 21)
+        self.btnSoftwareFGColor.connect('color-set', self._set_color, 22)
+        self.btnValidationBGColor.connect('color-set', self._set_color, 10)
+        self.btnValidationFGColor.connect('color-set', self._set_color, 11)
+        self.btnIncidentBGColor.connect('color-set', self._set_color, 12)
+        self.btnIncidentFGColor.connect('color-set', self._set_color, 13)
+        self.btnTestingBGColor.connect('color-set', self._set_color, 14)
+        self.btnTestingFGColor.connect('color-set', self._set_color, 15)
 
         _label = gtk.Label(_(u"Look & Feel"))
         _label.set_tooltip_text(_(u"Allows setting default values in RTK."))
-        notebook.insert_page(_fixed, tab_label=_label, position=-1)
+        self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- - Create list edit options - ----- ----- ----- #
-        fixed = gtk.Fixed()
+        _vbox = gtk.VBox()
+
+        _fixed = gtk.Fixed()
+        _vbox.pack_start(_fixed)
+
+        self.tvwListEditor = gtk.TreeView()
+        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING, gobject.TYPE_STRING)
+        self.tvwListEditor.set_model(_model)
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.tvwListEditor)
+        _vbox.pack_end(_scrollwindow)
 
         self.rdoMeasurement = gtk.RadioButton(group=None,
                                               label=_(u"Edit measurement "
@@ -1819,23 +1948,56 @@ class Options(gtk.Window):
         self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement,
                                         label=_(u"Edit user list"))
 
-        self.btnListEdit = gtk.Button(stock=gtk.STOCK_EDIT)
-        self.btnListEdit.connect('clicked', self.edit_lists)
+        self.btnListEdit = gtk.Button(_(u"Edit List"))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/edit.png')
+        self.btnListEdit.set_image(_image)
+        self.btnListEdit.connect('clicked', self._edit_list)
 
-        fixed.put(self.rdoMeasurement, 5, 5)
-        fixed.put(self.rdoRequirementTypes, 5, 35)
-        fixed.put(self.rdoRiskCategory, 5, 65)
-        fixed.put(self.rdoVandVTasks, 5, 95)
-        fixed.put(self.rdoUsers, 5, 125)
-        fixed.put(self.btnListEdit, 5, 205)
+        self.btnListAdd = gtk.Button(_(u"Add Item"))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        self.btnListAdd.set_image(_image)
+        self.btnListAdd.connect('clicked', self._add_to_list)
 
-        label = gtk.Label(_(u"Edit Lists"))
-        label.set_tooltip_text(_(u"Allows editing of lists used in RTK."))
-        notebook.insert_page(fixed, tab_label=label, position=-1)
+        self.btnListRemove = gtk.Button(_(u"Remove Item"))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        self.btnListRemove.set_image(_image)
+        self.btnListRemove.connect('clicked', self._remove_from_list)
+
+        _fixed.put(self.rdoMeasurement, 5, 5)
+        _fixed.put(self.rdoRequirementTypes, 5, 35)
+        _fixed.put(self.rdoRiskCategory, 5, 65)
+        _fixed.put(self.rdoVandVTasks, 5, 95)
+        _fixed.put(self.rdoUsers, 5, 125)
+        _fixed.put(self.btnListEdit, 5, 205)
+        _fixed.put(self.btnListAdd, 105, 205)
+        _fixed.put(self.btnListRemove, 215, 205)
+
+        for i in range(5):
+            _cell = gtk.CellRendererText()
+            _cell.set_property('background', '#FFFFFF')
+            _cell.set_property('editable', 1)
+            _cell.set_property('foreground', '#000000')
+            _cell.set_property('wrap-width', 250)
+            _cell.set_property('wrap-mode', pango.WRAP_WORD)
+            _cell.connect('edited', self._cell_edit, i, _model)
+
+            _column = gtk.TreeViewColumn()
+            _column.set_alignment(0.5)
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, text=i)
+
+            self.tvwListEditor.append_column(_column)
+
+        _label = gtk.Label(_(u"Edit Lists"))
+        _label.set_tooltip_text(_(u"Allows editing of lists used in RTK."))
+        self.notebook.insert_page(_vbox, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- -- Create tree edit options - ----- ----- ----- #
-        fixed = gtk.Fixed()
+        _fixed = gtk.Fixed()
 
         self.rdoRevision = gtk.RadioButton(group=None,
                                            label=_(u"Edit Revision tree "
@@ -1884,26 +2046,26 @@ class Options(gtk.Window):
         self.btnTreeEdit = gtk.Button(stock=gtk.STOCK_EDIT)
         self.btnTreeEdit.connect('button-release-event', self._edit_tree)
 
-        fixed.put(self.rdoRevision, 5, 5)
-        fixed.put(self.rdoFunction, 5, 35)
-        fixed.put(self.rdoRequirement, 5, 65)
-        fixed.put(self.rdoHardware, 5, 95)
-        fixed.put(self.rdoSoftware, 5, 125)
-        fixed.put(self.rdoValidation, 5, 155)
-        fixed.put(self.rdoTesting, 5, 185)
-        fixed.put(self.rdoIncident, 5, 215)
-        fixed.put(self.rdoSurvival, 5, 245)
-        #fixed.put(self.rdoAllocation, 5, 275)
-        fixed.put(self.rdoPart, 5, 275)
-        fixed.put(self.rdoRiskAnalysis, 5, 305)
-        fixed.put(self.rdoSimilarItem, 5, 335)
-        fixed.put(self.rdoFMECA, 5, 365)
-        fixed.put(self.btnTreeEdit, 5, 405)
+        _fixed.put(self.rdoRevision, 5, 5)
+        _fixed.put(self.rdoFunction, 5, 35)
+        _fixed.put(self.rdoRequirement, 5, 65)
+        _fixed.put(self.rdoHardware, 5, 95)
+        _fixed.put(self.rdoSoftware, 5, 125)
+        _fixed.put(self.rdoValidation, 5, 155)
+        _fixed.put(self.rdoTesting, 5, 185)
+        _fixed.put(self.rdoIncident, 5, 215)
+        _fixed.put(self.rdoSurvival, 5, 245)
+        #_fixed.put(self.rdoAllocation, 5, 275)
+        _fixed.put(self.rdoPart, 5, 275)
+        _fixed.put(self.rdoRiskAnalysis, 5, 305)
+        _fixed.put(self.rdoSimilarItem, 5, 335)
+        _fixed.put(self.rdoFMECA, 5, 365)
+        _fixed.put(self.btnTreeEdit, 5, 405)
 
-        label = gtk.Label(_(u"Edit Tree Layouts"))
-        label.set_tooltip_text(_(u"Allows editing of tree layouts used in "
-                                 u"RTK."))
-        notebook.insert_page(fixed, tab_label=label, position=-1)
+        _label = gtk.Label(_(u"Edit Tree Layouts"))
+        _label.set_tooltip_text(_(u"Allows editing of tree layouts used in "
+                                  u"RTK."))
+        self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- Create tree edit gtk.TreeView ----- ----- ----- #
@@ -1911,84 +2073,266 @@ class Options(gtk.Window):
                    _(u"Column\nPosition"), _(u"Can\nEdit?"),
                    _(u"Is\nVisible?")]
 
-        vbox = gtk.VBox()
+        _vbox = gtk.VBox()
 
         self.tvwEditTree = gtk.TreeView()
-        model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
-                              gobject.TYPE_INT, gobject.TYPE_INT,
-                              gobject.TYPE_INT, gobject.TYPE_STRING,
-                              gobject.TYPE_STRING)
-        self.tvwEditTree.set_model(model)
+        _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                               gobject.TYPE_INT, gobject.TYPE_INT,
+                               gobject.TYPE_INT, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING)
+        self.tvwEditTree.set_model(_model)
 
         for i in range(5):
-
             if i == 0:
-                cell = gtk.CellRendererText()
-                cell.set_property('background', 'light gray')
-                cell.set_property('editable', 0)
-                cell.set_property('foreground', '#000000')
-                cell.set_property('wrap-width', 250)
-                cell.set_property('wrap-mode', pango.WRAP_WORD)
+                _cell = gtk.CellRendererText()
+                _cell.set_property('background', 'light gray')
+                _cell.set_property('editable', 0)
+                _cell.set_property('foreground', '#000000')
+                _cell.set_property('wrap-width', 250)
+                _cell.set_property('wrap-mode', pango.WRAP_WORD)
             elif i > 0 and i < 3:
-                cell = gtk.CellRendererText()
-                cell.set_property('background', '#FFFFFF')
-                cell.set_property('editable', 1)
-                cell.set_property('foreground', '#000000')
-                cell.set_property('wrap-width', 250)
-                cell.set_property('wrap-mode', pango.WRAP_WORD)
-                cell.connect('edited', self._cell_edit, i, model)
+                _cell = gtk.CellRendererText()
+                _cell.set_property('background', '#FFFFFF')
+                _cell.set_property('editable', 1)
+                _cell.set_property('foreground', '#000000')
+                _cell.set_property('wrap-width', 250)
+                _cell.set_property('wrap-mode', pango.WRAP_WORD)
+                _cell.connect('edited', self._cell_edit, i, _model)
             elif i > 4:
-                cell = gtk.CellRendererText()
-                cell.set_property('editable', 0)
+                _cell = gtk.CellRendererText()
+                _cell.set_property('editable', 0)
             else:
-                cell = gtk.CellRendererToggle()
-                cell.set_property('activatable', 1)
-                cell.connect('toggled', self._cell_toggled, i, model)
+                _cell = gtk.CellRendererToggle()
+                _cell.set_property('activatable', 1)
+                _cell.connect('toggled', self._cell_toggled, i, _model)
 
-            label = gtk.Label()
-            label.set_line_wrap(True)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_markup("<span weight='bold'>" + _labels[i] + "</span>")
-            label.show_all()
+            _label = gtk.Label()
+            _label.set_line_wrap(True)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_markup("<span weight='bold'>" + _labels[i] + "</span>")
+            _label.show_all()
 
-            column = gtk.TreeViewColumn()
-            column.set_widget(label)
-            column.set_alignment(0.5)
-            column.pack_start(cell, True)
+            _column = gtk.TreeViewColumn()
+            _column.set_widget(_label)
+            _column.set_alignment(0.5)
+            _column.pack_start(_cell, True)
             if i < 3:
-                column.set_attributes(cell, text=i)
+                _column.set_attributes(_cell, text=i)
             elif i > 4:
-                column.set_visible(0)
+                _column.set_visible(0)
             else:
-                column.set_attributes(cell, active=i)
+                _column.set_attributes(_cell, active=i)
 
-            self.tvwEditTree.append_column(column)
+            self.tvwEditTree.append_column(_column)
 
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.add(self.tvwEditTree)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.add(self.tvwEditTree)
 
-        vbox.pack_start(scrollwindow)
+        _vbox.pack_start(_scrollwindow)
 
-        fixed = gtk.Fixed()
+        _fixed = gtk.Fixed()
 
-        self.btnSaveTree = gtk.Button(_(u"Save Layout"))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        self.btnSaveTree.set_image(image)
-        self.btnSaveTree.connect('clicked', self._save_tree_layout)
+        self.btnSave = gtk.Button(_(u"Save"))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        self.btnSave.set_image(_image)
+        self.btnSave.connect('clicked', self._save_options)
 
-        fixed.put(self.btnSaveTree, 5, 5)
+        self.btnQuit = gtk.Button(_(u"Close"))
+        _image = gtk.Image()
+        _image.set_from_file(_conf.ICON_DIR + '32x32/quit.png')
+        self.btnQuit.set_image(_image)
+        self.btnQuit.connect('clicked', self._quit)
 
-        vbox.pack_end(fixed, expand=False)
+        _vbox.pack_end(_fixed, expand=False)
 
-        label = gtk.Label(_(u"Editor"))
-        label.set_tooltip_text(_(u"Displays the editor."))
-        notebook.insert_page(vbox, tab_label=label, position=-1)
+        _label = gtk.Label(_(u"Editor"))
+        _label.set_tooltip_text(_(u"Displays the editor."))
+        self.notebook.insert_page(_vbox, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
-        self.add(notebook)
+        _vbox = gtk.VBox()
+        _vbox.pack_start(self.notebook)
+
+        _buttonbox = gtk.HButtonBox()
+        _buttonbox.set_layout(gtk.BUTTONBOX_END)
+        _buttonbox.pack_start(self.btnSave)
+        _buttonbox.pack_start(self.btnQuit)
+        _vbox.pack_end(_buttonbox, expand=False)
+
+        self.add(_vbox)
+
+        self._load_defaults()
+
         self.show_all()
+
+    def _load_defaults(self):
+        """
+        Method to load the current default values from the RTK configuration
+        file.
+        """
+
+        _tab_pos = {'bottom': 0, 'left': 1, 'right': 2, 'top': 3}
+
+        # Make a backup of the original configuration file.
+        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+
+        _parser = SafeConfigParser()
+
+        if file_exists(_conf_file):
+            _parser.read(_conf_file)
+
+            # Set tab positions.
+            self.cmbModuleBookTabPosition.set_active(
+                _tab_pos[_parser.get('General', 'treetabpos')])
+            self.cmbWorkBookTabPosition.set_active(
+                _tab_pos[_parser.get('General', 'booktabpos')])
+            self.cmbListBookTabPosition.set_active(
+                _tab_pos[_parser.get('General', 'listtabpos')])
+
+            # Set numerical values.
+            self.txtFRMultiplier.set_text(str(_parser.get('General',
+                                                          'frmultiplier')))
+            self.txtDecimalPlaces.set_text(str(_parser.get('General',
+                                                           'decimal')))
+            self.txtMissionTime.set_text(str(_parser.get('General',
+                                                         'calcreltime')))
+
+            # Set color options.
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'revisionbg'))
+                self.btnRevisionBGColor.set_color(_color)
+            except ValueError:
+                self.btnRevisionBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'revisionfg'))
+                self.btnRevisionFGColor.set_color(_color)
+            except ValueError:
+                self.btnRevisionFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'functionbg'))
+                self.btnFunctionBGColor.set_color(_color)
+            except ValueError:
+                self.btnFunctionBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'functionfg'))
+                self.btnFunctionFGColor.set_color(_color)
+            except ValueError:
+                self.btnFunctionFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'requirementbg'))
+                self.btnRequirementsBGColor.set_color(_color)
+            except ValueError:
+                self.btnRequirementsBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'requirementfg'))
+                self.btnRequirementsFGColor.set_color(_color)
+            except ValueError:
+                self.btnRequirementsFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'assemblybg'))
+                self.btnHardwareBGColor.set_color(_color)
+            except ValueError:
+                self.btnHardwareBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'assemblyfg'))
+                self.btnHardwareFGColor.set_color(_color)
+            except(ValueError, NoOptionError):
+                self.btnHardwareFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'softwarebg'))
+                self.btnSoftwareBGColor.set_color(_color)
+            except(ValueError, NoOptionError):
+                self.btnSoftwareBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'softwarefg'))
+                self.btnSoftwareFGColor.set_color(_color)
+            except(ValueError, NoOptionError):
+                self.btnSoftwareFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'validationbg'))
+                self.btnValidationBGColor.set_color(_color)
+            except ValueError:
+                self.btnValidationBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+                                                          'validationfg'))
+                self.btnValidationFGColor.set_color(_color)
+            except ValueError:
+                self.btnValidationFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'rgbg'))
+                self.btnTestingBGColor.set_color(_color)
+            except ValueError:
+                self.btnTestingBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'rgfg'))
+                self.btnTestingFGColor.set_color(_color)
+            except ValueError:
+                self.btnTestingFGColor.set_color(gtk.gdk.Color('#000000'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'fracabg'))
+                self.btnIncidentBGColor.set_color(_color)
+            except ValueError:
+                self.btnIncidentBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
+            try:
+                _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'fracafg'))
+                self.btnIncidentFGColor.set_color(_color)
+            except ValueError:
+                self.btnIncidentFGColor.set_color(gtk.gdk.Color('#000000'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partbg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partfg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'overstressbg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'overstressfg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedbg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedfg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'nofrmodelfg'))
+
+        return False
+
+    def _set_color(self, colorbutton, rtk_colors):
+        """
+        Method to set the selected color.
+
+        :param gtk.ColorButton colorbutton: the gtk.ColorButton() that called
+                                            this method.
+        :param int rtk_colors: the position in the RTK_COLORS global variable.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        # Retrieve the six digit hexidecimal version of the selected color.
+        _color = colorbutton.get_color()
+        try:
+            _red = "{0:#0{1}}".format('%X' % int(_color.red / 255), 2)
+        except ValueError:
+            _red = '%X' % int(_color.red / 255)
+        try:
+            _green = "{0:#0{1}}".format('%X' % int(_color.green / 255), 2)
+        except ValueError:
+            _green = '%X' % int(_color.green / 255)
+        try:
+            _blue = "{0:#0{1}}".format('%X' % int(_color.blue / 255), 2)
+        except ValueError:
+            _blue = '%X' % int(_color.blue / 255)
+        _color = '#%s%s%s' % (_red, _green, _blue)
+
+        # Set the color variable.
+        _conf.RTK_COLORS[rtk_colors] = _color
+
+        return False
 
     def _edit_tree(self, __button, __event):
         """
@@ -1997,6 +2341,8 @@ class Options(gtk.Window):
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                       method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from lxml import etree
@@ -2004,46 +2350,48 @@ class Options(gtk.Window):
         (_name, _fmt_idx) = self._get_format_info()
 
         # Retrieve the default heading text from the format file.
-        path = "/root/tree[@name='%s']/column/defaulttitle" % _name
-        default = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/defaulttitle" % _name
+        _default = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve the default heading text from the format file.
-        path = "/root/tree[@name='%s']/column/usertitle" % _name
-        user = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/usertitle" % _name
+        _user = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve the column position from the format file.
-        path = "/root/tree[@name='%s']/column/position" % _name
-        position = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/position" % _name
+        _position = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve whether or not the column is editable from the format file.
-        path = "/root/tree[@name='%s']/column/editable" % _name
-        editable = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/editable" % _name
+        _editable = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve whether or not the column is visible from the format file.
-        path = "/root/tree[@name='%s']/column/visible" % _name
-        visible = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/visible" % _name
+        _visible = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve datatypes from the format file.
-        path = "/root/tree[@name='%s']/column/datatype" % _name
-        datatype = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/datatype" % _name
+        _datatype = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve widget types from the format file.
-        path = "/root/tree[@name='%s']/column/widget" % _name
-        widget = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(path)
+        _path = "/root/tree[@name='%s']/column/widget" % _name
+        _widget = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
-        model = self.tvwEditTree.get_model()
-        model.clear()
+        _model = self.tvwEditTree.get_model()
+        _model.clear()
 
-        for i in range(len(default)):
-            _data = [default[i].text, user[i].text, int(position[i].text),
-                     int(editable[i].text), int(visible[i].text),
-                     datatype[i].text, widget[i].text]
-            model.append(_data)
+        for i in range(len(_default)):
+            _data = [_default[i].text, _user[i].text, int(_position[i].text),
+                     int(_editable[i].text), int(_visible[i].text),
+                     _datatype[i].text, _widget[i].text]
+            _model.append(_data)
 
-        notebook = self.get_children()
-        notebook[0].set_current_page(2)
-        _child = notebook[0].get_nth_page(notebook[0].get_current_page())
-        notebook[0].set_tab_label_text(_child, _(u"Edit %s Tree" % _name))
+        if _conf.RTK_PROG_INFO[2] == '':
+            self.notebook.set_current_page(3)
+        else:
+            self.notebook.set_current_page(4)
+        _child = self.notebook.get_nth_page(self.notebook.get_current_page())
+        self.notebook.set_tab_label_text(_child, _(u"Edit %s Tree" % _name))
 
         return False
 
@@ -2092,71 +2440,133 @@ class Options(gtk.Window):
 
         return False
 
-    def _save_tree_layout(self, __button):
+    def _edit_list(self, __button):
         """
-        Method for saving the gtk.TreeView layout file.
+        Method to edit drop down list items.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False
+        :rtype: boolean
         """
 
-        from shutil import copyfile
+        if self.rdoMeasurement.get_active():
+            _query = "SELECT fld_measurement_id, fld_measurement_code \
+                      FROM tbl_measurement_units"
+            _header = ["", "Measurement Unit", "", "", "", ""]
+            _pad = ('', '', '', '')
+        elif self.rdoRequirementTypes.get_active():
+            _query = "SELECT fld_requirement_type_id, \
+                             fld_requirement_type_desc, \
+                             fld_requirement_type_code \
+                      FROM tbl_requirement_type"
+            _header = ["", "Requirement Type", "Code", "", "", ""]
+            _pad = ('', '', '')
+        elif self.rdoRiskCategory.get_active():
+            _query = "SELECT fld_category_id, fld_category_noun, \
+                             fld_category_value \
+                      FROM tbl_risk_category"
+            _header = ["", "Risk Category", "Value", "", "", ""]
+            _pad = ('', '', '')
+        elif self.rdoVandVTasks.get_active():
+            _query = "SELECT fld_validation_type_id, \
+                             fld_validation_type_desc, \
+                             fld_validation_type_code \
+                      FROM tbl_validation_type"
+            _header = ["", "Validation Type", "Code", "", "", ""]
+            _pad = ('', '', '')
+        elif self.rdoUsers.get_active():
+            _query = "SELECT fld_user_id, fld_user_lname, fld_user_fname, \
+                             fld_user_email, fld_user_phone, fld_user_group \
+                      FROM tbl_users"
+            _header = ["", "User Last Name", "User First Name", "eMail", "Phone",
+                       "Work Group"]
+            _pad = ()
 
-        (_name, _fmt_idx) = self._get_format_info()
+        _results = self._app.COMDB.execute_query(_query, None,
+                                                 self._app.ComCnx)
+        try:
+            _n_entries = len(_results)
+        except TypeError:
+            _n_entries = 0
 
-        # Get the format file for the gtk.TreeView to be edited.
-        _format_file = _conf.RTK_FORMAT_FILE[_fmt_idx]
-        _basename = os.path.basename(_format_file)
+        # Update the column headings and set appropriate columns visible.
+        _columns = self.tvwListEditor.get_columns()
+        for i in range(len(_columns)):
+            _columns[i].set_title(_header[i])
+            if _header[i] == '':
+                _columns[i].set_visible(False)
+            else:
+                _columns[i].set_visible(True)
 
-        # Make a copy of the original format file.
-        copyfile(_format_file, _format_file + '.bak')
+        # Load the results.
+        _model = self.tvwListEditor.get_model()
+        _model.clear()
+        for i in range(_n_entries):
+            _model.append(_results[i] + _pad)
 
-        # Open the format file for writing.
-        _file = open(_format_file, 'w')
+        return False
 
-        # Create the new format file.
-        _file.write("<!--\n")
-        _file.write("-*- coding: utf-8 -*-\n\n")
-        _file.write("%s is part of the RTK Project\n\n" % _basename)
-        _file.write('Copyright 2011-2014 Andrew "Weibullguy" Rowland '
-                    '<andrew DOT rowland AT reliaqual DOT com>\n\n')
-        _file.write("All rights reserved.-->\n\n")
-        _file.write("<!-- This file contains information used by the RTK "
-                    "application to draw\n")
-        _file.write("various widgets.  These values can be changed by the "
-                    "user to personalize\n")
-        _file.write("their experience. -->\n\n")
+    def _add_to_list(self, __button):
+        """
+        Method to add a row to the list editor gtk.TreeView().
 
-        _file.write("<root>\n")
-        _file.write('\t<tree name="%s">\n' % _name)
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
 
-        model = self.tvwEditTree.get_model()
-        row = model.get_iter_first()
-        while row is not None:
-            _file.write("\t\t<column>\n")
-            _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" %
-                        model.get_value(row, 0))
-            _file.write("\t\t\t<usertitle>%s</usertitle>\n"%
-                        model.get_value(row, 1))
-            _file.write("\t\t\t<datatype>%s</datatype>\n" %
-                        model.get_value(row, 5))
-            _file.write('\t\t\t<position>%d</position>\n' %
-                        model.get_value(row, 2))
-            _file.write("\t\t\t<widget>%s</widget>\n" %
-                        model.get_value(row, 6))
-            _file.write("\t\t\t<editable>%d</editable>\n" %
-                        model.get_value(row, 3))
-            _file.write("\t\t\t<visible>%d</visible>\n" %
-                        model.get_value(row, 4))
-            _file.write("\t\t</column>\n")
+        # Add a new row.
+        _model = self.tvwListEditor.get_model()
+        _row = _model.append([-1, "", "", "", "", ""])
 
-            row = model.iter_next(row)
+        # Select and activate the new row.
+        _path = _model.get_path(_row)
+        _column = self.tvwListEditor.get_column(1)
+        self.tvwListEditor.row_activated(_path, _column)
+        self.tvwListEditor.set_cursor(_path, _column, True)
 
-        _file.write("\t</tree>\n")
-        _file.write("</root>")
-        _file.close()
+        return False
 
-        self.destroy()
+    def _remove_from_list(self, __button):
+        """
+        Method to remove the selected row from the list editor gtk.TreeView().
+
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_model, _row) = self.tvwListEditor.get_selection().get_selected()
+
+        if self.rdoMeasurement.get_active():
+            _query = "DELETE FROM tbl_measurement_units \
+                      WHERE fld_measurement_id=%d" % \
+                     _model.get_value(_row, 0)
+        elif self.rdoRequirementTypes.get_active():
+            _query = "DELETE FROM tbl_requirement_type \
+                      WHERE fld_requirement_type_id=%d" % \
+                     _model.get_value(_row, 0)
+        elif self.rdoRiskCategory.get_active():
+            _query = "DELETE FROM tbl_risk_category \
+                      WHERE fld_category_id=%d" % \
+                     _model.get_value(_row, 0)
+        elif self.rdoVandVTasks.get_active():
+            _query = "DELETE tbl_validation_type \
+                      WHERE fld_validation_type_id=%d" % \
+                     _model.get_value(_row, 0)
+        elif self.rdoUsers.get_active():
+            rtk_information(_(u"You cannot remove a user from the RTK Program."
+                              u"  Retaining all users, past and present, is "
+                              u"necessary to ensure audit trails remain "
+                              u"intact."))
+            return False
+
+        if not self._app.COMDB.execute_query(_query, None, self._app.ComCnx,
+                                             commit=True):
+            rtk_error(_(u"Problem removing entry from list."))
+            return True
+
+        _model.remove(_row)
 
         return False
 
@@ -2207,128 +2617,318 @@ class Options(gtk.Window):
 
         return _name, _fmt_idx
 
-    def save_options(self, __button):
+    def _save_options(self, __button):
+        """
+        Method to select the proper save function depending on the selected
+        page in the gtk.Notebook().
+
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        from shutil import copyfile
+
+        # Make a backup of the original configuration file.
+        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+        copyfile(_conf_file, _conf_file + '.bak')
+
+        # Find out which page is selected in the gtk.Notebook().
+        _page = self.notebook.get_current_page()
+        if _conf.RTK_PROG_INFO[2] == '':
+            _page += 1
+
+        # Call the proper save function.
+        if _page == 0:
+            _error = self._save_modules()
+        elif _page == 1:
+            _error = self._save_defaults()
+        elif _page == 2:
+            _error = self._save_list()
+        elif _page == 4:
+            _error = self._save_tree_layout()
+
+        if _error:
+            rtk_warning(_(u"Problem saving your RTK configuration.  "
+                          u"Restoring previous configuration values."))
+            copyfile(_conf_file + '.bak', _conf_file)
+            return True
+
+        return False
+
+    def _save_modules(self):
         """
         Method to save the configuration changes made by the user.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
         :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        # Save the active modules for the open RTK Program database.
+        if _conf.RTK_PROG_INFO[2] != '':
+            _values = (self.chkRevisions.get_active(),
+                       self.chkFunctions.get_active(),
+                       self.chkRequirements.get_active(),
+                       self.chkSoftware.get_active(),
+                       self.chkValidation.get_active(),
+                       self.chkRG.get_active(),
+                       0, self.chkIncidents.get_active(),
+                       0, self.chkSurvivalAnalysis.get_active(), 0, 0)
+
+            _query = "UPDATE tbl_program_info \
+                      SET fld_revision_active=%d, fld_function_active=%d, \
+                          fld_requirement_active=%d, fld_software_active=%d, \
+                          fld_vandv_active=%d, fld_testing_active=%d, \
+                          fld_rcm_active=%d, fld_fraca_active=%d, \
+                          fld_fmeca_active=%d, fld_survival_active=%d, \
+                          fld_rbd_active=%d, fld_fta_active=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                return True
+
+        return False
+
+    def _save_defaults(self):
+        """
+        Method to save the default values to the RTK configuration file.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+
+        _parser = SafeConfigParser()
+
+        # Write the new colors to the configuration file.
+        if file_exists(_conf_file):
+            _parser.read(_conf_file)
+
+            try:
+                _parser.set('General', 'frmultiplier',
+                            str(float(self.txtFRMultiplier.get_text()) / 1.0))
+            except ValueError:
+                _parser.set('General', 'frmultiplier', '1.0')
+
+            try:
+                _parser.set('General', 'calcreltime',
+                            str(float(self.txtMissionTime.get_text()) / 1.0))
+            except ValueError:
+                _parser.set('General', 'calcreltime', '10.0')
+
+            try:
+                _parser.set('General', 'decimal',
+                            str(int(self.txtDecimalPlaces.get_text()) / 1))
+            except ValueError:
+                _parser.set('General', 'decimal', '6')
+
+            try:
+                _parser.set('General', 'treetabpos',
+                    self.cmbModuleBookTabPosition.get_active_text().lower())
+            except AttributeError:
+                _parser.set('General', 'treetabpos', 'top')
+
+            try:
+                _parser.set('General', 'listtabpos',
+                        self.cmbListBookTabPosition.get_active_text().lower())
+            except AttributeError:
+                _parser.set('General', 'listtabpos', 'right')
+
+            try:
+                _parser.set('General', 'booktabpos',
+                        self.cmbWorkBookTabPosition.get_active_text().lower())
+            except AttributeError:
+                _parser.set('General', 'booktabpos', 'bottom')
+
+            _parser.set('Colors', 'revisionbg', _conf.RTK_COLORS[0])
+            _parser.set('Colors', 'revisionfg', _conf.RTK_COLORS[1])
+            _parser.set('Colors', 'functionbg', _conf.RTK_COLORS[2])
+            _parser.set('Colors', 'functionfg', _conf.RTK_COLORS[3])
+            _parser.set('Colors', 'requirementbg', _conf.RTK_COLORS[4])
+            _parser.set('Colors', 'requirementfg', _conf.RTK_COLORS[5])
+            _parser.set('Colors', 'assemblybg', _conf.RTK_COLORS[6])
+            _parser.set('Colors', 'assemblyfg', _conf.RTK_COLORS[7])
+            _parser.set('Colors', 'validationbg', _conf.RTK_COLORS[8])
+            _parser.set('Colors', 'validationfg', _conf.RTK_COLORS[9])
+            _parser.set('Colors', 'rgbg', _conf.RTK_COLORS[10])
+            _parser.set('Colors', 'rgfg', _conf.RTK_COLORS[11])
+            _parser.set('Colors', 'fracabg', _conf.RTK_COLORS[12])
+            _parser.set('Colors', 'fracafg', _conf.RTK_COLORS[13])
+            _parser.set('Colors', 'partbg', _conf.RTK_COLORS[14])
+            _parser.set('Colors', 'partfg', _conf.RTK_COLORS[15])
+            _parser.set('Colors', 'overstressbg', _conf.RTK_COLORS[16])
+            _parser.set('Colors', 'overstressfg', _conf.RTK_COLORS[17])
+            _parser.set('Colors', 'taggedbg', _conf.RTK_COLORS[18])
+            _parser.set('Colors', 'taggedfg', _conf.RTK_COLORS[19])
+            _parser.set('Colors', 'nofrmodelfg', _conf.RTK_COLORS[20])
+            _parser.set('Colors', 'softwarebg', _conf.RTK_COLORS[21])
+            _parser.set('Colors', 'softwarefg', _conf.RTK_COLORS[22])
+
+            try:
+                _parser.write(open(_conf_file, 'w'))
+                return False
+            except EnvironmentError:
+                return True
+
+    def _save_list(self):
+        """
+        Method for saving the currently active list in the List Editor
+        gtk.TreeView().
+        """
+
+        def _save_line_item(model, __path, row, self):
+            """
+            Function to save an individual gtk.TreeIter() in the List Editor
+            gtk.TreeView().
+
+            :param gtk.TreeModel model: the List Editor gtk.TreeModel().
+            :param str __path: the path of the active gtk.TreeIter() in the
+                               List Editor gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the List
+                                     Editor gtk.TreeModel().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            if self.rdoMeasurement.get_active():
+                _query = "REPLACE INTO tbl_measurement_units \
+                          (fld_measurement_id, fld_measurement_code) \
+                          VALUES((SELECT fld_measurement_id \
+                                  FROM tbl_measurement_units \
+                                  WHERE fld_measurement_code='%s'), \
+                                 '%s')" % \
+                         (model.get_value(row, 1), model.get_value(row, 1))
+            elif self.rdoRequirementTypes.get_active():
+                _query = "REPLACE INTO tbl_requirement_type \
+                          (fld_requirement_type_id, \
+                           fld_requirement_type_desc, \
+                           fld_requirement_type_code) \
+                          VALUES((SELECT fld_requirement_type_id \
+                                  FROM tbl_requirement_type \
+                                  WHERE fld_requirement_type_desc = '%s'), \
+                                '%s', '%s')" % \
+                         (model.get_value(row, 1), model.get_value(row, 1),
+                          model.get_value(row, 2))
+            elif self.rdoRiskCategory.get_active():
+                _query = "REPLACE INTO tbl_risk_category \
+                          (fld_category_id, fld_category_noun, \
+                           fld_category_value) \
+                          VALUES((SELECT fld_category_id \
+                                  FROM tbl_risk_category \
+                                  WHERE fld_category_noun='%s'), '%s', %d)" % \
+                         (model.get_value(row, 1), model.get_value(row, 1),
+                          int(model.get_value(row, 2)))
+            elif self.rdoVandVTasks.get_active():
+                _query = "REPLACE INTO tbl_validation_type \
+                          (fld_validation_type_id, fld_validation_type_desc, \
+                           fld_validation_type_code) \
+                          VALUES((SELECT fld_validation_type_id \
+                                  FROM tbl_validation_type \
+                                  WHERE fld_validation_type_desc='%s'), \
+                                 '%s', '%s')" % \
+                         (model.get_value(row, 1), model.get_value(row, 1),
+                          model.get_value(row, 2))
+            elif self.rdoUsers.get_active():
+                _query = "INSERT INTO tbl_users \
+                          (fld_user_lname, fld_user_fname, \
+                           fld_user_email, fld_user_phone, fld_user_group) \
+                          VALUES((SELECT fld_user_id \
+                                  FROM tbl_users \
+                                  WHERE fld_user_lname='%s' \
+                                  AND fld_user_fname='%s'), \
+                                 '%s', '%s', '%s', '%s', '%s')" % \
+                         (model.get_value(row, 1), model.get_value(row, 2),
+                          model.get_value(row, 1), model.get_value(row, 2),
+                          model.get_value(row, 3), model.get_value(row, 4),
+                          model.get_value(row, 5))
+
+            # Update the RTK Common Database table.
+            if not self._app.COMDB.execute_query(_query, None,
+                                                 self._app.ComCnx,
+                                                 commit=True):
+                return True
+
+            return False
+
+        set_cursor(self._app, gtk.gdk.WATCH)
+
+        _model = self.tvwListEditor.get_model()
+        _model.foreach(_save_line_item, self)
+
+        set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
+        return False
+
+    def _save_tree_layout(self):
+        """
+        Method for saving the gtk.TreeView() layout file.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_name, _fmt_idx) = self._get_format_info()
+
+        # Get the format file for the gtk.TreeView to be edited.
+        _format_file = _conf.RTK_FORMAT_FILE[_fmt_idx]
+        _basename = os.path.basename(_format_file)
+
+        # Open the format file for writing.
+        _file = open(_format_file, 'w')
+
+        # Create the new format file.
+        _file.write("<!--\n")
+        _file.write("-*- coding: utf-8 -*-\n\n")
+        _file.write("%s is part of the RTK Project\n\n" % _basename)
+        _file.write('Copyright 2011-2014 Andrew "Weibullguy" Rowland '
+                    '<andrew DOT rowland AT reliaqual DOT com>\n\n')
+        _file.write("All rights reserved.-->\n\n")
+        _file.write("<!-- This file contains information used by the RTK "
+                    "application to draw\n")
+        _file.write("various widgets.  These values can be changed by the "
+                    "user to personalize\n")
+        _file.write("their experience. -->\n\n")
+
+        _file.write("<root>\n")
+        _file.write('\t<tree name="%s">\n' % _name)
+
+        _model = self.tvwEditTree.get_model()
+        _row = _model.get_iter_first()
+        while _row is not None:
+            _file.write("\t\t<column>\n")
+            _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" %
+                        _model.get_value(_row, 0))
+            _file.write("\t\t\t<usertitle>%s</usertitle>\n"%
+                        _model.get_value(_row, 1))
+            _file.write("\t\t\t<datatype>%s</datatype>\n" %
+                        _model.get_value(_row, 5))
+            _file.write('\t\t\t<position>%d</position>\n' %
+                        _model.get_value(_row, 2))
+            _file.write("\t\t\t<widget>%s</widget>\n" %
+                        _model.get_value(_row, 6))
+            _file.write("\t\t\t<editable>%d</editable>\n" %
+                        _model.get_value(_row, 3))
+            _file.write("\t\t\t<visible>%d</visible>\n" %
+                        _model.get_value(_row, 4))
+            _file.write("\t\t</column>\n")
+
+            _row = _model.iter_next(_row)
+
+        _file.write("\t</tree>\n")
+        _file.write("</root>")
+        _file.close()
+
+        return False
+
+    def _quit(self, __button):
+        """
+        Method to quit the options gtk.Assistant().
+
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         self.destroy()
 
-        _values = (self.chkRevisions.get_active(),
-                   self.chkFunctions.get_active(),
-                   self.chkRequirements.get_active(),
-                   self.chkSoftware.get_active(),
-                   self.chkValidation.get_active(),
-                   self.chkRG.get_active(),
-                   0,
-                   self.chkIncidents.get_active(),
-                   0, self.chkSurvivalAnalysis.get_active(), 0, 0)
-
-        _query = "UPDATE tbl_program_info \
-                  SET fld_revision_active=%d, fld_function_active=%d, \
-                      fld_requirement_active=%d, fld_software_active=%d, \
-                      fld_vandv_active=%d, fld_testing_active=%d, \
-                      fld_rcm_active=%d, fld_fraca_active=%d, \
-                      fld_fmeca_active=%d, fld_survival_active=%d, \
-                      fld_rbd_active=%d, fld_fta_active=%d" % _values
-        return self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                          commit=True)
-
-    def _save_defaults(self, __button):
-        """
-
-        :param __button:  the gtk.Button() that called this method.
-        :type __button: gtk.Button
-        :return: False
-        :rtype: boolean
-        """
-
-        import ConfigParser
-        from shutil import copyfile
-
-        _conf_file = _conf.CONF_DIR + 'RTK.conf'
-
-        _config = ConfigParser.RawConfigParser()
-
-        # Make a copy of the original configuration file.
-        copyfile(_conf_file, _conf_file + '.bak')
-
-        # Read the configuration file and get the current values.
-        _config.read(_conf_file)
-
-        _fr_multiplier = _config.get('General', 'frmultiplier')
-        _mission_time = _config.get('General', 'calcreltime')
-        _decimal_places = _config.get('General', 'decimal')
-        _module_tab_position = _config.get('General', 'treetabpos')
-        _work_tab_position = _config.get('General', 'booktabpos')
-        _list_tab_position = _config.get('General', 'listtabpos')
-
-        # Write changes to the configuration file.  If the user has left
-        # something blank, set it to the existing value.
-        try:
-            _config.set('General', 'frmultiplier',
-                        float(self.txtFRMultiplier.get_text()) / 1.0)
-        except ValueError:
-                _config.set('General', 'frmultiplier', _fr_multiplier)
-
-        try:
-            _config.set('General', 'calcreltime',
-                        float(self.txtMissionTime.get_text()) / 1.0)
-        except ValueError:
-            _config.set('General', 'calcreltime', _mission_time)
-
-        try:
-            _config.set('General', 'decimal',
-                        int(self.txtDecimalPlaces.get_text()) / 1)
-        except ValueError:
-            _config.set('General', 'decimal', _decimal_places)
-
-        try:
-            _config.set('General', 'treetabpos',
-                        self.cmbModuleBookTabPosition.get_active_text().lower())
-        except AttributeError:
-            _config.set('General', 'treetabpos', _module_tab_position)
-
-        try:
-            _config.set('General', 'listtabpos',
-                        self.cmbListBookTabPosition.get_active_text().lower())
-        except AttributeError:
-            _config.set('General', 'listtabpos', _list_tab_position)
-
-        try:
-            _config.set('General', 'booktabpos',
-                        self.cmbWorkBookTabPosition.get_active_text().lower())
-        except AttributeError:
-            _config.set('General', 'booktabpos', _work_tab_position)
-
-        try:
-            _parser = open(_conf_file, 'w')
-            _config.write(_parser)
-            _parser.close()
-            self.destroy()
-            return False
-        except EnvironmentError:
-            rtk_error(_(u"Error saving configuration.  Restoring old "
-                        u"configuration values."))
-            copyfile(_conf_file + '.bak', _conf_file)
-            self.destroy()
-            return True
-
-
-
-    def edit_lists(self, __button):
-        """
-
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
-        :return: False
-        :rtype: boolean
-        """
-
-        #if self.rdoMeasurement.get_active():
-        #    assistant = gtk.Assistant()
         return False

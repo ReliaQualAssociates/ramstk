@@ -980,8 +980,8 @@ class Software(object):
         # Create the main Software class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Software', 15, self._app,
-                                                None, _conf.RTK_COLORS[6],
-                                                _conf.RTK_COLORS[7])
+                                                    None, _conf.RTK_COLORS[21],
+                                                    _conf.RTK_COLORS[22])
 
         # Software class Work Book toolbar widgets.
         self.btnAddItem = gtk.ToolButton()

@@ -130,6 +130,10 @@ Global list containing the colors to use for various widgets.
 +-------+-----------------------------------------------+
 |  22   | Part with no failure rate model foreground    |
 +-------+-----------------------------------------------+
+|  23   | Software Tree background color                |
++-------+-----------------------------------------------+
+|  24   | Software Tree foreground color                |
++-------+-----------------------------------------------+
 
 :const RTK_PREFIX: Default value: []
 Global variable list to house information about the prefix and next index to
@@ -646,6 +650,8 @@ class RTKConf(object):
             config.set('Colors', 'requirementfg', '#000000')
             config.set('Colors', 'assemblybg', '#FFFFFF')
             config.set('Colors', 'assemblyfg', '#000000')
+            config.set('Colors', 'softwarebg', '#FFFFFF')
+            config.set('Colors', 'softwarefg', '#000000')
             config.set('Colors', 'validationbg', '#FFFFFF')
             config.set('Colors', 'validationfg', '#00FF00')
             config.set('Colors', 'rgbg', '#FFFFFF')
@@ -764,6 +770,8 @@ class RTKConf(object):
             config.set('Colors', 'taggedbg', RTK_COLORS[18])
             config.set('Colors', 'taggedfg', RTK_COLORS[19])
             config.set('Colors', 'nofrmodelfg', RTK_COLORS[20])
+            config.set('Colors', 'softwarebg', RTK_COLORS[21])
+            config.set('Colors', 'softwarefg', RTK_COLORS[22])
 
             try:
                 parser = open(self._conf_file, 'w')
