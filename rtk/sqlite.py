@@ -123,7 +123,8 @@ class SQLite3Interface(object):
         :rtype: int
         """
 
-        if "are not unique" in msg[0]:      # Primary key not unique.
+        _err_code = 0
+        if "PRIMARY KEY must be unique" in msg[0]:      # Primary key not unique.
             _err_code = 1555
         else:
             print msg[0]

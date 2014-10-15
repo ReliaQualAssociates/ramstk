@@ -679,18 +679,17 @@ class TreeWindow(gtk.Window):
             assistant = _impt.ImportAssistant(self._app)
             return False
 
-    def delete_event(self, widget, event, data=None):
+    def delete_event(self, __widget, __event, data=None):
         """
-        Used to quit the RTK application when the X in the upper
+        Method to quit the RTK application when the X in the upper
         right corner is pressed.
 
-        Keyword Arguments:
-        winmain -- the RTK application main window widget.
-        event   -- the gdk event (GDK_DELETE in this case).
-        data    -- any data to pass when exiting the application.
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
-
-        _util.save_project(widget, self)
 
         gtk.main_quit()
 
