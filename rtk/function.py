@@ -150,7 +150,6 @@ class Function(object):
         self.tvwFunctionMatrix = gtk.TreeView()
 
         # Diagram tab widgets.
-# TODO: Implement Diagram Worksheet for the Function Class.
 
         # Assessment results tab widgets.
         self.txtPredictedHt = _widg.make_entry(editable=False, bold=True)

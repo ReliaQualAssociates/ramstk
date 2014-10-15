@@ -5414,8 +5414,8 @@ class Software(object):
                                       u"information to the open RTK program "
                                       u"database."))
             return True
-# TODO: Save recommended and selected values to database.
-        #_model = self.tvwCSCITestSelectionMatrix.get_model()
+
+        # _model = self.tvwCSCITestSelectionMatrix.get_model()
 
         return False
 

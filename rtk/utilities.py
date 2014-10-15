@@ -653,15 +653,13 @@ def save_project(__widget, app):
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
-# TODO: Only save the active module in the Tree Book.
+
     if not app.LOADED:
         return True
 
     app.winTree.statusbar.push(2, _(u"Saving"))
 
-    app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-    app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+    set_cursor(app, gtk.gdk.WATCH)
 
     app.REVISION.save_revision()
     app.REQUIREMENT.save_requirement()
@@ -670,7 +668,7 @@ def save_project(__widget, app):
     app.SOFTWARE.save_software()
     #app.winParts.save_component()
 
-# Update the next ID for each type of object.
+    # Update the next ID for each type of object.
     _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
                _conf.RTK_PREFIX[5], _conf.RTK_PREFIX[7],
                _conf.RTK_PREFIX[9], _conf.RTK_PREFIX[11],
@@ -686,12 +684,10 @@ def save_project(__widget, app):
              WHERE fld_program_id=%d" % _values
     app.DB.execute_query(query, None, app.ProgCnx, commit=True)
 
-    #conf = _conf.RTKConf('user')
-    #conf.write_configuration()
+    # conf = _conf.RTKConf('user')
+    # conf.write_configuration()
 
-    app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-    app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+    set_cursor(app, gtk.gdk.LEFT_PTR)
 
     app.winTree.statusbar.pop(2)
 
@@ -792,7 +788,6 @@ def import_project(__widget, app):
     :rtype: boolean
     """
 
-# TODO: Write function to import project information from various other formats; Excel, CSV, other delimited files.
     _dialog = gtk.FileChooserDialog(_(u"Select Project to Import"), None,
                                     gtk.FILE_CHOOSER_ACTION_OPEN,
                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -1002,7 +997,6 @@ def find(widget, action):
                        or replace(3).
     """
 
-    # TODO: Write code to find, find next, find previous, and replace search terms.
     return False
 
 
@@ -1028,17 +1022,17 @@ def find_all_in_list(_list, value, start=0):
 
 
 def undo():
-    """ Undoes the last chamge. """
-
-    # TODO: Write code to undo changes.
+    """
+    Undoes the last change.
+    """
 
     return False
 
 
 def redo():
-    """ Redoes the last change. """
-
-    # TODO: Write code to redo changes.
+    """
+    Re-does the last change.
+    """
 
     return False
 
@@ -1103,7 +1097,7 @@ def add_parts_system_hierarchy(__widget, app):
     :rtype: boolean
     """
 
-    set_cursor(self._app, gtk.gdk.WATCH)
+    set_cursor(app, gtk.gdk.WATCH)
 
     # Find the revision id.
     if _conf.RTK_MODULES[0] == 1:
@@ -1133,16 +1127,11 @@ def add_parts_system_hierarchy(__widget, app):
         _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + \
                      str(_conf.RTK_PREFIX[7])
 
-        # Create a tuple of values to pass to the component_add queries.  The
-        # values are:
-        #   Revision ID
-        #   Assembly ID
-        #   Name
-        #   Part?
-        #   Parent Assembly
-        #   Part Number
+        _parent = app.HARDWARE.dicPaths[_results[i][1]]
+
+        # Create a tuple of values to pass to the component_add queries.
         _values = (_revision_id, _assembly_id, _part_name, 1,
-                   _results[i][1], _results[i][0])
+                   _parent, _results[i][0])
 
         # Add the new component to each table needing a new entry and increment
         # the count of components added.
@@ -1161,7 +1150,7 @@ def add_parts_system_hierarchy(__widget, app):
     #TODO: Need to find and select the previously selected revision before loading the hardware tree.
     app.HARDWARE.load_tree()
 
-    set_cursor(self._app, gtk.gdk.LEFT_PTR)
+    set_cursor(app, gtk.gdk.LEFT_PTR)
 
     return False
 
@@ -1172,9 +1161,17 @@ def component_add(app, values):
 
     :param rtk app: the running instance of the RTK application.
     :param tuple values: tuple containing the values to pass to the queries.
+                         - Revision ID
+                         - Assembly ID
+                         - Component Name
+                         - Part?
+                         - Parent Assembly
+                         - Part Number
     :return: False if successul or True if an error is encountered.
     :rtype: boolean
     """
+
+    _error = False
 
     # Insert the new part into tbl_system.
     _query = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
@@ -1184,9 +1181,9 @@ def component_add(app, values):
               VALUES (%d, %d, '%s', %d, '%s', '%s')" % values
     if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
         app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component %s as a child of assembly %d to the "
+                            "component %s as a child of assembly %s to the "
                             "system table." % (values[5], values[4]))
-        return True
+        _error = True
 
     # Insert the new component into tbl_prediction.
     _query = "INSERT INTO tbl_prediction \
@@ -1194,21 +1191,31 @@ def component_add(app, values):
               VALUES (%d, %d)" % (values[0], values[1])
     if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
         app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component %s as a child of assembly %d to the "
+                            "component %s as a child of assembly %s to the "
                             "prediction table." % (values[5], values[4]))
-        return True
+        _error = True
 
-    # Insert the new component into tbl_fmeca.
-    _query = "INSERT INTO tbl_fmeca \
-              (fld_assembly_id) \
-              VALUES (%d)" % values[1]
-    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-        app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component %s as a child of assembly %d to the "
-                            "FMECA table." % (values[5], values[4]))
-        return True
+    # Retrieve the list of function id's in the open RTK Program database.
+    _query = "SELECT fld_function_id \
+              FROM tbl_functions \
+              WHERE fld_revision_id=%d" % values[0]
+    _functions = app.DB.execute_query(_query, None, app.ProgCnx)
 
-    return False
+    # Add a record to the functional matrix table for each function that exists
+    # in the open RTK program database.
+    for j in range(len(_functions)):
+        _query = "INSERT INTO tbl_functional_matrix \
+                  (fld_revision_id, fld_function_id, \
+                   fld_assembly_id, fld_relationship) \
+                  VALUES(%d, %d, %d, '')" % \
+                 (values[0], _functions[j][0], values[1])
+        if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
+            app.debug_log.error("utilities.py:component_add - Failed to add "
+                                "new component to the functional matrix "
+                                "table.")
+            _error = True
+
+    return _error
 
 
 def set_part_model(category, subcategory):
@@ -1501,7 +1508,7 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
-# TODO: Add capability to remove existing failure modes in the event the component category/sub-category are changed.  This depends on updating the API to include returning integer error codes.
+
     _err = False
 
     # Retrieve the default failure modes for the component from the common
@@ -1520,12 +1527,12 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
 
     # Add the default failure modes to the open RTK Program database.
     _base_query = "INSERT INTO tbl_fmeca \
-                   (fld_revision_id, fld_assembly_id, fld_mode_id, \
+                   (fld_revision_id, fld_assembly_id, \
                     fld_mode_description, fld_mode_ratio) \
-                   VALUES (%d, %d, %d, '%s', %f)"
+                   VALUES (%d, %d, '%s', %f)"
     for i in range(_n_modes):
-        _query = _base_query % (revision_id, assembly_id,
-                                _modes[i][0], _modes[i][1], _modes[i][2])
+        _query = _base_query % (revision_id, assembly_id, _modes[i][1],
+                                _modes[i][2])
         if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
             _err = True
 
@@ -1636,40 +1643,40 @@ def set_cursor(app, cursor):
     """
     Function to set the cursor for a gtk.gdk.Window()
 
-    :param app: the running instance of the RTK application.
-    :param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
-                   following:
-                   gtk.gdk.X_CURSOR
-                   gtk.gdk.ARROW
-                   gtk.gdk.CENTER_PTR
-                   gtk.gdk.CIRCLE
-                   gtk.gdk.CROSS
-                   gtk.gdk.CROSS_REVERSE
-                   gtk.gdk.CROSSHAIR
-                   gtk.gdk.DIAMOND_CROSS
-                   gtk.gdk.DOUBLE_ARROW
-                   gtk.gdk.DRAFT_LARGE
-                   gtk.gdk.DRAFT_SMALL
-                   gtk.gdk.EXCHANGE
-                   gtk.gdk.FLEUR
-                   gtk.gdk.GUMBY
-                   gtk.gdk.HAND1
-                   gtk.gdk.HAND2
-                   gtk.gdk.LEFT_PTR - used for non-busy cursor
-                   gtk.gdk.PENCIL
-                   gtk.gdk.PLUS
-                   gtk.gdk.QUESTION_ARROW
-                   gtk.gdk.RIGHT_PTR
-                   gtk.gdk.SB_DOWN_ARROW
-                   gtk.gdk.SB_H_DOUBLE_ARROW
-                   gtk.gdk.SB_LEFT_ARROW
-                   gtk.gdk.SB_RIGHT_ARROW
-                   gtk.gdk.SB_UP_ARROW
-                   gtk.gdk.SB_V_DOUBLE_ARROW
-                   gtk.gdk.TCROSS
-                   gtk.gdk.TOP_LEFT_ARROW
-                   gtk.gdk.WATCH - used when application is busy
-                   gtk.gdk.XTERM - selection bar
+    :param rtk app: the running instance of the RTK application.
+    :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
+                                  one of the following:
+                                  - gtk.gdk.X_CURSOR
+                                  - gtk.gdk.ARROW
+                                  - gtk.gdk.CENTER_PTR
+                                  - gtk.gdk.CIRCLE
+                                  - gtk.gdk.CROSS
+                                  - gtk.gdk.CROSS_REVERSE
+                                  - gtk.gdk.CROSSHAIR
+                                  - gtk.gdk.DIAMOND_CROSS
+                                  - gtk.gdk.DOUBLE_ARROW
+                                  - gtk.gdk.DRAFT_LARGE
+                                  - gtk.gdk.DRAFT_SMALL
+                                  - gtk.gdk.EXCHANGE
+                                  - gtk.gdk.FLEUR
+                                  - gtk.gdk.GUMBY
+                                  - gtk.gdk.HAND1
+                                  - gtk.gdk.HAND2
+                                  - gtk.gdk.LEFT_PTR - used for non-busy cursor
+                                  - gtk.gdk.PENCIL
+                                  - gtk.gdk.PLUS
+                                  - gtk.gdk.QUESTION_ARROW
+                                  - gtk.gdk.RIGHT_PTR
+                                  - gtk.gdk.SB_DOWN_ARROW
+                                  - gtk.gdk.SB_H_DOUBLE_ARROW
+                                  - gtk.gdk.SB_LEFT_ARROW
+                                  - gtk.gdk.SB_RIGHT_ARROW
+                                  - gtk.gdk.SB_UP_ARROW
+                                  - gtk.gdk.SB_V_DOUBLE_ARROW
+                                  - gtk.gdk.TCROSS
+                                  - gtk.gdk.TOP_LEFT_ARROW
+                                  - gtk.gdk.WATCH - used when application is busy
+                                  - gtk.gdk.XTERM - selection bar
     """
 
     app.winTree.window.set_cursor(gtk.gdk.Cursor(cursor))
