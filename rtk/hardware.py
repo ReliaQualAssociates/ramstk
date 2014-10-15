@@ -531,7 +531,7 @@ class Hardware(object):
         self.case_temp = 0.0
 
         # Define public Hardware class dictionary attributes.
-        # self.dicHARDWARE = {}
+        self.dicPaths = {0: '0'}
 
         # Create the main HARDWARE class treeview.
         (self.treeview,
@@ -3615,6 +3615,7 @@ class Hardware(object):
 
             # self.dicHARDWARE[_results_[i][1]] = _data_ + (_model_.get_string_from_iter(_row_),)
             self._treepaths[_results_[i][68]] = _model_.get_path(_row_)
+            self.dicPaths[_results_[i][1]] = _model_.get_string_from_iter(_row_)
 
         _root = _model_.get_iter_root()
         if _root is not None:
