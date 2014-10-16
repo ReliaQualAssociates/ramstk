@@ -234,7 +234,7 @@ class Testing(object):
         """
         Initializes the Testing Object.
 
-        :param application: the current instance of the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         # Define private Testing class attributes.
@@ -1551,10 +1551,9 @@ class Testing(object):
                          fld_left_interval, fld_right_interval, \
                          fld_quantity \
                   FROM tbl_survival_data \
-                  WHERE fld_dataset_id=%d" % self.test_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+                  WHERE fld_dataset_id=%d \
+                  ORDER BY fld_request_date" % self.test_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             _n_records = len(_results)
         except TypeError:
@@ -1669,6 +1668,9 @@ class Testing(object):
     def _update_attributes(self):
         """
         Method to update the Testing class attributes.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1708,28 +1710,30 @@ class Testing(object):
         Method to display a plot in it's own window.
 
         :param event: the matplotlib MouseEvent that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        plot = event.canvas
-        parent = plot.get_parent()
+        _plot = event.canvas
+        _parent = _plot.get_parent()
 
-        height = int(self._app.winWorkBook.height)
-        width = int(self._app.winWorkBook.width / 2.0)
+        _height = int(self._app.winWorkBook.height)
+        _width = int(self._app.winWorkBook.width / 2.0)
 
-        if event.button == 3:              # Right click.
-            window = gtk.Window()
-            window.set_skip_pager_hint(True)
-            window.set_skip_taskbar_hint(True)
-            window.set_default_size(width, height)
-            window.set_border_width(5)
-            window.set_position(gtk.WIN_POS_NONE)
-            window.set_title(_(u"RTK Plot"))
+        if event.button == 3:               # Right click.
+            _window = gtk.Window()
+            _window.set_skip_pager_hint(True)
+            _window.set_skip_taskbar_hint(True)
+            _window.set_default_size(_width, _height)
+            _window.set_border_width(5)
+            _window.set_position(gtk.WIN_POS_NONE)
+            _window.set_title(_(u"RTK Plot"))
 
-            window.connect('delete_event', _close_plot, plot, parent)
+            _window.connect('delete_event', _close_plot, _plot, _parent)
 
-            plot.reparent(window)
+            _plot.reparent(_window)
 
-            window.show_all()
+            _window.show_all()
 
         return False
 
@@ -1737,13 +1741,13 @@ class Testing(object):
         """
         Loads the Reliability Growth plot.
 
-        :param TPT: a list of the planned test times for each test phase.
-        :param MTBFA: a list of planned average MTBF values for each test
-                      phase.
-        :param obs: a list of lists of observed values for each test phase.
-                    The inner lists contain [Lower Bound, Point, Upper Bound]
-                    for the instantaneous failure intensity or instantaneous
-                    MTBF at each failure time.
+        :param float TPT: a list of the planned test times for each test phase.
+        :param float MTBFA: a list of planned average MTBF values for each test
+                            phase.
+        :param float obs: a list of lists of observed values for each test
+                          phase.  The inner lists contain [Lower Bound, Point,
+                          Upper Bound] for the instantaneous failure intensity
+                          or instantaneous MTBF at each failure time.
         :return: False if successful or True if an error is encountered.
         :rtype : boolean
         """
@@ -1923,28 +1927,29 @@ class Testing(object):
         Attachment gtk.TextBuffer and opening the link in the default
         application.
 
-        :param __tag: the gtk.TextTag() that called this method.
-        :param __widget: the gtk.TextView() that contains the tag calling this
-                         method.
-        :param event: the mouse button event calling this method.
-        :param row: the gtk.TextIter that called this method.
+        :param gtk.TextTag __tag: the gtk.TextTag() that called this method.
+        :param gtk.TextView __widget: the gtk.TextView() that contains the tag
+                                      calling this method.
+        :param gtk.gdk.Event event: the gtk.gdk.Event() event calling this
+                                    method.
+        :param gtk.TextIter row: the gtk.TextIter() that called this method.
         """
 
         import magic
 
-        line_number = row.get_line()
-        _start_ = self.txtAttachment.get_iter_at_line(line_number)
-        _end_ = self.txtAttachment.get_iter_at_line(line_number + 1)
+        _line_number = row.get_line()
+        _start = self.txtAttachment.get_iter_at_line(_line_number)
+        _end = self.txtAttachment.get_iter_at_line(_line_number + 1)
 
-        _text_ = self.txtAttachment.get_text(_start_, _end_,
-                                             include_hidden_chars=False)
+        _text = self.txtAttachment.get_text(_start, _end,
+                                            include_hidden_chars=False)
 
-        if len(_text_) > 1 and event.type == gtk.gdk.BUTTON_RELEASE:
-            mime = magic.Magic(mime=True)
+        if len(_text) > 1 and event.type == gtk.gdk.BUTTON_RELEASE:
+            _mime = magic.Magic(mime=True)
             try:
-                print mime.from_file(_text_)
+                print _mime.from_file(_text)
             except IOError:
-                _util.rtk_error(_(u"File %s does not exist" % _text_))
+                _util.rtk_error(_(u"File %s does not exist" % _text))
 
         return False
 
@@ -1956,12 +1961,11 @@ class Testing(object):
         _title_ = _(u"RTK - Add Test Plans")
         _prompt_ = _(u"How many test plans to add?")
 
-# Find the largest test plan ID already in the RTK Program database and
-# increment it by one.
-        _query_ = "SELECT MAX(fld_test_id) \
-                   FROM tbl_tests"
-        _max_id_ = self._app.DB.execute_query(_query_,
-                                              None,
+        # Find the largest test plan ID already in the RTK Program database and
+        # increment it by one.
+        _query = "SELECT MAX(fld_test_id) \
+                  FROM tbl_tests"
+        _max_id_ = self._app.DB.execute_query(_query, None,
                                               self._app.ProgCnx)[0][0]
         if _max_id_ is None or not _max_id_ or _max_id_ == '':
             _max_id_ = 1001
