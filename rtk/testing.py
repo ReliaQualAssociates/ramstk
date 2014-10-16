@@ -358,10 +358,8 @@ class Testing(object):
                                                         u"MTBF<sub>G</sub> "
                                                         u"/ MTBF<sub>GP"
                                                         u"</sub>."))
-        self.chkTRMG = _widg.make_check_button(label=_(u"Acceptable "
-                                                       u"MTBF<sub>G</sub> "
-                                                       u"/ MTBF<sub>I"
-                                                       u"</sub>."))
+        self.chkGR = _widg.make_check_button(label=_(u"Acceptable "
+                                                     u"average growth rate."))
 
         self.figFigureOC = Figure(figsize=(_width, _height))
 
@@ -374,7 +372,7 @@ class Testing(object):
         self.lblMIMGP = _widg.make_label("", width=150)
         self.lblFEF = _widg.make_label("", width=150)
         self.lblMGMGP = _widg.make_label("", width=150)
-        self.lblMGMI = _widg.make_label("", width=150)
+        self.lblGR = _widg.make_label("", width=150)
 
         self.pltPlotOC = FigureCanvas(self.figFigureOC)
 
@@ -387,7 +385,7 @@ class Testing(object):
         self.txtMIMGP = _widg.make_entry(width=75)
         self.txtFEF = _widg.make_entry(width=75)
         self.txtMGMGP = _widg.make_entry(width=75)
-        self.txtTRMG = _widg.make_entry(width=75)
+        self.txtGR = _widg.make_entry(width=75)
 
         # Test Assessment page widgets.
         # Widgets to enter and display the observed data.
@@ -1004,24 +1002,24 @@ class Testing(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the gtk.Fixed() for displaying reliability growth plan
             # feasibility.
-            _labels_ = [_(u"MTBF<sub>I</sub> / MTBF<sub>GP</sub> should fall "
-                          u"in the range of 0.15 - 0.47.  On average this "
-                          u"ratio is 0.30."),
-                        _(u"Program MTBF<sub>I</sub> / MTBF<sub>GP</sub>:"),
-                        "", "",
-                        _(u"MTBF<sub>G</sub> / MTBF<sub>GP</sub> should fall "
-                          u"in the range of 0.60 - 0.80."),
-                        _(u"Program MTBF<sub>G</sub> / MTBF<sub>GP</sub>:"),
-                        "", "",
-                        _(u"MTBF<sub>G</sub> / MTBF<sub>I</sub> should fall "
-                          u"in the range of 2 - 3."),
-                        _(u"Program MTBF<sub>G</sub> / MTBF<sub>I</sub>:"),
-                        "", "",
-                        _(u"The Fix Effectiveness Factor should fall in the "
-                          u"range of 0.55 - 0.85.  On average the FEF is "
-                          u"0.70."),
-                        _(u"Program average FEF:"), "", ""]
-            (_x_pos_, _y_pos_) = _widg.make_labels(_labels_,
+            _labels = [_(u"MTBF<sub>I</sub> / MTBF<sub>GP</sub> should fall "
+                         u"in the range of 0.15 - 0.47.  On average this "
+                         u"ratio is 0.30."),
+                       _(u"Program MTBF<sub>I</sub> / MTBF<sub>GP</sub>:"),
+                       "", "",
+                       _(u"MTBF<sub>G</sub> / MTBF<sub>GP</sub> should fall "
+                         u"in the range of 0.60 - 0.80."),
+                       _(u"Program MTBF<sub>G</sub> / MTBF<sub>GP</sub>:"),
+                       "", "",
+                       _(u"Average growth rate should fall in the range of "
+                         u"0.23 - 0.64."),
+                       _(u"Program average growth rate:"),
+                       "", "",
+                       _(u"The Fix Effectiveness Factor should fall in the "
+                         u"range of 0.55 - 0.85.  On average the FEF is "
+                         u"0.70."),
+                       _(u"Program average FEF:"), "", ""]
+            (_x_pos_, _y_pos_) = _widg.make_labels(_labels,
                                                    self.fxdRGRisk, 5, 5)
 
             self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the "
@@ -1035,9 +1033,9 @@ class Testing(object):
             self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the "
                                              u"goal MTBF to mature MTBF ratio "
                                              u"is within reasonable limits."))
-            self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the "
-                                            u"goal MTBF to initial MTBF ratio "
-                                            u"is within reasonable limits."))
+            self.chkGR.set_tooltip_text(_(u"Indicates whether or not the "
+                                          u"average growth rate is within "
+                                          u"reasonable limits."))
             self.pltPlotOC.set_tooltip_text(_(u"Displays the Reliability "
                                               u"Growth plan Operating "
                                               u"Characteristic (OC) curve."))
@@ -1050,9 +1048,9 @@ class Testing(object):
             self.fxdRGRisk.put(self.lblMGMGP, _x_pos_, _y_pos_[6])
             self.fxdRGRisk.put(self.chkMGMGP, 5, _y_pos_[7])
 
-            self.fxdRGRisk.put(self.txtTRMG, _x_pos_, _y_pos_[9])
-            self.fxdRGRisk.put(self.lblMGMI, _x_pos_, _y_pos_[10])
-            self.fxdRGRisk.put(self.chkTRMG, 5, _y_pos_[11])
+            self.fxdRGRisk.put(self.txtGR, _x_pos_, _y_pos_[9])
+            self.fxdRGRisk.put(self.lblGR, _x_pos_, _y_pos_[10])
+            self.fxdRGRisk.put(self.chkGR, 5, _y_pos_[11])
 
             self.fxdRGRisk.put(self.txtFEF, _x_pos_, _y_pos_[13])
             self.fxdRGRisk.put(self.lblFEF, _x_pos_, _y_pos_[14])
@@ -2394,9 +2392,9 @@ class Testing(object):
         The criteria and acceptable ranges are:\n
 
         - Initial MTBF / Goal MTBF              0.15 - 0.47\n
+        - Fix Effectiveness Factor              0.55 - 0.85\n
         - Goal MTBF / Growth Potential MTBF     0.60 - 0.80\n
         - Growth Rate                           0.23 - 0.64\n
-        - Fix Effectiveness Factor              0.55 - 0.85\n
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
@@ -2463,11 +2461,11 @@ class Testing(object):
             self.lblMGMGP.set_markup(_text)
 
             # Program average growth rate.
-            self.txtTRMG.set_text(str(self.avg_growth))
+            self.txtGR.set_text(str(self.avg_growth))
             if self.avg_growth >= 0.23 and self.avg_growth <= 0.64:
-                self.chkTRMG.set_active(True)
+                self.chkGR.set_active(True)
             else:
-                self.chkTRMG.set_active(False)
+                self.chkGRS.set_active(False)
 
             if self.avg_growth < 0.35:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
@@ -2475,7 +2473,7 @@ class Testing(object):
                 _text = "<span foreground='#D5D515'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
-            self.lblMGMI.set_markup(_text)
+            self.lblGR.set_markup(_text)
 
             # Fix effectiveness factor is low enough, but not too low.  Too low
             # means many failures will not be corrected, too high means it may
@@ -2496,6 +2494,11 @@ class Testing(object):
                 self.lblFEF.set_markup("<span foreground='red'>"
                                        "High Risk</span>")
 
+# TODO: Add check of management strategy.
+# < 0.9 => high risk
+# > 0.95 => high risk
+# 0.9 - 0.925 => medium risk
+# 0.925 - 0.95 => low risk
             # Reliability growth planning feasibility per phase.
             i = 0
             _model = self.tvwTestFeasibility.get_model()
