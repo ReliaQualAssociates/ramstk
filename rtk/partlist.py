@@ -397,6 +397,8 @@ class ListWindow(gtk.Window):
         :param str query: the SQL query to execute to retrieve the list of
                           parts associated with the calling Revision, Function,
                           or Assembly.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
