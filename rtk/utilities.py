@@ -675,17 +675,20 @@ def save_project(__widget, app):
                _conf.RTK_PREFIX[13], _conf.RTK_PREFIX[15],
                _conf.RTK_PREFIX[17], 1)
 
-    query = "UPDATE tbl_program_info \
-             SET fld_revision_next_id=%d, fld_function_next_id=%d, \
-                 fld_assembly_next_id=%d, fld_part_next_id=%d, \
-                 fld_fmeca_next_id=%d, fld_mode_next_id=%d, \
-                 fld_effect_next_id=%d, fld_cause_next_id=%d, \
-                 fld_software_next_id=%d \
-             WHERE fld_program_id=%d" % _values
-    app.DB.execute_query(query, None, app.ProgCnx, commit=True)
+    _query = "UPDATE tbl_program_info \
+              SET fld_revision_next_id=%d, fld_function_next_id=%d, \
+                  fld_assembly_next_id=%d, fld_part_next_id=%d, \
+                  fld_fmeca_next_id=%d, fld_mode_next_id=%d, \
+                  fld_effect_next_id=%d, fld_cause_next_id=%d, \
+                  fld_software_next_id=%d \
+              WHERE fld_program_id=%d" % _values
+    app.DB.execute_query(_query, None, app.ProgCnx, commit=True)
 
     # conf = _conf.RTKConf('user')
     # conf.write_configuration()
+
+    _query = "VACUUM"
+    print app.DB.execute_query(query, None, app.ProgCnx)
 
     set_cursor(app, gtk.gdk.LEFT_PTR)
 
