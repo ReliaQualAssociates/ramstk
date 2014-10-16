@@ -501,7 +501,7 @@ class ListWindow(gtk.Window):
 
         # Load the model with the returned results.
         for i in range(_n_datasets):
-            _model.append(None, _results[i])
+            _model.append(None, _results[i][:-1])
 
         return False
 

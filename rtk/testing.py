@@ -2465,7 +2465,7 @@ class Testing(object):
             if self.avg_growth >= 0.23 and self.avg_growth <= 0.64:
                 self.chkGR.set_active(True)
             else:
-                self.chkGRS.set_active(False)
+                self.chkGR.set_active(False)
 
             if self.avg_growth < 0.35:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"

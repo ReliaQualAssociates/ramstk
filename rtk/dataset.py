@@ -97,6 +97,7 @@ class Dataset(object):
         # Define private Dataset class list attributes.
 
         # Define public Dataset class scalar attributes.
+        self.revision_id = 0
         self.dataset_id = 0
         """ ID in the RTK Program database of the currently selected data set.
         """                                 # pylint: disable=W0105
@@ -1361,17 +1362,19 @@ class Dataset(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _query = "SELECT * FROM tbl_dataset"
+        _query = "SELECT * FROM tbl_dataset \
+                  WHERE fld_revision_id=%d" % self.revision_id
         _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             self.n_datasets = len(_results)
         except TypeError:
             self.n_datasets = 0
 
-        # Load the model with the returned results.
+        # Load the model with the returned results.  We don't include the
+        # revision id which is the last field in each record.
         _model.clear()
         for i in range(self.n_datasets):
-            _model.append(None, _results[i])
+            _model.append(None, _results[i][:-1])
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)

@@ -1165,7 +1165,8 @@ CREATE TABLE "tbl_dataset" (
     "fld_start_time" FLOAT DEFAULT(0),          -- Minimum failure time for filtering survival data records.
     "fld_start_date" INTEGER DEFAULT(719163),   -- Start date for filtering survival data records.
     "fld_end_date" INTEGER DEFAULT(719163),     -- End date for filtering survival data records.
-    "fld_nevada_chart" INTEGER DEFAULT(0)       -- Whether or not the dataset includes a Nevada chart.
+    "fld_nevada_chart" INTEGER DEFAULT(0),      -- Whether or not the dataset includes a Nevada chart.
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0)
 );
 
 CREATE TABLE "tbl_survival_data" (
