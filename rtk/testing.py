@@ -3,13 +3,13 @@
 This is the Class that is used to represent and hold information related to
 RTK Program test plans.  This includes the following types of test plans:
 
-    - Highly Accelerated Life Test (HALT)
-    - Highly Accelerated Stress Screening (HASS)
-    - Accelerated Life Test (ALT)
-    - Environmental Stress Screening (ESS)
-    - Reliability Growth (RG) Testing
-    - Reliability Demonstration/Qualification (RD/RQ) Testing
-    - Production Reliability Verification Testing (PRVT)
+ * Highly Accelerated Life Test (HALT)
+ * Highly Accelerated Stress Screening (HASS)
+ * Accelerated Life Test (ALT)
+ * Environmental Stress Screening (ESS)
+ * Reliability Growth (RG) Testing
+ * Reliability Demonstration/Qualification (RD/RQ) Testing
+ * Production Reliability Verification Testing (PRVT)
 """
 
 __author__ = 'Andrew Rowland'
@@ -24,6 +24,9 @@ __copyright__ = 'Copyright 2013 - 2014, Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+import locale
+import gettext
+from datetime import datetime
 
 # Modules required for the GUI.
 try:
@@ -32,11 +35,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk  # @UnusedImport
+    import gtk
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade  # @UnusedImport
+    import gtk.glade
 except ImportError:
     sys.exit(1)
 try:
@@ -44,29 +47,12 @@ try:
 except ImportError:
     sys.exit(1)
 
-from datetime import datetime
-
-import locale
-import gettext
-_ = gettext.gettext
-
-# Mathematics.
-from math import ceil, exp, log, sqrt
-
+# Modules used for mathematics.
 import numpy as np
+from math import ceil, exp, log, sqrt
 from scipy.stats import chi2, norm
 
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
-# Plotting.
+# Modules used for plotting.
 import matplotlib
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
@@ -74,12 +60,12 @@ from matplotlib.patches import Ellipse
 matplotlib.use('GTK')
 
 # Other RTK modules.
-from _assistants_.adds import AddRGRecord
-from _calculations_.growth import *
 import calculations as _calc
 import configuration as _conf
 import utilities as _util
 import widgets as _widg
+from _assistants_.adds import AddRGRecord
+from _calculations_.growth import *
 
 # Add localization support.
 try:
@@ -87,19 +73,18 @@ try:
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
+_ = gettext.gettext
+
 
 def _close_plot(__window, __event, plot, parent):
     """
     Function to close the plot and return it to its original parent widget.
 
-    :param __window: the gtk.Window() that is being destroyed.
-    :type __window: gtk.Window
-    :param __event: the gtk.gdk.Event() that called this method.
-    :type __event: gtk.gdk.Event
-    :param plot: the matplotlib FigureCanvas that was expaneded.
-    :type plot: matplotlib.FigureCanvas
-    :param parent: the original parent widget for the plot.
-    :type parent: gtk.Widget
+    :param gtk.Window __window: the gtk.Window() that is being destroyed.
+    :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this method.
+    :param matplotlib.FigureCanvas plot: the matplotlib FigureCanvas that was
+                                         expanded.
+    :param gtk.Widget parent: the original parent widget for the plot.
     :return: False if successful or True if an error is encountered
     :rtype: boolean
     """
@@ -245,23 +230,24 @@ class Testing(object):
                   60: {0.2: 0.128, 0.15: 0.147, 0.1: 0.173, 0.05: 0.220, 0.01: 0.33},
                   100: {0.2: 0.129, 0.15: 0.147, 0.1: 0.173, 0.05: 0.220, 0.01: 0.34}}
 
-# TODO: Write code to update Work Book widgets when editing the Module Book.
     def __init__(self, application):
         """
         Initializes the Testing Object.
 
-        :param application: the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         # Define private Testing class attributes.
         self._app = application
         self._int_mission_id = -1
+        self._flt_test_termination_time = 0.0
 
         # Define private Testing class dictionary attributes.
         self._dic_assemblies = {}           # List of assemblies.
         self._dic_rg_plan = {}              # RG plan details.
 
         # Define private Testing class list attributes.
+        self._lst_handler_id = []
 
         # Define public Testing class attributes.
         self.assembly_id = 0
@@ -292,11 +278,11 @@ class Testing(object):
         self.confidence = 0.75
         self.n_tests = 0
 
-        # Create the main TESTING class treeview.
+        # Create the main Testing class treeview.
         (self.treeview,
-         self._col_order) = _widg.make_treeview('Testing', 11, self._app,
-                                                None, _conf.RTK_COLORS[10],
-                                                _conf.RTK_COLORS[11])
+         self._lst_col_order) = _widg.make_treeview('Testing', 11, self._app,
+                                                    None, _conf.RTK_COLORS[10],
+                                                    _conf.RTK_COLORS[11])
 
         # Toolbar widgets.
         self.btnAdd = gtk.ToolButton()
@@ -372,10 +358,8 @@ class Testing(object):
                                                         u"MTBF<sub>G</sub> "
                                                         u"/ MTBF<sub>GP"
                                                         u"</sub>."))
-        self.chkTRMG = _widg.make_check_button(label=_(u"Acceptable "
-                                                       u"MTBF<sub>G</sub> "
-                                                       u"/ MTBF<sub>I"
-                                                       u"</sub>."))
+        self.chkGR = _widg.make_check_button(label=_(u"Acceptable "
+                                                     u"average growth rate."))
 
         self.figFigureOC = Figure(figsize=(_width, _height))
 
@@ -388,7 +372,7 @@ class Testing(object):
         self.lblMIMGP = _widg.make_label("", width=150)
         self.lblFEF = _widg.make_label("", width=150)
         self.lblMGMGP = _widg.make_label("", width=150)
-        self.lblMGMI = _widg.make_label("", width=150)
+        self.lblGR = _widg.make_label("", width=150)
 
         self.pltPlotOC = FigureCanvas(self.figFigureOC)
 
@@ -401,7 +385,7 @@ class Testing(object):
         self.txtMIMGP = _widg.make_entry(width=75)
         self.txtFEF = _widg.make_entry(width=75)
         self.txtMGMGP = _widg.make_entry(width=75)
-        self.txtTRMG = _widg.make_entry(width=75)
+        self.txtGR = _widg.make_entry(width=75)
 
         # Test Assessment page widgets.
         # Widgets to enter and display the observed data.
@@ -457,6 +441,8 @@ class Testing(object):
         self.txtGoFTrend = _widg.make_entry(width=100, editable=False)
         self.lblGoFModel = _widg.make_label("", width=100)
         self.txtGoFModel = _widg.make_entry(width=100, editable=False)
+        self.txtTestTermTime = _widg.make_entry(width=100)
+
         self.optLinear = gtk.RadioButton(label=_(u"Use Linear Scales"))
         self.optLinear.set_name('linear')
         self.optLinear.set_active(True)
@@ -501,6 +487,13 @@ class Testing(object):
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None, 0)
         self.treeview.connect('row_activated', self._treeview_row_changed, 0)
+
+        # Connect the cells to the callback function.
+        for i in [3, 4, 6, 7, 8, 9, 10, 11, 16, 17, 18, 19, 20, 21]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._testing_tree_edit, i,
+                             self.treeview.get_model())
 
         _scrollwindow_ = gtk.ScrolledWindow()
         _scrollwindow_.add(self.treeview)
@@ -611,6 +604,13 @@ class Testing(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display test planning inputs.       #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+            # Create a tag named hyperlink if it doesn't already exist.
+            _tag = self.txtAttachment.get_tag_table().lookup('hyperlink')
+            if _tag is None:
+                _tag = self.txtAttachment.create_tag('hyperlink',
+                                                     foreground='blue')
+            _tag.connect('event', self._hyperlink_handler)
+
             # Place the widgets that are common to all test types.
             _results = [["HALT"], ["HASS"], ["ALT"], ["ESS"],
                         [_(u"Reliability Growth")],
@@ -634,35 +634,21 @@ class Testing(object):
             self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the "
                                                 u"assembly associated with "
                                                 u"the test."))
-            _fixed.put(self.cmbAssembly, _x_pos, _y_pos[0])
-            self.cmbAssembly.connect('changed', self._callback_combo, 1)
-
             self.cmbTestType.set_tooltip_text(_(u"Selects and displays the "
                                                 u"type of test being "
                                                 u"planned."))
-            _fixed.put(self.cmbTestType, _x_pos, _y_pos[1])
-            self.cmbTestType.connect('changed', self._callback_combo, 5)
-
             self.txtName.set_tooltip_text(_(u"The title or name of the "
                                             u"selected test."))
+
+            _fixed.put(self.cmbAssembly, _x_pos, _y_pos[0])
+            _fixed.put(self.cmbTestType, _x_pos, _y_pos[1])
             _fixed.put(self.txtName, _x_pos, _y_pos[2])
-            self.txtName.connect('focus-out-event',
-                                 self._callback_entry, 'text', 3)
 
             _textview_ = _widg.make_text_view(txvbuffer=self.txtDescription,
                                               width=555)
             _textview_.set_tooltip_text(_(u"Detailed description of the "
                                           u"selected test."))
             _fixed.put(_textview_, 5, _y_pos[3] + 30)
-            self.txtDescription.connect('changed',
-                                        self._callback_entry, None, 'text', 4)
-
-            # Create a tag named hyperlink if it doesn't already exist.
-            _tag = self.txtAttachment.get_tag_table().lookup('hyperlink')
-            if _tag is None:
-                _tag = self.txtAttachment.create_tag('hyperlink',
-                                                     foreground='blue')
-            _tag.connect('event', self._hyperlink_handler)
 
             _label = _widg.make_label(_(u"Attachments:"), 150, 25)
             _fixed.put(_label, 5, _y_pos[3] + 135)
@@ -672,8 +658,17 @@ class Testing(object):
                                          u"attached documents associated "
                                          u"with the selected test."))
             _fixed.put(_textview, 5, _y_pos[3] + 170)
-            self.txtAttachment.connect('changed',
-                                       self._callback_entry, None, 'text', 15)
+
+            self.cmbAssembly.connect('changed', self._callback_combo, 1)
+            self.cmbTestType.connect('changed', self._callback_combo, 5)
+            self._lst_handler_id.append(
+                self.txtName.connect('focus-out-event', self._callback_entry,
+                                     'text', 3))
+            self._lst_handler_id.append(
+                self.txtDescription.connect('changed', self._callback_entry,
+                                            None, 'text', 4))
+            self.txtAttachment.connect('changed', self._callback_entry,
+                                       None, 'text', 15)
 
             _fixed.show_all()
 
@@ -692,7 +687,7 @@ class Testing(object):
                        _(u"Consumer Risk:")]
             (_x_pos,
              _y_pos) = _widg.make_labels(_labels, self.fxdRGPlan, 5, 5)
-            _x_pos += 20
+            _x_pos += 40
 
             _label = _widg.make_label(_(u"Fix\nValue"), 150, 50)
 
@@ -839,34 +834,48 @@ class Testing(object):
             self.cmbPlanModel.connect('changed', self._callback_combo, 12)
             self.cmbAssessModel.connect('changed', self._callback_combo, 13)
             self.btnFindTTFF.connect('button-release-event', _mttff_calculator)
-            self.txtMTBFI.connect('focus-out-event',
-                                  self._callback_entry, 'float', 6)
-            self.txtMTBFG.connect('focus-out-event',
-                                  self._callback_entry, 'float', 7)
-            self.txtMTBFGP.connect('focus-out-event',
-                                   self._callback_entry, 'float', 8)
-            self.txtTechReq.connect('focus-out-event',
-                                    self._callback_entry, 'float', 9)
+            self._lst_handler_id.append(
+                self.txtMTBFI.connect('focus-out-event', self._callback_entry,
+                                      'float', 6))
+            self._lst_handler_id.append(
+                self.txtMTBFG.connect('focus-out-event', self._callback_entry,
+                                      'float', 7))
+            self._lst_handler_id.append(
+                self.txtMTBFGP.connect('focus-out-event', self._callback_entry,
+                                       'float', 8))
+            self._lst_handler_id.append(
+                self.txtTechReq.connect('focus-out-event',
+                                        self._callback_entry, 'float', 9))
             self.spnNumPhases.connect('focus-out-event',
                                       self._callback_entry, 'float', 14)
             self.spnNumPhases.connect('value-changed',
                                       self._callback_spin, 14)
-            self.txtTTFF.connect('focus-out-event',
-                                 self._callback_entry, 'float', 20)
-            self.txtTTT.connect('focus-out-event',
-                                self._callback_entry, 'float', 16)
-            self.txtAverageGR.connect('focus-out-event',
-                                      self._callback_entry, 'float', 17)
-            self.txtAverageFEF.connect('focus-out-event',
-                                       self._callback_entry, 'float', 21)
-            self.txtProgramMS.connect('focus-out-event',
-                                      self._callback_entry, 'float', 18)
-            self.txtProgramProb.connect('focus-out-event',
-                                        self._callback_entry, 'float', 19)
-            self.txtProducerRisk.connect('focus-out-event',
-                                         self._callback_entry, 'float', 11)
-            self.txtConsumerRisk.connect('focus-out-event',
-                                         self._callback_entry, 'float', 10)
+            self._lst_handler_id.append(
+                self.txtTTFF.connect('focus-out-event', self._callback_entry,
+                                     'float', 20))
+            self._lst_handler_id.append(
+                self.txtTTT.connect('focus-out-event', self._callback_entry,
+                                    'float', 16))
+            self._lst_handler_id.append(
+                self.txtAverageGR.connect('focus-out-event',
+                                          self._callback_entry, 'float', 17))
+            self._lst_handler_id.append(
+                self.txtAverageFEF.connect('focus-out-event',
+                                           self._callback_entry, 'float', 21))
+            self._lst_handler_id.append(
+                self.txtProgramMS.connect('focus-out-event',
+                                          self._callback_entry, 'float', 18))
+            self._lst_handler_id.append(
+                self.txtProgramProb.connect('focus-out-event',
+                                            self._callback_entry, 'float', 19))
+            self._lst_handler_id.append(
+                self.txtProducerRisk.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 11))
+            self._lst_handler_id.append(
+                self.txtConsumerRisk.connect('focus-out-event',
+                                             self._callback_entry,
+                                             'float', 10))
 
             self.fxdRGPlan.show_all()
 
@@ -893,7 +902,8 @@ class Testing(object):
                                                        u"calendar."))
             _labels = [_(u"Phase"), _(u"Test\nArticles"), _(u"Start Date"),
                        _(u"End Date"), _(u"Cumulative\nTest Time"),
-                       _(u"Growth Rate"), _(u"Number of\nFailures"),
+                       _(u"Minimum\nRequired\nGrowth Rate"),
+                       _(u"Expected\nNumber of\nFailures"),
                        _(u"Average\nMTBF"), _(u"Initial\nMTBF"),
                        _(u"Final\nMTBF")]
             _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
@@ -923,10 +933,10 @@ class Testing(object):
                     _datatype = (i, 'gint')
                 elif i in [2, 3]:
                     _datatype = (i, 'gchararray')
-    # TODO: Unhide the growth rate column after figuring out a good way to calculate test phase specific growth rates.
+# TODO: Unhide the growth rate column after figuring out a good way to calculate test phase specific growth rates.
                 elif i == 5:
                     _datatype = (i, 'gfloat')
-                    _column.set_visible(False)
+                #    _column.set_visible(False)
                 else:
                     _datatype = (i, 'gfloat')
                 _column.set_attributes(_cell, text=i)
@@ -993,24 +1003,24 @@ class Testing(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the gtk.Fixed() for displaying reliability growth plan
             # feasibility.
-            _labels_ = [_(u"MTBF<sub>I</sub> / MTBF<sub>GP</sub> should fall "
-                          u"in the range of 0.15 - 0.47.  On average this "
-                          u"ratio is 0.30."),
-                        _(u"Program MTBF<sub>I</sub> / MTBF<sub>GP</sub>:"),
-                        "", "",
-                        _(u"MTBF<sub>G</sub> / MTBF<sub>GP</sub> should fall "
-                          u"in the range of 0.60 - 0.80."),
-                        _(u"Program MTBF<sub>G</sub> / MTBF<sub>GP</sub>:"),
-                        "", "",
-                        _(u"MTBF<sub>G</sub> / MTBF<sub>I</sub> should fall "
-                          u"in the range of 2 - 3."),
-                        _(u"Program MTBF<sub>G</sub> / MTBF<sub>I</sub>:"),
-                        "", "",
-                        _(u"The Fix Effectiveness Factor should fall in the "
-                          u"range of 0.55 - 0.85.  On average the FEF is "
-                          u"0.70."),
-                        _(u"Program average FEF:"), "", ""]
-            (_x_pos_, _y_pos_) = _widg.make_labels(_labels_,
+            _labels = [_(u"MTBF<sub>I</sub> / MTBF<sub>GP</sub> should fall "
+                         u"in the range of 0.15 - 0.47.  On average this "
+                         u"ratio is 0.30."),
+                       _(u"Program MTBF<sub>I</sub> / MTBF<sub>GP</sub>:"),
+                       "", "",
+                       _(u"MTBF<sub>G</sub> / MTBF<sub>GP</sub> should fall "
+                         u"in the range of 0.60 - 0.80."),
+                       _(u"Program MTBF<sub>G</sub> / MTBF<sub>GP</sub>:"),
+                       "", "",
+                       _(u"Average growth rate should fall in the range of "
+                         u"0.23 - 0.64."),
+                       _(u"Program average growth rate:"),
+                       "", "",
+                       _(u"The Fix Effectiveness Factor should fall in the "
+                         u"range of 0.55 - 0.85.  On average the FEF is "
+                         u"0.70."),
+                       _(u"Program average FEF:"), "", ""]
+            (_x_pos_, _y_pos_) = _widg.make_labels(_labels,
                                                    self.fxdRGRisk, 5, 5)
 
             self.chkMIMGP.set_tooltip_text(_(u"Indicates whether or not the "
@@ -1024,9 +1034,9 @@ class Testing(object):
             self.chkMGMGP.set_tooltip_text(_(u"Indicates whether or not the "
                                              u"goal MTBF to mature MTBF ratio "
                                              u"is within reasonable limits."))
-            self.chkTRMG.set_tooltip_text(_(u"Indicates whether or not the "
-                                            u"goal MTBF to initial MTBF ratio "
-                                            u"is within reasonable limits."))
+            self.chkGR.set_tooltip_text(_(u"Indicates whether or not the "
+                                          u"average growth rate is within "
+                                          u"reasonable limits."))
             self.pltPlotOC.set_tooltip_text(_(u"Displays the Reliability "
                                               u"Growth plan Operating "
                                               u"Characteristic (OC) curve."))
@@ -1039,9 +1049,9 @@ class Testing(object):
             self.fxdRGRisk.put(self.lblMGMGP, _x_pos_, _y_pos_[6])
             self.fxdRGRisk.put(self.chkMGMGP, 5, _y_pos_[7])
 
-            self.fxdRGRisk.put(self.txtTRMG, _x_pos_, _y_pos_[9])
-            self.fxdRGRisk.put(self.lblMGMI, _x_pos_, _y_pos_[10])
-            self.fxdRGRisk.put(self.chkTRMG, 5, _y_pos_[11])
+            self.fxdRGRisk.put(self.txtGR, _x_pos_, _y_pos_[9])
+            self.fxdRGRisk.put(self.lblGR, _x_pos_, _y_pos_[10])
+            self.fxdRGRisk.put(self.chkGR, 5, _y_pos_[11])
 
             self.fxdRGRisk.put(self.txtFEF, _x_pos_, _y_pos_[13])
             self.fxdRGRisk.put(self.lblFEF, _x_pos_, _y_pos_[14])
@@ -1192,6 +1202,10 @@ class Testing(object):
                                                   u"rate/MTBF bounds and "
                                                   u"goodness of fit (GoF) "
                                                   u"tests."))
+            self.txtTestTermTime.set_tooltip_text(_(u"For time terminated "
+                                                    u"(Type II) tests, enter "
+                                                    u"the test termination "
+                                                    u"time."))
 
             # Place the widgets used to describe the format of the dataset.
             _y_pos = 5
@@ -1207,7 +1221,12 @@ class Testing(object):
 
             _label = _widg.make_label(_(u"Confidence:"))
             _fxdDataSet_.put(_label, 5, _y_pos)
-            _fxdDataSet_.put(self.spnConfidence, 230, _y_pos)
+            _fxdDataSet_.put(self.spnConfidence, 250, _y_pos)
+            _y_pos += 30
+
+            _label = _widg.make_label(_(u"Test Termination Time:"))
+            _fxdDataSet_.put(_label, 5, _y_pos)
+            _fxdDataSet_.put(self.txtTestTermTime, 250, _y_pos)
             _y_pos += 25
 
             _label = _widg.make_label(u"")
@@ -1219,16 +1238,18 @@ class Testing(object):
                                        self._callback_entry, 'float', 26)
             self.spnConfidence.connect('value-changed',
                                        self._callback_spin, 26)
+            self.txtTestTermTime.connect('focus-out-event',
+                                         self._callback_entry, 'float', 200)
 
             # Place the gtk.TreeView() that will display the reliability test
             # data.
             _labels = [_(u"Record\nNumber"), _(u"Date"),
                        _(u"Interval\nStart"), _(u"Interval\nEnd"),
                        _(u"Number\nof\nFailures")]
-            _model_ = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                                    gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                                    gobject.TYPE_INT)
-            self.tvwTestAssessment.set_model(_model_)
+            _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                                   gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+                                   gobject.TYPE_INT)
+            self.tvwTestAssessment.set_model(_model)
             self.tvwTestAssessment.set_tooltip_text(_(u"Displays the "
                                                       u"incidents associated "
                                                       u"with the selected "
@@ -1238,7 +1259,7 @@ class Testing(object):
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
                 _cell.set_property('background', 'white')
-                _cell.connect('edited', _widg.edit_tree, i, _model_)
+                _cell.connect('edited', _widg.edit_tree, i, _model)
 
                 _column = gtk.TreeViewColumn()
                 _column.set_widget(_widg.make_column_heading(_labels[i]))
@@ -1481,11 +1502,9 @@ class Testing(object):
         :rtype: boolean
         """
 
-        _query_ = "SELECT * FROM tbl_tests \
-                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx)
+        _query = "SELECT * FROM tbl_tests \
+                  WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
+        _results_ = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             self.n_tests = len(_results_)
         except TypeError:
@@ -1500,11 +1519,11 @@ class Testing(object):
 
         self.treeview.expand_all()
         self.treeview.set_cursor('0', None, False)
-        root = _model_.get_iter_root()
-        if root is not None:
-            path = _model_.get_path(root)
-            col = self.treeview.get_column(0)
-            self.treeview.row_activated(path, col)
+        _root = _model_.get_iter_root()
+        if _root is not None:
+            _path = _model_.get_path(_root)
+            _col = self.treeview.get_column(0)
+            self.treeview.row_activated(_path, _col)
 
         # Load the Assembly combo.
         _query_ = "SELECT fld_name, fld_assembly_id, fld_description \
@@ -1522,16 +1541,18 @@ class Testing(object):
     def load_test_assessment_tree(self):
         """
         Method to load the Testing class test data gtk.TreeView().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT fld_record_id, fld_request_date, \
                          fld_left_interval, fld_right_interval, \
                          fld_quantity \
                   FROM tbl_survival_data \
-                  WHERE fld_dataset_id=%d" % self.test_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+                  WHERE fld_dataset_id=%d \
+                  ORDER BY fld_request_date" % self.test_id
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             _n_records = len(_results)
         except TypeError:
@@ -1639,12 +1660,16 @@ class Testing(object):
         self.spnConfidence.set_value(self.confidence)
         self.txtCumTestTime.set_text(str(self.cum_time))
         self.txtCumFailures.set_text(str(self.cum_failures))
+        self.txtTestTermTime.set_text(str(self._flt_test_termination_time))
 
         return False
 
     def _update_attributes(self):
         """
         Method to update the Testing class attributes.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1684,28 +1709,30 @@ class Testing(object):
         Method to display a plot in it's own window.
 
         :param event: the matplotlib MouseEvent that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        plot = event.canvas
-        parent = plot.get_parent()
+        _plot = event.canvas
+        _parent = _plot.get_parent()
 
-        height = int(self._app.winWorkBook.height)
-        width = int(self._app.winWorkBook.width / 2.0)
+        _height = int(self._app.winWorkBook.height)
+        _width = int(self._app.winWorkBook.width / 2.0)
 
-        if event.button == 3:              # Right click.
-            window = gtk.Window()
-            window.set_skip_pager_hint(True)
-            window.set_skip_taskbar_hint(True)
-            window.set_default_size(width, height)
-            window.set_border_width(5)
-            window.set_position(gtk.WIN_POS_NONE)
-            window.set_title(_(u"RTK Plot"))
+        if event.button == 3:               # Right click.
+            _window = gtk.Window()
+            _window.set_skip_pager_hint(True)
+            _window.set_skip_taskbar_hint(True)
+            _window.set_default_size(_width, _height)
+            _window.set_border_width(5)
+            _window.set_position(gtk.WIN_POS_NONE)
+            _window.set_title(_(u"RTK Plot"))
 
-            window.connect('delete_event', _close_plot, plot, parent)
+            _window.connect('delete_event', _close_plot, _plot, _parent)
 
-            plot.reparent(window)
+            _plot.reparent(_window)
 
-            window.show_all()
+            _window.show_all()
 
         return False
 
@@ -1713,13 +1740,13 @@ class Testing(object):
         """
         Loads the Reliability Growth plot.
 
-        :param TPT: a list of the planned test times for each test phase.
-        :param MTBFA: a list of planned average MTBF values for each test
-                      phase.
-        :param obs: a list of lists of observed values for each test phase.
-                    The inner lists contain [Lower Bound, Point, Upper Bound]
-                    for the instantaneous failure intensity or instantaneous
-                    MTBF at each failure time.
+        :param float TPT: a list of the planned test times for each test phase.
+        :param float MTBFA: a list of planned average MTBF values for each test
+                            phase.
+        :param float obs: a list of lists of observed values for each test
+                          phase.  The inner lists contain [Lower Bound, Point,
+                          Upper Bound] for the instantaneous failure intensity
+                          or instantaneous MTBF at each failure time.
         :return: False if successful or True if an error is encountered.
         :rtype : boolean
         """
@@ -1809,7 +1836,7 @@ class Testing(object):
                              _(u"Planned Growth Curve"), _(u"Target Values")])
 
             # Find the minimum and maximum y-value.
-            _y_min = max(0.0, min(_targets), min(ideal), min(plan))
+            _y_min = min(0.0, min(_targets), min(ideal), min(plan))
             _y_max = max(max(_targets), max(ideal), max(plan))
 
         # Add the idealized growth curve.
@@ -1881,7 +1908,7 @@ class Testing(object):
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
 
-        _text_ = str(_model_.get_value(_row_, self._col_order[14]))
+        _text_ = str(_model_.get_value(_row_, self._lst_col_order[14]))
 
         _start_ = self.txtAttachment.get_start_iter()
         _end_ = self.txtAttachment.get_end_iter()
@@ -1899,28 +1926,29 @@ class Testing(object):
         Attachment gtk.TextBuffer and opening the link in the default
         application.
 
-        :param __tag: the gtk.TextTag() that called this method.
-        :param __widget: the gtk.TextView() that contains the tag calling this
-                         method.
-        :param event: the mouse button event calling this method.
-        :param row: the gtk.TextIter that called this method.
+        :param gtk.TextTag __tag: the gtk.TextTag() that called this method.
+        :param gtk.TextView __widget: the gtk.TextView() that contains the tag
+                                      calling this method.
+        :param gtk.gdk.Event event: the gtk.gdk.Event() event calling this
+                                    method.
+        :param gtk.TextIter row: the gtk.TextIter() that called this method.
         """
 
         import magic
 
-        line_number = row.get_line()
-        _start_ = self.txtAttachment.get_iter_at_line(line_number)
-        _end_ = self.txtAttachment.get_iter_at_line(line_number + 1)
+        _line_number = row.get_line()
+        _start = self.txtAttachment.get_iter_at_line(_line_number)
+        _end = self.txtAttachment.get_iter_at_line(_line_number + 1)
 
-        _text_ = self.txtAttachment.get_text(_start_, _end_,
-                                             include_hidden_chars=False)
+        _text = self.txtAttachment.get_text(_start, _end,
+                                            include_hidden_chars=False)
 
-        if len(_text_) > 1 and event.type == gtk.gdk.BUTTON_RELEASE:
-            mime = magic.Magic(mime=True)
+        if len(_text) > 1 and event.type == gtk.gdk.BUTTON_RELEASE:
+            _mime = magic.Magic(mime=True)
             try:
-                print mime.from_file(_text_)
+                print _mime.from_file(_text)
             except IOError:
-                _util.rtk_error(_(u"File %s does not exist" % _text_))
+                _util.rtk_error(_(u"File %s does not exist" % _text))
 
         return False
 
@@ -1932,12 +1960,11 @@ class Testing(object):
         _title_ = _(u"RTK - Add Test Plans")
         _prompt_ = _(u"How many test plans to add?")
 
-# Find the largest test plan ID already in the RTK Program database and
-# increment it by one.
-        _query_ = "SELECT MAX(fld_test_id) \
-                   FROM tbl_tests"
-        _max_id_ = self._app.DB.execute_query(_query_,
-                                              None,
+        # Find the largest test plan ID already in the RTK Program database and
+        # increment it by one.
+        _query = "SELECT MAX(fld_test_id) \
+                  FROM tbl_tests"
+        _max_id_ = self._app.DB.execute_query(_query, None,
                                               self._app.ProgCnx)[0][0]
         if _max_id_ is None or not _max_id_ or _max_id_ == '':
             _max_id_ = 1001
@@ -2002,12 +2029,43 @@ class Testing(object):
 
         return False
 
+    def _delete_test_record(self):
+        """
+        Method to remove the selected test record.
+
+        :return: False if successful or True if an error occurs.
+        :rtype: boolean
+        """
+
+        (_model, _row) = self.tvwTestAssessment.get_selection().get_selected()
+        _record_id = _model.get_value(_row, 0)
+
+        _err = False
+
+        _query = "DELETE FROM tbl_survival_data \
+                  WHERE fld_record_id=%d \
+                  AND fld_dataset_id=%d" % (_record_id, self.test_id)
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
+            _err = True
+
+        self.load_test_assessment_tree()
+
+        if _err:
+            _util.rtk_error(_(u"Problem deleting record %d from the RTK "
+                              u"Program database."))
+            return True
+
+        return False
+
     def _calculate(self, __button):
         """
         Method to perform calculations for the Testing class.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: gtk.ToolButton
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        method.
+        :return: False if successful or True if an error occurs.
+        :rtype: boolean
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -2034,6 +2092,7 @@ class Testing(object):
         _gr = [0.0, 0.0, 0.0]               # Growth rate estimates.
         _crit_vals = []                     # Trend and GoF critical values.
 
+        _M = 2
         _N = 0
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -2058,7 +2117,7 @@ class Testing(object):
         if not self.chkFixMTBFI.get_active():
             MTBFI = initial_mtbf(TTT, t1, MTBFF, AvgGR, AvgMS, Prob)
 
-        # Calculate final MTBF.
+        # Calculate final, goal MTBF.
         if not self.chkFixMTBFG.get_active():
             MTBFF = final_mtbf(TTT, t1, MTBFI, AvgGR)
 
@@ -2081,9 +2140,23 @@ class Testing(object):
         if not self.chkFixProgramProb.get_active():
             Prob = prob(t1, MTBFI, AvgMS)
 
+        # Calculate the growth potential MTBF.
         self.mgp = growth_potential(MTBFI, AvgMS, AvgFEF)
         if not isinstance(self.mgp, (int, long, float)):
             self.mgp = MTBFF
+        if self.mgp < MTBFF:
+            _util.rtk_warning(_(u"The goal MTBF is greater than the growth "
+                                u"potential MTBF.  It is recommended that you "
+                                u"review the Initial Program MTBF, Average "
+                                u"FEF, and Average Management Strategy for "
+                                u"the test program.  Growth potential is a "
+                                u"function of these three parameters."))
+
+        # Calculate the ideal growth curve from 0 - TTT in steps of one.
+        _times = range(int(TTT))
+        _ideal = idealized_values(TTT, t1, MTBFI, MTBFF, AvgGR,
+                                  self.optMTBF.get_active())
+        self.mgp = min(self.mgp, _ideal[-1])
 
         _model.set_value(_row, 6, MTBFI)
         _model.set_value(_row, 9, MTBFF)
@@ -2100,11 +2173,6 @@ class Testing(object):
         self.txtAverageGR.set_text(str(fmt.format(AvgGR)))
         self.txtProgramMS.set_text(str(fmt.format(AvgMS)))
         self.txtProgramProb.set_text(str(fmt.format(Prob)))
-
-        # Calculate the ideal growth curve from 0 - TTT in steps of one.
-        _times = range(int(TTT))
-        _ideal = idealized_values(TTT, t1, MTBFI, AvgGR,
-                                  self.optMTBF.get_active())
 
         # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
         # Reliability growth planning phase specific calculations.          #
@@ -2166,8 +2234,10 @@ class Testing(object):
             _M = len(_X)                    # Total number of groups.
             _N = sum(_F)                    # Total number of failures.
 
-# TODO: Add gtk.Entry() for entering termination time for a time terminated test.
-            _T_star = _X[-1]                # Test termination time.
+            # If the user-suppled test termination time is less than the latest
+            # observed time, then use the latest observed time.
+            if self._flt_test_termination_time != _X[-1]:
+                self._flt_test_termination_time = _X[-1]
 
             # Estimate model parameters and bounds.
             if _N > 1:
@@ -2180,34 +2250,37 @@ class Testing(object):
                     (_lambda_hat[1],
                      _beta_hat[1]) = crow_amsaa_parameters(_F, _X,
                                                            grouped=True)
-# TODO: Add a gtk.ComboBox() to select confidence bound types for RG assessment.  Default to Crow bounds until then.
+
             # Calculate the confidence bounds for the model parameters.
             (_lambda_hat[0],
-             _lambda_hat[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                           _beta_hat[1], _alpha, 2)
+             _lambda_hat[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                           _lambda_hat[1], _beta_hat[1],
+                                           _alpha, 2)
             (_beta_hat[0],
-             _beta_hat[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                         _beta_hat[1], _alpha, 1)
+             _beta_hat[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                         _lambda_hat[1], _beta_hat[1],
+                                         _alpha, 1)
 
             # Calculate MTBF and failure intensity point estimates.
             (_mu_c[1],
-             _mu_i[1]) = crow_amsaa_mean(_lambda_hat[1], _beta_hat[1], _T_star)
+             _mu_i[1]) = crow_amsaa_mean(_lambda_hat[1], _beta_hat[1],
+                                         self._flt_test_termination_time)
 
             _rho_c[1] = 1.0 / _mu_c[1]
             _rho_i[1] = 1.0 / _mu_i[1]
 
             # Calculate bounds on the MTBF and failure intensities.
             (_rho_c[0],
-             _rho_c[2]) = crow_bounds(_N, _T_star, _lambda_hat[1],
-                                      _beta_hat[1], _alpha, 3)
+             _rho_c[2]) = crow_bounds(_N, self._flt_test_termination_time,
+                                      _lambda_hat[1], _beta_hat[1], _alpha, 3)
 
             _mu_c[0] = 1.0 / _rho_c[2]
             _mu_c[2] = 1.0 / _rho_c[0]
 
             _rho_i[0] = _lambda_hat[0] * _beta_hat[0] * \
-                _T_star**(_beta_hat[0] - 1.0)
+                self._flt_test_termination_time**(_beta_hat[0] - 1.0)
             _rho_i[2] = _lambda_hat[2] * _beta_hat[2] * \
-                _T_star**(_beta_hat[2] - 1.0)
+                self._flt_test_termination_time**(_beta_hat[2] - 1.0)
 
             _mu_i[0] = 1.0 / _rho_i[2]
             _mu_i[2] = 1.0 / _rho_i[0]
@@ -2219,81 +2292,84 @@ class Testing(object):
 
             __row = __model.iter_next(__row)
 
-        self.cum_time = _T_star
         self.cum_failures = _N
 
-        # Calculate critical values for GoF tests.
-        _chi2_critical_l = chi2.ppf(_alpha_half, 2 * _N)
-        _chi2_critical_u = chi2.ppf(_alpha + _alpha_half, 2 * _N)
-
-        _probs = self._cvm_table.get(_M, self._cvm_table[min(self._cvm_table.keys(), key=lambda k: abs(k - _M))])
-        _cvm_critical = _probs.get(2.0 * _alpha_half, _probs[min(_probs.keys(), key=lambda k: abs(k - 2.0 * _alpha_half))])
-
-        if not self.optGrouped.get_active():    # Exact failure times.
-            # Test the hypothesis that the data fits the Crow-AMSAA model.
-            #
-            #       Ho: the data fits the Crow-AMSAA model
-            #       Ha: the data does not fit the Crow-AMSAA model
-            #
-            # Reject Ho if _CvM exceeds the critical value.
-            _cvm = cramer_von_mises(_X, _beta_hat[1], _T_star, type2=True)
-            self.txtGoFTrend.set_text(str(fmt.format(_cvm_critical)))
-            self.txtGoFModel.set_text(str(fmt.format(_cvm)))
-            if _cvm < _cvm_critical:
-                self.lblGoFModel.set_markup(_(u"<span foreground='green'>"
-                                              u"Good Fit</span>"))
-            else:
-                self.lblGoFModel.set_markup(_(u"<span foreground='red'>"
-                                              u"Poor Fit</span>"))
-
-        elif self.optGrouped.get_active():      # Grouped failure times.
-            # Test the hypothesis that the data fits the Crow-AMSAA model.
-            #
-            #       Ho: the data fits the Crow-AMSAA model
-            #       Ha: the data does not fit the Crow-AMSAA model
-            #
-            # Reject Ho if _chi2 exceeds the critical values.
-            _chi2 = crow_amsaa_chi_square(_F, _X,
-                                          _lambda_hat[1], _beta_hat[1])
-            self.txtGoFTrend.set_text(str(fmt.format(_chi2_critical_u)))
-            self.txtGoFModel.set_text(str(fmt.format(_chi2)))
-            if _chi2 > _chi2_critical_l and _chi2 < _chi2_critical_u:
-                self.lblGoFModel.set_markup(_(u"<span foreground='green'>"
-                                              u"Good Fit</span>"))
-            else:
-                self.lblGoFModel.set_markup(_(u"<span foreground='red'>"
-                                              u"Poor Fit</span>"))
-
         if _N > 1:
-            # Calculate the growth rate and it's bounds.
-            _gr[0] = 1.0 - _beta_hat[2]
-            _gr[1] = 1.0 - _beta_hat[1]
-            _gr[2] = 1.0 - _beta_hat[0]
+            # Calculate critical values for GoF tests.
+            _chi2_critical_l = chi2.ppf(_alpha_half, 2 * _N)
+            _chi2_critical_u = chi2.ppf(_alpha + _alpha_half, 2 * _N)
 
-            # Load the results.
-            _model.set_value(_row, 24, _T_star)
-            _model.set_value(_row, 25, _N)
-            self.txtScalell.set_text(str(fmt.format(_lambda_hat[0])))
-            self.txtScale.set_text(str(fmt.format(_lambda_hat[1])))
-            self.txtScaleul.set_text(str(fmt.format(_lambda_hat[2])))
-            self.txtShapell.set_text(str(fmt.format(_beta_hat[0])))
-            self.txtShape.set_text(str(fmt.format(_beta_hat[1])))
-            self.txtShapeul.set_text(str(fmt.format(_beta_hat[2])))
-            self.txtGRActualll.set_text(str(fmt.format(_gr[0])))
-            self.txtGRActual.set_text(str(fmt.format(_gr[1])))
-            self.txtGRActualul.set_text(str(fmt.format(_gr[2])))
-            self.txtRhoInstll.set_text(str(fmt.format(_rho_i[0])))
-            self.txtRhoInst.set_text(str(fmt.format(_rho_i[1])))
-            self.txtRhoInstul.set_text(str(fmt.format(_rho_i[2])))
-            self.txtRhoCll.set_text(str(fmt.format(_rho_c[0])))
-            self.txtRhoC.set_text(str(fmt.format(_rho_c[1])))
-            self.txtRhoCul.set_text(str(fmt.format(_rho_c[2])))
-            self.txtMTBFInstll.set_text(str(fmt.format(_mu_i[0])))
-            self.txtMTBFInst.set_text(str(fmt.format(_mu_i[1])))
-            self.txtMTBFInstul.set_text(str(fmt.format(_mu_i[2])))
-            self.txtMTBFCll.set_text(str(fmt.format(_mu_c[0])))
-            self.txtMTBFC.set_text(str(fmt.format(_mu_c[1])))
-            self.txtMTBFCul.set_text(str(fmt.format(_mu_c[2])))
+            _probs = self._cvm_table.get(_M, self._cvm_table[min(self._cvm_table.keys(), key=lambda k: abs(k - _M))])
+            _cvm_critical = _probs.get(2.0 * _alpha_half, _probs[min(_probs.keys(), key=lambda k: abs(k - 2.0 * _alpha_half))])
+
+            if not self.optGrouped.get_active():    # Exact failure times.
+                self.cum_time = sum(_X)
+                # Test the hypothesis that the data fits the Crow-AMSAA model.
+                #
+                #       Ho: the data fits the Crow-AMSAA model
+                #       Ha: the data does not fit the Crow-AMSAA model
+                #
+                # Reject Ho if _CvM exceeds the critical value.
+                _cvm = cramer_von_mises(_X, _beta_hat[1],
+                                        self._flt_test_termination_time,
+                                        type2=True)
+                self.txtGoFTrend.set_text(str(fmt.format(_cvm_critical)))
+                self.txtGoFModel.set_text(str(fmt.format(_cvm)))
+                if _cvm < _cvm_critical:
+                    self.lblGoFModel.set_markup(_(u"<span foreground='green'>"
+                                                  u"Good Fit</span>"))
+                else:
+                    self.lblGoFModel.set_markup(_(u"<span foreground='red'>"
+                                                  u"Poor Fit</span>"))
+
+            elif self.optGrouped.get_active():      # Grouped failure times.
+                self.cum_time = max(_X)
+                # Test the hypothesis that the data fits the Crow-AMSAA model.
+                #
+                #       Ho: the data fits the Crow-AMSAA model
+                #       Ha: the data does not fit the Crow-AMSAA model
+                #
+                # Reject Ho if _chi2 exceeds the critical values.
+                _chi2 = crow_amsaa_chi_square(_F, _X,
+                                              _lambda_hat[1], _beta_hat[1])
+                self.txtGoFTrend.set_text(str(fmt.format(_chi2_critical_u)))
+                self.txtGoFModel.set_text(str(fmt.format(_chi2)))
+                if _chi2 > _chi2_critical_l and _chi2 < _chi2_critical_u:
+                    self.lblGoFModel.set_markup(_(u"<span foreground='green'>"
+                                                  u"Good Fit</span>"))
+                else:
+                    self.lblGoFModel.set_markup(_(u"<span foreground='red'>"
+                                                  u"Poor Fit</span>"))
+
+                # Calculate the growth rate and it's bounds.
+                _gr[0] = 1.0 - _beta_hat[2]
+                _gr[1] = 1.0 - _beta_hat[1]
+                _gr[2] = 1.0 - _beta_hat[0]
+
+                # Load the results.
+                _model.set_value(_row, 24, self._flt_test_termination_time)
+                _model.set_value(_row, 25, self.cum_failures)
+                self.txtScalell.set_text(str(fmt.format(_lambda_hat[0])))
+                self.txtScale.set_text(str(fmt.format(_lambda_hat[1])))
+                self.txtScaleul.set_text(str(fmt.format(_lambda_hat[2])))
+                self.txtShapell.set_text(str(fmt.format(_beta_hat[0])))
+                self.txtShape.set_text(str(fmt.format(_beta_hat[1])))
+                self.txtShapeul.set_text(str(fmt.format(_beta_hat[2])))
+                self.txtGRActualll.set_text(str(fmt.format(_gr[0])))
+                self.txtGRActual.set_text(str(fmt.format(_gr[1])))
+                self.txtGRActualul.set_text(str(fmt.format(_gr[2])))
+                self.txtRhoInstll.set_text(str(fmt.format(_rho_i[0])))
+                self.txtRhoInst.set_text(str(fmt.format(_rho_i[1])))
+                self.txtRhoInstul.set_text(str(fmt.format(_rho_i[2])))
+                self.txtRhoCll.set_text(str(fmt.format(_rho_c[0])))
+                self.txtRhoC.set_text(str(fmt.format(_rho_c[1])))
+                self.txtRhoCul.set_text(str(fmt.format(_rho_c[2])))
+                self.txtMTBFInstll.set_text(str(fmt.format(_mu_i[0])))
+                self.txtMTBFInst.set_text(str(fmt.format(_mu_i[1])))
+                self.txtMTBFInstul.set_text(str(fmt.format(_mu_i[2])))
+                self.txtMTBFCll.set_text(str(fmt.format(_mu_c[0])))
+                self.txtMTBFC.set_text(str(fmt.format(_mu_c[1])))
+                self.txtMTBFCul.set_text(str(fmt.format(_mu_c[2])))
 
             self.load_assessment_tab()
 
@@ -2317,9 +2393,9 @@ class Testing(object):
         The criteria and acceptable ranges are:\n
 
         - Initial MTBF / Goal MTBF              0.15 - 0.47\n
+        - Fix Effectiveness Factor              0.55 - 0.85\n
         - Goal MTBF / Growth Potential MTBF     0.60 - 0.80\n
         - Growth Rate                           0.23 - 0.64\n
-        - Fix Effectiveness Factor              0.55 - 0.85\n
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
@@ -2386,11 +2462,11 @@ class Testing(object):
             self.lblMGMGP.set_markup(_text)
 
             # Program average growth rate.
-            self.txtTRMG.set_text(str(self.avg_growth))
+            self.txtGR.set_text(str(self.avg_growth))
             if self.avg_growth >= 0.23 and self.avg_growth <= 0.64:
-                self.chkTRMG.set_active(True)
+                self.chkGR.set_active(True)
             else:
-                self.chkTRMG.set_active(False)
+                self.chkGR.set_active(False)
 
             if self.avg_growth < 0.35:
                 _text = "<span foreground='#00CC00'>Low Risk</span>"
@@ -2398,7 +2474,7 @@ class Testing(object):
                 _text = "<span foreground='#D5D515'>Medium Risk</span>"
             else:
                 _text = "<span foreground='red'>High Risk</span>"
-            self.lblMGMI.set_markup(_text)
+            self.lblGR.set_markup(_text)
 
             # Fix effectiveness factor is low enough, but not too low.  Too low
             # means many failures will not be corrected, too high means it may
@@ -2419,6 +2495,11 @@ class Testing(object):
                 self.lblFEF.set_markup("<span foreground='red'>"
                                        "High Risk</span>")
 
+# TODO: Add check of management strategy.
+# < 0.9 => high risk
+# > 0.95 => high risk
+# 0.9 - 0.925 => medium risk
+# 0.925 - 0.95 => low risk
             # Reliability growth planning feasibility per phase.
             i = 0
             _model = self.tvwTestFeasibility.get_model()
@@ -2468,19 +2549,22 @@ class Testing(object):
         Saves the Testing class gtk.TreeView() information to the open RTK
         Program database.
 
-        :param __button: the gtk.Button() widget that called this function.4
-        :type __button: gtk.Button
-        :return: False or True
+        :param gtk.Button __button: the gtk.Button() widget that called this
+                                    method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-# Find the notebook page that is currently selected.  We only save the
-# information associated with the currently selected page.
+        _util.set_cursor(self._app, gtk.gdk.WATCH)
+
+        # Find the notebook page that is currently selected.  We only save the
+        # information associated with the currently selected page.
         _page = self.notebook.get_current_page()
 
-# Find the test type so we can save the contents of any gtk.TreeView
-# associated specifically with the selected type of test.
+        # Find the test type so we can save the contents of any gtk.TreeView()
+        # associated specifically with the selected type of test.
         _test_type = _model.get_value(_row, 5)
 
         _model.foreach(self._save_line_item)
@@ -2495,6 +2579,8 @@ class Testing(object):
             _model = self.tvwTestAssessment.get_model()
             _model.foreach(self._save_rg_data)
 
+        _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+
         return False
 
     def _save_line_item(self, model, __path, row):
@@ -2502,62 +2588,59 @@ class Testing(object):
         Saves each row in the TESTING Object treeview model to the RTK's
         Program MySQL or SQLite3 database.
 
-        :param model: the TESTING class gtk.TreeModel().
-        :type modle: gtk.TreeModel
-        :param string __path: the path of the active row in the TESTING
-                              gtk.ListStore().
-        :param row: the selected row in the TESTING gtk.TreeView().
-        :type row: gtk.Iter
+        :param gtk.TreeModel model: the Testing class gtk.TreeModel().
+        :param str __path: the path of the active row in the Testing class
+                           gtk.ListStore().
+        :param gtk.TreeIter row: the selected row in the Testing class
+                                 gtk.TreeView().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        values = (model.get_value(row, self._col_order[1]),
-                  model.get_value(row, self._col_order[3]),
-                  model.get_value(row, self._col_order[4]),
-                  model.get_value(row, self._col_order[5]),
-                  model.get_value(row, self._col_order[6]),
-                  model.get_value(row, self._col_order[7]),
-                  model.get_value(row, self._col_order[8]),
-                  model.get_value(row, self._col_order[9]),
-                  model.get_value(row, self._col_order[10]),
-                  model.get_value(row, self._col_order[11]),
-                  model.get_value(row, self._col_order[12]),
-                  model.get_value(row, self._col_order[13]),
-                  model.get_value(row, self._col_order[14]),
-                  model.get_value(row, self._col_order[15]),
-                  model.get_value(row, self._col_order[16]),
-                  model.get_value(row, self._col_order[17]),
-                  model.get_value(row, self._col_order[18]),
-                  model.get_value(row, self._col_order[19]),
-                  model.get_value(row, self._col_order[20]),
-                  model.get_value(row, self._col_order[21]),
-                  model.get_value(row, self._col_order[22]),
-                  model.get_value(row, self._col_order[23]),
-                  model.get_value(row, self._col_order[24]),
-                  model.get_value(row, self._col_order[25]),
-                  model.get_value(row, self._col_order[26]),
-                  model.get_value(row, self._col_order[2]),
-                  model.get_value(row, self._col_order[0]))
+        _values = (model.get_value(row, self._lst_col_order[1]),
+                   model.get_value(row, self._lst_col_order[3]),
+                   model.get_value(row, self._lst_col_order[4]),
+                   model.get_value(row, self._lst_col_order[5]),
+                   model.get_value(row, self._lst_col_order[6]),
+                   model.get_value(row, self._lst_col_order[7]),
+                   model.get_value(row, self._lst_col_order[8]),
+                   model.get_value(row, self._lst_col_order[9]),
+                   model.get_value(row, self._lst_col_order[10]),
+                   model.get_value(row, self._lst_col_order[11]),
+                   model.get_value(row, self._lst_col_order[12]),
+                   model.get_value(row, self._lst_col_order[13]),
+                   model.get_value(row, self._lst_col_order[14]),
+                   model.get_value(row, self._lst_col_order[15]),
+                   model.get_value(row, self._lst_col_order[16]),
+                   model.get_value(row, self._lst_col_order[17]),
+                   model.get_value(row, self._lst_col_order[18]),
+                   model.get_value(row, self._lst_col_order[19]),
+                   model.get_value(row, self._lst_col_order[20]),
+                   model.get_value(row, self._lst_col_order[21]),
+                   model.get_value(row, self._lst_col_order[22]),
+                   model.get_value(row, self._lst_col_order[23]),
+                   model.get_value(row, self._lst_col_order[24]),
+                   model.get_value(row, self._lst_col_order[25]),
+                   model.get_value(row, self._lst_col_order[26]),
+                   model.get_value(row, self._lst_col_order[2]),
+                   model.get_value(row, self._lst_col_order[0]))
 
-        query = "UPDATE tbl_tests \
-                 SET fld_assembly_id=%d, fld_test_name='%s', \
-                     fld_test_description='%s', fld_test_type=%d, \
-                     fld_mi=%f, fld_mg=%f, fld_mgp=%f, fld_tr=%f, \
-                     fld_consumer_risk=%f, fld_producer_risk=%f, \
-                     fld_rg_plan_model=%d, fld_rg_assess_model=%d, \
-                     fld_num_phases=%d, fld_attachment='%s', \
-                     fld_ttt=%f, fld_avg_growth=%f, fld_avg_ms=%f, \
-                     fld_prob=%f, fld_ttff=%f, fld_avg_fef=%f, \
-                     fld_grouped=%d, fld_group_interval=%f, fld_cum_time=%f, \
-                     fld_cum_failures=%d, fld_confidence=%f \
-                 WHERE fld_test_id=%d \
-                 AND fld_revision_id=%d" % values
+        _query = "UPDATE tbl_tests \
+                  SET fld_assembly_id=%d, fld_test_name='%s', \
+                      fld_test_description='%s', fld_test_type=%d, \
+                      fld_mi=%f, fld_mg=%f, fld_mgp=%f, fld_tr=%f, \
+                      fld_consumer_risk=%f, fld_producer_risk=%f, \
+                      fld_rg_plan_model=%d, fld_rg_assess_model=%d, \
+                      fld_num_phases=%d, fld_attachment='%s', \
+                      fld_ttt=%f, fld_avg_growth=%f, fld_avg_ms=%f, \
+                      fld_prob=%f, fld_ttff=%f, fld_avg_fef=%f, \
+                      fld_grouped=%d, fld_group_interval=%f, fld_cum_time=%f, \
+                      fld_cum_failures=%d, fld_confidence=%f \
+                  WHERE fld_test_id=%d \
+                  AND fld_revision_id=%d" % _values
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("testing.py: Failed to save test plan.")
             return True
 
@@ -2567,14 +2650,15 @@ class Testing(object):
         """
         Method to save the reliability growth phase information.
 
-        :param model: the Testing class reliability growth phase
-                      gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param string __path: the path of the active row in the Testing class
-                              reliability growth phase gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the Testing class
-                    reliability growth phase gtk.TreeView().
-        :type row: gtk.TreeIter
+        :param gtk.TreeModel model: the Testing class reliability growth phase
+                                    gtk.TreeModel().
+        :param str __path: the path of the active row in the Testing class
+                           reliability growth phase gtk.TreeModel().
+        :param gtk.TreeIter row: the gtk.TreeIter() of the active row in the
+                                 Testing class reliability growth phase
+                                 gtk.TreeView().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _dt_start = datetime.strptime(model.get_value(row, 2),
@@ -2606,34 +2690,31 @@ class Testing(object):
         Method to save the reliability growth phase feasibility information.
 
         Keyword Arguments:
-        :param model: the TESTING class reliability growth phase feasibility
-                      gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param __path: the path of the active row in the TESTING class
-                       reliability growth phase feasibility
-                       gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
-                    reliability growth phase feasibility gtk.TreeView().
-        :type row: gtk.TreeIter
+        :param gtk.TreeModel model: the Testing class reliability growth phase
+                                    feasibility gtk.TreeModel().
+        :param str __path: the path of the active row in the Testing class
+                           reliability growth phase feasibility
+                           gtk.TreeModel().
+        :param gtk.TreeIter row: the gtk.TreeIter() of the active row in the
+                                 Testing class reliability growth phase
+                                 feasibility gtk.TreeView().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        values = (model.get_value(row, 4), model.get_value(row, 5),
-                  model.get_value(row, 6), model.get_value(row, 7),
-                  model.get_value(row, 8), model.get_value(row, 0),
-                  self.test_id)
+        _values = (model.get_value(row, 4), model.get_value(row, 5),
+                   model.get_value(row, 6), model.get_value(row, 7),
+                   model.get_value(row, 8), model.get_value(row, 0),
+                   self.test_id)
 
-        query = "UPDATE tbl_rel_growth \
-                 SET fld_num_fails=%f, fld_ms=%f, fld_fef_avg=%f, fld_tpu=%f, \
-                     fld_tpupw=%f \
-                 WHERE fld_phase_id=%d \
-                 AND fld_test_id=%d" % values
+        _query = "UPDATE tbl_rel_growth \
+                  SET fld_num_fails=%f, fld_ms=%f, fld_fef_avg=%f, fld_tpu=%f, \
+                      fld_tpupw=%f \
+                  WHERE fld_phase_id=%d \
+                  AND fld_test_id=%d" % _values
 
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx,
-                                             commit=True)
-
-        if not results:
+        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("testing.py: Failed to save reliability "
                                       "growth phase feasibility information.")
             return True
@@ -2644,33 +2725,30 @@ class Testing(object):
         """
         Method to save the reliability growth testing field data.
 
-        :param model: the TESTING class reliability growth field data
-                      gtk.TreeModel().
-        :type model: gtk.TreeModel
-        :param __path: the path of the active row in the TESTING class
-                       reliability growth field data gtk.TreeModel().
-        :param row: the gtk.TreeIter() of the active row in the TESTING class
-                    reliability growth field data gtk.TreeView().
-        :type row: gtk.TreeIter
+        :param gtk.TreeModel model: the Testing class reliability growth field
+                                    data gtk.TreeModel().
+        :param str __path: the path of the active row in the Testing class
+                           reliability growth field data gtk.TreeModel().
+        :param gtk.TreeIter row: the gtk.TreeIter() of the active row in the
+                                 Testing class reliability growth field data
+                                 gtk.TreeView().
         """
 
-        _date_ = datetime.strptime(model.get_value(row, 1),
-                                   '%Y-%m-%d').toordinal()
-        _values_ = (_date_, model.get_value(row, 2),
-                    model.get_value(row, 3), model.get_value(row, 4),
-                    model.get_value(row, 0), self.test_id)
+        _date = datetime.strptime(model.get_value(row, 1),
+                                  '%Y-%m-%d').toordinal()
+        _values = (_date, model.get_value(row, 2),
+                   model.get_value(row, 3), model.get_value(row, 4),
+                   model.get_value(row, 0), self.test_id)
 
-        _query_ = "UPDATE tbl_survival_data \
-                   SET fld_request_date=%d, fld_left_interval=%f, \
-                       fld_right_interval=%f, fld_quantity=%d \
-                   WHERE fld_record_id=%d \
-                   AND fld_dataset_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                               None,
-                                               self._app.ProgCnx,
-                                               commit=True)
+        _query = "UPDATE tbl_survival_data \
+                  SET fld_request_date=%d, fld_left_interval=%f, \
+                      fld_right_interval=%f, fld_quantity=%d \
+                  WHERE fld_record_id=%d \
+                  AND fld_dataset_id=%d" % _values
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True)
 
-        if not _results_:
+        if not _results:
             self._app.debug_log.error("testing.py: Failed to save reliability "
                                       "growth field data.")
             return True
@@ -2691,6 +2769,7 @@ class Testing(object):
         :rtype: boolean
         """
 
+        # Get the Testing Class gtk.TreeModel() and selected gtk.TreeIter().
         (_model, _row) = self.treeview.get_selection().get_selected()
 
         # Update the Testing Tree.
@@ -2703,6 +2782,7 @@ class Testing(object):
         else:
             _model.set_value(_row, index, check.get_active())
 
+        # Update the Testing class public and private attributes.
         self._update_attributes()
 
         return False
@@ -2809,26 +2889,22 @@ class Testing(object):
         Callback function to retrieve and save gtk.Entry() changes for the
         Testing class.
 
-        :param entry: the gtk.Entry() that called this method.
-        :type entry: gtk.Entry
-        :param  __event: the gtk.gdk.Event() that called this method.
-        :type __event: gtk.gdk.Event
-        :param convert: the data type to convert the entry contents to.
-        :type convert: string
-        :param index: the position in the applicable gtk.TreeModel() associated
-                      with the data from the calling gtk.Entry().
-        :type index: integer
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param str convert: the data type to convert the entry contents to.
+        :param int index: the position in the applicable gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Entry().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_model, _row) = self.treeview.get_selection().get_selected()
-
         if convert == 'text':
-            if index == self._col_order[4]:
+            if index == self._lst_col_order[4]:
                 _bounds = self.txtDescription.get_bounds()
                 _text = self.txtDescription.get_text(_bounds[0], _bounds[1])
-            elif index == self._col_order[15]:
+            elif index == self._lst_col_order[15]:
                 _bounds = self.txtAttachment.get_bounds()
                 _text = self.txtAttachment.get_text(_bounds[0], _bounds[1])
             else:
@@ -2850,16 +2926,18 @@ class Testing(object):
             _text = datetime.strptime(entry.get_text(),
                                       '%Y-%m-%d').toordinal()
 
-        # Try to update the gtk.TreeModel.  Just keep going if no row is
-        # selected.
-        try:
-            _model.set_value(_row, index, _text)
-        except TypeError:
-            pass
-
         if index == 13:
             self._rg_plan_details(2)
 
+        # Get the Testing Class gtk.TreeModel() and selected gtk.TreeIter()
+        # and update the Function Class gtk.TreeView().
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _model.set_value(_row, index, _text)
+
+        if index == 200:
+            self._flt_test_termination_time = float(_text)
+
+        # Update the Testing class public and private attributes.
         self._update_attributes()
 
         return False
@@ -2990,6 +3068,8 @@ class Testing(object):
         elif _page == 2:                   # Test assessment
             if button.get_name() == 'Add':
                 AddRGRecord(self._app)
+            elif button.get_name() == 'Remove':
+                self._delete_test_record()
 
         return False
 
@@ -2997,12 +3077,12 @@ class Testing(object):
         """
         Called whenever the Work Book gtk.Notebook() page is changed.
 
-        :param __notebook: the Work Book gtk.Notebook().
-        :param __page: the newly selected page widget.
-        :param integer page_num: the newly selected page number.
-                                 0 = Planning Inputs
-                                 1 = Test Feasibility
-                                 2 = Test Assessment
+        :param gtk.Notebook __notebook: the Work Book gtk.Notebook().
+        :param gtk.Widget __page: the newly selected page widget.
+        :param int page_num: the newly selected page number.
+                             * 0 = Planning Inputs
+                             * 1 = Test Feasibility
+                             * 2 = Test Assessment
         :return: False if successful or True if an error is encountered.
         :rtype: booelan
         """
@@ -3026,8 +3106,7 @@ class Testing(object):
         """
         Method to load the reliability growth plan details.
 
-        :param index: the index of the
-        :type index: integer
+        :param int index: the index of the
         :return: False if successful or True if an error is encountered.
         :rtype: booelan
         """
@@ -3172,6 +3251,94 @@ class Testing(object):
             return False
         else:
             return True
+
+    def _testing_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Testing Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 3:
+            self.txtName.handler_block(self._lst_handler_id[0])
+            self.txtName.set_text(str(new_text))
+            self.txtName.handler_unblock(self._lst_handler_id[0])
+        elif self._lst_col_order[position] == 4:
+            self.txtDescription.handler_block(self._lst_handler_id[1])
+            self.txtDescription.set_text(_util.none_to_string(new_text))
+            self.txtDescription.handler_unblock(self._lst_handler_id[1])
+        elif self._lst_col_order[position] == 6:
+            self.txtMTBFI.handler_block(self._lst_handler_id[2])
+            self.txtMTBFI.set_text(str(new_text))
+            self.txtMTBFI.handler_unblock(self._lst_handler_id[2])
+        elif self._lst_col_order[position] == 7:
+            self.txtMTBFG.handler_block(self._lst_handler_id[3])
+            self.txtMTBFG.set_text(str(new_text))
+            self.txtMTBFG.handler_unblock(self._lst_handler_id[3])
+        elif self._lst_col_order[position] == 8:
+            self.txtMTBFGP.handler_block(self._lst_handler_id[4])
+            self.txtMTBFGP.set_text(str(new_text))
+            self.txtMTBFGP.handler_unblock(self._lst_handler_id[4])
+        elif self._lst_col_order[position] == 9:
+            self.txtTechReq.handler_block(self._lst_handler_id[5])
+            self.txtTechReq.set_text(str(new_text))
+            self.txtTechReq.handler_unblock(self._lst_handler_id[5])
+        elif self._lst_col_order[position] == 20:
+            self.txtTTFF.handler_block(self._lst_handler_id[6])
+            self.txtTTFF.set_text(str(new_text))
+            self.txtTTFF.handler_unblock(self._lst_handler_id[6])
+        elif self._lst_col_order[position] == 16:
+            self.txtTTT.handler_block(self._lst_handler_id[7])
+            self.txtTTT.set_text(str(new_text))
+            self.txtTTT.handler_unblock(self._lst_handler_id[7])
+        elif self._lst_col_order[position] == 17:
+            self.txtAverageGR.handler_block(self._lst_handler_id[8])
+            self.txtAverageGR.set_text(str(new_text))
+            self.txtAverageGR.handler_unblock(self._lst_handler_id[8])
+        elif self._lst_col_order[position] == 21:
+            self.txtAverageFEF.handler_block(self._lst_handler_id[9])
+            self.txtAverageFEF.set_text(str(new_text))
+            self.txtAverageFEF.handler_unblock(self._lst_handler_id[9])
+        elif self._lst_col_order[position] == 18:
+            self.txtProgramMS.handler_block(self._lst_handler_id[10])
+            self.txtProgramMS.set_text(str(new_text))
+            self.txtProgramMS.handler_unblock(self._lst_handler_id[10])
+        elif self._lst_col_order[position] == 19:
+            self.txtProgramProb.handler_block(self._lst_handler_id[11])
+            self.txtProgramProb.set_text(str(new_text))
+            self.txtProgramProb.handler_unblock(self._lst_handler_id[11])
+        elif self._lst_col_order[position] == 11:
+            self.txtProducerRisk.handler_block(self._lst_handler_id[12])
+            self.txtProducerRisk.set_text(str(new_text))
+            self.txtProducerRisk.handler_unblock(self._lst_handler_id[12])
+        elif self._lst_col_order[position] == 10:
+            self.txtConsumerRisk.handler_block(self._lst_handler_id[13])
+            self.txtConsumerRisk.set_text(str(new_text))
+            self.txtConsumerRisk.handler_unblock(self._lst_handler_id[13])
+
+        return False
 
     def _rg_plan_edit(self, cell, path, new_text, position):
         """

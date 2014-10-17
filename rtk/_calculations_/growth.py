@@ -4,7 +4,9 @@ Contains functions for performing calculations associated with reliability
 growth.
 """
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
@@ -39,25 +41,12 @@ except ImportError:
 import gettext
 _ = gettext.gettext
 
-# Import R library.
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    import rpy2.rlike.container as rlc
-    import rpy2.rinterface as ri
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
 # Import mathematical functions.
 import numpy as np
 from numpy.linalg import inv
 from math import ceil, exp, floor, log, sqrt
-from scipy.stats import chi2, norm, t   #pylint: disable=E0611
-from scipy.optimize import fsolve, root       #pylint: disable=E0611
+from scipy.stats import chi2, norm, t       #pylint: disable=E0611
+from scipy.optimize import fsolve, root     #pylint: disable=E0611
 
 # Import other RTK modules.
 try:
@@ -150,18 +139,12 @@ def average_mtbf(ttt, t1, mtbfi, gr, T, N):
     """
     Function to calculate the average growth rate over a test phase.
 
-    :param ttt: the total test time for the test phase.
-    :type ttt: float
-    :param t1: the length of the first test phase.
-    :type t1: float
-    :param mtbfi: the initial MTBF for the test phase.
-    :type mtbfi: float
-    :param gr: the average growth rate for the test phase.
-    :type gr: float
-    :param T: total test time for previous test phase.
-    :type T: float
-    :param N: cumulative number of failures over previous i - 1 test phases.
-    :type N: integer
+    :param float ttt: the total test time for the test phase.
+    :param float t1: the length of the first test phase.
+    :param float mtbfi: the initial MTBF for the test program.
+    :param float gr: the average growth rate for the test phase.
+    :param float T: total test time for previous test phase.
+    :param int N: cumulative number of failures over previous i - 1 test phases.
     :return: _mtbfa; the average MTBF over the test phase.
     :rtype: float
     """
@@ -335,12 +318,9 @@ def growth_potential(mtbfi, avems, avefef):
     """
     Function to calculate the growth potential MTBF.
 
-    :param mtbfi: the initial MTBF.
-    :type mtbfi: float
-    :param avems: the management strategy.
-    :type avems: float
-    :param avefef: the fix effectiveness factor.
-    :type avefef: float
+    :param float mtbfi: the initial MTBF.
+    :param float avems: the management strategy.
+    :param float avefef: the fix effectiveness factor.
     :return: _mtbfgp: the growth potnetial MTBF.
     :rtype: float
     """
@@ -351,10 +331,10 @@ def growth_potential(mtbfi, avems, avefef):
         _mtbfgp = mtbfi
         _util.rtk_error(_(u"To calculate the growth potential MTBF, "
                           u"you must provide the following inputs with "
-                          u"values greater than zero:"
-                          u"1. Initial MTBF (MI): %f"
-                          u"2. Management strategy (MS): %f"
-                          u"3. Fix Effectiveness Factor (FEF): %f")
+                          u"values greater than zero:\n\n"
+                          u"1. Initial MTBF (MI): %f\n"
+                          u"2. Management strategy (MS): %f\n"
+                          u"3. Fix Effectiveness Factor (FEF): %f\n\n")
                         % (mtbfi, avems, avefef))
         return True
 
@@ -377,19 +357,17 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
     test phase.  This is a wrapper function forthe growth_phase() function that
     allows the use of gtk.TreeModel().foreach()
 
-    :param model: the gtk.TreeModel() that called this function.
-    :type model: gtk.TreeModel
-    :param row: the first gtk.TreeIter().
-    :type row: gtk.TreeIter
-    :param t1: the length of the first test phase.
-    :type t1: float
-    :param mtbfi: the initial program MTBF.
-    :type: mtbfi: float
-    :param gr: the overall, average program growth rate.
-    :type gr: float
+    :param gtk.TreeModel model: the gtk.TreeModel() that called this function.
+    :param gtk.TreeIter row: the first gtk.TreeIter().
+    :param float t1: the length of the first test phase.
+    :param float mtbfi: the initial program MTBF.
+    :param float gr: the overall, average program growth rate.
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
+
+    # Function to calculate the optimum growth rate for a test phase.
+    _gr = lambda gr, mi, mf, ttt, t1: (ttt / t1)**gr + (mf / mi) * (gr - 1)
 
     # Set the length of first test phase.  If it is supplied use that,
     # otherwise use the growth start time.  If the length of the first test
@@ -412,7 +390,7 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
 
     # This will be used to set the initial MTBF of phase i equal to the final
     # MTBF of phase i - 1.
-    _prev_mtbfi = mtbfi
+    _mtbfi = mtbfi
 
     # Initialize some variables used to track cumulative values.
     i = 1
@@ -424,11 +402,8 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
         _gri = model.get_value(row, 5)          # Growth rate for phase i.
         _ni = model.get_value(row, 6)           # Num of failures for phase i.
         _mtbfai = model.get_value(row, 7)       # Average MTBF for phase i.
-        _mtbfi = model.get_value(row, 8)        # Starting MTBF for phase i.
+        #_mtbfi = model.get_value(row, 8)        # Starting MTBF for phase i.
         _mtbff = model.get_value(row, 9)        # Final MTBF for phase i.
-
-        if _gri <= 0.0:
-            _gri = gr
 
         # First make sure only one missing value exists for the test phase.
         # If not, inform the user and continue to the next test phase.
@@ -458,11 +433,10 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
                                _previous_time)
 
         if _gri <= 0.0:
-            #_gri = growth_rate(_ttti - _previous_time, _t1, _mtbfi, _mtbff)
-            _gri = gr
+            _gri = fsolve(_gr, 0.01, (_mtbfi, _mtbff, _ttti, _t1))[0]
 
         if _mtbff <= 0.0:
-           _mtbff = final_mtbf(_ttti, _t1, mtbfi, _gri)
+           _mtbff = final_mtbf(_ttti, _t1, _mtbfi, _gri)
 
         # Calculate the expected number of failures for the phase and the
         # average MTBF for the phase.  Even if _mtbfa > 0.0, we need to
@@ -482,35 +456,37 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
         model.set_value(row, 5, _gri)
         model.set_value(row, 6, ceil(_ni))  # No fractional failures.
         model.set_value(row, 7, _mtbfai)
-        model.set_value(row, 8, _prev_mtbfi)
+        model.set_value(row, 8, _mtbfi)
         model.set_value(row, 9, _mtbff)
 
-        _prev_mtbfi = _mtbff
+        _mtbfi = _mtbff
 
         row = model.iter_next(row)
 
     return False
 
 
-def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
+def idealized_values(ttt, ti, mtbfi, mtbff, gr, mtbf=True):
     """
     Function to calculate the values for the idealized growth curve.
 
-    :param ttt: the total time on test for the program.
-    :type ttt: float
-    :param ti: the growth start time (i.e., the time the first fix is
-               implemented on a test article).
-    :type ti: float
-    :param mtbfi: the initial MTBF for the test program.
-    :type mtbfi: float
-    :param avggr: the average growth rate across the entire test program.
-    :type avggr: float
-    :param mtbf: indicates whether to calculate MTBF (default) or failure
-                 intensity values.
-    :type mtbf: boolean
+    :param float ttt: the total time on test for the program.
+    :param float ti: the growth start time (i.e., the time the first fix is
+                     implemented on a test article).
+    :param float mtbfi: the initial MTBF for the test program.
+    :param float mtbff: the final MTBF for the test program.
+    :param float gr: the average growth rate across the entire test program.
+    :param bool mtbf: indicates whether to calculate MTBF (default) or failure
+                      intensity values.
     :return: _ideal
     :rtype: list of floats
     """
+
+    # Function to calculate the growth rate necessary to have the ideal growth
+    # curve end at the final MTBF.
+    _gr = lambda gr, mi, mf, ttt, t1: (ttt / t1)**gr + (mf / mi) * (gr - 1)
+
+    _ideal_gr = fsolve(_gr, 0.01, (mtbfi, mtbff, ttt, ti))[0]
 
     _time = 0.0
     _ideal = []
@@ -526,10 +502,10 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)   # pylint: disable=E1101
+                _ideal.append(np.nan)
             else:
-                _ideal.append((mtbfi * (_time / ti) ** gr) /
-                              (1.0 - gr))
+                _ideal.append((mtbfi * (_time / ti) ** _ideal_gr) /
+                              (1.0 - _ideal_gr))
 
             _time += 1.0
     else:
@@ -537,10 +513,10 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(1.0 / mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)   # pylint: disable=E1101
+                _ideal.append(np.nan)
             else:
-                _ideal.append((1.0 - gr) /
-                              (mtbfi * (_time / ti) ** gr))
+                _ideal.append((1.0 - _ideal_gr) /
+                              (mtbfi * (_time / ti) ** _ideal_gr))
 
             _time += 1.0
 
@@ -551,10 +527,9 @@ def planned_values(ttt, mtbfa, mtbf=True):  # pylint: disable=C0103
     """
     Function to create the planned growth curve values.
 
-    :param ttt:
-    :type ttt: float
-    :param mtbfa: the average MTBF for the test phase.
-    :type mtbfa: float
+    :param float ttt: the total test time.
+    :param float mtbfa: the average MTBF for the test phase.
+    :param boolean mtbf: indicates whether to calculate MTBF or failure rates.
     :return: _plan
     :rtype: list of floats
     """
@@ -584,15 +559,13 @@ def duane_parameters(F, X):
     when regression is used to estimated the NHPP Power Law model parameters.
     The form of the Duane model used in RTK:
 
-        cumulative failure intensity = lambda_c = (1 / b) * T^-alpha
-        cumulative MTBF = MTBFc = b * T^alpha
-        instantaneous failure intensity = lambda_i = (1 - alpha) * lambda_c
-        instantaneous MTBF = MTBFi = MTBFc / (1 - alpha)
+    .. note:: cumulative failure intensity = lambda_c = (1 / b) * T^-alpha
+    .. note:: cumulative MTBF = MTBFc = b * T^alpha
+    .. note:: instantaneous failure intensity = lambda_i = (1 - alpha) * lambda_c
+    .. note:: instantaneous MTBF = MTBFi = MTBFc / (1 - alpha)
 
-    :param F: list of the number of failures at each failure time.
-    :type F: list of integers
-    :param X: list of failure times
-    :type X: list of floats
+    :param int F: list of the number of failures at each failure time.
+    :param float X: list of failure times
     :return: _b_hat, _alpha_hat
     :rtype: tuple of floats
     """
@@ -609,7 +582,10 @@ def duane_parameters(F, X):
     except ZeroDivisionError:
         _alpha_hat = 0.0
 
-    _b_hat = exp((1.0 / sum(F)) * (_logM - _alpha_hat * _logT))
+    try:
+        _b_hat = exp((1.0 / sum(F)) * (_logM - _alpha_hat * _logT))
+    except OverflowError:
+        _b_hat = 1.0
 
     return _b_hat, _alpha_hat
 
@@ -670,8 +646,8 @@ def duane_mean(b, alpha, T):
     values (e.g., MTBF) given the Duane parameters and a time.  The Duane model
     used is:
 
-        cumulative mean = mean_c = b * T^alpha
-        instantaneous mean = mean_i = mean_c / (1 - alpha)
+    cumulative mean = mean_c = b * T^alpha
+    instantaneous mean = mean_i = mean_c / (1 - alpha)
 
     :param b: the Duane model scale parameter.
     :type b: float
@@ -696,6 +672,11 @@ def duane_mean(b, alpha, T):
 def beta_grouped(b, f, t, logt):
     """
     Function for estimating the beta value from grouped data.
+
+    :param float b: guess for the Crow-AMSAA shape parameter.
+    :param ndarray f:
+    :param ndarray t:
+    :param ndarray logt:
     """
 
     _beta = sum(f[1:] * ((t[1:]**b * logt[1:] - t[:-1]**b * logt[:-1]) /
@@ -710,10 +691,13 @@ def crow_amsaa_parameters(F, X, T_star=0.0, grouped=False):
     used when MLE is used to estimated the NHPP Power Law model parameters.
     The form of the Crow-AMSAA model used in RTK:
 
-        cumulative failure intensity = lambda_c = lambda * T^(beta - 1)
-        cumulative MTBF = MTBFc = (1 / lambda) * T^(1- beta)
-        instantaneous failure intensity = lambda_i = lambda * beta * T^(beta - 1)
-        instantaneous MTBF = MTBFi = 1 / lambda_i
+    .. hlist::
+       :columns: 1
+
+        * cumulative failure intensity = lambda_c = lambda * T^(beta - 1)
+        * cumulative MTBF = MTBFc = (1 / lambda) * T^(1- beta)
+        * instantaneous failure intensity = lambda_i = lambda * beta * T^(beta - 1)
+        * instantaneous MTBF = MTBFi = 1 / lambda_i
 
     :param F: list of the number of failures at each failure time.
     :type F: list of integers
@@ -732,7 +716,6 @@ def crow_amsaa_parameters(F, X, T_star=0.0, grouped=False):
     # Validate that the failure time and failure count lists are not empty.
     # If they are, raise an error and return 0.0 for both parameters.
     if F == [] or X == []:
-# TODO: Write lists to the error log.
         _util.rtk_error(_(u"The list of failure times and/or the list of "
                           u"failure counts is empty.  Cannot estimate "
                           u"Crow-AMSAA parameters without both."))
@@ -777,8 +760,9 @@ def crow_amsaa_mean(_lambda, beta, T):
     mean values (e.g., MTBF) given the Crow-AMSAA parameters and a time.  The
     Crow-AMSAA model used is:
 
-        cumulative mean = mean_c = (1 / lambda) * T^(1 - beta)
-        instantaneous mean = mean_i = 1 / (lambda * beta * T^(beta - 1))
+    .. math::
+    cumulative mean &= mean_c = (1 / lambda) * T^((1 - beta) \\
+    instantaneous mean &= mean_i = 1 / (lambda * beta * T^(beta - 1))
 
     :param _lambda: the Crow-AMSAA model scale parameter.
     :type _lambda: float
@@ -809,18 +793,14 @@ def cramer_von_mises(X, beta, T_star=0.0, type2=True):
     not a set of data fits to the Crow-AMSAA model.  This is used when failure
     times are exact.
 
-    The null hypothesis is rejected if the statistic exceeds the critical value
-    for a chosen significance level.
+    .. note:: The null hypothesis is rejected if the statistic exceeds the
+              critical value for a chosen significance level.
 
-    :param X: list of failure times
-    :type X: list of floats
-    :param beta: the Crow-AMSAA model shape parameter.
-    :type beta: float
-    :param T_star: termination time.
-    :type T_star: float
-    :param type2: whether or not the test is time terminated (Type I) or
-                  failure terminated (Type II).
-    :type type2: boolean
+    :param float X: list of failure times
+    :param float beta: the Crow-AMSAA model shape parameter.
+    :param float T_star: termination time.
+    :param boolean type2: whether or not the test is time terminated (Type I)
+                          or failure terminated (Type II).
     :return: _Cvm, the Cramer-von Mises GoF statistic.
     :rtype: float
     """
@@ -845,8 +825,11 @@ def crow_amsaa_chi_square(F, X, _lambda, beta, grouped=True):
     Function to calculate the chi-square statistic for GoF.  This is used when
     failure times are grouped.  The test statistic is calculated as follows:
 
-        theta_i = lambda * (T_i^beta - T_i-1^beta)
-        chi-square = sum((Ni - theta_i)^2 / theta_i)
+    .. hlist::
+       :columns: 1
+
+        * theta_i = lambda * (T_i^beta - T_i-1^beta)
+        * chi-square = sum((Ni - theta_i)^2 / theta_i)
 
     Where theta_i is the expected number of failures in the interval (i, i-1)
     and Ni is the observed number of failures.  The null hypothesis is rejected
@@ -887,14 +870,10 @@ def var_covar(N, T, alpha, beta):
     Function to calculate the variance-covariance matrix for the NHPP - Power
     Law model parameters.  Used for Crow-AMSAA models too.
 
-    :param N: total number of failures in the data set.
-    :type N: integer
-    :param T: total observation time or maximum failure time.
-    :type T: float
-    :param alpha: the point estimate of the alpha (scale) parameter.
-    :type alpha: float
-    :param beta: the point estimate of the beta (shape) parameter.
-    :type beta: float
+    :param int N: total number of failures in the data set.
+    :param float T: total observation time or maximum failure time.
+    :param float alpha: the point estimate of the alpha (scale) parameter.
+    :param float beta: the point estimate of the beta (shape) parameter.
     :return: the variance-covariance matrix for alpha and beta.  It has the
              form:
                     [[Var(alpha), Cov(alpha, beta)],
@@ -1075,28 +1054,24 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
     Function to estimate the parameters (alpha and beta) of the NHPP power law
     model.  The NHPP power law model used in RTK is:
 
-        cumulative failure intensity = m(t) = alpha * t^(-beta)
+    .. hlist::
+       :columns: 1
 
-    :param F: list of failure counts.
-    :type F: list of integers
-    :param X: list of individual failures times.
-    :type X: list of floats
-    :param confmeth: the method for calculating confidence bounds.
-    :type confmeth: integer
-    :param fitmeth: method used to fit the data
-                    1=MLE (default)
-                    2=regression
-    :type fitmeth: integer
-    :param conftype: the confidence level type
-                     1=lower one-sided
-                     2=upper one-sided
-                     3=two-sided (default)
-    :type conftype: integer
-    :param alpha: the confidence level.
-    :type alpha: float
-    :param T_star: the end of the observation period for time terminated, or
-                   Type I, tests.  Defaults to 0.0.
-    :type T_star: float
+        * cumulative failure intensity = m(t) = alpha * t^(-beta)
+
+    :param int F: list of failure counts.
+    :param float X: list of individual failures times.
+    :param int confmeth: the method for calculating confidence bounds.
+    :param int fitmeth: method used to fit the data
+                        1 = MLE (default)
+                        2 = regression
+    :param int conftype: the confidence level type
+                         1 = lower one-sided
+                         2 = upper one-sided
+                         3 = two-sided (default)
+    :param float alpha: the confidence level.
+    :param float T_star: the end of the observation period for time terminated,
+                         or Type I, tests.  Defaults to 0.0.
     :return: [_alpha_lower, _alpha_hat, _alpha_upper],
              [_beta_lower, _beta_hat, _beta_upper]
     :rtype: tuple of lists
@@ -1129,15 +1104,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
         _N = sum(F) - 2
 
     if fitmeth == 1:                        # MLE
-        # Make sure we're using a compatible method of calculating confidence
-        # bounds.
-        if confmeth not in [1, 3, 5]:
-            _util.rtk_information(_(u"Selected confidence method is "
-                                    u"incompatible with NHPP MLE analysis.  "
-                                    u"Select from Crow, Fisher, or "
-                                    u"Bootstrap methods and try again."))
-            return ([0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
         # Estimate the Crow-AMASAA parameters using exact failure time data.
         _alpha_hat, _beta_hat = crow_amsaa_parameters(F, X, T_star)
 
@@ -1167,15 +1133,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
                                                      alpha)
 
     elif fitmeth == 2:                        # Regression
-        # Make sure we're using a compatible method of calculating confidence
-        # bounds.
-        if confmeth != 2:
-            _util.rtk_information(_(u"Selected confidence method is "
-                                    u"incompatible with NHPP regression "
-                                    u"analysis.  Select the Duane method and "
-                                    u"try again."))
-            return ([0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
-
         # Estimate the Duane parameters and transform to the NHPP - Power Law
         # parameters.
         _b_hat, _beta_hat = duane_parameters(F, X)
@@ -1186,8 +1143,14 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3,
                                                           _beta_hat)
 
         # Calculate the bounding values for the alpha (scale) parameter.
-        _alpha_lower = 1.0 / (_b_hat * exp(_critical_value_t * _se_lnb))
-        _alpha_upper = 1.0 / (_b_hat * exp(-_critical_value_t * _se_lnb))
+        try:
+            _alpha_lower = 1.0 / (_b_hat * exp(_critical_value_t * _se_lnb))
+        except (OverflowError, ZeroDivisionError):
+            _alpha_lower = _alpha_hat
+        try:
+            _alpha_upper = 1.0 / (_b_hat * exp(-_critical_value_t * _se_lnb))
+        except (OverflowError, ZeroDivisionError):
+            _alpha_upper = _alpha_hat
 
         # Calculate the bounding values for the beta (shape) parameter.
         _beta_lower = _beta_hat - _critical_value_t * _se_beta
@@ -1274,5 +1237,4 @@ def loglinear(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
 
         _loglinear_.append([_T_, _n_, _M_, g0, g1, _mc_hat_, _lc_hat_])
 
-    #print _loglinear_
     return False

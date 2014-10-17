@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-""" This is the System Tree window for RTK. """
+"""
+This is the Module Book window for RTK.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
 #       tree.py is part of The RTK Project
@@ -44,6 +47,8 @@ import imports as _impt
 import utilities as _util
 
 from _assistants_.adds import AddTestPlan
+from _assistants_.processmap import ProcessMap
+from _assistants_.designreview import *
 
 
 class TreeWindow(gtk.Window):
@@ -51,14 +56,11 @@ class TreeWindow(gtk.Window):
     This class is the window containing the various gtk.Treeviews.
     """
 
-#TODO: Create GUI to set/edit user-defined column headings for all trees.
-
     def __init__(self, application):
         """
         Initializes the TreeBook Object.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         self._app = application
@@ -226,6 +228,7 @@ class TreeWindow(gtk.Window):
                                      u"validation activities."))
             self.notebook.insert_page(self.scwValidation, tab_label=label,
                                       position=-1)
+            _app.VALIDATION.load_tree()
 
         if _conf.RTK_MODULES[6] == 1:
             label = gtk.Label()
@@ -279,7 +282,6 @@ class TreeWindow(gtk.Window):
         #if(_conf.RTK_MODULES[12] == 1):
             # This determines whether FTAs are active.
 
-
         self.notebook.show_all()
 
         return False
@@ -290,7 +292,7 @@ class TreeWindow(gtk.Window):
         menu = gtk.Menu()
 
         menu2 = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("_Project"), use_underline=True)
+        menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
         menu_item.connect('activate', _util.create_project, self)
         menu2.append(menu_item)
 
@@ -298,7 +300,7 @@ class TreeWindow(gtk.Window):
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert_sibling.png')
+        image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         menu_item.set_label(_(u"Sibling Assembly"))
         menu_item.set_image(image)
         menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
@@ -439,6 +441,20 @@ class TreeWindow(gtk.Window):
         mnuSearch.show()
         mnuSearch.set_submenu(menu)
 
+        # Create the View menu.
+        menu = gtk.Menu()
+        menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
+        menu_item.connect('activate', ProcessMap, self._app)
+        menu.append(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"_Design Reviews"),
+                                 use_underline=True)
+        menu_item.connect('activate', DesignReview, self._app)
+        menu.append(menu_item)
+
+        mnuView = gtk.MenuItem(label=_(u"_Process"), use_underline=True)
+        mnuView.show()
+        mnuView.set_submenu(menu)
+
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
         menu_item.connect('activate', _util.options, self._app)
@@ -447,9 +463,9 @@ class TreeWindow(gtk.Window):
                                  use_underline=True)
         menu_item.connect('activate', _util.create_comp_ref_des, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Import Project"),
+        menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                  use_underline=True)
-        menu_item.connect('activate', _util.import_project, self._app)
+        menu_item.connect('activate', ReviewCriteria, self._app)
         menu.append(menu_item)
         menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
                                  use_underline=True)
@@ -465,6 +481,7 @@ class TreeWindow(gtk.Window):
         menubar.append(mnuFile)
         menubar.append(mnuEdit)
         menubar.append(mnuSearch)
+        menubar.append(mnuView)
         menubar.append(mnuTools)
 
         return menubar
@@ -476,7 +493,7 @@ class TreeWindow(gtk.Window):
 
         _pos = 0
 
-# New file button.
+        # New file button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         image = gtk.Image()
@@ -486,7 +503,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Connect button
+        # Connect button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Connect to an existing RTK Program Database."))
         image = gtk.Image()
@@ -496,6 +513,9 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
         # Save button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Save the currently open RTK Program Database."))
@@ -503,42 +523,6 @@ class TreeWindow(gtk.Window):
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         button.set_icon_widget(image)
         button.connect('clicked', _util.save_project, self._app)
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
-# TODO: Connect callback to approriate class' calculate method.
-        # Calculate button
-        button = gtk.MenuToolButton(None, label = "")
-        button.set_tooltip_text(_(u"Perform various calculations on the "
-                                  u"system."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        button.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_(u"Project"))
-        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK "
-                                     u"project."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Revision"))
-        menu_item.set_tooltip_text(_(u"Calculate the revisions only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Function"))
-        menu_item.set_tooltip_text(_(u"Calculate the functions only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 2)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"System"))
-        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies "
-                                     u"only."))
-        #menu_item.connect('activate', _calc.calculate_project, self._app, 3)
-        menu.add(menu_item)
-        button.set_menu(menu)
-        menu.show_all()
-        button.show()
         toolbar.insert(button, _pos)
         _pos += 1
 
@@ -576,9 +560,9 @@ class TreeWindow(gtk.Window):
         """
         Called whenever the Tree Book notebook page is changed.
 
-        @param notebook: the Tree Book notebook widget.
-        @param page: the newly selected page widget.
-        @param page_num: the newly selected page number.
+        :param notebook: the Tree Book notebook widget.
+        :param page: the newly selected page widget.
+        :param page_num: the newly selected page number.
                             0 = Revision Tree
                             1 = Function Tree
                             2 = Requirements Tree
@@ -590,17 +574,13 @@ class TreeWindow(gtk.Window):
                             8 = Survival Analyses Tree
         """
 
-        button = self.toolbar.get_nth_item(4)
-
         if _conf.RTK_PAGE_NUMBER[page_num] == 0:
             try:
                 self._app.REVISION.treeview.grab_focus()
-                (_model_, _row_) = self._app.REVISION.treeview.get_selection().get_selected()
-                _path_ = _model_.get_path(_model_.get_iter_root())
-                _column_ = self._app.REVISION.treeview.get_column(0)
-                self._app.REVISION.treeview.row_activated(_path_, _column_)
-                button.set_tooltip_text(_(u"Add a new revision to the current "
-                                          u"RTK Program."))
+                _model = self._app.REVISION.treeview.get_model()
+                _path = _model.get_path(_model.get_iter_root())
+                _column = self._app.REVISION.treeview.get_column(0)
+                self._app.REVISION.treeview.row_activated(_path, _column)
             except TypeError:               # There are no revisions.
                 pass
         elif _conf.RTK_PAGE_NUMBER[page_num] == 1:
@@ -648,9 +628,6 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new verification and "
-                                          u"validation task to the current "
-                                          u"RTK Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
         elif _conf.RTK_PAGE_NUMBER[page_num] == 6:
@@ -661,8 +638,6 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.TESTING.treeview.get_column(0)
                 self._app.TESTING.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new test plan to the "
-                                          u"current RTK Program."))
             except:
                 self._app.TESTING.load_notebook()
         elif _conf.RTK_PAGE_NUMBER[page_num] == 7:
@@ -673,8 +648,6 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new incident to the current "
-                                          u"RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
         elif _conf.RTK_PAGE_NUMBER[page_num] == 8:
@@ -685,8 +658,6 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new dataset to the current "
-                                          u"RTK Program."))
             except:                         # There are no datasets.
                 self._app.DATASET.load_notebook()
 
@@ -708,18 +679,17 @@ class TreeWindow(gtk.Window):
             assistant = _impt.ImportAssistant(self._app)
             return False
 
-    def delete_event(self, widget, event, data=None):
+    def delete_event(self, __widget, __event, data=None):
         """
-        Used to quit the RTK application when the X in the upper
+        Method to quit the RTK application when the X in the upper
         right corner is pressed.
 
-        Keyword Arguments:
-        winmain -- the RTK application main window widget.
-        event   -- the gdk event (GDK_DELETE in this case).
-        data    -- any data to pass when exiting the application.
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
-
-        _util.save_project(widget, self)
 
         gtk.main_quit()
 

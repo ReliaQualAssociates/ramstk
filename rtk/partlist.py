@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-""" This is the List notebook for RTK. """
+"""
+This is the List Book for RTK.
+"""
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
 #       partlist.py is part of the RTK Project
@@ -50,45 +53,38 @@ _ = gettext.gettext
 
 class ListWindow(gtk.Window):
     """
-    This class is the windows containing the lists associated with the
-    selected Revision, Function, or Assembly in the upper window.
+    This class is the windows containing the lists associated with the selected
+    Revision, Function, or Assembly in the upper window.
     """
-
-    # TODO: Write code to update notebook widgets when editing the Partslist treeview.
-    # TODO: Create GUI to set/edit user-defined column headings for all trees.
 
     def __init__(self, application):
         """
-        Initializes the List Object.
+        Initializes the List Class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
         self._app = application
 
-# Define global dictionary variables.
-        self.parttreepaths = {}
-
-# Define local dictionary variables.
-# Dictionary to hold the Assembly ID/Hardware Tree treemodel paths.  This is
-# used to keep the Hardware Tree and the Parts List in sync.
+        # Define private dictionary variables.
+        # Dictionary to hold the Assembly ID/Hardware Tree treemodel paths.
+        # This is used to keep the Hardware Tree and the Parts List in sync.
         self._treepaths = {}
 
-# Define local list variables.
+        # Define private list variables.
         self._VISIBLE_PARTS_ = []
 
-# Define global object variables.
-        self.objPartModel = None
-        self.objTestModel = None
-        self.objIncidentModel = None
-        self.objDatasetModel = None
-        self.objPartRow = None
-
-# Define local scalar variables.
+        # Define private scalar variables.
         self._assembly_id = 0
 
-# Create a new window and set its properties.
+        # Define public dictionary variables.
+        self.parttreepaths = {}
+        self.dicPartValues = {}
+
+        # Define public object variables.
+        self.objPartModel = None
+
+        # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_title(_(u"RTK Lists"))
         self.set_resizable(True)
@@ -96,97 +92,86 @@ class ListWindow(gtk.Window):
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
 
-        n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        width = gtk.gdk.screen_width() / n_screens
-        height = gtk.gdk.screen_height()
+        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
+        _width = gtk.gdk.screen_width() / _n_screens
+        _height = gtk.gdk.screen_height()
 
-        self.set_default_size((width / 3) - 10, (2 * height / 7))
+        self.set_default_size((_width / 3) - 10, (2 * _height / 7))
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)
-        self.move((2 * width / 3), 0)
+        self.move((2 * _width / 3), 0)
 
-# Create the gtk.Notebook widget to hold the parts list, RG tests list, program
-# incidents, and survival analyses list.
+        self.connect('delete_event', self.delete_event)
+
+        # Create the gtk.Notebook widget to hold the parts list, RG tests list,
+        # program incidents, and survival analyses list.
         self.notebook = gtk.Notebook()
 
-# Find the user's preferred gtk.Notebook tab position.
-        if(_conf.TABPOS[1] == 'left'):
+        # Find the user's preferred gtk.Notebook tab position.
+        if _conf.TABPOS[1] == 'left':
             self.notebook.set_tab_pos(gtk.POS_LEFT)
-        elif(_conf.TABPOS[1] == 'right'):
+        elif _conf.TABPOS[1] == 'right':
             self.notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif(_conf.TABPOS[1] == 'top'):
+        elif _conf.TABPOS[1] == 'top':
             self.notebook.set_tab_pos(gtk.POS_TOP)
         else:
             self.notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self.notebook.connect('switch-page', self.notebook_page_switched)
 
-# Create the parts list tab for the LIST Object.
-        bg_color = _conf.RTK_COLORS[14]
-        fg_color = _conf.RTK_COLORS[15]
-        (self.tvwPartsList, self._col_order) = _widg.make_treeview('Parts', 7,
-                                                                   self._app,
-                                                                   None,
-                                                                   bg_color,
-                                                                   fg_color)
+        # Create the parts list tab for the LIST Object.
+        (self.tvwPartsList,
+         self._col_order) = _widg.make_treeview('Parts', 7, self._app,
+                                                None, _conf.RTK_COLORS[14],
+                                                _conf.RTK_COLORS[15])
         self.objPartModel = self.tvwPartsList.get_model()
         if self._parts_list_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Parts List tab.")
+            self._app.debug_log.error("partlist.py: Failed to create Parts "
+                                      "List tab.")
 
-# Create the reliability testing tab for the LIST Object.
-        bg_color = _conf.RTK_COLORS[14]
-        fg_color = _conf.RTK_COLORS[15]
-        (self.tvwRG, self._rg_col_order) = _widg.make_treeview('RGIncidents',
-                                                               13,
-                                                               self._app,
-                                                               None,
-                                                               bg_color,
-                                                               fg_color)
-        self.objTestModel = self.tvwRG.get_model()
+        # Create the reliability testing tab for the List class.
+        (self.tvwTesting,
+         self._rg_col_order) = _widg.make_treeview('Testing', 11, self._app,
+                                                   None, _conf.RTK_COLORS[14],
+                                                   _conf.RTK_COLORS[15])
         if self._rel_testing_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Reliability Test tab.")
+            self._app.debug_log.error("partlist.py: Failed to create "
+                                      "Reliability Test tab.")
 
-# Create the program incidents tab for the LIST object.
-        bg_color = _conf.RTK_COLORS[12]
-        fg_color = _conf.RTK_COLORS[13]
+        # Create the program incidents tab for the LIST object.
         (self.tvwIncidents,
-         self._incident_col_order) = _widg.make_treeview('Incidents',
-                                                         14,
-                                                         self._app,
-                                                         None,
-                                                         bg_color,
-                                                         fg_color)
-        self.objIncidentModel = self.tvwIncidents.get_model()
+         self._incident_col_order) = _widg.make_treeview('Incidents', 14,
+                                                         self._app, None,
+                                                         _conf.RTK_COLORS[12],
+                                                         _conf.RTK_COLORS[13])
         self.tvwIncidents.connect('row_activated',
                                   self._treeview_row_changed, 1)
 
         if self._incidents_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Program Incidents tab.")
+            self._app.debug_log.error("partlist.py: Failed to create Program "
+                                      "Incidents tab.")
 
-# Create the dataset tab for the LIST object.
-        bg_color = _conf.RTK_COLORS[12]
-        fg_color = _conf.RTK_COLORS[13]
+        # Create the dataset tab for the LIST object.
         (self.tvwDatasets,
          self._dataset_col_order) = _widg.make_treeview('Dataset', 16,
-                                                        self._app,
-                                                        None,
-                                                        bg_color,
-                                                        fg_color)
-        self.objDatasetModel = self.tvwDatasets.get_model()
+                                                        self._app, None,
+                                                        _conf.RTK_COLORS[12],
+                                                        _conf.RTK_COLORS[13])
         self.tvwDatasets.connect('row_activated',
                                  self._treeview_row_changed, 2)
 
         if self._survival_tab_create():
-            self._app.debug_log.error("partlist.py: Failed to create Datasets tab.")
+            self._app.debug_log.error("partlist.py: Failed to create Datasets "
+                                      "tab.")
 
-# Create a statusbar for the list/matrix window.
+        # Create a statusbar for the list/matrix window.
         self.statusbar = gtk.Statusbar()
 
-        vbox = gtk.VBox()
-        vbox.pack_start(self.notebook, expand=True, fill=True)
-        vbox.pack_start(self.statusbar, expand=False, fill=False)
+        _vbox = gtk.VBox()
+        _vbox.pack_start(self.notebook, expand=True, fill=True)
+        _vbox.pack_start(self.statusbar, expand=False, fill=False)
 
-        self.add(vbox)
+        self.add(_vbox)
         self.show_all()
 
         self.statusbar.push(1, _(u"Ready"))
@@ -200,25 +185,24 @@ class ListWindow(gtk.Window):
         self.tvwPartsList.connect('row_activated', self._row_activated)
 
         # Create the Parts list.
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add(self.tvwPartsList)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add(self.tvwPartsList)
 
-        frame = _widg.make_frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        _frame = _widg.make_frame()
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
 
-        label = gtk.Label()
-        _heading = _(u"Parts List")
-        label.set_markup("<span weight='bold'>" + _heading + "</span>")
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.show_all()
-        label.set_tooltip_text(_("Displays the list of parts for the selected Revision, Requirement, Function, or Assembly."))
+        _label = gtk.Label()
+        _label.set_markup(_(u"<span weight='bold'>Parts List</span>"))
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.show_all()
+        _label.set_tooltip_text(_(u"Displays the list of parts for the "
+                                  u"selected Revision, Function, or "
+                                  u"Hardware item."))
 
-        self.notebook.insert_page(frame,
-                                  tab_label=label,
-                                  position=-1)
+        self.notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
@@ -229,25 +213,25 @@ class ListWindow(gtk.Window):
         """
 
         # Create the Reliability Test list.
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwRG)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self.tvwTesting)
 
-        frame = _widg.make_frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        _frame = _widg.make_frame()
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
 
-        label = gtk.Label()
-        _heading = _(u"Reliability\nTests")
-        label.set_markup("<span weight='bold'>" + _heading + "</span>")
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.show_all()
-        label.set_tooltip_text(_(u"Displays the list of HALT, HASS, ALT, ESS, reliability growth and reliability demonstration tests for the selected Assembly."))
+        _label = gtk.Label()
+        _label.set_markup(_(u"<span weight='bold'>Reliability\nTests</span>"))
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.show_all()
+        _label.set_tooltip_text(_(u"Displays the list of HALT, HASS, ALT, "
+                                  u"ESS, reliability growth and reliability "
+                                  u"demonstration tests for the selected "
+                                  u"Revision or Hardware item."))
 
-        self.notebook.insert_page(frame,
-                                  tab_label=label,
-                                  position=-1)
+        self.notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
@@ -257,25 +241,24 @@ class ListWindow(gtk.Window):
         """
 
         # Create the Program Incidents list.
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwIncidents)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self.tvwIncidents)
 
-        frame = _widg.make_frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        _frame = _widg.make_frame()
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
 
-        label = gtk.Label()
-        _heading = _(u"Program\nIncidents")
-        label.set_markup("<span weight='bold'>" + _heading + "</span>")
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.show_all()
-        label.set_tooltip_text(_(u"Displays the list of program incidents for the selected Assembly."))
+        _label = gtk.Label()
+        _label.set_markup(_(u"<span weight='bold'>Program\nIncidents</span>"))
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.show_all()
+        _label.set_tooltip_text(_(u"Displays the list of program incidents "
+                                  u"for the selected Revision, Hardware item, "
+                                  u"or Software item."))
 
-        self.notebook.insert_page(frame,
-                                  tab_label=label,
-                                  position=-1)
+        self.notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
@@ -285,25 +268,24 @@ class ListWindow(gtk.Window):
         """
 
         # Create the Program Incidents list.
-        scrollwindow = gtk.ScrolledWindow()
-        scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwindow.add_with_viewport(self.tvwDatasets)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self.tvwDatasets)
 
-        frame = _widg.make_frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        frame.add(scrollwindow)
+        _frame = _widg.make_frame()
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
 
-        label = gtk.Label()
-        _heading = _("Survival\nAnalyses")
-        label.set_markup("<span weight='bold'>" + _heading + "</span>")
-        label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.show_all()
-        label.set_tooltip_text(_("Displays the list of survival (Weibull) analyses."))
+        _label = gtk.Label()
+        _label.set_markup(_(u"<span weight='bold'>Survival\nAnalyses</span>"))
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.show_all()
+        _label.set_tooltip_text(_(u"Displays the list of survival (Weibull) "
+                                  u"analyses for the selected Revision or "
+                                  u"Hardware item."))
 
-        self.notebook.insert_page(frame,
-                                  tab_label=label,
-                                  position=-1)
+        self.notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
@@ -312,31 +294,31 @@ class ListWindow(gtk.Window):
         Creates the toolbar for the PartsList.
         """
 
-        toolbar = gtk.Toolbar()
+        _toolbar = gtk.Toolbar()
 
         # Add part button.
-        button = gtk.ToolButton(stock_id = gtk.STOCK_ADD)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_ADD)
         button.set_tooltip_text(_("Add a component to the currently selected assembly"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         button.set_icon_widget(image)
         button.connect('clicked', self._app.COMPONENT.component_add, None)
-        toolbar.insert(button, 0)
+        _toolbar.insert(button, 0)
 
         # Delete part button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_DELETE)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_DELETE)
         button.set_tooltip_text(_("Delete the currently selected component."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/delete.png')
         button.set_icon_widget(image)
         button.set_property('name', 'part')
         button.connect('clicked', self._app.COMPONENT.component_delete)
-        toolbar.insert(button, 1)
+        _toolbar.insert(button, 1)
 
-        toolbar.insert(gtk.SeparatorToolItem(), 2)
+        _toolbar.insert(gtk.SeparatorToolItem(), 2)
 
         # Cut button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_CUT)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_CUT)
         button.set_tooltip_text(_("Cut the currently selected component."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/cut.png')
@@ -344,10 +326,10 @@ class ListWindow(gtk.Window):
         button.set_label(_("Cut"))
         button.connect('clicked', _util.cut_copy_paste, 0)
         button.show()
-        toolbar.insert(button, 3)
+        _toolbar.insert(button, 3)
 
         # Copy button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_COPY)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_COPY)
         button.set_tooltip_text(_("Copy the currently selected component."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/copy.png')
@@ -355,10 +337,10 @@ class ListWindow(gtk.Window):
         button.set_label(_("Copy"))
         button.connect('clicked', _util.cut_copy_paste, 1)
         button.show()
-        toolbar.insert(button, 4)
+        _toolbar.insert(button, 4)
 
         # Paste button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_PASTE)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_PASTE)
         button.set_tooltip_text(_("Paste the contents of the clipboard."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/paste.png')
@@ -366,12 +348,12 @@ class ListWindow(gtk.Window):
         button.set_label(_("Paste"))
         button.connect('clicked', _util.cut_copy_paste, 2)
         button.show()
-        toolbar.insert(button, 5)
+        _toolbar.insert(button, 5)
 
-        toolbar.insert(gtk.SeparatorToolItem(), 6)
+        _toolbar.insert(gtk.SeparatorToolItem(), 6)
 
         # Undo button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_UNDO)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_UNDO)
         button.set_tooltip_text(_("Undo the last change"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/undo.png')
@@ -379,10 +361,10 @@ class ListWindow(gtk.Window):
         button.set_label(_("Undo"))
         button.connect('clicked', _util.undo, self)
         button.show()
-        toolbar.insert(button, 7)
+        _toolbar.insert(button, 7)
 
         # Redo button
-        button = gtk.ToolButton(stock_id = gtk.STOCK_REDO)
+        button = gtk.ToolButton(stock_id=gtk.STOCK_REDO)
         button.set_tooltip_text(_("Redo the last change"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/redo.png')
@@ -390,141 +372,154 @@ class ListWindow(gtk.Window):
         button.set_label(_("Redo"))
         button.connect('clicked', _util.redo, self)
         button.show()
-        toolbar.insert(button, 8)
+        _toolbar.insert(button, 8)
 
-        toolbar.insert(gtk.SeparatorToolItem(), 9)
+        _toolbar.insert(gtk.SeparatorToolItem(), 9)
 
         # Calculate button
         button = gtk.ToolButton(label=_("Calculate"))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         button.set_icon_widget(image)
-        #button.connect('clicked', self._app.COMPONENT.calculate)
+        # button.connect('clicked', self._app.COMPONENT.calculate)
         button.show()
-        toolbar.insert(button, 10)
+        _toolbar.insert(button, 10)
 
-        toolbar.show()
+        _toolbar.show()
 
-        return(toolbar)
+        return _toolbar
 
     def load_part_tree(self, query):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Revision, Function, or Assembly.
 
-        Keyword Arguments:
-        query  -- the SQL query to execute to retrieve the list of parts
-                  associated with the calling Revision, Function, or
-                  Assembly.
+        :param str query: the SQL query to execute to retrieve the list of
+                          parts associated with the calling Revision, Function,
+                          or Assembly.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        _results_ = self._app.DB.execute_query(query,
-                                               None,
-                                               self._app.ProgCnx)
-
-        if(_results_ == '' or not _results_ or _results_ is None):
-            return True
+        _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
+        try:
+            _n_parts = len(_results)
+        except TypeError:
+            _n_parts = 0
 
         self.objPartModel.clear()
-        _n_parts = len(_results)
         for i in range(_n_parts):
-            row = self.objPartModel.append(None, _results[i])
-            self._treepaths[_results[i][1]] = self.objPartModel.get_path(row)
+            _row = self.objPartModel.append(None, _results[i])
+            self._treepaths[_results[i][1]] = self.objPartModel.get_path(_row)
 
         self.tvwPartsList.set_model(model=self.objPartModel)
 
         return False
 
-    def load_test_tree(self, _query_, _values_):
+    def load_test_tree(self, query):
         """
         Populates the test list treeview with the tests associated with the
         currently selected Assembly.
 
-        Keyword Arguments:
-        query -- the SQL query to execute to retrieve the list of parts
-                 associated with the calling Assembly.
+        :param str query: the SQL query to execute to retrieve the list of
+                          reliability tests associated with the selected
+                          revision, hardware item, or software item.
         """
+
+        _model = self.tvwTesting.get_model()
+        _model.clear()
+
+        _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
+        try:
+            _n_tests = len(_results)
+        except TypeError:
+            _n_tests = 0
+
+        # Load the model with the returned results.
+        for i in range(_n_tests):
+            _model.append(None, _results[i])
 
         return False
 
-    def load_incident_tree(self, query,  _values_=None):
+    def load_incident_tree(self, query):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Assembly.
 
-        @param query: the SQL query to execute to retrieve the list of parts
-                      associated with the calling Revision, Assembly, or
-                      Software class.
-        _values_ -- the tuple of values to pass with the query.
+        :param str query: the SQL query to execute to retrieve the list of
+                          incidents associated with the selected revision,
+                          hardware item, or software item.
         """
 
-        model = self.tvwIncidents.get_model()
-        model.clear()
+        _model = self.tvwIncidents.get_model()
+        _model.clear()
 
-        results = self._app.DB.execute_query(query,
-                                             _values_,
-                                             self._app.ProgCnx)
-
-        if(results == '' or not results):
-            return True
-
-        n_incidents = len(results)
+        _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
+        try:
+            _n_incidents = len(_results)
+        except TypeError:
+            _n_incidents = 0
 
         # Load the model with the returned results.
-        for i in range(n_incidents):
-            try:
-                model.append(None, results[i])
-            except TypeError:
-                print results[i]
+        for i in range(_n_incidents):
+            _data = [_results[i][0], _results[i][1], _results[i][2],
+                     _results[i][3], _results[i][4], _results[i][5],
+                     _results[i][6], _results[i][7], _results[i][8],
+                     _results[i][9], _results[i][10], _results[i][11],
+                     _results[i][12], _results[i][13], _results[i][14],
+                     _results[i][15], _results[i][16], _results[i][17],
+                     _results[i][18], _util.ordinal_to_date(_results[i][19]),
+                     _results[i][20], _results[i][21],
+                     _util.ordinal_to_date(_results[i][22]), _results[i][23],
+                     _results[i][24], _util.ordinal_to_date(_results[i][25]),
+                     _results[i][26], _results[i][27],
+                     _util.ordinal_to_date(_results[i][28]), _results[i][29],
+                     _results[i][30], _results[i][31]]
+            _model.append(None, _data)
 
         return False
 
-    def load_dataset_tree(self, _query_, _values_):
+    def load_dataset_tree(self, query):
         """
         Populates the part list treeview with the parts associated with the
         currently selected Assembly.
 
-        Keyword Arguments:
-        _query_  -- the SQL query to execute to retrieve the list of parts
-                    associated with the calling Revision, Assembly, or Software
-                    module.
-        _values_ -- the tuple of values to pass with the query.
+        :param str query: the SQL query to execute to retrieve the list of
+                          survival analysis data sets associated with the
+                          selected revision or hardware item.
         """
 
-        model = self.tvwDatasets.get_model()
-        model.clear()
+        _model = self.tvwDatasets.get_model()
+        _model.clear()
 
-        results = self._app.DB.execute_query(_query_,
-                                             _values_,
-                                             self._app.ProgCnx)
+        _results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
 
-        if(results == '' or not results):
-            return True
-
-        n_datasets = len(results)
+        try:
+            _n_datasets = len(_results)
+        except TypeError:
+            _n_datasets = 0
 
         # Load the model with the returned results.
-        for i in range(n_datasets):
-            model.append(None, results[i])
+        for i in range(_n_datasets):
+            _model.append(None, _results[i][:-1])
 
         return False
 
-    def _tree_clicked(self, treeview, event):
+    def _tree_clicked(self, __treeview, __event):
         """
         Called whenever the Parts List tree is clicked.
 
-        Keyword Arguments:
-        treeview -- the TreeView that was clicked.
-        event    -- a gtk.gdk.Event that called this function.
+        :param gtk.TreeView __treeview: the gtk.TreeView() that was clicked.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
         """
 
         self._treeview_row_changed()
 
-    def _row_activated(self, treeview, path_, column):
+    def _row_activated(self, __treeview, __path, __column):
         """
         Called whenever a row in one of the trees is activated.
 
-        Keyword Arguments:
         treeview -- the TreeView that recieved the signal.
         path_    -- the path of the row activated in the treeview.
         column   -- the column in the activated row that was selected.
@@ -538,17 +533,11 @@ class ListWindow(gtk.Window):
         being clicked or activated.
         """
 
-# First save the previously selected row.
-        if self.selected_row is not None:
-            _path_ = _model_.get_path(self.selected_row)
-            self.save_line_item(self.objPartsList, _path_, self.selected_row)
+        # Now set the new selection.
+        (_model, _row) = self.tvwPartsList.get_selection().get_selected()
 
-# Now set the new selection.
-        selection = self.tvwPartsList.get_selection()
-        (_model_, self.selected_row) = selection.get_selected()
-
-        if(self.selected_row is not None):
-            self._assembly_id = self.objPartsList.get_value(self.selected_row, 1)
+        if _row is not None:
+            self._assembly_id = _model.get_value(_row, 1)
             self._app.HARDWARE.model.foreach(self.find_hardware_tree_row)
             self._app.HARDWARE.part = True
             self._app.COMPONENT.load_notebook()
@@ -557,67 +546,39 @@ class ListWindow(gtk.Window):
         else:
             return True
 
-    def find_hardware_tree_row(self, model, path_, row):
+    def find_hardware_tree_row(self, model, __path, row):
         """
         Finds the corresponding row in the Hardware TreeView and sets that
         Hardware TreeView row active.  Called whenever the Parts List is
         clicked or row is activated.
 
-        Keyword Arguments:
-        model -- the HARDWARE object tree model.
+        :param gtk.TreeModel model: the Hardware class gtk.TreeModel().
         path_ -- the path of the row activated in the Hardware Object
                  TreeModel.
         row   -- the row activated in the HARDWARE object
                  tree model.
         """
 
-        if(model.get_value(row, 1) == self._assembly_id):
+        if model.get_value(row, 1) == self._assembly_id:
             self._app.HARDWARE.selected_row = row
             self._app.HARDWARE.treeview.set_cursor(model.get_path(row),
                                                    None, False)
 
         return False
 
-    def get_function_parts(self, model, row, parts):
-        """
-        Filters the Parts List TreeView to show only the components associated
-        with the currently selected Function Object.
-
-        Keyword Arguments:
-        model -- the Parts List filtered model.
-        row   -- the row in the filtered model.
-        parts -- the list of part assembly ids.
-        """
-
-        return model.get_value(row, 1) in parts
-
-    def get_assembly_parts(self, model, row, parts):
-        """
-        Filters the Parts List TreeView to show only the components associated
-        with the currently selected Assembly Object.
-
-        Keyword Arguments:
-        model -- the Parts List filtered model.
-        row   -- the row in the filtered model.
-        parts -- the list of part assembly ids.
-        """
-
-        return model.get_value(row, 1) in parts
-
     def save_component(self):
         """
-        Saves the Hardware Tree information to the project's MySQL or SQLite3
-        database.
+        Saves the List Tree information to the RTK Program database.
         """
 
-        model = self.tvwPartsList.get_model()
+        _model = self.tvwPartsList.get_model()
 
-        if(model is not None):
-            model.foreach(self.save_line_item)
+        if _model is not None:
+            _model.foreach(self.save_line_item)
 
         return False
 
-    def save_line_item(self, model, path_, row):
+    def save_line_item(self, model, __path, row):
         """
         Called for each row in the PartsList Object TreeView when the
         gtk.TreeView data is saved.
@@ -785,18 +746,14 @@ class ListWindow(gtk.Window):
                        fld_test_time_lab=%f, fld_thermal_resistance=%f, \
                        fld_tref=%f, fld_voltage_ratio=%f, fld_years=%d \
                    WHERE fld_revision_id=%d AND fld_assembly_id=%d" % _values_
-        _results_ = self._app.DB.execute_query(_query_,
-                                              None,
-                                              self._app.ProgCnx,
-                                              commit=True)
-
-        if not _results_:
+        if not self._app.DB.execute_query(_query_, None, self._app.ProgCnx,
+                                          commit=True):
             self._app.debug_log.error("partlist.py:save_line_item - Failed to save part list information for Assembly ID %d to RTK Program database." % model.get_value(row, self._col_order[1]))
             return True
 
         return False
 
-    def notebook_page_switched(self, notebook, page, page_num):
+    def notebook_page_switched(self, __notebook, __page, page_num):
         """
         Called whenever the Lists notebook page is changed.
 
@@ -810,13 +767,29 @@ class ListWindow(gtk.Window):
                     3 = Survival Analyses List
         """
 
-        if(page_num == 0):
+        if page_num == 0:
             self.set_title(_(u"RTK Parts List"))
-        elif(page_num == 1):
+        elif page_num == 1:
             self.set_title(_(u"RTK Reliability Tests List"))
-        elif(page_num == 2):
+        elif page_num == 2:
             self.set_title(_(u"RTK Program Incidents List"))
-        elif(page_num == 3):
+        elif page_num == 3:
             self.set_title(_(u"RTK Survival Analyses Lists"))
         else:
             self.set_title(_(u"RTK List Book"))
+
+    def delete_event(self, __widget, __event):
+        """
+        Method to quit the RTK application when the X in the upper right corner
+        is pressed.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this method
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        gtk.main_quit()
+
+        return False

@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-""" This is the IC Socket connection class. """
+"""
+This is the IC Socket connection class.
+"""
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -10,28 +14,27 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #
 # All rights reserved.
 
+import gettext
+import locale
 import pango
 
 try:
-    import relkit.calculations as _calc
-    import relkit.configuration as _conf
-    import relkit.widgets as _widg
+    import rtk.calculations as _calc
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 except ImportError:
     import calculations as _calc
     import configuration as _conf
     import widgets as _widg
+from connection import Connection
 
 # Add localization support.
-import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except ImportError:
     locale.setlocale(locale.LC_ALL, '')
 
-import gettext
 _ = gettext.gettext
-
-from connection import Connection
 
 
 class ICSocket(Connection):
@@ -40,17 +43,19 @@ class ICSocket(Connection):
     Covers specifications MIL-S-83734.
 
     Hazard Rate Models:
-        1. MIL-HDBK-217F, section 15.3.
+        # MIL-HDBK-217F, section 15.3.
     """
 
-    _quality = ["", _("MIL-SPEC"), _("Lower")]
+    _quality = ["", "MIL-SPEC", _(u"Lower")]
 
     def __init__(self):
-        """ Initializes the IC Socket Connection Component Class. """
+        """
+        Initializes the IC Socket Connection Component Class.
+        """
 
         Connection.__init__(self)
 
-        self.subcategory = 74                   # Subcategory ID in relkitcom database.
+        self.subcategory = 74               # Subcategory ID in rtkcom DB.
 
         # MIL-HDK-217F hazard rate calculation variables.
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -61,7 +66,7 @@ class ICSocket(Connection):
                                0.070, 1.3]
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-        self._in_labels.append(_("# of Active Contacts:"))
+        self._in_labels.append(_(u"# of Active Contacts:"))
 
         self._out_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub>\u03C0<sub>P</sub></span>"
         self._out_labels.append(u"\u03C0<sub>P</sub>:")
@@ -72,179 +77,260 @@ class ICSocket(Connection):
         widgets needed to select inputs for IC Socket Connection Component
         Class prediction calculations.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            treemodel = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        (_x_pos,
+         _y_pos) = Connection.assessment_inputs_create(self, part, layout,
+                                                       x_pos, y_pos)
+        _x_pos = max(x_pos, _x_pos) + 35
 
-        y_pos = Connection.assessment_inputs_create(self, part, layout,
-                                                    x_pos, y_pos)
-
+        # Create the display widgets specific to the IC socket.
         part.txtActiveContacts = _widg.make_entry()
-        part.txtActiveContacts.connect('focus-out-event',
-                                       self._callback_entry,
+
+        # Place all the display widgets.
+        layout.move(part.cmbCalcModel, _x_pos, 5)
+        layout.move(part.cmbQuality, _x_pos, _y_pos[0])
+        layout.move(part.txtCommercialPiQ, _x_pos, _y_pos[1])
+        layout.put(part.txtActiveContacts, _x_pos, _y_pos[2])
+
+        # Connect to callback methods.
+        part.txtActiveContacts.connect('focus-out-event', self._callback_entry,
                                        part, 'float', 57)
-        layout.put(part.txtActiveContacts, x_pos, y_pos)
 
         layout.show_all()
 
         return False
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def assessment_inputs_load(self, part):
+        """
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
+
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        (_model, _row) = Connection.assessment_inputs_load(self, part)
+
+        part.txtActiveContacts.set_text(str('{0:0.0f}'.format(
+            _model.get_value(_row, 57))))
+
+        return False
+
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
         """
         Populates the RTK Workbook calculation results tab with the
         widgets to display IC Socket Connection Component Class
         calculation results.
 
-        Keyword Arguments:
-        part   -- the RTK COMPONENT object.
-        layout -- the layout widget to contain the display widgets.
-        x_pos  -- the x position of the widgets.
-        y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            treemodel = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
-
-        y_pos = Connection.assessment_results_create(self, part, layout,
-                                                     x_pos, y_pos)
+        (_x_pos,
+         _y_pos) = Connection.reliability_results_create(self, part, layout,
+                                                         x_pos, y_pos)
 
         # Create the piP Entry.  We store this value in the piPT field in the
         # program database.
-        part.txtPiP = _widg.make_entry(editable=False, bold=True)
-        layout.put(part.txtPiP, x_pos, y_pos)
+        part.txtPiP = _widg.make_entry(width=100, editable=False, bold=True)
 
-        return False
-
-    def assessment_inputs_load(self, part):
-        """
-        Loads the RTK Workbook calculation input widgets with
-        calculation input information.
-
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
-        """
-
-        Connection.assessment_inputs_load(self, part)
-
-        num_contacts = part.model.get_value(part.selected_row, 57)
-        part.txtActiveContacts.set_text(str('{0:0.0g}'.format(num_contacts)))
+        layout.put(part.txtPiP, _x_pos, _y_pos[3])
 
         return False
 
     def assessment_results_load(self, part):
         """
-        Loads the RTK Workbook calculation results widgets with
-        calculation results.
+        Loads the RTK Workbook calculation results widgets with calculation
+        results.
 
-        Keyword Arguments:
-        part -- the RTK COMPONENT object.
+        :param rtk.Component part: the current instance of the rtk.Component().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        Connection.assessment_results_load(self, part)
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        fmt = '{0:0.' + str(part.fmt) + 'g}'
+        (_model, _row) = Connection.assessment_results_load(self, part)
 
-        pip = part.model.get_value(part.selected_row, 78)
-        part.txtPiP.set_text(str(fmt.format(pip)))
+        part.txtPiP.set_text(str(fmt.format(_model.get_value(_row, 78))))
 
         return False
 
-    def calculate_mil_217_count(self, partmodel, partrow,
-                                systemmodel, systemrow):
+    def calculate(self, partmodel, partrow, systemmodel, systemrow):
         """
-        Performs MIL-HDBK-217F part count hazard rate calculations for the
-        IC Socket Connection Component Class.
+        Performs hazard rate calculations for the PCB edge connector class.
 
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
-        """
-
-        _hrmodel = {}
-        _hrmodel['equation'] = 'lambdab * piQ'
-
-        # Retrieve hazard rate inputs.
-        Qidx = partmodel.get_value(partrow, 85)         # Quality index
-        Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
-
-        _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
-
-        if(Qidx == 1):
-            _hrmodel['piQ'] = 1.0
-        else:
-            _hrmodel['piQ'] = 2.0
-
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
-
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
-
-        return False
-
-    def calculate_mil_217_stress(self, partmodel, partrow,
-                                 systemmodel, systemrow):
-        """
-        Performs MIL-HDBK-217F part stress hazard rate calculations for
-        the IC Socket Connection Component Class.
-
-        Keyword Arguments:
-        partmodel   -- the RTK winParts full gtk.TreeModel.
-        partrow     -- the currently selected row in the winParts full
-                       gtk.TreeModel.
-        systemmodel -- the RTK HARDWARE object gtk.TreeModel.
-        systemrow   -- the currently selected row in the RTK HARWARE
-                       object gtk.TreeModel.
+        :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+        :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                     in List class gtk.TreeModel().
+        :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                          gtk.TreeModel().
+        :param gtk.TreeIter systemrow: the currently selected
+                                       gtk.TreeIter() in the RTK Hardware
+                                       class gtk.TreeModel().
+        :return: False if succussful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        from math import exp
+        def _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part count hazard rate calculations for the
+            IC Socket Connection Component Class.
 
-        _hrmodel = {}
-        _hrmodel['equation'] = 'lambdab * piP * piE'
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
 
-        # Retrieve hazard rate inputs.
-        N = partmodel.get_value(partrow, 57)                 # Number of active pins
-        Qidx = partmodel.get_value(partrow, 85)              # Quality index
+            _hrmodel = {}
+            _hrmodel['equation'] = 'lambdab * piQ'
 
-        # Base hazard rate.
-        _hrmodel['lambdab'] = 0.00042
+            _quantity = systemmodel.get_value(systemrow, 67)
 
-        # Active pins correction factor.
-        if(N - 1 > 0):
-            _hrmodel['piP'] = exp(((N - 1) / 10)**0.51064)
-        else:
-            _hrmodel['piP'] = 0.0
+            # Retrieve hazard rate inputs.
+            Qidx = partmodel.get_value(partrow, 85)         # Quality index
+            Eidx = systemmodel.get_value(systemrow, 22)     # Environment index
 
-        # Environmental correction factor.
-        idx = systemmodel.get_value(systemrow, 22)
-        _hrmodel['piE'] = self._piE[idx - 1]
+            _hrmodel['lambdab'] = self._lambdab_count[Eidx - 1]
 
-        # Calculate component hazard rate.
-        lambdap = _calc.calculate_part(_hrmodel)
+            if Qidx == 1:
+                _hrmodel['piQ'] = 1.0
+            else:
+                _hrmodel['piQ'] = 2.0
 
-        partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
-        partmodel.set_value(partrow, 72, _hrmodel['piE'])
-        partmodel.set_value(partrow, 78, _hrmodel['piP'])
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity / 1000000.0
 
-        systemmodel.set_value(systemrow, 28, lambdap)
-        systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 32, _lambdaa)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        def _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow):
+            """
+            Performs MIL-HDBK-217F part stress hazard rate calculations for
+            the IC Socket Connection Component Class.
+
+            :param gtk.TreeModel partmodel: the RTK List class gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in List class gtk.TreeModel().
+            :param gtk.TreeModel systemmodel: the RTK Hardware class
+                                              gtk.TreeModel().
+            :param gtk.TreeIter systemrow: the currently selected
+                                           gtk.TreeIter() in the RTK Hardware
+                                           class gtk.TreeModel().
+            :return: False if succussful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            from math import exp
+
+            _hrmodel = {}
+            _hrmodel['equation'] = 'lambdab * piP * piE'
+
+            # Retrieve the part category, subcategory, active environment,
+            # dormant environment, software hazard rate, and quantity.
+            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+            _category_id = systemmodel.get_value(systemrow, 11)
+            _subcategory_id = systemmodel.get_value(systemrow, 78)
+            _active_env = systemmodel.get_value(systemrow, 22)
+            _dormant_env = systemmodel.get_value(systemrow, 23)
+            _lambdas = systemmodel.get_value(systemrow, 33)
+            _quantity = systemmodel.get_value(systemrow, 67)
+
+            # Retrieve hazard rate inputs.
+            N = partmodel.get_value(partrow, 57)        # Number of active pins
+            Qidx = partmodel.get_value(partrow, 85)     # Quality index
+
+            # Retrieve stress inputs.
+            Iapplied = partmodel.get_value(partrow, 62)
+            Vapplied = partmodel.get_value(partrow, 66)
+            Irated = partmodel.get_value(partrow, 92)
+            Vrated = partmodel.get_value(partrow, 94)
+
+            # Base hazard rate.
+            _hrmodel['lambdab'] = 0.00042
+
+            # Active pins correction factor.
+            if N - 1 > 0:
+                _hrmodel['piP'] = exp(((N - 1) / 10)**0.51064)
+            else:
+                _hrmodel['piP'] = 0.0
+
+            # Environmental correction factor.
+            idx = systemmodel.get_value(systemrow, 22)
+            _hrmodel['piE'] = self._piE[idx - 1]
+
+            # Calculate component active hazard rate.
+            _lambdaa = _calc.calculate_part(_hrmodel)
+            _lambdaa = _lambdaa * _quantity / 1000000.0
+
+            # Calculate the component dormant hazard rate.
+            _lambdad = _calc.dormant_hazard_rate(_category_id, _subcategory_id,
+                                                 _active_env, _dormant_env,
+                                                 _lambdaa)
+
+
+            # Calculate the component predicted hazard rate.
+            _lambdap = _lambdaa + _lambdad + _lambdas
+
+            # Calculate overstresses.
+            (_overstress,
+             self.reason) = _calc.overstressed(partmodel, partrow,
+                                               systemmodel, systemrow)
+
+            # Calculate operating point ratios.
+            _i_ratio = float(Iapplied) / float(Irated)
+            _v_ratio = float(Vapplied) / float(Vrated)
+
+            partmodel.set_value(partrow, 17, _i_ratio)
+            partmodel.set_value(partrow, 46, _hrmodel['lambdab'])
+            partmodel.set_value(partrow, 72, _hrmodel['piE'])
+            partmodel.set_value(partrow, 78, _hrmodel['piP'])
+            partmodel.set_value(partrow, 111, _v_ratio)
+
+            systemmodel.set_value(systemrow, 28, _lambdaa)
+            systemmodel.set_value(systemrow, 29, _lambdad)
+            systemmodel.set_value(systemrow, 32, _lambdap)
+            systemmodel.set_value(systemrow, 60, _overstress)
+            systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
+
+            return False
+
+        _calc_model = systemmodel.get_value(systemrow, 10)
+
+        if _calc_model == 1:
+            _calculate_mil_217_stress(partmodel, partrow,
+                                      systemmodel, systemrow)
+        elif _calc_model == 2:
+            _calculate_mil_217_count(partmodel, partrow,
+                                     systemmodel, systemrow)
 
         return False

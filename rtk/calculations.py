@@ -39,19 +39,6 @@ except ImportError:
 # Add NLS support.
 _ = gettext.gettext
 
-# Import R library.
-try:
-    from rpy2 import robjects
-    from rpy2.robjects import r as R
-    from rpy2.robjects.packages import importr
-    import rpy2.rlike.container as rlc
-    import rpy2.rinterface as ri
-    __USE_RPY__ = False
-    __USE_RPY2__ = True
-except ImportError:
-    __USE_RPY__ = False
-    __USE_RPY2__ = False
-
 import numpy as np
 from math import ceil, exp, log, sqrt
 
@@ -63,12 +50,12 @@ def calculate_part(model):
     """
     Calculates the hazard rate for a component.
 
-    @param model: the component's h(t) prediction model and the input
+    :param model: the component's h(t) prediction model and the input
                   variables.  The keys are the model variables and the values
                   are the values of the variable in the key.
-    @type model: dictionary
-    @return: _lambdap, the calculated h(t).
-    @rtype: float
+    :type model: dictionary
+    :return: _lambdap, the calculated h(t).
+    :rtype: float
     """
 
     _keys = model.keys()
@@ -90,90 +77,118 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     Currently only default derating rules from Reliability Toolkit:
     Commercial Practices Edition, Section 6.3.3 are used.
 
-      Component  |                            |    Environment    |
-        Type     |     Derating Parameter     | Severe  | Benign  |
-    -------------+----------------------------+---------+---------+
-     Capacitor   | DC Voltage                 |   60%   |   90%   |
-                 | Temp from Max Limit        |   10C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Circuit Bkr | Current                    |   80%   |   80%   |
-    -------------+----------------------------+---------+---------+
-     Connectors  | Voltage                    |   70%   |   90%   |
-                 | Current                    |   70%   |   90%   |
-                 | Insert Temp from Max Limit |   25C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Diodes      | Power Dissipation          |   70%   |   90%   |
-                 | Max Junction Temperature   |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Fiber Optics| Bend Radius                |  200%   |  200%   |
-                 | Cable Tension              |   50%   |   50%   |
-    -------------+----------------------------+---------+---------+
-     Fuses       | Current (Maximum           |   50%   |   70%   |
-                 | Capability)                |         |         |
-    -------------+----------------------------+---------+---------+
-     Inductors   | Operating Current          |   60%   |   90%   |
-                 | Dielectric Voltage         |   50%   |   90%   |
-                 | Temp from Hot Spot         |   15C   |         |
-    -------------+----------------------------+---------+---------+
-     Lamps       | Voltage                    |   94%   |   94%   |
-    -------------+----------------------------+---------+---------+
-     Memories    | Supply Voltage             |  +/-5%  |  +/-5%  |
-                 | Output Current             |   80%   |   90%   |
-                 | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Micro-      | Supply Voltage             |  +/-5%  |  +/-5%  |
-     circuits    | Fan Out                    |   80%   |   80%   |
-                 | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     GaAs Micro- | Max Junction Temp          |  135C   |   N/A   |
-     circuits    |                            |         |         |
-    -------------+----------------------------+---------+---------+
-     Micro-      | Supply Voltage             |  +/-5%  |  +/-5%  |
-     processors  | Fan Out                    |   80%   |   80%   |
-                 | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Photo-      | Reverse Voltage            |   70%   |    70%  |
-     diode       | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Photo-      | Max Junction Temp          |  125C   |   N/A   |
-     transistor  |                            |         |         |
-    -------------+----------------------------+---------+---------+
-     Relays      | Resistive Load Current     |   75%   |   90%   |
-                 | Capacitive Load Current    |   75%   |   90%   |
-                 | Inductive Load Current     |   40%   |   50%   |
-                 | Contact Power              |   50%   |   60%   |
-    -------------+----------------------------+---------+---------+
-     Resistors   | Power Dissipation          |   50%   |   80%   |
-                 | Temp from Max Limit        |   30C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Transistor, | Power Dissipation          |   70%   |   90%   |
-     Silicon     | Breakdown Voltage          |   75%   |   90%   |
-                 | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Transistor, | Power Dissipation          |   70%   |   90%   |
-     GaAs        | Breakdown Voltage          |   70%   |   90%   |
-                 | Max Junction Temp          |  135C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Thyristors  | On-State Current           |   70%   |   90%   |
-                 | Off-State Voltage          |   70%   |   90%   |
-                 | Max Junction Temp          |  125C   |   N/A   |
-    -------------+----------------------------+---------+---------+
-     Switches    | Resistive Load Current     |   75%   |   90%   |
-                 | Capacitive Load Current    |   75%   |   90%   |
-                 | Inductive Load Current     |   40%   |   50%   |
-                 | Contact Power              |   50%   |   60%   |
-    -------------+----------------------------+---------+---------+
+    +------------+----------------------------+-------------------+
+    | Component  |                            |    Environment    |
+    |   Type     |     Derating Parameter     | Severe  | Benign  |
+    +============+============================+=========+=========+
+    | Capacitor  | DC Voltage                 |   60%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Max Limit        |   10C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Circuit Bkr| Current                    |   80%   |   80%   |
+    +------------+----------------------------+---------+---------+
+    | Connectors | Voltage                    |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Current                    |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Insert Temp from Max Limit |   25C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Diodes     | Power Dissipation          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temperature   |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Fiber      | Bend Radius                |  200%   |  200%   |
+    | Optics     +----------------------------+---------+---------+
+    |            | Cable Tension              |   50%   |   50%   |
+    +------------+----------------------------+---------+---------+
+    | Fuses      | Current (Maximum           |   50%   |   70%   |
+    |            | Capability)                |         |         |
+    +------------+----------------------------+---------+---------+
+    | Inductors  | Operating Current          |   60%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Dielectric Voltage         |   50%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Hot Spot         |   15C   |         |
+    +------------+----------------------------+---------+---------+
+    | Lamps      | Voltage                    |   94%   |   94%   |
+    +------------+----------------------------+---------+---------+
+    | Memories   | Supply Voltage             |  +/-5%  |  +/-5%  |
+    |            +----------------------------+---------+---------+
+    |            | Output Current             |   80%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
+    | circuits   +----------------------------+---------+---------+
+    |            | Fan Out                    |   80%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | GaAs Micro | Max Junction Temp          |  135C   |   N/A   |
+    | circuits   +----------------------------+---------+---------+
+    +------------+----------------------------+---------+---------+
+    | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
+    | processors +----------------------------+---------+---------+
+    |            | Fan Out                    |   80%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Photo      | Reverse Voltage            |   70%   |    70%  |
+    | diode      +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Photo      | Max Junction Temp          |  125C   |   N/A   |
+    | transistor |                            |         |         |
+    +------------+----------------------------+---------+---------+
+    | Relays     | Resistive Load Current     |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Capacitive Load Current    |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Inductive Load Current     |   40%   |   50%   |
+    |            +----------------------------+---------+---------+
+    |            | Contact Power              |   50%   |   60%   |
+    +------------+----------------------------+---------+---------+
+    | Resistors  | Power Dissipation          |   50%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Max Limit        |   30C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Transistor,| Power Dissipation          |   70%   |   90%   |
+    | Silicon    +----------------------------+---------+---------+
+    |            | Breakdown Voltage          |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Transistor,| Power Dissipation          |   70%   |   90%   |
+    | GaAs       +----------------------------+---------+---------+
+    |            | Breakdown Voltage          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  135C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Thyristors | On-State Current           |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Off-State Voltage          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Switches   | Resistive Load Current     |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Capacitive Load Current    |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Inductive Load Current     |   40%   |   50%   |
+    |            +----------------------------+---------+---------+
+    |            | Contact Power              |   50%   |   60%   |
+    +------------+----------------------------+---------+---------+
 
-    @param partmodel: the winParts full gtk.TreeModel().
-    @type partmodel: gtk.TreeModel
-    @param partrow: the currently selected gtk.TreeIter() in the winParts full
+    :param partmodel: the winParts full gtk.TreeModel().
+    :type partmodel: gtk.TreeModel
+    :param partrow: the currently selected gtk.TreeIter() in the winParts full
                     gtk.TreeModel().
-    @type partrow: gtk.TreeIter
-    @param systemmodel: the Hardware class gtk.TreeModel().
-    @type systemmodel: gtk.TreeModel
-    @param systemrow: the currently selected gtk.TreeIter() in the Hardware
+    :type partrow: gtk.TreeIter
+    :param systemmodel: the Hardware class gtk.TreeModel().
+    :type systemmodel: gtk.TreeModel
+    :param systemrow: the currently selected gtk.TreeIter() in the Hardware
                       class gtk.TreeModel().
-    @type systemrow: gtk.TreeIter
+    :type systemrow: gtk.TreeIter
     """
 
     # |------------------  <---- Knee Temperature
@@ -262,7 +277,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                  "rated current.\n"
                 r_index += 1
 
-    elif category == 3:                    # Inductive Device
+    elif category == 3:                     # Inductive Device
         Ths = partmodel.get_value(partrow, 39)
         Ioper = partmodel.get_value(partrow, 62)
         Voper = partmodel.get_value(partrow, 66)
@@ -306,7 +321,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
         Irate = partmodel.get_value(partrow, 92)
         Vrate = partmodel.get_value(partrow, 94)
 
-        if subcategory < 3:                # GaAs
+        if subcategory < 3:                 # GaAs
             if harsh:
                 if Tjunc > 135.0:
                     overstress = True
@@ -352,10 +367,10 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                      "90% rated current.\n"
                     r_index += 1
 
-    elif category == 6:                    # Miscellaneous
-        if subcategory == 80:              # Crystal
+    elif category == 6:                     # Miscellaneous
+        if subcategory == 80:               # Crystal
             print "Bug #113: No overstress calculations for crystals."
-        elif subcategory == 81:            # Lamps
+        elif subcategory == 81:             # Lamps
             Voper = partmodel.get_value(partrow, 66)
             Vrated = partmodel.get_value(partrow, 94)
             if Voper >= 0.94 * Vrated:
@@ -363,12 +378,23 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                 reason = reason + str(r_index) + ". Operating voltage > 94% " \
                                                  "rated voltage.\n"
                 r_index += 1
-        elif subcategory == 82:            # Fuse
-            print "Bug #114: No overstress calculations for fuses."
-        elif subcategory == 83:            # Filter
+        elif subcategory == 82:             # Fuse
+            Ioper = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+            if harsh and Ioper >= 0.50 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 50% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Ioper >= 0.70 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 70% " \
+                                                 "rated current.\n"
+                r_index += 1
+        elif subcategory == 83:             # Filter
             print "Bug #115: No overstress calculations for filters."
 
-    elif category == 7:                    # Relay
+    elif category == 7:                     # Relay
         Aidx = partmodel.get_value(partrow, 30)
         Ioper = partmodel.get_value(partrow, 62)
         Irated = partmodel.get_value(partrow, 92)
@@ -463,7 +489,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                                                  "125.0C.\n"
                 r_index += 1
 
-        elif subcategory == 6:             # Thyristor
+        elif subcategory == 6:              # Thyristor
             if harsh:
                 if Ioper > 0.70 * Irate:
                     overstress = True
@@ -610,66 +636,70 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     To convert from quality A to quality B use conversion factors from
     Table 6.3.3-1 (reproduced below).
 
-                  |           |    Full   |           |           |
-                  |   Space   |  Military | Ruggedized| Commercial|
-    --------------+-----------+-----------+-----------+-----------+
-    Space         |    1.0    |    0.8    |    0.5    |    0.2    |
-    --------------+-----------+-----------+-----------+-----------+
-    Full Military |    1.3    |    1.0    |    0.6    |    0.3    |
-    --------------+-----------+-----------+-----------+-----------+
-    Ruggedized    |    2.0    |    1.7    |    1.0    |    0.4    |
-    --------------+-----------+-----------+-----------+-----------+
-    Commercial    |    5.0    |    3.3    |    2.5    |    1.0    |
-    --------------+-----------+-----------+-----------+-----------+
+    +-------------+-----------+-----------+-----------+-----------+
+    | Quality     |           | Full      |           |           |
+    | Level       |   Space   | Military  | Ruggedized| Commercial|
+    +=============+===========+===========+===========+===========+
+    | Space       |    1.0    |    0.8    |    0.5    |    0.2    |
+    +-------------+-----------+-----------+-----------+-----------+
+    | Full        |    1.3    |    1.0    |    0.6    |    0.3    |
+    | Military    |           |           |           |           |
+    +-------------+-----------+-----------+-----------+-----------+
+    | Ruggedized  |    2.0    |    1.7    |    1.0    |    0.4    |
+    +-------------+-----------+-----------+-----------+-----------+
+    | Commercial  |    5.0    |    3.3    |    2.5    |    1.0    |
+    +-------------+-----------+-----------+-----------+-----------+
 
     To convert from environment A to environment B use the conversion
     factors from Table 6.3.3-2 (reproduced below).
 
-                  |  GB   |  GM   |  NS   |  AIC  |  ARW  |  SF   |
-    --------------+-------+-------+-------+-------+-------+-------+
-    GB            |  1.0  |  0.2  |  0.3  |  0.3  |  0.1  |  1.1  |
-    --------------+-------+-------+-------+-------+-------+-------+
-    GM            |  5.0  |  1.0  |  1.4  |  1.4  |  0.5  |  5.0  |
-    --------------+-------+-------+-------+-------+-------+-------+
-    NS            |  3.3  |  0.7  |  1.0  |  1.0  |  0.3  |  3.3  |
-    --------------+-------+-------+-------+-------+-------+-------+
-    AIC           |  3.3  |  0.7  |  1.0  |  1.0  |  0.3  |  3.3  |
-    --------------+-------+-------+-------+-------+-------+-------+
-    ARW           | 10.0  |  2.0  |  3.3  |  3.3  |  1.0  | 10.0  |
-    --------------+-------+-------+-------+-------+-------+-------+
-    SF            |  0.9  |  0.2  |  0.3  |  0.3  |  0.1  |  1.0  |
-    --------------+-------+-------+-------+-------+-------+-------+
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | Environment |  GB   |  GM   |  NS   |  AIC  |  ARW  |  SF   |
+    +=============+=======+=======+=======+=======+=======+=======+
+    | GB          |  1.0  |  0.2  |  0.3  |  0.3  |  0.1  |  1.1  |
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | GM          |  5.0  |  1.0  |  1.4  |  1.4  |  0.5  |  5.0  |
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | NS          |  3.3  |  0.7  |  1.0  |  1.0  |  0.3  |  3.3  |
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | AIC         |  3.3  |  0.7  |  1.0  |  1.0  |  0.3  |  3.3  |
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | ARW         | 10.0  |  2.0  |  3.3  |  3.3  |  1.0  | 10.0  |
+    +-------------+-------+-------+-------+-------+-------+-------+
+    | SF          |  0.9  |  0.2  |  0.3  |  0.3  |  0.1  |  1.0  |
+    +-------------+-------+-------+-------+-------+-------+-------+
 
     To convert from temperature A to temperature B (both in Celcius) use
     conversion factors from Table 6.3.3-3 (reproduced below).
 
-                 |  10  |  20  |  30  |  40  |  50  |  60  |  70  |
-    -------------+------+------+------+------+------+------+------+
-    10           |  1.0 |  0.9 |  0.8 |  0.8 |  0.7 |  0.5 |  0.4 |
-    -------------+------+------+------+------+------+------+------+
-    20           |  1.1 |  1.0 |  0.9 |  0.8 |  0.7 |  0.6 |  0.5 |
-    -------------+------+------+------+------+------+------+------+
-    30           |  1.2 |  1.1 |  1.0 |  0.9 |  0.8 |  0.6 |  0.5 |
-    -------------+------+------+------+------+------+------+------+
-    40           |  1.3 |  1.2 |  1.1 |  1.0 |  0.9 |  0.7 |  0.6 |
-    -------------+------+------+------+------+------+------+------+
-    50           |  1.5 |  1.4 |  1.2 |  1.1 |  1.0 |  0.8 |  0.7 |
-    -------------+------+------+------+------+------+------+------+
-    60           |  1.9 |  1.7 |  1.6 |  1.5 |  1.2 |  1.0 |  0.8 |
-    -------------+------+------+------+------+------+------+------+
-    70           |  2.4 |  2.2 |  1.9 |  1.8 |  1.5 |  1.2 |  1.0 |
-    -------------+------+------+------+------+------+------+------+
+    +------------+------+------+------+------+------+------+------+
+    | Temperature| 10 C | 20 C | 30 C | 40 C | 50 C | 60 C | 70 C |
+    +============+======+======+======+======+======+======+======+
+    | 10 C       |  1.0 |  0.9 |  0.8 |  0.8 |  0.7 |  0.5 |  0.4 |
+    +------------+------+------+------+------+------+------+------+
+    | 20 C       |  1.1 |  1.0 |  0.9 |  0.8 |  0.7 |  0.6 |  0.5 |
+    +------------+------+------+------+------+------+------+------+
+    | 30 C       |  1.2 |  1.1 |  1.0 |  0.9 |  0.8 |  0.6 |  0.5 |
+    +------------+------+------+------+------+------+------+------+
+    | 40 C       |  1.3 |  1.2 |  1.1 |  1.0 |  0.9 |  0.7 |  0.6 |
+    +------------+------+------+------+------+------+------+------+
+    | 50 C       |  1.5 |  1.4 |  1.2 |  1.1 |  1.0 |  0.8 |  0.7 |
+    +------------+------+------+------+------+------+------+------+
+    | 60 C       |  1.9 |  1.7 |  1.6 |  1.5 |  1.2 |  1.0 |  0.8 |
+    +------------+------+------+------+------+------+------+------+
+    | 70 C       |  2.4 |  2.2 |  1.9 |  1.8 |  1.5 |  1.2 |  1.0 |
+    +------------+------+------+------+------+------+------+------+
 
-    @param component: the rtk.Component() class to perform calculations on.
-    @type component: rtk.Component
-    @param new_qual: the index of the quality level of the new item.
-    @type new_qual: integer
-    @param new_environ: the index of the environment of the new item.
-    @type new_environ: integer
-    @param new_temp: the index of the operating temperature of the new item.
-    @type new_temp: integer
-    @return: hr_similar; the estimated hazard rate for the new item.
-    @rtype: float
+    :param component: the rtk.Component() class to perform calculations on.
+    :type component: rtk.Component
+    :param new_qual: the index of the quality level of the new item.
+    :type new_qual: integer
+    :param new_environ: the index of the environment of the new item.
+    :type new_environ: integer
+    :param new_temp: the index of the operating temperature of the new item.
+    :type new_temp: integer
+    :return: hr_similar; the estimated hazard rate for the new item.
+    :rtype: float
     """
 
     qual_factor = [[1.0, 0.8, 0.5, 0.2],
@@ -749,47 +779,43 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     All conversion factors come from Reliability Toolkit: Commercial
     Practices Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below).
 
-                  |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-                  |Active |Active  |Active  |Active |Active |Active |Active |
-                  |to     |to      |to      |to     |to     |to     |to     |
-                  |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-                  |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Integrated    | 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
-    Circuits      |       |        |        |       |       |       |       |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Diodes        | 0.04  |  0.05  |  0.01  | 0.04  | 0.03  | 0.20  | 0.80  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Transistors   | 0.05  |  0.06  |  0.02  | 0.05  | 0.03  | 0.20  | 1.00  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Capacitors    | 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Resistors     | 0.20  |  0.06  |  0.03  | 0.10  | 0.06  | 0.50  | 1.00  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Switches      | 0.40  |  0.20  |  0.10  | 0.40  | 0.20  | 0.80  | 1.00  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Relays        | 0.20  |  0.20  |  0.04  | 0.30  | 0.08  | 0.40  | 0.90  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Connectors    | 0.005 |  0.005 |  0.003 | 0.008 | 0.003 | 0.02  | 0.03  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Circuit       | 0.04  |  0.02  |  0.01  | 0.03  | 0.01  | 0.08  | 0.20  |
-    Boards        |       |        |        |       |       |       |       |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
-    Transformers  | 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
-    --------------+-------+--------+--------+-------+-------+-------+-------+
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Component   |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
+    | Category    |Active |Active  |Active  |Active |Active |Active |Active |
+    |             |to     |to      |to      |to     |to     |to     |to     |
+    |             |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
+    |             |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
+    +=============+=======+========+========+=======+=======+=======+=======+
+    | Integrated  | 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
+    | Circuits    |       |        |        |       |       |       |       |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Diodes      | 0.04  |  0.05  |  0.01  | 0.04  | 0.03  | 0.20  | 0.80  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Transistors | 0.05  |  0.06  |  0.02  | 0.05  | 0.03  | 0.20  | 1.00  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Capacitors  | 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Resistors   | 0.20  |  0.06  |  0.03  | 0.10  | 0.06  | 0.50  | 1.00  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Switches    | 0.40  |  0.20  |  0.10  | 0.40  | 0.20  | 0.80  | 1.00  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Relays      | 0.20  |  0.20  |  0.04  | 0.30  | 0.08  | 0.40  | 0.90  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Connectors  | 0.005 |  0.005 |  0.003 | 0.008 | 0.003 | 0.02  | 0.03  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Circuit     | 0.04  |  0.02  |  0.01  | 0.03  | 0.01  | 0.08  | 0.20  |
+    | Boards      |       |        |        |       |       |       |       |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
+    | Transformers| 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
+    +-------------+-------+--------+--------+-------+-------+-------+-------+
 
-    @param category: the component category index.
-    @type category: integer
-    @param subcategory: the component subcategory index.
-    @type subcategory: integer
-    @param active_env: the active environment index.
-    @type active_env: integer
-    @param dormant_env: the dormant environment index.
-    @type dormant_env: integer
-    @param lambdaa: the active hazard rate of the component.
-    @type lambdaa: float
-    @return: lambdad; the dormant hazard rate.
-    @rtype: float
+    :param int category: the component category index.
+    :param int subcategory: the component subcategory index.
+    :param int active_env: the active environment index.
+    :param int dormant_env: the dormant environment index.
+    :param float lambdaa: the active hazard rate of the component.
+    :return: lambdad; the dormant hazard rate.
+    :rtype: float
     """
 
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -831,7 +857,7 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6:         # Naval
+    elif active_env > 3 and active_env < 6: # Naval
         if dormant_env == 1:                # Ground
             e_index = 4
         elif dormant_env == 2:              # Naval
@@ -857,6 +883,8 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
         lambdad = lambdaa * factor[c_index - 1][e_index]
     except IndexError:
         lambdad = 0.0
+    except UnboundLocalError:
+        lambdad = 0.0
 
     return lambdad
 
@@ -865,17 +893,17 @@ def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
 
-    @param modeca: list containing inputs for the MIL-STD-1629A mode
+    :param modeca: list containing inputs for the MIL-STD-1629A mode
                    criticality calculation.
-    @type modeca: list of mixed types
-    @param itemca: list containing inputs for the MIL-STD-1629A item
+    :type modeca: list of mixed types
+    :param itemca: list containing inputs for the MIL-STD-1629A item
                    criticality calculation.
-    @type itemca: list of mixed types
-    @param rpn: list containing inputs for the automotive criticality
+    :type itemca: list of mixed types
+    :param rpn: list containing inputs for the automotive criticality
                 calculation.
-    @type rpn: list of mixed types
-    @return: modeca, itemca, rpn
-    @rtype: list, list, list
+    :type rpn: list of mixed types
+    :return: modeca, itemca, rpn
+    :rtype: list, list, list
     """
 
     fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -921,118 +949,22 @@ def criticality_analysis(modeca, itemca, rpn):
     return modeca, itemca, rpn
 
 
-def calculate_rg_phase(T1, MTBFi, MTBFf, MTBFa, GR, MS, FEF, Prob, ti, fix):
-    """
-    Function to calculate the values for an individual reliability growth
-    phase.
-
-    @param T1: the length of the first test phase.
-    @type T1: float
-    @param MTBFi: the inital MTBF for the test phase.
-    @type MTBFi: float
-    @param MTBFf: the final MTBF for the test phase.
-    @type MTBFf: float
-    @param MTBFa: the average MTBF for the test phase.
-    @type MTBFa: float
-    @param GR: the average growth rate across the entire test program.
-    @type GR: float
-    @param MS: the management strategy for this program.
-    @type MS: float
-    @param FEF: the average FEF for this program.
-    @type FEF: float
-    @param Prob: the probability of seeing one failure.
-    @type Prob: float
-    @param ti: the growth start time; time to first fix for this program.
-    @type t1: float
-    @param fix: list of True/False indicating which parameters are fixed when
-                calculating results for each test phase.
-                0 = Program probability
-                1 = Management strategy
-                2 = Time to first failure
-                3 = Total test time for test phase
-                4 = Test phase initial MTBF
-                5 = Test phase final MTBF
-                6 = Growth rate
-    @type fix: list of booleans
-    @return: GRi, T1, MTBFi, MTBFf; growth rate, test time, initial MTBF,
-                                    final MTBF for the test phase.
-    @rtype: float, float, float, float
-    """
-
-    # Calculate the average growth rate for the phase.
-    if not fix[6]:
-        try:
-            GRi = -log(T1 / ti) - 1.0 + \
-                  sqrt((1.0 + log(T1 / ti))**2.0 + 2.0 * log(MTBFf / MTBFi))
-        except(ValueError, ZeroDivisionError):
-            GRi = 0.0
-    else:
-        GRi = GR
-
-    # Calculate initial MTBF for the phase.
-    if not fix[4]:
-        try:
-            MTBFi = (-1.0 * ti * MS) / log(1.0 - Prob)
-        except(ValueError, ZeroDivisionError):
-            try:
-                MTBFi = MTBFf / exp(GRi * (0.5 * GRi + log(T1 / ti) + 1.0))
-            except(ValueError, ZeroDivisionError):
-                try:
-                    MTBFi = (ti * (T1 / ti)**(1.0 - GRi)) / Ni
-                except(ValueError, ZeroDivisionError):
-                    MTBFi = 0.0
-
-    # Calculate final MTBF for the phase.
-    if not fix[5]:
-        try:
-            MTBFf = MTBFi * exp(GRi * (0.5 * GRi + log(T1 / ti) + 1.0))
-        except (ValueError, ZeroDivisionError):
-            MTBFf = 0.0
-
-    # Calculate total test time for the phase.
-    if not fix[3]:
-        try:
-            T1 = exp(log(ti) +
-                     1.0 / GRi * (log(MTBFf / MTBFi) + log(1.0 - GRi)))
-        except(ValueError, ZeroDivisionError):
-            T1 = 0.0
-
-    return GRi, T1, MTBFi, MTBFf
-
-
-def moving_average(data, n=3):
-    """
-    Function to calculate the moving average of a data set.
-
-    @param data: the data set for which to find the moving average.
-    @type data: list of floats or integers
-    @param n: the desired period.
-    @type n: integer
-    @return: the nth period moving average of data.
-    @rtype: float
-    """
-
-    _cumsum = np.cumsum(data, dtype=float)  # pylint: disable=E1101
-
-    return (_cumsum[n - 1:] - _cumsum[:1 - n]) / n
-
-
 def beta_bounds(a, m, b, alpha):
     """
     Function to calculate the mean, standard error, and bounds on the mean of
     a beta distribution.  These are the project management estimators, not
     exact calculations.
 
-    @param a: the minimum expected value.
-    @type a: float
-    @param m: most likely value.
-    @type m: float
-    @param b: the maximum expected value.
-    @type b: float
-    @param alpha: the desired confidence level.
-    @type alpha: float
-    @return: _meanll, _mean, _meanul; the calculated mean and bounds.
-    @rtype: tuple of floats
+    :param a: the minimum expected value.
+    :type a: float
+    :param m: most likely value.
+    :type m: float
+    :param b: the maximum expected value.
+    :type b: float
+    :param alpha: the desired confidence level.
+    :type alpha: float
+    :return: _meanll, _mean, _meanul; the calculated mean and bounds.
+    :rtype: tuple of floats
     """
 
     from scipy.stats import norm            # pylint: disable=E0611
@@ -1061,7 +993,7 @@ def calculate_field_ttf(_dates_):
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
-    @param _dates_: tuple containing start and end date for calculating
+    :param _dates_: tuple containing start and end date for calculating
                     time to failure.
     """
 
@@ -1074,389 +1006,19 @@ def calculate_field_ttf(_dates_):
     return ttf.days
 
 
-def kaplan_meier(_dataset_, _reltime_, _conf_=0.75, _type_=3):
-    """
-    Function to calculate the Kaplan-Meier survival function estimates.
-
-    @param dataset: list of tuples where each tuple is in the form of:
-                    (Left of Interval, Right of Interval, Event Status) and
-                    event status are:
-                    0 = right censored
-                    1 = event at time
-                    2 = left censored
-                    3 = interval censored
-    @param reltime: time at which to stop analysis (helps eliminate stretched
-                    plots due to small number of events at high hours).
-    @param conf: the confidence level of the KM estimates (default is 75%).
-    @param type: the confidence interval type for the KM estimates.
-    @return: _KM, a list of lists where each inner list has the following
-                  information:
-
-                   0 = total number of subjects in each curve.
-                   1 = the time points at which the curve has a step.
-                   2 = the number of subjects at risk at t.
-                   3 = the number of events that occur at time t.
-                   4 = the number of subjects that enter at time t (counting
-                       process data only).
-                   5 = the estimate of survival at time t+0. This may be a
-                       vector or a matrix.
-                   6 = type of survival censoring.
-                   7 = the standard error of the cumulative hazard or
-                       -log(survival).
-                   8 = upper confidence limit for the survival curve.
-                   9 = lower confidence limit for the survival curve.
-                  10 = the approximation used to compute the confidence limits.
-                  11 = the level of the confidence limits, e.g. 90 or 95%.
-                  12 = the returned value from the na.action function, if any.
-                       It will be used in the printout of the curve, e.g., the
-                       number of observations deleted due to missing values.
-    @rtype: list
-    """
-
-    from scipy.stats import norm            # pylint: disable=E0611
-
-    # Eliminate zero time failures and failures occurring after any
-    # user-supplied upper limit.
-    _dataset_ = [i for i in _dataset_ if i[0] >= 0.0]
-    if _reltime_ != 0.0:
-        _dataset_ = [i for i in _dataset_ if i[0] <= _reltime_]
-        times = [i[0] for i in _dataset_ if i[0] <= _reltime_]
-        times2 = [i[1] for i in _dataset_ if i[0] <= _reltime_]
-        status = [i[2] for i in _dataset_ if i[0] <= _reltime_]
-
-    for i in range(len(status)):
-        if status[i] == "Right Censored":
-            status[i] = 0
-        elif status[i] == "Left Censored":
-            status[i] = 2
-        elif status[i] == "Interval Censored":
-            status[i] = 3
-        else:
-            status[i] = 1
-
-    # If Rpy2 is available, we will use that to perform the KM estimations.
-    if __USE_RPY__:
-        print "Probably using Windoze."
-
-    elif __USE_RPY2__:
-        survival = importr('survival')
-
-        times = robjects.FloatVector(times)
-        times2 = robjects.FloatVector(times2)
-        status = robjects.IntVector(status)
-
-        surv = survival.Surv(times, times2, type='interval2')   # pylint: disable=E1101
-        robjects.globalenv['surv'] = surv
-        fmla = robjects.Formula('surv ~ 1')
-        _KM_ = survival.survfit(fmla)       # pylint: disable=E1101
-
-        # Every subject must have a censored time to use survrec.
-        # survrec = importr('survrec')
-        # units = robjects.StrVector(units)
-        # survr = survrec.Survr(units, times2, status2)
-        # fit = survrec.wc_fit(survr)
-
-        return _KM_
-
-    else:
-
-        # Determine the confidence bound z-value.
-        _z_norm_ = norm.ppf(_conf_)
-
-        # Get the total number of events.
-        _n_ = len(_dataset_)
-        N = _n_
-
-        _KM_ = []
-        _Sh_ = 1.0
-        muhat = 0.0
-        var = 0.0
-        z = 0.0
-        ti = float(_dataset_[0][0])
-        tj = 0.0
-        i = 0
-
-        while _n_ > 0:
-            # Find the total number of failures and
-            # suspensions in interval [i - 1, i].
-            _d_ = len([t for t in _dataset_
-                       if t[0] == _dataset_[i][0] and t[1] == 1])
-            _s_ = len([t for t in _dataset_
-                       if t[0] == _dataset_[i][0] and t[1] == 0])
-
-            # Estimate the probability of failing in interval [i - 1, i].
-            _Si_ = 1.0 - (float(_d_) / float(_n_))
-
-            # Estimate the probability of survival up to time i [S(ti)].
-            _Sh_ = _Si_ * _Sh_
-
-            # Calculate the standard error for S(ti).
-            z = z + 1.0 / ((_n_ - _d_ + 1) * _n_)
-            _se_ = sqrt(_Si_ * _Si_ * z)
-
-            # Calculate confidence bounds for S(ti).
-            _ll_ = _Sh_ - _z_norm_ * _se_
-            _ul_ = _Sh_ + _z_norm_ * _se_
-            if _type_ == 1 or _ul_ > 1.0:
-                _ul_ = _Sh_
-            if _type_ == 2 or _ll_ < 0.0:
-                _ll_ = _Sh_
-
-            # Calculate the cumulative hazard rate.
-            try:
-                _H_ = -log(_Sh_)
-            except ValueError:
-                _H_ = _H_
-
-            # Calculate the mean.
-            muhat = muhat + _Sh_ * (ti - tj)
-            tj = ti
-            ti = _dataset_[i][0]
-
-            _KM_.append([ti, _n_, _d_, _Si_, _Sh_, _se_, _ll_, _ul_, _H_,
-                         muhat, var])
-            # if(_s_ > 0):
-            #    _KM_.append([str(_dataset_[i][0]) + '+', _n_, _s_, '-', _Sh_,
-            #                 _se_, _ll_, _ul_, _H_])
-
-            _n_ = _n_ - _d_ - _s_
-            i = i + _d_ + _s_
-
-        return _KM_
-
-
-def mean_cumulative_function(units, times, data, _conf_=0.75):
-    """
-    This function estimates the mean cumulative function (MCF) for a population
-    of items.
-
-    @param units: list of unique unit ID's in the data set.
-    @type units: list
-    @param times: list of unique failure times in the data set.
-    @type times: list of floats
-    @param data: a data.frame or matrix where:
-                 Column 0 is the failed unit id.
-                 Column 1 is the left of the interval.
-                 Column 2 is the right of the interval.
-                 Column 3 is the interarrival time.
-    @type data: R data.frame
-    @param conf: the confidence level of the MCF estimates (default is 75%).
-    @type conf: float
-    @return: MCF
-    @rtype: list of lists
-    """
-
-    from scipy.stats import norm            # pylint: disable=E0611
-
-    # Determine the confidence bound z-value.
-    _z_norm_ = norm.ppf(_conf_)
-
-    _m_ = len(units)
-    _n_ = len(times)
-
-    datad = []
-
-    for i in range(len(data)):
-        datad.append(data[i])
-    data = np.asarray(data)                 # pylint: disable=E1101
-    datad = np.asarray(datad)               # pylint: disable=E1101
-
-    _d_ = np.zeros(shape=(_m_, _n_))        # pylint: disable=E1101
-    _delta_ = np.zeros(shape=(_m_, _n_))    # pylint: disable=E1101
-
-    for i in range(_n_):
-        # Array of indices with failure times equal to the current unique
-        # failure time.
-        k = np.where(data[:, 2] == str(times[i]))    # pylint: disable=E1101
-
-        # List of units whose failure time is equal to the current unique
-        # failure time.
-        _u_ = np.array(data[k, 0])[0].tolist()      # pylint: disable=E1101
-        for j in range(len(_u_)):
-            k = [a for a, x in enumerate(units) if x == _u_[j]]
-            _delta_[k, 0:i+1] = 1
-
-    for i in range(_n_):
-        # Array of indices with failure times equal to the current unique
-        # failure time.
-        k = np.where(datad[:, 2] == str(times[i]))   # pylint: disable=E1101
-
-        # List of units whose failure time is equal to the current unique
-        # failure time.
-        _u_ = np.array(datad[k, 0])[0].tolist()      # pylint: disable=E1101
-        for j in range(len(_u_)):
-            k = [a for a, x in enumerate(units) if x == _u_[j]]
-            _d_[k, i] += 1
-
-    _delta_ = _delta_.transpose()
-    _d_ = _d_.transpose()
-
-    _delta_dot = _delta_.sum(axis=1)
-    _d_dot = (_d_ * _delta_).sum(axis=1)
-    _d_bar = _d_dot / _delta_dot
-
-    _MCF_ = []
-    _x_ = (_delta_.transpose() / _delta_dot).transpose()
-    _y_ = (_d_.transpose() - _d_bar).transpose()
-    muhatp = 0.0
-    _llp_ = 0.0
-    _ulp_ = 0.0
-    for i in range(len(times)):
-        muhat = _d_bar[0:i+1].sum(axis=0)
-
-        # Estimate the variance.
-        _z_ = (_x_[0:i+1] * _y_[0:i+1])
-        _var_ = ((_z_.sum(axis=0))**2).sum(axis=0)
-
-        # Calculate the lower and upper bound on the MCF.
-        _ll_ = muhat - _z_norm_ * sqrt(_var_)
-        _ul_ = muhat + _z_norm_ * sqrt(_var_)
-
-        # Estimate the cumulative MTBF.
-        _mtbfc_ = times[i] / muhat
-        _mtbfcll_ = times[i] / _ul_
-        _mtbfcul_ = times[i] / _ll_
-
-        # Estimate the instantaneous MTBF.
-        if i > 0:
-            _mtbfi_ = (times[i] - times[i - 1]) / (muhat - muhatp)
-            _mtbfill_ = (times[i] - times[i - 1]) / (_ul_ - _ulp_)
-            _mtbfiul_ = (times[i] - times[i - 1]) / (_ll_ - _llp_)
-        else:
-            _mtbfi_ = times[i] / (muhat - muhatp)
-            _mtbfill_ = times[i] / (_ul_ - _ulp_)
-            _mtbfiul_ = times[i] / (_ll_ - _llp_)
-
-        muhatp = muhat
-        _llp_ = _ll_
-        _ulp_ = _ul_
-
-        _MCF_.append([times[i], _delta_[i], _d_[i], _delta_dot[i], _d_dot[i],
-                      _d_bar[i], _var_, _ll_, _ul_, muhat, _mtbfc_, _mtbfcll_,
-                      _mtbfcul_, _mtbfi_, _mtbfill_, _mtbfiul_])
-
-    return _MCF_
-
-
-def parametric_fit(_dataset_, _starttime_, _reltime_, _fitmeth_,
-                   _dist_='exponential'):
-    """
-    Function to fit data to a parametric distribution and estimate the
-    parameters.
-
-    @param _dataset_: the data set to fit.
-    @type _dataset_: list of floats
-    @param _reltime_: the maximum time to include in the fit.  Used to exclude
-                      outliers.
-    @type _reltime_: float
-    @param _fitmeth_: method used to fit data to the selected distribution.
-                      1 = rank regression
-                      2 = maximum likelihood estimation (MLE)
-    @type _fitmeth_: integer
-    @param _dist_: the noun name of the distribution to fit.  Defaults to
-                   the exponential distribution.
-    @type _dist_: string
-    @return: fit
-    @rtype: R.Survival.SurvReg object
-    """
-
-    # Eliminate zero time failures and failures occurring after any
-    # user-supplied upper limit.
-    _dataset_ = [i for i in _dataset_ if i[2] > _starttime_]
-    _dataset_ = [i for i in _dataset_ if i[2] <= _reltime_]
-
-    if __USE_RPY__:
-        print "Probably using Windoze."
-
-    elif __USE_RPY2__:
-
-        Rbase = importr('base')
-
-        if _fitmeth_ == 1:                  # MLE
-            if _dist_ == 'exponential':
-                _dist_ = 'exp'
-            elif _dist_ == 'lognormal':
-                _dist_ = 'lnorm'
-            elif _dist_ == 'normal':
-                _dist_ = 'norm'
-
-            left = [i[1] for i in _dataset_]
-            right = [i[2] for i in _dataset_]
-            for i in range(len(_dataset_)):
-                if _dataset_[i][4] == 0:
-                    right[i] = 'NA'
-                elif _dataset_[i][4] == 1:
-                    left[i] = right[i]
-                elif _dataset_[i][4] == 2:
-                    left[i] = 'NA'
-
-            od = rlc.OrdDict([('left', robjects.FloatVector(left)),
-                              ('right', robjects.FloatVector(right))])
-
-            censdata = robjects.DataFrame(od)
-            n_row = Rbase.nrow(censdata)    # pylint: disable=E1101
-            if n_row[0] > 1:
-                fitdistrplus = importr('fitdistrplus')
-                try:
-                    fit = fitdistrplus.fitdistcens(censdata, _dist_)    # pylint: disable=E1101
-                except ri.RRuntimeError:
-                    return True
-
-                #para=R.list(scale=fit[0][1], shape=fit[0][0])
-                #fitdistrplus.plotdistcens(censdata, _dist_, para)
-            else:
-                return True
-
-        elif _fitmeth_ == 2:                # Regression
-            if _dist_ == 'normal':
-                _dist_ = 'gaussian'
-
-            if _reltime_ != 0.0:
-                time = [i[1] + 0.01 for i in _dataset_ if i[2] <= _reltime_]
-                time2 = [i[2] + 0.01 for i in _dataset_ if i[2] <= _reltime_]
-                status = [i[4] for i in _dataset_ if i[2] <= _reltime_]
-
-            survival = importr('survival')
-
-            for i in range(len(status)):
-                if status[i] == 'Right Censored':
-                    status[i] = 0
-                elif status[i] == 'Event':
-                    status[i] = 1
-                elif status[i] == 'Left Censored':
-                    status[i] = 2
-                else:
-                    status[i] = 3
-
-            time = robjects.FloatVector(time)
-            time2 = robjects.FloatVector(time2)
-            status = robjects.IntVector(status)
-
-            surv = survival.Surv(time, time2, status, type='interval')  # pylint: disable=E1101
-            robjects.globalenv['surv'] = surv
-            formula = robjects.Formula('surv ~ 1')
-
-            fit = survival.survreg(formula, dist=_dist_)    # pylint: disable=E1101
-
-    else:
-        print "No R"
-
-    return fit
-
-
 def smooth_curve(x, y, num):
     """
     Function to produce smoothed plots where there are a small number of data
     points in the original data set.
 
-    @param x: a numpy array of the raw x-values.
-    @type x: numpy array
-    @param y: a numpy array of the raw y-values.
-    @type y: numpy array
-    @param num: the number of points to generate.
-    @type num: integer
-    @return: _new_x, _new_y
-    @rtype: list
+    :param x: a numpy array of the raw x-values.
+    :type x: numpy array
+    :param y: a numpy array of the raw y-values.
+    :type y: numpy array
+    :param num: the number of points to generate.
+    :type num: integer
+    :return: _new_x, _new_y
+    :rtype: list
     """
 
     from scipy.interpolate import spline    # pylint: disable=E0611
@@ -1484,51 +1046,3 @@ def smooth_curve(x, y, num):
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error
-
-
-def theoretical_distribution(_data_, _distr_, _para_):
-    """
-    Function to generate data points from a theoretical distribution with the
-    parameters provided.
-
-    @param _data_: data set used to bound the theoretical distribution.
-    @type _data_: list of floats
-    @param _distr_: the name of the desired theoretical distribution.
-    @type _distr_: string
-    @param _para_: the parameters of the desired theoretical distribution.
-    @type _para_: list of floats
-    @return: theop
-    @rtype: R object
-    """
-
-    Rbase = importr('base')
-
-    # Create the R density and probabilty distribution names.
-    ddistname = R.paste('d', _distr_, sep='')
-    pdistname = R.paste('p', _distr_, sep='')
-
-    # Calculate the minimum and maximum values for x.
-    xminleft = min([i[0] for i in _data_ if i[0] != 'NA'])
-    xminright = min([i[1] for i in _data_ if i[1] != 'NA'])
-    x_min = min(xminleft, xminright)
-
-    xmaxleft = max([i[0] for i in _data_ if i[0] != 'NA'])
-    xmaxright = max([i[1] for i in _data_ if i[1] != 'NA'])
-    x_max = max(xmaxleft, xmaxright)
-
-    x_range = x_max - x_min
-    x_min = x_min - 0.3 * x_range
-    x_max = x_max + 0.3 * x_range
-
-    # Create a list of probabilities for the theoretical distribution with the
-    # estimated parameters.
-    den = float(len(_data_))
-    densfun = R.get(ddistname, mode='function')
-    nm = R.names(_para_)
-    f = R.formals(densfun)
-    args = R.names(f)
-    m = R.match(nm, args)
-    s = R.seq(x_min, x_max, by=(x_max - x_min) / den)
-    theop = Rbase.do_call(pdistname, R.c(R.list(s), _para_))    # pylint: disable=E1101
-
-    return theop

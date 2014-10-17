@@ -67,41 +67,68 @@ _ = gettext.gettext
 matplotlib.use('GTK')
 
 
-# noinspection PyUnresolvedReferences
 class Validation(object):
     """
     The Validation class is used to represent the verification and validation
     tasks for the system being analyzed.
+
+    :ivar _dic_tasks: Dictionary to to carry the validation task type indices.
+    Key is the task ID; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Ordinal Start Date        |
+    +-------+---------------------------+
+    |   1   | Ordinal End Date          |
+    +-------+---------------------------+
+    |   2   | Minimum Task Time         |
+    +-------+---------------------------+
+    |   3   | Likely Task Time          |
+    +-------+---------------------------+
+    |   4   | Maximum Task Time         |
+    +-------+---------------------------+
+    |   5   | % Complete                |
+    +-------+---------------------------+
+    |   6   | |
+    +-------+---------------------------+
+    |   7   | Minimum Task Cost         |
+    +-------+---------------------------+
+    |   8   | Likely Task Cost          |
+    +-------+---------------------------+
+    |   9   | Maximum Task Cost         |
+    +-------+---------------------------+
+    |  10   | |
+    +-------+---------------------------+
+
     """
 
-    #_ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
-    #                  _(u"Does this activity provide quantitative strength information as an output?"),
-    #                  _(u"Does this activity provide operating environment information as an output?"),
-    #                  _(u"Hardware item configuration/architecture"),
-    #                  _(u"Hardware item failure modes"),
-    #                  _(u"Hardware item failure mechanisms"),
-    #                  _(u"Hardware item failure causes"),
-    #                  _(u"Hardware item failure times"),
-    #                  _(u"Hardware item Part quality"),
-    #                  _(u"Hardware item aging/degradation information"),
-    #                  _(u"Hardware item design requirements and/or goals"),
-    #                  _(u"")]
+    # _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
+    #                   _(u"Does this activity provide quantitative strength information as an output?"),
+    #                   _(u"Does this activity provide operating environment information as an output?"),
+    #                   _(u"Hardware item configuration/architecture"),
+    #                   _(u"Hardware item failure modes"),
+    #                   _(u"Hardware item failure mechanisms"),
+    #                   _(u"Hardware item failure causes"),
+    #                   _(u"Hardware item failure times"),
+    #                   _(u"Hardware item Part quality"),
+    #                   _(u"Hardware item aging/degradation information"),
+    #                   _(u"Hardware item design requirements and/or goals"),
+    #                   _(u"")]
 
     def __init__(self, application):
         """
         Initializes the Validation class.
 
-        @param application: the current instance of the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
-        # Define private VALIDATION class attributes.
+        # Define private Validation class attributes.
         self._app = application
 
         # Define private VALIDATION class dictionary attributes.
         self._dic_types = {}
-        """Dictionary to carry the validation task type indices.  Key is the
-        noun name of the task type; value is the integer index."""
-        self._dic_tasks = {}                # All task information.
+        self._dic_tasks = {}
         self._dic_status = {}               # Status of tasks.
 
         # Define private Validation class list attributes.
@@ -312,9 +339,9 @@ class Validation(object):
             Function to create the VALIDATION class gtk.Notebook() page for
             displaying general data about the selected VALIDATION.
 
-            @param self: the current instance of a VALIDATION class.
-            @param notebook: the VALIDATION class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a VALIDATION class.
+            :param notebook: the VALIDATION class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -707,10 +734,9 @@ class Validation(object):
         self._dic_tasks.clear()
 
         # Load the Requirement Type gtk.CellRendererCombo().
-        _query_ = "SELECT fld_validation_type_desc \
-                   FROM tbl_validation_type"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
+        _query = "SELECT fld_validation_type_desc \
+                  FROM tbl_validation_type"
+        _results_ = self._app.COMDB.execute_query(_query, None,
                                                   self._app.ComCnx)
 
         if _results_ == '' or not _results_ or _results_ is None:
@@ -732,9 +758,7 @@ class Validation(object):
         _query = "SELECT * FROM tbl_validation \
                   WHERE fld_revision_id=%d \
                   ORDER BY fld_validation_id" % self._app.REVISION.revision_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             _n_tasks = len(_results)
         except TypeError:
@@ -816,7 +840,7 @@ class Validation(object):
             Loads the widgets with general information about the Validation
             class.
 
-            @param self: the current instance of the Validation class.
+            :param self: the current instance of the Validation class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -829,6 +853,7 @@ class Validation(object):
                 _index_ = 0
 
             try:
+                self.validation_id = _model_.get_value(_row_, 1)
                 self.txtID.set_text(str(_model_.get_value(_row_, 1)))
                 _textbuffer = self.txtTask.get_child().get_child().get_buffer()
                 _textbuffer.set_text(_model_.get_value(_row_, 2))
@@ -932,8 +957,8 @@ class Validation(object):
         """
         Method to load the Validation class effort progress plot.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from operator import itemgetter
@@ -1015,7 +1040,8 @@ class Validation(object):
         # identified as a Reliability Assessment.  Add an annotation box
         # showing the minimum required and goal values for each milestone.
         for i in range(len(_assess_dates)):
-            self.axAxis1.axvline(x=_assess_dates[i], ymin=0, color='m',
+            self.axAxis1.axvline(x=_assess_dates[i], ymin=0,
+                                 ymax=1.05 * _y3[0], color='m',
                                  linewidth=2.5, linestyle=':')
 
         for i in range(len(_targets)):
@@ -1035,8 +1061,7 @@ class Validation(object):
                                       alpha=0.5,
                                       patchA=None,
                                       patchB=Ellipse((2, -1), 0.5, 0.5),
-                                      relpos=(0.2, 0.5))
-                                  )
+                                      relpos=(0.2, 0.5)))
 
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),
@@ -1044,18 +1069,20 @@ class Validation(object):
         create_legend(self.axAxis1, _text, fontsize='medium',
                       legframeon=True, location='lower left', legshadow=True)
 
+        self.axAxis1.set_ylim(bottom=0.0, top=1.05 * _y3[0])
+
         return False
 
     def _update_tree(self, columns, values):
         """
-        Updates the values in the VALIDATION class gtk.Treeview.
+        Updates the values in the Validation class gtk.Treeview.
 
-        @param columns: a list of integers representing the column numbers to
+        :param columns: a list of integers representing the column numbers to
                         update.
-        @type columns: list of integers
-        @param values: a list of new values for the VALIDATION class
+        :type columns: list of integers
+        :param values: a list of new values for the Validation class
                        gtk.TreeView().
-        @type values: list
+        :type values: list
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1117,15 +1144,15 @@ class Validation(object):
         Method called whenever a VALIDATION class gtk.Treeview()
         gtk.CellRenderer() is edited.
 
-        @param __cell: the gtk.CellRenderer() that was edited.
-        @type __cell: gtk.CellRenderer
-        @param string path: the gtk.TreeView() path of the gtk.CellRenderer()
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param string path: the gtk.TreeView() path of the gtk.CellRenderer()
                             that was edited.
-        @param string new_text: the new text in the edited gtk.CellRenderer().
-        @param integer position: the column position of the edited
+        :param string new_text: the new text in the edited gtk.CellRenderer().
+        :param integer position: the column position of the edited
                                  gtk.CellRenderer().
-        @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        @type model: gtk.TreeModel
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
         """
 
         # Update the gtk.TreeModel() with the new value.
@@ -1201,9 +1228,9 @@ class Validation(object):
         Adds a new Verfication & Validation activity to the RTK Program's
         MySQL or SQLite3 database.
 
-        @param __widget: the gtk.Widget() that called this function.
-        @type __widget: gtk.Widget
-        @return: False or True
+        :param __widget: the gtk.Widget() that called this function.
+        :type __widget: gtk.Widget
+        :return: False or True
         """
 
         _n_tasks = add_items(title=_(u"RTK - Add V &amp; V Activity"),
@@ -1233,8 +1260,8 @@ class Validation(object):
         Deletes the currently selected V&V activity from the RTK Program's
         MySQL or SQLite3 database.
 
-        @param __menuitem: the gtk.MenuItem() that called this function.
-        @type __menuitem: gtk.MenuItem
+        :param __menuitem: the gtk.MenuItem() that called this function.
+        :type __menuitem: gtk.MenuItem
         """
 
         (_model_, _row_) = self.treeview.get_selection().get_selected()
@@ -1263,8 +1290,8 @@ class Validation(object):
         Method to save the Validation class gtk.TreeView() information to the
         open RTK Program database.
 
-        @param __widget: the gtk.Widget() that called this function.
-        @type __widget: gtk.Widget
+        :param __widget: the gtk.Widget() that called this function.
+        :type __widget: gtk.Widget
         """
 
         def _save_line_item(model, __path, row, self):
@@ -1272,13 +1299,13 @@ class Validation(object):
             Function to save each row in the Validation class gtk.TreeModel()
             to the open RTK Program's database.
 
-            @param model: the Validation class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param string __path: the path of the active row in the Validation
+            :param model: the Validation class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param string __path: the path of the active row in the Validation
                                   class gtk.TreeModel().
-            @param row: the selected row in the Validation class
+            :param row: the selected row in the Validation class
                         gtk.TreeView().
-            @type row: gtk.TreeIter
+            :type row: gtk.TreeIter
             """
 
             _start = _util.date_to_ordinal(model.get_value(
@@ -1389,12 +1416,12 @@ class Validation(object):
         """
         Callback function to retrieve and save entry changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called this function.
-        @type __event: gtk.gdk.Event
-        @param string convert: the data type to convert the entry contents to.
-        @param integer index: the position in the VALIDATION class attribute
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called this function.
+        :type __event: gtk.gdk.Event
+        :param string convert: the data type to convert the entry contents to.
+        :param integer index: the position in the VALIDATION class attribute
                               list associated with the data from the calling
                               entry.
         """
@@ -1415,12 +1442,18 @@ class Validation(object):
             except ValueError:
                 _text_ = ""
 
-                # Update the Validation Tree.
+        # Update the Validation Tree.
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         try:
             _model_.set_value(_row_, index, _text_)
         except TypeError:
             print index
+
+        # Update the ordinal start and end dates in the task dictionary.
+        if index == 10 or index == 11:
+            _text_ = datetime.strptime(entry.get_text(),
+                                       '%Y-%m-%d').toordinal()
+            self._dic_tasks[self.validation_id][index - 10] = _text_
 
         # Calculate task time estimates.
         if index == 13 or index == 14 or index == 15:
@@ -1454,10 +1487,10 @@ class Validation(object):
         """
         Callback function to retrieve and save spinbutton changes.
 
-        @param spinbutton: the gtk.SpinButton() that called this function.
-        @type spinbutton: gtk.SpinButton
-        @param string __convert: the data type to convert the entry contents.
-        @param integer index: the position in the VALIDATION class attribute
+        :param spinbutton: the gtk.SpinButton() that called this function.
+        :type spinbutton: gtk.SpinButton
+        :param string __convert: the data type to convert the entry contents.
+        :param integer index: the position in the VALIDATION class attribute
                               list associated with the data from the calling
                               entry.
         """
@@ -1478,8 +1511,7 @@ class Validation(object):
         Method to calculate the expected task time, lower limit, and upper
         limit on task time.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
         """
 
         from operator import itemgetter
@@ -1542,11 +1574,16 @@ class Validation(object):
 # TODO: Remove this hackish way to save program time/cost info when it is moved into the Revision class.
         self._app.REVISION.program_time = sum([_m[3] for _m in _tasks])
         self._app.REVISION.program_time_se = sum([_m[5] for _m in _tasks])
-        (_model, _row) = self._app.REVISION.treeview.get_selection().get_selected()
-        _model.set_value(_row, self._app.REVISION._lst_col_order[23], self._app.REVISION.program_time)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[24], self._app.REVISION.program_time_se)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[25], self._app.REVISION.program_cost)
-        _model.set_value(_row, self._app.REVISION._lst_col_order[26], self._app.REVISION.program_cost_se)
+        (_model,
+         _row) = self._app.REVISION.treeview.get_selection().get_selected()
+        _model.set_value(_row, self._app.REVISION._lst_col_order[23],
+                         self._app.REVISION.program_time)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[24],
+                         self._app.REVISION.program_time_se)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[25],
+                         self._app.REVISION.program_cost)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[26],
+                         self._app.REVISION.program_cost_se)
 
         self.txtProjectTimeLL.set_text(str(fmt.format(
             self._app.REVISION.program_time -

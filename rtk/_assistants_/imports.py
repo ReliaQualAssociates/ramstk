@@ -4,8 +4,8 @@ This module contains classes (gtk.Assistants) used to import data from external
 files into the open RTK Program database.  Currently the following import
 assistants are implemented:
 
- - Hardware
- - Program Incidents
+ * Hardware
+ * Program Incidents
 """
 
 __author__ = 'Andrew Rowland'
@@ -20,6 +20,7 @@ __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+import os
 
 # Modules required for the GUI.
 try:
@@ -45,9 +46,14 @@ import locale
 import gettext
 
 # Import other RTK modules.
-import configuration as _conf               # pylint: disable=F0401
-import utilities as _util                   # pylint: disable=F0401
-import widgets as _widg                     # pylint: disable=F0401
+try:
+    import configuration as _conf
+    import utilities as _util
+    import widgets as _widg
+except ImportError:
+    import rtk.configuration as _conf
+    import rtk.utilities as _util
+    import rtk.widgets as _widg
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -81,11 +87,10 @@ def _select_source_file(assistant):
     Function to select the file containing the data to import to the open RTK
     Program database.
 
-    @param assistant: the gtk.Assistant() calling this function.
-    @type assistant: gtk.Assistant
-    @return: _headers, _contents; lists containing the column headings and
+    :param gtk.Assistant assistant: the gtk.Assistant() calling this function.
+    :return: _headers, _contents; lists containing the column headings and
              each line from the source file.
-    @rtype: lists
+    :rtype: lists
     """
 
     # Get the user's selected file and write the results.
@@ -115,17 +120,24 @@ def _select_source_file(assistant):
     _dialog.add_filter(_filter)
 
     # Run the dialog and write the file.
+    _headers = []
     _contents = []
     if _dialog.run() == gtk.RESPONSE_ACCEPT:
         _filename = _dialog.get_filename()
         _file = open(_filename, 'r')
 
+        __, _extension = os.path.splitext(_filename)
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
         for _line in _file:
             _contents.append([_line.rstrip('\n')])
 
-        _headers = str(_contents[0][0]).rsplit('\t')
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
         for i in range(len(_contents) - 1):
-            _contents[i] = str(_contents[i + 1][0]).rsplit('\t')
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
 
         _dialog.destroy()
 
@@ -730,9 +742,9 @@ class ImportIncident(gtk.Assistant):
         """
         Initialize an instance of the Import Incident Assistant.
 
-        @param __button: the gtk.Button() widget that called this Assistant.
-        @type __button: gtk.Button
-        @param app: the current instance of the RTK application.
+        :param gtk.Button __button: the gtk.Button() that called this
+                                    Assistant.
+        :param rtk app: the current instance of the RTK application.
         """
 
         self._app = app
@@ -875,21 +887,19 @@ class ImportIncident(gtk.Assistant):
         """
         Called whenever a TreeView CellRendererCombo changes.
 
-        @param cell: the gtk.CellRendererCombo() that called this function.
-        @type ce;;" gtk.CellRendererCombo
-        @param path: the path in the gtk.TreeView() containing the
-                     gtk.CellRendererCombo() that called this function.
-        @type path: string
-        @param row: the new gtk.TreeIter() in the gtk.CellRendererCombo() that
-                    called this function.
-        @type row: gtk.TreeIter
-        @param position: the position of in the gtk.TreeView() of the
+        :param gtk.CellRendererCombo cell: the gtk.CellRendererCombo() that
+                                           called this method.
+        :param str path: the path in the gtk.TreeView() containing the
                          gtk.CellRendererCombo() that called this function.
-        @type position: integer
-        @param treemodel: the gtk.TreeModel() for the gtk.TreeView().
-        @type treemodel: gtk.TreeModel
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param gtk.TreeIter row: the new gtk.TreeIter() in the
+                                 gtk.CellRendererCombo() that called this
+                                 method.
+        :param int position: the position of in the gtk.TreeView() of the
+                             gtk.CellRendererCombo() that called this function.
+        :param gtk.TreeModel treemodel: the gtk.TreeModel() for the
+                                        gtk.TreeView().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _model = cell.get_property('model')
@@ -909,11 +919,10 @@ class ImportIncident(gtk.Assistant):
         """
         Method to select the next page to display in the gtk.Assistant().
 
-        @param current_page: the currently selected page in the
-                             gtk.Assistant().
-        @type current_page: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param int current_page: the currently selected page in the
+                                 gtk.Assistant().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if current_page == 0:
@@ -925,10 +934,9 @@ class ImportIncident(gtk.Assistant):
         """
         Method to perform the import from an external file to the database.
 
-        @param __button: the gtk.Button() that called this method.
-        @type __button: gtk.Button
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _import_error = False
@@ -962,6 +970,12 @@ class ImportIncident(gtk.Assistant):
                         _contents.append('')
 
             _contents[14] = _contents[14].replace('$', '')
+
+            # Remove any single and double parentheses from the description and
+            # remarks fields.
+            for j in[4, 5, 8]:
+                _contents[j] = _contents[j].replace('\'', '')
+                _contents[j] = _contents[j].replace('\"', '')
 
             # Remove any commas that may be in numerical fields.
             for j in [12, 14, 15]:

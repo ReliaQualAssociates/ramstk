@@ -1,6 +1,308 @@
 #!/usr/bin/env python
 """
 This file contains configuration information and functions for RTK.
+
+:const ICON_DIR: Default value: ''
+Path to the directory containing icon files used by RTK. \n
+POSIX default: /usr/share/pixmaps/RTK \n
+Windows default: None
+
+:const DATA_DIR: Default value: ''
+Path to the directory containing data files used by RTK. \n
+POSIX default: /usr/share/RTK \n
+Windows default: None
+
+:const CONF_DIR: Default value: ''
+Path to the directory containing configuration files used by RTK.\n
+POSIX default: $HOME/.config/RTK \n
+Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK
+
+:const LOG_DIR: Default value: ''
+Path to the directory containing log files used by RTK. \n
+POSIX default: $HOME/.config/RTK/logs \n
+Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs
+
+:const PROG_DIR: Default value: ''
+Path to the base directory containing RTK Program database files.  This is only
+used when the backend is SQLite3. \n
+POSIX default: $HOME/analyses/rtk \n
+Windows default: C:\\\Users\\\<USER NAME>\\\analyses\\\rtk
+
+:const RTK_MODE_SOURCE: Default value: 1
+Indicator variable used to determine which failure mode source to use.
+
+:const RTK_FORMAT_FILE: Default value: []
+Global list containing the path to the format files to use for various widgets.
+
++-------+----------------------------+
+| Index | Tree Format                |
++=======+============================+
+|    0  | Revision Tree              |
++-------+----------------------------+
+|    1  | Function Tree              |
++-------+----------------------------+
+|    2  | Requirements Tree          |
++-------+----------------------------+
+|    3  | Hardware Tree              |
++-------+----------------------------+
+|    4  | Validation Tree            |
++-------+----------------------------+
+|    5  | Reliability Growth Tree    |
++-------+----------------------------+
+|    6  | Field Incidents List       |
++-------+----------------------------+
+|    7  | Parts List                 |
++-------+----------------------------+
+|    8  | Similar Item Analysis      |
++-------+----------------------------+
+|    9  | Hardware FMECA             |
++-------+----------------------------+
+|   10  | Stakeholder Input          |
++-------+----------------------------+
+|   11  | Test Planning List         |
++-------+----------------------------+
+|   12  | Future Use                 |
++-------+----------------------------+
+|   13  | Future Use                 |
++-------+----------------------------+
+|   14  | Future Use                 |
++-------+----------------------------+
+|   15  | Software Tree              |
++-------+----------------------------+
+|   16  | Dataset Tree               |
++-------+----------------------------+
+|   17  | Risk Analysis              |
++-------+----------------------------+
+|   18  | Functional FMECA           |
++-------+----------------------------+
+|   19  | Software FMECA             |
++-------+----------------------------+
+
+:const RTK_COLORS: Default value: []
+Global list containing the colors to use for various widgets.
+
++-------+-----------------------------------------------+
+| Index | Tree Color                                    |
++=======+===============================================+
+|   0   | Revision Tree background                      |
++-------+-----------------------------------------------+
+|   1   | Revision Tree foreground                      |
++-------+-----------------------------------------------+
+|   2   | Function Tree background                      |
++-------+-----------------------------------------------+
+|   3   | Function Tree foreground                      |
++-------+-----------------------------------------------+
+|   4   | Requirement Tree background                   |
++-------+-----------------------------------------------+
+|   5   | Requirement Tree foreground                   |
++-------+-----------------------------------------------+
+|   6   | Hardware Tree background                      |
++-------+-----------------------------------------------+
+|   7   | Hardware Tree foreground                      |
++-------+-----------------------------------------------+
+|   8   | Validation Tree background                    |
++-------+-----------------------------------------------+
+|   9   | Validation Tree foreground                    |
++-------+-----------------------------------------------+
+|  10   | Reliability Testing Tree background           |
++-------+-----------------------------------------------+
+|  11   | Reliability Testing Tree foreground           |
++-------+-----------------------------------------------+
+|  12   | Program Incident Tree background              |
++-------+-----------------------------------------------+
+|  13   | Program Incident Tree foreground              |
++-------+-----------------------------------------------+
+|  14   | Dataset Tree background color                 |
++-------+-----------------------------------------------+
+|  15   | Dataset Tree foreground color                 |
++-------+-----------------------------------------------+
+|  16   | Part List Tree background                     |
++-------+-----------------------------------------------+
+|  17   | Part List Tree foreground                     |
++-------+-----------------------------------------------+
+|  18   | Overstressed Part background                  |
++-------+-----------------------------------------------+
+|  19   | Overstressed Part foreground                  |
++-------+-----------------------------------------------+
+|  20   | Tagged Part background                        |
++-------+-----------------------------------------------+
+|  21   | Tagged Part foreground                        |
++-------+-----------------------------------------------+
+|  22   | Part with no failure rate model foreground    |
++-------+-----------------------------------------------+
+|  23   | Software Tree background color                |
++-------+-----------------------------------------------+
+|  24   | Software Tree foreground color                |
++-------+-----------------------------------------------+
+
+:const RTK_PREFIX: Default value: []
+Global variable list to house information about the prefix and next index to
+use when adding new revisions, functions, assemblies, parts, FMECA items,
+FMECA modes, FMECA effects, and FMECA causes.
+
++-------+---------------------------+
+| Index | Next Prefix/Index         |
++=======+===========================+
+|   0   | Revision prefix           |
++-------+---------------------------+
+|   1   | Next Revision index       |
++-------+---------------------------+
+|   2   | Function prefix           |
++-------+---------------------------+
+|   3   | Next Function index       |
++-------+---------------------------+
+|   4   | Hardware prefix           |
++-------+---------------------------+
+|   5   | Next Hardware index       |
++-------+---------------------------+
+|   6   | Part prefix               |
++-------+---------------------------+
+|   7   | Next Part index           |
++-------+---------------------------+
+|   8   | FMECA item prefix         |
++-------+---------------------------+
+|   9   | Next FMECA item index     |
++-------+---------------------------+
+|  10   | FMECA mode prefix         |
++-------+---------------------------+
+|  11   | Next FMECA mode index     |
++-------+---------------------------+
+|  12   | FMECA effect prefix       |
++-------+---------------------------+
+|  13   | Next FMECA effect index   |
++-------+---------------------------+
+|  14   | FMECA cause prefix        |
++-------+---------------------------+
+|  15   | Next FMECA cause index    |
++-------+---------------------------+
+|  16   | Software prefix           |
++-------+---------------------------+
+|  17   | Next Software index       |
++-------+---------------------------+
+
+:const RTK_MODULES: Default value: []
+Global list to house information about the active modules.  Where 1 = active
+and 0 = inactive.
+
++-------+---------------+
+| Index | Module        |
++=======+===============+
+|   0   | Revision      |
++-------+---------------+
+|   1   | Function      |
++-------+---------------+
+|   2   | Requirements  |
++-------+---------------+
+|   3   | Hardware      |
++-------+---------------+
+|   4   | Software      |
++-------+---------------+
+|   5   | Validation    |
++-------+---------------+
+|   6   | Testing       |
++-------+---------------+
+|   7   | Incidents     |
++-------+---------------+
+|   8   | Dataset       |
++-------+---------------+
+|   9   | FMECA         |
++-------+---------------+
+|  10   | RCM           |
++-------+---------------+
+|  11   | RBD           |
++-------+---------------+
+|  12   | FTA           |
++-------+---------------+
+
+:const RTK_PAGE_NUMBER: Default value: []
+
+:const RTK_COM_INFO: Default value: []
+Global list for the RTK common database connection information.
+
++-------+-------------------------------+
+| Index | Information                   |
++=======+===============================+
+|   0   | Host name (MySQL only)        |
++-------+-------------------------------+
+|   1   | Host port (MySQL only)        |
++-------+-------------------------------+
+|   2   | Database name                 |
++-------+-------------------------------+
+|   3   | User name (MySQL only)        |
++-------+-------------------------------+
+|   4   | User password (MySQL only)    |
++-------+-------------------------------+
+
+:const RTK_PROG_INFO: Default value: []
+Global list for RTK Program database connectioninformation.
+
++-------+-------------------------------+
+| Index | Information                   |
++=======+===============================+
+|   0   | Host name (MySQL only)        |
++-------+-------------------------------+
+|   1   | Host port (MySQL only)        |
++-------+-------------------------------+
+|   2   | Database name                 |
++-------+-------------------------------+
+|   3   | User name (MySQL only)        |
++-------+-------------------------------+
+|   4   | User password (MySQL only)    |
++-------+-------------------------------+
+
+:const RTK_RISK_POINTS: Default value: [4, 10]
+Global list for risk level cutoffs.
+
++-------+---------------------------+
+| Index | Risk Level Cutoff Value   |
++=======+===========================+
+|   0   | Low to medium             |
++-------+---------------------------+
+|   1   | Medium to high            |
++-------+---------------------------+
+
+:const COM_BACKEND: Default value: ''
+RTK common database backend to use; mysql or sqlite3.
+
+:const BACKEND: Default value: ''
+RTK Program database backend to use; mysql or sqlite3.
+
+:const LOCALE: Default value: en_US
+The language locale to use with RTK.
+
+:const OS: Default value: ''
+The operating system RTK is currently running on.
+
+:const FRMULT: Default value: 1.0
+The failure rate multiplier.  All failure rates will be multiplied by this
+value for display.  This allows failure rates to display without using
+scientific notation.
+
+:const PLACES: Default value: 6
+Number of decimal places to show in numerical results.
+
+:const RTK_MTIME: Default value: 10.0
+The default mission time for new RTK Programs.
+
+:const TABPOS: Default value: ['Top', 'Bottom', 'Bottom']
+Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
+'Bottom', 'Left', or 'Right'.
+
++-------+---------------+
+| Index | Notebook      |
++=======+===============+
+|   0   | Module Book   |
++-------+---------------+
+|   1   | Work Book     |
++-------+---------------+
+|   2   | List Book     |
++-------+---------------+
+
+:const RTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
+    * basic: a single window embedded with the Module Book, Work Book, and List
+             Book.
+    * advanced: multiple windows; one each for the Module Book, Work Book, and
+                List Book.
 """
 
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
@@ -15,7 +317,8 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import ConfigParser
-from os import environ, path, mkdir, name
+import sys
+from os import environ, path, makedirs, name
 
 # Add localization support.
 import gettext
@@ -26,200 +329,42 @@ import utilities as _util
 import widgets as _widg
 
 MODE = ''
-""" Sets the mode of operation.  Defaults to '' for user-mode.  Will be set to
-'developer' when devmode is passed as a CLI argument.  The 'developer' mode is
-used during testing and enables the use of built-in test cases."""
 
+SITE_DIR = ''
 ICON_DIR = ''
-""" Path to the directory containing icon files used by RTK.\n
-Defaults to /usr/share/pixmaps/RTK/ on POSIX systems."""
-
 DATA_DIR = ''
-""" Path to the directory containing data files used by RTK.\n
-Defaults to /usr/share/RTK/ on POSIX systems."""
-
 CONF_DIR = ''
-""" Path to the directory containing configuration files used by RTK.\n
-Defaults to $HOME/.config/RTK/ on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\config\RTK\ on NT systems."""
-
 LOG_DIR = ''
-""" Path to the directory containing log files used by RTK.\n
-Defaults to $HOME/.config/RTK/logs/ on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\config\RTK\logs\ on NT systems."""
-
 PROG_DIR = ''
-""" Path to the base directory containing RTK Program database files.  This is
-only used when the backend is SQLite3.\n
-Defaults to $HOME/analyses/rtk on POSIX systems.\n
-Defaults to C:\\Users\<USER NAME>\analyses\rtk\ on NT systems."""
+
+RTK_MODE_SOURCE = 1
 
 RTK_FORMAT_FILE = []
-""" Global list containing the path to the format files to use for various
-widgets.\n\n
-
-Position  Tree Format\n
-    0     Revision Tree\n
-    1     Function Tree\n
-    2     Requirements Tree\n
-    3     Hardware Tree\n
-    4     Validation Tree\n
-    5     Reliability Growth Tree\n
-    6     Field Incidents List\n
-    7     Parts List\n
-    8     Similar Item Analysis\n
-    9     Hardware FMECA\n
-   10     Stakeholder Input\n
-   11     Test Planning List\n
-   12     Future Use\n
-   13     Future Use\n
-   14     Future Use\n
-   15     Software Tree\n
-   16     Dataset Tree\n
-   17     Risk Analysis\n
-   18     Functional FMECA\n
-   19     Software FMECA"""
-
 RTK_COLORS = []
-""" Global list containing the colors to use for various widgets.\n\n
-
-Position    Tree Color\n
-    0       Revision Tree background\n
-    1       Revision Tree foreground\n
-    2       Function Tree background\n
-    3       Function Tree foreground\n
-    4       Requirement Tree background\n
-    5       Requirement Tree foreground\n
-    6       Hardware Tree background\n
-    7       Hardware Tree foreground\n
-    8       Validation Tree background\n
-    9       Validation Tree foreground\n
-   10       Reliability Testing Tree background\n
-   11       Reliability Testing Tree foreground\n
-   12       Program Incident Tree background\n
-   13       Program Incident Tree foreground\n
-   14       Dataset Tree background color\n
-   15       Dataset Tree foreground color\n
-   16       Part List Tree background\n
-   17       Part List Tree foreground\n
-   18       Overstressed Part background\n
-   19       Overstressed Part foreground\n
-   20       Tagged Part background\n
-   21       Tagged Part foreground\n
-   22       Part with no failure rate model foreground"""
-
 RTK_PREFIX = []
-""" Global variable list to house information about the prefix and next index
-to use when adding new revisions, functions, assemblies, parts, FMECA items,
-FMECA modes, FMECA effects, and FMECA causes.\n\n
-
-Position    Index/Prefix\n
-    0       Revision prefix\n
-    1       Next Revision index\n
-    2       Function prefix\n
-    3       Next Function index\n
-    4       Hardware prefix\n
-    5       Next Hardware index\n
-    6       Part prefix\n
-    7       Next Part index\n
-    8       FMECA item prefix\n
-    9       Next FMECA item index\n
-   10       FMECA mode prefix\n
-   11       Next FMECA mode index\n
-   12       FMECA effect prefix\n
-   13       Next FMECA effect index\n
-   14       FMECA cause prefix\n
-   15       Next FMECA cause index\n
-   16       Software prefix\n
-   17       Next Software index"""
 
 RTK_MODULES = []
-""" Global list to house information about the active modules.  Where
-1 = active and 0 = inactive.\n\n
-
-Position    Module Status\n
-    0       Revision\n
-    1       Function\n
-    2       Requirements\n
-    3       Hardware\n
-    4       Software\n
-    5       Validation\n
-    6       Testing\n
-    7       Incidents\n
-    8       Dataset\n
-    9       FMECA\n
-   10       RCM\n
-   11       RBD\n
-   12       FTA"""
-
 RTK_PAGE_NUMBER = []
 
 RTK_COM_INFO = []
-""" Global list for the RTK common database connection information.\n\n
-
-Position    Information\n
-    0       Host name (MySQL only)\n
-    1       Host port (MySQL only)\n
-    2       Database name\n
-    3       User name (MySQL only)\n
-    4       User password (MySQL only)"""
-
 RTK_PROG_INFO = []
-""" Global list for RTK Program database connection information.\n\n
-
-Position    Information\n
-    0       Host name (MySQL only)\n
-    1       Host port (MySQL only)\n
-    2       Database name\n
-    3       User name (MySQL only)\n
-    4       User password (MySQL only)"""
 
 RTK_RISK_POINTS = [4, 10]
-""" Global list for risk level cutoffs.\n\n
 
-Index   Risk Level Cutoff Value\n
-  0     Low to medium\n
-  1     Medium to high"""
-
-# Variables to hold the backend database type for the program and common
-# database.
 COM_BACKEND = ''
-""" RTK common database backend to use; mysql or sqlite3."""
 BACKEND = ''
-""" RTK Program database backend to use; mysql or sqlite3."""
 
-# Variables to support native language support.
 LOCALE = 'en_US'
-""" The language locale to use with RTK."""
 OS = ''
-""" The operating system RTK is currently running on."""
 
-# Variables to control the display of numerical information.
 FRMULT = 1.0
-""" The failure rate multiplier.  All failure rates will be multiplied by this
-value for display.  This allows failure rates to display without using
-scientific notation."""
 PLACES = 6
-""" Number of decimal places to show in numerical results."""
 RTK_MTIME = 10.0
-""" The default mission time for new RTK Programs."""
 
-# Variables to control GUI options.
 TABPOS = ['top', 'bottom', 'bottom']
-""" Location of tabs in the three main gtk.Notebook() widgets.\n\n
-Index   Notebook\n
-  0     Module Book\n
-  1     Work Book\n
-  2     List Book"""
 
 RTK_GUI_LAYOUT = 'basic'
-""" Layout of the GUI to use.  Possible options are:\n\n
-- basic: a single window embedded with the Module Book, Work Book, and List
-         Book.\n
-- advanced: multiple windows; one each for the Module Book, Work Book, and
-            List Book."""
 
-# Variables to hold various control parameters.
 METHOD = 'STANDARD'                         # STANDARD or LRM
 FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
@@ -233,9 +378,8 @@ class RTKConf(object):
         """
         Initializes the RTK configuration parser.
 
-        @param level: indicates which configuration file is to be read.
-                      One of 'site' or 'user'.
-        @type level: string
+        :param str level: indicates which configuration file is to be read.
+                          One of 'site' or 'user'.
         """
 
         if name == 'posix':
@@ -250,11 +394,13 @@ class RTKConf(object):
         elif name == 'nt':
             self.OS = 'Windows'
             _HOMEDIR = environ['USERPROFILE']
-            _DATADIR = _HOMEDIR + '/.config/RTK/'
-            _SITEDIR = _HOMEDIR + '/.config/RTK/'
-            _ICONDIR = _HOMEDIR + '/.config/RTK/icons/'
-            _LOGDIR = _HOMEDIR + '/.config/RTK/logs/'
+            _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            _DATADIR = _SITEDIR + 'data/'
+            _ICONDIR = _SITEDIR + 'icons/'
+            _LOGDIR = _SITEDIR + 'logs/'
             _PROGDIR = _HOMEDIR + '/analyses/rtk/'
+
+        self.SITE_DIR = _SITEDIR
 
         if level == 'site':
             if _util.dir_exists(_SITEDIR):
@@ -277,25 +423,25 @@ class RTKConf(object):
             else:
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
 
-            self._conf_file = self.conf_dir + '/site.conf'
+            self._conf_file = self.conf_dir + 'site.conf'
 
         elif level == 'user':
             self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
-            if _util.dir_exists(_DATADIR):
-                self.data_dir = _DATADIR
-            else:
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
                 self.data_dir = _HOMEDIR + '/.config/RTK/data/'
-
-            if _util.dir_exists(_ICONDIR):
-                self.icon_dir = _ICONDIR
             else:
+                self.data_dir = _DATADIR
+
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/icons'):
                 self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
-
-            if _util.dir_exists(_LOGDIR):
-                self.log_dir = _LOGDIR
             else:
+                self.icon_dir = _ICONDIR
+
+            if _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
+            else:
+                self.log_dir = _LOGDIR
 
             if _util.dir_exists(_PROGDIR):
                 self.prog_dir = _PROGDIR
@@ -304,8 +450,8 @@ class RTKConf(object):
 
             self._conf_file = self.conf_dir + 'RTK.conf'
 
-        if not _util.file_exists(self._conf_file):
-            self.create_default_configuration()
+            if not _util.file_exists(self._conf_file):
+                self.create_default_configuration()
 
     def create_default_configuration(self):
         """
@@ -313,203 +459,222 @@ class RTKConf(object):
         directory.
         """
 
+        import glob
+        import shutil
         from os.path import basename
 
-        if _util.dir_exists(self.conf_dir):
+        config = ConfigParser.ConfigParser()
 
-            config = ConfigParser.ConfigParser()
+        if name == 'posix':
+            _SITEDIR = '/etc/RTK/'
+            _HOMEDIR = environ['HOME']
 
-            if basename(self._conf_file) == 'site.conf':
-                dialog = _widg.make_dialog(_(u"RTK common database "
-                                             u"information..."))
+        elif name == 'nt':
+            _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            _HOMEDIR = environ['USERPROFILE']
 
-                fixed = _widg.make_fixed()
+        _PROGDIR = _HOMEDIR + '/analyses/rtk/'
 
-                y_pos = 10
-                label = _widg.make_label(_(u"RTK common database host name:"),
-                                         width=340)
-                txtDBHost = _widg.make_entry()
-                txtDBHost.set_text(_(u"localhost"))
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBHost, 345, y_pos)
-                y_pos += 30
+        if basename(self._conf_file) == 'site.conf':
+            dialog = _widg.make_dialog(_(u"RTK common database "
+                                         u"information..."))
 
-                label = _widg.make_label(_(u"RTK common database socket:"),
-                                         width=340)
-                txtDBSocket = _widg.make_entry()
-                txtDBSocket.set_text("3306")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBSocket, 345, y_pos)
-                y_pos += 30
+            fixed = _widg.make_fixed()
 
-                label = _widg.make_label(_(u"RTK common database name:"),
-                                         width=340)
-                txtDBName = _widg.make_entry()
-                txtDBName.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBName, 345, y_pos)
-                y_pos += 30
+            y_pos = 10
+            label = _widg.make_label(_(u"RTK common database host name:"),
+                                     width=340)
+            txtDBHost = _widg.make_entry()
+            txtDBHost.set_text(_(u"localhost"))
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBHost, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database user name:"),
-                                         width=340)
-                txtDBUser = _widg.make_entry()
-                txtDBUser.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBUser, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database socket:"),
+                                     width=340)
+            txtDBSocket = _widg.make_entry()
+            txtDBSocket.set_text("3306")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBSocket, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database password:"),
-                                         width=340)
-                txtDBPassword = _widg.make_entry()
-                txtDBPassword.set_invisible_char("*")
-                txtDBPassword.set_visibility(False)
-                txtDBPassword.set_text("RTKcom")
-                fixed.put(label, 5, y_pos)
-                fixed.put(txtDBPassword, 345, y_pos)
-                y_pos += 30
+            label = _widg.make_label(_(u"RTK common database name:"),
+                                     width=340)
+            txtDBName = _widg.make_entry()
+            txtDBName.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBName, 345, y_pos)
+            y_pos += 30
 
-                label = _widg.make_label(_(u"RTK common database type:"),
-                                         width=340)
-                cmbDBType = _widg.make_combo()
-                _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
-                fixed.put(label, 5, y_pos)
-                fixed.put(cmbDBType, 345, y_pos)
+            label = _widg.make_label(_(u"RTK common database user name:"),
+                                     width=340)
+            txtDBUser = _widg.make_entry()
+            txtDBUser.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBUser, 345, y_pos)
+            y_pos += 30
 
-                fixed.show_all()
-                dialog.vbox.pack_start(fixed)   # pylint: disable=E1101
+            label = _widg.make_label(_(u"RTK common database password:"),
+                                     width=340)
+            txtDBPassword = _widg.make_entry()
+            txtDBPassword.set_invisible_char("*")
+            txtDBPassword.set_visibility(False)
+            txtDBPassword.set_text("RTKcom")
+            fixed.put(label, 5, y_pos)
+            fixed.put(txtDBPassword, 345, y_pos)
+            y_pos += 30
 
-                if dialog.run() == -3:
-                    RTKcomlist = []
-                    RTKcomlist.append(txtDBHost.get_text())
-                    try:
-                        RTKcomlist.append(int(txtDBSocket.get_text()))
-                    except ValueError:
-                        RTKcomlist.append(txtDBSocket.get_text())
-                    RTKcomlist.append(txtDBName.get_text())
-                    RTKcomlist.append(txtDBUser.get_text())
-                    RTKcomlist.append(txtDBPassword.get_text())
-                    RTKcomlist.append(cmbDBType.get_active_text())
+            label = _widg.make_label(_(u"RTK common database type:"),
+                                     width=340)
+            cmbDBType = _widg.make_combo()
+            _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
+            fixed.put(label, 5, y_pos)
+            fixed.put(cmbDBType, 345, y_pos)
 
-                dialog.destroy()
+            fixed.show_all()
+            dialog.vbox.pack_start(fixed)
 
-                config.add_section('Modules')
-                config.set('Modules', 'prediction', 'True')
-                config.set('Modules', 'fmeca', 'True')
-                config.set('Modules', 'maintainability', 'True')
-                config.set('Modules', 'maintenance', 'True')
-                config.set('Modules', 'fraca', 'True')
+            if dialog.run() == -3:
+                RTKcomlist = []
+                RTKcomlist.append(txtDBHost.get_text())
+                try:
+                    RTKcomlist.append(int(txtDBSocket.get_text()))
+                except ValueError:
+                    RTKcomlist.append(txtDBSocket.get_text())
+                RTKcomlist.append(txtDBName.get_text())
+                RTKcomlist.append(txtDBUser.get_text())
+                RTKcomlist.append(txtDBPassword.get_text())
+                RTKcomlist.append(cmbDBType.get_active_text())
 
-                config.add_section('Backend')
-                config.set('Backend', 'host', RTKcomlist[0])
-                config.set('Backend', 'socket', RTKcomlist[1])
-                config.set('Backend', 'database', RTKcomlist[2])
-                config.set('Backend', 'user', RTKcomlist[3])
-                config.set('Backend', 'password', RTKcomlist[4])
-                config.set('Backend', 'type', RTKcomlist[5])
+            dialog.destroy()
 
-            elif basename(self._conf_file) == 'RTK.conf':
-                config.add_section('General')
-                config.set('General', 'reportsize', 'letter')
-                config.set('General', 'failtimeunit', 'hours')
-                config.set('General', 'repairtimeunit', 'hours')
-                config.set('General', 'frmultiplier', 1000000.0)
-                config.set('General', 'calcreltime', 100.0)
-                config.set('General', 'autoaddlistitems', 'False')
-                config.set('General', 'decimal', 6)
-                config.set('General', 'parallelcalcs', 'False')
-                config.set('General', 'treetabpos', 'top')
-                config.set('General', 'listtabpos', 'bottom')
-                config.set('General', 'booktabpos', 'bottom')
+            config.add_section('Modules')
+            config.set('Modules', 'prediction', 'True')
+            config.set('Modules', 'fmeca', 'True')
+            config.set('Modules', 'maintainability', 'True')
+            config.set('Modules', 'maintenance', 'True')
+            config.set('Modules', 'fraca', 'True')
 
-                config.add_section('Backend')
-                config.set('Backend', 'type', 'sqlite3')
-                config.set('Backend', 'host', 'localhost')
-                config.set('Backend', 'socket', 3306)
-                config.set('Backend', 'database', '')
-                config.set('Backend', 'user', '')
-                config.set('Backend', 'password', '')
+            config.add_section('Backend')
+            config.set('Backend', 'host', RTKcomlist[0])
+            config.set('Backend', 'socket', RTKcomlist[1])
+            config.set('Backend', 'database', RTKcomlist[2])
+            config.set('Backend', 'user', RTKcomlist[3])
+            config.set('Backend', 'password', RTKcomlist[4])
+            config.set('Backend', 'type', RTKcomlist[5])
+            config.set('Backend', 'path', self.SITE_DIR)
 
-                config.add_section('Directories')
-                config.set('Directories', 'datadir', 'data')
-                config.set('Directories', 'icondir', 'icons')
-                config.set('Directories', 'logdir', 'log')
+        elif basename(self._conf_file) == 'RTK.conf':
 
-                config.add_section('Files')
-                config.set('Files', 'datasetformat', 'dataset_format.xml')
-                config.set('Files', 'fmecaformat', 'fmeca_format.xml')
-                config.set('Files', 'functionformat', 'function_format.xml')
-                config.set('Files', 'hardwareformat', 'hardware_format.xml')
-                config.set('Files', 'incidentformat', 'incident_format.xml')
-                config.set('Files', 'rgincidentformat',
-                           'rgincident_format.xml')
-                config.set('Files', 'partformat', 'part_format.xml')
-                config.set('Files', 'requirementformat',
-                           'requirement_format.xml')
-                config.set('Files', 'revisionformat', 'revision_format.xml')
-                config.set('Files', 'riskformat', 'risk_format.xml')
-                config.set('Files', 'siaformat', 'sia_format.xml')
-                config.set('Files', 'softwareformat', 'software_format.xml')
-                config.set('Files', 'testformat', 'testing_format.xml')
-                config.set('Files', 'validationformat',
-                           'validation_format.xml')
-# TODO: Remove the following format files from RTK.
-                config.set('Files', 'rgformat', 'rgincident_format.xml')
-                config.set('Files', 'fracaformat', 'incident_format.xml')
-                config.set('Files', 'stakeholderformat',
-                           'stakeholder_format.xml')
-                config.set('Files', 'mechanismformat', 'incident_format.xml')
+            # Create the directories needed for the user.
+            if not _util.dir_exists(self.conf_dir):
+                makedirs(self.conf_dir)
 
-                config.add_section('Colors')
-                config.set('Colors', 'revisionbg', '#FFFFFF')
-                config.set('Colors', 'revisionfg', '#000000')
-                config.set('Colors', 'functionbg', '#FFFFFF')
-                config.set('Colors', 'functionfg', '#0000FF')
-                config.set('Colors', 'requirementbg', '#FFFFFF')
-                config.set('Colors', 'requirementfg', '#000000')
-                config.set('Colors', 'assemblybg', '#FFFFFF')
-                config.set('Colors', 'assemblyfg', '#000000')
-                config.set('Colors', 'validationbg', '#FFFFFF')
-                config.set('Colors', 'validationfg', '#00FF00')
-                config.set('Colors', 'rgbg', '#FFFFFF')
-                config.set('Colors', 'rgfg', '#000000')
-                config.set('Colors', 'fracabg', '#FFFFFF')
-                config.set('Colors', 'fracafg', '#000000')
-                config.set('Colors', 'partbg', '#FFFFFF')
-                config.set('Colors', 'partfg', '#000000')
-                config.set('Colors', 'overstressbg', '#FF0000')
-                config.set('Colors', 'overstressfg', '#FFFFFF')
-                config.set('Colors', 'taggedbg', '#00FF00')
-                config.set('Colors', 'taggedfg', '#FFFFFF')
-                config.set('Colors', 'nofrmodelfg', '#A52A2A')
+            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
+                makedirs(_HOMEDIR + '/.config/RTK/data/')
 
-            try:
-                parser = open(self._conf_file, 'w')
-                config.write(parser)
-                parser.close()
+            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
+                makedirs(_HOMEDIR + '/.config/RTK/logs/')
 
-                print _("RTK default configuration created.")
-                return True
-            except EnvironmentError:
-                print _("Could not save your RTK configuration.")
-                return False
+            # Copy format files from _SITEDIR to the user's _CONFDIR.
+            for _file in glob.glob(_SITEDIR + '*.xml'):
+                shutil.copy(_file, self.conf_dir)
 
-        else:
-            try:
-                mkdir(self.conf_dir)
-                print _("RTK configuration directory (%s) created.") % \
-                    self.conf_dir
-                mkdir(self.data_dir)
-                print _("RTK data directory (%s) created.") % \
-                    self.data_dir
-                mkdir(self.log_dir)
-                print _("RTK log file directory (%s) created.") % \
-                    self.log_dir
-                mkdir(self.icon_dir)
-                print _("RTK icon directory (%s) created.") % \
-                    self.icon_dir
-                self.__init__()
-            except EnvironmentError:
-                print _("Could not create RTK default configuration.")
+            # Copy SQL files from _SITEDIR to the user's _DATADIR.
+            for _file in glob.glob(_SITEDIR + '/data/*.sql'):
+                shutil.copy(_file, self.conf_dir + '/data/')
+
+            # Copy the icons from _SITEDIR to the user's _CONFDIR.
+            shutil.copytree(_SITEDIR + '/icons/', self.conf_dir + '/icons/')
+
+            # Copy the common data base from _SITEDIR to the user's _CONFDIR.
+            shutil.copy(_SITEDIR + '/rtkcom.rfb', self.conf_dir)
+
+            # Create the default RTK configuration file.
+            config.add_section('General')
+            config.set('General', 'reportsize', 'letter')
+            config.set('General', 'failtimeunit', 'hours')
+            config.set('General', 'repairtimeunit', 'hours')
+            config.set('General', 'frmultiplier', 1000000.0)
+            config.set('General', 'calcreltime', 10.0)
+            config.set('General', 'autoaddlistitems', 'False')
+            config.set('General', 'decimal', 6)
+            config.set('General', 'modesource', 1)
+            config.set('General', 'parallelcalcs', 'False')
+            config.set('General', 'treetabpos', 'top')
+            config.set('General', 'listtabpos', 'bottom')
+            config.set('General', 'booktabpos', 'bottom')
+
+            config.add_section('Backend')
+            config.set('Backend', 'type', 'sqlite3')
+            config.set('Backend', 'host', 'localhost')
+            config.set('Backend', 'socket', 3306)
+            config.set('Backend', 'database', '')
+            config.set('Backend', 'user', '')
+            config.set('Backend', 'password', '')
+
+            config.add_section('Directories')
+            config.set('Directories', 'datadir', 'data')
+            config.set('Directories', 'icondir', 'icons')
+            config.set('Directories', 'logdir', 'log')
+            config.set('Directories', 'progdir', 'analyses/rtk')
+
+            config.add_section('Files')
+            config.set('Files', 'datasetformat', 'dataset_format.xml')
+            config.set('Files', 'fmecaformat', 'fmeca_format.xml')
+            config.set('Files', 'ffmecaformat', 'ffmeca_format.xml')
+            config.set('Files', 'sfmecaformat', 'sfmeca_format.xml')
+            config.set('Files', 'functionformat', 'function_format.xml')
+            config.set('Files', 'hardwareformat', 'hardware_format.xml')
+            config.set('Files', 'incidentformat', 'incident_format.xml')
+            config.set('Files', 'rgincidentformat', 'rgincident_format.xml')
+            config.set('Files', 'partformat', 'part_format.xml')
+            config.set('Files', 'requirementformat', 'requirement_format.xml')
+            config.set('Files', 'revisionformat', 'revision_format.xml')
+            config.set('Files', 'riskformat', 'risk_format.xml')
+            config.set('Files', 'siaformat', 'sia_format.xml')
+            config.set('Files', 'softwareformat', 'software_format.xml')
+            config.set('Files', 'testformat', 'testing_format.xml')
+            config.set('Files', 'validationformat', 'validation_format.xml')
+            config.set('Files', 'rgformat', 'rgincident_format.xml')
+            config.set('Files', 'fracaformat', 'incident_format.xml')
+            config.set('Files', 'stakeholderformat', 'stakeholder_format.xml')
+            config.set('Files', 'mechanismformat', 'incident_format.xml')
+
+            config.add_section('Colors')
+            config.set('Colors', 'revisionbg', '#FFFFFF')
+            config.set('Colors', 'revisionfg', '#000000')
+            config.set('Colors', 'functionbg', '#FFFFFF')
+            config.set('Colors', 'functionfg', '#0000FF')
+            config.set('Colors', 'requirementbg', '#FFFFFF')
+            config.set('Colors', 'requirementfg', '#000000')
+            config.set('Colors', 'assemblybg', '#FFFFFF')
+            config.set('Colors', 'assemblyfg', '#000000')
+            config.set('Colors', 'softwarebg', '#FFFFFF')
+            config.set('Colors', 'softwarefg', '#000000')
+            config.set('Colors', 'validationbg', '#FFFFFF')
+            config.set('Colors', 'validationfg', '#00FF00')
+            config.set('Colors', 'rgbg', '#FFFFFF')
+            config.set('Colors', 'rgfg', '#000000')
+            config.set('Colors', 'fracabg', '#FFFFFF')
+            config.set('Colors', 'fracafg', '#000000')
+            config.set('Colors', 'partbg', '#FFFFFF')
+            config.set('Colors', 'partfg', '#000000')
+            config.set('Colors', 'overstressbg', '#FF0000')
+            config.set('Colors', 'overstressfg', '#FFFFFF')
+            config.set('Colors', 'taggedbg', '#00FF00')
+            config.set('Colors', 'taggedfg', '#FFFFFF')
+            config.set('Colors', 'nofrmodelfg', '#A52A2A')
+
+        try:
+            parser = open(self._conf_file, 'w')
+            config.write(parser)
+            parser.close()
+            return True
+
+        except EnvironmentError:
+            print _(u"Could not save your RTK configuration.")
+            return False
 
     def write_configuration(self):
         """
@@ -527,6 +692,7 @@ class RTKConf(object):
             config.set('General', 'calcreltime', RTK_MTIME)
             config.set('General', 'autoaddlistitems', 'False')
             config.set('General', 'decimal', PLACES)
+            config.set('General', 'modesource', RTK_MODE_SOURCE)
             config.set('General', 'treetabpos', TABPOS[0])
             config.set('General', 'listtabpos', TABPOS[1])
             config.set('General', 'booktabpos', TABPOS[2])
@@ -604,6 +770,8 @@ class RTKConf(object):
             config.set('Colors', 'taggedbg', RTK_COLORS[18])
             config.set('Colors', 'taggedfg', RTK_COLORS[19])
             config.set('Colors', 'nofrmodelfg', RTK_COLORS[20])
+            config.set('Colors', 'softwarebg', RTK_COLORS[21])
+            config.set('Colors', 'softwarefg', RTK_COLORS[22])
 
             try:
                 parser = open(self._conf_file, 'w')
@@ -620,14 +788,10 @@ class RTKConf(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        try:
-            if _util.file_exists(self._conf_file):
-                config = ConfigParser.ConfigParser()
-                config.read(self._conf_file)
-                return config
-            else:
-                self.create_default_configuration()
-                self.read_configuration()
-        except:
-            _util.rtk_error(_(u"There is a problem with your configuration "
-                              u"file. Please, remove %s.") % self._conf_file)
+        if _util.file_exists(self._conf_file):
+            config = ConfigParser.ConfigParser()
+            config.read(self._conf_file)
+        else:
+            config = None
+
+        return config

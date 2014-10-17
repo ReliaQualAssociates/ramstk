@@ -42,8 +42,7 @@ class SQLite3Interface(object):
         """
         Opens a connections to a database.
 
-        @param database: the absolute path to the database to be opened.
-        @type database: string
+        :param STR database: the absolute path to the database to be opened.
         """
 # TODO: Make the connection object an instance attribute.
         cnx = sqlite3.connect(database, isolation_level=None)
@@ -56,50 +55,78 @@ class SQLite3Interface(object):
         """
         Executes a query on the SQLite database and returns the results.
 
-        @param query: the query to execute.
-        @type query: string
-        @param values: a typle containing the values to insert into the query.
-        @type values: tuple
-        @param cnx: the connection to use when executing the query.
-        @type cnx: SQLite3 connection
-        @param commit: whether or not to commit the results.
-        @type commit: boolean
-        @return: results of the query, True if a commit query, and False if an
+        :param str query: the query to execute.
+        :param tuple values: a typle containing the values to insert into the
+                             query.
+        :param sqlite3.connect cnx: the connection to use when executing the
+                                    query.
+        :param boolean commit: whether or not to commit the results.
+        :return: results of the query, True if a commit query, and False if an
                  error is encountered.
-        @rtype: list of tuples or boolean
+        :rtype: list of tuples or boolean
         """
 # TODO: Revise to eliminate the values parameter.
-# TODO: Return the error message and process locally in the calling module.
+# TODO: Return the error code and process locally in the calling module.
         with cnx:
-            cur = cnx.cursor()
+            _cursor = cnx.cursor()
 
             try:
                 if values is None:
-                    cur.execute(query)
+                    _cursor.execute(query)
                 else:
-                    cur.execute(query, values)
+                    _cursor.execute(query, values)
 
                 if not commit:
                     try:
-                        results = cur.fetchall()
-                    except sqlite3.Error, e:    # pylint: disable=C0103
-                        self._app.debug_log.error(e)
-                        self._app.debug_log.error(query)
-                        results = False
+                        _results = _cursor.fetchall()
+                    except sqlite3.Error, _error:
+                        _err_code = self._error_handler(_error)
+                        try:
+                            self._app.debug_log.error(_error)
+                            self._app.debug_log.error(query)
+                        except AttributeError:
+                            pass
+                        _results = False
                 else:
                     try:
                         cnx.commit()
-                        results = True
-                    except sqlite3.Error, e:    # pylint: disable=C0103
-                        self._app.debug_log.error(e.args[0])
-                        self._app.debug_log.error(query)
-                        results = False
+                        _results = True
+                    except sqlite3.Error, _error:
+                        _err_code = self._error_handler(_error)
+                        cnx.rollback()
+                        try:
+                            self._app.debug_log.error(_error.args[0])
+                            self._app.debug_log.error(query)
+                        except AttributeError:
+                            pass
+                        _results = False
 
-            except sqlite3.Error, e:            # pylint: disable=C0103
-                self._app.debug_log.error(e)
-                self._app.debug_log.error(query)
-                results = False
+            except sqlite3.Error, _error:
+                _err_code = self._error_handler(_error)
+                try:
+                    self._app.debug_log.error(_error)
+                    self._app.debug_log.error(query)
+                except AttributeError:
+                    pass
+                _results = False
 
-            cur.close()
+            _cursor.close()
 
-        return results
+        return _results
+
+    def _error_handler(self, msg):
+        """
+        Method to handle SQLite3 errors and return actionable error codes.
+
+        :param str msg: the error message to parse.
+        :return: _err_code
+        :rtype: int
+        """
+
+        _err_code = 0
+        if "PRIMARY KEY must be unique" in msg[0]:      # Primary key not unique.
+            _err_code = 1555
+        else:
+            print msg[0]
+
+        return _err_code

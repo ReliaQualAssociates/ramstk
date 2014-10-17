@@ -61,18 +61,18 @@ def _test_selection_tree_edit(cell, path, position, model):
     Called whenever a gtk.TreeView CellRenderer is edited for the
     test selection worksheet.
 
-    @param cell: the gtk.CellRenderer() that was edited.
-    @type cell: gtk.CellRenderer
-    @param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
+    :param cell: the gtk.CellRenderer() that was edited.
+    :type cell: gtk.CellRenderer
+    :param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
                  edited.
-    @type path: string
-    @param position: the column position in the Software class gtk.TreeView()
+    :type path: string
+    :param position: the column position in the Software class gtk.TreeView()
                      of the edited gtk.CellRenderer().
-    @type position: integer
-    @param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-    @type model: gtk.TreeModel
-    @return: False if successful or True if an error is encountered.
-    @rtype: boolean
+    :type position: integer
+    :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+    :type model: gtk.TreeModel
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
     """
 
     model[path][position] = not cell.get_active()
@@ -84,14 +84,12 @@ def _set_risk_color(risk, module):
     """
     Function to find the hexadecimal code for the risk level colors.
 
-    @param risk: dictionary containing the Software class risk factors.
-    @type risk: dictionary
-    @param module: the software id used as a key for accessing the correct risk
-                   factors from the risk dictionary.
-    @type module: integer
-    @return: a dictionary containing the hexadecimal color values for each
+    :param dict risk: dictionary containing the Software class risk factors.
+    :param int module: the software id used as a key for accessing the correct
+                       risk factors from the risk dictionary.
+    :return: a dictionary containing the hexadecimal color values for each
              risk factor.
-    @rtype: dictionary
+    :rtype: dictionary
     """
 
     _color = {}
@@ -225,11 +223,11 @@ def _calculate_app_risk(model, row):
     |  18   | Development Tools            |   High   |
     +-------+------------------------------+----------+
 
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type row: gtk.TreeIter
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _application = model.get_value(row, 4)
@@ -258,16 +256,16 @@ def _calculate_development_risk(model, row, risk):
         Low development risk (Dc > 0.9) is assigned a 0.5.
         High development risk (Dc < 0.5) is assigned a 2.
 
-    @param model: the Software class gtk.TreeModel()
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel()
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the development
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the development
                  environment risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _A = _calculate_app_risk(model, row)
@@ -313,16 +311,16 @@ def _calculate_srr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the software requirements
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the software requirements
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -415,16 +413,16 @@ def _calculate_pdr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the preliminary design
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the preliminary design
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -505,16 +503,16 @@ def _calculate_cdr_risk(model, row, risk):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the critical design
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the critical design
                  review risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -680,16 +678,16 @@ def _calculate_trr_risk(model, row, risk):
 
             SM = (0.9 * um + wm + 2.0 * xm) / NM
 
-    @param model: the Software class gtk.TreeModel().
-    @type model: gtk.TreeModel
-    @param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
+    :param model: the Software class gtk.TreeModel().
+    :type model: gtk.TreeModel
+    :param row: the gtk.TreeIter() in the Software class gtk.TreeView() to
                 calculate results for.
-    @type row: gtk.TreeIter
-    @param risk: dictionary containing the answers to the test readiness review
+    :type row: gtk.TreeIter
+    :param risk: dictionary containing the answers to the test readiness review
                  risk analysis questions.
-    @type risk: dictionary
-    @return: the reliability prediction figure of merit (RPFOM).
-    @rtype: float
+    :type risk: dictionary
+    :return: the reliability prediction figure of merit (RPFOM).
+    :rtype: float
     """
 
     _software_id = model.get_value(row, 1)
@@ -780,10 +778,54 @@ def _calculate_trr_risk(model, row, risk):
 
 class Software(object):
     """
-    The Software class
-    """
+    The Software class represents the software items (modules and units) for
+    the system being analyzed.
 
-    # TODO: Write code to update notebook widgets when editing the system treeview.
+    :ivar _dic_dev_env: Dictionary to hold the development environment risk
+    analysis answers.  Key is the software module ID.  The values are lists of
+    risk analysis answers.
+
+    :ivar _dic_srr: Dictionary to hold requirements review risk analysis
+    answers.  Key is the software module ID.  The values are lists of risk
+    analysis answers.
+
+    :ivar _dic_pdr: Dictionary to hold preliminary design review risk analysis
+    answers.  Key is the software module ID.  The values are lists of risk
+    analysis answers.
+
+    :ivar _dic_cdr: Dictionary to hold critical design review risk analysis
+    answers.  Key is the software module ID.  The values are lists of risk
+    analysis answers.
+
+    :ivar _dic_trr: Dictionary to hold test readiness review risk analysis
+    answers.  Key is the software module ID.  The values are lists of risk
+    analysis answers.
+
+    :ivar _dic_risk: Dictionary to hold risk factor values.  Key is the module
+    name.  The values are lists of risk factors:
+
+    +-------+--------------------------+
+    | Index |       Risk Factor        |
+    +=======+==========================+
+    |   0   | Application              |
+    +-------+--------------------------+
+    |   1   | Development environment  |
+    +-------+--------------------------+
+    |   2   | Anomaly management       |
+    +-------+--------------------------+
+    |   3   | Requirement traceability |
+    +-------+--------------------------+
+    |   4   | Quality control          |
+    +-------+--------------------------+
+    |   5   | Language type            |
+    +-------+--------------------------+
+    |   6   | Complexity               |
+    +-------+--------------------------+
+    |   7   | Modularity               |
+    +-------+--------------------------+
+    |   8   | Overall                  |
+    +-------+--------------------------+
+    """
 
     _csci_test_rankings = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],     # noqa
                            [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],     # noqa
@@ -833,8 +875,7 @@ class Software(object):
         """
         Initializes the Software class.
 
-        @param application: the current instance of the RTK application.
-        @type application: RTK application
+        :param application: the current instance of the RTK application.
         """
 
         # Define private Software class scalar attributes.
@@ -853,26 +894,10 @@ class Software(object):
         self._dic_pdr = {}
         self._dic_cdr = {}
         self._dic_trr = {}
-
-        # Dictionary to hold risk factor values.  The key is the module name.
-        # The values are lists of risk factors, where a list contains the
-        # following factors:
-        #   +-------+--------------------------+
-        #   | Index |       Risk Factor        |
-        #   +-------+--------------------------+
-        #   |   0   | Application              |
-        #   |   1   | Development environment  |
-        #   |   2   | Anomaly management       |
-        #   |   3   | Requirement traceability |
-        #   |   4   | Quality control          |
-        #   |   5   | Language type            |
-        #   |   6   | Complexity               |
-        #   |   7   | Modularity               |
-        #   |   8   | Overall                  |
-        #   +-------+--------------------------+
         self._dic_risk = {}
 
         # Define private Software class list attributes.
+        self._lst_handler_id = []
 
         # Define public Software class scalar attributes.
         self.revision_id = 0
@@ -954,9 +979,9 @@ class Software(object):
 
         # Create the main Software class treeview.
         (self.treeview,
-         self._col_order) = _widg.make_treeview('Software', 15, self._app,
-                                                None, _conf.RTK_COLORS[6],
-                                                _conf.RTK_COLORS[7])
+         self._lst_col_order) = _widg.make_treeview('Software', 15, self._app,
+                                                    None, _conf.RTK_COLORS[21],
+                                                    _conf.RTK_COLORS[22])
 
         # Software class Work Book toolbar widgets.
         self.btnAddItem = gtk.ToolButton()
@@ -1021,7 +1046,7 @@ class Software(object):
         self.chkDevEnvQ43 = _widg.make_check_button()
 
 # ----- ----- Create the Requirements Review widgets ----- ----- #
-        self.hpnSRR = gtk.HPaned()
+        self.hpnSRR = gtk.VPaned()
         self.lblSRR = gtk.Label()
 
         # CSCI-level Yes/No from WS2A (16 questions)
@@ -1084,8 +1109,8 @@ class Software(object):
         self.txtSRRQCQ11 = _widg.make_entry(width=50)
         self.txtSRRQCQ12 = _widg.make_entry(width=50)
 
-# ----- ----- Create the Preliminary Design Review widgets ----- ----- #
-        self.hpnPDR = gtk.HPaned()
+        # ----- ---- Create the Preliminary Design Review widgets ---- ----- #
+        self.hpnPDR = gtk.VPaned()
         self.lblPDR = gtk.Label()
 
         # CSCI-level Yes/No from WS2B (14 questions)
@@ -1135,8 +1160,8 @@ class Software(object):
         self.txtPDRQCQ15 = _widg.make_entry(width=50)
         self.txtPDRQCQ16 = _widg.make_entry(width=50)
 
-# ----- ----- Create the Critical Design Review widgets ----- ----- #
-        self.hpnCDR = gtk.HPaned()
+        # ----- ----- Create the Critical Design Review widgets ----- ----- #
+        self.hpnCDR = gtk.VPaned()
         self.lblCDR = gtk.Label()
 
         self.fraCDRCSCIAM = _widg.make_frame(_(u"Software Module Anomaly "
@@ -1223,7 +1248,7 @@ class Software(object):
         self.txtCDRUnitQCQ16 = _widg.make_entry(width=50)
 
 # ----- ----- Create the Test Readiness Review widgets ----- ----- #
-        self.hpnTRR = gtk.HPaned()
+        self.hpnTRR = gtk.VPaned()
         self.lblTRR = gtk.Label()
 
         self.fraTRRCSCILT = _widg.make_frame(_(u"Software Module Language "
@@ -1326,12 +1351,12 @@ class Software(object):
         Creates the Software gtk.Treeview and connects it to callback functions
         to handle editing.
 
-        @return: the gtk.ScrolledWindow() container holding the Software class
+        :return: the gtk.ScrolledWindow() container holding the Software class
                  gtk.TreeView().
-        @rtype: gtk.ScrolledWindow
+        :rtype: gtk.ScrolledWindow
         """
 
-        self.treeview.set_tooltip_text(_(u"Displays an indentured list (tree) "
+        self.treeview.set_tooltip_text(_(u"Displays an indented list (tree) "
                                          u"of software."))
         self.treeview.set_enable_tree_lines(True)
 
@@ -1342,6 +1367,13 @@ class Software(object):
                               None, None, 0)
         self.treeview.connect('row_activated', self._treeview_row_changed, 0)
 
+        # Connect the cells to the callback function.
+        for i in [3]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._software_tree_edit, i,
+                             self.treeview.get_model())
+
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
 
@@ -1351,8 +1383,8 @@ class Software(object):
         """
         Method to create the toolbar for the Software class Work Book.
 
-        @return: the gtk.Toolbar() used in the Software class gtk.NoteBook().
-        @rtype: gtk.Toolbar
+        :return: the gtk.Toolbar() used in the Software class gtk.NoteBook().
+        :rtype: gtk.Toolbar
         """
 
         _toolbar = gtk.Toolbar()
@@ -1421,8 +1453,8 @@ class Software(object):
         """
         Method to create the Software class gtk.Notebook().
 
-        @return: the Software class gtk.Notebook() used for the Work Book.
-        @rtype: gtk.Notebook
+        :return: the Software class gtk.Notebook() used for the Work Book.
+        :rtype: gtk.Notebook
         """
 
         def _create_general_data_page(self, notebook):
@@ -1430,10 +1462,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying general data about the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1500,9 +1532,10 @@ class Software(object):
             _fixed.put(self.cmbApplication, _x_pos, _y_pos[1])
             _fixed.put(self.cmbPhase, _x_pos, _y_pos[2])
 
-            _textbuffer = self.txtDescription.get_child().get_child()
-            _textbuffer.connect('focus-out-event', self._callback_entry,
-                                'text', 3)
+            _textview = self.txtDescription.get_child().get_child()
+            self._lst_handler_id.append(
+                _textview.connect('focus-out-event',
+                                  self._callback_entry, 'text', 3))
             self.cmbLevel.connect('changed', self._callback_combo, 2)
             self.cmbApplication.connect('changed', self._callback_combo, 4)
             self.cmbPhase.connect('changed', self._callback_combo, 36)
@@ -1528,10 +1561,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying the risk analysis for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1620,12 +1653,12 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying the risk analysis for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1844,7 +1877,6 @@ class Software(object):
                                            self._callback_entry, 'int', 54)
 
             _fxdbottomleft.show_all()
-# TODO: Include recommended and selected columns in test matrices.
             # Create and load the Test Matrix for CSCI-level testing.
             _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
                                    gobject.TYPE_INT, gobject.TYPE_INT,
@@ -2116,10 +2148,10 @@ class Software(object):
             Function to create the Software class gtk.Notebook() page for
             displaying reliability estimates for the selected Software.
 
-            @param self: the current instance of a Software class.
-            @type self: Software class
-            @param notebook: the Software class gtk.Notebook() widget.
-            @type notebook: gtk.Notebook
+            :param self: the current instance of a Software class.
+            :type self: Software class
+            :param notebook: the Software class gtk.Notebook() widget.
+            :type notebook: gtk.Notebook
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2245,8 +2277,8 @@ class Software(object):
         """
         Method to create the Software class risk analysis gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _create_development_environment_page(self):
@@ -2258,12 +2290,12 @@ class Software(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Build-up the containers for the tab.                          #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            _hpaned = gtk.HPaned()
+            _hpaned = gtk.VPaned()
 
-            _hbox_left = gtk.HBox()
+            _hbox_left = gtk.VBox()
             _hpaned.pack1(_hbox_left, resize=True, shrink=True)
 
-            _hbox_right = gtk.HBox()
+            _hbox_right = gtk.VBox()
             _hpaned.pack2(_hbox_right, resize=True, shrink=True)
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -2283,24 +2315,25 @@ class Software(object):
 
             _hbox_left.pack_start(_frame)
 
-            _labels = [_(u"There are separate design and coding "
+            _labels = [_(u"1. There are separate design and coding "
                          u"organizations."),
-                       _(u"There is an independent software test "
+                       _(u"2. There is an independent software test "
                          u"organization."),
-                       _(u"There is an independent software quality assurance "
-                         u"organization."),
-                       _(u"There is an independent software configuration "
+                       _(u"3. There is an independent software quality "
+                         u"assurance organization."),
+                       _(u"4. There is an independent software configuration "
                          u"management organization."),
-                       _(u"There is an independent software verification and "
-                         u"validation organization."),
-                       _(u"A structured programming team will develop the "
+                       _(u"5. There is an independent software verification "
+                         u"and validation organization."),
+                       _(u"6. A structured programming team will develop the "
                          u"software."),
-                       _(u"The educational level of the software team members "
-                         u"is above average."),
-                       _(u"The experience level of the software team members "
-                         u"is above average.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                       _(u"7. The educational level of the software team "
+                         u"members is above average."),
+                       _(u"8. The experience level of the software team "
+                         u"members is above average.")]
+            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed,
+                                                 5, 5, wrap=False)
+            _x_pos += 125
 
             _fixed.put(self.chkDevEnvQ1, _x_pos, _y_pos[0])
             _fixed.put(self.chkDevEnvQ2, _x_pos, _y_pos[1])
@@ -2334,22 +2367,22 @@ class Software(object):
 
             _hbox_left.pack_end(_frame)
 
-            _labels = [_(u"Standards are defined and will be enforced."),
-                       _(u"Software will be developed using a higher order "
+            _labels = [_(u"1. Standards are defined and will be enforced."),
+                       _(u"2. Software will be developed using a higher order "
                          u"language."),
-                       _(u"The development process will include formal "
+                       _(u"3. The development process will include formal "
                          u"reviews (PDR, CDR, etc.)."),
-                       _(u"The development process will include frequent "
+                       _(u"4. The development process will include frequent "
                          u"walkthroughs."),
-                       _(u"Development will take a top-down and structured "
-                         u"approach."),
-                       _(u"Unit development folders will be used."),
-                       _(u"A software development library will be used."),
-                       _(u"A formal change and error reporting process will "
-                         u"be used."),
-                       _(u"Progress and status will routinely be reported.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                       _(u"5. Development will take a top-down and "
+                         u"structured approach."),
+                       _(u"6. Unit development folders will be used."),
+                       _(u"7. A software development library will be used."),
+                       _(u"8. A formal change and error reporting process "
+                         u"will be used."),
+                       _(u"9. Progress and status will routinely be "
+                         u"reported.")]
+            (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
             _fixed.put(self.chkDevEnvQ9, _x_pos, _y_pos[0])
             _fixed.put(self.chkDevEnvQ10, _x_pos, _y_pos[1])
@@ -2385,26 +2418,29 @@ class Software(object):
 
             _hbox_right.pack_start(_frame)
 
-            _labels = [_(u"System requirements specifications will be "
+            _labels = [_(u" 1. System requirements specifications will be "
                          u"documented."),
-                       _(u"Software requirements specifications will be "
+                       _(u" 2. Software requirements specifications will be "
                          u"documented."),
-                       _(u"Interface design specifications will be "
+                       _(u" 3. Interface design specifications will be "
                          u"documented."),
-                       _(u"Software design specification will be documented."),
-                       _(u"Test plans, procedures, and reports will be "
+                       _(u" 4. Software design specification will be "
                          u"documented."),
-                       _(u"The software development plan will be documented."),
-                       _(u"The software quality assurance plan will be "
+                       _(u" 5. Test plans, procedures, and reports will be "
                          u"documented."),
-                       _(u"The software configuration management plan will be "
+                       _(u" 6. The software development plan will be "
                          u"documented."),
-                       _(u"A requirements traceability matrix will be used."),
-                       _(u"The software version description will be "
+                       _(u" 7. The software quality assurance plan will be "
                          u"documented."),
-                       _(u"All software discrepancies will be documented.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                       _(u" 8. The software configuration management plan will "
+                         u"be documented."),
+                       _(u" 9. A requirements traceability matrix will be "
+                         u"used."),
+                       _(u"10. The software version description will be "
+                         u"documented."),
+                       _(u"11. All software discrepancies will be "
+                         u"documented.")]
+            (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
             _fixed.put(self.chkDevEnvQ18, _x_pos, _y_pos[0])
             _fixed.put(self.chkDevEnvQ19, _x_pos, _y_pos[1])
@@ -2444,25 +2480,25 @@ class Software(object):
 
             _hbox_right.pack_end(_frame)
 
-            _labels = [_(u"The software language requirements will be "
+            _labels = [_(u" 1. The software language requirements will be "
                          u"specified."),
-                       _(u"Formal program design language will be used."),
-                       _(u"Program design graphical techniques (flowcharts, "
-                         u"HIPO, etc.) will be used."),
-                       _(u"Simulation/emulation tools will be used."),
-                       _(u"Configuration management tools will be used."),
-                       _(u"A code auditing tool will be used."),
-                       _(u"A data flow analyzer will be used."),
-                       _(u"A programmer's workbench will be used."),
-                       _(u"Measurement tools will be used."),
-                       _(u"Software code reviews will be used."),
-                       _(u"Software branch testing will be used."),
-                       _(u"Random testing will be used."),
-                       _(u"Functional testing will be used."),
-                       _(u"Error and anomaly detection testing will be used."),
-                       _(u"Structure analysis will be used.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                       _(u" 2. Formal program design language will be used."),
+                       _(u" 3. Program design graphical techniques "
+                         u"(flowcharts, HIPO, etc.) will be used."),
+                       _(u" 4. Simulation/emulation tools will be used."),
+                       _(u" 5. Configuration management tools will be used."),
+                       _(u" 6. A code auditing tool will be used."),
+                       _(u" 7. A data flow analyzer will be used."),
+                       _(u" 8. A programmer's workbench will be used."),
+                       _(u" 9. Measurement tools will be used."),
+                       _(u"10. Software code reviews will be used."),
+                       _(u"11. Software branch testing will be used."),
+                       _(u"12. Random testing will be used."),
+                       _(u"13. Functional testing will be used."),
+                       _(u"14. Error and anomaly detection testing will be "
+                         u"used."),
+                       _(u"15. Structure analysis will be used.")]
+            (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
             _fixed.put(self.chkDevEnvQ29, _x_pos, _y_pos[0])
             _fixed.put(self.chkDevEnvQ30, _x_pos, _y_pos[1])
@@ -2525,12 +2561,12 @@ class Software(object):
             # Place the widgets used to display risk analysis information.  #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the anomaly management risk pane.
-            _fixed = gtk.Fixed()
+            _fixed1 = gtk.Fixed()
 
             _scrollwindow = gtk.ScrolledWindow()
             _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow.add_with_viewport(_fixed)
+            _scrollwindow.add_with_viewport(_fixed1)
 
             _frame = _widg.make_frame(label=_(u"Anomaly Management"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
@@ -2538,92 +2574,212 @@ class Software(object):
 
             self.hpnSRR.pack1(_frame, resize=True, shrink=True)
 
-            _labels = [_(u"Number of instances of different processes (or "
-                         u"functions, subfunctions) which are required to be "
+            _labels = [_(u" 1. Number of instances of different processes (or "
+                         u"functions, subfunctions) which are required to be\n"
                          u"executed at the same time (i.e., concurrent "
                          u"processing):"),
-                       _(u"Number of instances of concurrent processing "
+                       _(u" 2. Number of instances of concurrent processing "
                          u"required to be centrally controlled:"),
-                       _(u"Number of error conditions required to be "
+                       _(u" 3. Number of error conditions required to be "
                          u"recognized/identified:"),
-                       _(u"Number of recognized error conditions that require "
-                         u"recovery or repair:"),
-                       _(u"There is a standard for handling recognized errors "
-                         u"such that all error conditions are passed to the "
-                         u"calling function."),
-                       _(u"Number of instances of the same process (or "
-                         u"function, subfunction) being required to execute "
+                       _(u" 4. Number of recognized error conditions that "
+                         u"require recovery or repair:"),
+                       _(u" 5. There is a standard for handling recognized "
+                         u"errors such that all error conditions are passed "
+                         u"to\nthe calling function."),
+                       _(u" 6. Number of instances of the same process (or "
+                         u"function, subfunction) being required to execute\n"
                          u"more than once for comparison purposes (i.e., "
-                         u"polling of parallel or redundant processing "
+                         u"polling of parallel or redundant\nprocessing "
                          u"results):"),
-                       _(u"Number of instances of parallel/redundant "
+                       _(u" 7. Number of instances of parallel/redundant "
                          u"processing that are required to be centrally "
                          u"controlled:"),
-                       _(u"Error tolerances are specified for all applicable "
-                         u"external input data (i.e., range of numerical "
-                         u"values, legal  combinations of alphanumerical "
-                         u"values)."),
-                       _(u"There are requirements for detection of and/or "
+                       _(u" 8. Error tolerances are specified for all "
+                         u"applicable external input data\n(i.e., range of "
+                         u"numerical values, legal  combinations of "
+                         u"alphanumerical values)."),
+                       _(u" 9. There are requirements for detection of and/or "
                          u"recovery from all computational failures."),
-                       _(u"There are requirements to range test all critical "
-                         u"loop and multiple transfer index parameters before "
-                         u"used."),
-                       _(u"There are requirements to range test all critical "
-                         u"subscript values before use."),
-                       _(u"There are requirements to range test all critical "
-                         u"output data before final outputting."),
-                       _(u"There are requirements for recovery from all "
+                       _(u"10. There are requirements to range test all "
+                         u"critical loop and multiple transfer index "
+                         u"parameters before used."),
+                       _(u"11. There are requirements to range test all "
+                         u"critical subscript values before use."),
+                       _(u"12. There are requirements to range test all "
+                         u"critical output data before final outputting."),
+                       _(u"13. There are requirements for recovery from all "
                          u"detected hardware faults."),
-                       _(u"There are requirements for recovery from all I/O "
-                         u"divide errors."),
-                       _(u"There are requirements for recovery from all "
+                       _(u"14. There are requirements for recovery from all "
+                         u"I/O divide errors."),
+                       _(u"15. There are requirements for recovery from all "
                          u"communication transmission errors."),
-                       _(u"There are requirements for recovery from all "
+                       _(u"16. There are requirements for recovery from all "
                          u"failures to communicate with other nodes or other "
                          u"systems."),
-                       _(u"There are requirements to periodically check "
+                       _(u"17. There are requirements to periodically check "
                          u"adjacent nodes or operating system for operational "
                          u"status."),
-                       _(u"There are requirements to provide a strategy for "
-                         u"alternating routing of messages."),
-                       _(u"There are requirements to ensure communication "
-                         u"paths to all remaining nodes/communication links "
+                       _(u"18. There are requirements to provide a strategy "
+                         u"for alternating routing of messages."),
+                       _(u"19. There are requirements to ensure communication "
+                         u"paths to all remaining\nnodes/communication links "
                          u"in the event of a failure of one node/link."),
-                       _(u"There are requirements for maintaining the "
-                         u"integrity of all data values following the "
+                       _(u"20. There are requirements for maintaining the "
+                         u"integrity of all data values following the\n"
                          u"occurence of anomalous conditions."),
-                       _(u"There are requirements to enable all disconnected "
-                         u"nodes to rejoin the network after recovery, such "
-                         u"that the processing functions of the system are "
-                         u"not interrupted."),
-                       _(u"There are requirements to replicate all critical "
-                         u"data at two or more distinct nodes.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                       _(u"21. There are requirements to enable all "
+                         u"disconnected nodes to rejoin the network after "
+                         u"recovery, such\nthat the processing functions of "
+                         u"the system are not interrupted."),
+                       _(u"22. There are requirements to replicate all "
+                         u"critical data at two or more distinct nodes.")]
+            (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fixed1,
+                                                  5, 5, wrap=False)
 
-            _fixed.put(self.txtSRRAMQ1, _x_pos, _y_pos[0])
-            _fixed.put(self.txtSRRAMQ2, _x_pos, _y_pos[1])
-            _fixed.put(self.txtSRRAMQ3, _x_pos, _y_pos[2])
-            _fixed.put(self.txtSRRAMQ4, _x_pos, _y_pos[3])
-            _fixed.put(self.chkSRRAMQ5, _x_pos, _y_pos[4])
-            _fixed.put(self.txtSRRAMQ6, _x_pos, _y_pos[5])
-            _fixed.put(self.txtSRRAMQ7, _x_pos, _y_pos[6])
-            _fixed.put(self.chkSRRAMQ8, _x_pos, _y_pos[7])
-            _fixed.put(self.chkSRRAMQ9, _x_pos, _y_pos[8])
-            _fixed.put(self.chkSRRAMQ10, _x_pos, _y_pos[9])
-            _fixed.put(self.chkSRRAMQ11, _x_pos, _y_pos[10])
-            _fixed.put(self.chkSRRAMQ12, _x_pos, _y_pos[11])
-            _fixed.put(self.chkSRRAMQ13, _x_pos, _y_pos[12])
-            _fixed.put(self.chkSRRAMQ14, _x_pos, _y_pos[13])
-            _fixed.put(self.chkSRRAMQ15, _x_pos, _y_pos[14])
-            _fixed.put(self.chkSRRAMQ16, _x_pos, _y_pos[15])
-            _fixed.put(self.chkSRRAMQ17, _x_pos, _y_pos[16])
-            _fixed.put(self.chkSRRAMQ18, _x_pos, _y_pos[17])
-            _fixed.put(self.chkSRRAMQ19, _x_pos, _y_pos[18])
-            _fixed.put(self.chkSRRAMQ20, _x_pos, _y_pos[19])
-            _fixed.put(self.chkSRRAMQ21, _x_pos, _y_pos[20])
-            _fixed.put(self.chkSRRAMQ22, _x_pos, _y_pos[21])
+            # Create the quality control risk pane.
+            _fixed2 = gtk.Fixed()
 
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fixed2)
+
+            _frame = _widg.make_frame(label=_(u"Software Quality Control"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
+
+            self.hpnSRR.pack2(_frame, resize=True, shrink=True)
+
+            _labels = [_(u" 1. There is a table(s) tracing all requirements "
+                         u"to the parent system or subsystem specification."),
+                       _(u" 2. There are quantitative accuracy requirements "
+                         u"for all inputs associated with each function."),
+                       _(u" 3. There are quantitative accuracy requirements "
+                         u"for all outputs associated with each function."),
+                       _(u" 4. There are quantitative accuracy requirements "
+                         u"for all constants associated with each function."),
+                       _(u" 5. The existing math library routines which are "
+                         u"planned for use provide enough precision to "
+                         u"support\naccuracy objectives."),
+                       _(u" 6. All processes and functions are partitioned to "
+                         u"be logically complete and self contained so as to\n"
+                         u"minimize interface complexity."),
+                       _(u" 7. There are requirements for each operational "
+                         u"CPU/System to have a separate power source."),
+                       _(u" 8. There are requirements for the executive "
+                         u"software to perform testing of its own operation "
+                         u"and of\nthecommunication links, memory devices, "
+                         u"and peripheral devices."),
+                       _(u" 9. All inputs, processing, and outputs are "
+                         u"clearly and precisely defined."),
+                       _(u"10. Number of data references that are "
+                         u"identified:"),
+                       _(u"11. Number of identified data references that are "
+                         u"documented with regard to source, meaning, and "
+                         u"format:"),
+                       _(u"12. Number of data items that are identified "
+                         u"(e.g., documented with regard to source, meaning, "
+                         u"and format):"),
+                       _(u"13. Number of data items that are referenced:"),
+                       _(u"14. All defined functions have been referenced."),
+                       _(u"15. All system functions allocated to this module "
+                         u"have been allocated to software functions "
+                         u"within\nthis module."),
+                       _(u"16. All referenced functions have been defined "
+                         u"(i.e., documented with precise inputs, processing,"
+                         u"\nand output requirements)."),
+                       _(u"17. The flow of processing (algorithms) and all "
+                         u"decision points (conditions and alternate paths) "
+                         u"in the flow\nis described for all functions."),
+                       _(u"18. Specific standards have been established for "
+                         u"design representations (e.g., HIPO charts, program "
+                         u"\ndesign language, flow charts, data flow "
+                         u"diagrams)."),
+                       _(u"19. Specific standards have been established for "
+                         u"calling sequence protocol between software units."),
+                       _(u"20. Specific standards have been established for "
+                         u"external I/O protocol and format for all software "
+                         u"units."),
+                       _(u"21. Specific standards have been established for "
+                         u"error handling for all software units."),
+                       _(u"22. All references to the same function use a "
+                         u"single, unique name."),
+                       _(u"23. Specific standards have been established for "
+                         u"all data representation in the design."),
+                       _(u"24. Specific standards have been established for "
+                         u"the naming of all data."),
+                       _(u"25. Specific standards have been established for "
+                         u"the definition and use of global variables."),
+                       _(u"26. There are procedures for establishing "
+                         u"consistency and concurrency of multiple copies\n"
+                         u"(e.g., copies at different nodes) of the same "
+                         u"software or database version."),
+                       _(u"27. There are procedures for verifying consistency "
+                         u"and concurrency of multiple copies\n(e.g., copies "
+                         u"at different nodes) of the same software or "
+                         u"database version."),
+                       _(u"28. All references to the same data use a single, "
+                         u"unique name.")]
+            (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fixed2,
+                                                   5, 5, wrap=False)
+            _x_pos = max(_x_pos, _x_pos2) + 125
+
+            # Place the anomaly management widgets.
+            _fixed1.put(self.txtSRRAMQ1, _x_pos, _y_pos1[0])
+            _fixed1.put(self.txtSRRAMQ2, _x_pos, _y_pos1[1])
+            _fixed1.put(self.txtSRRAMQ3, _x_pos, _y_pos1[2])
+            _fixed1.put(self.txtSRRAMQ4, _x_pos, _y_pos1[3])
+            _fixed1.put(self.chkSRRAMQ5, _x_pos, _y_pos1[4])
+            _fixed1.put(self.txtSRRAMQ6, _x_pos, _y_pos1[5])
+            _fixed1.put(self.txtSRRAMQ7, _x_pos, _y_pos1[6])
+            _fixed1.put(self.chkSRRAMQ8, _x_pos, _y_pos1[7])
+            _fixed1.put(self.chkSRRAMQ9, _x_pos, _y_pos1[8])
+            _fixed1.put(self.chkSRRAMQ10, _x_pos, _y_pos1[9])
+            _fixed1.put(self.chkSRRAMQ11, _x_pos, _y_pos1[10])
+            _fixed1.put(self.chkSRRAMQ12, _x_pos, _y_pos1[11])
+            _fixed1.put(self.chkSRRAMQ13, _x_pos, _y_pos1[12])
+            _fixed1.put(self.chkSRRAMQ14, _x_pos, _y_pos1[13])
+            _fixed1.put(self.chkSRRAMQ15, _x_pos, _y_pos1[14])
+            _fixed1.put(self.chkSRRAMQ16, _x_pos, _y_pos1[15])
+            _fixed1.put(self.chkSRRAMQ17, _x_pos, _y_pos1[16])
+            _fixed1.put(self.chkSRRAMQ18, _x_pos, _y_pos1[17])
+            _fixed1.put(self.chkSRRAMQ19, _x_pos, _y_pos1[18])
+            _fixed1.put(self.chkSRRAMQ20, _x_pos, _y_pos1[19])
+            _fixed1.put(self.chkSRRAMQ21, _x_pos, _y_pos1[20])
+            _fixed1.put(self.chkSRRAMQ22, _x_pos, _y_pos1[21])
+
+            # Place the quality control widgets.
+            _fixed2.put(self.chkSRRSTQ1, _x_pos, _y_pos2[0])
+            _fixed2.put(self.chkSRRQCQ1, _x_pos, _y_pos2[1])
+            _fixed2.put(self.chkSRRQCQ2, _x_pos, _y_pos2[2])
+            _fixed2.put(self.chkSRRQCQ3, _x_pos, _y_pos2[3])
+            _fixed2.put(self.chkSRRQCQ4, _x_pos, _y_pos2[4])
+            _fixed2.put(self.chkSRRQCQ5, _x_pos, _y_pos2[5])
+            _fixed2.put(self.chkSRRQCQ6, _x_pos, _y_pos2[6])
+            _fixed2.put(self.chkSRRQCQ7, _x_pos, _y_pos2[7])
+            _fixed2.put(self.chkSRRQCQ8, _x_pos, _y_pos2[8])
+            _fixed2.put(self.txtSRRQCQ9, _x_pos, _y_pos2[9])
+            _fixed2.put(self.txtSRRQCQ10, _x_pos, _y_pos2[10])
+            _fixed2.put(self.txtSRRQCQ11, _x_pos, _y_pos2[11])
+            _fixed2.put(self.txtSRRQCQ12, _x_pos, _y_pos2[12])
+            _fixed2.put(self.chkSRRQCQ13, _x_pos, _y_pos2[13])
+            _fixed2.put(self.chkSRRQCQ14, _x_pos, _y_pos2[14])
+            _fixed2.put(self.chkSRRQCQ15, _x_pos, _y_pos2[15])
+            _fixed2.put(self.chkSRRQCQ16, _x_pos, _y_pos2[16])
+            _fixed2.put(self.chkSRRQCQ17, _x_pos, _y_pos2[17])
+            _fixed2.put(self.chkSRRQCQ18, _x_pos, _y_pos2[18])
+            _fixed2.put(self.chkSRRQCQ19, _x_pos, _y_pos2[19])
+            _fixed2.put(self.chkSRRQCQ20, _x_pos, _y_pos2[20])
+            _fixed2.put(self.chkSRRQCQ21, _x_pos, _y_pos2[21])
+            _fixed2.put(self.chkSRRQCQ22, _x_pos, _y_pos2[22])
+            _fixed2.put(self.chkSRRQCQ23, _x_pos, _y_pos2[23])
+            _fixed2.put(self.chkSRRQCQ24, _x_pos, _y_pos2[24])
+            _fixed2.put(self.chkSRRQCQ25, _x_pos, _y_pos2[25])
+            _fixed2.put(self.chkSRRQCQ26, _x_pos, _y_pos2[26])
+            _fixed2.put(self.chkSRRQCQ27, _x_pos, _y_pos2[27])
+
+            # Connect the anomaly management widgets to callback methods.
             self.txtSRRAMQ1.connect('focus-out-event', self._callback_entry,
                                     'int', 200)
             self.txtSRRAMQ2.connect('focus-out-event', self._callback_entry,
@@ -2653,121 +2809,7 @@ class Software(object):
             self.chkSRRAMQ21.connect('toggled', self._callback_check, 220)
             self.chkSRRAMQ22.connect('toggled', self._callback_check, 221)
 
-            # Create the quality control risk pane.
-            _fixed = gtk.Fixed()
-
-            _scrollwindow = gtk.ScrolledWindow()
-            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                     gtk.POLICY_AUTOMATIC)
-            _scrollwindow.add_with_viewport(_fixed)
-
-            _frame = _widg.make_frame(label=_(u"Software Quality Control"))
-            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame.add(_scrollwindow)
-
-            self.hpnSRR.pack2(_frame, resize=True, shrink=True)
-
-            _labels = [_(u"There is a table(s) tracing all requirements to "
-                         u"the parent system or subsystem specification."),
-                       _(u"There are quantitative accuracy requirements for "
-                         u"all inputs associated with each function."),
-                       _(u"There are quantitative accuracy requirements for "
-                         u"all outputs associated with each function."),
-                       _(u"There are quantitative accuracy requirements for "
-                         u"all constants associated with each function."),
-                       _(u"The existing math library routines which are "
-                         u"planned for use provide enough precision to "
-                         u"support accuracy objectives."),
-                       _(u"All processes and functions are partitioned to be "
-                         u"logically complete and self contained so as to "
-                         u"minimize interface complexity."),
-                       _(u"There are requirements for each operational "
-                         u"CPU/System to have a separate power source."),
-                       _(u"There are requirements for the executive software "
-                         u"to perform testing of its own operation and of the "
-                         u"communication links, memory devices, and "
-                         u"peripheral devices."),
-                       _(u"All inputs, processing, and outputs are clearly "
-                         u"and precisely defined."),
-                       _(u"Number of data references that are identified:"),
-                       _(u"Number of identified data references that are "
-                         u"documented with regard to source, meaning, and "
-                         u"format:"),
-                       _(u"Number of data items that are identified (e.g., "
-                         u"documented with regard to source, meaning, and "
-                         u"format):"),
-                       _(u"Number of data items that are referenced:"),
-                       _(u"All defined functions have been referenced."),
-                       _(u"All system functions allocated to this module have "
-                         u"been allocated to software functions within this "
-                         u"module."),
-                       _(u"All referenced functions have been defined (i.e., "
-                         u"documented with precise inputs, processing, and "
-                         u"output requirements)."),
-                       _(u"The flow of processing (algorithms) and all "
-                         u"decision points (conditions and alternate paths) "
-                         u"in the flow is described for all functions."),
-                       _(u"Specific standards have been established for "
-                         u"design representations (e.g., HIPO charts, program "
-                         u"design language, flow charts, data flow "
-                         u"diagrams)."),
-                       _(u"Specific standards have been established for "
-                         u"calling sequence protocol between software units."),
-                       _(u"Specific standards have been established for "
-                         u"external I/O protocol and format for all software "
-                         u"units."),
-                       _(u"Specific standards have been established for error "
-                         u"handling for all software units."),
-                       _(u"All references to the same function use a single, "
-                         u"unique name."),
-                       _(u"Specific standards have been established for all "
-                         u"data representation in the design."),
-                       _(u"Specific standards have been established for the "
-                         u"naming of all data."),
-                       _(u"Specific standards have been established for the "
-                         u"definition and use of global variables."),
-                       _(u"There are procedures for establishing consistency "
-                         u"and concurrency of multiple copies (e.g., copies "
-                         u"at different nodes) of the same software or "
-                         u"database version."),
-                       _(u"There are procedures for verifying consistency and "
-                         u"concurrency of multiple copies (e.g., copies at "
-                         u"different nodes) of the same software or database "
-                         u"version."),
-                       _(u"All references to the same data use a single, "
-                         u"unique name.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
-
-            _fixed.put(self.chkSRRSTQ1, _x_pos, _y_pos[0])
-            _fixed.put(self.chkSRRQCQ1, _x_pos, _y_pos[1])
-            _fixed.put(self.chkSRRQCQ2, _x_pos, _y_pos[2])
-            _fixed.put(self.chkSRRQCQ3, _x_pos, _y_pos[3])
-            _fixed.put(self.chkSRRQCQ4, _x_pos, _y_pos[4])
-            _fixed.put(self.chkSRRQCQ5, _x_pos, _y_pos[5])
-            _fixed.put(self.chkSRRQCQ6, _x_pos, _y_pos[6])
-            _fixed.put(self.chkSRRQCQ7, _x_pos, _y_pos[7])
-            _fixed.put(self.chkSRRQCQ8, _x_pos, _y_pos[8])
-            _fixed.put(self.txtSRRQCQ9, _x_pos, _y_pos[9])
-            _fixed.put(self.txtSRRQCQ10, _x_pos, _y_pos[10])
-            _fixed.put(self.txtSRRQCQ11, _x_pos, _y_pos[11])
-            _fixed.put(self.txtSRRQCQ12, _x_pos, _y_pos[12])
-            _fixed.put(self.chkSRRQCQ13, _x_pos, _y_pos[13])
-            _fixed.put(self.chkSRRQCQ14, _x_pos, _y_pos[14])
-            _fixed.put(self.chkSRRQCQ15, _x_pos, _y_pos[15])
-            _fixed.put(self.chkSRRQCQ16, _x_pos, _y_pos[16])
-            _fixed.put(self.chkSRRQCQ17, _x_pos, _y_pos[17])
-            _fixed.put(self.chkSRRQCQ18, _x_pos, _y_pos[18])
-            _fixed.put(self.chkSRRQCQ19, _x_pos, _y_pos[19])
-            _fixed.put(self.chkSRRQCQ20, _x_pos, _y_pos[20])
-            _fixed.put(self.chkSRRQCQ21, _x_pos, _y_pos[21])
-            _fixed.put(self.chkSRRQCQ22, _x_pos, _y_pos[22])
-            _fixed.put(self.chkSRRQCQ23, _x_pos, _y_pos[23])
-            _fixed.put(self.chkSRRQCQ24, _x_pos, _y_pos[24])
-            _fixed.put(self.chkSRRQCQ25, _x_pos, _y_pos[25])
-            _fixed.put(self.chkSRRQCQ26, _x_pos, _y_pos[26])
-            _fixed.put(self.chkSRRQCQ27, _x_pos, _y_pos[27])
-
+            # Connect the quality control widgets to callback methods.
             self.chkSRRSTQ1.connect('toggled', self._callback_check, 222)
             self.chkSRRQCQ1.connect('toggled', self._callback_check, 223)
             self.chkSRRQCQ2.connect('toggled', self._callback_check, 224)
@@ -2832,12 +2874,12 @@ class Software(object):
             # Place the widgets used to display risk analysis information.  #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the anomaly management risk pane.
-            _fixed = gtk.Fixed()
+            _fixed1 = gtk.Fixed()
 
             _scrollwindow = gtk.ScrolledWindow()
             _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
                                      gtk.POLICY_AUTOMATIC)
-            _scrollwindow.add_with_viewport(_fixed)
+            _scrollwindow.add_with_viewport(_fixed1)
 
             _frame = _widg.make_frame(label=_(u"Anomaly Management"))
             _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
@@ -2845,58 +2887,165 @@ class Software(object):
 
             self.hpnPDR.pack1(_frame, resize=True, shrink=True)
 
-            _labels = [_(u"There are provisions for recovery from all "
+            _labels = [_(u" 1. There are provisions for recovery from all "
                          u"computational errors."),
-                       _(u"There are provisions for recovery from all "
+                       _(u" 2. There are provisions for recovery from all "
                          u"detected hardware faults (e.g., arithmetic faults, "
-                         u"power failure, clock interrupt)."),
-                       _(u"There are provisions for recovery from all I/O "
+                         u"\npower failure, clock interrupt)."),
+                       _(u" 3. There are provisions for recovery from all I/O "
                          u"device errors."),
-                       _(u"There are provisions for recovery from all "
+                       _(u" 4. There are provisions for recovery from all "
                          u"communication transmission errors."),
-                       _(u"Error checking information (e.g., checksum, parity "
-                         u"bit) is computed and transmitted with all "
+                       _(u" 5. Error checking information (e.g., checksum, "
+                         u"parity bit) is computed and transmitted with all "
                          u"messages."),
-                       _(u"Error checking information is computed and "
+                       _(u" 6. Error checking information is computed and "
                          u"compared with all message receptions."),
-                       _(u"Transmission retries are limited for all "
+                       _(u" 7. Transmission retries are limited for all "
                          u"transmissions."),
-                       _(u"There are provisions for recovery from all "
+                       _(u" 8. There are provisions for recovery from all "
                          u"failures to communicate with other nodes or other "
                          u"systems."),
-                       _(u"There are provisions to periodically check all "
+                       _(u" 9. There are provisions to periodically check all "
                          u"adjacent nodes or operating systems for "
                          u"operational status."),
-                       _(u"There are provisions for alternate routing of "
+                       _(u"10. There are provisions for alternate routing of "
                          u"messages."),
-                       _(u"Communication paths exist to all remaining "
+                       _(u"11. Communication paths exist to all remaining "
                          u"nodes/links in the event of a failure of one "
                          u"node/link."),
-                       _(u"The integrity of all data values is maintained "
+                       _(u"12. The integrity of all data values is maintained "
                          u"following the occurence of anomalous conditions."),
-                       _(u"All disconnected nodes can rejoin the network "
+                       _(u"13. All disconnected nodes can rejoin the network "
                          u"after recovery, such that the processing functions "
-                         u"of the system are not interrupted."),
-                       _(u"All critical data in the module is replicated at "
-                         u"two or more distinct nodes")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
+                         u"\nof the system are not interrupted."),
+                       _(u"14. All critical data in the module is replicated "
+                         u"at two or more distinct nodes")]
+            (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fixed1,
+                                                  5, 5, wrap=False)
 
-            _fixed.put(self.chkPDRAMQ1, _x_pos, _y_pos[0])
-            _fixed.put(self.chkPDRAMQ2, _x_pos, _y_pos[1])
-            _fixed.put(self.chkPDRAMQ3, _x_pos, _y_pos[2])
-            _fixed.put(self.chkPDRAMQ4, _x_pos, _y_pos[3])
-            _fixed.put(self.chkPDRAMQ5, _x_pos, _y_pos[4])
-            _fixed.put(self.chkPDRAMQ6, _x_pos, _y_pos[5])
-            _fixed.put(self.chkPDRAMQ7, _x_pos, _y_pos[6])
-            _fixed.put(self.chkPDRAMQ8, _x_pos, _y_pos[7])
-            _fixed.put(self.chkPDRAMQ9, _x_pos, _y_pos[8])
-            _fixed.put(self.chkPDRAMQ10, _x_pos, _y_pos[9])
-            _fixed.put(self.chkPDRAMQ11, _x_pos, _y_pos[10])
-            _fixed.put(self.chkPDRAMQ12, _x_pos, _y_pos[11])
-            _fixed.put(self.chkPDRAMQ13, _x_pos, _y_pos[12])
-            _fixed.put(self.chkPDRAMQ14, _x_pos, _y_pos[13])
+            # Create the software quality control risk pane.
+            _fixed2 = gtk.Fixed()
 
+            _scrollwindow = gtk.ScrolledWindow()
+            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
+            _scrollwindow.add_with_viewport(_fixed2)
+
+            _frame = _widg.make_frame(label=_(u"Software Quality Control"))
+            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+            _frame.add(_scrollwindow)
+
+            self.hpnPDR.pack2(_frame, resize=True, shrink=True)
+
+            _labels = [_(u" 1. There is a table tracing all the top-level CSC "
+                         u"allocated requirements to the parent CSCI "
+                         u"specification."),
+                       _(u" 2. The numerical techniques used in implementing "
+                         u"applicable functions provide enough precision to "
+                         u"support\naccuracy objectives."),
+                       _(u" 3. All processes and functions are partitioned to "
+                         u"be logically complete and self-contained so as to "
+                         u"minimize\ninterface complexity."),
+                       _(u" 4. Estimated process time typically spent "
+                         u"executing the entire module:"),
+                       _(u" 5. Estimated process time typically spent in "
+                         u"execution of hardware and device interface "
+                         u"protocol:"),
+                       _(u" 6. The executive software performs testing of its "
+                         u"own operation and of the communication links, "
+                         u"memory\ndevices, and peripheral devices."),
+                       _(u" 7. All inputs, processing, and outputs are "
+                         u"clearly and precisely defined."),
+                       _(u" 8. Number of data references that are defined:"),
+                       _(u" 9. Number of identified data references that are "
+                         u"documented with regard to source, meaning, and "
+                         u"format:"),
+                       _(u"10. Number of data items that are defined (i.e., "
+                         u"documented with regard to source, meaning, and "
+                         u"format):"),
+                       _(u"11. Number of data items that are referenced:"),
+                       _(u"12. Number of data references that are "
+                         u"identified:"),
+                       _(u"13. Number of identified data references that are "
+                         u"computed or obtained from an external source\n"
+                         u"(e.g., referencing global data with preassigned "
+                         u"values, input parameters with preassigned "
+                         u"values):"),
+                       _(u"14. Number of software discrepancy reports have "
+                         u"been recorded, to date:"),
+                       _(u"15. Number of software discrepancy reports have "
+                         u"been closed, to date:"),
+                       _(u"16. All functions of this module been allocated to "
+                         u"top-level module."),
+                       _(u"17. All conditions and alternative processing "
+                         u"options are defined for each decision point."),
+                       _(u"18. Design representations are in the formats of "
+                         u"the established standard."),
+                       _(u"19. All references to the same top-level module "
+                         u"use a single, unique name."),
+                       _(u"20. All data representation complies with the "
+                         u"established standard."),
+                       _(u"21. The naming of all data complies with the "
+                         u"established standard."),
+                       _(u"22. The definition and use of all global variables "
+                         u"is in accordange with the established standard."),
+                       _(u"23. There are procedures for establishing "
+                         u"consistency and concurrency of multiple copies of "
+                         u"the\nsame software or database version."),
+                       _(u"24. There are procedures for verifying the "
+                         u"consistency and concurrency of multiples copies of "
+                         u"the\nsame software or database version."),
+                       _(u"25. All references to the same data use a single, "
+                         u"unique name.")]
+            (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fixed2,
+                                                   5, 5, wrap=False)
+            _x_pos = max(_x_pos, _x_pos2) + 125
+
+            # Place the anomaly management widgets.
+            _fixed1.put(self.chkPDRAMQ1, _x_pos, _y_pos1[0])
+            _fixed1.put(self.chkPDRAMQ2, _x_pos, _y_pos1[1])
+            _fixed1.put(self.chkPDRAMQ3, _x_pos, _y_pos1[2])
+            _fixed1.put(self.chkPDRAMQ4, _x_pos, _y_pos1[3])
+            _fixed1.put(self.chkPDRAMQ5, _x_pos, _y_pos1[4])
+            _fixed1.put(self.chkPDRAMQ6, _x_pos, _y_pos1[5])
+            _fixed1.put(self.chkPDRAMQ7, _x_pos, _y_pos1[6])
+            _fixed1.put(self.chkPDRAMQ8, _x_pos, _y_pos1[7])
+            _fixed1.put(self.chkPDRAMQ9, _x_pos, _y_pos1[8])
+            _fixed1.put(self.chkPDRAMQ10, _x_pos, _y_pos1[9])
+            _fixed1.put(self.chkPDRAMQ11, _x_pos, _y_pos1[10])
+            _fixed1.put(self.chkPDRAMQ12, _x_pos, _y_pos1[11])
+            _fixed1.put(self.chkPDRAMQ13, _x_pos, _y_pos1[12])
+            _fixed1.put(self.chkPDRAMQ14, _x_pos, _y_pos1[13])
+
+            # Place the quality control widgets.
+            _fixed2.put(self.chkPDRSTQ1, _x_pos, _y_pos2[0])
+            _fixed2.put(self.chkPDRQCQ1, _x_pos, _y_pos2[1])
+            _fixed2.put(self.chkPDRQCQ2, _x_pos, _y_pos2[2])
+            _fixed2.put(self.txtPDRQCQ3, _x_pos, _y_pos2[3])
+            _fixed2.put(self.txtPDRQCQ4, _x_pos, _y_pos2[4])
+            _fixed2.put(self.chkPDRQCQ5, _x_pos, _y_pos2[5])
+            _fixed2.put(self.chkPDRQCQ6, _x_pos, _y_pos2[6])
+            _fixed2.put(self.txtPDRQCQ7, _x_pos, _y_pos2[7])
+            _fixed2.put(self.txtPDRQCQ8, _x_pos, _y_pos2[8])
+            _fixed2.put(self.txtPDRQCQ9, _x_pos, _y_pos2[9])
+            _fixed2.put(self.txtPDRQCQ10, _x_pos, _y_pos2[10])
+            _fixed2.put(self.txtPDRQCQ11, _x_pos, _y_pos2[11])
+            _fixed2.put(self.txtPDRQCQ12, _x_pos, _y_pos2[12])
+            _fixed2.put(self.chkPDRQCQ13, _x_pos, _y_pos2[13])
+            _fixed2.put(self.chkPDRQCQ14, _x_pos, _y_pos2[14])
+            _fixed2.put(self.txtPDRQCQ15, _x_pos, _y_pos2[15])
+            _fixed2.put(self.txtPDRQCQ16, _x_pos, _y_pos2[16])
+            _fixed2.put(self.chkPDRQCQ17, _x_pos, _y_pos2[17])
+            _fixed2.put(self.chkPDRQCQ18, _x_pos, _y_pos2[18])
+            _fixed2.put(self.chkPDRQCQ19, _x_pos, _y_pos2[19])
+            _fixed2.put(self.chkPDRQCQ20, _x_pos, _y_pos2[20])
+            _fixed2.put(self.chkPDRQCQ21, _x_pos, _y_pos2[21])
+            _fixed2.put(self.chkPDRQCQ22, _x_pos, _y_pos2[22])
+            _fixed2.put(self.chkPDRQCQ23, _x_pos, _y_pos2[23])
+            _fixed2.put(self.chkPDRQCQ24, _x_pos, _y_pos2[24])
+
+            # Connect the anomaly management widgets to callback methods.
             self.chkPDRAMQ1.connect('toggled', self._callback_check, 300)
             self.chkPDRAMQ2.connect('toggled', self._callback_check, 301)
             self.chkPDRAMQ3.connect('toggled', self._callback_check, 302)
@@ -2912,108 +3061,7 @@ class Software(object):
             self.chkPDRAMQ13.connect('toggled', self._callback_check, 312)
             self.chkPDRAMQ14.connect('toggled', self._callback_check, 313)
 
-            # Create the software quality control risk pane.
-            _fixed = gtk.Fixed()
-
-            _scrollwindow = gtk.ScrolledWindow()
-            _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                     gtk.POLICY_AUTOMATIC)
-            _scrollwindow.add_with_viewport(_fixed)
-
-            _frame = _widg.make_frame(label=_(u"Software Quality Control"))
-            _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-            _frame.add(_scrollwindow)
-
-            self.hpnPDR.pack2(_frame, resize=True, shrink=True)
-
-            _labels = [_(u"There is a table tracing all the top-level CSC "
-                         u"allocated requirements to the parent CSCI "
-                         u"specification."),
-                       _(u"The numerical techniques used in implementing "
-                         u"applicable functions provide enough precision to "
-                         u"support accuracy objectives."),
-                       _(u"All processes and functions are partitioned to be "
-                         u"logically complete and self-contained so as to "
-                         u"minimize interface complexity."),
-                       _(u"Estimated process time typically spent executing "
-                         u"the entire module:"),
-                       _(u"Estimated process time typically spent in "
-                         u"execution of hardware and device interface "
-                         u"protocol:"),
-                       _(u"The executive software performs testing of its own "
-                         u"operation and of the communication links, memory "
-                         u"devices, and peripheral devices."),
-                       _(u"All inputs, processing, and outputs are clearly "
-                         u"and precisely defined."),
-                       _(u"Number of data references that are defined:"),
-                       _(u"Number of identified data references that are "
-                         u"documented with regard to source, meaning, and "
-                         u"format:"),
-                       _(u"Number of data items that are defined (i.e., "
-                         u"documented with regard to source, meaning, and "
-                         u"format):"),
-                       _(u"Number of data items that are referenced:"),
-                       _(u"Number of data references that are identified:"),
-                       _(u"Number of identified data references that are "
-                         u"computed or obtained from an external source "
-                         u"(e.g., referencing global data with preassigned "
-                         u"values, input parameters with preassigned "
-                         u"values):"),
-                       _(u"Number of software discrepancy reports have been "
-                         u"recorded, to date:"),
-                       _(u"Number of software discrepancy reports have been "
-                         u"closed, to date:"),
-                       _(u"All functions of this module been allocated to "
-                         u"top-level module."),
-                       _(u"All conditions and alternative processing options "
-                         u"are defined for each decision point."),
-                       _(u"Design representations are in the formats of the "
-                         u"established standard."),
-                       _(u"All references to the same top-level module use a "
-                         u"single, unique name."),
-                       _(u"All data representation complies with the "
-                         u"established standard."),
-                       _(u"The naming of all data complies with the "
-                         u"established standard."),
-                       _(u"The definition and use of all global variables is "
-                         u"in accordange with the established standard."),
-                       _(u"There are procedures for establishing consistency "
-                         u"and concurrency of multiple copies of the same "
-                         u"software or data base version."),
-                       _(u"There are procedures for verifying the consistency "
-                         u"and concurrency of multiples copies of the same "
-                         u"software or data base version."),
-                       _(u"All references to the same data use a single, "
-                         u"unique name.")]
-            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-            _x_pos += 45
-
-            _fixed.put(self.chkPDRSTQ1, _x_pos, _y_pos[0])
-            _fixed.put(self.chkPDRQCQ1, _x_pos, _y_pos[1])
-            _fixed.put(self.chkPDRQCQ2, _x_pos, _y_pos[2])
-            _fixed.put(self.txtPDRQCQ3, _x_pos, _y_pos[3])
-            _fixed.put(self.txtPDRQCQ4, _x_pos, _y_pos[4])
-            _fixed.put(self.chkPDRQCQ5, _x_pos, _y_pos[5])
-            _fixed.put(self.chkPDRQCQ6, _x_pos, _y_pos[6])
-            _fixed.put(self.txtPDRQCQ7, _x_pos, _y_pos[7])
-            _fixed.put(self.txtPDRQCQ8, _x_pos, _y_pos[8])
-            _fixed.put(self.txtPDRQCQ9, _x_pos, _y_pos[9])
-            _fixed.put(self.txtPDRQCQ10, _x_pos, _y_pos[10])
-            _fixed.put(self.txtPDRQCQ11, _x_pos, _y_pos[11])
-            _fixed.put(self.txtPDRQCQ12, _x_pos, _y_pos[12])
-            _fixed.put(self.chkPDRQCQ13, _x_pos, _y_pos[13])
-            _fixed.put(self.chkPDRQCQ14, _x_pos, _y_pos[14])
-            _fixed.put(self.txtPDRQCQ15, _x_pos, _y_pos[15])
-            _fixed.put(self.txtPDRQCQ16, _x_pos, _y_pos[16])
-            _fixed.put(self.chkPDRQCQ17, _x_pos, _y_pos[17])
-            _fixed.put(self.chkPDRQCQ18, _x_pos, _y_pos[18])
-            _fixed.put(self.chkPDRQCQ19, _x_pos, _y_pos[19])
-            _fixed.put(self.chkPDRQCQ20, _x_pos, _y_pos[20])
-            _fixed.put(self.chkPDRQCQ21, _x_pos, _y_pos[21])
-            _fixed.put(self.chkPDRQCQ22, _x_pos, _y_pos[22])
-            _fixed.put(self.chkPDRQCQ23, _x_pos, _y_pos[23])
-            _fixed.put(self.chkPDRQCQ24, _x_pos, _y_pos[24])
-
+            # Connect the quality control widgets to callback methods.
             self.chkPDRSTQ1.connect('toggled', self._callback_check, 314)
             self.chkPDRQCQ1.connect('toggled', self._callback_check, 315)
             self.chkPDRQCQ2.connect('toggled', self._callback_check, 316)
@@ -3124,52 +3172,150 @@ class Software(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Place the widgets used to display risk analysis information.  #
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-            # Create the anomaly management risk pane for CSCI.
-            _labels = [_(u"Number of units in this module:"),
-                       _(u"Number of units in this module, when an error "
+            # Create the anomaly management labels for CSCI.
+            _labels = [_(u" 1. Number of units in this module:"),
+                       _(u" 2. Number of units in this module, when an error "
                          u"condition is detected, in which resolution "
-                         u"the error is not determined by the calling unit:"),
-                       _(u"The value of all external inputs with range "
+                         u"the error is not\ndetermined by the calling unit:"),
+                       _(u" 3. The value of all external inputs with range "
                          u"specifications are checked with respect to the "
-                         u"specified range prior to use."),
-                       _(u"All external inputs are checked with respect to "
-                         u"specified conflicting requests prior to use."),
-                       _(u"All external inputs are checked with respect to "
-                         u"specified illegal combinations prior to use."),
-                       _(u"All external inputs are checked for reasonableness "
-                         u"before processing begins."),
-                       _(u"All detected errors, with respect to applicable "
-                         u"external inputs, are reported before processing "
-                         u"begins."),
-                       _(u"Number of units in this module that do not perform "
-                         u"a check to determine that all data is available "
-                         u"before processing begins:"),
-                       _(u"Critical loop and multiple transfer index "
+                         u"specified\nrange prior to use."),
+                       _(u" 4. All external inputs are checked with respect "
+                         u"to specified conflicting requests prior to use."),
+                       _(u" 5. All external inputs are checked with respect "
+                         u"to specified illegal combinations prior to use."),
+                       _(u" 6. All external inputs are checked for "
+                         u"reasonableness before processing begins."),
+                       _(u" 7. All detected errors, with respect to "
+                         u"applicable external inputs, are reported before "
+                         u"processing begins."),
+                       _(u" 8. Number of units in this module that do not "
+                         u"perform a check to determine that all data is "
+                         u"available before\nprocessing begins:"),
+                       _(u" 9. Critical loop and multiple transfer index "
                          u"parameters (e.g., supporting a mission-critical "
-                         u"system function) are checked for out-of-range "
+                         u"system function)\nare checked for out-of-range "
                          u"values before use."),
-                       _(u"All critical subscripts (e.g., supporting a "
+                       _(u"10. All critical subscripts (e.g., supporting a "
                          u"mission-critical system function) are checked for "
-                         u"out-of-range values before use."),
-                       _(u"All critical output data (e.g., supporting a "
-                         u"mission-critical system function) are checked for "
+                         u"out-of-range\nvalues before use."),
+                       _(u"11. All critical output data (e.g., supporting a "
+                         u"mission-critical system function) are checked for\n"
                          u"reasonable values prior to final outputting.")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdcsciam, 5, 5)
-            _x_pos += 45
+            (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdcsciam,
+                                                  5, 5, wrap=False)
 
-            _fxdcsciam.put(self.txtCDRAMQ1, _x_pos, _y_pos[0])
-            _fxdcsciam.put(self.txtCDRAMQ2, _x_pos, _y_pos[1])
-            _fxdcsciam.put(self.chkCDRAMQ3, _x_pos, _y_pos[2])
-            _fxdcsciam.put(self.chkCDRAMQ4, _x_pos, _y_pos[3])
-            _fxdcsciam.put(self.chkCDRAMQ5, _x_pos, _y_pos[4])
-            _fxdcsciam.put(self.chkCDRAMQ6, _x_pos, _y_pos[5])
-            _fxdcsciam.put(self.chkCDRAMQ7, _x_pos, _y_pos[6])
-            _fxdcsciam.put(self.txtCDRAMQ8, _x_pos, _y_pos[7])
-            _fxdcsciam.put(self.chkCDRAMQ9, _x_pos, _y_pos[8])
-            _fxdcsciam.put(self.chkCDRAMQ10, _x_pos, _y_pos[9])
-            _fxdcsciam.put(self.chkCDRAMQ11, _x_pos, _y_pos[10])
+            # Create the software quality control labels for CSCI.
+            _labels = [_(u" 1. The description of each software unit "
+                         u"identifies all the requirements that the unit "
+                         u"helps satisfy."),
+                       _(u" 2. The decomposition of top-level modules into "
+                         u"lower-level modules and software units is "
+                         u"graphically depicted."),
+                       _(u" 3. Estimated executable lines of source code in "
+                         u"this module:"),
+                       _(u" 4. Estimated executable lines of source code "
+                         u"necessary to handle hardware and device interface "
+                         u"protocol\nin this module:"),
+                       _(u" 5. Number of units in this module that perform "
+                         u"processing of hardware and/or device interface "
+                         u"protocol:"),
+                       _(u" 6. Estimated processing time typically spent "
+                         u"executing this module:"),
+                       _(u" 7. Estimated processing time typically spent in "
+                         u"execution of hardware and device interface "
+                         u"protocol in\nthis module:"),
+                       _(u" 8. Number of units that clearly and precisely "
+                         u"define all inputs, processing, and outputs:"),
+                       _(u" 9. Data references identified in this module:"),
+                       _(u"10. Identified data references that are documented "
+                         u"with regard to source, meaning, and format in this "
+                         u"module:"),
+                       _(u"11. Data items that are defined (i.e., documented "
+                         u"with regard to source, meaning, and format) in "
+                         u"this module:"),
+                       _(u"12. Data items are referenced in this module:"),
+                       _(u"13. Data references identified in this module:"),
+                       _(u"14. Identified data references that are computed "
+                         u"or obtained from an external source\n(e.g., "
+                         u"referencing global data with preassigned values, "
+                         u"input parameters with preassigned values)\nin this "
+                         u"module:"),
+                       _(u"15. Number of units that define all conditions and "
+                         u"alternative processing options for each decision "
+                         u"point:"),
+                       _(u"16. Number of units in which all parameters in the "
+                         u"argument list are used:"),
+                       _(u"17. Number of software discrepancy reports "
+                         u"recorded, to date, for this module:"),
+                       _(u"18. Number of software discrepancy reports "
+                         u"recorded that have been closed, to date, for this "
+                         u"module:"),
+                       _(u"19. Number of units in which all design "
+                         u"representations are in the formats of the "
+                         u"established standard:"),
+                       _(u"20. Number of units in which the inter-unit "
+                         u"calling sequence protocol complies with the "
+                         u"standard:"),
+                       _(u"21. Number of units in which the I/O protocol and "
+                         u"format complies with the established standard:"),
+                       _(u"22. Number of units in which the handling of "
+                         u"errors complies with the established standard:"),
+                       _(u"23. Number of units in which all references to the "
+                         u"unit use the same, unique name:"),
+                       _(u"24. Number of units in which the naming of all "
+                         u"data complies with the established standard:"),
+                       _(u"25. Number of units in which is the definition and "
+                         u"use of all global variables is in accordance with "
+                         u"the\nestablished standard:"),
+                       _(u"26. Number of units in which references to the "
+                         u"same data use a single, unique name:")]
+            (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdcsciqc,
+                                                   5, 5, wrap=False)
+            _x_pos = max(_x_pos, _x_pos2) + 125
 
+            # Place the anomaly management widgets for CSCI.
+            _fxdcsciam.put(self.txtCDRAMQ1, _x_pos, _y_pos1[0])
+            _fxdcsciam.put(self.txtCDRAMQ2, _x_pos, _y_pos1[1])
+            _fxdcsciam.put(self.chkCDRAMQ3, _x_pos, _y_pos1[2])
+            _fxdcsciam.put(self.chkCDRAMQ4, _x_pos, _y_pos1[3])
+            _fxdcsciam.put(self.chkCDRAMQ5, _x_pos, _y_pos1[4])
+            _fxdcsciam.put(self.chkCDRAMQ6, _x_pos, _y_pos1[5])
+            _fxdcsciam.put(self.chkCDRAMQ7, _x_pos, _y_pos1[6])
+            _fxdcsciam.put(self.txtCDRAMQ8, _x_pos, _y_pos1[7])
+            _fxdcsciam.put(self.chkCDRAMQ9, _x_pos, _y_pos1[8])
+            _fxdcsciam.put(self.chkCDRAMQ10, _x_pos, _y_pos1[9])
+            _fxdcsciam.put(self.chkCDRAMQ11, _x_pos, _y_pos1[10])
+
+            # Place the quality control widgets for CSCI.
+            _fxdcsciqc.put(self.chkCDRSTQ1, _x_pos, _y_pos2[0])
+            _fxdcsciqc.put(self.chkCDRSTQ2, _x_pos, _y_pos2[1])
+            _fxdcsciqc.put(self.txtCDRQCQ1, _x_pos, _y_pos2[2])
+            _fxdcsciqc.put(self.txtCDRQCQ2, _x_pos, _y_pos2[3])
+            _fxdcsciqc.put(self.txtCDRQCQ3, _x_pos, _y_pos2[4])
+            _fxdcsciqc.put(self.txtCDRQCQ4, _x_pos, _y_pos2[5])
+            _fxdcsciqc.put(self.txtCDRQCQ5, _x_pos, _y_pos2[6])
+            _fxdcsciqc.put(self.txtCDRQCQ6, _x_pos, _y_pos2[7])
+            _fxdcsciqc.put(self.txtCDRQCQ7, _x_pos, _y_pos2[8])
+            _fxdcsciqc.put(self.txtCDRQCQ8, _x_pos, _y_pos2[9])
+            _fxdcsciqc.put(self.txtCDRQCQ9, _x_pos, _y_pos2[10])
+            _fxdcsciqc.put(self.txtCDRQCQ10, _x_pos, _y_pos2[11])
+            _fxdcsciqc.put(self.txtCDRQCQ11, _x_pos, _y_pos2[12])
+            _fxdcsciqc.put(self.txtCDRQCQ12, _x_pos, _y_pos2[13])
+            _fxdcsciqc.put(self.txtCDRQCQ13, _x_pos, _y_pos2[14])
+            _fxdcsciqc.put(self.txtCDRQCQ14, _x_pos, _y_pos2[15])
+            _fxdcsciqc.put(self.txtCDRQCQ15, _x_pos, _y_pos2[16])
+            _fxdcsciqc.put(self.txtCDRQCQ16, _x_pos, _y_pos2[17])
+            _fxdcsciqc.put(self.txtCDRQCQ17, _x_pos, _y_pos2[18])
+            _fxdcsciqc.put(self.txtCDRQCQ18, _x_pos, _y_pos2[19])
+            _fxdcsciqc.put(self.txtCDRQCQ19, _x_pos, _y_pos2[20])
+            _fxdcsciqc.put(self.txtCDRQCQ20, _x_pos, _y_pos2[21])
+            _fxdcsciqc.put(self.txtCDRQCQ21, _x_pos, _y_pos2[22])
+            _fxdcsciqc.put(self.txtCDRQCQ22, _x_pos, _y_pos2[23])
+            _fxdcsciqc.put(self.txtCDRQCQ23, _x_pos, _y_pos2[24])
+            _fxdcsciqc.put(self.txtCDRQCQ24, _x_pos, _y_pos2[25])
+
+            # Connect the anomaly management widgets to callback methods.
             self.txtCDRAMQ1.connect('focus-out-event', self._callback_entry,
                                     'int', 400)
             self.txtCDRAMQ2.connect('focus-out-event', self._callback_entry,
@@ -3185,158 +3331,7 @@ class Software(object):
             self.chkCDRAMQ10.connect('toggled', self._callback_check, 409)
             self.chkCDRAMQ11.connect('toggled', self._callback_check, 410)
 
-            # Create the anomaly management risk pane for units.
-            _labels = [_(u"When an error condition is detected, the "
-                         u"resolution of the error is not determined by this "
-                         u"unit."),
-                       _(u"The values of all applicable external inputs with "
-                         u"range specifications are checked with respect to "
-                         u"specified range prior to use in this unit."),
-                       _(u"All applicable external inputs are checked with "
-                         u"respect to specified conflicting requests prior "
-                         u"to use in this unit."),
-                       _(u"All applicable external inputs are checked with "
-                         u"respect to specified illegal combinations prior to "
-                         u"use in this unit."),
-                       _(u"All applicable external inputs are checked for "
-                         u"reasonableness before processing begins in this "
-                         u"unit."),
-                       _(u"All detected errors, with respect to applicable "
-                         u"external inputs, are reported before processing "
-                         u"begins in this unit."),
-                       _(u"This unit does not perform a check to determine "
-                         u"that all data is available before processing "
-                         u"begins."),
-                       _(u"Critical loop and multiple transfer index "
-                         u"parameters (e.g., supporting a mission-critical "
-                         u"system function) are checked for out-of-range "
-                         u"values before use in this unit."),
-                       _(u"All critical subscripts (e.g., supporting a "
-                         u"mission-critical system function) are checked for "
-                         u"out-of-range values before use in this unit."),
-                       _(u"All critical output data (e.g., supporting a "
-                         u"mission-critical system function) are checked for "
-                         u"reasonable values prior to final outputting by "
-                         u"this unit.")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdunitam, 5, 5)
-            _x_pos += 45
-
-            _fxdunitam.put(self.chkCDRUnitAMQ1, _x_pos, _y_pos[0])
-            _fxdunitam.put(self.chkCDRUnitAMQ2, _x_pos, _y_pos[1])
-            _fxdunitam.put(self.chkCDRUnitAMQ3, _x_pos, _y_pos[2])
-            _fxdunitam.put(self.chkCDRUnitAMQ4, _x_pos, _y_pos[3])
-            _fxdunitam.put(self.chkCDRUnitAMQ5, _x_pos, _y_pos[4])
-            _fxdunitam.put(self.chkCDRUnitAMQ6, _x_pos, _y_pos[5])
-            _fxdunitam.put(self.chkCDRUnitAMQ7, _x_pos, _y_pos[6])
-            _fxdunitam.put(self.chkCDRUnitAMQ8, _x_pos, _y_pos[7])
-            _fxdunitam.put(self.chkCDRUnitAMQ9, _x_pos, _y_pos[8])
-            _fxdunitam.put(self.chkCDRUnitAMQ10, _x_pos, _y_pos[9])
-
-            self.chkCDRUnitAMQ1.connect('toggled', self._callback_check, 437)
-            self.chkCDRUnitAMQ2.connect('toggled', self._callback_check, 438)
-            self.chkCDRUnitAMQ3.connect('toggled', self._callback_check, 439)
-            self.chkCDRUnitAMQ4.connect('toggled', self._callback_check, 440)
-            self.chkCDRUnitAMQ5.connect('toggled', self._callback_check, 441)
-            self.chkCDRUnitAMQ6.connect('toggled', self._callback_check, 442)
-            self.chkCDRUnitAMQ7.connect('toggled', self._callback_check, 443)
-            self.chkCDRUnitAMQ8.connect('toggled', self._callback_check, 444)
-            self.chkCDRUnitAMQ9.connect('toggled', self._callback_check, 445)
-            self.chkCDRUnitAMQ10.connect('toggled', self._callback_check, 446)
-
-            # Create the software quality control risk pane for CSCI.
-            _labels = [_(u"The description of each software unit identifies "
-                         u"all the requirements that the unit helps satisfy."),
-                       _(u"The decomposition of top-level modules into "
-                         u"lower-level modules and software units is "
-                         u"graphically depicted."),
-                       _(u"Estimated executable lines of source code in this "
-                         u"module:"),
-                       _(u"Estimated executable lines of source code "
-                         u"necessary to handle hardware and device interface "
-                         u"protocol in this module:"),
-                       _(u"Number of units in this module that perform "
-                         u"processing of hardware and/or device interface "
-                         u"protocol:"),
-                       _(u"Estimated processing time typically spent "
-                         u"executing this module:"),
-                       _(u"Estimated processing time typically spent in "
-                         u"execution of hardware and device interface "
-                         u"protocol in this module:"),
-                       _(u"Number of units that clearly and precisely define "
-                         u"all inputs, processing, and outputs:"),
-                       _(u"Data references identified in this module:"),
-                       _(u"Identified data references that are documented "
-                         u"with regard to source, meaning, and format in this "
-                         u"module:"),
-                       _(u"Data items that are defined (i.e., documented with "
-                         u"regard to source, meaning, and format) in this "
-                         u"module:"),
-                       _(u"Data items are referenced in this module:"),
-                       _(u"Data references identified in this module:"),
-                       _(u"Identified data references that are computed or "
-                         u"obtained from an external source (e.g., "
-                         u"referencing global data with preassigned values, "
-                         u"input parameters with preassigned values) in this "
-                         u"module:"),
-                       _(u"Number of units that define all conditions and "
-                         u"alternative processing options for each decision "
-                         u"point:"),
-                       _(u"Number of units in which all parameters in the "
-                         u"argument list are used:"),
-                       _(u"Number of software discrepancy reports recorded, "
-                         u"to date, for this module:"),
-                       _(u"Number of software discrepancy reports recorded "
-                         u"that have been closed, to date, for this module:"),
-                       _(u"Number of units in which all design "
-                         u"representations are in the formats of the "
-                         u"established standard:"),
-                       _(u"Number of units in which the inter-unit calling "
-                         u"sequence protocol complies with the standard:"),
-                       _(u"Number of units in which the I/O protocol and "
-                         u"format complies with the established standard:"),
-                       _(u"Number of units in which the handling of errors "
-                         u"complies with the established standard:"),
-                       _(u"Number of units in which all references to the "
-                         u"unit use the same, unique name:"),
-                       _(u"Number of units in which the naming of all data "
-                         u"complies with the established standard:"),
-                       _(u"Number of units in which is the definition and use "
-                         u"of all global variables is in accordance with the "
-                         u"established standard:"),
-                       _(u"Number of units in which references to the same "
-                         u"data use a single, unique name:")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdcsciqc, 5, 5)
-            _x_pos += 45
-
-            _fxdcsciqc.put(self.chkCDRSTQ1, _x_pos, _y_pos[0])
-            _fxdcsciqc.put(self.chkCDRSTQ2, _x_pos, _y_pos[1])
-            _fxdcsciqc.put(self.txtCDRQCQ1, _x_pos, _y_pos[2])
-            _fxdcsciqc.put(self.txtCDRQCQ2, _x_pos, _y_pos[3])
-            _fxdcsciqc.put(self.txtCDRQCQ3, _x_pos, _y_pos[4])
-            _fxdcsciqc.put(self.txtCDRQCQ4, _x_pos, _y_pos[5])
-            _fxdcsciqc.put(self.txtCDRQCQ5, _x_pos, _y_pos[6])
-            _fxdcsciqc.put(self.txtCDRQCQ6, _x_pos, _y_pos[7])
-            _fxdcsciqc.put(self.txtCDRQCQ7, _x_pos, _y_pos[8])
-            _fxdcsciqc.put(self.txtCDRQCQ8, _x_pos, _y_pos[9])
-            _fxdcsciqc.put(self.txtCDRQCQ9, _x_pos, _y_pos[10])
-            _fxdcsciqc.put(self.txtCDRQCQ10, _x_pos, _y_pos[11])
-            _fxdcsciqc.put(self.txtCDRQCQ11, _x_pos, _y_pos[12])
-            _fxdcsciqc.put(self.txtCDRQCQ12, _x_pos, _y_pos[13])
-            _fxdcsciqc.put(self.txtCDRQCQ13, _x_pos, _y_pos[14])
-            _fxdcsciqc.put(self.txtCDRQCQ14, _x_pos, _y_pos[15])
-            _fxdcsciqc.put(self.txtCDRQCQ15, _x_pos, _y_pos[16])
-            _fxdcsciqc.put(self.txtCDRQCQ16, _x_pos, _y_pos[17])
-            _fxdcsciqc.put(self.txtCDRQCQ17, _x_pos, _y_pos[18])
-            _fxdcsciqc.put(self.txtCDRQCQ18, _x_pos, _y_pos[19])
-            _fxdcsciqc.put(self.txtCDRQCQ19, _x_pos, _y_pos[20])
-            _fxdcsciqc.put(self.txtCDRQCQ20, _x_pos, _y_pos[21])
-            _fxdcsciqc.put(self.txtCDRQCQ21, _x_pos, _y_pos[22])
-            _fxdcsciqc.put(self.txtCDRQCQ22, _x_pos, _y_pos[23])
-            _fxdcsciqc.put(self.txtCDRQCQ23, _x_pos, _y_pos[24])
-            _fxdcsciqc.put(self.txtCDRQCQ24, _x_pos, _y_pos[25])
-
+            # Connect the quality control widgets to callback methods.
             self.chkCDRSTQ1.connect('toggled', self._callback_check, 411)
             self.chkCDRSTQ2.connect('toggled', self._callback_check, 412)
             self.txtCDRQCQ1.connect('focus-out-event', self._callback_entry,
@@ -3388,90 +3383,154 @@ class Software(object):
             self.txtCDRQCQ24.connect('focus-out-event', self._callback_entry,
                                      'int', 436)
 
-            # Create the quality control risk pane for units.
-            _labels = [_(u"The description of this software unit identifies "
-                         u"all the requirements that the unit helps satisfy."),
-                       _(u"Estimated executable lines of source code in this "
-                         u"unit:"),
-                       _(u"Estimated executable lines of source code "
+            # Create the anomaly management labels for units.
+            _labels = [_(u" 1. When an error condition is detected, the "
+                         u"resolution of the error is not determined by this "
+                         u"unit."),
+                       _(u" 2. The values of all applicable external inputs "
+                         u"with range specifications are checked with respect "
+                         u"to specified range prior to use in this unit."),
+                       _(u" 3. All applicable external inputs are checked "
+                         u"with respect to specified conflicting requests "
+                         u"prior to use in this unit."),
+                       _(u" 4. All applicable external inputs are checked "
+                         u"with respect to specified illegal combinations "
+                         u"prior to use in this unit."),
+                       _(u" 5. All applicable external inputs are checked for "
+                         u"reasonableness before processing begins in this "
+                         u"unit."),
+                       _(u" 6. All detected errors, with respect to "
+                         u"applicable external inputs, are reported before "
+                         u"processing begins in this unit."),
+                       _(u" 7. This unit does not perform a check to "
+                         u"determine that all data is available before "
+                         u"processing begins."),
+                       _(u" 8. Critical loop and multiple transfer index "
+                         u"parameters (e.g., supporting a mission-critical "
+                         u"system function) are checked for out-of-range "
+                         u"values before use in this unit."),
+                       _(u" 9. All critical subscripts (e.g., supporting a "
+                         u"mission-critical system function) are checked for "
+                         u"out-of-range values before use in this unit."),
+                       _(u"10. All critical output data (e.g., supporting a "
+                         u"mission-critical system function) are checked for "
+                         u"reasonable values prior to final outputting by "
+                         u"this unit.")]
+            (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdunitam,
+                                                  5, 5, wrap=False)
+
+            # Create the quality control labels for units.
+            _labels = [_(u" 1. The description of this software unit "
+                         u"identifies all the requirements that the unit "
+                         u"helps satisfy."),
+                       _(u" 2. Estimated executable lines of source code in "
+                         u"this unit:"),
+                       _(u" 3. Estimated executable lines of source code "
                          u"necessary to handle hardware and device interface "
                          u"protocol in this unit:"),
-                       _(u"This unit performs processing of hardware and/or "
-                         u"device interface protocols."),
-                       _(u"Estimated processing time typically spent "
+                       _(u" 4. This unit performs processing of hardware "
+                         u"and/or device interface protocols."),
+                       _(u" 5. Estimated processing time typically spent "
                          u"executing this unit:"),
-                       _(u"Estimated processing time typically spent in "
+                       _(u" 6. Estimated processing time typically spent in "
                          u"execution of hardware and device interface "
                          u"protocol in this unit:"),
-                       _(u"All inputs, processing, and outputs are clearly "
-                         u"and precisely defined."),
-                       _(u"Data references identified in this unit:"),
-                       _(u"Identified data references that are documented "
+                       _(u" 7. All inputs, processing, and outputs are "
+                         u"clearly and precisely defined."),
+                       _(u" 8. Data references identified in this unit:"),
+                       _(u" 9. Identified data references that are documented "
                          u"with regard to source, meaning, and format in this "
                          u"unit:"),
-                       _(u"Data items that are defined (i.e., documented with "
-                         u"regard to source, meaning, and format) in this "
-                         u"unit:"),
-                       _(u"Data items are referenced in this unit:"),
-                       _(u"Data references identified in this unit:"),
-                       _(u"Identified data references that are computed or "
-                         u"obtained from an external source (e.g., "
+                       _(u"10. Data items that are defined (i.e., documented "
+                         u"with regard to source, meaning, and format) in "
+                         u"this unit:"),
+                       _(u"11. Data items are referenced in this unit:"),
+                       _(u"12. Data references identified in this unit:"),
+                       _(u"13. Identified data references that are computed "
+                         u"or obtained from an external source (e.g., "
                          u"referencing global data with preassigned values, "
                          u"input parameters with preassigned values) in this "
                          u"unit:"),
-                       _(u"All conditions and alternative processing options "
-                         u"for each decision point are defined."),
-                       _(u"All parameters in the argument list are used."),
-                       _(u"Number of software discrepancy reports recorded, "
-                         u"to date, for this unit:"),
-                       _(u"Number of software discrepancy reports recorded "
-                         u"that have been closed, to date, for this unit:"),
-                       _(u"All design representations are in the formats of "
-                         u"the established standard."),
-                       _(u"The calling sequence protocol (between units) "
+                       _(u"14. All conditions and alternative processing "
+                         u"options for each decision point are defined."),
+                       _(u"15. All parameters in the argument list are used."),
+                       _(u"16. Number of software discrepancy reports "
+                         u"recorded, to date, for this unit:"),
+                       _(u"17. Number of software discrepancy reports "
+                         u"recorded that have been closed, to date, for this "
+                         u"unit:"),
+                       _(u"18. All design representations are in the formats "
+                         u"of the established standard."),
+                       _(u"19. The calling sequence protocol (between units) "
                          u"complies with the established standard."),
-                       _(u"The I/O protocol and format complies with the "
+                       _(u"20. The I/O protocol and format complies with the "
                          u"established standard."),
-                       _(u"The handling of errors complies with the "
+                       _(u"21. The handling of errors complies with the "
                          u"established standard."),
-                       _(u"All references to the unit use the same, unique "
-                         u"name."),
-                       _(u"The naming of all data complies with the "
+                       _(u"22. All references to the unit use the same, "
+                         u"unique name."),
+                       _(u"23. The naming of all data complies with the "
                          u"established standard."),
-                       _(u"The definition and use of all global variables is "
-                         u"in accordance with the established standard."),
-                       _(u"References to the same data use a single, unique "
-                         u"name.")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdunitqc, 5, 5)
-            _x_pos += 45
+                       _(u"24. The definition and use of all global variables "
+                         u"is in accordance with the established standard."),
+                       _(u"25. References to the same data use a single, "
+                         u"unique name.")]
+            (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdunitqc,
+                                                   5, 5, wrap=False)
+            _x_pos = max(_x_pos, _x_pos2) + 125
 
-            _fxdunitqc.put(self.chkCDRUnitSTQ1, _x_pos, _y_pos[0])
-            _fxdunitqc.put(self.txtCDRUnitQCQ1, _x_pos, _y_pos[1])
-            _fxdunitqc.put(self.txtCDRUnitQCQ2, _x_pos, _y_pos[2])
-            _fxdunitqc.put(self.chkCDRUnitQCQ3, _x_pos, _y_pos[3])
-            _fxdunitqc.put(self.txtCDRUnitQCQ4, _x_pos, _y_pos[4])
-            _fxdunitqc.put(self.txtCDRUnitQCQ5, _x_pos, _y_pos[5])
-            _fxdunitqc.put(self.chkCDRUnitQCQ6, _x_pos, _y_pos[6])
-            _fxdunitqc.put(self.txtCDRUnitQCQ7, _x_pos, _y_pos[7])
-            _fxdunitqc.put(self.txtCDRUnitQCQ8, _x_pos, _y_pos[8])
-            _fxdunitqc.put(self.txtCDRUnitQCQ9, _x_pos, _y_pos[9])
-            _fxdunitqc.put(self.txtCDRUnitQCQ10, _x_pos, _y_pos[10])
-            _fxdunitqc.put(self.txtCDRUnitQCQ11, _x_pos, _y_pos[11])
-            _fxdunitqc.put(self.txtCDRUnitQCQ12, _x_pos, _y_pos[12])
-            _fxdunitqc.put(self.chkCDRUnitQCQ13, _x_pos, _y_pos[13])
-            _fxdunitqc.put(self.chkCDRUnitQCQ14, _x_pos, _y_pos[14])
-            _fxdunitqc.put(self.txtCDRUnitQCQ15, _x_pos, _y_pos[15])
-            _fxdunitqc.put(self.txtCDRUnitQCQ16, _x_pos, _y_pos[16])
-            _fxdunitqc.put(self.chkCDRUnitQCQ17, _x_pos, _y_pos[17])
-            _fxdunitqc.put(self.chkCDRUnitQCQ18, _x_pos, _y_pos[18])
-            _fxdunitqc.put(self.chkCDRUnitQCQ19, _x_pos, _y_pos[19])
-            _fxdunitqc.put(self.chkCDRUnitQCQ20, _x_pos, _y_pos[20])
-            _fxdunitqc.put(self.chkCDRUnitQCQ21, _x_pos, _y_pos[21])
-            _fxdunitqc.put(self.chkCDRUnitQCQ22, _x_pos, _y_pos[22])
-            _fxdunitqc.put(self.chkCDRUnitQCQ23, _x_pos, _y_pos[23])
-            _fxdunitqc.put(self.chkCDRUnitQCQ24, _x_pos, _y_pos[24])
+            # Place the anomaly management widgets for units.
+            _fxdunitam.put(self.chkCDRUnitAMQ1, _x_pos, _y_pos1[0])
+            _fxdunitam.put(self.chkCDRUnitAMQ2, _x_pos, _y_pos1[1])
+            _fxdunitam.put(self.chkCDRUnitAMQ3, _x_pos, _y_pos1[2])
+            _fxdunitam.put(self.chkCDRUnitAMQ4, _x_pos, _y_pos1[3])
+            _fxdunitam.put(self.chkCDRUnitAMQ5, _x_pos, _y_pos1[4])
+            _fxdunitam.put(self.chkCDRUnitAMQ6, _x_pos, _y_pos1[5])
+            _fxdunitam.put(self.chkCDRUnitAMQ7, _x_pos, _y_pos1[6])
+            _fxdunitam.put(self.chkCDRUnitAMQ8, _x_pos, _y_pos1[7])
+            _fxdunitam.put(self.chkCDRUnitAMQ9, _x_pos, _y_pos1[8])
+            _fxdunitam.put(self.chkCDRUnitAMQ10, _x_pos, _y_pos1[9])
 
+            # Place the quality control widgets for units.
+            _fxdunitqc.put(self.chkCDRUnitSTQ1, _x_pos, _y_pos2[0])
+            _fxdunitqc.put(self.txtCDRUnitQCQ1, _x_pos, _y_pos2[1])
+            _fxdunitqc.put(self.txtCDRUnitQCQ2, _x_pos, _y_pos2[2])
+            _fxdunitqc.put(self.chkCDRUnitQCQ3, _x_pos, _y_pos2[3])
+            _fxdunitqc.put(self.txtCDRUnitQCQ4, _x_pos, _y_pos2[4])
+            _fxdunitqc.put(self.txtCDRUnitQCQ5, _x_pos, _y_pos2[5])
+            _fxdunitqc.put(self.chkCDRUnitQCQ6, _x_pos, _y_pos2[6])
+            _fxdunitqc.put(self.txtCDRUnitQCQ7, _x_pos, _y_pos2[7])
+            _fxdunitqc.put(self.txtCDRUnitQCQ8, _x_pos, _y_pos2[8])
+            _fxdunitqc.put(self.txtCDRUnitQCQ9, _x_pos, _y_pos2[9])
+            _fxdunitqc.put(self.txtCDRUnitQCQ10, _x_pos, _y_pos2[10])
+            _fxdunitqc.put(self.txtCDRUnitQCQ11, _x_pos, _y_pos2[11])
+            _fxdunitqc.put(self.txtCDRUnitQCQ12, _x_pos, _y_pos2[12])
+            _fxdunitqc.put(self.chkCDRUnitQCQ13, _x_pos, _y_pos2[13])
+            _fxdunitqc.put(self.chkCDRUnitQCQ14, _x_pos, _y_pos2[14])
+            _fxdunitqc.put(self.txtCDRUnitQCQ15, _x_pos, _y_pos2[15])
+            _fxdunitqc.put(self.txtCDRUnitQCQ16, _x_pos, _y_pos2[16])
+            _fxdunitqc.put(self.chkCDRUnitQCQ17, _x_pos, _y_pos2[17])
+            _fxdunitqc.put(self.chkCDRUnitQCQ18, _x_pos, _y_pos2[18])
+            _fxdunitqc.put(self.chkCDRUnitQCQ19, _x_pos, _y_pos2[19])
+            _fxdunitqc.put(self.chkCDRUnitQCQ20, _x_pos, _y_pos2[20])
+            _fxdunitqc.put(self.chkCDRUnitQCQ21, _x_pos, _y_pos2[21])
+            _fxdunitqc.put(self.chkCDRUnitQCQ22, _x_pos, _y_pos2[22])
+            _fxdunitqc.put(self.chkCDRUnitQCQ23, _x_pos, _y_pos2[23])
+            _fxdunitqc.put(self.chkCDRUnitQCQ24, _x_pos, _y_pos2[24])
+
+            # Connect the anomaly management widgets to callback methods.
+            self.chkCDRUnitAMQ1.connect('toggled', self._callback_check, 437)
+            self.chkCDRUnitAMQ2.connect('toggled', self._callback_check, 438)
+            self.chkCDRUnitAMQ3.connect('toggled', self._callback_check, 439)
+            self.chkCDRUnitAMQ4.connect('toggled', self._callback_check, 440)
+            self.chkCDRUnitAMQ5.connect('toggled', self._callback_check, 441)
+            self.chkCDRUnitAMQ6.connect('toggled', self._callback_check, 442)
+            self.chkCDRUnitAMQ7.connect('toggled', self._callback_check, 443)
+            self.chkCDRUnitAMQ8.connect('toggled', self._callback_check, 444)
+            self.chkCDRUnitAMQ9.connect('toggled', self._callback_check, 445)
+            self.chkCDRUnitAMQ10.connect('toggled', self._callback_check, 446)
+
+            # Connect the quality control widgets to callback methods.
             self.chkCDRUnitSTQ1.connect('toggled', self._callback_check, 447)
             self.txtCDRUnitQCQ1.connect('focus-out-event',
                                         self._callback_entry, 'int', 448)
@@ -3576,16 +3635,16 @@ class Software(object):
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Create the language type, modularity, and complexity risk pane
             # for CSCI.
-            _labels = [_(u"Number of units in this module:"),
-                       _(u"Total executable lines of source code in this "
+            _labels = [_(u"1. Number of units in this module:"),
+                       _(u"2. Total executable lines of source code in this "
                          u"module:"),
-                       _(u"Total assembly language lines of code in this "
+                       _(u"3. Total assembly language lines of code in this "
                          u"module:"),
-                       _(u"Total higher order language lines of code in this "
+                       _(u"4. Total higher order language lines of code in this "
                          u"module:")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdcscilt, 5, 5)
-            _x_pos += 45
+            (_x_pos, _y_pos) = _widg.make_labels(_labels, _fxdcscilt,
+                                                 5, 5, wrap=False)
+            _x_pos += 125
 
             _fxdcscilt.put(self.txtTRRLTCMQ1, _x_pos, _y_pos[0])
             _fxdcscilt.put(self.txtTRRLTCMQ2, _x_pos, _y_pos[1])
@@ -3603,19 +3662,75 @@ class Software(object):
 
             # Create the language type, modularity, and complexity risk pane
             # for the unit.
-            _labels = [_(u"Total executable lines of source code in this "
+            _labels = [_(u"1. Total executable lines of source code in this "
                          u"unit:"),
-                       _(u"Total assembly language lines of code in this "
+                       _(u"2. Total assembly language lines of code in this "
                          u"unit:"),
-                       _(u"Total higher order language lines of code in this "
-                         u"unit:")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdunitlt, 5, 5)
-            _x_pos += 45
+                       _(u"3. Total higher order language lines of code in "
+                         u"this unit:")]
+            (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdunitlt,
+                                                  5, 5, wrap=False)
 
-            _fxdunitlt.put(self.txtTRRUnitLTCMQ1, _x_pos, _y_pos[0])
-            _fxdunitlt.put(self.txtTRRUnitLTCMQ2, _x_pos, _y_pos[1])
-            _fxdunitlt.put(self.txtTRRUnitLTCMQ3, _x_pos, _y_pos[2])
+            # Create the quality control and anomaly management risk pane for
+            # the unit.
+            _labels = [_(u" 1. When an error condition is detected in this "
+                         u"unit, resolution of the error is determined by "
+                         u"this unit."),
+                       _(u" 2. A check is performed before processing begins "
+                         u"to determine that all data is available."),
+                       _(u" 3. All inputs, processing, and outputs are "
+                         u"clearly and precisely defined for this unit."),
+                       _(u" 4. All data references in this unit are defined."),
+                       _(u" 5. All data references in this unit are "
+                         u"identified."),
+                       _(u" 6. All conditions and alternative processing "
+                         u"options in this unit are defined for each decision "
+                         u"point."),
+                       _(u" 7. All parameters in the argument list for this "
+                         u"unit are used."),
+                       _(u" 8. All design representations in this unit are in "
+                         u"the formats of the established standard."),
+                       _(u" 9. The between unit calling sequence protocol in "
+                         u"this unit complies with the established standard."),
+                       _(u"10. The I/O protocol and format in this unit "
+                         u"complies with the established standard."),
+                       _(u"11. The handling of errors in this unit complies "
+                         u"with the established standard."),
+                       _(u"12. All references to this unit use the same, "
+                         u"unique name."),
+                       _(u"13. All data representation in this unit complies "
+                         u"with the established standard."),
+                       _(u"14. The naming of all data in this unit complies "
+                         u"with the established standard."),
+                       _(u"15. The definition and use of all global variables "
+                         u"in this unit is in accordance with the established "
+                         u"standard."),
+                       _(u"16. All references to the same data in this unit "
+                         u"use a single, unique name.")]
+            (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdunitqc,
+                                                   5, 5, wrap=False)
+            _x_pos = max(_x_pos, _x_pos2) + 125
+
+            _fxdunitlt.put(self.txtTRRUnitLTCMQ1, _x_pos, _y_pos1[0])
+            _fxdunitlt.put(self.txtTRRUnitLTCMQ2, _x_pos, _y_pos1[1])
+            _fxdunitlt.put(self.txtTRRUnitLTCMQ3, _x_pos, _y_pos1[2])
+
+            _fxdunitqc.put(self.chkTRRUnitAMQ1, _x_pos, _y_pos2[0])
+            _fxdunitqc.put(self.chkTRRUnitAMQ2, _x_pos, _y_pos2[1])
+            _fxdunitqc.put(self.chkTRRUnitQCQ1, _x_pos, _y_pos2[2])
+            _fxdunitqc.put(self.chkTRRUnitQCQ2, _x_pos, _y_pos2[3])
+            _fxdunitqc.put(self.chkTRRUnitQCQ3, _x_pos, _y_pos2[4])
+            _fxdunitqc.put(self.chkTRRUnitQCQ4, _x_pos, _y_pos2[5])
+            _fxdunitqc.put(self.chkTRRUnitQCQ5, _x_pos, _y_pos2[6])
+            _fxdunitqc.put(self.chkTRRUnitQCQ6, _x_pos, _y_pos2[7])
+            _fxdunitqc.put(self.chkTRRUnitQCQ7, _x_pos, _y_pos2[8])
+            _fxdunitqc.put(self.chkTRRUnitQCQ8, _x_pos, _y_pos2[9])
+            _fxdunitqc.put(self.chkTRRUnitQCQ9, _x_pos, _y_pos2[10])
+            _fxdunitqc.put(self.chkTRRUnitQCQ10, _x_pos, _y_pos2[11])
+            _fxdunitqc.put(self.chkTRRUnitQCQ11, _x_pos, _y_pos2[12])
+            _fxdunitqc.put(self.chkTRRUnitQCQ12, _x_pos, _y_pos2[13])
+            _fxdunitqc.put(self.chkTRRUnitQCQ13, _x_pos, _y_pos2[14])
+            _fxdunitqc.put(self.chkTRRUnitQCQ14, _x_pos, _y_pos2[15])
 
             self.txtTRRUnitLTCMQ1.connect('focus-out-event',
                                           self._callback_entry, 'int', 504)
@@ -3623,61 +3738,6 @@ class Software(object):
                                           self._callback_entry, 'int', 505)
             self.txtTRRUnitLTCMQ3.connect('focus-out-event',
                                           self._callback_entry, 'int', 506)
-
-            # Create the quality control and anomaly management risk pane for
-            # the unit.
-            _labels = [_(u"When an error condition is detected in this unit, "
-                         u"resolution of the error is determined by this "
-                         u"unit."),
-                       _(u"A check is performed before processing begins to "
-                         u"determine that all data is available."),
-                       _(u"All inputs, processing, and outputs are clearly "
-                         u"and precisely defined for this unit."),
-                       _(u"All data references in this unit are defined."),
-                       _(u"All data references in this unit are identified."),
-                       _(u"All conditions and alternative processing options "
-                         u"in this unit are defined for each decision point."),
-                       _(u"All parameters in the argument list for this unit "
-                         u"are used."),
-                       _(u"All design representations in this unit are in the "
-                         u"formats of the established standard."),
-                       _(u"The between unit calling sequence protocol in this "
-                         u"unit complies with the established standard."),
-                       _(u"The I/O protocol and format in this unit complies "
-                         u"with the established standard."),
-                       _(u"The handling of errors in this unit complies with "
-                         u"the established standard."),
-                       _(u"All references to this unit use the same, unique "
-                         u"name."),
-                       _(u"All data representation in this unit complies with "
-                         u"the established standard."),
-                       _(u"The naming of all data in this unit complies with "
-                         u"the established standard."),
-                       _(u"The definition and use of all global variables in "
-                         u"this unit is in accordance with the established "
-                         u"standard."),
-                       _(u"All references to the same data in this unit use a "
-                         u"single, unique name.")]
-            (_x_pos,
-             _y_pos) = _widg.make_labels(_labels, _fxdunitqc, 5, 5)
-            _x_pos += 45
-
-            _fxdunitqc.put(self.chkTRRUnitAMQ1, _x_pos, _y_pos[0])
-            _fxdunitqc.put(self.chkTRRUnitAMQ2, _x_pos, _y_pos[1])
-            _fxdunitqc.put(self.chkTRRUnitQCQ1, _x_pos, _y_pos[2])
-            _fxdunitqc.put(self.chkTRRUnitQCQ2, _x_pos, _y_pos[3])
-            _fxdunitqc.put(self.chkTRRUnitQCQ3, _x_pos, _y_pos[4])
-            _fxdunitqc.put(self.chkTRRUnitQCQ4, _x_pos, _y_pos[5])
-            _fxdunitqc.put(self.chkTRRUnitQCQ5, _x_pos, _y_pos[6])
-            _fxdunitqc.put(self.chkTRRUnitQCQ6, _x_pos, _y_pos[7])
-            _fxdunitqc.put(self.chkTRRUnitQCQ7, _x_pos, _y_pos[8])
-            _fxdunitqc.put(self.chkTRRUnitQCQ8, _x_pos, _y_pos[9])
-            _fxdunitqc.put(self.chkTRRUnitQCQ9, _x_pos, _y_pos[10])
-            _fxdunitqc.put(self.chkTRRUnitQCQ10, _x_pos, _y_pos[11])
-            _fxdunitqc.put(self.chkTRRUnitQCQ11, _x_pos, _y_pos[12])
-            _fxdunitqc.put(self.chkTRRUnitQCQ12, _x_pos, _y_pos[13])
-            _fxdunitqc.put(self.chkTRRUnitQCQ13, _x_pos, _y_pos[14])
-            _fxdunitqc.put(self.chkTRRUnitQCQ14, _x_pos, _y_pos[15])
 
             self.chkTRRUnitAMQ1.connect('toggled', self._callback_check, 507)
             self.chkTRRUnitAMQ2.connect('toggled', self._callback_check, 508)
@@ -3730,8 +3790,8 @@ class Software(object):
         Method to load the Software clas gtk.TreeModel() with system
         information.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _query = "SELECT * FROM tbl_software " \
@@ -3771,8 +3831,8 @@ class Software(object):
         """
         Method to load the Software class gtk.Notebook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _load_general_data_page(self):
@@ -3785,7 +3845,7 @@ class Software(object):
 
             if _row is not None:
                 self.cmbLevel.set_active(int(self.level_id))
-                _buffer = self.txtDescription.get_child().get_child().get_buffer()  # noqa
+                _buffer = self.txtDescription.get_child().get_child().get_buffer()
                 try:
                     _buffer.set_text(self.description)
                 except TypeError:
@@ -3804,8 +3864,8 @@ class Software(object):
             Function to load the widgets on the Risk Analysis gtk.Notebook()
             page.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _error = False
@@ -3819,8 +3879,7 @@ class Software(object):
             # Retrieve the development environment risk answers.
             _query = "SELECT * FROM tbl_software_development \
                       ORDER BY fld_software_id, fld_question_id"
-            _results = self._app.DB.execute_query(_query,
-                                                  None,
+            _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
             try:
                 _n_development = len(_results)
@@ -3836,8 +3895,7 @@ class Software(object):
             # Retrieve the requirements review risk answers.
             _query = "SELECT * FROM tbl_srr_ssr \
                       ORDER BY fld_software_id, fld_question_id"
-            _results = self._app.DB.execute_query(_query,
-                                                  None,
+            _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
             try:
                 _n_requirements = len(_results)
@@ -3857,8 +3915,7 @@ class Software(object):
             # Retrieve the preliminary design review risk answers.
             _query = "SELECT * FROM tbl_pdr \
                       ORDER BY fld_software_id, fld_question_id"
-            _results = self._app.DB.execute_query(_query,
-                                                  None,
+            _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
             try:
                 _n_pdr = len(_results)
@@ -3878,8 +3935,7 @@ class Software(object):
             # Retrieve the critical design review risk answers.
             _query = "SELECT * FROM tbl_cdr \
                       ORDER BY fld_software_id, fld_question_id"
-            _results = self._app.DB.execute_query(_query,
-                                                  None,
+            _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
             try:
                 _n_cdr = len(_results)
@@ -3901,8 +3957,7 @@ class Software(object):
             # Retrieve the test readiness review risk answers.
             _query = "SELECT * FROM tbl_trr \
                       ORDER BY fld_software_id, fld_question_id"
-            _results = self._app.DB.execute_query(_query,
-                                                  None,
+            _results = self._app.DB.execute_query(_query, None,
                                                   self._app.ProgCnx)
             try:
                 _n_trr = len(_results)
@@ -3913,11 +3968,15 @@ class Software(object):
             # Populate the test readiness review risk dictionary.  If the input
             # is a numerical input, assign the value of the third response
             # field returned from the database.
-            for i in range(0, _n_trr, 24):
+            for i in range(0, _n_trr, 25):
                 _list = [y[2] for y in _results if y[0] == _results[i][0]]
-                for j in [0, 1, 2, 3, 4, 5, 6]:
-                    _list[j] = _results[i+j][3]
-                    self._dic_trr[_results[i][0]] = _list
+                if self.level_id == 2:
+                    for j in [0, 1, 2, 3]:
+                        _list[j] = _results[i+j][3]
+                elif self.level_id == 3:
+                    for j in [0, 1, 2]:
+                        _list[j] = _results[i+j][3]
+                self._dic_trr[_results[i][0]] = _list
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
             # Load the risk analysis widgets.                                 #
@@ -4155,10 +4214,9 @@ class Software(object):
             self.chkTRRUnitQCQ14.set_active(self._dic_trr[_software_id][22])
 
             if _error:
-                _util.rtk_error(_(u"Unable to retrieve all risk "
-                                          u"analysis information for "
-                                          u"software module '%s'.") %
-                                        self.description)
+                _util.rtk_error(_(u"Unable to retrieve all risk analysis "
+                                  u"information for software module '%s'.") %
+                                self.description)
                 return True
             else:
                 return False
@@ -4334,8 +4392,8 @@ class Software(object):
         """
         Method to load the Software class Risk Map.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Load the risk matrix.
@@ -4391,12 +4449,12 @@ class Software(object):
         """
         Updates the values in the Software class gtk.TreeView().
 
-        @param columns: a list of integers representing the column numbers to
+        :param columns: a list of integers representing the column numbers to
                         update.
-        @type columns: list of integers
-        @param values: a list of new values for the Software class
+        :type columns: list of integers
+        :param values: a list of new values for the Software class
                        gtk.TreeModel().
-        @type values: list
+        :type values: list
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4413,77 +4471,77 @@ class Software(object):
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        self.revision_id = _model.get_value(_row, self._col_order[0])
-        self.software_id = _model.get_value(_row, self._col_order[1])
-        self.level_id = _model.get_value(_row, self._col_order[2])
-        self.description = _model.get_value(_row, self._col_order[3])
-        self.application_id = _model.get_value(_row, self._col_order[4])
-        self.development_id = _model.get_value(_row, self._col_order[5])
-        self.a_risk = _model.get_value(_row, self._col_order[6])
-        self.do = _model.get_value(_row, self._col_order[7])
-        self.dd = _model.get_value(_row, self._col_order[8])
-        self.dc = _model.get_value(_row, self._col_order[9])
-        self.d_risk = _model.get_value(_row, self._col_order[10])
-        self.am = _model.get_value(_row, self._col_order[11])
-        self.sa = _model.get_value(_row, self._col_order[12])
-        self.st = _model.get_value(_row, self._col_order[13])
-        self.dr = _model.get_value(_row, self._col_order[14])
-        self.sq = _model.get_value(_row, self._col_order[15])
-        self.s1 = _model.get_value(_row, self._col_order[16])
-        self.hloc = _model.get_value(_row, self._col_order[17])
-        self.aloc = _model.get_value(_row, self._col_order[18])
-        self.sloc = _model.get_value(_row, self._col_order[19])
-        self.sl = _model.get_value(_row, self._col_order[20])
-        self.ax = _model.get_value(_row, self._col_order[21])
-        self.bx = _model.get_value(_row, self._col_order[22])
-        self.cx = _model.get_value(_row, self._col_order[23])
-        self.nm = _model.get_value(_row, self._col_order[24])
-        self.sx = _model.get_value(_row, self._col_order[25])
-        self.um = _model.get_value(_row, self._col_order[26])
-        self.wm = _model.get_value(_row, self._col_order[27])
-        self.xm = _model.get_value(_row, self._col_order[28])
-        self.sm = _model.get_value(_row, self._col_order[29])
-        self.df = _model.get_value(_row, self._col_order[30])
-        self.sr = _model.get_value(_row, self._col_order[31])
-        self.s2 = _model.get_value(_row, self._col_order[32])
-        self.rpfom = _model.get_value(_row, self._col_order[33])
-        self.parent_module = _model.get_value(_row, self._col_order[34])
-        self.dev_assess_type = _model.get_value(_row, self._col_order[35])
-        self.phase_id = _model.get_value(_row, self._col_order[36])
-        self.tcl = _model.get_value(_row, self._col_order[37])
-        self.test_path = _model.get_value(_row, self._col_order[38])
-        self.category = _model.get_value(_row, self._col_order[39])
-        self.test_effort = _model.get_value(_row, self._col_order[40])
-        self.test_approach = _model.get_value(_row, self._col_order[41])
-        self.labor_hours_test = _model.get_value(_row, self._col_order[42])
-        self.labor_hours_dev = _model.get_value(_row, self._col_order[43])
-        self.budget_test = _model.get_value(_row, self._col_order[44])
-        self.budget_dev = _model.get_value(_row, self._col_order[45])
-        self.schedule_test = _model.get_value(_row, self._col_order[46])
-        self.schedule_dev = _model.get_value(_row, self._col_order[47])
-        self.branches = _model.get_value(_row, self._col_order[48])
-        self.branches_test = _model.get_value(_row, self._col_order[49])
-        self.inputs = _model.get_value(_row, self._col_order[50])
-        self.inputs_test = _model.get_value(_row, self._col_order[51])
-        self.nm_test = _model.get_value(_row, self._col_order[52])
-        self.interfaces = _model.get_value(_row, self._col_order[53])
-        self.interfaces_test = _model.get_value(_row, self._col_order[54])
-        self.te = _model.get_value(_row, self._col_order[55])
-        self.tm = _model.get_value(_row, self._col_order[56])
-        self.tc = _model.get_value(_row, self._col_order[57])
-        self.t_risk = _model.get_value(_row, self._col_order[58])
-        self.ft1 = _model.get_value(_row, self._col_order[59])
-        self.ft2 = _model.get_value(_row, self._col_order[60])
-        self.ren_avg = _model.get_value(_row, self._col_order[61])
-        self.ren_eot = _model.get_value(_row, self._col_order[62])
-        self.ec = _model.get_value(_row, self._col_order[63])
-        self.ev = _model.get_value(_row, self._col_order[64])
-        self.et = _model.get_value(_row, self._col_order[65])
-        self.os = _model.get_value(_row, self._col_order[66])
-        self.ew = _model.get_value(_row, self._col_order[67])
-        self.e_risk = _model.get_value(_row, self._col_order[68])
-        self.failure_rate = _model.get_value(_row, self._col_order[69])
-        self.failure_rate = _model.get_value(_row, self._col_order[69])
+        self.revision_id = _model.get_value(_row, self._lst_col_order[0])
+        self.software_id = _model.get_value(_row, self._lst_col_order[1])
+        self.level_id = _model.get_value(_row, self._lst_col_order[2])
+        self.description = _model.get_value(_row, self._lst_col_order[3])
+        self.application_id = _model.get_value(_row, self._lst_col_order[4])
+        self.development_id = _model.get_value(_row, self._lst_col_order[5])
+        self.a_risk = _model.get_value(_row, self._lst_col_order[6])
+        self.do = _model.get_value(_row, self._lst_col_order[7])
+        self.dd = _model.get_value(_row, self._lst_col_order[8])
+        self.dc = _model.get_value(_row, self._lst_col_order[9])
+        self.d_risk = _model.get_value(_row, self._lst_col_order[10])
+        self.am = _model.get_value(_row, self._lst_col_order[11])
+        self.sa = _model.get_value(_row, self._lst_col_order[12])
+        self.st = _model.get_value(_row, self._lst_col_order[13])
+        self.dr = _model.get_value(_row, self._lst_col_order[14])
+        self.sq = _model.get_value(_row, self._lst_col_order[15])
+        self.s1 = _model.get_value(_row, self._lst_col_order[16])
+        self.hloc = _model.get_value(_row, self._lst_col_order[17])
+        self.aloc = _model.get_value(_row, self._lst_col_order[18])
+        self.sloc = _model.get_value(_row, self._lst_col_order[19])
+        self.sl = _model.get_value(_row, self._lst_col_order[20])
+        self.ax = _model.get_value(_row, self._lst_col_order[21])
+        self.bx = _model.get_value(_row, self._lst_col_order[22])
+        self.cx = _model.get_value(_row, self._lst_col_order[23])
+        self.nm = _model.get_value(_row, self._lst_col_order[24])
+        self.sx = _model.get_value(_row, self._lst_col_order[25])
+        self.um = _model.get_value(_row, self._lst_col_order[26])
+        self.wm = _model.get_value(_row, self._lst_col_order[27])
+        self.xm = _model.get_value(_row, self._lst_col_order[28])
+        self.sm = _model.get_value(_row, self._lst_col_order[29])
+        self.df = _model.get_value(_row, self._lst_col_order[30])
+        self.sr = _model.get_value(_row, self._lst_col_order[31])
+        self.s2 = _model.get_value(_row, self._lst_col_order[32])
+        self.rpfom = _model.get_value(_row, self._lst_col_order[33])
+        self.parent_module = _model.get_value(_row, self._lst_col_order[34])
+        self.dev_assess_type = _model.get_value(_row, self._lst_col_order[35])
+        self.phase_id = _model.get_value(_row, self._lst_col_order[36])
+        self.tcl = _model.get_value(_row, self._lst_col_order[37])
+        self.test_path = _model.get_value(_row, self._lst_col_order[38])
+        self.category = _model.get_value(_row, self._lst_col_order[39])
+        self.test_effort = _model.get_value(_row, self._lst_col_order[40])
+        self.test_approach = _model.get_value(_row, self._lst_col_order[41])
+        self.labor_hours_test = _model.get_value(_row, self._lst_col_order[42])
+        self.labor_hours_dev = _model.get_value(_row, self._lst_col_order[43])
+        self.budget_test = _model.get_value(_row, self._lst_col_order[44])
+        self.budget_dev = _model.get_value(_row, self._lst_col_order[45])
+        self.schedule_test = _model.get_value(_row, self._lst_col_order[46])
+        self.schedule_dev = _model.get_value(_row, self._lst_col_order[47])
+        self.branches = _model.get_value(_row, self._lst_col_order[48])
+        self.branches_test = _model.get_value(_row, self._lst_col_order[49])
+        self.inputs = _model.get_value(_row, self._lst_col_order[50])
+        self.inputs_test = _model.get_value(_row, self._lst_col_order[51])
+        self.nm_test = _model.get_value(_row, self._lst_col_order[52])
+        self.interfaces = _model.get_value(_row, self._lst_col_order[53])
+        self.interfaces_test = _model.get_value(_row, self._lst_col_order[54])
+        self.te = _model.get_value(_row, self._lst_col_order[55])
+        self.tm = _model.get_value(_row, self._lst_col_order[56])
+        self.tc = _model.get_value(_row, self._lst_col_order[57])
+        self.t_risk = _model.get_value(_row, self._lst_col_order[58])
+        self.ft1 = _model.get_value(_row, self._lst_col_order[59])
+        self.ft2 = _model.get_value(_row, self._lst_col_order[60])
+        self.ren_avg = _model.get_value(_row, self._lst_col_order[61])
+        self.ren_eot = _model.get_value(_row, self._lst_col_order[62])
+        self.ec = _model.get_value(_row, self._lst_col_order[63])
+        self.ev = _model.get_value(_row, self._lst_col_order[64])
+        self.et = _model.get_value(_row, self._lst_col_order[65])
+        self.os = _model.get_value(_row, self._lst_col_order[66])
+        self.ew = _model.get_value(_row, self._lst_col_order[67])
+        self.e_risk = _model.get_value(_row, self._lst_col_order[68])
+        self.failure_rate = _model.get_value(_row, self._lst_col_order[69])
+        self.failure_rate = _model.get_value(_row, self._lst_col_order[69])
 
         return False
 
@@ -4492,16 +4550,14 @@ class Software(object):
         Method to update the Software class Risk Map when the risk is
         re-calculated.
 
-        @param model: the Software calss Risk Map gtk.TreeModel().
-        @type model: gtk.TreeModel
-        @param __path: the path of the selected row in the Software class Risk
-                       Map gtk.TreeView().
-        @type __path: string
-        @param row: the selected Software class gtk.TreeIter() from the risk
-                    map gtk.TreeModel().
-        @type row: gtk.TreeIter
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param gtk.TreeModel model: the Software class Risk Map
+                                    gtk.TreeModel().
+        :param str __path: the path of the selected row in the Software class
+                           Risk Map gtk.TreeView().
+        :param gtk.TreeIter row: the selected Software class gtk.TreeIter()
+                                 from the risk map gtk.TreeModel().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _module = model.get_value(row, 0)
@@ -4545,24 +4601,24 @@ class Software(object):
     | Test Readiness Review        | Unit   | X  |     |     |  X  |  X  |
     +------------------------------+--------+----+-----+-----+-----+-----+
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _show_page(notebook, child, label):
             """
             Function to show a page in a gtk.Notebook().
 
-            @param notebook: the gtk.Notebook() to add the page to.
-            @type notebook: gtk.Notebook
-            @param child: the child gtk.Widget() to add to the gtk.Notebook()
+            :param notebook: the gtk.Notebook() to add the page to.
+            :type notebook: gtk.Notebook
+            :param child: the child gtk.Widget() to add to the gtk.Notebook()
                           page.
-            @type child: gtk.Widget
-            @param label: the gtk.Label() to use as the label for the
+            :type child: gtk.Widget
+            :param label: the gtk.Label() to use as the label for the
                           gtk.Notebook() tab.
-            @type label: gtk.Label
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type label: gtk.Label
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             notebook.insert_page(child, tab_label=label, position=-1)
@@ -4574,15 +4630,15 @@ class Software(object):
             Function to remove existing gtk.Widget() from a container and then
             pack new child gtk.Widget() into the container.
 
-            @param container: a container type gtk.Widget(); typically a
+            :param container: a container type gtk.Widget(); typically a
                               gtk.Box() or gtk.Paned().
-            @type container: gtk.Widget
-            @param child1: a gtk.Widget().
-            @type child1: gtk.Widget
-            @param child2: a gtk.Widget().
-            @type child2: gtk.Widget
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type container: gtk.Widget
+            :param child1: a gtk.Widget().
+            :type child1: gtk.Widget
+            :param child2: a gtk.Widget().
+            :type child2: gtk.Widget
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             # Remove existing children from the container.
@@ -4667,9 +4723,9 @@ class Software(object):
         Callback function for handling mouse clicks on the Software class
         gtk.TreeView().
 
-        @param treeview: the Software class gtk.TreeView().
-        @type treeview: gtk.TreeView
-        @param event: the gtk.gdk.Event() that called this function (the
+        :param treeview: the Software class gtk.TreeView().
+        :type treeview: gtk.TreeView
+        :param event: the gtk.gdk.Event() that called this function (the
                       important attribute is which mouse button was clicked).
                       1 = left
                       2 = scrollwheel
@@ -4678,9 +4734,9 @@ class Software(object):
                       5 = backward
                       8 =
                       9 =
-        @type event: gtk.gdk.Event
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type event: gtk.gdk.Event
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if event.button == 1:
@@ -4698,20 +4754,18 @@ class Software(object):
         previously selected row in the Software class gtk.TreeView().  Then it
         loads the Software class.
 
-        @param __treeview: one of the Software class gtk.TreeView().
-        @type __treeview: gtk.TreeView
-        @param __path: the activated row's path.
-        @type __path: string
-        @param __column: the activated gtk.TreeViewColumn().
-        @type __column: gtk.TreeViewColumn
-        @param index: determines which Software class gtk.TreeView() had the
-                      change:
-                      0 = main treeview
-                      1 = incident list treeview
-                      2 = incident action list treeview
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __treeview: one of the Software class gtk.TreeView().
+        :type __treeview: gtk.TreeView
+        :param str __path: the activated row's path.
+        :param __column: the activated gtk.TreeViewColumn().
+        :type __column: gtk.TreeViewColumn
+        :param int index: determines which Software class gtk.TreeView() had
+                          the change:
+                          * 0 = main treeview
+                          * 1 = incident list treeview
+                          * 2 = incident action list treeview
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # Save the previously selected row in the Software tree.
@@ -4737,18 +4791,54 @@ class Software(object):
             else:
                 return True
 
+    def _software_tree_edit(self, __cell, path, new_text, position, model):
+        """
+        Method called whenever a Requirement Class gtk.Treeview()
+        gtk.CellRenderer() is edited.
+
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: gtk.CellRenderer
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+        """
+
+        # Update the gtk.TreeModel() with the new value.
+        _type = gobject.type_name(model.get_column_type(position))
+
+        if _type == 'gchararray':
+            model[path][position] = str(new_text)
+        elif _type == 'gint':
+            model[path][position] = int(new_text)
+        elif _type == 'gfloat':
+            model[path][position] = float(new_text)
+
+        # Now update the associated gtk.Widget() in the Work Book with the
+        # new value.  We block and unblock the signal handlers for the widgets
+        # so a race condition does not ensue.
+        if self._lst_col_order[position] == 3:
+            _textview = self.txtDescription.get_child().get_child()
+            _buffer = _textview.get_buffer()
+            _textview.handler_block(self._lst_handler_id[0])
+            _buffer.set_text(str(new_text))
+            _textview.handler_unblock(self._lst_handler_id[0])
+
+        return False
+
     def _add_module(self, __button, level):
         """
         Adds a new Software module to the Program's database.
 
-        @param __button: the gtk.Button() that called this function.
-        @type __button: gtk.Button
-        @param level: the level of Software module to add.
-                      0 = sibling
-                      1 = child
-        @type level: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param int level: the level of Software module to add.
+                          0 = sibling
+                          1 = child
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4885,10 +4975,10 @@ class Software(object):
         Deletes the currently selected software modules from the Program's
         database.
 
-        @param __widget: the gtk.Widget() that called this function.
-        @type __widget: gtk.Widget
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __widget: the gtk.Widget() that called this function.
+        :type __widget: gtk.Widget
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -4931,8 +5021,8 @@ class Software(object):
         Saves the Software class gtk.TreeView() information to the open RTK
         Program database.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _save_line(model, __path, row, self):
@@ -4940,87 +5030,87 @@ class Software(object):
             Saves each row in the Software class gtk.TreeModel to the open RTK
             program database.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the active row in the Software class
+            :param model: the Software class gtk.TreeModel().
+            :type model: gtk.TreeModel
+            :param __path: the path of the active row in the Software class
                            gtk.TreeModel().
-            @type __path: string
-            @param row: the selected row in the Software class gtk.TreeView().
-            @type row: gtk.TreeIter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :type __path: string
+            :param row: the selected row in the Software class gtk.TreeView().
+            :type row: gtk.TreeIter
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
-            _values = (model.get_value(row, self._col_order[2]),
-                       model.get_value(row, self._col_order[3]),
-                       model.get_value(row, self._col_order[4]),
-                       model.get_value(row, self._col_order[5]),
-                       model.get_value(row, self._col_order[6]),
-                       model.get_value(row, self._col_order[7]),
-                       model.get_value(row, self._col_order[8]),
-                       model.get_value(row, self._col_order[9]),
-                       model.get_value(row, self._col_order[10]),
-                       model.get_value(row, self._col_order[11]),
-                       model.get_value(row, self._col_order[12]),
-                       model.get_value(row, self._col_order[13]),
-                       model.get_value(row, self._col_order[14]),
-                       model.get_value(row, self._col_order[15]),
-                       model.get_value(row, self._col_order[16]),
-                       model.get_value(row, self._col_order[17]),
-                       model.get_value(row, self._col_order[18]),
-                       model.get_value(row, self._col_order[19]),
-                       model.get_value(row, self._col_order[20]),
-                       model.get_value(row, self._col_order[21]),
-                       model.get_value(row, self._col_order[22]),
-                       model.get_value(row, self._col_order[23]),
-                       model.get_value(row, self._col_order[24]),
-                       model.get_value(row, self._col_order[25]),
-                       model.get_value(row, self._col_order[26]),
-                       model.get_value(row, self._col_order[27]),
-                       model.get_value(row, self._col_order[28]),
-                       model.get_value(row, self._col_order[29]),
-                       model.get_value(row, self._col_order[30]),
-                       model.get_value(row, self._col_order[31]),
-                       model.get_value(row, self._col_order[32]),
-                       model.get_value(row, self._col_order[33]),
-                       model.get_value(row, self._col_order[34]),
-                       model.get_value(row, self._col_order[35]),
-                       model.get_value(row, self._col_order[36]),
-                       model.get_value(row, self._col_order[37]),
-                       model.get_value(row, self._col_order[38]),
-                       model.get_value(row, self._col_order[39]),
-                       model.get_value(row, self._col_order[40]),
-                       model.get_value(row, self._col_order[41]),
-                       model.get_value(row, self._col_order[42]),
-                       model.get_value(row, self._col_order[43]),
-                       model.get_value(row, self._col_order[44]),
-                       model.get_value(row, self._col_order[45]),
-                       model.get_value(row, self._col_order[46]),
-                       model.get_value(row, self._col_order[47]),
-                       model.get_value(row, self._col_order[48]),
-                       model.get_value(row, self._col_order[49]),
-                       model.get_value(row, self._col_order[50]),
-                       model.get_value(row, self._col_order[51]),
-                       model.get_value(row, self._col_order[52]),
-                       model.get_value(row, self._col_order[53]),
-                       model.get_value(row, self._col_order[54]),
-                       model.get_value(row, self._col_order[55]),
-                       model.get_value(row, self._col_order[56]),
-                       model.get_value(row, self._col_order[57]),
-                       model.get_value(row, self._col_order[58]),
-                       model.get_value(row, self._col_order[59]),
-                       model.get_value(row, self._col_order[60]),
-                       model.get_value(row, self._col_order[61]),
-                       model.get_value(row, self._col_order[62]),
-                       model.get_value(row, self._col_order[63]),
-                       model.get_value(row, self._col_order[64]),
-                       model.get_value(row, self._col_order[65]),
-                       model.get_value(row, self._col_order[66]),
-                       model.get_value(row, self._col_order[67]),
-                       model.get_value(row, self._col_order[68]),
-                       model.get_value(row, self._col_order[69]),
-                       model.get_value(row, self._col_order[0]),
-                       model.get_value(row, self._col_order[1]))
+            _values = (model.get_value(row, self._lst_col_order[2]),
+                       model.get_value(row, self._lst_col_order[3]),
+                       model.get_value(row, self._lst_col_order[4]),
+                       model.get_value(row, self._lst_col_order[5]),
+                       model.get_value(row, self._lst_col_order[6]),
+                       model.get_value(row, self._lst_col_order[7]),
+                       model.get_value(row, self._lst_col_order[8]),
+                       model.get_value(row, self._lst_col_order[9]),
+                       model.get_value(row, self._lst_col_order[10]),
+                       model.get_value(row, self._lst_col_order[11]),
+                       model.get_value(row, self._lst_col_order[12]),
+                       model.get_value(row, self._lst_col_order[13]),
+                       model.get_value(row, self._lst_col_order[14]),
+                       model.get_value(row, self._lst_col_order[15]),
+                       model.get_value(row, self._lst_col_order[16]),
+                       model.get_value(row, self._lst_col_order[17]),
+                       model.get_value(row, self._lst_col_order[18]),
+                       model.get_value(row, self._lst_col_order[19]),
+                       model.get_value(row, self._lst_col_order[20]),
+                       model.get_value(row, self._lst_col_order[21]),
+                       model.get_value(row, self._lst_col_order[22]),
+                       model.get_value(row, self._lst_col_order[23]),
+                       model.get_value(row, self._lst_col_order[24]),
+                       model.get_value(row, self._lst_col_order[25]),
+                       model.get_value(row, self._lst_col_order[26]),
+                       model.get_value(row, self._lst_col_order[27]),
+                       model.get_value(row, self._lst_col_order[28]),
+                       model.get_value(row, self._lst_col_order[29]),
+                       model.get_value(row, self._lst_col_order[30]),
+                       model.get_value(row, self._lst_col_order[31]),
+                       model.get_value(row, self._lst_col_order[32]),
+                       model.get_value(row, self._lst_col_order[33]),
+                       model.get_value(row, self._lst_col_order[34]),
+                       model.get_value(row, self._lst_col_order[35]),
+                       model.get_value(row, self._lst_col_order[36]),
+                       model.get_value(row, self._lst_col_order[37]),
+                       model.get_value(row, self._lst_col_order[38]),
+                       model.get_value(row, self._lst_col_order[39]),
+                       model.get_value(row, self._lst_col_order[40]),
+                       model.get_value(row, self._lst_col_order[41]),
+                       model.get_value(row, self._lst_col_order[42]),
+                       model.get_value(row, self._lst_col_order[43]),
+                       model.get_value(row, self._lst_col_order[44]),
+                       model.get_value(row, self._lst_col_order[45]),
+                       model.get_value(row, self._lst_col_order[46]),
+                       model.get_value(row, self._lst_col_order[47]),
+                       model.get_value(row, self._lst_col_order[48]),
+                       model.get_value(row, self._lst_col_order[49]),
+                       model.get_value(row, self._lst_col_order[50]),
+                       model.get_value(row, self._lst_col_order[51]),
+                       model.get_value(row, self._lst_col_order[52]),
+                       model.get_value(row, self._lst_col_order[53]),
+                       model.get_value(row, self._lst_col_order[54]),
+                       model.get_value(row, self._lst_col_order[55]),
+                       model.get_value(row, self._lst_col_order[56]),
+                       model.get_value(row, self._lst_col_order[57]),
+                       model.get_value(row, self._lst_col_order[58]),
+                       model.get_value(row, self._lst_col_order[59]),
+                       model.get_value(row, self._lst_col_order[60]),
+                       model.get_value(row, self._lst_col_order[61]),
+                       model.get_value(row, self._lst_col_order[62]),
+                       model.get_value(row, self._lst_col_order[63]),
+                       model.get_value(row, self._lst_col_order[64]),
+                       model.get_value(row, self._lst_col_order[65]),
+                       model.get_value(row, self._lst_col_order[66]),
+                       model.get_value(row, self._lst_col_order[67]),
+                       model.get_value(row, self._lst_col_order[68]),
+                       model.get_value(row, self._lst_col_order[69]),
+                       model.get_value(row, self._lst_col_order[0]),
+                       model.get_value(row, self._lst_col_order[1]))
 
             _query = "UPDATE tbl_software \
                       SET fld_level_id=%d, fld_description='%s', \
@@ -5058,7 +5148,7 @@ class Software(object):
                                           u"problem persists you can report "
                                           u"it to bugs@reliaqual.com.") %
                                         model.get_value(row,
-                                                        self._col_order[3]))
+                                                        self._lst_col_order[3]))
                 return True
 
             return False
@@ -5073,8 +5163,8 @@ class Software(object):
         Method to save the answers to the Risk Analysis questions on the
         currently selected tab in the risk analysis gtk.NoteBook().
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 # TODO: Add a transaction before saving all the risk Q & A stuff.
         def _save_development_env(self):
@@ -5082,8 +5172,8 @@ class Software(object):
             Function to save development environment information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(43):
@@ -5105,8 +5195,8 @@ class Software(object):
             Function to save software requirements review information to the
             open RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(50):
@@ -5137,8 +5227,8 @@ class Software(object):
             Function to save preliminary design review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(39):
@@ -5169,8 +5259,8 @@ class Software(object):
             Function to save critical design review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in range(72):
@@ -5203,8 +5293,8 @@ class Software(object):
             Function to save test readiness review information to the open
             RTK program database.
 
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             for i in [0, 1, 2, 3, 4, 5, 6]:
@@ -5275,34 +5365,34 @@ class Software(object):
         Method to save the test techniques for the currently selected
         software module.
 
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _software_id = _model.get_value(_row, self._col_order[1])
+        _software_id = _model.get_value(_row, self._lst_col_order[1])
 
         _model.set_value(_row, 37, self.cmbTCL.get_active())
         _model.set_value(_row, 38, self.cmbTestPath.get_active())
 
-        _values = (_model.get_value(_row, self._col_order[37]),
-                   _model.get_value(_row, self._col_order[38]),
-                   _model.get_value(_row, self._col_order[40]),
-                   _model.get_value(_row, self._col_order[41]),
-                   _model.get_value(_row, self._col_order[42]),
-                   _model.get_value(_row, self._col_order[43]),
-                   _model.get_value(_row, self._col_order[44]),
-                   _model.get_value(_row, self._col_order[45]),
-                   _model.get_value(_row, self._col_order[46]),
-                   _model.get_value(_row, self._col_order[47]),
-                   _model.get_value(_row, self._col_order[48]),
-                   _model.get_value(_row, self._col_order[49]),
-                   _model.get_value(_row, self._col_order[50]),
-                   _model.get_value(_row, self._col_order[51]),
-                   _model.get_value(_row, self._col_order[52]),
-                   _model.get_value(_row, self._col_order[53]),
-                   _model.get_value(_row, self._col_order[54]),
+        _values = (_model.get_value(_row, self._lst_col_order[37]),
+                   _model.get_value(_row, self._lst_col_order[38]),
+                   _model.get_value(_row, self._lst_col_order[40]),
+                   _model.get_value(_row, self._lst_col_order[41]),
+                   _model.get_value(_row, self._lst_col_order[42]),
+                   _model.get_value(_row, self._lst_col_order[43]),
+                   _model.get_value(_row, self._lst_col_order[44]),
+                   _model.get_value(_row, self._lst_col_order[45]),
+                   _model.get_value(_row, self._lst_col_order[46]),
+                   _model.get_value(_row, self._lst_col_order[47]),
+                   _model.get_value(_row, self._lst_col_order[48]),
+                   _model.get_value(_row, self._lst_col_order[49]),
+                   _model.get_value(_row, self._lst_col_order[50]),
+                   _model.get_value(_row, self._lst_col_order[51]),
+                   _model.get_value(_row, self._lst_col_order[52]),
+                   _model.get_value(_row, self._lst_col_order[53]),
+                   _model.get_value(_row, self._lst_col_order[54]),
                    _software_id)
         _query = "UPDATE tbl_software \
                   SET fld_tcl=%d, fld_test_path=%d, fld_test_effort=%d, \
@@ -5324,8 +5414,8 @@ class Software(object):
                                       u"information to the open RTK program "
                                       u"database."))
             return True
-# TODO: Save recommended and selected values to database.
-        #_model = self.tvwCSCITestSelectionMatrix.get_model()
+
+        # _model = self.tvwCSCITestSelectionMatrix.get_model()
 
         return False
 
@@ -5333,13 +5423,13 @@ class Software(object):
         """
         Callback function to retrieve and save gtk.CheckButton() changes.
 
-        @param check: the gtk.CheckButton() that called the function.
-        @type check: gtk.CheckButton
-        @param index: the position in the applicable Software class dictionary
+        :param check: the gtk.CheckButton() that called the function.
+        :type check: gtk.CheckButton
+        :param index: the position in the applicable Software class dictionary
                       associated with the data from the calling checkbutton.
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -5372,13 +5462,13 @@ class Software(object):
         """
         Callback function to retrieve and save combobox changes.
 
-        @param combo: the gtk.ComboBox() that called the function.
-        @type combo: gtk.ComboBox
-        @param index: the position in the Software class gtk.TreeView()
+        :param combo: the gtk.ComboBox() that called the function.
+        :type combo: gtk.ComboBox
+        :param index: the position in the Software class gtk.TreeView()
                       associated with the data from the calling gtk.ComboBox().
-        @type index: integer
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         _combo_state = combo.get_active()
@@ -5459,17 +5549,17 @@ class Software(object):
         Callback function to retrieve and save Software class gtk.Entry()
         changes.
 
-        @param entry: the gtk.Entry() that called the function.
-        @type entry: gtk.Entry
-        @param __event: the gtk.gdk.Event() that called the function.
-        @type __event: gtk.gdk.Event
-        @param convert: the data type to convert the entry contents to.
-        @type convert: string
-        @param index: the position in the Software class gtk.TreeView()
+        :param entry: the gtk.Entry() that called the function.
+        :type entry: gtk.Entry
+        :param __event: the gtk.gdk.Event() that called the function.
+        :type __event: gtk.gdk.Event
+        :param convert: the data type to convert the entry contents to.
+        :type convert: string
+        :param index: the position in the Software class gtk.TreeView()
                       associated with the data from the calling entry.
-        @type index: integer
-        @return: False if successful and True if an error is encountered.
-        @rtype: boolean
+        :type index: integer
+        :return: False if successful and True if an error is encountered.
+        :rtype: boolean
         """
 
         from datetime import datetime
@@ -5543,20 +5633,20 @@ class Software(object):
         """
         Called whenever the Software class Work Book page is changed.
 
-        @param __notebook: the Software class gtk.Notebook().
-        @type __notebook: gtk.Notebook
-        @param __page: the newly selected page widget.
-        @type __page: gtk.Widget
-        @param page_num: the newly selected page number.
+        :param __notebook: the Software class gtk.Notebook().
+        :type __notebook: gtk.Notebook
+        :param __page: the newly selected page widget.
+        :type __page: gtk.Widget
+        :param page_num: the newly selected page number.
                          0 = General Data
                          1 = Risk Analysis
                          2 = Test Selection
                          3 = Assessment Results
-        @type page_num: integer
-        @param index: which gtk.Notebook() called this method.
-        @type index: integer
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :type page_num: integer
+        :param index: which gtk.Notebook() called this method.
+        :type index: integer
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         if index == 0:                      # Main gtk.Notebook
@@ -5591,10 +5681,10 @@ class Software(object):
         """
         Method to react to the Software class gtk.ToolButton clicked events.
 
-        @param button: the gtk.ToolButton() that was pressed.
-        @type button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param button: the gtk.ToolButton() that was pressed.
+        :type button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         _button = button.get_name()
@@ -5619,10 +5709,10 @@ class Software(object):
         """
         Method to calculate metrics for the Software class.
 
-        @param __button: the gtk.ToolButton() that called this method.
-        @type __button: gtk.ToolButton
-        @return: False if successful or True if an error is encountered.
-        @rtype: boolean
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: gtk.ToolButton
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         def _count_units(model, __path, row, self):
@@ -5630,18 +5720,14 @@ class Software(object):
             Function to sum unit-level answers for the parent module-level
             module.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the currently active path in the Software class
-                           gtk.TreeModel()
-            @type __path: tuple
-            @param row: the currently active gtk.TreeIter() in the Software
-                        class gtk.TreeModel().
-            @type row: gtk.TreeIter
-            @param self: the current instance of the RTK application.
-            @type self: RTK instance
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param gtk.TreeModel model: the Software class gtk.TreeModel().
+            :param str __path: the currently active path in the Software class
+                               gtk.TreeModel()
+            :param gtk.TreeIter row: the currently active gtk.TreeIter() in the
+                                     Software class gtk.TreeModel().
+            :param RTK self: the current instance of the RTK application.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _software_id = model.get_value(row, 1)
@@ -5817,16 +5903,14 @@ class Software(object):
             also provides test planning guidance in a similar manner as
             RL-TR-92-52.
 
-            @param model: the Software class gtk.TreeModel().
-            @type model: gtk.TreeModel
-            @param __path: the path of the selected row in the Software class
-                           gtk.TreeView().
-            @type __path: string
-            @param row: the gtk.Iter() in the Software class gtk.TreeView() for
-                        which to calculate the risk.
-            @type row: gtk.Iter
-            @return: False if successful or True if an error is encountered.
-            @rtype: boolean
+            :param gtk.TreeModel model: the Software class gtk.TreeModel().
+            :param str __path: the path of the selected row in the Software
+                               class gtk.TreeView().
+            :param gtk.Iter row: the gtk.Iter() in the Software class
+                                 gtk.TreeView() for which to calculate the
+                                 risk.
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
             """
 
             _A = 0.0
@@ -5837,6 +5921,7 @@ class Software(object):
             _SL = 0.0
             _SX = 0.0
             _SM = 0.0
+            _rpfom = 0.0
 
             _software_id = model.get_value(row, 1)
             _level_id = model.get_value(row, 2)
@@ -5877,15 +5962,15 @@ class Software(object):
             self._dic_risk[_software_id][7] = _SM
             self._dic_risk[_software_id][8] = _rpfom
 
-            model.set_value(row, self._col_order[6], _A)
-            model.set_value(row, self._col_order[10], _D)
-            model.set_value(row, self._col_order[12], _SA)
-            model.set_value(row, self._col_order[13], _ST)
-            model.set_value(row, self._col_order[15], _SQ)
-            model.set_value(row, self._col_order[20], _SL)
-            model.set_value(row, self._col_order[25], _SX)
-            model.set_value(row, self._col_order[29], _SM)
-            model.set_value(row, self._col_order[33], _rpfom)
+            model.set_value(row, self._lst_col_order[6], _A)
+            model.set_value(row, self._lst_col_order[10], _D)
+            model.set_value(row, self._lst_col_order[12], _SA)
+            model.set_value(row, self._lst_col_order[13], _ST)
+            model.set_value(row, self._lst_col_order[15], _SQ)
+            model.set_value(row, self._lst_col_order[20], _SL)
+            model.set_value(row, self._lst_col_order[25], _SX)
+            model.set_value(row, self._lst_col_order[29], _SM)
+            model.set_value(row, self._lst_col_order[33], _rpfom)
 
             return False
 
@@ -5903,7 +5988,7 @@ class Software(object):
                  float(len(self._dic_risk.values()))    # noqa
 
         self._dic_risk[_model.get_value(_row, 1)][8] = _rpfom
-        _model.set_value(_row, self._col_order[33], _rpfom)
+        _model.set_value(_row, self._lst_col_order[33], _rpfom)
 
         # Update the risk map.
         _model = self.tvwRiskMap.get_model()
@@ -5924,8 +6009,8 @@ class Software(object):
         software failure rates.  RTK also provides test planning guidance in
         the same manner as RL-TR-92-52.
 
-        @return: the reliability risk reduction factor.
-        @rtype: float
+        :return: the reliability risk reduction factor.
+        :rtype: float
         """
 
         # Calculate the risk reduction due to the test effort.
