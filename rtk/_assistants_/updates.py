@@ -1,20 +1,21 @@
 #!/usr/bin/env python
+"""
+This module contains several assistants for updating information in an open
+RTK Program database.  They provide assisted data movement.
+"""
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       updates.py is part of The RelKit Project
+#       updates.py is part of The RTK Project
 #
 # All rights reserved.
 
-import os
 import sys
-import pango
-
-from os import environ, name
-from datetime import datetime
 
 # Modules required for the GUI.
 try:
@@ -35,76 +36,86 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
-import configuration as _conf
-import widgets as _widg
+# Import other RTK modules.
+try:
+    import configuration as _conf
+    import widgets as _widg
+except ImportError:
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 
 # Add localization support.
 import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except:
+except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
 import gettext
 _ = gettext.gettext
 
 
-class AssignMTBFResults:
+class AssignMTBFResults(object):
     """
     Assigns the MTBF and failure rate results to the assembly associated with
     the dataset.  Values are assigned to the specified fields.
     """
 
-    def __init__(self, button, app):
+    def __init__(self, __button, app):
         """
         Method to initialize the Survival Analysis Results Assignment
         Assistant.
 
-        Keyword Arguments:
-        button -- the gtk.Button widget that called this method.
-        app    -- the RelKit application.
+        @param __button: the gtk.Button() widget that called this method.
+        @type __button: gtk.Button
+        @param app: the running RTK application.
         """
 
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RelKit Survival Analysis Results Assignment Assistant"))
+        self.assistant.set_title(_(u"RTK Survival Analysis Results Assignment "
+                                   u"Assistant"))
         self.assistant.connect('apply', self._assign)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
         self.tvwAssemblies = gtk.TreeView()
 
-# Create the introduction page.
+        # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _(u"This is the RelKit survival analysis result assignment assistant.  It will help you assign the results of the currently selected dataset to the revision and assembly of your selection.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text = _(u"This is the RTK survival analysis result assignment "
+                  u"assistant.  It will help you assign the results of the "
+                  u"currently selected dataset to the revision and assembly "
+                  u"of your selection.  Press 'Forward' to continue or "
+                  u"'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text, width=-1, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(fixed, _("Introduction"))
+        self.assistant.set_page_title(fixed, _(u"Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-# Gather a list of existing assemblies and revision names from the open RelKit
-# project database.
+        # Gather a list of existing assemblies and revision names from the
+        # open RTK project database.
         query = "SELECT t1.fld_name, t2.fld_name, t1.fld_assembly_id \
                  FROM tbl_system AS t1 \
                  INNER JOIN tbl_revisions AS t2 \
                  WHERE t1.fld_revision_id=t2.fld_revision_id \
-                 ORDER BY t1.fld_description ASC"
+                 ORDER BY t1.fld_revision_id ASC"
         results = self._app.DB.execute_query(query,
                                              None,
                                              self._app.ProgCnx)
 
         n_assemblies = len(results)
 
-# Create a page to select the revision and assembly to assign the results.
+        # Create a page to select the revision and assembly to assign the
+        # results.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                               gobject.TYPE_INT)
 
         # Load a gtk.ListStore with the results of the query.
-        if(results != '' and n_assemblies > 0):
+        if results != '' and n_assemblies > 0:
             for i in range(n_assemblies):
                 model.append(results[i])
 
@@ -142,36 +153,39 @@ class AssignMTBFResults:
         scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrollwindow.add_with_viewport(self.tvwAssemblies)
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(scrollwindow)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
-                                      _(u"Select Assembly to Assign Results"))
+        self.assistant.set_page_title(frame, _(u"Select Assembly to Assign "
+                                               u"Results"))
         self.assistant.set_page_complete(frame, True)
 
-# Create a page to select whether or not to
+        # Create a page to select whether or not to assign the decomposed
+        # results to the sub-assemblies.
         fixed = gtk.Fixed()
 
-        self.optSubAssembly = _widg.make_check_button(_(u"Assign decomposed results to subassemblies"))
+        self.optSubAssembly = _widg.make_check_button(_(u"Assign decomposed "
+                                                        u"results to "
+                                                        u"subassemblies"))
         fixed.put(self.optSubAssembly, 5, 5)
 
-        frame = _widg.make_frame(_label_=_(""))
+        frame = _widg.make_frame(label=_(""))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         frame.add(fixed)
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
-                                      _(u"Assign SubAssembly Results"))
+        self.assistant.set_page_title(frame, _(u"Assign SubAssembly Results"))
         self.assistant.set_page_complete(frame, True)
 
-# Create the page to assign the results.
+        # Create the page to assign the results.
         fixed = gtk.Fixed()
-        _text_ = _(u"Press 'Apply' to assign the results to the selected assembly or 'Cancel' to quit the assistant.")
-        label = _widg.make_label(_text_, width=500, height=150)
+        _text_ = _(u"Press 'Apply' to assign the results to the selected "
+                   u"assembly or 'Cancel' to quit the assistant.")
+        label = _widg.make_label(_text_, width=-1, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed,
@@ -181,20 +195,21 @@ class AssignMTBFResults:
 
         self.assistant.show_all()
 
-    def _assign(self, button):
+    def _assign(self, __button):
         """
         Method to create the desired data set.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
+        @return: False if successful or True if an error is encountered.
+        @rtype: boolean
         """
 
-        selection = self.tvwAssemblies.get_selection()
-        (model, row) = selection.get_selected()
+        (model, row) = self.tvwAssemblies.get_selection().get_selected()
 
-        _mtbf_ = float(self._app.DATASET.txtMTBF.get_text())
-        _mtbfll_ = float(self._app.DATASET.txtMTBFLL.get_text())
-        _mtbful_ = float(self._app.DATASET.txtMTBFUL.get_text())
+        _mtbf_ = float(self._app.DATASET.txtMTBFi.get_text())
+        _mtbfll_ = float(self._app.DATASET.txtMTBFiLL.get_text())
+        _mtbful_ = float(self._app.DATASET.txtMTBFiUL.get_text())
         _fr_ = 1.0 / _mtbf_
         _frll_ = 1.0 / _mtbfll_
         _frul_ = 1.0 / _mtbful_
@@ -216,11 +231,11 @@ class AssignMTBFResults:
                                    self._app.ProgCnx,
                                    commit=True)
 
-# Create a dictionary to hold the assembly ID of the assemblies for the
-# revision selected to recieve the results.  The key is the noun name of the
-# assembly.
+        # Create a dictionary to hold the assembly ID of the assemblies for the
+        # revision selected to recieve the results.  The key is the noun name
+        # of the assembly.
         _assembly_id_ = {}
-        if(self.optSubAssembly.get_active()):
+        if self.optSubAssembly.get_active():
             # Find the revision ID of the assembly selected to receive the
             # results.
             _query_ = "SELECT fld_revision_id \
@@ -269,20 +284,20 @@ class AssignMTBFResults:
 
                 _row_ = _model_.iter_next(_row_)
 
-# Load the hardware gtk.TreeView with the new information.
-        self._app.HARDWARE.load_tree
+        # Load the hardware gtk.TreeView with the new information.
+        self._app.HARDWARE.load_tree()
         _page = sum(_conf.RTK_MODULES[:4])
         self._app.winTree.notebook.set_current_page(_page - 1)
 
         return False
 
-    def _cancel(self, button):
+    def _cancel(self, __button):
         """
-        Method to destroy the gtk.Assistant when the 'Cancel' button is
+        Method to destroy the gtk.Assistant() when the 'Cancel' button is
         pressed.
 
-        Keyword Arguments:
-        button -- the gtk.Button that called this method.
+        @param __button: the gtk.Button() that called this method.
+        @type __button: gtk.Button
         """
 
         self.assistant.destroy()

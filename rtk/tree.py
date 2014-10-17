@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-""" This is the System Tree window for RTK. """
+"""
+This is the Module Book window for RTK.
+"""
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -43,6 +47,8 @@ import imports as _impt
 import utilities as _util
 
 from _assistants_.adds import AddTestPlan
+from _assistants_.processmap import ProcessMap
+from _assistants_.designreview import *
 
 
 class TreeWindow(gtk.Window):
@@ -50,14 +56,11 @@ class TreeWindow(gtk.Window):
     This class is the window containing the various gtk.Treeviews.
     """
 
-#TODO: Create GUI to set/edit user-defined column headings for all trees.
-
     def __init__(self, application):
         """
         Initializes the TreeBook Object.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param rtk application: the current instance of the RTK application.
         """
 
         self._app = application
@@ -117,7 +120,7 @@ class TreeWindow(gtk.Window):
         self.scwHardware = self._app.HARDWARE.create_tree()
         self.scwSoftware = self._app.SOFTWARE.create_tree()
         self.scwTesting = self._app.TESTING.create_tree()
-# TODO: Implement Maintenance Policy tree.
+
         # This is just a placeholder for now.
         # self.scwMaintenance = self._app.MAINTENANCE.create_tree()
         self.scwValidation = self._app.VALIDATION.create_tree()
@@ -149,10 +152,10 @@ class TreeWindow(gtk.Window):
         active for the project being opened.
         """
 
-        if(_conf.RTK_MODULES[0] == 1):
+        if _conf.RTK_MODULES[0] == 1:
             label = gtk.Label()
-            _heading = _(u"Revisions")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Revisions") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
@@ -162,132 +165,110 @@ class TreeWindow(gtk.Window):
                                       position=-1)
             _app.REVISION.load_tree()
 
-        if(_conf.RTK_MODULES[1] == 1):
+        if _conf.RTK_MODULES[1] == 1:
             label = gtk.Label()
-            _heading = _(u"Functions")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Functions") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system functional hierarchy."))
-            self.notebook.insert_page(self.scwFunction,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system functional "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwFunction, tab_label=label,
                                       position=-1)
             _app.FUNCTION.load_tree()
 
-        if(_conf.RTK_MODULES[2] == 1):
+        if _conf.RTK_MODULES[2] == 1:
             label = gtk.Label()
-            _heading = _(u"Requirements")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Requirements") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system requirement hierarchy."))
-            self.notebook.insert_page(self.scwRequirement,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system requirement "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwRequirement, tab_label=label,
                                       position=-1)
             _app.REQUIREMENT.load_tree()
 
-        if(_conf.RTK_MODULES[3] == 1):
+        if _conf.RTK_MODULES[3] == 1:
             label = gtk.Label()
-            _heading = _(u"Hardware")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Hardware") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system hardware hierarchy."))
-            self.notebook.insert_page(self.scwHardware,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system hardware "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwHardware, tab_label=label,
                                       position=-1)
             _app.HARDWARE.load_tree()
 
-        if(_conf.RTK_MODULES[4] == 1):
+        if _conf.RTK_MODULES[4] == 1:
             label = gtk.Label()
-            _heading = _(u"Software")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Software") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system software hierarchy."))
-            self.notebook.insert_page(self.scwSoftware,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system software "
+                                     u"hierarchy."))
+            self.notebook.insert_page(self.scwSoftware, tab_label=label,
                                       position=-1)
             _app.SOFTWARE.load_tree()
 
-        if(_conf.RTK_MODULES[5] == 1):
+        if _conf.RTK_MODULES[5] == 1:
             label = gtk.Label()
-            _heading = _(u"V &amp; V Tasks")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"V &amp; V Tasks") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system verification and validation activities."))
-            self.notebook.insert_page(self.scwValidation,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system verification and "
+                                     u"validation activities."))
+            self.notebook.insert_page(self.scwValidation, tab_label=label,
                                       position=-1)
+            _app.VALIDATION.load_tree()
 
-        if(_conf.RTK_MODULES[6] == 1):
+        if _conf.RTK_MODULES[6] == 1:
             label = gtk.Label()
-            _heading = _(u"Reliability\nTesting")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
+            label.set_markup("<span weight='bold'>" +
+                             _(u"Reliability\nTesting") + "</span>")
             label.set_alignment(xalign=0.5, yalign=0.5)
             label.set_justify(gtk.JUSTIFY_CENTER)
             label.show_all()
-            label.set_tooltip_text(_(u"Displays the system reliability testing plans and results."))
-            self.notebook.insert_page(self.scwTesting,
-                                      tab_label=label,
+            label.set_tooltip_text(_(u"Displays the system reliability "
+                                     u"testing plans and results."))
+            self.notebook.insert_page(self.scwTesting, tab_label=label,
                                       position=-1)
             _app.TESTING.load_tree()
 
-            #if(_conf.RTK_MODULES[7] == 1):
-            #label = gtk.Label(_("Maintenance Analysis"))
-            #label.set_tooltip_text(_("Displays the system maintenance packages."))
-            #self.notebook.insert_page(scrollwindow, tab_label=label, position=-1)
+        if _conf.RTK_MODULES[7] == 1:
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"Program\nIncidents") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Displays the program incidents."))
+            self.notebook.insert_page(self.scwIncidents, tab_label=_label,
+                                      position=-1)
+            _app.INCIDENT.load_tree()
 
-        if(_conf.RTK_MODULES[8] == 1):
-            label = gtk.Label()
-            _heading = _(u"Program\nIncidents")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_(u"Displays the system field incidents."))
-            self.notebook.insert_page(self.scwIncidents, tab_label=label, position=-1)
-
-            # Find the current revision if using the revision module, otherwise
-            # set this to the default value.
-            if(_conf.RTK_MODULES[0] == 1):
-                values = (self._app.REVISION.revision_id,)
-            else:
-                values = (0, )
-
-            # Select all the unaccepted field incidents from the open RTK
-            # Program database.
-            if(_conf.BACKEND == 'mysql'):
-                query = "SELECT * FROM tbl_incident \
-                         WHERE fld_revision_id=%d \
-                         ORDER BY fld_incident_id"
-            elif(_conf.BACKEND == 'sqlite3'):
-                query = "SELECT * FROM tbl_incident \
-                         WHERE fld_revision_id=? \
-                         ORDER BY fld_incident_id"
-
-            _app.INCIDENT.load_tree(query, values)
-
-        # TODO: Add index to RTK_MODULES array for data sets.
-        if(_conf.RTK_MODULES[8] == 1):
-            label = gtk.Label()
-            _heading = _(u"Survival\nAnalyses")
-            label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            label.set_alignment(xalign=0.5, yalign=0.5)
-            label.set_justify(gtk.JUSTIFY_CENTER)
-            label.show_all()
-            label.set_tooltip_text(_(u"Displays the program survival data sets."))
-            self.notebook.insert_page(self.scwDatasets, tab_label=label,
+        if _conf.RTK_MODULES[8] == 1:
+            _label = gtk.Label()
+            _label.set_markup("<span weight='bold'>" +
+                              _(u"Survival\nAnalyses") + "</span>")
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.show_all()
+            _label.set_tooltip_text(_(u"Displays the program survival data "
+                                      u"sets."))
+            self.notebook.insert_page(self.scwDatasets, tab_label=_label,
                                       position=-1)
             _app.DATASET.load_tree()
 
-            #if(_conf.RTK_MODULES[9] == 1):
+        #if(_conf.RTK_MODULES[9] == 1):
             # This determines whether the FMECA will be active for functions
             # and hardware.
 
@@ -301,7 +282,6 @@ class TreeWindow(gtk.Window):
         #if(_conf.RTK_MODULES[12] == 1):
             # This determines whether FTAs are active.
 
-
         self.notebook.show_all()
 
         return False
@@ -312,40 +292,40 @@ class TreeWindow(gtk.Window):
         menu = gtk.Menu()
 
         menu2 = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_("_Project"), use_underline=True)
+        menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
         menu_item.connect('activate', _util.create_project, self)
         menu2.append(menu_item)
 
-# Add assembly entry.
+        # Add assembly entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert-sibling.png')
+        image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         menu_item.set_label(_(u"Sibling Assembly"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
         menu2.append(menu_item)
 
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
-        image.set_from_file(_conf.ICON_DIR + '16x16/insert-child.png')
+        image.set_from_file(_conf.ICON_DIR + '16x16/insert_child.png')
         menu_item.set_label(_(u"Child Assembly"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
         menu2.append(menu_item)
 
-# Add component entry.
+        # Add component entry.
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
         image.set_from_file(_conf.ICON_DIR + '16x16/part.png')
         menu_item.set_label(_(u"Component"))
         menu_item.set_image(image)
-        #menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
+        menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
         menu2.append(menu_item)
 
-# Add New menu.
+        # Add New menu.
         mnuNew = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -364,6 +344,7 @@ class TreeWindow(gtk.Window):
         menu_item.set_image(image)
         menu_item.connect('activate', _util.open_project, self._app)
         menu.append(menu_item)
+
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -372,12 +353,14 @@ class TreeWindow(gtk.Window):
         menu_item.set_image(image)
         menu_item.connect('activate', _util.save_project, self._app)
         menu.append(menu_item)
+
         menu_item = gtk.MenuItem(label=_("Save _As"), use_underline=True)
         menu_item.connect('activate', _util.save_project, self._app)
         menu.append(menu_item)
         #menu_item = gtk.MenuItem(label=_("_Close"), use_underline=True)
         #menu_item.connect('activate', _util.close)
         #menu.append(menu_item)
+
         menu_item = gtk.ImageMenuItem()
         image = gtk.Image()
         image.show()
@@ -458,6 +441,20 @@ class TreeWindow(gtk.Window):
         mnuSearch.show()
         mnuSearch.set_submenu(menu)
 
+        # Create the View menu.
+        menu = gtk.Menu()
+        menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
+        menu_item.connect('activate', ProcessMap, self._app)
+        menu.append(menu_item)
+        menu_item = gtk.MenuItem(label=_(u"_Design Reviews"),
+                                 use_underline=True)
+        menu_item.connect('activate', DesignReview, self._app)
+        menu.append(menu_item)
+
+        mnuView = gtk.MenuItem(label=_(u"_Process"), use_underline=True)
+        mnuView.show()
+        mnuView.set_submenu(menu)
+
         menu = gtk.Menu()
         menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
         menu_item.connect('activate', _util.options, self._app)
@@ -466,9 +463,9 @@ class TreeWindow(gtk.Window):
                                  use_underline=True)
         menu_item.connect('activate', _util.create_comp_ref_des, self._app)
         menu.append(menu_item)
-        menu_item = gtk.MenuItem(label=_("_Import Project"),
+        menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                  use_underline=True)
-        menu_item.connect('activate', _util.import_project, self._app)
+        menu_item.connect('activate', ReviewCriteria, self._app)
         menu.append(menu_item)
         menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
                                  use_underline=True)
@@ -484,6 +481,7 @@ class TreeWindow(gtk.Window):
         menubar.append(mnuFile)
         menubar.append(mnuEdit)
         menubar.append(mnuSearch)
+        menubar.append(mnuView)
         menubar.append(mnuTools)
 
         return menubar
@@ -495,7 +493,7 @@ class TreeWindow(gtk.Window):
 
         _pos = 0
 
-# New file button.
+        # New file button.
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         image = gtk.Image()
@@ -505,7 +503,7 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Connect button
+        # Connect button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Connect to an existing RTK Program Database."))
         image = gtk.Image()
@@ -515,7 +513,10 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Save button
+        toolbar.insert(gtk.SeparatorToolItem(), _pos)
+        _pos += 1
+
+        # Save button
         button = gtk.ToolButton()
         button.set_tooltip_text(_(u"Save the currently open RTK Program Database."))
         image = gtk.Image()
@@ -528,41 +529,10 @@ class TreeWindow(gtk.Window):
         toolbar.insert(gtk.SeparatorToolItem(), _pos)
         _pos += 1
 
-# Calculate button
-        button = gtk.MenuToolButton(None, label = "")
-        button.set_tooltip_text(_(u"Perform various calculations on the system."))
-        image = gtk.Image()
-        image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        button.set_icon_widget(image)
-        menu = gtk.Menu()
-        menu_item = gtk.MenuItem(label=_(u"Project"))
-        menu_item.set_tooltip_text(_(u"Calculate the currently open RTK project."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 0)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Revision"))
-        menu_item.set_tooltip_text(_(u"Calculate the revisions only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 1)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"Function"))
-        menu_item.set_tooltip_text(_(u"Calculate the functions only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 2)
-        menu.add(menu_item)
-        menu_item = gtk.MenuItem(label=_(u"System"))
-        menu_item.set_tooltip_text(_(u"Calculate the hardware assemblies only."))
-        menu_item.connect('activate', _calc.calculate_project, self._app, 3)
-        menu.add(menu_item)
-        button.set_menu(menu)
-        menu.show_all()
-        button.show()
-        toolbar.insert(button, _pos)
-        _pos += 1
-
-        toolbar.insert(gtk.SeparatorToolItem(), _pos)
-        _pos += 1
-
-# Save and quit button
+        # Save and quit button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Save the currently open RTK Program Database then quit"))
+        button.set_tooltip_text(_(u"Save the currently open RTK Program "
+                                  u"Database then quits."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
         button.set_icon_widget(image)
@@ -571,9 +541,10 @@ class TreeWindow(gtk.Window):
         toolbar.insert(button, _pos)
         _pos += 1
 
-# Quit without saving button
+        # Quit without saving button
         button = gtk.ToolButton()
-        button.set_tooltip_text(_(u"Quit without saving the currently open RTK Program Database"))
+        button.set_tooltip_text(_(u"Quits without saving the currently open "
+                                  u"RTK Program Database."))
         image = gtk.Image()
         image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         button.set_icon_widget(image)
@@ -583,41 +554,36 @@ class TreeWindow(gtk.Window):
 
         toolbar.show()
 
-        return(toolbar)
+        return toolbar
 
     def _notebook_page_switched(self, notebook, page, page_num):
         """
         Called whenever the Tree Book notebook page is changed.
 
-        Keyword Arguments:
-        notebook -- the Tree Book notebook widget.
-        page     -- the newly selected page widget.
-        page_num -- the newly selected page number.
-                    0 = Revision Tree
-                    1 = Function Tree
-                    2 = Requirements Tree
-                    3 = Hardware Tree
-                    4 = Software Tree
-                    5 = Validation Tree
-                    6 = Reliability Testing Tree
-                    7 = Maintenance Policy Tree
-                    8 = Field Incident Tree
-                    9 = Survival Analyses Tree
+        :param notebook: the Tree Book notebook widget.
+        :param page: the newly selected page widget.
+        :param page_num: the newly selected page number.
+                            0 = Revision Tree
+                            1 = Function Tree
+                            2 = Requirements Tree
+                            3 = Hardware Tree
+                            4 = Software Tree
+                            5 = Validation Tree
+                            6 = Reliability Testing Tree
+                            7 = Field Incident Tree
+                            8 = Survival Analyses Tree
         """
 
-        button = self.toolbar.get_nth_item(4)
-
-        if(_conf.RTK_PAGE_NUMBER[page_num] == 0):
+        if _conf.RTK_PAGE_NUMBER[page_num] == 0:
             try:
                 self._app.REVISION.treeview.grab_focus()
-                (_model_, _row_) = self._app.REVISION.treeview.get_selection().get_selected()
-                _path_ = _model_.get_path(_model_.get_iter_root())
-                _column_ = self._app.REVISION.treeview.get_column(0)
-                self._app.REVISION.treeview.row_activated(_path_, _column_)
-                button.set_tooltip_text(_(u"Add a new revision to the current RTK Program."))
+                _model = self._app.REVISION.treeview.get_model()
+                _path = _model.get_path(_model.get_iter_root())
+                _column = self._app.REVISION.treeview.get_column(0)
+                self._app.REVISION.treeview.row_activated(_path, _column)
             except TypeError:               # There are no revisions.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 1):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 1:
             try:
                 self._app.FUNCTION.treeview.grab_focus()
                 model = self._app.FUNCTION.treeview.get_model()
@@ -626,7 +592,7 @@ class TreeWindow(gtk.Window):
                 self._app.FUNCTION.treeview.row_activated(path, column)
             except TypeError:               # There are no functions.
                 self._app.FUNCTION.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 2):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 2:
             try:
                 self._app.REQUIREMENT.treeview.grab_focus()
                 model = self._app.REQUIREMENT.treeview.get_model()
@@ -635,7 +601,7 @@ class TreeWindow(gtk.Window):
                 self._app.REQUIREMENT.treeview.row_activated(path, column)
             except TypeError:               # There are no requirements.
                 self._app.REQUIREMENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 3):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 3:
             try:
                 self._app.HARDWARE.treeview.grab_focus()
                 model = self._app.HARDWARE.treeview.get_model()
@@ -644,18 +610,17 @@ class TreeWindow(gtk.Window):
                 self._app.HARDWARE.treeview.row_activated(path, column)
             except TypeError:               # There is no hardware.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 4):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 4:
             try:
                 self._app.SOFTWARE.treeview.grab_focus()
-                model = self._app.SOFTWARE.model
+                _model = self._app.SOFTWARE.treeview.get_model()
                 self._app.winParts.tvwPartsList.set_model(None)
-                path = model.get_path(model.get_iter_root())
-                column = self._app.SOFTWARE.treeview.get_column(0)
-                self._app.SOFTWARE.treeview.row_activated(path, column)
-                self._app.SOFTWARE.load_notebook()
+                _path = _model.get_path(_model.get_iter_root())
+                _column = self._app.SOFTWARE.treeview.get_column(0)
+                self._app.SOFTWARE.treeview.row_activated(_path, _column)
             except:                         # There are no software modules.
                 pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 5):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 5:
             try:
                 self._app.VALIDATION.treeview.grab_focus()
                 model = self._app.VALIDATION.model
@@ -663,10 +628,9 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.VALIDATION.treeview.get_column(0)
                 self._app.VALIDATION.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new verification and validation task to the current RTK Program."))
             except:                         # There are no V&V tasks.
                 self._app.VALIDATION.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 6):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 6:
             try:
                 self._app.TESTING.treeview.grab_focus()
                 model = self._app.TESTING.model
@@ -674,15 +638,9 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.TESTING.treeview.get_column(0)
                 self._app.TESTING.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new test plan to the current RTK Program."))
             except:
                 self._app.TESTING.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 7):
-            try:
-                print "You selected Maintenance Policy"
-            except:
-                pass
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 8):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 7:
             try:
                 self._app.INCIDENT.treeview.grab_focus()
                 model = self._app.INCIDENT.model
@@ -690,10 +648,9 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.INCIDENT.treeview.get_column(0)
                 self._app.INCIDENT.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new incident to the current RTK Program."))
             except:                         # There are no field incidents.
                 self._app.INCIDENT.load_notebook()
-        elif(_conf.RTK_PAGE_NUMBER[page_num] == 9):
+        elif _conf.RTK_PAGE_NUMBER[page_num] == 8:
             try:
                 self._app.DATASET.treeview.grab_focus()
                 model = self._app.DATASET.model
@@ -701,7 +658,6 @@ class TreeWindow(gtk.Window):
                 path = model.get_path(model.get_iter_root())
                 column = self._app.DATASET.treeview.get_column(0)
                 self._app.DATASET.treeview.row_activated(path, column)
-                button.set_tooltip_text(_(u"Add a new dataset to the current RTK Program."))
             except:                         # There are no datasets.
                 self._app.DATASET.load_notebook()
 
@@ -716,25 +672,24 @@ class TreeWindow(gtk.Window):
         """
 
         if(_conf.RTK_PROG_INFO[2] == ''):
-            _util.application_error(_("There is no active RTK Project.  You must open a Project before importing data."),
+            _util.rtk_error(_("There is no active RTK Project.  You must open a Project before importing data."),
                                     _image_='warning')
             return True
         else:
             assistant = _impt.ImportAssistant(self._app)
             return False
 
-    def delete_event(self, widget, event, data=None):
+    def delete_event(self, __widget, __event, data=None):
         """
-        Used to quit the RTK application when the X in the upper
+        Method to quit the RTK application when the X in the upper
         right corner is pressed.
 
-        Keyword Arguments:
-        winmain -- the RTK application main window widget.
-        event   -- the gdk event (GDK_DELETE in this case).
-        data    -- any data to pass when exiting the application.
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
-
-        _util.save_project(widget, self)
 
         gtk.main_quit()
 

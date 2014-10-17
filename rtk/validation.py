@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 """
-This is the Class that is used to represent and hold information related to
-verification and validation tasks of the Program.
+This is the class that is used to represent and hold information related to
+verification and validation (V&V) tasks of the Program.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -18,17 +20,6 @@ import gettext
 import locale
 import sys
 
-import matplotlib
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.patches import Ellipse
-
-import configuration as _conf
-from utilities import date_select, add_items
-from widgets import make_label, make_text_view, make_treeview, create_legend, \
-    load_plot, make_labels, make_frame, make_entry, make_button, load_combo, \
-    make_combo
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -37,11 +28,11 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gtk  # @UnusedImport
+    import gtk                              # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
-    import gtk.glade  # @UnusedImport
+    import gtk.glade                        # @UnusedImport
 except ImportError:
     sys.exit(1)
 try:
@@ -49,8 +40,20 @@ try:
 except ImportError:
     sys.exit(1)
 
+# Import plotting modules.
+import matplotlib
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.patches import Ellipse
+
 # Import other RTK modules.
+import configuration as _conf
 import utilities as _util
+from calculations import beta_bounds
+from utilities import date_select, add_items
+from widgets import make_label, make_text_view, make_treeview, create_legend, \
+    load_plot, make_labels, make_frame, make_entry, make_button, load_combo, \
+    make_combo
 
 # Add localization support.
 try:
@@ -64,46 +67,74 @@ _ = gettext.gettext
 matplotlib.use('GTK')
 
 
-# noinspection PyUnresolvedReferences
 class Validation(object):
     """
-    The VALIDATION class is used to represent the verification and validation
+    The Validation class is used to represent the verification and validation
     tasks for the system being analyzed.
+
+    :ivar _dic_tasks: Dictionary to to carry the validation task type indices.
+    Key is the task ID; value is a list with the following:
+
+    +-------+---------------------------+
+    | Index | Information               |
+    +=======+===========================+
+    |   0   | Ordinal Start Date        |
+    +-------+---------------------------+
+    |   1   | Ordinal End Date          |
+    +-------+---------------------------+
+    |   2   | Minimum Task Time         |
+    +-------+---------------------------+
+    |   3   | Likely Task Time          |
+    +-------+---------------------------+
+    |   4   | Maximum Task Time         |
+    +-------+---------------------------+
+    |   5   | % Complete                |
+    +-------+---------------------------+
+    |   6   | |
+    +-------+---------------------------+
+    |   7   | Minimum Task Cost         |
+    +-------+---------------------------+
+    |   8   | Likely Task Cost          |
+    +-------+---------------------------+
+    |   9   | Maximum Task Cost         |
+    +-------+---------------------------+
+    |  10   | |
+    +-------+---------------------------+
+
     """
 
-    #_ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
-    #                  _(u"Does this activity provide quantitative strength information as an output?"),
-    #                  _(u"Does this activity provide operating environment information as an output?"),
-    #                  _(u"Hardware item configuration/architecture"),
-    #                  _(u"Hardware item failure modes"),
-    #                  _(u"Hardware item failure mechanisms"),
-    #                  _(u"Hardware item failure causes"),
-    #                  _(u"Hardware item failure times"),
-    #                  _(u"Hardware item Part quality"),
-    #                  _(u"Hardware item aging/degradation information"),
-    #                  _(u"Hardware item design requirements and/or goals"),
-    #                  _(u"")]
+    # _ta_tab_labels = [_(u"Does this activity provide quantitative stress information as an output?"),
+    #                   _(u"Does this activity provide quantitative strength information as an output?"),
+    #                   _(u"Does this activity provide operating environment information as an output?"),
+    #                   _(u"Hardware item configuration/architecture"),
+    #                   _(u"Hardware item failure modes"),
+    #                   _(u"Hardware item failure mechanisms"),
+    #                   _(u"Hardware item failure causes"),
+    #                   _(u"Hardware item failure times"),
+    #                   _(u"Hardware item Part quality"),
+    #                   _(u"Hardware item aging/degradation information"),
+    #                   _(u"Hardware item design requirements and/or goals"),
+    #                   _(u"")]
 
     def __init__(self, application):
         """
-        Initializes the VALIDATION class.
+        Initializes the Validation class.
 
-        :param application: the RTK application.
+        :param RTK application: the current instance of the RTK application.
         """
 
-        # Define private VALIDATION class attributes.
+        # Define private Validation class attributes.
         self._app = application
 
         # Define private VALIDATION class dictionary attributes.
-        self._dic_types = {}  # Task types.
-        self._dic_tasks = {}  # All task information.
-        self._dic_status = {}  # Status of tasks.
+        self._dic_types = {}
+        self._dic_tasks = {}
+        self._dic_status = {}               # Status of tasks.
 
-        # Define private VALIDATION class list attributes.
-        self._lst_col_order = []
+        # Define private Validation class list attributes.
         self._lst_handler_id = []
 
-        # Define public VALIDATION class attributes.
+        # Define public Validation class attributes.
         self.validation_id = 0
         self.task_description = ''
         self.task_type = ''
@@ -127,23 +158,33 @@ class Validation(object):
         self.mean_cost = 0.0
         self.cost_variance = 0.0
 
-        # Define public VALIDATION class dictionary attributes.
+        # Define public Validation class dictionary attributes.
 
-        # Create the main VALIDATION class treeview.
-        bg_color = _conf.RTK_COLORS[8]
-        fg_color = _conf.RTK_COLORS[9]
+        # Create the main Validation class treeview.
         (self.treeview,
-         self._lst_col_order) = make_treeview('Validation', 4,
-                                              self._app, None,
-                                              bg_color, fg_color)
+         self._lst_col_order) = make_treeview('Validation', 4, self._app, None,
+                                              _conf.RTK_COLORS[8],
+                                              _conf.RTK_COLORS[9])
+
+        # Reset the limits of adjustment on the percent complete
+        # gtk.CellRendererSpin() to 0 - 100 with steps of 1.
+        _cell = self.treeview.get_column(
+            self._lst_col_order[12]).get_cell_renderers()[0]
+        _cell.set_property('digits', 0)
+        _adjustment = _cell.get_property('adjustment')
+        _adjustment.configure(0, 0, 100, 1, 0, 0)
 
         # Toolbar widgets.
 
         # General Data tab widgets.
-        self.btnEndDate = make_button(_height_=25, _width_=25, _label_="...",
-                                      _image_=None)
-        self.btnStartDate = make_button(_height_=25, _width_=25, _label_="...",
-                                        _image_=None)
+        self.btnEndDate = make_button(height=25,
+                                      width=25,
+                                      label="...",
+                                      image=None)
+        self.btnStartDate = make_button(height=25,
+                                        width=25,
+                                        label="...",
+                                        image=None)
 
         self.cmbTaskType = make_combo()
         self.cmbMeasurementUnit = make_combo()
@@ -316,7 +357,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad1_)
 
-            _frame_ = make_frame(_label_=_(u"Task Description"))
+            _frame_ = make_frame(label=_(u"Task Description"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -332,7 +373,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad2_)
 
-            _frame_ = make_frame(_label_=_(u"Task Effort"))
+            _frame_ = make_frame(label=_(u"Task Effort"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -346,7 +387,7 @@ class Validation(object):
                                       gtk.POLICY_AUTOMATIC)
             _scrollwindow_.add_with_viewport(_fxdGenDataQuad4_)
 
-            _frame_ = make_frame(_label_=_(u"Project Effort"))
+            _frame_ = make_frame(label=_(u"Project Effort"))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_scrollwindow_)
 
@@ -500,7 +541,7 @@ class Validation(object):
                                                u"select the date the task "
                                                u"was completed."))
             _fxdGenDataQuad2_.put(self.btnEndDate, _x_pos_ + 105, _y_pos1_[1])
-            self.btnEndDate.connect('released', date_select,
+            self.btnEndDate.connect('button-release-event', date_select,
                                     self.txtEndDate)
 
             self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to "
@@ -508,7 +549,7 @@ class Validation(object):
                                                  u"was started."))
             _fxdGenDataQuad2_.put(self.btnStartDate, _x_pos_ + 105,
                                   _y_pos1_[0])
-            self.btnStartDate.connect('released', date_select,
+            self.btnStartDate.connect('button-release-event', date_select,
                                       self.txtStartDate)
 
             self.txtStartDate.set_tooltip_text(_(u"Displays the date the "
@@ -643,7 +684,7 @@ class Validation(object):
 
             _hbox_ = gtk.HBox()
 
-            _frame_ = make_frame(_label_=_(u""))
+            _frame_ = make_frame(label=_(u""))
             _frame_.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
             _frame_.add(_hbox_)
             _frame_.show_all()
@@ -693,10 +734,9 @@ class Validation(object):
         self._dic_tasks.clear()
 
         # Load the Requirement Type gtk.CellRendererCombo().
-        _query_ = "SELECT fld_validation_type_desc \
-                   FROM tbl_validation_type"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
+        _query = "SELECT fld_validation_type_desc \
+                  FROM tbl_validation_type"
+        _results_ = self._app.COMDB.execute_query(_query, None,
                                                   self._app.ComCnx)
 
         if _results_ == '' or not _results_ or _results_ is None:
@@ -718,9 +758,7 @@ class Validation(object):
         _query = "SELECT * FROM tbl_validation \
                   WHERE fld_revision_id=%d \
                   ORDER BY fld_validation_id" % self._app.REVISION.revision_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             _n_tasks = len(_results)
         except TypeError:
@@ -732,10 +770,8 @@ class Validation(object):
         _total_time = 0.0
         _first_start = datetime.today().toordinal()
         for i in range(_n_tasks):
-            _start = str(datetime.fromordinal(int(_results[i][10])).strftime(
-                '%Y-%m-%d'))
-            _end = str(datetime.fromordinal(int(_results[i][11])).strftime(
-                '%Y-%m-%d'))
+            _start = _util.ordinal_to_date(_results[i][10])
+            _end = _util.ordinal_to_date(_results[i][11])
             _model.append(None, [_results[i][0], _results[i][1],
                                  _results[i][2], _results[i][3],
                                  _results[i][4], _results[i][5],
@@ -796,15 +832,15 @@ class Validation(object):
 
     def load_notebook(self):
         """
-        Method to load the VALIDATION class gtk.Notebook.
+        Method to load the Validation class gtk.Notebook.
         """
 
         def _load_general_data_tab(self):
             """
-            Loads the widgets with general information about the VALIDATION
+            Loads the widgets with general information about the Validation
             class.
 
-            :param self: the current instance of the VALIDATION class.
+            :param self: the current instance of the Validation class.
             """
 
             fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -817,6 +853,7 @@ class Validation(object):
                 _index_ = 0
 
             try:
+                self.validation_id = _model_.get_value(_row_, 1)
                 self.txtID.set_text(str(_model_.get_value(_row_, 1)))
                 _textbuffer = self.txtTask.get_child().get_child().get_buffer()
                 _textbuffer.set_text(_model_.get_value(_row_, 2))
@@ -848,10 +885,39 @@ class Validation(object):
                     str(fmt.format(_model_.get_value(_row_, 19))))
                 self.txtMaxCost.set_text(
                     str(fmt.format(_model_.get_value(_row_, 20))))
-            except IndexError:  # There are no V&V tasks.
+
+                _a_ = float(_model_.get_value(_row_, 13))
+                _m_ = float(_model_.get_value(_row_, 14))
+                _b_ = float(_model_.get_value(_row_, 15))
+
+                # Calculate expected task time +/- 95% confidence limits
+                # assuming a beta distribution.
+                (_meanll, _mean,
+                 _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
+
+                self.txtMeanTimeLL.set_text(str(fmt.format(_meanll)))
+                self.txtMeanTime.set_text(str(fmt.format(_mean)))
+                self.txtMeanTimeUL.set_text(str(fmt.format(_meanul)))
+
+                # Calculate expected task cost +/- 95% confidence limits
+                # assuming a beta distribution.
+                _a_ = float(_model_.get_value(_row_, 18))
+                _m_ = float(_model_.get_value(_row_, 19))
+                _b_ = float(_model_.get_value(_row_, 20))
+
+                (_meanll, _mean,
+                 _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
+
+                self.txtMeanCostLL.set_text(str(fmt.format(_meanll)))
+                self.txtMeanCost.set_text(str(fmt.format(_mean)))
+                self.txtMeanCostUL.set_text(str(fmt.format(_meanul)))
+
+            except IndexError:              # There are no V&V tasks.
                 pass
 
             return False
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         (_model, _row) = self.treeview.get_selection().get_selected()
 
@@ -863,22 +929,36 @@ class Validation(object):
         self._app.winWorkBook.add(self.vbxValidation)
         self._app.winWorkBook.show_all()
 
-        try:
-            _title = _(u"RTK Work Book: Analyzing %s") % \
-                     _model.get_value(_row, 2)
-        except TypeError:
-            _title = _(u"RTK Work Book")
-        self._app.winWorkBook.set_title(_title)
+        _mean = self._app.REVISION.program_time
+        _se = self._app.REVISION.program_time_se
+        self.txtProjectTimeLL.set_text(str(fmt.format(_mean - 1.945 * _se)))
+        self.txtProjectTime.set_text(str(fmt.format(_mean)))
+        self.txtProjectTimeUL.set_text(str(fmt.format(_mean + 1.945 * _se)))
 
+        _mean = self._app.REVISION.program_cost
+        _se = self._app.REVISION.program_cost_se
+        self.txtProjectCostLL.set_text(str(fmt.format(_mean - 1.945 * _se)))
+        self.txtProjectCost.set_text(str(fmt.format(_mean)))
+        self.txtProjectCostUL.set_text(str(fmt.format(_mean + 1.945 * _se)))
+
+        try:
+            self._app.winWorkBook.set_title(_(u"RTK Work Book: Analyzing "
+                                              u"%s") %
+                                            _model.get_value(_row, 2))
+        except TypeError:
+            self._app.winWorkBook.set_title(_(u"RTK Work Book"))
+
+# TODO: Add _selected_page as a class attribute and use it to set the active page in the Work Book.
         self.notebook.set_page(0)
 
         return False
 
     def _load_progress_plot(self):
         """
-        Method to load the VALIDATION class effort progress plot.
+        Method to load the Validation class effort progress plot.
 
-        :return: False
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         from operator import itemgetter
@@ -907,11 +987,18 @@ class Validation(object):
 
         # Find the earliest start date, the latest end date, and the total
         # number of hours for minimum, most likely, and maximum task time.
-        _x = [min([_a[0] for _a in _tasks])]
-        _y1 = [sum([_a[2] for _a in _tasks])]
-        _y2 = [sum([_a[3] for _a in _tasks])]
-        _y3 = [sum([_a[4] for _a in _tasks])]
-        _y4 = [sum([_a[3] for _a in _tasks])]
+        try:
+            _x = [min([_a[0] for _a in _tasks])]
+            _y1 = [sum([_a[2] for _a in _tasks])]
+            _y2 = [sum([_a[3] for _a in _tasks])]
+            _y3 = [sum([_a[4] for _a in _tasks])]
+            _y4 = [sum([_a[3] for _a in _tasks])]
+        except ValueError:
+            _x = [719163]
+            _y1 = [0]
+            _y2 = [0]
+            _y3 = [0]
+            _y4 = [0]
 
         # Get a sorted list of unique end dates and then find the total number
         # of hours that should be completed on each unique end date.
@@ -953,12 +1040,13 @@ class Validation(object):
         # identified as a Reliability Assessment.  Add an annotation box
         # showing the minimum required and goal values for each milestone.
         for i in range(len(_assess_dates)):
-            self.axAxis1.axvline(x=_assess_dates[i], ymin=0, color='m',
+            self.axAxis1.axvline(x=_assess_dates[i], ymin=0,
+                                 ymax=1.05 * _y3[0], color='m',
                                  linewidth=2.5, linestyle=':')
 
         for i in range(len(_targets)):
-            self.axAxis1.annotate(str(fmt.format(_targets[i][0])) + "\n" + str(
-                fmt.format(_targets[i][1])),
+            self.axAxis1.annotate(str(fmt.format(_targets[i][0])) + "\n" +
+                                  str(fmt.format(_targets[i][1])),
                                   xy=(_assess_dates[i], 0.95 * max(_y3)),
                                   xycoords='data',
                                   xytext=(-55, 0), textcoords='offset points',
@@ -973,25 +1061,26 @@ class Validation(object):
                                       alpha=0.5,
                                       patchA=None,
                                       patchB=Ellipse((2, -1), 0.5, 0.5),
-                                      relpos=(0.2, 0.5))
-            )
+                                      relpos=(0.2, 0.5)))
 
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),
                  _(u"Minimum Expected Time"), _(u"Actual Remaining Time"))
-        create_legend(self.axAxis1, _text, _fontsize_='medium',
-                      _frameon_=True, _location_='lower left', _shadow_=True)
+        create_legend(self.axAxis1, _text, fontsize='medium',
+                      legframeon=True, location='lower left', legshadow=True)
+
+        self.axAxis1.set_ylim(bottom=0.0, top=1.05 * _y3[0])
 
         return False
 
     def _update_tree(self, columns, values):
         """
-        Updates the values in the VALIDATION class gtk.Treeview.
+        Updates the values in the Validation class gtk.Treeview.
 
         :param columns: a list of integers representing the column numbers to
                         update.
         :type columns: list of integers
-        :param values: a list of new values for the VALIDATION class
+        :param values: a list of new values for the Validation class
                        gtk.TreeView().
         :type values: list
         """
@@ -1081,10 +1170,10 @@ class Validation(object):
         # new value.  We block and unblock the signal handlers for the widgets
         # so a race condition does not ensue.
         if self._lst_col_order[position] == 2:
-            _buffer_ = self.txtTask.get_child().get_child().get_buffer()
-            _buffer_.handler_block(self._lst_handler_id[0])
-            _buffer_.set_text(str(new_text))
-            _buffer_.handler_unblock(self._lst_handler_id[0])
+            _buffer = self.txtTask.get_child().get_child().get_buffer()
+            _buffer.handler_block(self._lst_handler_id[0])
+            _buffer.set_text(str(new_text))
+            _buffer.handler_unblock(self._lst_handler_id[0])
         elif self._lst_col_order[position] == 3:
             try:
                 _index_ = self._dic_types[new_text]
@@ -1127,8 +1216,8 @@ class Validation(object):
             self.txtEndDate.handler_unblock(self._lst_handler_id[9])
         elif self._lst_col_order[position] == 12:
             self.spnStatus.handler_block(self._lst_handler_id[10])
-            _adjustment_ = self.spnStatus.get_adjustment()
-            _adjustment_.set_value(float(new_text))
+            _adjustment = self.spnStatus.get_adjustment()
+            _adjustment.set_value(float(new_text))
             self.spnStatus.update()
             self.spnStatus.handler_unblock(self._lst_handler_id[10])
 
@@ -1144,8 +1233,6 @@ class Validation(object):
         :return: False or True
         """
 
-        (_model, _row) = self.treeview.get_selection().get_selected()
-
         _n_tasks = add_items(title=_(u"RTK - Add V &amp; V Activity"),
                              prompt=_(
                                  u"How many V &amp; V activities to add?"))
@@ -1160,11 +1247,8 @@ class Validation(object):
 
             if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
                                               commit=True):
-                _util.application_error(_(u"Failed to add V&V task to "
-                                          u"revision %d") %
-                                        self._app.REVISION.revision_id)
-                self._app.user_log.error(
-                    "validation.py: Failed to add V&V task.")
+                _util.rtk_error(_(u"Failed to add V&V task to revision %d") %
+                                self._app.REVISION.revision_id)
                 return True
 
         self.load_tree()
@@ -1203,7 +1287,7 @@ class Validation(object):
 
     def validation_save(self, __widget=None):
         """
-        Method to save the VALIDATION class gtk.TreeView() information to the
+        Method to save the Validation class gtk.TreeView() information to the
         open RTK Program database.
 
         :param __widget: the gtk.Widget() that called this function.
@@ -1212,72 +1296,71 @@ class Validation(object):
 
         def _save_line_item(model, __path, row, self):
             """
-            Function to save each row in the VALIDATION class gtk.TreeModel()
+            Function to save each row in the Validation class gtk.TreeModel()
             to the open RTK Program's database.
 
-            :param model: the VALIDATION class gtk.TreeModel().
+            :param model: the Validation class gtk.TreeModel().
             :type model: gtk.TreeModel
-            :param string __path: the path of the active row in the VALIDATION
+            :param string __path: the path of the active row in the Validation
                                   class gtk.TreeModel().
-            :param row: the selected row in the VALIDATION class
+            :param row: the selected row in the Validation class
                         gtk.TreeView().
             :type row: gtk.TreeIter
             """
 
-            _start_ = datetime.strptime(
-                model.get_value(row, self._lst_col_order[10]),
-                '%Y-%m-%d').toordinal()
-            _end_ = datetime.strptime(
-                model.get_value(row, self._lst_col_order[11]),
-                '%Y-%m-%d').toordinal()
-            _values_ = (model.get_value(row, self._lst_col_order[2]),
-                        model.get_value(row, self._lst_col_order[3]),
-                        model.get_value(row, self._lst_col_order[4]),
-                        model.get_value(row, self._lst_col_order[5]),
-                        model.get_value(row, self._lst_col_order[6]),
-                        model.get_value(row, self._lst_col_order[7]),
-                        model.get_value(row, self._lst_col_order[8]),
-                        model.get_value(row, self._lst_col_order[9]),
-                        _start_, _end_,
-                        model.get_value(row, self._lst_col_order[12]),
-                        model.get_value(row, self._lst_col_order[13]),
-                        model.get_value(row, self._lst_col_order[14]),
-                        model.get_value(row, self._lst_col_order[15]),
-                        model.get_value(row, self._lst_col_order[16]),
-                        model.get_value(row, self._lst_col_order[17]),
-                        model.get_value(row, self._lst_col_order[18]),
-                        model.get_value(row, self._lst_col_order[19]),
-                        model.get_value(row, self._lst_col_order[20]),
-                        model.get_value(row, self._lst_col_order[21]),
-                        model.get_value(row, self._lst_col_order[22]),
-                        self._app.REVISION.revision_id,
-                        model.get_value(row, self._lst_col_order[1]))
+            _start = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[10]))
+            _end = _util.date_to_ordinal(model.get_value(
+                row, self._lst_col_order[11]))
 
-            _query_ = "UPDATE tbl_validation \
-                       SET fld_task_desc='%s', fld_task_type='%s', \
-                           fld_task_specification='%s', \
-                           fld_measurement_unit=%d, fld_min_acceptable=%f, \
-                           fld_mean_acceptable=%f, fld_max_acceptable=%f, \
-                           fld_variance_acceptable=%f, fld_start_date=%d, \
-                           fld_end_date=%d, fld_status=%f, \
-                           fld_minimum_time=%f, fld_average_time=%f, \
-                           fld_maximum_time=%f, fld_mean_time=%f, \
-                           fld_time_variance=%f, fld_minimum_cost=%f, \
-                           fld_average_cost=%f, fld_maximum_cost=%f, \
-                           fld_mean_cost=%f, fld_cost_variance=%f \
-                       WHERE fld_revision_id=%d \
-                       AND fld_validation_id=%d" % _values_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
-                                                   self._app.ProgCnx,
-                                                   commit=True)
+            _values = (model.get_value(row, self._lst_col_order[2]),
+                       model.get_value(row, self._lst_col_order[3]),
+                       model.get_value(row, self._lst_col_order[4]),
+                       model.get_value(row, self._lst_col_order[5]),
+                       model.get_value(row, self._lst_col_order[6]),
+                       model.get_value(row, self._lst_col_order[7]),
+                       model.get_value(row, self._lst_col_order[8]),
+                       model.get_value(row, self._lst_col_order[9]),
+                       _start, _end,
+                       model.get_value(row, self._lst_col_order[12]),
+                       model.get_value(row, self._lst_col_order[13]),
+                       model.get_value(row, self._lst_col_order[14]),
+                       model.get_value(row, self._lst_col_order[15]),
+                       model.get_value(row, self._lst_col_order[16]),
+                       model.get_value(row, self._lst_col_order[17]),
+                       model.get_value(row, self._lst_col_order[18]),
+                       model.get_value(row, self._lst_col_order[19]),
+                       model.get_value(row, self._lst_col_order[20]),
+                       model.get_value(row, self._lst_col_order[21]),
+                       model.get_value(row, self._lst_col_order[22]),
+                       self._app.REVISION.revision_id,
+                       model.get_value(row, self._lst_col_order[1]))
 
-            if not _results_:
-                self._app.debug_log.error(
-                    "validation.py: Failed to save V&V task.")
+            _query = "UPDATE tbl_validation \
+                      SET fld_task_desc='%s', fld_task_type='%s', \
+                          fld_task_specification='%s', \
+                          fld_measurement_unit=%d, fld_min_acceptable=%f, \
+                          fld_mean_acceptable=%f, fld_max_acceptable=%f, \
+                          fld_variance_acceptable=%f, fld_start_date=%d, \
+                          fld_end_date=%d, fld_status=%f, \
+                          fld_minimum_time=%f, fld_average_time=%f, \
+                          fld_maximum_time=%f, fld_mean_time=%f, \
+                          fld_time_variance=%f, fld_minimum_cost=%f, \
+                          fld_average_cost=%f, fld_maximum_cost=%f, \
+                          fld_mean_cost=%f, fld_cost_variance=%f \
+                      WHERE fld_revision_id=%d \
+                      AND fld_validation_id=%d" % _values
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Error saving V&V task."))
+
+                self._app.debug_log.error("validation.py: Failed to save V&V "
+                                          "task %d." %
+                                          model.get_value(
+                                              row, self._lst_col_order[1]))
                 return True
-
-            return False
+            else:
+                return False
 
         _model_ = self.treeview.get_model()
         _model_.foreach(_save_line_item, self)
@@ -1359,12 +1442,18 @@ class Validation(object):
             except ValueError:
                 _text_ = ""
 
-                # Update the Validation Tree.
+        # Update the Validation Tree.
         (_model_, _row_) = self.treeview.get_selection().get_selected()
         try:
             _model_.set_value(_row_, index, _text_)
         except TypeError:
             print index
+
+        # Update the ordinal start and end dates in the task dictionary.
+        if index == 10 or index == 11:
+            _text_ = datetime.strptime(entry.get_text(),
+                                       '%Y-%m-%d').toordinal()
+            self._dic_tasks[self.validation_id][index - 10] = _text_
 
         # Calculate task time estimates.
         if index == 13 or index == 14 or index == 15:
@@ -1373,15 +1462,11 @@ class Validation(object):
             _b_ = float(_model_.get_value(_row_, 15))
 
             # Calculate assuming a beta distribution.
-            _mean_ = (_a_ + 4.0 * _m_ + _b_) / 6.0
-            _sd_ = (_b_ - _a_) / 6.0
+            (_meanll, _mean, _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
 
-            _meanll_ = _mean_ - 1.945 * _sd_
-            _meanul_ = _mean_ + 1.945 * _sd_
-
-            self.txtMeanTimeLL.set_text(str(fmt.format(_meanll_)))
-            self.txtMeanTime.set_text(str(fmt.format(_mean_)))
-            self.txtMeanTimeUL.set_text(str(fmt.format(_meanul_)))
+            self.txtMeanTimeLL.set_text(str(fmt.format(_meanll)))
+            self.txtMeanTime.set_text(str(fmt.format(_mean)))
+            self.txtMeanTimeUL.set_text(str(fmt.format(_meanul)))
 
         # Calculate task cost estimates.
         if index == 18 or index == 19 or index == 20:
@@ -1389,15 +1474,12 @@ class Validation(object):
             _m_ = float(_model_.get_value(_row_, 19))
             _b_ = float(_model_.get_value(_row_, 20))
 
-            _mean_ = (_a_ + 4 * _m_ + _b_) / 6.0
-            _sd_ = (_b_ - _a_) / 6.0
+            # Calculate assuming a beta distribution.
+            (_meanll, _mean, _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
 
-            _meanll_ = _mean_ - 1.945 * _sd_
-            _meanul_ = _mean_ + 1.945 * _sd_
-
-            self.txtMeanCostLL.set_text(str(fmt.format(_meanll_)))
-            self.txtMeanCost.set_text(str(fmt.format(_mean_)))
-            self.txtMeanCostUL.set_text(str(fmt.format(_meanul_)))
+            self.txtMeanCostLL.set_text(str(fmt.format(_meanll)))
+            self.txtMeanCost.set_text(str(fmt.format(_mean)))
+            self.txtMeanCostUL.set_text(str(fmt.format(_meanul)))
 
         return False
 
@@ -1429,8 +1511,7 @@ class Validation(object):
         Method to calculate the expected task time, lower limit, and upper
         limit on task time.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: gtk.Button
+        :param gtk.Button __button: the gtk.Button() that called this method.
         """
 
         from operator import itemgetter
@@ -1452,16 +1533,16 @@ class Validation(object):
                 _m_ = float(_model_.get_value(_row_, 14))
                 _b_ = float(_model_.get_value(_row_, 15))
 
-                _mean_ = (_a_ + 4.0 * _m_ + _b_) / 6.0
-                _sd_ = (_b_ - _a_) / 6.0
+                (_meanll, _mean,
+                 _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
 
-                _model_.set_value(_row_, 16, _mean_)
-                _model_.set_value(_row_, 17, _sd_)
+                _model_.set_value(_row_, 16, _mean)
+                _model_.set_value(_row_, 17, _sd)
 
-                self._dic_tasks[_id_][2] = _mean_ - 1.945 * _sd_
-                self._dic_tasks[_id_][3] = _mean_
-                self._dic_tasks[_id_][4] = _mean_ + 1.945 * _sd_
-                self._dic_tasks[_id_][5] = _sd_
+                self._dic_tasks[_id_][2] = _meanll
+                self._dic_tasks[_id_][3] = _mean
+                self._dic_tasks[_id_][4] = _meanul
+                self._dic_tasks[_id_][5] = _sd
                 self._dic_tasks[_id_][6] = _percent_
 
                 # Calculate mean task cost assuming a beta distribution.
@@ -1469,16 +1550,16 @@ class Validation(object):
                 _m_ = float(_model_.get_value(_row_, 19))
                 _b_ = float(_model_.get_value(_row_, 20))
 
-                _mean_ = (_a_ + 4.0 * _m_ + _b_) / 6.0
-                _sd_ = (_b_ - _a_) / 6.0
+                (_meanll, _mean,
+                 _meanul, _sd) = beta_bounds(_a_, _m_, _b_, 0.95)
 
-                _model_.set_value(_row_, 21, _mean_)
-                _model_.set_value(_row_, 22, _sd_)
+                _model_.set_value(_row_, 21, _mean)
+                _model_.set_value(_row_, 22, _sd)
 
-                self._dic_tasks[_id_][7] = _mean_ - 1.945 * _sd_
-                self._dic_tasks[_id_][8] = _mean_
-                self._dic_tasks[_id_][9] = _mean_ + 1.945 * _sd_
-                self._dic_tasks[_id_][10] = _sd_
+                self._dic_tasks[_id_][7] = _meanll
+                self._dic_tasks[_id_][8] = _mean
+                self._dic_tasks[_id_][9] = _meanul
+                self._dic_tasks[_id_][10] = _sd
 
             except ValueError:
                 pass
@@ -1489,19 +1570,41 @@ class Validation(object):
         _tasks = sorted(self._dic_tasks.values(), key=itemgetter(1))
 
         # Calculate project overall mean values and confidence bounds.
-        _mean = sum([_m[3] for _m in _tasks])
-        _sd = sum([_m[5] for _m in _tasks])
+# TODO: Move total program time and cost to the Revision class.
+# TODO: Remove this hackish way to save program time/cost info when it is moved into the Revision class.
+        self._app.REVISION.program_time = sum([_m[3] for _m in _tasks])
+        self._app.REVISION.program_time_se = sum([_m[5] for _m in _tasks])
+        (_model,
+         _row) = self._app.REVISION.treeview.get_selection().get_selected()
+        _model.set_value(_row, self._app.REVISION._lst_col_order[23],
+                         self._app.REVISION.program_time)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[24],
+                         self._app.REVISION.program_time_se)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[25],
+                         self._app.REVISION.program_cost)
+        _model.set_value(_row, self._app.REVISION._lst_col_order[26],
+                         self._app.REVISION.program_cost_se)
 
-        self.txtProjectTimeLL.set_text(str(fmt.format(_mean - 1.945 * _sd)))
-        self.txtProjectTime.set_text(str(fmt.format(_mean)))
-        self.txtProjectTimeUL.set_text(str(fmt.format(_mean + 1.945 * _sd)))
+        self.txtProjectTimeLL.set_text(str(fmt.format(
+            self._app.REVISION.program_time -
+            1.945 * self._app.REVISION.program_time_se)))
+        self.txtProjectTime.set_text(str(fmt.format(
+            self._app.REVISION.program_time)))
+        self.txtProjectTimeUL.set_text(str(fmt.format(
+            self._app.REVISION.program_time +
+            1.945 * self._app.REVISION.program_time_se)))
 
-        _mean = sum([_m[8] for _m in _tasks])
-        _sd = sum([_m[10] for _m in _tasks])
+        self._app.REVISION.program_cost = sum([_m[8] for _m in _tasks])
+        self._app.REVISION.program_cost_se = sum([_m[10] for _m in _tasks])
 
-        self.txtProjectCostLL.set_text(str(fmt.format(_mean - 1.945 * _sd)))
-        self.txtProjectCost.set_text(str(fmt.format(_mean)))
-        self.txtProjectCostUL.set_text(str(fmt.format(_mean + 1.945 * _sd)))
+        self.txtProjectCostLL.set_text(str(fmt.format(
+            self._app.REVISION.program_cost -
+            1.945 * self._app.REVISION.program_cost_se)))
+        self.txtProjectCost.set_text(str(fmt.format(
+            self._app.REVISION.program_cost)))
+        self.txtProjectCostUL.set_text(str(fmt.format(
+            self._app.REVISION.program_cost +
+            1.945 * self._app.REVISION.program_cost_se)))
 
         self._load_progress_plot()
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2012 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       exports.py is part of The RelKit Project
+#       exports.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,15 +37,19 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RelKit modules.
-import configuration as _conf
-import widgets as _widg
+# Import other RTK modules.
+try:
+    import configuration as _conf
+    import widgets as _widg
+except ImportError:
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 
 # Add localization support.
 import locale
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except:
+except locale.Error:
     locale.setlocale(locale.LC_ALL, "")
 
 import gettext
@@ -53,7 +59,7 @@ _ = gettext.gettext
 class ExportHardware:
     """
     This is the gtk.Assistant that walks the user through the process of
-    exporting program incident records from the open RelKit Program database.
+    exporting program incident records from the open RTK Program database.
     """
 
     def __init__(self, button, app):
@@ -63,14 +69,14 @@ class ExportHardware:
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_("RelKit Export Hardware Assistant"))
+        self.assistant.set_title(_("RTK Export Hardware Assistant"))
         self.assistant.connect('apply', self._export)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
 # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RelKit hardware export assistant.  It will help you export the hardware structure from the database to an external file.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _("This is the RTK hardware export assistant.  It will help you export the hardware structure from the database to an external file.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -201,7 +207,7 @@ class ExportHardware:
         results = self._get_values(model, row, _export_fields)
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_("RelKit: Export to File ..."),
+        dialog = gtk.FileChooserDialog(_("RTK: Export to File ..."),
                                        None,
                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,

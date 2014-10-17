@@ -192,7 +192,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign', _width_=80)
+            button = _widg.make_button(width=80, image='assign')
             button.show()
             hbox.pack_start(button, expand=False)
 
@@ -280,7 +280,8 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order, s_treeview, d_treeview)
+            button.connect('button-release-event', _set_import_order,
+                           s_treeview, d_treeview)
 
             response = dialog.run()
 
@@ -604,7 +605,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign')
+            button = _widg.make_button(image='assign')
             button.show()
             hbox.pack_start(button)
 
@@ -651,7 +652,8 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order, s_treeview, d_treeview)
+            button.connect('button-release-event', _set_import_order,
+                           s_treeview, d_treeview)
 
             response = dialog.run()
 
@@ -854,7 +856,7 @@ class ImportAssistant:
             s_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            button = _widg.make_button(_image_='assign')
+            button = _widg.make_button(image='assign')
             button.show()
             hbox.pack_start(button)
 
@@ -926,7 +928,7 @@ class ImportAssistant:
             dialog.vbox.pack_start(hbox)
             hbox.show()
 
-            button.connect('released', _set_import_order,
+            button.connect('button-release-event', _set_import_order,
                            s_treeview, d_treeview)
 
             response = dialog.run()

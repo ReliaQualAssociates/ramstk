@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-""" This is the Workbook window for RTK. """
+"""
+This is the Work Book window for RTK.
+"""
 
-__author__ = 'Andrew Rowland <darowland@ieee.org>'
-__copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -49,17 +53,16 @@ class WorkBookWindow(gtk.Window):
 
     def __init__(self, application):
         """
-        Initializes the WorkBook Class.
+        Initializes the Work Book Class.
 
-        Keyword Arguments:
-        application -- the RTK application.
+        :param application: the current instance of the RTK application.
         """
 
         self._app = application
 
         self.VISIBLE_PAGE = 0
 
-# Create a new window and set its properties.
+        # Create a new window and set its properties.
         gtk.Window.__init__(self)
         self.set_resizable(True)
         self.set_deletable(False)
@@ -71,11 +74,11 @@ class WorkBookWindow(gtk.Window):
         width = gtk.gdk.screen_width() / n_screens
         height = gtk.gdk.screen_height()
 
-# On a 1268x1024 screen, the size will be 845x640.
-        if(_conf.OS == 'Linux'):
+        # On a 1268x1024 screen, the size will be 845x640.
+        if _conf.OS == 'Linux':
             self.width = width - 20
             self.height = (5 * height / 8)
-        elif(_conf.OS == 'Windows'):
+        elif _conf.OS == 'Windows':
             self.width = width - 20
             self.height = (5 * height / 8) - 40
 
@@ -84,4 +87,21 @@ class WorkBookWindow(gtk.Window):
         self.set_position(gtk.WIN_POS_NONE)
         self.move((width / 2), (height / 3))
 
+        self.connect('delete_event', self.delete_event)
+
         self.show_all()
+
+    def delete_event(self, widget, event, data=None):
+        """
+        Used to quit the RTK application when the X in the upper
+        right corner is pressed.
+
+        :param rtk.winTree winmain: the RTK application main window widget.
+        "param gtk.gdk.Event event: the gtk.gdk.Event() that called this
+                                    method.
+        :param str data: any data to pass when exiting the application.
+        """
+
+        gtk.main_quit()
+
+        return False

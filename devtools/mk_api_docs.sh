@@ -1,17 +1,18 @@
 #!/bin/bash
 
 TYPE=$1
-LOGFILE=`pwd`/epydoc$TYPE.log
+BASEDIR='/home/andrew/projects/RTK'
+LOGFILE=$BASEDIR/docs/epydoc$TYPE.log
 
 case $TYPE in
 
 	html | HTML)
-		echo "Creating html api documentation for RelKit."
-		epydoc --config `pwd`/devtools/confightml > $LOGFILE
+		echo "Creating html api documentation for RTK."
+		epydoc --config $BASEDIR/devtools/confightml > $LOGFILE
 		;;
 	pdf | PDF)
-		echo "Creating pdf api documentation for RelKit."
-		epydoc --config `pwd`/devtools/configpdf > $LOGFILE
+		echo "Creating pdf api documentation for RTK."
+		epydoc --config $BASEDIR/devtools/configpdf > $LOGFILE
 		;;
 	*)
 		echo "Pass an output format to this script."
@@ -20,10 +21,10 @@ case $TYPE in
 		;;
 esac
 
-echo "Completed generating $TYPE RelKit api documentation."
+echo "Completed generating $TYPE RTK api documentation."
 
-echo "Uploading api documentation to RelKit website."
-rsync -aiv * weibullguy,reliafree@web.sourceforge.net:/home/project-web/reliafree/htdocs/apidocs/
-echo "Completed uploading api documentation to RelKit website."
+#echo "Uploading api documentation to RTK website."
+#rsync -aiv * weibullguy,reliafree@web.sourceforge.net:/home/project-web/reliafree/htdocs/apidocs/
+#echo "Completed uploading api documentation to RTK website."
 
 exit 0

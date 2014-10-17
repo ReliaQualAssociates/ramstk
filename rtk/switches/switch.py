@@ -1,293 +1,319 @@
 #!/usr/bin/env python
+"""
+switch.py is the meta-class for all switch types.
+"""
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 # -*- coding: utf-8 -*-
 #
-#       switch.py is part of The RelKit Project
-#
-#       Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+#       switch.py is part of The RTK Project
 #
 # All rights reserved.
 
+import gettext
+import locale
 import pango
 
 try:
-    import relkit.widgets as _widg
+    import rtk.configuration as _conf
+    import rtk.widgets as _widg
 except:
+    import configuration as _conf
     import widgets as _widg
 
-class Switch:
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except locale.Error:
+    locale.setlocale(locale.LC_ALL, '')
 
-    """ Switches meta class.
+_ = gettext.gettext
 
-        Hazard Rate Models:
-            1. MIL-HDBK-217F, section 14.
 
+class Switch(object):
+    """
+    Switches meta class.
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 14.
     """
 
     def __init__(self):
+        """
+        Initializes the Switches Component Class.
+        """
 
-        """ Initializes the Switches Component Class. """
-
-        self._ready = False
-
-        self._in_labels = []
-        self._out_labels = []
-
-        self.category = 7                       # Category in relkitcom database.
+        self.category = 7                   # Category in the rtkcom database.
+        self.reason = ''
 
         # Label text for input data.
-        self._in_labels.append(u"Quality:")
-        self._in_labels.append(u"\u03C0<sub>Q</sub> Override:")
-        self._in_labels.append(u"Application:")
-        self._in_labels.append(u"Cycling Rate (cycles/hour):")
-        self._in_labels.append(u"Rated Current (A):")
-        self._in_labels.append(u"Operating Current (A):")
+        self._in_labels = [_(u"Application:"),
+                           _(u"Cycling Rate (cycles/hour):"),
+                           _(u"Rated Current (A):"),
+                           _(u"Operating Current (A):")]
 
         # Label text for output data.
-        self._out_labels.append("")
-        self._out_labels.append(u"\u03BB<sub>b</sub>:")
-        self._out_labels.append(u"\u03C0<sub>E</sub>:")
+        self._out_labels = ["", u"\u03BB<sub>b</sub>:",
+                            u"\u03C0<sub>E</sub>:"]
+
+        # Derating points for the derating curve.  The list at position 0 is
+        # for severe environments.  The list at position 1 is for benign
+        # environments.
+        self._derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
     def assessment_inputs_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook calculation input tab with the widgets
+        needed to select inputs for Switches Component Class prediction
+        calculations.
 
-        """ Populates the RelKit Workbook calculation input tab with the
-            widgets needed to select inputs for Switches Component Class
-            prediction calculations.
-
-            Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
-            layout -- the layout widget to contain the display widgets.
-            x_pos  -- the x position of the widgets.
-            y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the input widgets.
+        :param int x_pos: the x position of the input widgets.
+        :param int y_pos: the y position of the first input widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed() except the
+        # calculation model gtk.Label() and gtk.ComboBox().
+        for _child in layout.get_children()[2:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is SWITCH,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
-
-        # Create and place all the labels for the inputs.
-        numlabels = len(self._in_labels)
-        for i in range(numlabels):
-            label = _widg.make_label(self._in_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
-
-        part.cmbQuality = _widg.make_combo(simple=True)
-        for i in range(len(self._quality)):
-            part.cmbQuality.insert_text(i, self._quality[i])
-        part.cmbQuality.connect("changed",
-                                self.combo_callback,
-                                part, 85)
-        layout.put(part.cmbQuality, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtCommercialPiQ = _widg.make_entry(_width_=entry_width)
-        part.txtCommercialPiQ.connect("focus-out-event",
-                                      self.entry_callback,
-                                      part, "float", 79)
-        layout.put(part.txtCommercialPiQ, x_pos, y_pos)
-        y_pos += 30
-
+        # Create the input widgets.
         part.cmbApplication = _widg.make_combo(simple=True)
+        part.txtCycleRate = _widg.make_entry(width=100)
+        part.txtCurrentRated = _widg.make_entry(width=100)
+        part.txtCurrentOper = _widg.make_entry(width=100)
+
+        # Load the gtk.ComboBox().
         for i in range(len(self._application)):
             part.cmbApplication.insert_text(i, self._application[i])
-        part.cmbApplication.connect("changed",
-                                    self.combo_callback,
-                                    part, 5)
-        layout.put(part.cmbApplication, x_pos, y_pos)
-        y_pos += 30
 
-        part.txtCycleRate = _widg.make_entry(_width_=entry_width)
-        part.txtCycleRate.connect("focus-out-event",
-                                  self.entry_callback,
+        # Create and place all the labels for the inputs.
+        (_x_pos, _y_pos) = _widg.make_labels(self._in_labels, layout, 5, y_pos)
+
+        # Place the input widgets.
+        layout.put(part.cmbApplication, _x_pos, _y_pos[0])
+        layout.put(part.txtCycleRate, _x_pos, _y_pos[1])
+        layout.put(part.txtCurrentRated, _x_pos, _y_pos[2])
+        layout.put(part.txtCurrentOper, _x_pos, _y_pos[3])
+
+        # Connect to callback methods.
+        part.cmbApplication.connect("changed", self._callback_combo, part, 5)
+        part.txtCycleRate.connect("focus-out-event", self._callback_entry,
                                   part, "float", 19)
-        layout.put(part.txtCycleRate, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtCurrentRated = _widg.make_entry(_width_=entry_width)
-        part.txtCurrentRated.connect("focus-out-event",
-                                     self.entry_callback,
+        part.txtCurrentRated.connect("focus-out-event", self._callback_entry,
                                      part, "float", 92)
-        layout.put(part.txtCurrentRated, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtCurrentOper = _widg.make_entry(_width_=entry_width)
-        part.txtCurrentOper.connect("focus-out-event",
-                                    self.entry_callback,
+        part.txtCurrentOper.connect("focus-out-event", self._callback_entry,
                                     part, "float", 62)
-        layout.put(part.txtCurrentOper, x_pos, y_pos)
-        y_pos += 30
 
         layout.show_all()
 
-        return(y_pos)
+        return _x_pos, _y_pos
 
-    def assessment_results_create(self, part, layout, x_pos, y_pos):
+    def reliability_results_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook calculation results tab with the widgets to
+        display Switches Component Class calculation results.
 
-        """ Populates the RelKit Workbook calculation results tab with the
-            widgets to display Switches Component Class calculation results.
-
-            Keyword Arguments:
-            part   -- the RelKit COMPONENT object.
-            layout -- the layout widget to contain the display widgets.
-            x_pos  -- the x position of the widgets.
-            y_pos  -- the y position of the first widget.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the display widgets.
+        :param int y_pos: the y position of the first display widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
         """
 
-        entry_width = int((int(part.fmt) + 5) * 8)
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[20:]:
+            layout.remove(_child)
 
-        # Get the list of widgets already on the layout.
-        # Check each child widget's name.  If it is IC,
-        # then it needs to be removed before placing new
-        # widgets.
-        chwidgets = layout.get_children()
-        for i in range(len(chwidgets)):
-            if(chwidgets[i].get_name() == "TRANSIENT"):
-                layout.remove(chwidgets[i])
+        # Create the reliability result display widgets.
+        part.txtLambdaB = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+        part.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
 
         # Create and place all the labels.
-        numlabels = len(self._out_labels)
-        for i in range(numlabels):
-            if(i == 2):
-                label = _widg.make_label(self._out_labels[i], width=400)
-                llayout = label.get_layout()
-                llayout.set_alignment(pango.ALIGN_CENTER)
-                label.show_all()
-            else:
-                label = _widg.make_label(self._out_labels[i])
-            layout.put(label, 5, (i * 30 + y_pos))
+        (_x_pos, _y_pos) = _widg.make_labels(self._out_labels,
+                                             layout, x_pos, y_pos)
+        _x_pos += x_pos
+        _x_pos -= 30
 
-        y_pos += 30
-
-        part.txtLambdaB = _widg.make_entry(_width_=entry_width,
-                                           editable=False, bold=True)
-        layout.put(part.txtLambdaB, x_pos, y_pos)
-        y_pos += 30
-
-        part.txtPiE = _widg.make_entry(_width_=entry_width,
-                                       editable=False, bold=True)
-        layout.put(part.txtPiE, x_pos, y_pos)
-        y_pos += 30
+        # Place the reliability result display widgets.
+        layout.put(part.txtLambdaB, _x_pos, _y_pos[1])
+        layout.put(part.txtPiE, _x_pos, _y_pos[2])
 
         layout.show_all()
 
-        self._ready = True
+        return _x_pos, _y_pos
 
-        return(y_pos)
+    def stress_results_create(self, part, layout, x_pos, y_pos):
+        """
+        Populates the RTK Workbook stress calculation results tab with the
+        widgets to display Switch Component Class stress results.
+
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param gtk.Fixed layout: the gtk.Fixed() to contain the display
+                                 widgets.
+        :param int x_pos: the x position of the widgets.
+        :param int y_pos: the y position of the first widget.
+        :return: (_x_pos, _y_pos); the x-coordinate and list of y-coordinates.
+        :rtype: tuple
+        """
+
+        # Clear all the display widgets from the gtk.Fixed().
+        for _child in layout.get_children()[16:]:
+            layout.remove(_child)
+
+        # Create and place all the labels.
+        # (_x_pos, _y_pos) = _widg.make_labels(self._out_labels[:2], layout,
+        #                                      5, y_pos)
+
+        # Create the stress result display widgets.
+        # part.txtTRise = _widg.make_entry(width=100, editable=False, bold=True)
+        # part.txtTJunc = _widg.make_entry(width=100, editable=False, bold=True)
+
+        # Place the stress result display widgets.
+        # layout.put(part.txtTRise, _x_pos, _y_pos[0])
+        # layout.put(part.txtTJunc, _x_pos, _y_pos[1])
+
+        part.graDerate.set_title(_(u"Derating Curve for %s at %s") %
+                                 (part.txtPartNum.get_text(),
+                                  part.txtRefDes.get_text()))
+        part.graDerate.set_xlabel(_(u"Temperature (\u2070C)"))
+        part.graDerate.set_ylabel(_(u"Voltage Derating Factor"))
+
+        layout.show_all()
+
+        # return _x_pos, _y_pos
+        return False
 
     def assessment_inputs_load(self, part):
+        """
+        Loads the RTK Workbook calculation input widgets with calculation input
+        information.
 
-        """ Loads the RelKit Workbook calculation input widgets with
-            calculation input information.
-
-            Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.cmbQuality.set_active(int(part.model.get_value(part.selected_row, 85)))
-        part.cmbApplication.set_active(int(part.model.get_value(part.selected_row, 5)))
-        part.txtCycleRate.set_text(str(fmt.format(part.model.get_value(part.selected_row, 19))))
-        part.txtCurrentRated.set_text(str(fmt.format(part.model.get_value(part.selected_row, 92))))
-        part.txtCurrentOper.set_text(str(fmt.format(part.model.get_value(part.selected_row, 62))))
-        if (int(part.model.get_value(part.selected_row, 85)) <= 0):
-            part.txtCommercialPiQ.set_text(str(fmt.format(part.model.get_value(part.selected_row, 79))))
-        else:
-            part.txtCommercialPiQ.set_text("0.0")
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        return False
+        part.cmbApplication.set_active(int(_model.get_value(_row, 5)))
+        part.txtCycleRate.set_text(str(fmt.format(_model.get_value(_row, 19))))
+        part.txtCurrentRated.set_text(str(fmt.format(
+            _model.get_value(_row, 92))))
+        part.txtCurrentOper.set_text(str(fmt.format(
+            _model.get_value(_row, 62))))
+
+        return _model, _row
 
     def assessment_results_load(self, part):
+        """
+        Loads the RTK Workbook calculation results widgets with calculation
+        results.
 
-        """ Loads the RelKit Workbook calculation results widgets with
-            calculation results.
-
-            Keyword Arguments:
-            part -- the RelKit COMPONENT object.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :return: (_model, _row); the Parts List gtk.Treemodel and selected
+                 gtk.TreeIter()
+        :rtype: tuple
         """
 
-        fmt = "{0:0." + str(part.fmt) + "g}"
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        part.txtLambdaB.set_text(str(fmt.format(part.model.get_value(part.selected_row, 46))))
-        part.txtPiE.set_text(str("{0:0.2g}".format(part.model.get_value(part.selected_row, 72))))
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        return False
+        part.txtLambdaB.set_text(str(fmt.format(_model.get_value(_row, 46))))
+        part.txtPiE.set_text(str("{0:0.2g}".format(
+            _model.get_value(_row, 72))))
 
-    def combo_callback(self, combo, part, _index_):
+        part.txtOSReason.set_text(self.reason)
 
-        """ Callback function for handling Switches Component Class ComboBox
-            changes.
+        part.graDerate.cla()
 
-            Keyword Arguments:
-              combo -- the combobox widget calling this function.
-               part -- the RelKit COMPONENT object.
-            _index_ -- the user-definded index for the calling combobx.
+        return _model, _row
+
+    def _callback_combo(self, combo, part, idx):
+        """
+        Callback function for handling Switches Component Class gtk.ComboBox()
+        changes.
+
+        :param gtk.ComboBox combo: the gtk.ComboBox() calling this method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param int idx: the user-defined index for the calling combobx.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
-        idx = combo.get_active()
+        _index = combo.get_active()
 
         # Update the Component object property and the Parts List treeview.
-        model.set_value(row, _index_, int(idx))
-
-        if(self._ready):
-            part.calculate()
+        _model.set_value(_row, idx, int(_index))
 
         return False
 
-    def entry_callback(self, entry, event, part, convert, _index_):
+    def _callback_entry(self, entry, event, part, convert, idx):
+        """
+        Callback function for handling Switches Component Class gtk.Entry()
+        changes.
 
-        """ Callback function for handling Switches Component Class Entry
-            changes.
-
-            Keyword Arguments:
-              entry -- the entry widget calling this function.
-              event -- the event that triggered calling this function.
-               part -- the RelKit COMPONENT object.
-            convert -- the data type to convert the entry contents to.
-            _index_ -- the position in the Component property array
-                       associated with the data from the entry that called
-                       this function.
-
+        :param gtk.Entry entry: the gtk.Entry() that called this method.
+        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                      method.
+        :param rtk.Component part: the current instance of the RTK Component
+                                   class.
+        :param str convert: the data type to convert the gtk.Entry() contents.
+        :param int idx: the position in the Component property array
+                        associated with the data from the gtk.Entry() that
+                        called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
-        try:
-            # Get the Parts List treeview full model and full model iter.
-            model = part._app.winParts.full_model
-            row = part._app.winParts.model.convert_iter_to_child_iter(part._app.winParts.selected_row)
-        except:
-            return True
+        _path = part._app.winParts._treepaths[part.assembly_id]
+        _model = part._app.winParts.tvwPartsList.get_model()
+        _row = _model.get_iter(_path)
 
         # Update the Component object property.
-        if(convert == "text"):
-            model.set_value(row, _index_, entry.get_text())
+        if convert == "text":
+            _model.set_value(_row, idx, entry.get_text())
 
-        elif(convert == "int"):
-            model.set_value(row, _index_, int(entry.get_text()))
+        elif convert == "int":
+            _model.set_value(_row, idx, int(entry.get_text()))
 
-        elif(convert == "float"):
-            model.set_value(row, _index_, float(entry.get_text()))
+        elif convert == "float":
+            _model.set_value(_row, idx, float(entry.get_text()))
 
         # Commercial PiQ entry called the function.
-        if(_index_ == 79):
+        if idx == 79:
             CpiQ = float(entry.get_text())
 
             # Use this value for piQ if it is greater than zero.
-            if(CpiQ > 0):
-                model.set_value(row, 79, CpiQ)
-
-        if(self._ready):
-            part.calculate()
+            if CpiQ > 0:
+                _model.set_value(_row, 79, CpiQ)
 
         return False

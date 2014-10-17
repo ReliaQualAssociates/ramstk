@@ -3,7 +3,8 @@
 
       requirement_format.xml is part of The RTK Project
 
-      Copyright (C) 2007-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland
+      <andrew.rowland@reliaqual.com>
 -->
 
 <!-- This file contains information used by the RTK application to draw
@@ -477,6 +478,15 @@ experience. -->
             <datatype>gint</datatype>
             <position>51</position>
             <widget>toggle</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Priority</defaulttitle>
+            <usertitle>Priority</usertitle>
+            <datatype>gint</datatype>
+            <position>52</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

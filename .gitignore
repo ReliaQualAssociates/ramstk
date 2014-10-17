@@ -4,8 +4,12 @@
 *.DS_Store
 *.out
 .Rhistory
+.ropeproject
 *.swp
 *.idea
+*.goutputstream*
+*.geanyprj
+
 
 # Python specific files to ignore
 *.pyc
@@ -15,9 +19,16 @@
 Notes
 workbook_mockup.glade
 code.counts
+geany_run_script.sh
 html
 pylintout
 *.xls*
 *.log
 *.txt
 *.csv
+docs/generated/
+docs/build/
+docs/source/
+docs/Makefile
+/devtools/RTKModuleTemplate.py
+/FailureModes.sql
