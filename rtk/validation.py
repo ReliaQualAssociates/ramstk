@@ -734,10 +734,9 @@ class Validation(object):
         self._dic_tasks.clear()
 
         # Load the Requirement Type gtk.CellRendererCombo().
-        _query_ = "SELECT fld_validation_type_desc \
-                   FROM tbl_validation_type"
-        _results_ = self._app.COMDB.execute_query(_query_,
-                                                  None,
+        _query = "SELECT fld_validation_type_desc \
+                  FROM tbl_validation_type"
+        _results_ = self._app.COMDB.execute_query(_query, None,
                                                   self._app.ComCnx)
 
         if _results_ == '' or not _results_ or _results_ is None:
@@ -759,9 +758,7 @@ class Validation(object):
         _query = "SELECT * FROM tbl_validation \
                   WHERE fld_revision_id=%d \
                   ORDER BY fld_validation_id" % self._app.REVISION.revision_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         try:
             _n_tasks = len(_results)
         except TypeError:

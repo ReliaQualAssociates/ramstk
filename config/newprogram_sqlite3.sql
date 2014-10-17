@@ -16,8 +16,8 @@ CREATE TABLE "tbl_program_info" (
     "fld_assembly_prefix" VARCHAR(16) NOT NULL DEFAULT('ASSEMBLY'), -- Default prefix to use for new hardware assembly.
     "fld_assembly_next_id" INTEGER NOT NULL DEFAULT(1),             -- Next hardware assembly ID.
     "fld_part_prefix" VARCHAR(16) NOT NULL DEFAULT('PART'),         -- Default prefix to use for new hardware part or component.
-    "fld_part_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_fmeca_prefix" VARCHAR(16) NOT NULL DEFAULT('FMEA'),
+    "fld_part_next_id" INTEGER NOT NULL DEFAULT(1),                 -- Next hardware component ID.
+    "fld_fmeca_prefix" VARCHAR(16) NOT NULL DEFAULT('FMEA'),        -- Default prefix to use for new FMEA.
     "fld_fmeca_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_mode_prefix" VARCHAR(16) NOT NULL DEFAULT('MODE'),
     "fld_mode_next_id" INTEGER NOT NULL DEFAULT(1),
@@ -101,41 +101,41 @@ CREATE TABLE "tbl_environmental_profile" (
 
 DROP TABLE IF EXISTS "tbl_failure_definitions";
 CREATE TABLE "tbl_failure_definitions" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- Indentifier for the revision.
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Indentifier for the revision.
     "fld_definition_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, --Identifier for the failure definition.
-    "fld_definition" BLOB,                              -- Definition of the failure.
+    "fld_definition" BLOB,                                          -- Definition of the failure.
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS "tbl_revisions";
 CREATE TABLE "tbl_revisions" (
     "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_availability" REAL NOT NULL DEFAULT(1),            -- Assessed availability of the revision.
-    "fld_availability_mission" REAL NOT NULL DEFAULT(1),    -- Assessed mission availability of the revision.
-    "fld_cost" REAL NOT NULL DEFAULT(0),                    -- Assessed cost of the revision.
-    "fld_cost_failure" REAL NOT NULL DEFAULT(0),            -- Assessed cost per failure of the revision.
-    "fld_cost_hour" REAL NOT NULL DEFAULT(0),               -- Assessed cost to operate the revision for one hour.
-    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0),     -- Assessed active failure intensity of the revision.
-    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),    -- Assessed dormant failure intensity of the revision.
-    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),    -- Assessed mission failure intensity of the revision.
-    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),  -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
-    "fld_failure_rate_software" REAL NOT NULL DEFAULT(0),   -- Assessed software failure intensity of the revision.
-    "fld_mmt" REAL NOT NULL DEFAULT(0),                     -- Mean maintenance time (MMT) of the revision.
-    "fld_mcmt" REAL NOT NULL DEFAULT(0),                    -- Mean corrective maintenance time (MCMT) of the revision.
-    "fld_mpmt" REAL NOT NULL DEFAULT(0),                    -- Mean preventive maintenance time (MPMT) of the revision.
-    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission MTBF of the revision.
-    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed MTBF of the revision.
-    "fld_mttr" REAL NOT NULL DEFAULT(0),                    -- Assessed MTTR of the revision.
-    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),           -- Noun name of the revision.
-    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),     -- Assessed mission reliability of the revision.
-    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),   -- Assessed reliability of the revision.
-    "fld_remarks" BLOB NOT NULL,                            -- Remarks about the revision.
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),  -- Total number of components comprising the revision.
-    "fld_revision_code" VARCHAR(8) DEFAULT(''),             -- Alphnumeric code for the revision.
-    "fld_program_time" REAL DEFAULT(0),                     -- Total expected time for all tasks in the development program.
-    "fld_program_time_sd" REAL DEFAULT(0),                  -- Standard error on the total expected program time.
-    "fld_program_cost" REAL DEFAULT(0),                     -- Total expected cost for all tasks in the development program.
-    "fld_program_cost_sd" REAL DEFAULT(0)                   -- Standard error on the total expected program cost.
+    "fld_availability" REAL NOT NULL DEFAULT(1),                    -- Assessed availability of the revision.
+    "fld_availability_mission" REAL NOT NULL DEFAULT(1),            -- Assessed mission availability of the revision.
+    "fld_cost" REAL NOT NULL DEFAULT(0),                            -- Assessed cost of the revision.
+    "fld_cost_failure" REAL NOT NULL DEFAULT(0),                    -- Assessed cost per failure of the revision.
+    "fld_cost_hour" REAL NOT NULL DEFAULT(0),                       -- Assessed cost to operate the revision for one hour.
+    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0),             -- Assessed active failure intensity of the revision.
+    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),            -- Assessed dormant failure intensity of the revision.
+    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission failure intensity of the revision.
+    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
+    "fld_failure_rate_software" REAL NOT NULL DEFAULT(0),           -- Assessed software failure intensity of the revision.
+    "fld_mmt" REAL NOT NULL DEFAULT(0),                             -- Mean maintenance time (MMT) of the revision.
+    "fld_mcmt" REAL NOT NULL DEFAULT(0),                            -- Mean corrective maintenance time (MCMT) of the revision.
+    "fld_mpmt" REAL NOT NULL DEFAULT(0),                            -- Mean preventive maintenance time (MPMT) of the revision.
+    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),                    -- Assessed mission MTBF of the revision.
+    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),                  -- Assessed MTBF of the revision.
+    "fld_mttr" REAL NOT NULL DEFAULT(0),                            -- Assessed MTTR of the revision.
+    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),                   -- Noun name of the revision.
+    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),             -- Assessed mission reliability of the revision.
+    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),           -- Assessed reliability of the revision.
+    "fld_remarks" BLOB NOT NULL,                                    -- Remarks about the revision.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),          -- Total number of components comprising the revision.
+    "fld_revision_code" VARCHAR(8) DEFAULT(''),                     -- Alphnumeric code for the revision.
+    "fld_program_time" REAL DEFAULT(0),                             -- Total expected time for all tasks in the development program.
+    "fld_program_time_sd" REAL DEFAULT(0),                          -- Standard error on the total expected program time.
+    "fld_program_cost" REAL DEFAULT(0),                             -- Total expected cost for all tasks in the development program.
+    "fld_program_cost_sd" REAL DEFAULT(0)                           -- Standard error on the total expected program cost.
 );
 INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'', 0.0, 0.0, 0.0, 0.0);
 
@@ -162,21 +162,21 @@ CREATE TABLE "tbl_functions" (
     "fld_code" VARCHAR(16) NOT NULL DEFAULT('Function Code'),       -- Tracking code for the function.
     "fld_cost" FLOAT NOT NULL DEFAULT(0),                           -- Assessed cost of the function.
     "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),           -- Assessed mission failure intensity of the function.
-    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0), -- Assessed limiting failure intensity of the function.
-    "fld_mmt" FLOAT NOT NULL DEFAULT(0),                    -- Assessed mean maintenance time of the function.
-    "fld_mcmt" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mean corrective maintenance time of the function.
-    "fld_mpmt" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mean preventive maintenance time of the function.
-    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT(0),           -- Assessed mission mean time between failures of the function.
-    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT(0),         -- Assessed limiting mean time between failures of the function.
-    "fld_mttr" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mean time to repair of the function.
-    "fld_name" VARCHAR(255) DEFAULT('Function Name'),       -- Noun name of the function.
-    "fld_remarks" BLOB,                                     -- Remarks associated with the function.
-    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT(0),  -- Total number of failure modes impacting the function.
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(0),  -- Total number of components comprising the function.
-    "fld_type" INTEGER NOT NULL DEFAULT(0),                 --
-    "fld_parent_id" VARCHAR(16) NOT NULL DEFAULT('-'),      --
-    "fld_level" INTEGER NOT NULL DEFAULT(0),                --
-    "fld_safety_critical" INTEGER NOT NULL DEFAULT(0)       -- Indicates whether or not the function is safety critical.
+    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0),         -- Assessed limiting failure intensity of the function.
+    "fld_mmt" FLOAT NOT NULL DEFAULT(0),                            -- Assessed mean maintenance time of the function.
+    "fld_mcmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean corrective maintenance time of the function.
+    "fld_mpmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean preventive maintenance time of the function.
+    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mission mean time between failures of the function.
+    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT(0),                 -- Assessed limiting mean time between failures of the function.
+    "fld_mttr" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean time to repair of the function.
+    "fld_name" VARCHAR(255) DEFAULT('Function Name'),               -- Noun name of the function.
+    "fld_remarks" BLOB,                                             -- Remarks associated with the function.
+    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of failure modes impacting the function.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of components comprising the function.
+    "fld_type" INTEGER NOT NULL DEFAULT(0),                         --
+    "fld_parent_id" VARCHAR(16) NOT NULL DEFAULT('-'),              -- gtk.TreeView() path of parent function.
+    "fld_level" INTEGER NOT NULL DEFAULT(0),                        --
+    "fld_safety_critical" INTEGER NOT NULL DEFAULT(0)               -- Indicates whether or not the function is safety critical.
 );
 INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,'-',0,0);
 
@@ -278,8 +278,8 @@ CREATE TABLE "tbl_requirements" (
 --
 DROP TABLE IF EXISTS "tbl_system";
 CREATE TABLE "tbl_system" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision code.
-    "fld_assembly_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Assembly code.
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision ID.
+    "fld_assembly_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Assembly ID.
     "fld_add_adj_factor" REAL NOT NULL DEFAULT(0),                  -- Failure rate additive adjustment factor.
     "fld_allocation_type" INTEGER NOT NULL DEFAULT(0),              -- Allocation method to use.
     "fld_alt_part_number" VARCHAR(128) DEFAULT(''),                 -- Alternate part number.

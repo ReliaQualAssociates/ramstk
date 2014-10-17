@@ -902,7 +902,8 @@ class Testing(object):
                                                        u"calendar."))
             _labels = [_(u"Phase"), _(u"Test\nArticles"), _(u"Start Date"),
                        _(u"End Date"), _(u"Cumulative\nTest Time"),
-                       _(u"Growth Rate"), _(u"Number of\nFailures"),
+                       _(u"Minimum\nRequired\nGrowth Rate"),
+                       _(u"Expected\nNumber of\nFailures"),
                        _(u"Average\nMTBF"), _(u"Initial\nMTBF"),
                        _(u"Final\nMTBF")]
             _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
@@ -932,10 +933,10 @@ class Testing(object):
                     _datatype = (i, 'gint')
                 elif i in [2, 3]:
                     _datatype = (i, 'gchararray')
-    # TODO: Unhide the growth rate column after figuring out a good way to calculate test phase specific growth rates.
+# TODO: Unhide the growth rate column after figuring out a good way to calculate test phase specific growth rates.
                 elif i == 5:
                     _datatype = (i, 'gfloat')
-                    _column.set_visible(False)
+                #    _column.set_visible(False)
                 else:
                     _datatype = (i, 'gfloat')
                 _column.set_attributes(_cell, text=i)
@@ -2153,7 +2154,7 @@ class Testing(object):
 
         # Calculate the ideal growth curve from 0 - TTT in steps of one.
         _times = range(int(TTT))
-        _ideal = idealized_values(TTT, t1, MTBFI, AvgGR,
+        _ideal = idealized_values(TTT, t1, MTBFI, MTBFF, AvgGR,
                                   self.optMTBF.get_active())
         self.mgp = min(self.mgp, _ideal[-1])
 

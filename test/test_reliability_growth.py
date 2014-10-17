@@ -215,18 +215,28 @@ class TestGrowthPlanning(unittest.TestCase):
         """
 
         # Test the idealized growth curve MTBF calculations.
-        self.assertEqual(idealized_values(10.0, 2.0, 10.0, 0.23, mtbf=True),
-                         [10.0, 10.0, nan, 14.256412877770796,
-                          15.231622717297126, 16.033763625928838,
-                          16.720419273729014, 17.323870356850943,
-                          17.864179456360308, 18.354736450490236])
+        self.assertEqual(idealized_values(10.0, 2.0, 10.0, 20.0, 0.23,
+                                          mtbf=True),
+                         [10.0, 10.0, nan,
+                          14.782866993249925,
+                          15.890046372173748,
+                          16.805634286162935,
+                          17.592751028054352,
+                          18.286941823051453,
+                          18.910379818579006,
+                          19.477909723228045])
 
         # Test the idealized growth curve failure intensity calculations.
-        self.assertEqual(idealized_values(10.0, 2.0, 10.0, 0.23, mtbf=False),
-                         [0.1, 0.1, nan, 0.0701438719945634,
-                         0.06565288666613267, 0.06236838856616672,
-                         0.059807112706269976, 0.057723821490302106,
-                         0.055977941916831954, 0.05448185010432503])
+        self.assertEqual(idealized_values(10.0, 2.0, 10.0, 20.0, 0.23,
+                                          mtbf=False),
+                         [0.1, 0.1, nan,
+                          0.067645876842199471,
+                          0.062932478394221364,
+                          0.059503853467962151,
+                          0.056841593358841147,
+                          0.054683829022710524,
+                          0.05288101083075674,
+                          0.051340211255187583])
 
 
 class TestGrowthAssessment(unittest.TestCase):

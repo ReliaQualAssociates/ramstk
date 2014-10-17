@@ -139,18 +139,12 @@ def average_mtbf(ttt, t1, mtbfi, gr, T, N):
     """
     Function to calculate the average growth rate over a test phase.
 
-    :param ttt: the total test time for the test phase.
-    :type ttt: float
-    :param t1: the length of the first test phase.
-    :type t1: float
-    :param mtbfi: the initial MTBF for the test phase.
-    :type mtbfi: float
-    :param gr: the average growth rate for the test phase.
-    :type gr: float
-    :param T: total test time for previous test phase.
-    :type T: float
-    :param N: cumulative number of failures over previous i - 1 test phases.
-    :type N: integer
+    :param float ttt: the total test time for the test phase.
+    :param float t1: the length of the first test phase.
+    :param float mtbfi: the initial MTBF for the test program.
+    :param float gr: the average growth rate for the test phase.
+    :param float T: total test time for previous test phase.
+    :param int N: cumulative number of failures over previous i - 1 test phases.
     :return: _mtbfa; the average MTBF over the test phase.
     :rtype: float
     """
@@ -363,19 +357,17 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
     test phase.  This is a wrapper function forthe growth_phase() function that
     allows the use of gtk.TreeModel().foreach()
 
-    :param model: the gtk.TreeModel() that called this function.
-    :type model: gtk.TreeModel
-    :param row: the first gtk.TreeIter().
-    :type row: gtk.TreeIter
-    :param t1: the length of the first test phase.
-    :type t1: float
-    :param mtbfi: the initial program MTBF.
-    :type: mtbfi: float
-    :param gr: the overall, average program growth rate.
-    :type gr: float
+    :param gtk.TreeModel model: the gtk.TreeModel() that called this function.
+    :param gtk.TreeIter row: the first gtk.TreeIter().
+    :param float t1: the length of the first test phase.
+    :param float mtbfi: the initial program MTBF.
+    :param float gr: the overall, average program growth rate.
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
+
+    # Function to calculate the optimum growth rate for a test phase.
+    _gr = lambda gr, mi, mf, ttt, t1: (ttt / t1)**gr + (mf / mi) * (gr - 1)
 
     # Set the length of first test phase.  If it is supplied use that,
     # otherwise use the growth start time.  If the length of the first test
@@ -398,7 +390,7 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
 
     # This will be used to set the initial MTBF of phase i equal to the final
     # MTBF of phase i - 1.
-    _prev_mtbfi = mtbfi
+    _mtbfi = mtbfi
 
     # Initialize some variables used to track cumulative values.
     i = 1
@@ -410,11 +402,8 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
         _gri = model.get_value(row, 5)          # Growth rate for phase i.
         _ni = model.get_value(row, 6)           # Num of failures for phase i.
         _mtbfai = model.get_value(row, 7)       # Average MTBF for phase i.
-        _mtbfi = model.get_value(row, 8)        # Starting MTBF for phase i.
+        #_mtbfi = model.get_value(row, 8)        # Starting MTBF for phase i.
         _mtbff = model.get_value(row, 9)        # Final MTBF for phase i.
-
-        if _gri <= 0.0:
-            _gri = gr
 
         # First make sure only one missing value exists for the test phase.
         # If not, inform the user and continue to the next test phase.
@@ -444,11 +433,10 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
                                _previous_time)
 
         if _gri <= 0.0:
-            #_gri = growth_rate(_ttti - _previous_time, _t1, _mtbfi, _mtbff)
-            _gri = gr
+            _gri = fsolve(_gr, 0.01, (_mtbfi, _mtbff, _ttti, _t1))[0]
 
         if _mtbff <= 0.0:
-           _mtbff = final_mtbf(_ttti, _t1, mtbfi, _gri)
+           _mtbff = final_mtbf(_ttti, _t1, _mtbfi, _gri)
 
         # Calculate the expected number of failures for the phase and the
         # average MTBF for the phase.  Even if _mtbfa > 0.0, we need to
@@ -468,17 +456,17 @@ def planned_growth_curve(model, row, t1, mtbfi, gr):
         model.set_value(row, 5, _gri)
         model.set_value(row, 6, ceil(_ni))  # No fractional failures.
         model.set_value(row, 7, _mtbfai)
-        model.set_value(row, 8, _prev_mtbfi)
+        model.set_value(row, 8, _mtbfi)
         model.set_value(row, 9, _mtbff)
 
-        _prev_mtbfi = _mtbff
+        _mtbfi = _mtbff
 
         row = model.iter_next(row)
 
     return False
 
 
-def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
+def idealized_values(ttt, ti, mtbfi, mtbff, gr, mtbf=True):
     """
     Function to calculate the values for the idealized growth curve.
 
@@ -486,12 +474,19 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
     :param float ti: the growth start time (i.e., the time the first fix is
                      implemented on a test article).
     :param float mtbfi: the initial MTBF for the test program.
-    :param float avggr: the average growth rate across the entire test program.
+    :param float mtbff: the final MTBF for the test program.
+    :param float gr: the average growth rate across the entire test program.
     :param bool mtbf: indicates whether to calculate MTBF (default) or failure
                       intensity values.
     :return: _ideal
     :rtype: list of floats
     """
+
+    # Function to calculate the growth rate necessary to have the ideal growth
+    # curve end at the final MTBF.
+    _gr = lambda gr, mi, mf, ttt, t1: (ttt / t1)**gr + (mf / mi) * (gr - 1)
+
+    _ideal_gr = fsolve(_gr, 0.01, (mtbfi, mtbff, ttt, ti))[0]
 
     _time = 0.0
     _ideal = []
@@ -507,10 +502,10 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)       # pylint: disable=E1101
+                _ideal.append(np.nan)
             else:
-                _ideal.append((mtbfi * (_time / ti) ** gr) /
-                              (1.0 - gr))
+                _ideal.append((mtbfi * (_time / ti) ** _ideal_gr) /
+                              (1.0 - _ideal_gr))
 
             _time += 1.0
     else:
@@ -518,10 +513,10 @@ def idealized_values(ttt, ti, mtbfi, gr, mtbf=True):
             if _time < int(ti):
                 _ideal.append(1.0 / mtbfi)
             elif _time == int(ti):
-                _ideal.append(np.nan)       # pylint: disable=E1101
+                _ideal.append(np.nan)
             else:
-                _ideal.append((1.0 - gr) /
-                              (mtbfi * (_time / ti) ** gr))
+                _ideal.append((1.0 - _ideal_gr) /
+                              (mtbfi * (_time / ti) ** _ideal_gr))
 
             _time += 1.0
 
@@ -532,10 +527,9 @@ def planned_values(ttt, mtbfa, mtbf=True):  # pylint: disable=C0103
     """
     Function to create the planned growth curve values.
 
-    :param ttt:
-    :type ttt: float
-    :param mtbfa: the average MTBF for the test phase.
-    :type mtbfa: float
+    :param float ttt: the total test time.
+    :param float mtbfa: the average MTBF for the test phase.
+    :param boolean mtbf: indicates whether to calculate MTBF or failure rates.
     :return: _plan
     :rtype: list of floats
     """
