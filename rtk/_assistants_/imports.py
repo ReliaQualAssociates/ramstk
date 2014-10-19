@@ -650,7 +650,7 @@ class ImportHardware(gtk.Assistant):
                 _util.rtk_error(_(u"Error importing hardware information to "
                                   u"the open RTK Program database."))
                 self._app.import_log.error("Failed to import record: %d" %
-                                           root[i][1])
+                                           int(root[i][1]))
                 return True
 
             else:
@@ -666,7 +666,7 @@ class ImportHardware(gtk.Assistant):
                                                   commit=True):
                     self._app.import_log.error("Failed to import record: %d "
                                                "to the Allocation Table" %
-                                               root[i][1])
+                                               int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_risk_analysis \
@@ -677,7 +677,7 @@ class ImportHardware(gtk.Assistant):
                                                   commit=True):
                     self._app.import_log.error("Failed to import record: %d "
                                                "to the Risk Analysis Table" %
-                                               root[i][1])
+                                               int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_similar_item \
@@ -688,18 +688,7 @@ class ImportHardware(gtk.Assistant):
                                                   commit=True):
                     self._app.import_log.error("Failed to import record: %d "
                                                "to the Similar Item Table" %
-                                               root[i][1])
-                    _error = True
-
-                _query = "INSERT INTO tbl_fmeca \
-                          (fld_revision_id, fld_assembly_id) \
-                          VALUES (%d, %d)" % _values
-                if not self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=True):
-                    self._app.import_log.error("Failed to import record: %d "
-                                               "to the FMECA Table" %
-                                               root[i][1])
+                                               int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_functional_matrix \
@@ -710,7 +699,7 @@ class ImportHardware(gtk.Assistant):
                                                   commit=True):
                     self._app.import_log.error("Failed to import record: %d "
                                                "to the Functional Matrix "
-                                               "Table" % root[i][1])
+                                               "Table" % int(root[i][1]))
                     _error = True
 
             _children = [child for child in contents
