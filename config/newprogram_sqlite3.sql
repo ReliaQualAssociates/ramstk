@@ -1343,24 +1343,25 @@ CREATE TABLE "tbl_fmeca_actions" (
 --
 -- Create tables for storing accelerated test planning information.
 --
+DROP TABLE IF EXISTS "tbl_pof";
 CREATE TABLE "tbl_pof" (
-    "fld_assembly_id" INTEGER DEFAULT(0),               -- ID of the hardware assembly.
-    "fld_mode_id" INTEGER DEFAULT(0),                   -- ID of the failure mode.
-    "fld_mechanism_id" INTEGER DEFAULT(0),              -- ID of the failure mechanism.
-    "fld_load_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,  -- ID of the operating load condition.
-    "fld_load_description" VARCHAR(512) DEFAULT(''),    -- Description of the operating load condition.
-    "fld_primary_stress" VARCHAR(256) DEFAULT(''),      -- Description of the primary operational stress.
-    "fld_secondary_stress" VARCHAR(256) DEFAULT(''),    -- Description of the secondary operational stress.
-    "fld_tertiary_stress" VARCHAR(256) DEFAULT(''),     -- Description of the tertiary operational stress.
-    "fld_priority" VARCHAR(256) DEFAULT(''),            -- Priority of the failure mechanism.
-    "fld_primary_measurable" VARCHAR(256) DEFAULT(''),  -- Description of the measurable parameter for the primary stress.
-    "fld_primary_load_history" VARCHAR(256) DEFAULT(''),    -- Description of the method for quantifying the primary stress.
-    "fld_secondary_measureable" VARCHAR(256) DEFAULT(''),   -- Description of the measurable parameter for the secondary stress.
-    "fld_secondary_load_history" VARCHAR(256) DEFAULT(''),  -- Description of the method for quantifying the secondary stress.
-    "fld_tertiary_measurable" VARCHAR(256) DEFAULT(''), -- Description of the measurable parameter for the tertiary stress.
-    "fld_tertiary_load_history" VARCHAR(256) DEFAULT(''),   -- Description of the method for quantifying the tertiary stress.
-    "fld_remarks" BLOB,                                 -- User remarks/notes.
-    "fld_parent" VARCHAR(16) NOT NULL DEFAULT('0')      -- Path of the parent failure mode or failure mechanism.
+    "fld_assembly_id" INTEGER DEFAULT(0),                           -- ID of the hardware assembly.
+    "fld_mode_id" INTEGER DEFAULT(0),                               -- ID of the failure mode.
+    "fld_mechanism_id" INTEGER DEFAULT(0),                          -- ID of the failure mechanism.
+    "fld_load_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,       -- ID of the operating load condition.
+    "fld_load_description" VARCHAR(512) DEFAULT(''),                -- Description of the operating load condition.
+    "fld_primary_stress" VARCHAR(256) DEFAULT(''),                  -- Description of the primary operational stress.
+    "fld_secondary_stress" VARCHAR(256) DEFAULT(''),                -- Description of the secondary operational stress.
+    "fld_tertiary_stress" VARCHAR(256) DEFAULT(''),                 -- Description of the tertiary operational stress.
+    "fld_priority" VARCHAR(256) DEFAULT(''),                        -- Priority of the failure mechanism.
+    "fld_primary_measurable" VARCHAR(256) DEFAULT(''),              -- Description of the measurable parameter for the primary stress.
+    "fld_primary_load_history" VARCHAR(256) DEFAULT(''),            -- Description of the method for quantifying the primary stress.
+    "fld_secondary_measureable" VARCHAR(256) DEFAULT(''),           -- Description of the measurable parameter for the secondary stress.
+    "fld_secondary_load_history" VARCHAR(256) DEFAULT(''),          -- Description of the method for quantifying the secondary stress.
+    "fld_tertiary_measurable" VARCHAR(256) DEFAULT(''),             -- Description of the measurable parameter for the tertiary stress.
+    "fld_tertiary_load_history" VARCHAR(256) DEFAULT(''),           -- Description of the method for quantifying the tertiary stress.
+    "fld_remarks" BLOB,                                             -- User remarks/notes.
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT('0')                  -- Path of the parent failure mode or failure mechanism.
 );
 
 
@@ -1369,55 +1370,55 @@ CREATE TABLE "tbl_pof" (
 --
 CREATE TABLE "tbl_significant_item" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_q1" INTEGER DEFAULT(1),                        -- Is item a major load carrying element?
-    "fld_q2" INTEGER DEFAULT(1),                        -- Does failure have adverse effect on safety or result in mission failure?
-    "fld_q3" INTEGER DEFAULT(0),                        -- Is the failure rate and consumption of resources high?
-    "fld_q4" INTEGER DEFAULT(0),                        -- Does the item or a similar item have an existing scheduled maintenance requirement?
-    "fld_ssi" INTEGER DEFAULT(0),                       -- Assembly is or is not a structurally significant item.
-    "fld_fsi" INTEGER DEFAULT(1)                        -- Assembly is or is not a functionally significant item.
+    "fld_q1" INTEGER DEFAULT(1),                                    -- Is item a major load carrying element?
+    "fld_q2" INTEGER DEFAULT(1),                                    -- Does failure have adverse effect on safety or result in mission failure?
+    "fld_q3" INTEGER DEFAULT(0),                                    -- Is the failure rate and consumption of resources high?
+    "fld_q4" INTEGER DEFAULT(0),                                    -- Does the item or a similar item have an existing scheduled maintenance requirement?
+    "fld_ssi" INTEGER DEFAULT(0),                                   -- Assembly is or is not a structurally significant item.
+    "fld_fsi" INTEGER DEFAULT(1)                                    -- Assembly is or is not a functionally significant item.
 );
 
 CREATE TABLE "tbl_failure_consequences" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_q1" INTEGER DEFAULT(0),                        -- Is failure evident to operator while performing normal duties?
-    "fld_q1_justify" BLOB,                              -- Justification for the answer to question 1.
-    "fld_q2" INTEGER DEFAULT(1),                        -- Does the failure cause functional loss of secondary damage that could have a direct impact on operating safety?
-    "fld_q2_justify" BLOB,                              -- Justification for the answer to question 2.
-    "fld_q3" INTEGER DEFAULT(1),                        -- Does the hidden failure itself or in combination with a second failure have an adverse affect on operating safety?
-    "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
-    "fld_safety" INTEGER DEFAULT(0),                    -- Failure mode has apparent safety consequences.
-    "fld_safety_hidden" INTEGER DEFAULT(1),             -- Failure mode has hidden safety consequences.
-    "fld_operation_hidden" INTEGER DEFAULT(0)           -- Failure mode has hidden operational consequences.
+    "fld_q1" INTEGER DEFAULT(0),                                    -- Is failure evident to operator while performing normal duties?
+    "fld_q1_justify" BLOB,                                          -- Justification for the answer to question 1.
+    "fld_q2" INTEGER DEFAULT(1),                                    -- Does the failure cause functional loss of secondary damage that could have a direct impact on operating safety?
+    "fld_q2_justify" BLOB,                                          -- Justification for the answer to question 2.
+    "fld_q3" INTEGER DEFAULT(1),                                    -- Does the hidden failure itself or in combination with a second failure have an adverse affect on operating safety?
+    "fld_q3_justify" BLOB,                                          -- Justification for the answer to question 3.
+    "fld_safety" INTEGER DEFAULT(0),                                -- Failure mode has apparent safety consequences.
+    "fld_safety_hidden" INTEGER DEFAULT(1),                         -- Failure mode has hidden safety consequences.
+    "fld_operation_hidden" INTEGER DEFAULT(0)                       -- Failure mode has hidden operational consequences.
 );
 
 CREATE TABLE "tbl_on_condition" (
     "tbl_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "tbl_mode_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_q1" INTEGER DEFAULT(0),                        --
-    "fld_q1_justify" BLOB,                              -- Justification for the answer to question 1.
-    "fld_q2" INTEGER DEFAULT(0),                        --
-    "fld_q2_justify" BLOB,                              -- Justification for the answer to question 2.
-    "fld_q3" INTEGER DEFAULT(0),                        --
-    "fld_q3_justify" BLOB,                              -- Justification for the answer to question 3.
-    "fld_pot_act_interval" REAL,                        -- Interval between potential failure and actual failure.
-    "fld_dmmh_inspection" REAL,                         -- Direct maintenance man-hours for one inspection.
-    "fld_inspect_labor" REAL,                           -- Cost of labor per hour for one inspection.
-    "fld_inspect_mat_cost" REAL,                        -- Material costs for one inspection.
-    "fld_ci" REAL,                                      -- Cost of one inspection (fld_dmmh_inspection * fld_inspect_labor + fld_inspect_mat_cost).
-    "fld_dmmh_repair" REAL,                             -- Direct maintenance man-hours for one repair.
-    "fld_repair_labor" REAL,                            -- Cost of labor per hour for one repair.
-    "fld_repair_mat_cost" REAL,                         -- Material costs for one repair.
-    "fld_ccm" REAL,                                     -- Cost of one corrective maintenance task (fld_dmmh_repair * fld_repair_labor + fld_repair_mat_cost).
-    "fld_op_cost" REAL,                                 -- Cost of one lost hour of operation.
-    "fld_copc" REAL,                                    -- Cost of lost operation (fld_dmmh_repair * fld_op_cost).
-    "fld_cnpm" REAL,                                    -- Cost of not performing preventive maintenance (fld_ccm + fld_copc).
-    "fld_dmmh_correct" REAL,                            -- Direct maintenance man-hours to correct one potential failure.
-    "fld_correct_labor" REAL,                           -- Cost of labor per hour to correct one potential failure.
-    "fld_correct_mat_cost" REAL,                        -- Material costs to correct one potential failure.
-    "fld_pf" REAL,                                      -- Cost of correcting one potential failure (fld_dmmh_correct * fld_correct_labor + fld_correct_mat_cost).
-    "fld_cpm" REAL,                                     -- Cost of one preventive maintenance task (fld_ci + fld_cpf).
-    "fld_num_insp" INTEGER DEFAULT(0)                   -- Number of inspections.
+    "fld_q1" INTEGER DEFAULT(0),                                    --
+    "fld_q1_justify" BLOB,                                          -- Justification for the answer to question 1.
+    "fld_q2" INTEGER DEFAULT(0),                                    --
+    "fld_q2_justify" BLOB,                                          -- Justification for the answer to question 2.
+    "fld_q3" INTEGER DEFAULT(0),                                    --
+    "fld_q3_justify" BLOB,                                          -- Justification for the answer to question 3.
+    "fld_pot_act_interval" REAL,                                    -- Interval between potential failure and actual failure.
+    "fld_dmmh_inspection" REAL,                                     -- Direct maintenance man-hours for one inspection.
+    "fld_inspect_labor" REAL,                                       -- Cost of labor per hour for one inspection.
+    "fld_inspect_mat_cost" REAL,                                    -- Material costs for one inspection.
+    "fld_ci" REAL,                                                  -- Cost of one inspection (fld_dmmh_inspection * fld_inspect_labor + fld_inspect_mat_cost).
+    "fld_dmmh_repair" REAL,                                         -- Direct maintenance man-hours for one repair.
+    "fld_repair_labor" REAL,                                        -- Cost of labor per hour for one repair.
+    "fld_repair_mat_cost" REAL,                                     -- Material costs for one repair.
+    "fld_ccm" REAL,                                                 -- Cost of one corrective maintenance task (fld_dmmh_repair * fld_repair_labor + fld_repair_mat_cost).
+    "fld_op_cost" REAL,                                             -- Cost of one lost hour of operation.
+    "fld_copc" REAL,                                                -- Cost of lost operation (fld_dmmh_repair * fld_op_cost).
+    "fld_cnpm" REAL,                                                -- Cost of not performing preventive maintenance (fld_ccm + fld_copc).
+    "fld_dmmh_correct" REAL,                                        -- Direct maintenance man-hours to correct one potential failure.
+    "fld_correct_labor" REAL,                                       -- Cost of labor per hour to correct one potential failure.
+    "fld_correct_mat_cost" REAL,                                    -- Material costs to correct one potential failure.
+    "fld_pf" REAL,                                                  -- Cost of correcting one potential failure (fld_dmmh_correct * fld_correct_labor + fld_correct_mat_cost).
+    "fld_cpm" REAL,                                                 -- Cost of one preventive maintenance task (fld_ci + fld_cpf).
+    "fld_num_insp" INTEGER DEFAULT(0)                               -- Number of inspections.
 );
 
 CREATE TABLE "tbl_hard_time" (
