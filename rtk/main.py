@@ -354,25 +354,6 @@ class RTK(object):
                   WHERE fld_revision_id=%d" % self.REVISION.revision_id
         self.winParts.load_incident_tree(_query)
 
-        #if _conf.RTK_MODULES[0] == 1:       # Revisions
-        #    self.REVISION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[1] == 1:     # Functions
-         #   self.FUNCTION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[2] == 1:     # Requirements
-         #   self.REQUIREMENT.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[3] == 1:     # Hardware
-         #   self.HARDWARE.load_tree()
-        #elif _conf.RTK_MODULES[4] == 1:     # Software
-         #   self.SOFTWARE.load_tree()
-        #elif _conf.RTK_MODULES[5] == 1:     # V&V Tracking
-         #   self.VALIDATION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[6] == 1:     # Reliability Testing
-         #   self.TESTING.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[7] == 1:     # Field incident tracking
-         #   self.INCIDENT.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[8] == 1:     # Survival analysis
-         #   self.DATASET.treeview.grab_focus()
-
         self.LOADED = True
 
         self.winTree.statusbar.pop(2)
