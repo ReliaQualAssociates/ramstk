@@ -23,24 +23,11 @@ try:
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Add NLS support.
 _ = gettext.gettext
 
 import numpy as np
-from math import ceil, exp, log, sqrt
 
 import configuration as _conf
 import utilities as _util
@@ -50,10 +37,9 @@ def calculate_part(model):
     """
     Calculates the hazard rate for a component.
 
-    :param model: the component's h(t) prediction model and the input
-                  variables.  The keys are the model variables and the values
-                  are the values of the variable in the key.
-    :type model: dictionary
+    :param dict model: the component's h(t) prediction model and the input
+                       variables.  The keys are the model variables and the
+                       values are the values of the variable in the key.
     :return: _lambdap, the calculated h(t).
     :rtype: float
     """
@@ -64,7 +50,7 @@ def calculate_part(model):
     for i in range(len(_keys)):
         vars()[_keys[i]] = _values[i]
 
-    _lambdap = eval(model['equation'])
+    _lambdap = eval(model['equation'])      # pylint: disable=W0123
 
     return _lambdap
 
@@ -125,7 +111,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     |            | Max Junction Temp          |  125C   |   N/A   |
     +------------+----------------------------+---------+---------+
     | GaAs Micro | Max Junction Temp          |  135C   |   N/A   |
-    | circuits   +----------------------------+---------+---------+
+    | circuits   |                            |         |         |
     +------------+----------------------------+---------+---------+
     | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
     | processors +----------------------------+---------+---------+
@@ -190,7 +176,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                       class gtk.TreeModel().
     :type systemrow: gtk.TreeIter
     """
-
+# TODO: Move overstress calculations to each component type.  See thumbwheel.py for example.
     # |------------------  <---- Knee Temperature
     # |                  \
     # |                   \
@@ -203,9 +189,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     harsh = True
 
     Eidx = systemmodel.get_value(systemrow, 22)
-    Tknee = partmodel.get_value(partrow, 43)
     Tmax = partmodel.get_value(partrow, 55)
-    Tmin = partmodel.get_value(partrow, 56)
 
     category = systemmodel.get_value(systemrow, 11)
     subcategory = systemmodel.get_value(systemrow, 78)
@@ -857,14 +841,14 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6: # Naval
+    elif active_env > 3 and active_env < 6:     # Naval
         if dormant_env == 1:                # Ground
             e_index = 4
         elif dormant_env == 2:              # Naval
             e_index = 3
         else:
             e_index = 7
-    elif active_env > 5 and active_env < 11:        # Airborne
+    elif active_env > 5 and active_env < 11:    # Airborne
         if dormant_env == 1:                # Ground
             e_index = 2
         elif dormant_env == 3:              # Airborne
@@ -893,16 +877,13 @@ def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
 
-    :param modeca: list containing inputs for the MIL-STD-1629A mode
-                   criticality calculation.
-    :type modeca: list of mixed types
-    :param itemca: list containing inputs for the MIL-STD-1629A item
-                   criticality calculation.
-    :type itemca: list of mixed types
-    :param rpn: list containing inputs for the automotive criticality
-                calculation.
-    :type rpn: list of mixed types
-    :return: modeca, itemca, rpn
+    :param list modeca: list containing inputs for the MIL-STD-1629A mode
+                        criticality calculation.
+    :param list itemca: list containing inputs for the MIL-STD-1629A item
+                        criticality calculation.
+    :param list rpn: list containing inputs for the automotive criticality
+                     calculation.
+    :return: modeca, itemca, rpn; mode criticality, item criticality, and RPN.
     :rtype: list, list, list
     """
 
@@ -916,7 +897,7 @@ def criticality_analysis(modeca, itemca, rpn):
     _keys = modeca.keys()
     for i in range(len(_keys)):
         modeca[_keys[i]][4] = modeca[_keys[i]][0] * modeca[_keys[i]][1] * \
-                              modeca[_keys[i]][2] * modeca[_keys[i]][3]
+            modeca[_keys[i]][2] * modeca[_keys[i]][3]
         modeca[_keys[i]][5] = modeca[_keys[i]][1] * modeca[_keys[i]][2]
 
     # Now calculate the item criticality in accordance with MIL-STD-1629A.
@@ -926,43 +907,37 @@ def criticality_analysis(modeca, itemca, rpn):
         for k in range(len(_cats)):
             _crit = 0.0
             _modes = [j[0] for j in itemca[_keys[i]] if j[1] == _cats[k]]
-            for l in range(len(_modes)):
-                _crit += modeca[_modes[l]][4]
+            for _m in range(len(_modes)):
+                _crit += modeca[_modes[_m]][4]
 
             if _cats[k] is not None and _cats[k] != '' and \
                _crit is not None and _crit != '':
                 _item_crit = _item_crit + _util.none_to_string(_cats[k]) + \
-                             ": " + \
-                             str(fmt.format(_util.none_to_string(_crit))) + \
-                             "\n"
+                    ": " + str(fmt.format(_util.none_to_string(_crit))) + "\n"
 
         itemca[_keys[i]].append(_item_crit)
 
-    # now calculate the rpn criticality.
+    # Now calculate the rpn criticality.
     _keys = rpn.keys()
     for i in range(len(_keys)):
         rpn[_keys[i]][3] = rpn[_keys[i]][0] * rpn[_keys[i]][1] * \
-                           rpn[_keys[i]][2]
+            rpn[_keys[i]][2]
         rpn[_keys[i]][7] = rpn[_keys[i]][4] * rpn[_keys[i]][5] * \
-                           rpn[_keys[i]][6]
+            rpn[_keys[i]][6]
 
     return modeca, itemca, rpn
 
 
-def beta_bounds(a, m, b, alpha):
+def beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     """
     Function to calculate the mean, standard error, and bounds on the mean of
     a beta distribution.  These are the project management estimators, not
     exact calculations.
 
-    :param a: the minimum expected value.
-    :type a: float
-    :param m: most likely value.
-    :type m: float
-    :param b: the maximum expected value.
-    :type b: float
-    :param alpha: the desired confidence level.
-    :type alpha: float
+    :param float a: the minimum expected value.
+    :param float m: most likely value.
+    :param float b: the maximum expected value.
+    :param float alpha: the desired confidence level.
     :return: _meanll, _mean, _meanul; the calculated mean and bounds.
     :rtype: tuple of floats
     """
@@ -989,34 +964,33 @@ def beta_bounds(a, m, b, alpha):
     return _meanll, _mean, _meanul, _sd
 
 
-def calculate_field_ttf(_dates_):
+def calculate_field_ttf(dates):
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
-    :param _dates_: tuple containing start and end date for calculating
-                    time to failure.
+    :param tuple dates: tuple containing start and end date for calculating
+                        time to failure.
+    :return: _ttf.days; the number of days between the start and end date.
+    :rtype: float
     """
 
     from datetime import datetime
 
-    _start = datetime(*time.strptime(_dates_[0], "%Y-%m-%d")[0:5]).date()
-    _fail = datetime(*time.strptime(_dates_[1], "%Y-%m-%d")[0:5]).date()
-    ttf = _fail - _start
+    _start = datetime.strptime(dates[0], "%Y-%m-%d")
+    _fail = datetime.strptime(dates[1], "%Y-%m-%d")
+    _ttf = _fail - _start
+    print _ttf.days
+    return _ttf.days
 
-    return ttf.days
 
-
-def smooth_curve(x, y, num):
+def smooth_curve(x, y, num):                # pylint: disable=C0103
     """
     Function to produce smoothed plots where there are a small number of data
     points in the original data set.
 
-    :param x: a numpy array of the raw x-values.
-    :type x: numpy array
-    :param y: a numpy array of the raw y-values.
-    :type y: numpy array
-    :param num: the number of points to generate.
-    :type num: integer
+    :param array x: a numpy array of the raw x-values.
+    :param array y: a numpy array of the raw y-values.
+    :param int num: the number of points to generate.
     :return: _new_x, _new_y
     :rtype: list
     """
@@ -1024,8 +998,9 @@ def smooth_curve(x, y, num):
     from scipy.interpolate import spline    # pylint: disable=E0611
 
     _error = False
-    x=np.array(x)
-    y=np.array(y)
+    x = np.array(x)
+    y = np.array(y)
+
     # Create a new set of x values to be used for smoothing the data.  The new
     # x values are in the range of the minimum and maximum x values passed to
     # the function.  The number of new data points between these values is
@@ -1042,7 +1017,7 @@ def smooth_curve(x, y, num):
         _error = True
         _new_y = np.zeros(num)              # pylint: disable=E1101
 
-    _new_x = _new_x.tolist()
+    _new_x = _new_x.tolist()                # pylint: disable=E1103
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error

@@ -108,7 +108,7 @@ class CellRendererML(gtk.CellRendererText):
         scrolled_window = gtk.ScrolledWindow()
         scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolled_window.set_property('visible', True)
-        #self.textedit_window.vbox.pack_start(scrolled_window)
+        # self.textedit_window.vbox.pack_start(scrolled_window)
 
         scrolled_window.add(self.textedit)
         self.textedit_window.vbox.add(scrolled_window)
@@ -868,7 +868,7 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
     if y1 is not None:
         if _type_[0] == 1:
             line, = axis.step(x, y1, _marker_[0], where='mid')
-            for i in range(n_points):           # pylint: disable=W0612
+            for i in range(n_points):
                 line.set_ydata(y1)
             _lst_min_.append(min(y1))
             _lst_max_.append(max(y1))

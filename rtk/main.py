@@ -21,7 +21,7 @@ import logging
 import os
 import sys
 
-from time import sleep
+# from time import sleep
 
 import configuration as _conf
 import mysql as _mysql
@@ -32,7 +32,6 @@ import tree as _tree
 import utilities as _util
 
 from dataset import Dataset
-from component import Component
 from function import Function
 from hardware import Hardware
 from incident import Incident
@@ -87,7 +86,7 @@ def main():
     return 0
 
 
-class SplashScreen():
+class SplashScreen(object):
     """
     This is the splash screen class.
     """
@@ -117,9 +116,9 @@ class SplashScreen():
         _vbox = gtk.VBox(False, 1)
         self.window.add(_vbox)
 
-        #_image = gtk.Image()
-        #_image.set_from_file("/home/andrew/.config/RTK/icons/ReliaFree.png")
-        #_vbox.pack_start(_image, True, True)
+        # _image = gtk.Image()
+        # _image.set_from_file("/home/andrew/.config/RTK/icons/ReliaFree.png")
+        # _vbox.pack_start(_image, True, True)
 
         _label = gtk.Label(_(u"Copyright 2007 - 2014, Andrew Rowland"))
         _label.set_alignment(0, 0.5)
@@ -223,7 +222,7 @@ class RTK(object):
             _util.rtk_warning(_(u"Cannot find license file %s.  "
                                 u"If your license file is elsewhere, "
                                 u"please place it in %s." %
-                              (_license_file, _conf.DATA_DIR)))
+                                (_license_file, _conf.DATA_DIR)))
             sys.exit(2)
 
         _license_key = _license_file.readline().rstrip('\n')

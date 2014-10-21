@@ -317,7 +317,6 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import ConfigParser
-import sys
 from os import environ, path, makedirs, name
 
 # Add localization support.
@@ -532,7 +531,7 @@ class RTKConf(object):
             fixed.put(cmbDBType, 345, y_pos)
 
             fixed.show_all()
-            dialog.vbox.pack_start(fixed)
+            dialog.vbox.pack_start(fixed)   # pylint: disable=E1101
 
             if dialog.run() == -3:
                 RTKcomlist = []
