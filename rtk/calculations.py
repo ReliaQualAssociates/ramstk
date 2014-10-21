@@ -156,14 +156,6 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     |            +----------------------------+---------+---------+
     |            | Max Junction Temp          |  125C   |   N/A   |
     +------------+----------------------------+---------+---------+
-    | Switches   | Resistive Load Current     |   75%   |   90%   |
-    |            +----------------------------+---------+---------+
-    |            | Capacitive Load Current    |   75%   |   90%   |
-    |            +----------------------------+---------+---------+
-    |            | Inductive Load Current     |   40%   |   50%   |
-    |            +----------------------------+---------+---------+
-    |            | Contact Power              |   50%   |   60%   |
-    +------------+----------------------------+---------+---------+
 
     :param partmodel: the winParts full gtk.TreeModel().
     :type partmodel: gtk.TreeModel
