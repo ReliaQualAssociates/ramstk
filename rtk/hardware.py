@@ -2455,7 +2455,7 @@ class Hardware(object):
                                         self._callback_entry, 'text', 86)
 
             # Create the component-specific widgets for quadrant #1.
-            # TODO: Move to the Component class.
+# TODO: Move this to the Component class.
             _labels = [_(u"Calculation Model:")]
 
             (_x_pos,
@@ -2473,7 +2473,7 @@ class Hardware(object):
 
             self.cmbCalcModel.connect('changed', self._callback_combo, 10)
 
-            # TODO: Move this to the Component class.
+# TODO: Move this to the Component class.
             _labels = [_(u"Min Rated Temp:"), _(u"Knee Temp:"),
                        _(u"Max Rated Temp:"), _(u"Rated Voltage:"),
                        _(u"Operating Voltage:"), _(u"Rated Current:"),
@@ -6715,7 +6715,7 @@ class Hardware(object):
 
             if self.part:                   # Update the Parts List.
                 # self.model.set_value(self.selected_row, _index_, _text_)
-                print "TODO: Write code to update parts list."
+                pass
 
             self._update_attributes()
 

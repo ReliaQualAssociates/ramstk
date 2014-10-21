@@ -2495,11 +2495,6 @@ class Testing(object):
                 self.lblFEF.set_markup("<span foreground='red'>"
                                        "High Risk</span>")
 
-# TODO: Add check of management strategy.
-# < 0.9 => high risk
-# > 0.95 => high risk
-# 0.9 - 0.925 => medium risk
-# 0.925 - 0.95 => low risk
             # Reliability growth planning feasibility per phase.
             i = 0
             _model = self.tvwTestFeasibility.get_model()

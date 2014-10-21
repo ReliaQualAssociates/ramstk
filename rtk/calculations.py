@@ -176,7 +176,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
                       class gtk.TreeModel().
     :type systemrow: gtk.TreeIter
     """
-# TODO: Move overstress calculations to each component type.  See thumbwheel.py for example.
+
     # |------------------  <---- Knee Temperature
     # |                  \
     # |                   \

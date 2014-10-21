@@ -967,7 +967,6 @@ def cut_copy_paste(__widget, action):
                        2 = paste
     """
 
-    # TODO: Write code to cut/copy/paste.
     clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(),
                               "CLIPBOARD")
 
@@ -1002,7 +1001,6 @@ def select_all(widget):
     :param gtk.Widget widget: the gtk.Widget() that called this function.
     """
 
-    # TODO: Write code to select all items in treeviews.
     return False
 
 

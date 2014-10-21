@@ -528,8 +528,8 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
     :param int fmt_idx: the index of the format file to use when creating the
                         gtk.TreeView().
     :param RTK app: the RTK application.
-    :param list cmblist: the list of items to load into the
-                         gtk.CellRendererCombo().
+    :keyword list cmblist: the list of items to load into the
+                           gtk.CellRendererCombo().
     :keyword str bg_col: the background color to use for each row.  Defaults to
                          white.
     :keyword str fg_col: the foreground (text) color to use for each row.

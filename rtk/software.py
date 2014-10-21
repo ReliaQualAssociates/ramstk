@@ -1996,7 +1996,6 @@ class Software(object):
             _column.set_widget(_label)
             self.tvwCSCITestSelectionMatrix.append_column(_column)
             _cell.connect('toggled', _test_selection_tree_edit, 13, _model)
-# TODO: Append recommended and selected values from database for display.
             for i in range(len(self._csci_test_rankings)):
                 _model.append(self._csci_test_rankings[i])
 

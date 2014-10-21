@@ -2966,7 +2966,6 @@ class Dataset(object):
 
                 # Calculate bounds on the cumulative and instantaneous MTBF and
                 # failure intensities.
-# TODO: Implement mtbf bounds using Crow and Fisher methods.
                 _mtbfc_ll = self.scale[0] * _T_star**self.shape[0]
                 _mtbfc_ul = self.scale[2] * _T_star**self.shape[2]
 
@@ -2981,7 +2980,6 @@ class Dataset(object):
                 _running_results.append(_record)
                 _model.append(_record)
 
-# TODO: Implement Cramer-von Mises GoF results.
             _cvm = cramer_von_mises(_X, self.shape[1], _T_star, type2=False)
 
             # Load the non-parametric results gtk.TreeView
@@ -3039,10 +3037,10 @@ class Dataset(object):
                                             color='b', ls='-.')
             self.axAxis1.add_line(_line)
 
-            #line = matplotlib.lines.Line2D(_plot_times,
-            #                               _plot_model, lw=1.5,
-            #                               color='k', ls='--')
-            #self.axAxis1.add_line(line)
+            # line = matplotlib.lines.Line2D(_plot_times,
+            #                                _plot_model, lw=1.5,
+            #                                color='k', ls='--')
+            # self.axAxis1.add_line(line)
 
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
