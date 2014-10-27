@@ -6,7 +6,7 @@ This is the test class for testing Revision module algorithms and models.
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -21,6 +21,9 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 import numpy as np
+
+import pygtk
+import gtk
 
 import rtk.configuration as _conf
 import rtk.utilities as _util
@@ -58,14 +61,18 @@ class TestRevision(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self._revision, Revision))
-        # self.assertEqual(_conf.RTK_MTIME, 10.0)
-        # self.assertEqual(_conf.FRMULT, 1.0)
 
     def test_default_attribute_values(self):
         """
         Test to ensure default values for public attributes are correct.
         """
 
+        self.assertEqual(self._revision._dic_missions, {})
+        self.assertEqual(self._revision._dic_mission_phase, {})
+        self.assertEqual(self._revision._dic_environments, {})
+        
+        self.assertEqual(self._revision._lst_handler_id, [1284, 1285, 1286])
+        
         self.assertEqual(self._revision.revision_id, 0)
         self.assertEqual(self._revision.name, '')
         self.assertEqual(self._revision.n_parts, 0)
@@ -94,6 +101,14 @@ class TestRevision(unittest.TestCase):
         self.assertEqual(self._revision.program_cost, 0.0)
         self.assertEqual(self._revision.program_cost_se, 0.0)
 
+    def test_create_toolbar(self):
+        """
+        Test of the toolbar creation.
+        """
+        
+        self.assertTrue(isinstance(self._revision._create_toolbar(), 
+                                    gtk.Toolbar))
+        
     def test_reliability_calculations(self):
         """
         Test to ensure no errors are raised when calculating the revision

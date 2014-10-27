@@ -311,9 +311,9 @@ class Revision(object):
 
         _toolbar = gtk.Toolbar()
 
-        _position_ = 0
+        _position = 0
 
-        # Add revision button.
+        # Add revision gtk.ToolButton().
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Adds a new revision to the open RTK "
                                     u"Program database."))
@@ -321,10 +321,10 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', AddRevision, self._app)
-        _toolbar.insert(_button_, _position_)
-        _position_ += 1
+        _toolbar.insert(_button_, _position)
+        _position += 1
 
-        # Delete revision button
+        # Delete revision gtk.ToolButton().
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Removes the currently selected revision "
                                     u"from the open RTK Program database."))
@@ -332,13 +332,13 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.delete_revision)
-        _toolbar.insert(_button_, _position_)
-        _position_ += 1
+        _toolbar.insert(_button_, _position)
+        _position += 1
 
-        _toolbar.insert(gtk.SeparatorToolItem(), _position_)
-        _position_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
-        # Calculate revision _button_
+        # Calculate revision gtk.ToolButton().
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Calculate the currently selected "
                                     u"revision."))
@@ -346,10 +346,10 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.calculate)
-        _toolbar.insert(_button_, _position_)
-        _position_ += 1
+        _toolbar.insert(_button_, _position)
+        _position += 1
 
-        # Create report button.
+        # Create report gtk.ToolButton().
         _button = gtk.MenuToolButton(None, label="")
         _button.set_tooltip_text(_(u"Create Revision reports."))
         _image = gtk.Image()
@@ -371,13 +371,13 @@ class Revision(object):
         _button.set_menu(_menu)
         _menu.show_all()
         _button.show()
-        _toolbar.insert(_button, _position_)
-        _position_ += 1
+        _toolbar.insert(_button, _position)
+        _position += 1
 
-        _toolbar.insert(gtk.SeparatorToolItem(), _position_)
-        _position_ += 1
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
 
-        # Save revision _button_.
+        # Save revision gtk.ToolButton().
         _button_ = gtk.ToolButton()
         _button_.set_tooltip_text(_(u"Saves the currently selected revision "
                                     u"to the open RTK Program database."))
@@ -385,7 +385,7 @@ class Revision(object):
         image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button_.set_icon_widget(image)
         _button_.connect('clicked', self.save_revision)
-        _toolbar.insert(_button_, _position_)
+        _toolbar.insert(_button_, _position)
 
         _toolbar.show()
 
@@ -1114,24 +1114,24 @@ class Revision(object):
 
             return False
 
-        _notebook_ = gtk.Notebook()
+        _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
         if _conf.TABPOS[2] == 'left':
-            _notebook_.set_tab_pos(gtk.POS_LEFT)
+            _notebook.set_tab_pos(gtk.POS_LEFT)
         elif _conf.TABPOS[2] == 'right':
-            _notebook_.set_tab_pos(gtk.POS_RIGHT)
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif _conf.TABPOS[2] == 'top':
-            _notebook_.set_tab_pos(gtk.POS_TOP)
+            _notebook.set_tab_pos(gtk.POS_TOP)
         else:
-            _notebook_.set_tab_pos(gtk.POS_BOTTOM)
+            _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
-        _create_general_data_tab(self, _notebook_)
-        _create_usage_profile_tab(self, _notebook_)
-        _create_failure_definition_tab(self, _notebook_)
-        _create_assessment_results_tab(self, _notebook_)
+        _create_general_data_tab(self, _notebook)
+        _create_usage_profile_tab(self, _notebook)
+        _create_failure_definition_tab(self, _notebook)
+        _create_assessment_results_tab(self, _notebook)
 
-        return _notebook_
+        return _notebook
 
     def load_tree(self):
         """

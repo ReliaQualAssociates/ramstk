@@ -930,7 +930,8 @@ def beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     :param float m: most likely value.
     :param float b: the maximum expected value.
     :param float alpha: the desired confidence level.
-    :return: _meanll, _mean, _meanul; the calculated mean and bounds.
+    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
+                                           standard error.
     :rtype: tuple of floats
     """
 

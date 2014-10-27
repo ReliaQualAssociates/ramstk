@@ -88,15 +88,15 @@ DROP TABLE IF EXISTS "tbl_environmental_profile";
 CREATE TABLE "tbl_environmental_profile" (
     "fld_mission_id" INTEGER NOT NULL DEFAULT(0),                   -- Identifier for the mission.
     "fld_phase" VARCHAR(128) NOT NULL DEFAULT('All'),               -- Name of the mission phase.
-    "fld_condition_id" INTEGER,                                     -- Identifier for the environmental condition.
+    "fld_condition_id" INTEGER PRIMARY KEY AUTOINCREMENT,           -- Identifier for the environmental condition.
     "fld_condition_name" VARCHAR(128),                              -- Noun name of the environmental condition.
     "fld_units" VARCHAR(64),                                        -- Units of measure for the environmental condition.
     "fld_minimum" REAL,                                             -- Minimum value of the environmental condition.
     "fld_maximum" REAL,                                             -- Maximum value of the environmental condition.
     "fld_mean" REAL,                                                -- Mean value of the environmental condition.
     "fld_variance" REAL,                                            -- Variance of the environmental condition.
+    "fld_phase_id" INTEGER,                                         -- Identifier for the mission phase.
     FOREIGN KEY("fld_mission_id") REFERENCES "tbl_missions"("fld_mission_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_mission_id", "fld_condition_id")
 );
 
 DROP TABLE IF EXISTS "tbl_failure_definitions";
