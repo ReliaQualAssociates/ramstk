@@ -56,3 +56,17 @@ class DAO(object):
         (_results, _error_code, _last_id) = self.model.execute(query, commit)
 
         return(_results, _error_code, _last_id)
+
+    def get_last_id(self, table):
+        """
+        Retrieves the next value to be used in the autoincrement field for the
+        passed table.
+
+        :param str table: the name of the table to get the next value.
+        :return: _next_id
+        :rtype: int
+        """
+
+        _last_id = self.model.get_last_id(table)
+
+        return _last_id

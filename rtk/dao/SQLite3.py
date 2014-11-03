@@ -108,9 +108,32 @@ class Model(object):
 
         return(_results, _error_code, _last_id)
 
-    def _get_last_id(self, cursor):
+    def get_last_id(self, table):
         """
-        Method to retrieve the last value used in the autoincrement field.
+        Retrieves the last value to be used in the autoincrement field for the
+        passed table.
+
+        :param str table: the name of the table to get the next value.
+        :return: (_last_id, _error_code)
+        :rtype: tuple
         """
 
-        _query = "SELECT seq FROM sqlite_sequence"
+        _error_code = 0
+
+        _query = "SELECT seq \
+                  FROM sqlite_sequence \
+                  WHERE name='{0:s}'".format(table)
+
+        with self.connection:
+            _cursor = self.connection.cursor()
+            _cursor.execute(_query)
+            try:
+                _last_id = _cursor.fetchall()
+                _last_id = _last_id[0][0]
+            except sqlite3.Error, _error:
+                _error_code = error_handler(_error)
+                _last_id = -1
+
+        _cursor.close()
+
+        return(_last_id, _error_code)

@@ -38,7 +38,7 @@ class TestSQLite3Model(unittest.TestCase):
         Method to setup the test fixture for the Environment model class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/AGCO/AxialCombine/AxialCombine.rtk'
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
         self.DUT = _dao(_database)
 
     def test_create_sqlite3(self):
@@ -59,3 +59,10 @@ class TestSQLite3Model(unittest.TestCase):
         _query = "SELECT * FROM tbl_revisions"
 
         self.assertEqual(self.DUT.execute(_query)[1], 0)
+
+    def test_get_next_id(self):
+        """
+        Tests that the next ID can be retrieved.
+        """
+
+        self.assertEqual(self.DUT.get_last_id('tbl_functions')[1], 0)
