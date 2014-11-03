@@ -67,8 +67,6 @@ class WorkView(gtk.VBox):
 
     :ivar _workview: the RTK top level Work View window to embed the Revision
                      Work Book into.
-    :ivar _modulebook: the :class:`rtk.Revision.ModuleBook` to associate with
-                       the Work Book instance.
     :ivar _revision_model: the Revision data model whose attributes are being
                            displayed.
     :ivar _usage_model: the Usage Profile data model whose attributes are being
@@ -82,6 +80,13 @@ class WorkView(gtk.VBox):
     :ivar _lst_handler_id: list containing the ID's of the callback signals for
                            each gtk.Widget() associated with an editable
                            Revision attribute.
+
+    :ivar dtcRevision: the :class:`rtk.revision.Revision.Revision` data
+                       controller to use with this Work Book.
+    :ivar dtcProfile: the :class:`rtk.usage.UsageProfile.UsageProfile` data
+                       controller to use with this Work Book.
+    :ivar dtcDefinitions: the :class:`rtk.failure_definition.Controller` data
+                       controller to use with this Work Book.
 
     :ivar btnAddSibling: the :class`gtk.Button` to add a new item to the Usage
                          Profile at the same level as the selected item.
@@ -160,9 +165,6 @@ class WorkView(gtk.VBox):
 
         # Initialize private scalar attributes.
         self._workview = workview
-        self.dtcRevision = modulebook.dtcRevision
-        self.dtcProfile = modulebook.dtcProfile
-        self.dtcDefinitions = modulebook.dtcDefinitions
         self._revision_model = None
         self._usage_model = None
 
@@ -172,6 +174,10 @@ class WorkView(gtk.VBox):
         # Initialize private list attributes.
         self._lst_handler_id = []
 
+        # Initialize public scalar attributes.
+        self.dtcRevision = modulebook.dtcRevision
+        self.dtcProfile = modulebook.dtcProfile
+        self.dtcDefinitions = modulebook.dtcDefinitions
         self.revision_id = None
 
         # General data tab widgets.
@@ -1247,7 +1253,7 @@ class WorkView(gtk.VBox):
             _text = entry.get_text()
             self._revision_model.code = _text
 
-        self._modulebook.update(index, _text)
+        self._module_book.update(index, _text)
 
         return False
 

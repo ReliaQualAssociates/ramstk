@@ -142,7 +142,7 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self._workbook = WorkView(view.workview, self)
 
-    def request_load_data(self, dao):
+    def request_load_data(self, dao, revision_id=None):
         """
         Loads the Revision Module Book view gtk.TreeModel() with revision
         information.

@@ -332,17 +332,20 @@ class Model(object):
 
 class Revision(object):
     """
-    The Revision controller provides an interface between the Revision data
-    model and an RTK view model.  A single Revision controller can manage one
-    or more Revision data models.  The attributes of a Revision controller are:
+    The Revision data controller provides an interface between the Revision
+    data model and an RTK view model.  A single Revision controller can manage
+    one or more Revision data models.  The attributes of a Revision data
+    controller are:
 
+    :ivar _dao: the Data Access Object to use when communicating with the RTK
+    Project database.
     :ivar dicRevisions: Dictionary of the Revision data models controlled.  Key
     is the Revision ID; value is a pointer to the Revision data model instance.
     """
 
     def __init__(self):
         """
-        Method to initialize a Revision controller instance.
+        Initializes a Revision data controller instance.
         """
 
         # Initialize private scalar attributes.
@@ -353,14 +356,14 @@ class Revision(object):
 
     def request_revisions(self, dao):
         """
-        Method to read the RTK Project database and load all the revisions.
-        For each revision returned:
+        Reads the RTK Project database and loads all the revisions.  For each
+        revision returned:
 
         #. Retrieve the revisions from the RTK Project database.
         #. Create a Revision data model instance.
         #. Set the attributes of the data model instance from the returned
            results.
-        #. Add the instance to the list of Revisions being managed
+        #. Add the instance to the dictionary of Revisions being managed
            by this controller.
 
         :param rtk.DAO dao: the Data Access object to use for communicating
@@ -371,7 +374,7 @@ class Revision(object):
 
         self._dao = dao
 
-        _query = "SELECT * FROM tbl_revisions"
+        _query = "SELECT * FROM tbl_revisions ORDER BY fld_revision_id"
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         try:
@@ -384,7 +387,7 @@ class Revision(object):
             _revision.set_attributes(_results[i])
             self.dicRevisions[_revision.revision_id] = _revision
 
-        return (_results, _error_code)
+        return(_results, _error_code)
 
     def add_revision(self, code=None, name=None, remarks=''):
         """
