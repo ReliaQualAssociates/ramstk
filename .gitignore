@@ -26,6 +26,7 @@ pylintout
 *.log
 *.txt
 *.csv
+docs/_temp/
 docs/generated/
 docs/build/
 docs/source/
