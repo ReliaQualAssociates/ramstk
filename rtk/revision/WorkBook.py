@@ -165,6 +165,7 @@ class WorkView(gtk.VBox):
 
         # Initialize private scalar attributes.
         self._workview = workview
+        self._module_book = modulebook
         self._revision_model = None
         self._usage_model = None
 
@@ -242,7 +243,7 @@ class WorkView(gtk.VBox):
 
     def _create_toolbar(self):
         """
-        Method to create the gtk.ToolBar() for the Revision class work book.
+        Creates the gtk.ToolBar() for the Revision class work book.
 
         :return: _toolbar
         :rtype: gtk.ToolBar
@@ -471,8 +472,7 @@ class WorkView(gtk.VBox):
                                gobject.TYPE_STRING, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING)
+                               gobject.TYPE_INT, gobject.TYPE_INT)
         self.tvwMissionProfile.set_model(_model)
 
         for i in range(10):
@@ -510,7 +510,7 @@ class WorkView(gtk.VBox):
                 _cell.set_property('yalign', 0.1)
                 _cell.connect('edited', self._on_usage_cell_edited, 3, _model)
                 _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=3)
+                _column.set_attributes(_cell, text=3, visible=11)
 
                 _column.set_visible(True)
             elif i == 2:
@@ -543,8 +543,7 @@ class WorkView(gtk.VBox):
                 _cell.connect('edited', self._on_usage_cell_edited, i + 2,
                               _model)
                 _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=i + 2, background=i + 5,
-                                       foreground=i + 7)
+                _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
             else:
                 _cell = gtk.CellRendererText()
@@ -965,30 +964,28 @@ class WorkView(gtk.VBox):
         _model = self.tvwMissionProfile.get_model()
         _model.clear()
         for _mission in self._usage_model.dicMissions.values():
-            _icon = _conf.ICON_DIR + '32x32/overstress.png'
+            _icon = _conf.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
             _data = (_icon, _mission.mission_id, _mission.description,
                      '', _mission.time_units, 0.0, _mission.time, 0.0, 0.0, 1,
-                     'light gray', 'light gray', 'light gray', 'light gray')
+                     0, 0)
             _mission_row = _model.append(None, _data)
 
             for _phase in _mission.dicPhases.values():
-                _icon = _conf.ICON_DIR + '32x32/assembly.png'
+                _icon = _conf.ICON_DIR + '32x32/phase.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _phase.phase_id, _phase.code,
                          _phase.description, '', _phase.start_time,
-                         _phase.end_time, 0.0, 0.0, 2, 'light gray',
-                         'light gray', 'light gray', 'light gray')
+                         _phase.end_time, 0.0, 0.0, 2, 0, 1)
                 _phase_row = _model.append(_mission_row, _data)
 
                 for _environment in _phase.dicEnvironments.values():
-                    _icon = _conf.ICON_DIR + '32x32/part.png'
+                    _icon = _conf.ICON_DIR + '32x32/environment.png'
                     _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                     _data = (_icon, _environment.environment_id,
                              _environment.name, '', _environment.units,
                              _environment.minimum, _environment.maximum,
-                             _environment.mean, _environment.variance, 3,
-                             'white', 'white', 'black', 'black')
+                             _environment.mean, _environment.variance, 3, 1, 0)
                     _model.append(_phase_row, _data)
 
         if path is None:
@@ -1049,11 +1046,12 @@ class WorkView(gtk.VBox):
         self.txtName.handler_block(self._lst_handler_id[1])
         self.txtName.set_text(str(self._revision_model.name))
         self.txtName.handler_unblock(self._lst_handler_id[1])
-# TODO: Figure out how to get the textview to work.
-        #_view = _textview.get_children()[0].get_children()[0]
-        #_view.handler_block(self._lst_handler_id[2])
-        #_view.set_text(str(self._revision_model.remarks))
-        #_view.handler_unblock(self._lst_handler_id[2])
+
+        _textview = self.txtRemarks.get_child()
+        _textview.handler_block(self._lst_handler_id[2])
+        _textbuffer = _textview.get_buffer()
+        _textbuffer.set_text(self._revision_model.remarks)
+        _textview.handler_unblock(self._lst_handler_id[2])
 
         return False
 
@@ -1097,12 +1095,11 @@ class WorkView(gtk.VBox):
                 (__, __,
                  _mission_id) = self.dtcProfile.add_mission(_revision_id)
                 _attributes = self._usage_model.dicMissions[_mission_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/overstress.png'
+                _icon = _conf.ICON_DIR + '32x32/mission.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _attributes[0], _attributes[3], '',
-                         _attributes[2], 0.0, _attributes[1], 0.0, 0.0, 1,
-                         'light gray', 'light gray', 'light gray',
-                         'light gray')
+                         _attributes[2], 0.0, _attributes[1], 0.0, 0.0, 1, 0,
+                         0)
             elif _level == 2:               # _id = Phase ID
                 _piter = _model.iter_parent(_row)
                 _mission_id = _model.get_value(_piter, 1)
@@ -1110,12 +1107,11 @@ class WorkView(gtk.VBox):
                  _phase_id) = self.dtcProfile.add_phase(_revision_id, _mission_id)
                 _mission = self._usage_model.dicMissions[_mission_id]
                 _attributes = _mission.dicPhases[_phase_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/assembly.png'
+                _icon = _conf.ICON_DIR + '32x32/phase.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _attributes[2], _attributes[5],
                          _attributes[6], '', _attributes[3],
-                         _attributes[4], 0.0, 0.0, 2, 'light gray',
-                         'light gray', 'light gray', 'light gray')
+                         _attributes[4], 0.0, 0.0, 2, 0, 1)
             elif _level == 3:               # _id = Environment ID
                 _piter = _model.iter_parent(_row)
                 _phase_id = _model.get_value(_piter, 1)
@@ -1128,12 +1124,11 @@ class WorkView(gtk.VBox):
                 _mission = self._usage_model.dicMissions[_mission_id]
                 _phase = _mission.dicPhases[_phase_id]
                 _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/part.png'
+                _icon = _conf.ICON_DIR + '32x32/environment.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _attributes[4], _attributes[5], '',
                          _attributes[6], _attributes[7], _attributes[8],
-                         _attributes[9], _attributes[10], 3, 'white', 'white',
-                         'black', 'black')
+                         _attributes[9], _attributes[10], 3, 1, 0)
 
             # Insert a new row with the new Usage Profile item and then select
             # the newly inserted row for editing.
@@ -1151,12 +1146,11 @@ class WorkView(gtk.VBox):
                  _phase_id) = self.dtcProfile.add_phase(_revision_id, _id)
                 _mission = self._usage_model.dicMissions[_id]
                 _attributes = _mission.dicPhases[_phase_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/assembly.png'
+                _icon = _conf.ICON_DIR + '32x32/phase.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _attributes[2], _attributes[5],
                          _attributes[6], '', _attributes[3],
-                         _attributes[4], 0.0, 0.0, 2, 'light gray',
-                         'light gray', 'light gray', 'light gray')
+                         _attributes[4], 0.0, 0.0, 2, 0, 1)
             elif _level == 2:               # _id = Phase ID
                 _piter = _model.iter_parent(_row)
                 _mission_id = _model.get_value(_piter, 1)
@@ -1168,12 +1162,11 @@ class WorkView(gtk.VBox):
                 _mission = self._usage_model.dicMissions[_mission_id]
                 _phase = _mission.dicPhases[_id]
                 _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/part.png'
+                _icon = _conf.ICON_DIR + '32x32/environment.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
                 _data = (_icon, _attributes[4], _attributes[5], '',
                          _attributes[6], _attributes[7], _attributes[8],
-                         _attributes[9], _attributes[10], 3, 'white', 'white',
-                         'black', 'black')
+                         _attributes[9], _attributes[10], 3, 1, 0)
             else:
 # TODO: Informational dialog to let user know they can't add a child to an environment.
                 return False
@@ -1300,7 +1293,7 @@ class WorkView(gtk.VBox):
             _label.show_all()
             _columns[i].set_widget(_label)
 
-        self.tvwMissionProfile.handler_block(self._lst_handler_id[7])
+        self.tvwMissionProfile.handler_unblock(self._lst_handler_id[7])
 
         return False
 
@@ -1457,7 +1450,8 @@ class WorkView(gtk.VBox):
 
     def _request_delete_revision(self, __button):
         """
-        Sends request to delete the selected revision to the Revision data controller.
+        Sends request to delete the selected revision from the Revision data
+        controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
@@ -1479,7 +1473,7 @@ class WorkView(gtk.VBox):
         #_next_row = _model.iter_next(_row)
 
         #_model.remove(_row)
-        #_model.row_deleted(_path)6
+        #_model.row_deleted(_path)
 
         #if _next_row is None:
         #_next_row = _model.get_iter_root()

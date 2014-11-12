@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
-This is the Module Book window for RTK.
+=============================================
+PyGTK Multi-Window Interface Module Book View
+=============================================
 """
 
 __author__ = 'Andrew Rowland'
@@ -39,7 +41,10 @@ import gettext
 import locale
 
 # Import other RTK modules.
-import configuration as _conf
+try:
+    import configuration as _conf
+except ImportError:
+    import rtk.configuration as _conf
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -51,15 +56,18 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class ModuleView(gtk.Window):
+class ModuleView(gtk.Window):               # pylint: disable=R0904
     """
     This is the Module view for the pyGTK multiple window interface.
     """
 
     def __init__(self):
         """
-        Initialize an instance of the Module view class.
+        Initializes an instance of the Module view class.
         """
+
+        # Initialize private list attributes.
+        self._lst_handler_id = []
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -105,7 +113,8 @@ class ModuleView(gtk.Window):
 
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(_position)
-        self.notebook.connect('switch-page', self._on_switch_page)
+        self._lst_handler_id.append(
+            self.notebook.connect('switch-page', self._on_switch_page))
 
         _vbox.pack_start(self.notebook, expand=True, fill=True)
 
@@ -123,12 +132,20 @@ class ModuleView(gtk.Window):
         self.show_all()
 
     def create_listview(self):
+        """
+        Creates an instance of the List View container for RTK module List
+        Books.
+        """
 
         self.listview = ListView()
 
         return self.listview
 
     def create_workview(self):
+        """
+        Creates an instance of the Work View container for RTK module List
+        Books.
+        """
 
         self.workview = WorkView()
 
@@ -393,7 +410,7 @@ class ModuleView(gtk.Window):
 
         return _toolbar
 
-    def create_module_page(self, view, controller, position=-1):
+    def create_module_page(self, view, controller, position, *args):
         """
         Method to create a Module view page.
 
@@ -401,15 +418,15 @@ class ModuleView(gtk.Window):
                      Book.
         :param controller: the RTK module data controller for the RTK module
                            view to use when communicating with the model.
-        :keyword int position: the position in the RTK Work Book to add the
-                               RTK module view.  Defaults to -1 (at the end).
+        :param int position: the position in the RTK Work Book to add the
+                             RTK module view.  Set to -1 to place at the end.
         :return: RTK module view class instance.
         :rtype: object
         """
 
-        return view(controller, self, position)
+        return view(controller, self, position, args)
 
-    def load_module_page(self, view, dao):
+    def load_module_page(self, view, dao, revision_id):
         """
         Method to request the RTK module data controller retrieve the data from
         the RTK model and load it into the RTK module view.
@@ -424,7 +441,7 @@ class ModuleView(gtk.Window):
         self.workview.add(view._workbook)
         self.workview.show_all()
 
-        _page = view.request_load_data(dao)
+        _page = view.request_load_data(dao, revision_id)
 
         return _page
 
@@ -447,34 +464,28 @@ class ModuleView(gtk.Window):
         """
 
         # Remove the existing Work Book before adding the new one.
+        if self.listview.get_child() is not None:
+            self.listview.remove(self.listview.get_child())
+
+        _listbook = _conf.RTK_MODULES[page_num]._listbook
+
+        if _listbook is not None:
+            self.listview.add(_listbook)
+
+        # Remove the existing Work Book before adding the new one.
         if self.workview.get_child() is not None:
             self.workview.remove(self.workview.get_child())
 
-        #if page_num == 0:
-        #    print _conf.RTK_MODULES[page_num]
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 1:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 2:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 3:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 4:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 5:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 6:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 7:
-        #    pass
-        #elif _conf.RTK_PAGE_NUMBER[page_num] == 8:
-        #    pass
+        _workbook = _conf.RTK_MODULES[page_num]._workbook
+
+        self.workview.add(_workbook)
 
         return False
 
     def destroy(self, __widget, __event=None, data=None):
         """
-        Method to quit the RTK application when the X in the upper
-        right corner is pressed.
+        Quits the RTK application when the X in the upper right corner is
+        pressed.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this

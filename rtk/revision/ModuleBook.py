@@ -85,7 +85,7 @@ class ModuleView(object):
     :ivar treeview: the :class:`gtk.TreeView` displaying the list of Revisions.
     """
 
-    def __init__(self, controller, view, position=-1):
+    def __init__(self, controller, view, position, *args):
         """
         Initializes the Module Book view for the Revision package.
 
@@ -94,13 +94,20 @@ class ModuleView(object):
                                                  this view.
         :param gtk.Notebook notebook: the gtk.Notebook() to add the Revision
                                       view into.
-        :keyword int position: the page position in the gtk.Notebook() to
-                               insert the Revision view.
+        :param int position: the page position in the gtk.Notebook() to
+                             insert the Revision view.  Pass -1 to add to the
+                             end.
+        :param *args: other user-defined arguments.
         """
 
         # Initialize private scalar attributes.
-        self.dtcRevision = controller
         self._model = None
+        self._listbook = None
+
+        # Initialize public scalar attributes.
+        self.dtcRevision = controller
+        self.dtcProfile = args[0][0]
+        self.dtcDefinitions = args[0][1]
 
         # Create the main Revision class treeview.
         (self.treeview,
@@ -135,9 +142,6 @@ class ModuleView(object):
 
         view.notebook.insert_page(_scrollwindow, tab_label=_label,
                                   position=position)
-
-        self.dtcProfile = UsageProfile()
-        self.dtcDefinitions = FailureDefinition()
 
         # Create a Work View to associate with this Module View.
         self._workbook = WorkView(view.workview, self)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
-This is the Work Book view for RTK.
+===========================================
+PyGTK Multi-Window Interface Work Book View
+===========================================
 """
 
 __author__ = 'Andrew Rowland'
@@ -30,10 +32,6 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Import modules for localization support.
 import gettext
@@ -53,17 +51,15 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.Window):
+class WorkView(gtk.Window):                 # pylint: disable=R0904
     """
     This is the Work View for the pyGTK multiple window interface.
     """
 
     def __init__(self):
         """
-        Initializes the Work View class.
+        Initializes an instance of the Work View class.
         """
-
-        self.VISIBLE_PAGE = 0
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -94,21 +90,14 @@ class WorkView(gtk.Window):
 
         self.show_all()
 
-    def create_work_book(self, view, controller):
+    def destroy(self, __widget, __event=None):
         """
-        """
-
-        return view(controller, self.notebook)
-
-    def destroy(self, __widget, __event=None, data=None):
-        """
-        Method to quit the RTK application when the X in the upper
-        right corner is pressed.
+        Quits the RTK application when the X in the upper right corner is
+        pressed.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                         method.
-        :keyword data: any user-supplied data.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
