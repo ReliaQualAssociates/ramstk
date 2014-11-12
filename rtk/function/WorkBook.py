@@ -59,10 +59,10 @@ except locale.Error:
 
 _ = gettext.gettext
 
-
+# TODO: Fix all docstrings; copy-paste errors from Revision.
 class WorkView(gtk.VBox):
     """
-    The Work Book view displays all the attributes for the selected Revision.
+    The Work Book view displays all the attributes for the selected Function.
     The attributes of a Work Book view are:
 
     :ivar _workview: the RTK top level Work View window to embed the Function
@@ -71,7 +71,7 @@ class WorkView(gtk.VBox):
                            displayed.
 
     :ivar _dic_definitions: dictionary containing pointers to the failure
-                            definitions for the Revision being displayed.  Key
+                            definitions for the Function being displayed.  Key
                             is the Failure Definition ID; value is the pointer
                             to the Failure Definition data model.
 
@@ -875,7 +875,7 @@ class WorkView(gtk.VBox):
              _mode_id) = self.dtcFMEA.add_mode(None, _function_id)
             _attributes = self._fmea_model.dicModes[_mode_id].get_attributes()
             _icon = _conf.ICON_DIR + '32x32/mode.png'
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[3], _attributes[4],
                      _attributes[5], _attributes[6], _attributes[7],
                      _attributes[8], _attributes[12], _attributes[13],
@@ -932,8 +932,8 @@ class WorkView(gtk.VBox):
 
     def _on_fmea_cell_edited(self, cell, path, new_text, position, model):
         """
-        Callback function to handle edits of the Revision package Work Book
-        Usage Profile gtk.Treeview()s.
+        Callback function to handle edits of the Function package Work Book
+        FMEA gtk.Treeview()s.
 
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()

@@ -94,11 +94,11 @@ def _add_to_combo(cell, __path, new_text):
 # TODO: Fix all docstrings; copy-paste errors.
 class WorkView(gtk.VBox):
     """
-    The Work Book view displays all the attributes for the selected Revision.
-    The attributes of a Work Book view are:
+    The Work Book view displays all the attributes for the selected
+    Requirement.  The attributes of a Work Book view are:
 
-    :ivar _workview: the RTK top level Work View window to embed the Function
-                     Work Book into.
+    :ivar _workview: the RTK top level Work View window to embed the
+                     Requirement Work Book into.
     :ivar _function_model: the Function data model whose attributes are being
                            displayed.
 
@@ -109,28 +109,47 @@ class WorkView(gtk.VBox):
 
     :ivar _lst_handler_id: list containing the ID's of the callback signals for
                            each gtk.Widget() associated with an editable
-                           Function attribute.
+                           Requirement attribute.
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |      0   | txtCode `focus_out_event`                 |
+    |      0   |                                           |
     +----------+-------------------------------------------+
-    |      1   | txtName `focus_out_event`                 |
+    |      1   |                                           |
     +----------+-------------------------------------------+
-    |      2   | txtRemarks `focus_out_event`              |
+    |      2   | txtRequirement `focus_out_event`          |
     +----------+-------------------------------------------+
-    |      3   | Mission gtk.CellRendererCombo() `edited`  |
+    |      3   |                                           |
     +----------+-------------------------------------------+
-    |      4   | Phase gtk.CellRendererCombo() `edited`    |
+    |      4   | cmbRqmtType `changed`                     |
     +----------+-------------------------------------------+
-    |      5   | btnAddMode `clicked`                      |
+    |      5   | cmbPriority `changed`                     |
     +----------+-------------------------------------------+
-    |      6   | btnRemoveMode `clicked`                   |
+    |      6   | txtSpecification `focus_out_event`        |
     +----------+-------------------------------------------+
-    |      7   | btnSaveFMEA `clicked`                     |
+    |      7   | txtPageNumber `focus_out_event`           |
     +----------+-------------------------------------------+
-
+    |      8   | txtFigureNumber `focus_out_event`         |
+    +----------+-------------------------------------------+
+    |      9   | chkDerived `toggled`                      |
+    +----------+-------------------------------------------+
+    |     10   | cmbOwner `changed`                        |
+    +----------+-------------------------------------------+
+    |     11   | chkValidated `toggled`                    |
+    +----------+-------------------------------------------+
+    |     12   | txtValidateDate `focus_out_event`         |
+    +----------+-------------------------------------------+
+    |     13   | btnValidateDate `clicked`                 |
+    +----------+-------------------------------------------+
+    |     14   | btnAddInput `clicked`                     |
+    +----------+-------------------------------------------+
+    |     15   | btnDeleteInput `clicked`                  |
+    +----------+-------------------------------------------+
+    |     16   | btnCalculateInputs `clicked`              |
+    +----------+-------------------------------------------+
+    |     17   | btnSaveInputs `clicked`                   |
+    +----------+-------------------------------------------+
 
     :ivar dtcFunction: the :class:`rtk.function.Function.Function` data
                        controller to use with this Work Book.
@@ -171,7 +190,7 @@ class WorkView(gtk.VBox):
 
     def __init__(self, workview, modulebook):
         """
-        Initializes the Work Book view for the Revision package.
+        Initializes the Work Book view for the Requirement package.
 
         :param rtk.gui.gtk.mwi.WorkView workview: the Work View container to
                                                   insert this Work Book into.

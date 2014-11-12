@@ -90,13 +90,13 @@ class ListView(gtk.VBox):
 
         # Initialize private list attributes.
         _icon = _conf.ICON_DIR + '32x32/none.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self._lst_matrix_icons = [_icon]
         _icon = _conf.ICON_DIR + '32x32/partial.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self._lst_matrix_icons.append(_icon)
         _icon = _conf.ICON_DIR + '32x32/complete.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self._lst_matrix_icons.append(_icon)
 
         # Initialize private scalar attributes.

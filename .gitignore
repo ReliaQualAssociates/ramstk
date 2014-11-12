@@ -34,3 +34,4 @@ docs/Makefile
 /devtools/RTKModuleTemplate.py
 /FailureModes.sql
 /rtk/.coverage
+/tests/.coverage
