@@ -38,8 +38,17 @@ import configuration as _conf
 import utilities as _util
 
 from dao.DAO import DAO
+from datamodels.matrix.Matrix import Matrix
 from revision.Revision import Revision
 from revision.ModuleBook import ModuleView as mvwRevision
+from usage.UsageProfile import UsageProfile
+from failure_definition.FailureDefinition import FailureDefinition
+from function.Function import Function
+from function.ModuleBook import ModuleView as mvwFunction
+from fmea.FMEA import FMEA
+from requirement.Requirement import Requirement
+from requirement.ModuleBook import ModuleView as mvwRequirement
+from stakeholder.Stakeholder import Stakeholder
 
 # Add localization support.
 _ = gettext.gettext
@@ -70,7 +79,7 @@ def main():
 
 def _read_configuration():
     """
-    Method to read the site configuration and RTK configuration files.
+    Reads the site configuration and RTK configuration files.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -115,7 +124,7 @@ def _read_configuration():
 
 def _initialize_loggers():
     """
-    Method to create loggers for the RTK application.
+    Creates loggers for the RTK application.
 
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
@@ -164,22 +173,32 @@ class RTK(object):
 
         # Connect to the site database.
         _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
-        self.dao = DAO(_database)
+        self.site_dao = DAO(_database)
+
+        # Validate the license.
+        if self._validate_license():
+            sys.exit(2)
 
         # Create loggers.
         (self.debug_log,
          self.user_log,
          self.import_log) = _initialize_loggers()
 
-        # Validate the license.
-        if self._validate_license():
-            sys.exit(2)
+        # Load common lists and variables.
+        self._load_commons()
 
         # Create data controllers.
+        self.dtcMatrices = Matrix()
         self.dtcRevision = Revision()
+        self.dtcProfile = UsageProfile()
+        self.dtcDefinitions = FailureDefinition()
+        self.dtcFunction = Function()
+        self.dtcFMEA = FMEA()
+        self.dtcRequirement = Requirement()
+        self.dtcStakeholder = Stakeholder()
 
         # Initialize RTK views.
-        if RTK_INTERFACE == 0:       # Single window.
+        if RTK_INTERFACE == 0:              # Single window.
             pass
         else:                               # Multiple windows.
             self.module_book = ModuleView()
@@ -188,12 +207,26 @@ class RTK(object):
 
         # Plug-in each of the RTK module views.
         _modview = self.module_book.create_module_page(mvwRevision,
-                                                       self.dtcRevision)
+                                                       self.dtcRevision, -1,
+                                                       self.dtcProfile,
+                                                       self.dtcDefinitions)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwFunction,
+                                                       self.dtcFunction, -1,
+                                                       self.dtcFMEA,
+                                                       self.dtcProfile,
+                                                       self.dtcMatrices)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwRequirement,
+                                                       self.dtcRequirement, -1,
+                                                       self.dtcStakeholder,
+                                                       self.dtcMatrices,
+                                                       self.site_dao)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
         _icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"program database."))
@@ -225,7 +258,7 @@ class RTK(object):
 
         _query = "SELECT fld_product_key, fld_expire_date \
                   FROM tbl_site_info"
-        (_results, _error_code, __) = self.dao.execute(_query, None)
+        (_results, _error_code, __) = self.site_dao.execute(_query, None)
 
         if _license_key != _results[0][0]:
             _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
@@ -243,6 +276,30 @@ class RTK(object):
 
         return False
 
+    def _load_commons(self):
+        """
+        Reads the common database and assigns results to global configuration
+        variables.  These variables will be available to all RTK modules.
+
+        :return:
+        :rtype:
+        """
+
+        _query = "SELECT * FROM tbl_severity"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_SEVERITY = _results
+
+        _query = "SELECT * FROM tbl_failure_probability"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_FAILURE_PROBABILITY = _results
+
+        _query = "SELECT * FROM tbl_rpn_severity"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_RPN_SEVERITY = _results
+
     def open_project(self):
         """
         Method to open an RTK Prooject database and load it into the views.
@@ -251,8 +308,10 @@ class RTK(object):
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
         # Connect to the project database.
-        _database = '/home/andrew/Analyses/RTK/AGCO/AxialCombine/AxialCombine.rtk'
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
         self.project_dao = DAO(_database)
+
+        self.dtcMatrices._dao = self.project_dao
 
         # Get a connection to the program database and then retrieve the
         # program information.
@@ -273,7 +332,7 @@ class RTK(object):
         _conf.RTK_PREFIX = [_element for _element in _results[0]]
 
         _icon = _conf.ICON_DIR + '32x32/db-connected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 16, 16)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
                                      u"%s." % _conf.RTK_PROG_INFO[2]))
@@ -294,10 +353,14 @@ class RTK(object):
         # that aren't active in the project, remove the page from the
         # RTK Module view.
         i = 0
-        for _module in _results:
-            if _module[0] == 1:
+        _first_revision = None
+        for _module in _results[0]:
+            if _module == 1 and i < 3:
                 self.module_book.load_module_page(_conf.RTK_MODULES[i],
-                                                  self.project_dao)
+                                                  self.project_dao,
+                                                  _first_revision)
+                if i == 0:
+                    _first_revision = min(self.dtcRevision.dicRevisions.keys())
                 _conf.RTK_PAGE_NUMBER.append(i)
             else:
                 self.module_book.notebook.remove_page(i)
