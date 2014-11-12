@@ -250,7 +250,13 @@ Global list for RTK Program database connectioninformation.
 |   4   | User password (MySQL only)    |
 +-------+-------------------------------+
 
-:const RTK_RISK_POINTS: Default value: [4, 10]
+:const RTK_SEVERITY: default value: []
+Global list for failure severity categories.
+
+:const RTK_FAILURE_PROBABILITY: default value: []
+Global list for qualitative failure probability categories.
+
+:const RTK_RISK_POINTS: default value: [4, 10]
 Global list for risk level cutoffs.
 
 +-------+---------------------------+
@@ -260,6 +266,15 @@ Global list for risk level cutoffs.
 +-------+---------------------------+
 |   1   | Medium to high            |
 +-------+---------------------------+
+
+:const RTK_RPN_SEVERITY: default value: []
+Global list for RPN Severity categories.
+
+:const RTK_RPN_OCCURRENCE: default value: []
+Global list for RPN Occurrence categories.
+
+:const RTK_RPN_DETECTION: default value: []
+Global list for RPN Detection categories.
 
 :const COM_BACKEND: Default value: ''
 RTK common database backend to use; mysql or sqlite3.
@@ -348,7 +363,13 @@ RTK_PAGE_NUMBER = []
 RTK_COM_INFO = []
 RTK_PROG_INFO = []
 
+RTK_SEVERITY = []
+RTK_FAILURE_PROBABILITY = []
 RTK_RISK_POINTS = [4, 10]
+
+RTK_RPN_SEVERITY = []
+RTK_RPN_OCCURRENCE = []
+RTK_RPN_DETECTION = []
 
 COM_BACKEND = ''
 BACKEND = ''

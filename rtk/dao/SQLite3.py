@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
-The SQLite3 Package.
+############################
+SQLite3 Package Data Module
+############################
 """
 
 __author__ = 'Andrew Rowland'
@@ -132,6 +134,8 @@ class Model(object):
                 _last_id = _last_id[0][0]
             except sqlite3.Error, _error:
                 _error_code = error_handler(_error)
+                _last_id = -1
+            except IndexError:
                 _last_id = -1
 
         _cursor.close()
