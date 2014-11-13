@@ -45,7 +45,7 @@ from usage.UsageProfile import UsageProfile
 from failure_definition.FailureDefinition import FailureDefinition
 from function.Function import Function
 from function.ModuleBook import ModuleView as mvwFunction
-from fmea.FMEA import FMEA
+from analyses.fmea.FMEA import FMEA
 from requirement.Requirement import Requirement
 from requirement.ModuleBook import ModuleView as mvwRequirement
 from stakeholder.Stakeholder import Stakeholder

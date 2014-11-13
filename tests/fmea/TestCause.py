@@ -24,7 +24,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 
-from fmea.Cause import Model
+from analyses.fmea.Cause import Model
 
 
 class TestCauseModel(unittest.TestCase):

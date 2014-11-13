@@ -24,7 +24,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 
-from fmea.FMEA import *
+from analyses.fmea.FMEA import *
 
 
 class TestFMEAModel(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestFMEAModel(unittest.TestCase):
 
     def setUp(self):
         """
-        Method to setup the test fixture for the FMEA model class.
+        Sets up the test fixture for the FMEA model class.
         """
 
         self.FDUT = Model(None, 0)

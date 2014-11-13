@@ -24,7 +24,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 
-from fmea.Mechanism import *
+from analyses.fmea.Mechanism import *
 
 
 class TestMechanismModel(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestMechanismModel(unittest.TestCase):
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Mechanism model class.
+        Setups the test fixture for the Mechanism model class.
         """
 
         self.DUT = Model()

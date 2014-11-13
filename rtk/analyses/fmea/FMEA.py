@@ -101,6 +101,8 @@ class Model(object):
         self.dicModes = {}
 
         # Set public scalar attribute default values.
+        self.function_id = function_id
+        self.assembly_id = assembly_id
 
     def calculate(self, severity, occurrence, detection):
         """
