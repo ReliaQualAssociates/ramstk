@@ -220,4 +220,4 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.DUT.request_inputs(self._dao, 0)
-        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.4, 1.4))
+        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.0, 1.0))

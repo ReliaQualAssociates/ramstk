@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       WorkBook.py is part of The RTK Project
+#       rtk.function.Function.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
 

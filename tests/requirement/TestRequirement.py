@@ -117,7 +117,7 @@ class TestRequirementModel(unittest.TestCase):
                           719163, -1))
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test_attribute_sanity(self):
         """
         (TestRequirement) get_attributes(set_attributes(values)) == values
         """

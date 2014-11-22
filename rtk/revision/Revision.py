@@ -23,15 +23,34 @@ import locale
 # Import other RTK modules.
 try:
     import configuration as _conf
-except ImportError:
+except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-except locale.Error:
+except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+
+def _error_handler(message):
+    """
+    Converts string errors to integer error codes.
+
+    :param str message: the message to convert to an error code.
+    :return: _err_code
+    :rtype: int
+    """
+
+    if 'argument must be a string or a number' in message[0]:   # Type error
+        _error_code = 10
+    elif 'index out of range' in message[0]:   # Index error
+        _error_code = 40
+    else:                                   # Unhandled error
+        _error_code = 1000                  # pragma: no cover
+
+    return _error_code
 
 
 class Model(object):
@@ -113,7 +132,8 @@ class Model(object):
         :rtype: bool
         """
 
-        _error = False
+        _code = 0
+        _msg = ''
 
         try:
             self.revision_id = int(values[0])
@@ -143,10 +163,14 @@ class Model(object):
             self.program_time_se = float(values[24])
             self.program_cost = float(values[25])
             self.program_cost_se = float(values[26])
-        except(IndexError, ValueError, TypeError):
-            _error = True
+        except IndexError as _err:
+            _code = _error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return _error
+        return(_code, _msg)
 
     def get_attributes(self):
         """
@@ -203,22 +227,22 @@ class Model(object):
 
         try:
             self.active_hazard_rate = float(inputs[0])
-        except(TypeError, ZeroDivisionError):
+        except TypeError:
             self.active_hazard_rate = 0.0
 
         try:
             self.dormant_hazard_rate = float(inputs[1])
-        except(TypeError, ZeroDivisionError):
+        except TypeError:
             self.dormant_hazard_rate = 0.0
 
         try:
             self.software_hazard_rate = float(inputs[2])
-        except(TypeError, ZeroDivisionError):
+        except TypeError:
             self.software_hazard_rate = 0.0
 
         try:
             self.mission_hazard_rate = float(inputs[3])
-        except(TypeError, ZeroDivisionError):
+        except TypeError:
             self.mission_hazard_rate = 0
 
         # Calculate the logistics h(t).
@@ -350,6 +374,7 @@ class Revision(object):
 
         # Initialize private scalar attributes.
         self._dao = None
+        self._last_id = None
 
         # Initialize public dictionary attributes.
         self.dicRevisions = {}
@@ -373,6 +398,8 @@ class Revision(object):
         """
 
         self._dao = dao
+
+        self._last_id = self._dao.get_last_id('tbl_revisions')[0]
 
         _query = "SELECT * FROM tbl_revisions ORDER BY fld_revision_id"
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
@@ -422,11 +449,12 @@ class Revision(object):
          _revision_id) = self._dao.execute(_query, commit=True)
 
         # If the new revision was added successfully to the RTK Project
-        # database, add a new Revision model to the controller and then refresh
-        # the Module View.
+        # database, add a new Revision model to the controller, add a mission
+        # to the new Revision and then refresh the Module View.
         if _results:
+            self._last_id = self._dao.get_last_id('tbl_revisions')[0]
             _revision = Model()
-            _revision.set_attributes((_revision_id, 1.0, 1.0, 0.0, 0.0, 0.0,
+            _revision.set_attributes((self._last_id, 1.0, 1.0, 0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0, name, 1.0, 1.0, remarks,
                                       1, code, 0.0, 0.0, 0.0, 0.0))

@@ -104,7 +104,7 @@ class Model(object):
 
     def set_attributes(self, values):
         """
-        Method to set the Requirement data model attributes.
+        Sets the Requirement data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -362,7 +362,7 @@ class Requirement(object):
                       _requirement.parent_id, _clear, _complete, _consistent,
                       _verifiable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
+# TODO: Handle errors.
         return(_results, _error_code)
 
     def save_all_requirements(self):
