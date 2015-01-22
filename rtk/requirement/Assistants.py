@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-##################################
+#####################################
 Requirement Package Assistants Module
-##################################
+#####################################
 """
 
 __author__ = 'Andrew Rowland'
@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       Assistants.py is part of The RTK Project
+#       rtk.requirement.Assistants.py is part of The RTK Project
 #
 # All rights reserved.
 

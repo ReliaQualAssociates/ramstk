@@ -8,11 +8,11 @@ Revision Package Module View
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       ModuleBook.py is part of The RTK Project
+#       rtk.revision.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 
