@@ -533,7 +533,7 @@ class Hardware(object):
         # Define public Hardware class dictionary attributes.
         self.dicPaths = {0: '0'}
 
-        # Create the main HARDWARE class treeview.
+        # Create the main Hardware class treeview.
         (self.treeview,
          self._col_order) = _widg.make_treeview('Hardware', 3, self._app,
                                                 [''], _conf.RTK_COLORS[6],
@@ -6468,7 +6468,14 @@ class Hardware(object):
                     for i in range(len(cells)):
                         cells[i].set_property('background', 'light gray')
                         cells[i].set_property('editable', 0)
-
+#_(u"Revision ID"), _(u"Assembly ID"), _(u"Description"),
+#_(u"Included?"), _(u"Number of\nSub-Systems"), _(u"Number of\nSub-Elements"),
+#_(u"Operating\nTime"), _(u"Duty Cycle"), _(u"Intricacy\n(1-10)"),
+#_(u"State of\nthe Art\n(1-10)"), _(u"Operating\nTime (1-10)"), _(u"Environment\n(1-10)"),
+#_(u"Weighting\nFactor"), _(u"Percent\nWeighting\nFactor"), _(u"Current\nFailure\nRate"),
+#_(u"Allocated\nFailure\nRate"), _(u"Current\nMTBF"), _(u"Allocated\nMTBF"),
+#_(u"Current\nReliability"), _(u"Allocated\nReliability"), _(u"Current\nAvailability"),
+#_(u"Allocated\nAvailability")
             elif i == 2:                    # AGREE apportionment selected.
                 for col in 0, 1, 4, 8, 9, 10, 11, 13, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)

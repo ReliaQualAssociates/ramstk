@@ -49,6 +49,12 @@ from analyses.fmea.FMEA import FMEA
 from requirement.Requirement import Requirement
 from requirement.ModuleBook import ModuleView as mvwRequirement
 from stakeholder.Stakeholder import Stakeholder
+from hardware.Hardware import Hardware
+from hardware.ModuleBook import ModuleView as mvwHardware
+from analyses.allocation.Allocation import Allocation
+from analyses.hazard.Hazard import Hazard
+from analyses.similar_item.SimilarItem import SimilarItem
+from analyses.pof.PhysicsOfFailure import PoF
 
 # Add localization support.
 _ = gettext.gettext
@@ -196,6 +202,11 @@ class RTK(object):
         self.dtcFMEA = FMEA()
         self.dtcRequirement = Requirement()
         self.dtcStakeholder = Stakeholder()
+        self.dtcHardware = Hardware()
+        dtcAllocation = Allocation()
+        dtcHazard = Hazard()
+        dtcSimilarItem = SimilarItem()
+        dtcPoF = PoF()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -203,7 +214,7 @@ class RTK(object):
         else:                               # Multiple windows.
             self.module_book = ModuleView()
             self.list_book = self.module_book.create_listview()
-            self.work_book = self.module_book.create_workview()
+            self.work_book = self.module_book.create_workview(self.site_dao)
 
         # Plug-in each of the RTK module views.
         _modview = self.module_book.create_module_page(mvwRevision,
@@ -222,6 +233,14 @@ class RTK(object):
                                                        self.dtcStakeholder,
                                                        self.dtcMatrices,
                                                        self.site_dao)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwHardware,
+                                                       self.dtcHardware, -1,
+                                                       dtcAllocation,
+                                                       dtcHazard,
+                                                       dtcSimilarItem,
+                                                       self.dtcFMEA,
+                                                       dtcPoF)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
@@ -295,10 +314,64 @@ class RTK(object):
                                                             commit=False)
         _conf.RTK_FAILURE_PROBABILITY = _results
 
+        # Retrieve RPN categories.
         _query = "SELECT * FROM tbl_rpn_severity"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_RPN_SEVERITY = _results
+
+        _query = "SELECT fld_occurrence_id, fld_occurrence_name, \
+                         fld_occurrence_description \
+                  FROM tbl_rpn_occurrence \
+                  WHERE fld_fmeca_type=0"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_RPN_OCCURRENCE = _results
+
+        _query = "SELECT fld_detection_id, fld_detection_name, \
+                         fld_detection_description \
+                  FROM tbl_rpn_detection \
+                  WHERE fld_fmeca_type=0"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_RPN_DETECTION = _results
+
+        _conf.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
+
+        # Retrieve the list of hazards to include in the hazard analysis
+        # worksheet.
+        _query = "SELECT fld_category, fld_subcategory \
+                  FROM tbl_hazards"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_HAZARDS = _results
+
+        #_conf.RTK_ACTIVE_ENVIRONMENTS
+        #_conf.RTK_DORMANT_ENVIRONMENTS
+        #_conf.RTK_QUALITY_LEVELS
+        _query = "SELECT fld_criticality_id, fld_criticality_name, \
+                         fld_criticality_cat \
+                  FROM tbl_criticality"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_CRITICALITY = _results
+
+        _query = "SELECT fld_action_name FROM tbl_action_category"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_ACTION_CATEGORY = [i[0] for i in _results]
+
+        _query = "SELECT fld_status_name FROM tbl_status"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_STATUS = _results
+
+        _query = "SELECT fld_user_lname, fld_user_fname FROM tbl_users"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_USERS = _results
+
+        return False
 
     def open_project(self):
         """
@@ -310,6 +383,8 @@ class RTK(object):
         # Connect to the project database.
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self.project_dao = DAO(_database)
+
+        self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.dtcMatrices._dao = self.project_dao
 
@@ -355,7 +430,7 @@ class RTK(object):
         i = 0
         _first_revision = None
         for _module in _results[0]:
-            if _module == 1 and i < 3:
+            if _module == 1 and i < len(_conf.RTK_MODULES):
                 self.module_book.load_module_page(_conf.RTK_MODULES[i],
                                                   self.project_dao,
                                                   _first_revision)

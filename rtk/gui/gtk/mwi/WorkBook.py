@@ -56,10 +56,29 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
     This is the Work View for the pyGTK multiple window interface.
     """
 
-    def __init__(self):
+    RTK_CATEGORIES = {}
+    RTK_SUBCATEGORIES = {}
+
+    RTK_MANUFACTURERS = {}
+
+    RTK_HR_TYPE = {}
+    RTK_HR_MODEL = {}
+    RTK_S_DIST = {}
+    RTK_ACTIVE_ENVIRON = {}
+    RTK_DORMANT_ENVIRON = {}
+
+    RTK_MTTR_TYPE = {}
+
+    RTK_COST_TYPE = {}
+
+    def __init__(self, dao):
         """
         Initializes an instance of the Work View class.
+
+        :param rtk.dao.DAO dao: the RTK Site data access object.
         """
+
+        self.site_dao = dao
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -88,7 +107,121 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
 
         self.connect('delete_event', self.destroy)
 
+        self._load_globals()
+
         self.show_all()
+
+    def _load_globals(self):
+        """
+        Loads the globally used dictionaries from the RTK Site database.
+        """
+
+        _query = "SELECT * FROM tbl_category \
+                  ORDER BY fld_category_noun ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_CATEGORIES[i] = [_results[i][1], _results[i][0]]
+
+        _query = "SELECT fld_manufacturers_noun, fld_location, fld_cage_code \
+                  FROM tbl_manufacturers \
+                  ORDER BY fld_manufacturers_noun ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_MANUFACTURERS[i] = [_results[i][0], _results[i][1],
+                                         _results[i][2]]
+
+        _query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_HR_TYPE[i] = _results[i][0]
+
+        _query = "SELECT fld_model_noun FROM tbl_calculation_model"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_HR_MODEL[i] = _results[i][0]
+
+        _query = "SELECT fld_distribution_noun FROM tbl_distributions"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_S_DIST[i] = _results[i][0]
+
+        _query = "SELECT fld_active_environ_code, fld_active_environ_noun \
+                  FROM tbl_active_environs"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_ACTIVE_ENVIRON[i] = [_results[i][1], _results[i][0]]
+
+        _query = "SELECT fld_dormant_environ_noun \
+                  FROM tbl_dormant_environs"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_DORMANT_ENVIRON[i] = _results[i][0]
+
+        _query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_MTTR_TYPE[i] = _results[i][0]
+
+        _query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_COST_TYPE[i] = _results[i][0]
+
+        return False
 
     def destroy(self, __widget, __event=None):
         """

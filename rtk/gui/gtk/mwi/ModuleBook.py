@@ -141,13 +141,13 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return self.listview
 
-    def create_workview(self):
+    def create_workview(self, dao):
         """
         Creates an instance of the Work View container for RTK module List
         Books.
         """
 
-        self.workview = WorkView()
+        self.workview = WorkView(dao)
 
         return self.workview
 
@@ -438,8 +438,11 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :rtype:
         """
 
-        self.workview.add(view._workbook)
-        self.workview.show_all()
+        _page = None
+
+        if view._workbook is not None:
+            self.workview.add(view._workbook)
+            self.workview.show_all()
 
         _page = view.request_load_data(dao, revision_id)
 
@@ -478,7 +481,8 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _workbook = _conf.RTK_MODULES[page_num]._workbook
 
-        self.workview.add(_workbook)
+        if _workbook is not None:
+            self.workview.add(_workbook)
 
         return False
 
