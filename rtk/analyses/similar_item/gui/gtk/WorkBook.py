@@ -67,9 +67,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
     Similar Item Analysis.  The attributes of a Similar Item Analysis Work Book
     view are:
 
-    :ivar _lst_handler_id:
+    :ivar _lst_handler_id: default value: []
 
-    :ivar dtcSimilarItem:
+    :ivar dtcSimilarItem: the Similar Item Analysis data controller.
     :ivar btnEditFunction:
     :ivar btnCalculate:
     :ivar btnSave:
@@ -381,9 +381,13 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         """
         Function to load the widgets on the Similar Item Analysis page.
 
-        :param rtk.analyses.similar_item.SimilarItem.SimilarItem controller:
-        :param int hardware_id:
-        :keyword str path:
+        :param `rtk.hardware.Hardware.Hardware` controller: the Hardware data
+                                                            controller instance
+                                                            being used by RTK.
+        :param int hardware_id: the Hardware ID to load the Similar Item
+                                Analysis for.
+        :keyword str path: the path of the parent hardware item in the Similar
+                           Item Analysis gtk.TreeView().
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
