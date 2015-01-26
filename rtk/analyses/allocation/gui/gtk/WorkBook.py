@@ -327,7 +327,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         _model = self.tvwAllocation.get_model()
 
-        _hardware = controller.dicHardware[hardware_id]
         _parent = self.dtcAllocation.dicAllocation[hardware_id]
 
         # Find the immediate child assemblies.
@@ -335,6 +334,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                      if _a.parent_id == hardware_id]
 
         for _child in _children:
+            _hardware = controller.dicHardware[_child.hardware_id]
             _availability = _hardware.availability_logistics
             _hazard_rate = _hardware.hazard_rate_logistics
             _mtbf = _hardware.mtbf_logistics
@@ -545,7 +545,12 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         (_model, _row) = self.tvwAllocation.get_selection().get_selected()
-        _hardware_id = _model.get_value(_row, 0)
+        if _row is None:
+            _row = _model.get_iter_root()
+        try:
+            _hardware_id = _model.get_value(_row, 0)
+        except TypeError:
+            return True
 
         combo.handler_block(self._lst_handler_id[index])
 

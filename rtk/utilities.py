@@ -8,11 +8,11 @@ application.
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       utilities.py is part of The RTK Project
+#       rtk.utilities.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -301,7 +301,7 @@ def none_to_string(string):
     :rtype: str
     """
 
-    if string is None:
+    if string is None or string == 'None':
         return ''
     else:
         return string
@@ -347,7 +347,8 @@ def date_to_ordinal(date):
 
 def ordinal_to_date(ordinal):
     """
-    Converts ordinal dates to date strings in ISO-8601 format.
+    Converts ordinal dates to date strings in ISO-8601 format.  Defaults to
+    the current date if a bad value is passed as the argument.
 
     :param int ordinal: the ordinal date to convert.
     :return: the ISO-8601 date representation of the passed ordinal.
@@ -359,7 +360,8 @@ def ordinal_to_date(ordinal):
     try:
         return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
     except ValueError:
-        return str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
+        ordinal = datetime.now().toordinal()
+        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
 
 
 def tuple_to_list(origtuple, origlist):

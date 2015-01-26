@@ -42,6 +42,7 @@ class TestMissionModel(unittest.TestCase):
         self.good_values = (0, 1, 50.0, 'days', 'Test Mission')
         self.bad_values = (0, 'days', 'Test Mission', 1, 50.0)
 
+    @attr(all=True, unit=True)
     def test_mission_create(self):
         """
         Method to test the creation of a Mission class instance and default
@@ -56,6 +57,7 @@ class TestMissionModel(unittest.TestCase):
         self.assertEqual(self.DUT.time_units, '')
         self.assertEqual(self.DUT.description, '')
 
+    @attr(all=True, unit=True)
     def test_set_attributes(self):
         """
         Test that attributes can be set.
@@ -64,6 +66,7 @@ class TestMissionModel(unittest.TestCase):
         self.assertFalse(self.DUT.set_attributes(self.good_values))
         self.assertTrue(self.DUT.set_attributes(self.bad_values))
 
+    @attr(all=True, unit=True)
     def test_get_attributes(self):
         """
         Test that attributes can be retrieved.
