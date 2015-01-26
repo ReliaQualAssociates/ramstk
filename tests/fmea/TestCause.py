@@ -54,6 +54,12 @@ class TestCauseModel(unittest.TestCase):
         self.assertEqual(self.DUT.mechanism_id, 0)
         self.assertEqual(self.DUT.cause_id, 0)
         self.assertEqual(self.DUT.description, '')
+        self.assertEqual(self.DUT.rpn_occurrence, 10)
+        self.assertEqual(self.DUT.rpn_detection, 10)
+        self.assertEqual(self.DUT.rpn, 1000)
+        self.assertEqual(self.DUT.rpn_occurrence_new, 10)
+        self.assertEqual(self.DUT.rpn_detection_new, 10)
+        self.assertEqual(self.DUT.rpn_new, 1000)
 
     @attr(all=True, unit=True)
     def test_set_good_attributes(self):
@@ -62,7 +68,8 @@ class TestCauseModel(unittest.TestCase):
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((0, 1, 2, 'Test Cause'))
+         _error_msg) = self.DUT.set_attributes((0, 1, 2, 'Test Cause', 4, 5,
+                                                200, 5, 4, 100))
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -83,7 +90,8 @@ class TestCauseModel(unittest.TestCase):
 
         # Check TypeError.
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((0, 1, None, 'Test Cause'))
+         _error_msg) = self.DUT.set_attributes((0, 1, None, 'Test Cause', 4, 5,
+                                                200, 5, 4, 100))
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -93,7 +101,8 @@ class TestCauseModel(unittest.TestCase):
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((0, 1, 'Test Cause', 2))
+         _error_msg) = self.DUT.set_attributes((0, 1, 'Test Cause', 2, 4, 5,
+                                                200, 5, 4, 100))
         self.assertEqual(_error_code, 50)
 
     @attr(all=True, unit=True)
@@ -103,7 +112,7 @@ class TestCauseModel(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (0, 0, 0, ''))
+                         (0, 0, 0, '', 10, 10, 1000, 10, 10, 1000))
 
     @attr(all=True, unit=True)
     def test_sanity(self):
@@ -111,7 +120,7 @@ class TestCauseModel(unittest.TestCase):
         get_attributes(set_attributes(values)) == values
         """
 
-        values = (4, 10, 246, 'Test Cause')
+        values = (4, 10, 246, 'Test Cause', 4, 5, 200, 5, 4, 100)
 
         self.DUT.set_attributes(values)
         result = self.DUT.get_attributes()

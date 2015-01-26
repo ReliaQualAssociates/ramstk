@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       FMEA.py is part of The RTK Project
+#       rtk.analyses.fmea.FMEA.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -60,10 +60,22 @@ def _error_handler(message):
     return _error_code
 
 
-class OutOfRangeError(Exception): pass
+class OutOfRangeError(Exception):
+    """
+    Exception raised when an input value is outside legal limits.
+    """
+
+    pass
 
 
-class ParentError(Exception): pass
+class ParentError(Exception):
+    """
+    Exception raised when neither a hardware ID or function ID are passed or
+    when both a hardware ID and function ID are passed when initializing an
+    instance of the FMEA model.
+    """
+
+    pass
 
 
 class Model(object):
@@ -73,7 +85,8 @@ class Model(object):
     Hardware item will consist of one FMEA.  The attributes of a FMEA are:
 
     :ivar dicModes: Dictionary of the Modes associated with the FMEA.  Key is
-    the Mode ID; value is a pointer to the instance of the Mode data model.
+                    the Mode ID; value is a pointer to the instance of the Mode
+                    data model.
 
     :ivar assembly_id: default value: None
     :ivar function_id: default value: None
@@ -104,35 +117,6 @@ class Model(object):
         self.function_id = function_id
         self.assembly_id = assembly_id
 
-    def calculate(self, severity, occurrence, detection):
-        """
-        Calculate the Risk Priority Number (RPN) for the FMEA.
-
-            RPN = S * O * D
-
-        :param int severity: the Severity (S) value of the FMEA end effect for
-                             the failure mode this FMEA is associated
-                             with.
-        :param int occurrence: the Occurrence (O) value of the FMEA.
-        :param int detection: the Detection (D) value of the FMEA.
-        :return: _rpn
-        :rtype: int
-        """
-
-        if not 0 < severity < 11:
-            raise OutOfRangeError
-        if not 0 < occurrence < 11:
-            raise OutOfRangeError
-        if not 0 < detection < 11:
-            raise OutOfRangeError
-
-        _rpn = int(severity) * int(occurrence) * int(detection)
-
-        if not 0 < _rpn < 1001:
-            raise OutOfRangeError
-
-        return _rpn
-
 
 class FMEA(object):
     """
@@ -141,8 +125,12 @@ class FMEA(object):
     more FMEA data models.
 
     :ivar _dao: default value: None
-    :ivar dicDFMEA: Dictionary of the Hardware FMEA data models controlled.  Key is the Assembly ID; value is a pointer to the instance of the FMEA data model.
-    :ivar dicFFMEA: Dictionary of the Function FMEA data models controlled.  Key is the Function ID; value is a pointer to the instance of the FMEA data model.
+    :ivar dicDFMEA: Dictionary of the Hardware FMEA data models controlled.
+                    Key is the Hardware ID; value is a pointer to the instance
+                    of the FMEA data model.
+    :ivar dicFFMEA: Dictionary of the Function FMEA data models controlled.
+                    Key is the Function ID; value is a pointer to the instance
+                    of the FMEA data model.
     """
 
     def __init__(self):
@@ -156,8 +144,11 @@ class FMEA(object):
         # Initialize public dictionary attributes.
         self.dicDFMEA = {}
         self.dicFFMEA = {}
+        self.dicMissions = {}
+        self.dicPhases = {}
 
-    def request_fmea(self, dao, assembly_id=None, function_id=None):
+    def request_fmea(self, dao, assembly_id=None,
+                     function_id=None, revision_id=None):    # pylint: disable=R0914
         """
         Method to load the entire FMEA for a Function or Hardware item.
         Starting at the Mode level, the steps to create the FMEA are:
@@ -200,14 +191,16 @@ class FMEA(object):
         if assembly_id is not None:
             self.dicDFMEA[assembly_id] = _fmea
 
-            _query = "SELECT * FROM tbl_modes \
-                      WHERE fld_assembly_id={0:d} \
+            _query = "SELECT * FROM rtk_modes \
+                      WHERE fld_hardware_id={0:d} \
+                      AND fld_type=1 \
                       ORDER BY fld_mode_id ASC".format(assembly_id)
         elif function_id is not None:
             self.dicFFMEA[function_id] = _fmea
 
-            _query = "SELECT * FROM tbl_modes \
+            _query = "SELECT * FROM rtk_modes \
                       WHERE fld_function_id={0:d} \
+                      AND fld_type=0 \
                       ORDER BY fld_mode_id ASC".format(function_id)
 
         (_results, _error_code, __) = self._dao.execute(_query)
@@ -221,7 +214,7 @@ class FMEA(object):
             _mode.set_attributes(_results[i])
             _fmea.dicModes[_mode.mode_id] = _mode
 
-            _query = "SELECT * FROM tbl_mechanisms \
+            _query = "SELECT * FROM rtk_mechanisms \
                       WHERE fld_mode_id={0:d}".format(_mode.mode_id)
             (_mechanisms,
              _error_code,
@@ -233,10 +226,10 @@ class FMEA(object):
 
             for i in range(_n_mechanisms):
                 _mechanism = Mechanism()
-                _mechanism.set_attributes(_mechanisms[i])
+                _mechanism.set_attributes(_mechanisms[i][2:])
                 _mode.dicMechanisms[_mechanism.mechanism_id] = _mechanism
 
-                _query = "SELECT * FROM tbl_causes \
+                _query = "SELECT * FROM rtk_causes \
                           WHERE fld_mechanism_id={0:d}".format(
                               _mechanism.mechanism_id)
                 (_causes, _error_code, __) = self._dao.execute(_query)
@@ -245,10 +238,64 @@ class FMEA(object):
                 except TypeError:
                     _n_causes = 0
 
-                for i in range(_n_causes):
+                for j in range(_n_causes):
                     _cause = Cause()
-                    _cause.set_attributes(_causes[i])
+                    _cause.set_attributes(_causes[j])
                     _mechanism.dicCauses[_cause.cause_id] = _cause
+
+                    _query = "SELECT * FROM rtk_controls \
+                              WHERE fld_cause_id={0:d}".format(_cause.cause_id)
+                    (_controls, _error_code, __) = self._dao.execute(_query)
+                    try:
+                        _n_controls = len(_controls)
+                    except TypeError:
+                        _n_controls = 0
+
+                    for k in range(_n_controls):
+                        _control = Control()
+                        _control.set_attributes(_controls[k])
+                        _mechanism.dicControls[_control.control_id] = _control
+                        _cause.dicControls[_control.control_id] = _control
+
+                    _query = "SELECT * FROM rtk_actions \
+                              WHERE fld_cause_id={0:d}".format(_cause.cause_id)
+                    (_actions, _error_code, __) = self._dao.execute(_query)
+                    try:
+                        _n_actions = len(_actions)
+                    except TypeError:
+                        _n_actions = 0
+
+                    for k in range(_n_actions):
+                        _action = Action()
+                        _action.set_attributes(_actions[k])
+                        _mechanism.dicActions[_action.action_id] = _action
+                        _cause.dicActions[_action.action_id] = _action
+
+        if revision_id is not None:
+            _query = "SELECT * FROM tbl_missions \
+                      WHERE fld_revision_id={0:d} \
+                      ORDER BY fld_mission_id".format(revision_id)
+            (_results, _error_code, __) = self._dao.execute(_query)
+            try:
+                _n_missions = len(_results)
+            except TypeError:
+                _n_missions = 0
+
+            for i in range(_n_missions):
+                self.dicMissions[_results[i][0]] = _results[i][1:]
+
+                _query = "SELECT * FROM tbl_mission_phase \
+                          WHERE fld_revision_id={0:d} \
+                          AND fld_mission_id={1:d} \
+                          ORDER BY fld_phase_id".format(revision_id,
+                                                        _results[i][1])
+                (_phases, _error_code, __) = self._dao.execute(_query)
+                try:
+                    _n_phases = len(_phases)
+                except TypeError:
+                    _n_phases = 0
+                for j in range(_n_phases):
+                    self.dicPhases[_results[i][0]] = _phases
 
         return False
 
@@ -278,19 +325,19 @@ class FMEA(object):
         """
 
         if assembly_id is not None:
-            _query = "INSERT INTO tbl_modes \
-                      (fld_assembly_id, fld_function_id) \
-                      VALUES ({0:d}, -1)".format(assembly_id)
+            _query = "INSERT INTO rtk_modes \
+                      (fld_hardware_id, fld_function_id, fld_type) \
+                      VALUES ({0:d}, 0, 1)".format(assembly_id)
             _fmea = self.dicDFMEA[assembly_id]
             _a_id = assembly_id
-            _f_id = -1
+            _f_id = 0
 
         elif function_id is not None:
-            _query = "INSERT INTO tbl_modes \
-                      (fld_assembly_id, fld_function_id) \
-                      VALUES (-1, {0:d})".format(function_id)
+            _query = "INSERT INTO rtk_modes \
+                      (fld_hardware_id, fld_function_id, fld_type) \
+                      VALUES (0, {0:d}, 0)".format(function_id)
             _fmea = self.dicFFMEA[function_id]
-            _a_id = -1
+            _a_id = 0
             _f_id = function_id
 
         (_results,
@@ -317,13 +364,13 @@ class FMEA(object):
         """
 
         if assembly_id is not None:
-            _query = "DELETE FROM tbl_modes \
-                      WHERE fld_assembly_id={0:d} \
+            _query = "DELETE FROM rtk_modes \
+                      WHERE fld_hardware_id={0:d} \
                       AND fld_mode_id={1:d}".format(assembly_id, mode_id)
             _fmea = self.dicDFMEA[assembly_id]
 
         elif function_id is not None:
-            _query = "DELETE FROM tbl_modes \
+            _query = "DELETE FROM rtk_modes \
                       WHERE fld_function_id={0:d} \
                       AND fld_mode_id={1:d}".format(function_id, mode_id)
             _fmea = self.dicFFMEA[function_id]
@@ -336,37 +383,238 @@ class FMEA(object):
 
         return(_results, _error_code)
 
-    def add_mechanism(self):
+    def add_mechanism(self, hardware_id, mode_id):
+        """
+        Adds a new Mechanism to the selected Mode.
 
-        pass
+        :keyword int hardware_id: the Hardware ID to add the Mechanism.
+        :keyword int mode_id: the Mode ID to add the Mechanism.
+        :return: (_results, _error_code, _last_id)
+        :rtype: tuple
+        """
 
-    def delete_mechanism(self):
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
 
-        pass
+        _query = "INSERT INTO rtk_mechanisms \
+                  (fld_assembly_id, fld_mode_id) \
+                  VALUES ({0:d}, {1:d})".format(hardware_id, mode_id)
+        (_results, _error_code, _last_id) = self._dao.execute(_query,
+                                                              commit=True)
 
-    def add_cause(self):
+        _mechanism = Mechanism()
+        _mechanism.set_attributes((mode_id, _last_id, '', 9, 9, 1000, 9, 9,
+                                   1000, 0))
+        _mode.dicMechanisms[_last_id] = _mechanism
 
-        pass
+        return(_results, _error_code, _last_id)
 
-    def delete_cause(self):
+    def delete_mechanism(self, hardware_id, mode_id, mechanism_id):
+        """
+        Deletes the selected Mechanism.
 
-        pass
+        :param int hardware_id: the Hardware ID of the Mechanism to delete.
+        :param int mode_id: the Mode ID of the Mechanism to delete.
+        :param int mechanism_id: the Mechanism ID to delete.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
 
-    def add_control(self):
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
 
-        pass
+        _query = "DELETE FROM rtk_mechanisms \
+                  WHERE fld_mechanism_id={0:d}".format(mechanism_id)
+        (_results, _error_code, _last_id) = self._dao.execute(_query,
+                                                              commit=True)
 
-    def delete_control(self):
+        try:
+            _mode.dicMechanisms.pop(mechanism_id)
+        except KeyError as _err:
+            _error_code = 60
 
-        pass
+        return(_results, _error_code)
 
-    def add_action(self):
+    def add_cause(self, hardware_id, mode_id, mechanism_id):
+        """
+        Adds a new Cause to the selected Mechanism.
 
-        pass
+        :param int hardware_id: the Hardware ID to add the Cause.
+        :param int mode_id: the Mode ID to add the Cause.
+        :param int mechanism_id: the Mechanism ID to add the Cause.
+        :return: (_results, _error_code, _last_id)
+        :rtype: tuple
+        """
 
-    def delete_action(self):
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
 
-        pass
+        _query = "INSERT INTO rtk_causes \
+                  (fld_mode_id, fld_mechanism_id) \
+                  VALUES ({0:d}, {1:d})".format(mode_id, mechanism_id)
+        (_results, _error_code, _last_id) = self._dao.execute(_query,
+                                                              commit=True)
+
+        _cause = Cause()
+        _cause.set_attributes((mode_id, mechanism_id, _last_id, '', 9, 9,
+                               1000, 9, 9, 1000))
+        _mechanism.dicCauses[_last_id] = _cause
+
+        return(_results, _error_code, _last_id)
+
+    def delete_cause(self, hardware_id, mode_id, mechanism_id, cause_id):
+        """
+        Deletes the selected Cause.
+
+        :param int hardware_id: the Hardware ID of the Cause to delete.
+        :param int mode_id: the Mode ID of the Cause to delete.
+        :param int mechanism_id: the Mechanism ID of the Cause to delete.
+        :param int cause_id: the Cause ID to delete.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
+
+        _query = "DELETE FROM rtk_causes \
+                  WHERE fld_cause_id={0:d}".format(cause_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        try:
+            _mechanism.dicCauses.pop(cause_id)
+        except KeyError as _err:
+            _error_code = 60
+
+        return(_results, _error_code)
+
+    def add_control(self, hardware_id, mode_id, mechanism_id, cause_id):
+        """
+        Adds a new Control to the selected Mechanism or Cause.
+
+        :param int hardware_id: the Hardware ID to add the Control.
+        :param int mode_id: the Mode ID to add the Control.
+        :param int mechanism_id: the Mechanism ID to add the Control.
+        :param int cause_id: the Cause ID to add the Control.
+        :return: (_results, _error_code, _last_id)
+        :rtype: tuple
+        """
+
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
+        _cause = _mechanism.dicCauses[cause_id]
+
+        _query = "INSERT INTO rtk_controls \
+                  (fld_mode_id, fld_mechanism_id, fld_cause_id) \
+                  VALUES ({0:d}, {1:d}, {2:d})".format(mode_id, mechanism_id,
+                                                       cause_id)
+        (_results, _error_code, _last_id) = self._dao.execute(_query,
+                                                              commit=True)
+
+        _control = Control()
+        _control.set_attributes((mode_id, mechanism_id, cause_id, _last_id, '',
+                                 0))
+        _mechanism.dicControls[_last_id] = _control
+        _cause.dicControls[_last_id] = _control
+
+        return(_results, _error_code, _last_id)
+
+    def delete_control(self, hardware_id, mode_id, mechanism_id, cause_id,
+                       control_id):
+        """
+        Deletes the selected Control.
+
+        :param int hardware_id: the Hardware ID of the Cause to delete.
+        :param int mode_id: the Mode ID of the Cause to delete.
+        :param int mechanism_id: the Mechanism ID of the Cause to delete.
+        :param int cause_id: the Cause ID to delete.
+        :param int control_id: the Control ID to delete.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
+        _cause = _mechanism.dicCauses[cause_id]
+
+        _query = "DELETE FROM rtk_controls \
+                  WHERE fld_control_id={0:d}".format(control_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        try:
+            _mechanism.dicControls.pop(control_id)
+            _cause.dicControls.pop(control_id)
+        except KeyError as _err:
+            _error_code = 60
+
+        return(_results, _error_code)
+
+    def add_action(self, hardware_id, mode_id, mechanism_id, cause_id):
+        """
+        Adds a new Action to the selected Mechanism or Cause.
+
+        :param int hardware_id: the Hardware ID to add the Control.
+        :param int mode_id: the Mode ID to add the Control.
+        :param int mechanism_id: the Mechanism ID to add the Control.
+        :param int cause_id: the Cause ID to add the Control.
+        :return: (_results, _error_code, _last_id)
+        :rtype: tuple
+        """
+
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
+        _cause = _mechanism.dicCauses[cause_id]
+
+        _query = "INSERT INTO rtk_actions \
+                  (fld_mode_id, fld_mechanism_id, fld_cause_id) \
+                  VALUES ({0:d}, {1:d}, {2:d})".format(mode_id, mechanism_id,
+                                                       cause_id)
+        (_results, _error_code, _last_id) = self._dao.execute(_query,
+                                                              commit=True)
+
+        _action = Action()
+        _action.set_attributes((mode_id, mechanism_id, cause_id, _last_id, '',
+                                0, 0, 0, 0, '', 0, 0, 0, 0))
+        _mechanism.dicActions[_last_id] = _action
+        _cause.dicActions[_last_id] = _action
+
+        return(_results, _error_code, _last_id)
+
+    def delete_action(self, hardware_id, mode_id, mechanism_id, cause_id,
+                      action_id):
+        """
+        Deletes the selected Action.
+
+        :param int hardware_id: the Hardware ID of the Cause to delete.
+        :param int mode_id: the Mode ID of the Cause to delete.
+        :param int mechanism_id: the Mechanism ID of the Cause to delete.
+        :param int cause_id: the Cause ID to delete.
+        :param int action_id: the Action ID to delete.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _fmea = self.dicDFMEA[hardware_id]
+        _mode = _fmea.dicModes[mode_id]
+        _mechanism = _mode.dicMechanisms[mechanism_id]
+        _cause = _mechanism.dicCauses[cause_id]
+
+        _query = "DELETE FROM rtk_actions \
+                  WHERE fld_action_id={0:d}".format(action_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        try:
+            _mechanism.dicActions.pop(action_id)
+            _cause.dicActions.pop(action_id)
+        except KeyError as _err:
+            _error_code = 60
+
+        return(_results, _error_code)
 
     def save_fmea(self, assembly_id=None, function_id=None):
         """
@@ -396,6 +644,14 @@ class FMEA(object):
 
         for _mode in _fmea.dicModes.values():
             self._save_mode(_mode)
+            for _mechanism in _mode.dicMechanisms.values():
+                self._save_mechanism(_mechanism)
+                for _cause in _mechanism.dicCauses.values():
+                    self._save_cause(_cause)
+                for _control in _mechanism.dicControls.values():
+                    self._save_control(_control)
+                for _action in _mechanism.dicActions.values():
+                    self._save_action(_action)
 
         return False
 
@@ -403,12 +659,13 @@ class FMEA(object):
         """
         Saves the Mode attributes to the RTK Project database.
 
-        :param rtk.fmea.Mode.Model: the Mode data model to save.
+        :param `rtk.analyses.fmea.Mode.Model` mode: the Mode data model to
+                                                    save.
         :return: _error_code
         :rtype: int
         """
 
-        _query = "UPDATE tbl_modes \
+        _query = "UPDATE rtk_modes \
                   SET fld_description='{0:s}', fld_mission='{1:s}', \
                       fld_mission_phase='{2:s}', fld_local_effect='{3:s}', \
                       fld_next_effect='{4:s}', fld_end_effect='{5:s}', \
@@ -425,7 +682,7 @@ class FMEA(object):
                       fld_mode_criticality={18:f}, fld_rpn_severity={19:d}, \
                       fld_rpn_severity_new={20:d}, fld_critical_item={21:d}, \
                       fld_single_point={22:d}, fld_remarks='{23:s}', \
-                      fld_assembly_id={24:d}, fld_function_id={25:d} \
+                      fld_hardware_id={24:d}, fld_function_id={25:d} \
                   WHERE fld_mode_id={26:d}".format(
                       mode.description, mode.mission, mode.mission_phase,
                       mode.local_effect, mode.next_effect, mode.end_effect,
@@ -444,17 +701,102 @@ class FMEA(object):
         return _error_code
 
     def _save_mechanism(self, mechanism):
+        """
+        Saves the Mechanism attributes to the RTK Project database.
 
-        pass
+        :param `rtk.analyses.fmea.Mechanism.Model` mechanism: the Mechanism
+                                                              data model to
+                                                              save.
+        :return: _error_code
+        :rtype: int
+        """
+
+        _query = "UPDATE rtk_mechanisms \
+                  SET fld_description='{0:s}', fld_rpn_occurrence={1:d}, \
+                      fld_rpn_detection={2:d}, fld_rpn={3:d}, \
+                      fld_rpn_occurrence_new={4:d}, \
+                      fld_rpn_detection_new={5:d}, fld_rpn_new={6:d}, \
+                      fld_include_pof={7:d} \
+                  WHERE fld_mechanism_id={8:d}".format(
+                      mechanism.description, mechanism.rpn_occurrence,
+                      mechanism.rpn_detection, mechanism.rpn,
+                      mechanism.rpn_occurrence_new,
+                      mechanism.rpn_detection_new, mechanism.rpn_new,
+                      mechanism.include_pof, mechanism.mechanism_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        return _error_code
 
     def _save_cause(self, cause):
+        """
+        Saves the Cause attributes to the RTK Project database.
 
-        pass
+        :param `rtk.analyses.fmea.Cause.Model` cause: the Cause data model to
+                                                      save.
+        :return: _error_code
+        :rtype: int
+        """
+
+        _query = "UPDATE rtk_causes \
+                  SET fld_description='{0:s}', \
+                      fld_rpn_occurrence={1:d}, fld_rpn_detection={2:d}, \
+                      fld_rpn={3:d}, fld_rpn_occurrence_new={4:d}, \
+                      fld_rpn_detection_new={5:d}, fld_rpn_new={6:d} \
+                  WHERE fld_cause_id={7:d}".format(
+                      cause.description, cause.rpn_occurrence,
+                      cause.rpn_detection, cause.rpn, cause.rpn_occurrence_new,
+                      cause.rpn_detection_new, cause.rpn_new, cause.cause_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        return _error_code
 
     def _save_control(self, control):
+        """
+        Saves the Control attributes to the RTK Project database.
 
-        pass
+        :param `rtk.analyses.fmea.Control.Model` control: the Control data
+                                                          model to save.
+        :return: _error_code
+        :rtype: int
+        """
+
+        _query = "UPDATE rtk_controls \
+                  SET fld_control_description='{0:s}', fld_control_type={1:d} \
+                  WHERE fld_control_id={2:d}".format(control.description,
+                                                     control.control_type,
+                                                     control.control_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        return _error_code
 
     def _save_action(self, action):
+        """
+        Saves the Action attributes to the RTK Project database.
 
-        pass
+        :param `rtk.analyses.fmea.Action.Model` action: the Action data model
+                                                        to save.
+        :return: _error_code
+        :rtype: int
+        """
+
+        _query = "UPDATE rtk_actions \
+                  SET fld_action_recommended='{0:s}', \
+                      fld_action_category={1:d}, \
+                      fld_action_owner={2:d}, \
+                      fld_action_due_date={3:d}, \
+                      fld_action_status={4:d}, \
+                      fld_action_taken='{5:s}', \
+                      fld_action_approved={6:d}, \
+                      fld_action_approve_date={7:d}, \
+                      fld_action_closed={8:d}, \
+                      fld_action_close_date={9:d} \
+                  WHERE fld_action_id={10:d}".format(
+                      action.action_recommended, action.action_category,
+                      action.action_owner, action.action_due_date,
+                      action.action_status, action.action_taken,
+                      action.action_approved, action.action_approved_date,
+                      action.action_closed, action.action_closed_date,
+                      action.action_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        return _error_code

@@ -38,7 +38,12 @@ def _error_handler(message):
     return _error_code
 
 
-class OutOfRangeError(Exception): pass
+class OutOfRangeError(Exception):
+    """
+    Exception raised when an input value is outside legal limits.
+    """
+
+    pass
 
 
 class Model(object):
@@ -133,7 +138,7 @@ class Model(object):
                self.rpn_occurrence_new, self.rpn_detection_new, self.rpn_new,
                self.include_pof)
 
-    def calculate(self, severity, occurrence, detection):
+    def calculate(self, severity, severity_new):
         """
         Calculate the Risk Priority Number (RPN) for the Mechanism.
 
@@ -142,25 +147,34 @@ class Model(object):
         :param int severity: the Severity (S) value of the FMEA end effect for
                              the failure mode this Mechanism is associated
                              with.
-        :param int occurrence: the Occurrence (O) value of the Mechanism.
-        :param int detection: the Detection (D) value of the Mechanism.
-        :return: _rpn
-        :rtype: int
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
         if not 0 < severity < 11:
             raise OutOfRangeError
-        if not 0 < occurrence < 11:
+        if not 0 < self.rpn_occurrence < 11:
             raise OutOfRangeError
-        if not 0 < detection < 11:
+        if not 0 < self.rpn_detection < 11:
+            raise OutOfRangeError
+        if not 0 < severity_new < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_occurrence_new < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_detection_new < 11:
             raise OutOfRangeError
 
-        _rpn = int(severity) * int(occurrence) * int(detection)
+        self.rpn = int(severity) * int(self.rpn_occurrence) * \
+                   int(self.rpn_detection)
+        self.rpn_new = int(severity_new) * int(self.rpn_occurrence_new) * \
+                   int(self.rpn_detection_new)
 
-        if not 0 < _rpn < 1001:
+        if not 0 < self.rpn < 1001:
+            raise OutOfRangeError
+        if not 0 < self.rpn_new < 1001:
             raise OutOfRangeError
 
-        return _rpn
+        return False
 
 
 class Mechanism(object):

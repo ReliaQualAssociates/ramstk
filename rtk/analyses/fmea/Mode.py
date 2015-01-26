@@ -8,13 +8,30 @@ FMEA Mode Module
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       Mode.py is part of The RTK Project
+#       rtk.analyses.fmea.Mode.py is part of The RTK Project
 #
 # All rights reserved.
+
+# Import modules for localization support.
+import gettext
+import locale
+
+# Import other RTK modules.
+try:
+    import configuration as _conf
+except ImportError:                         # pragma: no cover
+    import rtk.configuration as _conf
+
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except locale.Error:                        # pragma: no cover
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
 
 
 def _error_handler(message):
@@ -39,7 +56,12 @@ def _error_handler(message):
     return _error_code
 
 
-class OutOfRangeError(Exception): pass
+class OutOfRangeError(Exception):
+    """
+    Exception raised when an input value is outside legal limits.
+    """
+
+    pass
 
 
 class Model(object):
@@ -202,32 +224,42 @@ class Model(object):
         """
         Calculate the Criticality for the Mode.
 
-            Mode Criticality = Item Hazard Rate * Mode Ratio * Mode Operatin Time * Effect Probability
+            Mode Criticality = Item Hazard Rate * Mode Ratio * Mode Operating Time * Effect Probability
 
-        :param float item_hr:
-        :param float ratio:
-        :param float op_time:
-        :keyword float effect_prob:
+        :param float item_hr: the hazard rate of the hardware item being
+                              calculated.
+        :param float ratio: the mode ratio of the failure mode being
+                            calculated.
+        :param float op_time: the operating time of the failure mode being
+                              calculated.
+        :keyword float effect_prob: the probability the selected end-effect
+                                    will occur if the failure mode is
+                                    experienced in the field.
         :return: (_mode_ratio, _mode_crit)
         :rtype: tuple
         """
 
         if not 0.0 <= item_hr:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
         if not 0.0 <= ratio <= 1.0:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Failure mode ratio is outside the range "
+                                    u"of [0.0, 1.0]."))
         if not 0.0 <= op_time:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Failure mode operating time has a "
+                                    u"negative value."))
         if not 0.0 <= effect_prob <= 1.0:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Failure effect probability is outside "
+                                    u"the range [0.0, 1.0]."))
 
         _mode_hr = item_hr * ratio
         _mode_crit = _mode_hr * op_time * effect_prob
 
         if not 0.0 <= _mode_hr:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
+                                    u"value."))
         if not 0.0 <= _mode_crit:
-            raise OutOfRangeError
+            raise OutOfRangeError(_(u"Failure mode criticality has a negative "
+                                    u"value."))
 
         return(_mode_hr, _mode_crit)
 

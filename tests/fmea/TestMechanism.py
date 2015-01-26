@@ -128,7 +128,7 @@ class TestMechanismModel(unittest.TestCase):
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _values)
 
-    @attr(all=True, unit=True)
+    @attr(all=False, unit=False)
     def test_rpn(self):
         """
         (TestMechanism) calculate always returns a value between 1 - 1000
@@ -148,9 +148,19 @@ class TestMechanismModel(unittest.TestCase):
         (TestMechanism) calculate raises OutOfRangeError for 10 < input < 1
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0, 1, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 11, 1, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 0)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 11)
+        self.DUT.rpn_occurrence = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.DUT.rpn_occurrence = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.DUT.rpn_detection = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.DUT.rpn_detection = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.DUT.rpn_occurrence_new = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.DUT.rpn_occurrence_new = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.DUT.rpn_detection_new = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.DUT.rpn_detection_new = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)

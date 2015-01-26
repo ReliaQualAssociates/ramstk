@@ -126,13 +126,11 @@ class Model(object):
         Method to retrieve the current values of the Action data model
         attributes.
 
-        :return: (self.mode_id, self.mechanism_id, self.cause_id,
-                  self.action_id, self.action_recommended,
-                  self.action_category, self.action_owner,
-                  self.action_due_date, self.action_status,
-                  self.action_taken, self.action_approved,
-                  self.action_approved_date, self.action_closed,
-                  self.action_closed_date)
+        :return: (mode_id, mechanism_id, cause_id, action_id,
+                  action_recommended, action_category, action_owner,
+                  action_due_date, action_status, action_taken,
+                  action_approved, action_approved_date, action_closed,
+                  action_closed_date)
         :rtype: tuple
         """
 

@@ -45,11 +45,11 @@ class Model(object):
     are:
 
     :ivar dicControls: Dictionary of the Controls associated with the Cause.
-    Key is the Control ID, value is a pointer to the instance of the Control
-    data model.
+                       Key is the Control ID, value is a pointer to the
+                       instance of the Controldata model.
     :ivar dicActions: Dictionary of the Actions associated with the Cause.
-    Key is the Action ID, value is a pointer to the instance of the Action
-    data model.
+                      Key is the Action ID, value is a pointer to the instance
+                      of the Action data model.
 
     :ivar mode_id: default value: 0
     :ivar mechanism_id: default value: 0
@@ -71,6 +71,12 @@ class Model(object):
         self.mechanism_id = 0
         self.cause_id = 0
         self.description = ''
+        self.rpn_occurrence = 9
+        self.rpn_detection = 9
+        self.rpn = 1000
+        self.rpn_occurrence_new = 9
+        self.rpn_detection_new = 9
+        self.rpn_new = 1000
 
     def set_attributes(self, values):
         """
@@ -89,6 +95,12 @@ class Model(object):
             self.mechanism_id = int(values[1])
             self.cause_id = int(values[2])
             self.description = str(values[3])
+            self.rpn_occurrence = int(values[4])
+            self.rpn_detection = int(values[5])
+            self.rpn = int(values[6])
+            self.rpn_occurrence_new = int(values[7])
+            self.rpn_detection_new = int(values[8])
+            self.rpn_new = int(values[9])
         except IndexError as _err:
             _code = _error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -106,13 +118,16 @@ class Model(object):
         Method to retrieve the current values of the Cause data model
         attributes.
 
-        :return: (self.mode_id, self.mechanism_id, self.cause_id,
-                  self.description)
+        :return: (mode_id, mechanism_id, cause_id, description, rpn_occurrence,
+                  rpn_detection, rpn, rpn_occurrence_new, rpn_detection_new,
+                  rpn_new)
         :rtype: tuple
         """
 
         return(self.mode_id, self.mechanism_id, self.cause_id,
-               self.description)
+               self.description, self.rpn_occurrence, self.rpn_detection,
+               self.rpn, self.rpn_occurrence_new, self.rpn_detection_new,
+               self.rpn_new)
 
 
 class Cause(object):
