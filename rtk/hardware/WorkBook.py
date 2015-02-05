@@ -77,15 +77,15 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
-    Requirement.  The attributes of a Work Book view are:
+    Hardware item.  The attributes of a Work Book view are:
 
     :ivar _workview: the RTK top level Work View window to embed the
-                     Requirement Work Book into.
-    :ivar _function_model: the Function data model whose attributes are being
+                     Hardware Work Book into.
+    :ivar _hardware_model: the Hardware data model whose attributes are being
                            displayed.
 
     :ivar _dic_definitions: dictionary containing pointers to the failure
@@ -149,42 +149,39 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                        controller to use with this Work Book.
 
     :ivar chkSafetyCritical: the :class:`gtk.CheckButton` to display/edit the
-                             Function's safety criticality.
+                             Hardware's safety criticality.
 
-    :ivar txtCode: the :class:`gtk.Entry` to display/edit the Function code.
-    :ivar txtName: the :class:`gtk.Entry` to display/edit the Function name.
-    :ivar txtTotalCost: the :class:`gtk.Entry` to display the Function cost.
-    :ivar txtModeCount: the :class:`gtk.Entry` to display the number of
-                        hardware failure modes the Function is susceptible to.
+    :ivar txtName: the :class:`gtk.Entry` to display/edit the Hardware name.
+    :ivar txtTotalCost: the :class:`gtk.Entry` to display the Hardware cost.
     :ivar txtPartCount: the :class:`gtk.Entry` to display the number of
-                        hardware components comprising the Function.
-    :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Function
+                        Components comprising the Assembly.
+    :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Hardware
                       remarks.
-    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Function
+    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Hardware
                           logistics hazard rate.
-    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Function mission
+    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Hardware mission
                         hazard rate.
-    :ivar txtMTBF: the :class:`gtk.Entry` to display the Function logistics
+    :ivar txtMTBF: the :class:`gtk.Entry` to display the Hardware logistics
                    MTBF.
-    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Function
+    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Hardware
                           mission MTBF.
-    :ivar txtMPMT: the :class:`gtk.Entry` to display the Function mean
+    :ivar txtMPMT: the :class:`gtk.Entry` to display the Hardware mean
                    preventive maintenance time.
-    :ivar txtMCMT: the :class:`gtk.Entry` to display the Function mean
+    :ivar txtMCMT: the :class:`gtk.Entry` to display the Hardware mean
                    corrective maintenance time.
-    :ivar txtMTTR: the :class:`gtk.Entry` to display the Function mean time to
+    :ivar txtMTTR: the :class:`gtk.Entry` to display the Hardware mean time to
                    repair.
-    :ivar txtMMT: the :class:`gtk.Entry` to display the Function mean
+    :ivar txtMMT: the :class:`gtk.Entry` to display the Hardware mean
                   maintenance time.
-    :ivar txtAvailability: the :class:`gtk.Entry` to display the Function
+    :ivar txtAvailability: the :class:`gtk.Entry` to display the Hardware
                            logistics availability.
-    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Function mission
+    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Hardware mission
                         availability.
     """
 
     def __init__(self, workview, modulebook):
         """
-        Initializes the Work Book view for the Requirement package.
+        Initializes the Work Book view for the Hardware package.
 
         :param rtk.gui.gtk.mwi.WorkView workview: the Work View container to
                                                   insert this Work Book into.
@@ -198,6 +195,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._workview = workview
         self._modulebook = modulebook
         self._hardware_model = None
+        self._obj_inputs = None
+        self._obj_results = None
         #self._stakeholder_model = None
 
         # Initialize private dict attributes.
@@ -206,7 +205,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id = []
 
         # Initialize public scalar attributes.
-        self.dtcHardware = modulebook.dtcHardware
+        self.dtcBoM = modulebook.dtcBoM
 
         # General Data page widgets.
         self.chkRepairable = _widg.make_check_button()
@@ -366,7 +365,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                             bold=True)
         self.txtOSReason = gtk.TextBuffer()
 
-        self.vbxReliabilityResults = gtk.VBox()
+        self.vpnReliabilityResults = gtk.VPaned()
 
         # Put it all together.
         _toolbar = self._create_toolbar()
@@ -1036,7 +1035,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.cmbDormantEnviron.append_text(
                 self._workview.RTK_DORMANT_ENVIRON[_idx])
 
-        # Create the labels for quadrant #1.
+        # Create the labels for quadrant 1.
         _labels = [_(u"Active Environment:"), _(u"Active Temp:"),
                    _(u"Dormant Environment:"), _(u"Dormant Temp:"),
                    _(u"Duty Cycle:"), _(u"Humidity:"), _(u"Vibration:"),
@@ -1049,7 +1048,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
         _x_pos += 50
 
-        # Place the quadrant #1 widgets.
+        # Place the quadrant 1 widgets.
         self.cmbActEnviron.set_tooltip_text(_(u"Selects the active "
                                               u"operating environment for "
                                               u"the selected hardware item."))
@@ -1152,21 +1151,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         #    self.txtRPM.connect('focus-out-event',
         #                        self._on_focus_out, 'float', 37))
 
+        # Create the labels for quadrant 2.
         _labels = [_(u"Calculation Method:"), _(u"Calculation Model:"),
                    _(u"Specified h(t):"), _(u"Specified MTBF:"),
                    _(u"Software h(t):"), _(u"Additive Adj:"),
                    _(u"Multiplicative Adj:"), _(u"Failure Distribution:"),
                    _(u"Scale:"), _(u"Shape:"), _(u"Location:")]
-
         (_x_pos,
          _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
 
 # TODO: Clean this up when working on the components.  This is a working prototype of the approach to use.
-        _cap = gui.gtk.Capacitor.Capacitor()
-        _x_pos2 = _cap._create_mil_hdbk_217_stress(_x_pos)
-        self.vpnReliabilityInputs.pack2(_cap, True, True)
+        self._obj_inputs = gui.gtk.Capacitor.Inputs(52)
+        _x_pos2 = self._obj_inputs.create_217_stress_inputs(_x_pos)
+        self.vpnReliabilityInputs.pack2(self._obj_inputs, True, True)
         _x_pos = max(_x_pos, _x_pos2)
 
+        # Place the quadrant 2 widgets.
         self.cmbHRMethod.set_tooltip_text(_(u"Selects the method of "
                                             u"assessing the hazard rate for "
                                             u"the selected hardware item."))
@@ -1378,10 +1378,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        _hpaned2.pack2(_frame, True, False)
+        self.vpnReliabilityResults.pack1(_frame, True, True)
+
+        _hpaned2.pack2(self.vpnReliabilityResults, True, False)
 
         # --------------------------------------------------------------#
-        # Build the quadrant #3 (upper right) containers.               #
+        # Build the quadrant 3 (upper right) containers.                #
         # --------------------------------------------------------------#
         _vpaned = gtk.VPaned()
         _hpaned.pack2(_vpaned, True, False)
@@ -1399,7 +1401,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _vpaned.pack1(_frame, True, False)
 
         # --------------------------------------------------------------#
-        # Build the quadrant #4 (lower right) containers.               #
+        # Build the quadrant 4 (lower right) containers.                #
         # --------------------------------------------------------------#
         _fixed4 = gtk.Fixed()
 
@@ -1425,7 +1427,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         #self._component_x[1] = _x_pos
         #self._component_y[1] = _y_pos3[3] + 170
 
-        # Place the quadrant #1 widgets.
+        # Place the quadrant 1 widgets.
         self.txtTotalPwr.set_tooltip_text(_(u"The total power of the selected "
                                             u"hardware item."))
         self.txtVoltageRatio.set_tooltip_text(_(u"The ratio of operating "
@@ -1461,7 +1463,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         #self.fraDerate.add(self.pltDerate)
         #_fixed1.put(self.fraDerate, _x_pos + 125, 5)
 
-        # Create the labels for quadrant #1.
+        # Create the labels for quadrant 2.
         _labels = [_(u"Active h(t):"), _(u"Dormant h(t):"),
                    _(u"Software h(t):"), _(u"Predicted h(t):"),
                    _(u"Mission h(t):"), _(u"h(t) Percent:"),
@@ -1470,7 +1472,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
         _x_pos += 50
 
-        # Place the quadrant #1 widgets.
+# TODO: Clean this up when working on the components.  This is a working prototype of the approach to use.
+        self._obj_results = gui.gtk.Capacitor.Results(52)
+        _x_pos2 = self._obj_results.create_217_stress_results(_x_pos)
+        self.vpnReliabilityResults.pack2(self._obj_results, True, True)
+        _x_pos = max(_x_pos, _x_pos2)
+
+        # Place the quadrant 2 widgets.
         self.txtActiveHt.set_tooltip_text(_(u"Displays the active failure "
                                             u"intensity for the selected "
                                             u"hardware item."))
@@ -1521,7 +1529,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed1.show_all()
         _fixed2.show_all()
 
-        # Create the labels for quadrant #3.
+        # Create the labels for quadrant 3.
         _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
                    _(u"Availability:"), _(u"Mission A(t):")]
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed3, 5, 5)
@@ -1610,48 +1618,66 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # --------------------------------------------------------------#
         # Load the General Data information.                            #
         # --------------------------------------------------------------#
-        self.txtRevisionID.set_text(str(self._hardware_model.revision_id))
-        self.txtAltPartNum.set_text(self._hardware_model.alt_part_number)
-        self.txtAttachments.set_text(self._hardware_model.attachments)
-        self.txtCAGECode.set_text(self._hardware_model.cage_code)
-        self.txtCompRefDes.set_text(self._hardware_model.comp_ref_des)
-        self.txtDescription.set_text(self._hardware_model.description)
-        self.txtFigNum.set_text(self._hardware_model.figure_number)
-        self.txtLCN.set_text(self._hardware_model.lcn)
-        self.cmbManufacturer.set_active(self._hardware_model.manufacturer)
-        self.txtName.set_text(self._hardware_model.name)
-        self.txtNSN.set_text(self._hardware_model.nsn)
-        self.txtPageNum.set_text(self._hardware_model.page_number)
-        self.txtPartNum.set_text(self._hardware_model.part_number)
-        self.txtQuantity.set_text(str(self._hardware_model.quantity))
-        self.txtRefDes.set_text(self._hardware_model.ref_des)
-        _text = _util.none_to_string(self._hardware_model.remarks)
+        self.txtRevisionID.set_text(str(model.revision_id))
+        self.txtAltPartNum.set_text(model.alt_part_number)
+        self.txtAttachments.set_text(model.attachments)
+        self.txtCAGECode.set_text(model.cage_code)
+        self.txtCompRefDes.set_text(model.comp_ref_des)
+        self.txtDescription.set_text(model.description)
+        self.txtFigNum.set_text(model.figure_number)
+        self.txtLCN.set_text(model.lcn)
+        self.cmbManufacturer.set_active(model.manufacturer)
+        self.txtName.set_text(model.name)
+        self.txtNSN.set_text(model.nsn)
+        self.txtPageNum.set_text(model.page_number)
+        self.txtPartNum.set_text(model.part_number)
+        self.txtQuantity.set_text(str(model.quantity))
+        self.txtRefDes.set_text(model.ref_des)
+        _text = _util.none_to_string(model.remarks)
         _buffer = self.txtRemarks.get_child().get_child().get_buffer()
         _buffer.set_text(_text)
-        self.chkRepairable.set_active(self._hardware_model.repairable)
-        self.txtSpecification.set_text(
-            self._hardware_model.specification_number)
-        self.chkTagged.set_active(self._hardware_model.tagged_part)
-        self.txtYearMade.set_text(
-            str(self._hardware_model.year_of_manufacture))
+        self.txtSpecification.set_text(model.specification_number)
+        self.chkTagged.set_active(model.tagged_part)
+        self.txtYearMade.set_text(str(model.year_of_manufacture))
 
         # Show/hide the assembly-specific or component-specific widgets as
         # appropriate.
-        if self._hardware_model.part:
-            self.cmbCategory.set_active(self._hardware_model.category_id)
-            self.cmbSubcategory.set_active(self._hardware_model.subcategory_id)
+        if model.part == 1:
+
+            # Let the user know if the selected part does not have a part
+            # category selected.
+            if self._hardware_model.category_id < 1:
+                self.lblNoCategory.show()
+                self.cmbCategory.hide()
+                self.cmbSubcategory.hide()
+            else:
+                self.lblNoCategory.hide()
+                self.cmbCategory.show()
+                self.cmbSubcategory.show()
+                self.cmbCategory.set_active(model.category_id)
+
+            # Let the user know if the selected part does not have a part
+            # subcategory selected.
+            if self._hardware_model.subcategory_id < 1:
+                self.lblNoSubCategory.show()
+            else:
+                self.lblNoSubCategory.hide()
+                self.cmbSubcategory.set_active(model.subcategory_id)
+
+            self.lblCategory.show()
+            self.lblSubcategory.show()
+            self.chkRepairable.hide()
 
             #self._component = _util.set_part_model(self.category_id,
             #                                       self.subcategory_id)
-            self.cmbCategory.show()
-            self.cmbSubcategory.show()
-            self.lblCategory.show()
-            self.lblSubcategory.show()
+
         else:
             self.cmbCategory.hide()
             self.cmbSubcategory.hide()
             self.lblCategory.hide()
             self.lblSubcategory.hide()
+            self.chkRepairable.show()
+            self.chkRepairable.set_active(model.repairable)
 
         # --------------------------------------------------------------#
         # Load the Reliability Allocation information.                  #
@@ -1659,145 +1685,138 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Clear the Allocation View gtk.TreeModel().
         _model = self.wbvwAllocation.tvwAllocation.get_model()
         _model.clear()
-        self.wbvwAllocation.load_page(self.dtcHardware,
-                                      self._hardware_model.hardware_id)
+        self.wbvwAllocation.load_page(self.dtcBoM, model.hardware_id)
 
         # --------------------------------------------------------------#
         # Load the Hazard Analysis information.                         #
         # --------------------------------------------------------------#
-        self.wbvwHazard.load_page(self.dtcHardware,
-                                  self._hardware_model.hardware_id)
+        self.wbvwHazard.load_page(self.dtcBoM, model.hardware_id)
 
         # --------------------------------------------------------------#
         # Load the Similar Item Analysis information.                   #
         # --------------------------------------------------------------#
-        self.wbvwSimilarItem.load_page(self.dtcHardware,
-                                       self._hardware_model.hardware_id)
+        self.wbvwSimilarItem.load_page(self.dtcBoM, model.hardware_id)
 
         # --------------------------------------------------------------#
         # Load the Assessment Input information.                        #
         # --------------------------------------------------------------#
-        self.cmbHRMethod.set_active(int(self._hardware_model.hazard_rate_method))
+        self.cmbHRMethod.set_active(int(model.hazard_rate_method))
         self.txtSpecifiedHt.set_text(
-            str(fmt.format(self._hardware_model.hazard_rate_specified)))
-        self.txtSpecifiedMTBF.set_text(str(self._hardware_model.mtbf_specified))
+            str(fmt.format(model.hazard_rate_specified)))
+        self.txtSpecifiedMTBF.set_text(str(model.mtbf_specified))
         self.txtSoftwareHt.set_text(
-            str(fmt.format(self._hardware_model.hazard_rate_software)))
-        self.txtAddAdj.set_text(str(self._hardware_model.add_adj_factor))
-        self.txtMultAdj.set_text(str(self._hardware_model.mult_adj_factor))
-        self.cmbFailDist.set_active(int(self._hardware_model.failure_dist))
-        self.txtFailScale.set_text(str(self._hardware_model.failure_parameter_1))
-        self.txtFailShape.set_text(str(self._hardware_model.failure_parameter_2))
-        self.txtFailLoc.set_text(str(self._hardware_model.failure_parameter_3))
-        self.cmbActEnviron.set_active(int(self._hardware_model.environment_active))
-        self.txtActTemp.set_text(str(self._hardware_model.temperature_active))
-        self.cmbDormantEnviron.set_active(int(self._hardware_model.environment_dormant))
-        self.txtDormantTemp.set_text(str(self._hardware_model.temperature_dormant))
-        self.txtDutyCycle.set_text(str(self._hardware_model.duty_cycle))
-        self.txtHumidity.set_text(str(self._hardware_model.humidity))
-        self.txtVibration.set_text(str(self._hardware_model.vibration))
-        self.txtRPM.set_text(str(self._hardware_model.rpm))
-        self.cmbMTTRMethod.set_active(int(self._hardware_model.mttr_type))
-        self.txtSpecifiedMTTR.set_text(str(self._hardware_model.mttr_specified))
-        self.txtMTTRAddAdj.set_text(str(self._hardware_model.mttr_add_adj_factor))
-        self.txtMTTRMultAdj.set_text(str(self._hardware_model.mttr_mult_adj_factor))
-        self.cmbRepairDist.set_active(int(self._hardware_model.repair_dist))
-        self.txtRepairScale.set_text(str(self._hardware_model.repair_parameter_1))
-        self.txtRepairShape.set_text(str(self._hardware_model.repair_parameter_2))
+            str(fmt.format(model.hazard_rate_software)))
+        self.txtAddAdj.set_text(str(model.add_adj_factor))
+        self.txtMultAdj.set_text(str(model.mult_adj_factor))
+        self.cmbFailDist.set_active(int(model.failure_dist))
+        self.txtFailScale.set_text(str(model.failure_parameter_1))
+        self.txtFailShape.set_text(str(model.failure_parameter_2))
+        self.txtFailLoc.set_text(str(model.failure_parameter_3))
+        self.cmbActEnviron.set_active(int(model.environment_active))
+        self.txtActTemp.set_text(str(model.temperature_active))
+        self.cmbDormantEnviron.set_active(int(model.environment_dormant))
+        self.txtDormantTemp.set_text(str(model.temperature_dormant))
+        self.txtDutyCycle.set_text(str(model.duty_cycle))
+        self.txtHumidity.set_text(str(model.humidity))
+        self.txtVibration.set_text(str(model.vibration))
+        self.txtRPM.set_text(str(model.rpm))
+        self.cmbMTTRMethod.set_active(int(model.mttr_type))
+        self.txtSpecifiedMTTR.set_text(str(model.mttr_specified))
+        self.txtMTTRAddAdj.set_text(str(model.mttr_add_adj_factor))
+        self.txtMTTRMultAdj.set_text(str(model.mttr_mult_adj_factor))
+        self.cmbRepairDist.set_active(int(model.repair_dist))
+        self.txtRepairScale.set_text(str(model.repair_parameter_1))
+        self.txtRepairShape.set_text(str(model.repair_parameter_2))
         self.txtMissionTime.set_text(
-            str('{0:0.2f}'.format(self._hardware_model.mission_time)))
-        self.cmbCostMethod.set_active(int(self._hardware_model.cost_type))
-        self.txtCost.set_text(str(locale.currency(self._hardware_model.cost)))
+            str('{0:0.2f}'.format(model.mission_time)))
+        self.txtCost.set_text(str(locale.currency(model.cost)))
+        self.txtMinTemp.set_text(
+            str('{0:0.2f}'.format(model.min_rated_temperature)))
+        self.txtMaxTemp.set_text(
+            str('{0:0.2f}'.format(model.max_rated_temperature)))
+        self.txtRatedVoltage.set_text(str(fmt.format(model.rated_voltage)))
+        self.txtOpVoltage.set_text(str(fmt.format(model.operating_voltage)))
+        self.txtRatedCurrent.set_text(str(fmt.format(model.rated_current)))
+        self.txtOpCurrent.set_text(str(fmt.format(model.operating_current)))
+        self.txtRatedPower.set_text(str(fmt.format(model.rated_power)))
+        self.txtOpPower.set_text(str(fmt.format(model.operating_power)))
+        self.txtTempRise.set_text(str(fmt.format(model.temperature_rise)))
 
         # Load the component-specific information.
-        if self._hardware_model.part:
-            #self._component = _util.set_part_model(self.category_id,
-            #                                       self.subcategory_id)
-
-            self.cmbCalcModel.set_active(int(self._hardware_model.calculation_model))
-            self.txtMinTemp.set_text(str('{0:0.2f}'.format(self._hardware_model.min_temp)))
+        if model.part == 1:
+            self.cmbHRModel.set_active(int(model.hazard_rate_type))
             self.txtKneeTemp.set_text(
-                str('{0:0.2f}'.format(self.knee_temp)))
-            self.txtMaxTemp.set_text(str('{0:0.2f}'.format(self._hardware_model.max_temp)))
-            self.txtRatedVoltage.set_text(
-                str(fmt.format(self._hardware_model.rated_voltage)))
-            self.txtOpVoltage.set_text(str(fmt.format(self._hardware_model.op_voltage)))
-            self.txtRatedCurrent.set_text(
-                str(fmt.format(self._hardware_model.rated_current)))
-            self.txtOpCurrent.set_text(str(fmt.format(self._hardware_model.op_current)))
-            self.txtRatedPower.set_text(str(fmt.format(self._hardware_model.rated_power)))
-            self.txtOpPower.set_text(str(fmt.format(self._hardware_model.op_power)))
-            self.txtThetaJC.set_text(str(self._hardware_model.theta_jc))
-            self.txtTempRise.set_text(str(fmt.format(self._hardware_model.temp_rise)))
-            self.txtCaseTemp.set_text(str(fmt.format(self._hardware_model.case_temp)))
+                str('{0:0.2f}'.format(model.knee_temperature)))
+            self.txtThetaJC.set_text(
+                str(self._hardware_model.thermal_resistance))
+            self.txtCaseTemp.set_text(
+                str(fmt.format(model.junction_temperature)))
 
-        # Let the user know if the selected part does not have a part
-        # category selected.
-        if self._hardware_model.category_id < 1:
-            self.lblNoCategory.show()
-        else:
-            self.lblNoCategory.hide()
+            self._obj_inputs.load_217_stress_inputs(self._hardware_model)
 
-        # Let the user know if the selected part does not have a part
-        # subcategory selected.
-        if self._hardware_model.subcategory_id < 1:
-            self.lblNoSubCategory.show()
         else:
-            self.lblNoSubCategory.hide()
+            self.cmbCostMethod.set_active(int(model.cost_type))
 
         # --------------------------------------------------------------#
         # Load the Assessment Result information.                       #
         # --------------------------------------------------------------#
-        self.txtActiveHt.set_text(str(fmt.format(self._hardware_model.hazard_rate_active)))
-        self.txtDormantHt.set_text(str(fmt.format(self._hardware_model.hazard_rate_dormant)))
+        self.txtActiveHt.set_text(str(fmt.format(model.hazard_rate_active)))
+        self.txtDormantHt.set_text(str(fmt.format(model.hazard_rate_dormant)))
         self.txtSoftwareHt2.set_text(
-            str(fmt.format(self._hardware_model.hazard_rate_software)))
-        self.txtPredictedHt.set_text(str(fmt.format(self._hardware_model.hazard_rate_logistics)))
-        self.txtMissionHt.set_text(str(fmt.format(self._hardware_model.hazard_rate_mission)))
-        self.txtHtPerCent.set_text(str(fmt.format(self._hardware_model.hazard_rate_percent)))
+            str(fmt.format(model.hazard_rate_software)))
+        self.txtPredictedHt.set_text(
+            str(fmt.format(model.hazard_rate_logistics)))
+        self.txtMissionHt.set_text(str(fmt.format(model.hazard_rate_mission)))
+        self.txtHtPerCent.set_text(str(fmt.format(model.hazard_rate_percent)))
 
-        self.txtMTBF.set_text(str('{0:0.2f}'.format(self._hardware_model.mtbf_logistics)))
-        self.txtMissionMTBF.set_text(str('{0:0.2f}'.format(self._hardware_model.mtbf_mission)))
+        self.txtMTBF.set_text(str('{0:0.2f}'.format(model.mtbf_logistics)))
+        self.txtMissionMTBF.set_text(
+            str('{0:0.2f}'.format(model.mtbf_mission)))
 
-        self.txtReliability.set_text(str(fmt.format(self._hardware_model.reliability_logistics)))
-        self.txtMissionRt.set_text(str(fmt.format(self._hardware_model.reliability_mission)))
+        self.txtReliability.set_text(
+            str(fmt.format(model.reliability_logistics)))
+        self.txtMissionRt.set_text(str(fmt.format(model.reliability_mission)))
 
-        self.txtMPMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mpmt)))
-        self.txtMCMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mcmt)))
-        self.txtMTTR.set_text(str('{0:0.2f}'.format(self._hardware_model.mttr)))
-        self.txtMMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mmt)))
+        self.txtMPMT.set_text(str('{0:0.2f}'.format(model.mpmt)))
+        self.txtMCMT.set_text(str('{0:0.2f}'.format(model.mcmt)))
+        self.txtMTTR.set_text(str('{0:0.2f}'.format(model.mttr)))
+        self.txtMMT.set_text(str('{0:0.2f}'.format(model.mmt)))
 
-        self.txtAvailability.set_text(str(fmt.format(self._hardware_model.availability_logistics)))
-        self.txtMissionAt.set_text(str(fmt.format(self._hardware_model.availability_mission)))
+        self.txtAvailability.set_text(
+            str(fmt.format(model.availability_logistics)))
+        self.txtMissionAt.set_text(str(fmt.format(model.availability_mission)))
 
-        self.txtTotalCost.set_text(str(locale.currency(self._hardware_model.cost)))
+        self.txtTotalCost.set_text(str(locale.currency(model.cost)))
         self.txtCostFailure.set_text(
-            str(locale.currency(self._hardware_model.cost_failure)))
-        self.txtCostHour.set_text(str('${0:0.4g}'.format(self._hardware_model.cost_hour)))
+            str(locale.currency(model.cost_failure)))
+        self.txtCostHour.set_text(str('${0:0.4g}'.format(model.cost_hour)))
 
-        self.txtPartCount.set_text(str(fmt.format(self._hardware_model.total_part_quantity)))
-        self.txtTotalPwr.set_text(str(fmt.format(self._hardware_model.total_power_dissipation)))
+        if model.part == 1:
+            self.txtCurrentRatio.set_text(str(fmt.format(model.current_ratio)))
+            self.txtPwrRatio.set_text(str(fmt.format(model.power_ratio)))
+            self.txtVoltageRatio.set_text(str(fmt.format(model.voltage_ratio)))
 
-        if self._hardware_model.part:
-            self.txtCurrentRatio.set_text(str(fmt.format(self._hardware_model.current_ratio)))
-            self.txtPwrRatio.set_text(str(fmt.format(self._hardware_model.power_ratio)))
-            self.txtVoltageRatio.set_text(str(fmt.format(self._hardware_model.voltage_ratio)))
-
-            self.chkOverstressed.set_active(self._hardware_model.overstress)
+            self.chkOverstressed.set_active(model.overstress)
 
             #if self._component is not None:
             #    self._component.assessment_results_load(self)
 
+        else:
+            self.txtPartCount.set_text(
+                str(fmt.format(model.total_part_quantity)))
+            self.txtTotalPwr.set_text(
+                str(fmt.format(model.total_power_dissipation)))
+
         # --------------------------------------------------------------#
         # Load the FMEA/FMECA information.                              #
         # --------------------------------------------------------------#
-        self.wbvwFMECA.load_page(self._hardware_model.hardware_id,
-                                 self._hardware_model.hazard_rate_logistics)
+        self.wbvwFMECA.load_page(model.hardware_id,
+                                 model.hazard_rate_logistics)
 
         # --------------------------------------------------------------#
         # Load the PoF Analysis information.                            #
         # --------------------------------------------------------------#
-        self.wbvwPoF.load_page(self._hardware_model.hardware_id)
+        self.wbvwPoF.load_page(model.hardware_id)
 
         return False
 
@@ -1837,6 +1856,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         combo.handler_block(self._lst_handler_id[index])
+
+        if index == 3:                      # Component category.
+            print "Just changed the component category."
+        elif index == 4:                    # Component subcategory.
+            print "Just changed the component sub-category."
+        elif index == 9:                    # Manufacturer.
+            print "Just changed the manufacturer."
+
         combo.handler_unblock(self._lst_handler_id[index])
 
         return False

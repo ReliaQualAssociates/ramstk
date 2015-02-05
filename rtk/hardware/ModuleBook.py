@@ -8,11 +8,11 @@ Hardware Package Module View
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       ModuleBook.py is part of The RTK Project
+#       rtk.hardware.gui.gtk.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -61,13 +61,13 @@ _ = gettext.gettext
 # TODO: Fix all docstrings; copy-paste errors.
 class ModuleView(object):
     """
-    The Module Book view displays all the Requirements associated with the RTK
-    Project in a hierarchical list.  The attributes of a Module Book view are:
+    The Module Book view displays all the Hardware items associated with the
+    RTK Project in a hierarchical list.  The attributes of a Module Book view
+    are:
 
-    :ivar _model: the :class:`rtk.requirement.Requirement.Model` data model
-                  that is currently selected.
-    :ivar _stakeholder_model: the :class:`rtk.stakeholder.Stakeholder.Model`
-                              data model that is currently selected.
+    :ivar _model: the :class:`rtk.hardware.BoM.Model` data model that is
+                  currently selected.
+
     :ivar _lst_col_order: list containing the order of the columns in the
                           Module View :class:`gtk.TreeView`.
     :ivar _workbook: the :class:`rtk.requirement.WorkBook.WorkView` associated
@@ -100,19 +100,15 @@ class ModuleView(object):
         self._model = None
         self._allocation_model = None
 
-        # initialize public dict attributes.
-        #self.dicRequirementTypes = {}
-        #self.dicOwners = {}
-
         # Initialize public scalar attributes.
-        self.dtcHardware = controller
+        self.dtcBoM = controller
         self.dtcAllocation = args[0][0]
         self.dtcHazard = args[0][1]
         self.dtcSimilarItem = args[0][2]
         self.dtcFMECA = args[0][3]
         self.dtcPoF = args[0][4]
 
-        # Create the main Requirement class treeview.
+        # Create the main Hardware class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Hardware', 3,
                                                     None, None,
@@ -158,15 +154,14 @@ class ModuleView(object):
         :rtype: boolean
         """
 
-        (_hardware,
-         __) = self.dtcHardware.request_hardware(dao, revision_id)
+        (_hardware, __) = self.dtcBoM.request_bom(dao, revision_id)
         self.dtcAllocation.request_allocation(dao)
         self.dtcHazard.request_hazard(dao)
         self.dtcSimilarItem.request_similar_item(dao)
 
         # Only load the hardware associated with the selected Revision.
         _hardware = [_h for _h in _hardware if _h[0] == revision_id]
-        _top_reqs = [_h for _h in _hardware if _h[25] == -1]
+        _top_reqs = [_h for _h in _hardware if _h[23] == -1]
 
         # Load all the FMECA and PoF analyses.
         for _h in _hardware:
@@ -212,11 +207,11 @@ class ModuleView(object):
         _icon = _conf.ICON_DIR + '32x32/component.png'
         _component_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         for _hardware in parents:
-            if _hardware[25] == -1:
+            if _hardware[23] == -1:
                 row = None
-            if _hardware[26] == 0:
+            if _hardware[24] == 0:
                 _data = list(_hardware) + [_assembly_icon]
-            elif _hardware[26] == 1:
+            elif _hardware[24] == 1:
                 _data = list(_hardware) + [_component_icon]
             _piter = model.append(row, _data)
             _parent_id = _hardware[1]
@@ -224,7 +219,7 @@ class ModuleView(object):
             # Find the child requirements of the current parent requirement.
             # These # will be the new parent requirements to pass to this
             # method.
-            _parents = [_h for _h in hardware if _h[25] == _parent_id]
+            _parents = [_h for _h in hardware if _h[23] == _parent_id]
             self._load_treeview(dao, _parents, hardware, model, _piter)
 
         return False
@@ -292,7 +287,8 @@ class ModuleView(object):
         (_model, _row) = treeview.get_selection().get_selected()
 
         _hardware_id = _model.get_value(_row, 1)
-        self._model = self.dtcHardware.dicHardware[_hardware_id]
+
+        self._model = self.dtcBoM.dicHardware[_hardware_id]
 
         self._workbook.load(self._model)
 

@@ -49,7 +49,7 @@ from analyses.fmea.FMEA import FMEA
 from requirement.Requirement import Requirement
 from requirement.ModuleBook import ModuleView as mvwRequirement
 from stakeholder.Stakeholder import Stakeholder
-from hardware.Hardware import Hardware
+from hardware.BoM import BoM
 from hardware.ModuleBook import ModuleView as mvwHardware
 from analyses.allocation.Allocation import Allocation
 from analyses.hazard.Hazard import Hazard
@@ -202,7 +202,7 @@ class RTK(object):
         self.dtcFMEA = FMEA()
         self.dtcRequirement = Requirement()
         self.dtcStakeholder = Stakeholder()
-        self.dtcHardware = Hardware()
+        dtcBoM = BoM()
         dtcAllocation = Allocation()
         dtcHazard = Hazard()
         dtcSimilarItem = SimilarItem()
@@ -235,12 +235,11 @@ class RTK(object):
                                                        self.site_dao)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware,
-                                                       self.dtcHardware, -1,
+                                                       dtcBoM, -1,
                                                        dtcAllocation,
                                                        dtcHazard,
                                                        dtcSimilarItem,
-                                                       self.dtcFMEA,
-                                                       dtcPoF)
+                                                       self.dtcFMEA, dtcPoF)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()

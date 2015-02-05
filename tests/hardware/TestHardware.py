@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       TestHardware.py is part of The RTK Project
+#       tests.hardware.TestHardware.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -53,12 +53,10 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.alt_part_number, '')
         self.assertEqual(self.DUT.attachments, '')
         self.assertEqual(self.DUT.cage_code, '')
-        self.assertEqual(self.DUT.category_id, 0)
         self.assertEqual(self.DUT.comp_ref_des, '')
         self.assertEqual(self.DUT.cost, 0.0)
         self.assertEqual(self.DUT.cost_failure, 0.0)
         self.assertEqual(self.DUT.cost_hour, 0.0)
-        self.assertEqual(self.DUT.cost_type, 0)
         self.assertEqual(self.DUT.description, '')
         self.assertEqual(self.DUT.duty_cycle, 100.0)
         self.assertEqual(self.DUT.environment_active, 0)
@@ -81,21 +79,15 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.reliability_goal, 1.0)
         self.assertEqual(self.DUT.reliability_goal_measure, 0)
         self.assertEqual(self.DUT.remarks, '')
-        self.assertEqual(self.DUT.repairable, 0)
         self.assertEqual(self.DUT.rpm, 0.0)
         self.assertEqual(self.DUT.specification_number, '')
-        self.assertEqual(self.DUT.subcategory_id, 0)
         self.assertEqual(self.DUT.tagged_part, 0)
         self.assertEqual(self.DUT.temperature_active, 30.0)
         self.assertEqual(self.DUT.temperature_dormant, 30.0)
-        self.assertEqual(self.DUT.total_part_quantity, 0)
-        self.assertEqual(self.DUT.total_power_dissipation, 0.0)
         self.assertEqual(self.DUT.vibration, 0.0)
         self.assertEqual(self.DUT.year_of_manufacture, 2014)
 
         self.assertEqual(self.DUT.current_ratio, 1.0)
-        self.assertEqual(self.DUT.junction_temperature, 30.0)
-        self.assertEqual(self.DUT.knee_temperature, 0.0)
         self.assertEqual(self.DUT.max_rated_temperature, 0.0)
         self.assertEqual(self.DUT.min_rated_temperature, 0.0)
         self.assertEqual(self.DUT.operating_current, 0.0)
@@ -106,8 +98,6 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.rated_power, 1.0)
         self.assertEqual(self.DUT.rated_voltage, 1.0)
         self.assertEqual(self.DUT.temperature_rise, 0.0)
-        self.assertEqual(self.DUT.thermal_resistance, 0.0)
-        self.assertEqual(self.DUT.tref, 0.0)
         self.assertEqual(self.DUT.voltage_ratio, 1.0)
 
         self.assertEqual(self.DUT.add_adj_factor, 0.0)
@@ -124,7 +114,7 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.hazard_rate_logistics, 0.0)
         self.assertEqual(self.DUT.hazard_rate_method, 1)
         self.assertEqual(self.DUT.hazard_rate_mission, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_model, '')
+        self.assertEqual(self.DUT.hazard_rate_model, {})
         self.assertEqual(self.DUT.hazard_rate_percent, 0.0)
         self.assertEqual(self.DUT.hazard_rate_software, 0.0)
         self.assertEqual(self.DUT.hazard_rate_specified, 0.0)
@@ -153,12 +143,11 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_base_attributes should return a 0 error code on success
         """
 
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code', 0,
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0, 0.0, 'Spec #', 0, 0,
-                        30.0, 30.0, 0, 0.0, 0.0, 2014)
+        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
 
         (_error_code,
          _error_msg) = self.DUT._set_base_attributes(_base_values)
@@ -170,12 +159,11 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_base_attributes should return a 10 error code when passed a wrong data type
         """
 
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code', 0,
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
-                        100.0, 0, 0, 'Figure #', None, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0, 0.0, 'Spec #', 0, 0,
-                        30.0, 30.0, 0, 0.0, 0.0, 2014)
+        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', None, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
 
         (_error_code,
          _error_msg) = self.DUT._set_base_attributes(_base_values)
@@ -187,12 +175,11 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_base_attributes should return a 40 error code when too few items are passed
         """
 
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code', 0,
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0, 0.0, 'Spec #', 0, 0,
-                        30.0, 30.0, 0, 0.0, 0.0)
+        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0)
 
         (_error_code,
          _error_msg) = self.DUT._set_base_attributes(_base_values)
@@ -204,8 +191,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_stress_attributes should return a 0 error code on success
         """
 
-        _stress_values = (1.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-                          1.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
+                          0.0, 1.0)
 
         (_error_code,
          _error_msg) = self.DUT._set_stress_attributes(_stress_values)
@@ -217,8 +204,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_stress_attributes should return a 10 error code when passed a wrong data type
         """
 
-        _stress_values = (1.0, 30.0, 0.0, 0.0, None, 0.0, 0.0, 0.0, 1.0, 1.0,
-                          1.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        _stress_values = (1.0, 0.0, None, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
+                          0.0, 1.0)
 
         (_error_code,
          _error_msg) = self.DUT._set_stress_attributes(_stress_values)
@@ -230,8 +217,7 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_stress_attributes should return a 40 error code when too few items are passed
         """
 
-        _stress_values = (1.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-                          1.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 
         (_error_code,
          _error_msg) = self.DUT._set_stress_attributes(_stress_values)
@@ -288,17 +274,16 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_attributes should return a 0 error code on success
         """
 
-        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code', 0,
-                       'Comp Ref Des', 0.0, 0.0, 0.0, 1.0, 'Description',
+        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                       'Ref Des', 1.0, 0, 'Remarks', 0, 0.0, 'Spec #', 0, 0,
-                       30.0, 30.0, 0, 0.0, 0.0, 2014, 1.0, 30.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-                       1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-                       0.0, 0.0, 0)
+                       'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                       30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
+                       0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
+                       0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_all_values)
@@ -310,10 +295,10 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _get_base_attributes should return a tuple of attribute values
         """
 
-        _base_values = (None, None, '', '', '', 0, '', 0.0, 0.0, 0.0, 0,
-                        '', 100.0, 0, 0, '', 50.0, '', 1, 0, 10.0, '', '', 0,
-                        '', 0, 0, '', 1, '', 1.0, 0, '', 0, 0.0, '', 0, 0,
-                        30.0, 30.0, 0, 0.0, 0.0, 2014)
+        _base_values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0,
+                        0, 0, '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0,
+                        '', 1, '', 1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0,
+                        2014)
 
         self.assertEqual(self.DUT._get_base_attributes(), _base_values)
 
@@ -323,8 +308,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _get_stress_attributes should return a tuple of attribute values
         """
 
-        _stress_values = (1.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-                          1.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+                          1.0, 1.0, 0.0, 1.0)
 
         self.assertEqual(self.DUT._get_stress_attributes(), _stress_values)
 
@@ -335,7 +320,7 @@ class TestHardwareModel(unittest.TestCase):
         """
 
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                        0.0, 0)
 
@@ -347,15 +332,14 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) get_attributes should return a tuple of attribute values
         """
 
-        _all_values = (None, None, '', '', '', 0, '', 0.0, 0.0, 0.0, 0,
-                       '', 100.0, 0, 0, '', 50.0, '', 1, 0, 10.0, '', '', 0,
-                       '', 0, 0, '', 1, '', 1.0, 0, '', 0, 0.0, '', 0, 0,
-                       30.0, 30.0, 0, 0.0, 0.0, 2014, 1.0, 30.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-                       1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-                       0.0, 0.0, 0)
+        _all_values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0,
+                       0, '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1,
+                       '', 1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
+                       0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                       0.0, 0)
 
         self.assertEqual(self.DUT.get_attributes(), _all_values)
 
@@ -365,17 +349,16 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) get_attributes(set_attributes(values)) == values
         """
 
-        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code', 0,
-                       'Comp Ref Des', 0.0, 0.0, 0.0, 1.0, 'Description',
+        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                       'Ref Des', 1.0, 0, 'Remarks', 0, 0.0, 'Spec #', 0, 0,
-                       30.0, 30.0, 0, 0.0, 0.0, 2014, 1.0, 30.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-                       1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-                       0.0, 0.0, 0)
+                       'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                       30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
+                       0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
+                       0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0)
 
         self.DUT.set_attributes(_all_values)
         _result = self.DUT.get_attributes()
@@ -394,79 +377,3 @@ class TestHardwareModel(unittest.TestCase):
         self.assertFalse(self.DUT._calculate_cost())
         self.assertEqual(self.DUT.cost_failure, 194855.80670303974)
         self.assertEqual(self.DUT.cost_hour, 10.0)
-
-
-class TestHardwareController(unittest.TestCase):
-    """
-    Class for testing the Hardware data controller class.
-    """
-
-    def setUp(self):
-        """
-        Sets up the test fixture for the Hardware class.
-        """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-        self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
-
-        self.DUT = Hardware()
-
-    @attr(all=True, unit=True)
-    def test_controller_create(self):
-        """
-        (TestHardware) __init__ should create an Hardware data controller
-        """
-
-        self.assertTrue(isinstance(self.DUT, Hardware))
-        self.assertEqual(self.DUT._dao, None)
-        self.assertEqual(self.DUT._last_id, None)
-        self.assertEqual(self.DUT.dicHardware, {})
-
-    @attr(all=True, integration=True)
-    def test_request_hardware(self):
-        """
-        (TestHardware) request_hardware should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_hardware(self._dao, 0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_add_hardware(self):
-        """
-        (TestHardware) add_hardware should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_hardware(self._dao, 0)[1], 0)
-        self.assertEqual(self.DUT.add_hardware(0, 0, 0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_delete_hardware(self):
-        """
-        (TestHardware) delete_hardware returns 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_hardware(self._dao, 0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_hardware(self.DUT._last_id)
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_save_hardware(self):
-        """
-        (TestHardware) save_hardware returns (True, 0) on success
-        """
-
-        self.DUT.request_hardware(self._dao, 0)
-        self.assertEqual(self.DUT.save_hardware(2), (True, 0))
-
-    @attr(all=True, integration=True)
-    def test_save_all_hardware(self):
-        """
-        (TestHardware) save_all_hardware returns False on success
-        """
-
-        self.DUT.request_hardware(self._dao, 0)
-        self.assertFalse(self.DUT.save_all_hardware())
