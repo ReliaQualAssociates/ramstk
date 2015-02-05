@@ -60,8 +60,8 @@ _ = gettext.gettext
 # TODO: Fix all docstrings; copy-paste errors.
 class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
     """
-    The Work Book view displays all the attributes for the selected
-    Allocation.  The attributes of an Allocation Work Book view are:
+    The Work Book view displays all the attributes for the selected Allocation.
+    The attributes of an Allocation Work Book view are:
     """
 
     def __init__(self, controller):
