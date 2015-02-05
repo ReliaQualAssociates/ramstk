@@ -190,7 +190,7 @@ class RTK(object):
 
         self.icoStatus = gtk.StatusIcon()
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
-        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 22, 22)
         self.icoStatus.set_from_pixbuf(icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"program database."))

@@ -1,0 +1,500 @@
+#!/usr/bin/env python
+"""
+###########################################
+Bill of Materials (BoM) Package Data Module
+###########################################
+"""
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+# -*- coding: utf-8 -*-
+#
+#       rtk.hardware.BoM.py is part of The RTK Project
+#
+# All rights reserved.
+
+# Import modules for localization support.
+import gettext
+import locale
+
+# Import other RTK modules.
+try:
+    import configuration as _conf
+    from hardware.assembly.Assembly import Model as Assembly
+    from hardware.component.Component import Model as Component
+    import hardware.component.capacitor.electrolytic.Tantalum as Tantalum
+except ImportError:                         # pragma: no cover
+    import rtk.configuration as _conf
+    from rtk.hardware.assembly.Assembly import Model as Assembly
+    from rtk.hardware.component.Component import Model as Component
+    import rtk.hardware.component.capacitor.electrolytic.Tantalum as Tantalum
+
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except locale.Error:                        # pragma: no cover
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
+
+
+class ParentError(Exception):
+    """
+    Exception raised when a revision ID is not passed or when initializing an
+    instance of the BoM model.
+    """
+
+    pass
+
+
+class BoM(object):
+    """
+    The BoM data controller provides an interface between the BoM data model
+    and an RTK view model.  A single BoM data controller can manage one or more
+    BoM data models.  The attributes of a BoM data controller are:
+
+    :ivar _dao: the Data Access Object to use when communicating with the RTK
+                Project database.
+    :ivar _last_id: the last Hardware ID used.
+    :ivar dicHardware: Dictionary of the Hardware data models managed.  Key is
+                       the Hardware ID; value is a pointer to the Hardware data
+                       model instance.
+    """
+
+    def __init__(self):
+        """
+        Initializes a BoM data controller instance.
+        """
+
+        # Initialize private scalar attributes.
+        self._dao = None
+        self._last_id = None
+
+        # Initialize public dictionary attributes.
+        self.dicHardware = {}
+
+    def request_bom(self, dao, revision_id):
+        """
+        Reads the RTK Project database and loads all the Hardware associated
+        with the selected Revision.  For each hardware item returned:
+
+        #. Retrieve the hardware assemblies and components from the RTK Project
+           database.
+        #. Create an Assembly or Component data model instance as appropriate.
+        #. Set the attributes of the data model instance from the returned
+           results.
+        #. Add the instance to the dictionary of hardware being managed
+           by this controller.
+
+        :param rtk.DAO dao: the Data Access object to use for communicating
+                            with the RTK Project database.
+        :param int revision_id: the Revision ID to select the requirements for.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        self._dao = dao
+
+        self._last_id = self._dao.get_last_id('rtk_hardware')[0]
+
+        # Select everything from the hardware, stress, reliability, and
+        # maintainability tables.
+        _query = "SELECT t1.fld_revision_id, t1.fld_hardware_id, \
+                         t1.fld_alt_part_number, t1.fld_attachments, \
+                         t1.fld_cage_code, t1.fld_comp_ref_des, t1.fld_cost, \
+                         t1.fld_cost_failure, t1.fld_cost_hour, \
+                         t1.fld_description, t1.fld_duty_cycle, \
+                         t1.fld_environment_active, \
+                         t1.fld_environment_dormant, t1.fld_figure_number, \
+                         t1.fld_humidity, t1.fld_lcn, t1.fld_level, \
+                         t1.fld_manufacturer, t1.fld_mission_time, \
+                         t1.fld_name, t1.fld_nsn, t1.fld_overstress, \
+                         t1.fld_page_number, t1.fld_parent_id, t1.fld_part, \
+                         t1.fld_part_number, t1.fld_quantity, t1.fld_ref_des, \
+                         t1.fld_reliability_goal, \
+                         t1.fld_reliability_goal_measure, t1.fld_remarks, \
+                         t1.fld_rpm, t1.fld_specification_number, \
+                         t1.fld_tagged_part, t1.fld_temperature_active, \
+                         t1.fld_temperature_dormant, t1.fld_vibration, \
+                         t1.fld_year_of_manufacture, \
+                         t2.fld_current_ratio, \
+                         t2.fld_max_rated_temperature, \
+                         t2.fld_min_rated_temperature, \
+                         t2.fld_operating_current, t2.fld_operating_power, \
+                         t2.fld_operating_voltage, t2.fld_power_ratio, \
+                         t2.fld_rated_current, t2.fld_rated_power, \
+                         t2.fld_rated_voltage, t2.fld_temperature_rise, \
+                         t2.fld_voltage_ratio, \
+                         t3.fld_add_adj_factor, \
+                         t3.fld_availability_logistics, \
+                         t3.fld_availability_mission, \
+                         t3.fld_avail_log_variance, \
+                         t3.fld_avail_mis_variance, t3.fld_failure_dist, \
+                         t3.fld_failure_parameter_1, \
+                         t3.fld_failure_parameter_2, \
+                         t3.fld_failure_parameter_3, \
+                         t3.fld_hazard_rate_active, \
+                         t3.fld_hazard_rate_dormant, \
+                         t3.fld_hazard_rate_logistics, \
+                         t3.fld_hazard_rate_method, \
+                         t3.fld_hazard_rate_mission, \
+                         t3.fld_hazard_rate_model, \
+                         t3.fld_hazard_rate_percent, \
+                         t3.fld_hazard_rate_software, \
+                         t3.fld_hazard_rate_specified, \
+                         t3.fld_hazard_rate_type, t3.fld_hr_active_variance, \
+                         t3.fld_hr_dormant_variance, \
+                         t3.fld_hr_logistics_variance, \
+                         t3.fld_hr_mission_variance, \
+                         t3.fld_hr_specified_variance, t3.fld_mtbf_logistics, \
+                         t3.fld_mtbf_mission, t3.fld_mtbf_specified, \
+                         t3.fld_mtbf_log_variance, t3.fld_mtbf_miss_variance, \
+                         t3.fld_mtbf_spec_variance, t3.fld_mult_adj_factor, \
+                         t3.fld_reliability_logistics, \
+                         t3.fld_reliability_mission, t3.fld_rel_log_variance, \
+                         t3.fld_rel_miss_variance, t3.fld_survival_analysis, \
+                         t1.fld_cost_type, t1.fld_repairable, \
+                         t1.fld_total_part_quantity, \
+                         t1.fld_total_power_dissipation, \
+                         t1.fld_category_id, t1.fld_subcategory_id, \
+                         t2.fld_junction_temperature, \
+                         t2.fld_knee_temperature, t2.fld_thermal_resistance, \
+                         t2.fld_tref \
+                  FROM rtk_hardware AS t1 \
+                  INNER JOIN rtk_stress AS t2 \
+                  ON t2.fld_hardware_id=t1.fld_hardware_id \
+                  INNER JOIN rtk_reliability AS t3 \
+                  ON t3.fld_hardware_id=t1.fld_hardware_id \
+                  WHERE t1.fld_revision_id={0:d}".format(revision_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+# TODO: Add fields or table for component-type MIL-HDBK specific stress and R(t) attributes.
+        try:
+            _n_assemblies = len(_results)
+        except TypeError as _err:
+            _n_assemblies = 0
+
+        for i in range(_n_assemblies):
+            if _results[i][24] == 0:
+                _hardware = Assembly()
+            elif _results[i][24] == 1:
+                _hardware = self._load_component(_results[i][90],
+                                                 _results[i][91])
+                print _hardware.get_attributes()[92:]
+                print _results[i][92:]
+            _hardware.set_attributes(_results[i])
+            self.dicHardware[_hardware.hardware_id] = _hardware
+
+        return(_results, _error_code)
+
+    def _load_component(self, category, subcategory):
+
+        if category == 4:                   # Capacitor
+            if subcategory == 51:
+                return Tantalum.Solid()
+            elif subcategory == 52:
+                return Tantalum.NonSolid()
+            elif subcategory == 53:
+                return Aluminum.Wet()
+            elif subcategory == 54:
+                return Aluminum.Dry()
+
+    def add_hardware(self, revision_id, hardware_type, parent_id=None):
+        """
+        Adds a new Hardware item to the RTK Project for the selected Revision.
+
+        :param int revision_id: the Revision ID to add the new Hardware
+                                item(s).
+        :param int hardware_type: the type of Hardware item to add.
+                                  * 0 = Assembly
+                                  * 1 = Component
+        :keyword int parent_id: the Hardware ID of the parent hardware item.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        # By default we add the new Hardware item as an immediate child of the
+        # top-level assembly.
+        if parent_id is None:
+            parent_id = 0
+
+        _query = "INSERT INTO rtk_hardware \
+                  (fld_revision_id, fld_parent_id, fld_part) \
+                  VALUES({0:d}, {1:d}, {2:d})".format(revision_id, parent_id,
+                                                      hardware_type)
+        (_results, _error_code, _hardware_id) = self._dao.execute(_query,
+                                                                  commit=True)
+
+        # If the new hardware item was added successfully to the RTK Project
+        # database, add a record to the stress table in the RTK Project
+        # database.
+        if _results:
+            _query = "INSERT INTO rtk_stress \
+                      (fld_hardware_id) \
+                      VALUES({0:d})".format(_hardware_id)
+        (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+
+        # If the record was successfully added to the stress table, add a
+        # record to the reliability table.
+        if _results:
+            _query = "INSERT INTO rtk_reliability \
+                      (fld_hardware_id) \
+                      VALUES({0:d})".format(_hardware_id)
+        (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+
+        # If the record was successfully added to the reliability table, add a
+        # record to the allocation and similar item table.
+        if _results and hardware_type == 0:
+            _query = "INSERT INTO rtk_allocation \
+                      (fld_hardware_id, fld_parent_id) \
+                      VALUES({0:d}, {1:d})".format(_hardware_id, parent_id)
+            (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+            #if _results:
+            #    _query = "INSERT INTO rtk_similar_item \
+            #          (fld_hardware_id) \
+            #          VALUES({0:d})".format(_hardware_id)
+            #    (_results, _error_code, _) = self._dao.execute(_query,
+            #                                                   commit=True)
+
+
+        # If the new hardware item was added successfully to all the tables in
+        # the RTK Project database:
+        #   1. Retrieve the ID of the newly inserted hardware item.
+        #   2. Create a new Assembly or Component data model instance.
+        #   3. Set the attributes of the new Assembly or Component data model
+        #      instance.
+        #   4. Add the new Assembly or Component model to the controller
+        #      dictionary.
+        if _results:
+            self._last_id = self._dao.get_last_id('rtk_hardware')[0]
+            if hardware_type == 0:
+                _hardware = Assembly()
+            _hardware.set_attributes((revision_id, self._last_id, '', '', '',
+                                       '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
+                                       50.0, '', 1, 0, 10.0, '', '', 0, '',
+                                       parent_id, hardware_type, '', 1, '',
+                                       1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0,
+                                       2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                                       1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                                       0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0,
+                                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0,
+                                       1, 0, 0.0))
+            self.dicHardware[_hardware.hardware_id] = _hardware
+
+        return(_hardware, _error_code)
+
+    def delete_hardware(self, hardware_id):
+        """
+        Deletes a Hardware item from the RTK Project.
+
+        :param int hardware_id: the Hardware ID to delete.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        # Delete all the child hardware, if any.
+        _query = "DELETE FROM rtk_hardware \
+                  WHERE fld_parent_id={0:d}".format(hardware_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        # Then delete the parent hardware.
+        _query = "DELETE FROM rtk_hardware \
+                  WHERE fld_hardware_id={0:d}".format(hardware_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        self.dicHardware.pop(hardware_id)
+
+        return(_results, _error_code)
+
+    def save_hardware_item(self, hardware_id):
+        """
+        Saves the Assembly or Component attributes to the RTK Project database.
+
+        :param int hardware_id: the ID of the hardware to save.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _hardware = self.dicHardware[hardware_id]
+
+        # Save the base attributes.
+        _query = "UPDATE rtk_hardware \
+                  SET fld_alt_part_number='{0:s}', fld_attachments='{1:s}', \
+                      fld_cage_code='{2:s}', fld_comp_ref_des='{3:s}', \
+                      fld_cost={4:f}, fld_cost_failure={5:f}, \
+                      fld_cost_hour={6:f}, fld_description='{7:s}', \
+                      fld_duty_cycle={8:f}, fld_environment_active={9:d}, \
+                      fld_environment_dormant={10:d}, \
+                      fld_figure_number='{11:s}', fld_humidity={12:f}, \
+                      fld_lcn='{13:s}', fld_level={14:d}, \
+                      fld_manufacturer={15:d}, fld_mission_time={16:f}, \
+                      fld_name='{17:s}', fld_nsn='{18:s}', \
+                      fld_overstress={19:d}, fld_page_number='{20:s}', \
+                      fld_parent_id={21:d}, fld_part={22:d}, \
+                      fld_part_number='{23:s}', fld_quantity={24:d}, \
+                      fld_ref_des='{25:s}', fld_reliability_goal={26:f}, \
+                      fld_reliability_goal_measure={27:d}, \
+                      fld_remarks='{28:s}', fld_rpm={29:f}, \
+                      fld_specification_number='{30:s}', \
+                      fld_tagged_part={31:d}, fld_temperature_active={32:f}, \
+                      fld_temperature_dormant={33:f}, fld_vibration={34:f}, \
+                      fld_year_of_manufacture={35:d}".format(
+                      _hardware.alt_part_number, _hardware.attachments,
+                      _hardware.cage_code, _hardware.comp_ref_des,
+                      _hardware.cost, _hardware.cost_failure,
+                      _hardware.cost_hour, _hardware.description,
+                      _hardware.duty_cycle, _hardware.environment_active,
+                      _hardware.environment_dormant, _hardware.figure_number,
+                      _hardware.humidity, _hardware.lcn, _hardware.level,
+                      _hardware.manufacturer, _hardware.mission_time,
+                      _hardware.name, _hardware.nsn, _hardware.overstress,
+                      _hardware.page_number, _hardware.parent_id,
+                      _hardware.part, _hardware.part_number,
+                      _hardware.quantity, _hardware.ref_des,
+                      _hardware.reliability_goal,
+                      _hardware.reliability_goal_measure, _hardware.remarks,
+                      _hardware.rpm, _hardware.specification_number,
+                      _hardware.tagged_part, _hardware.temperature_active,
+                      _hardware.temperature_dormant, _hardware.vibration,
+                      _hardware.year_of_manufacture)
+
+        if _hardware.part == 0:
+            _query = _query + ", fld_cost_type={0:d}, fld_repairable={1:d}, \
+                               fld_total_part_quantity={2:d}, \
+                               fld_total_power_dissipation={3:f}".format(
+                               _hardware.cost_type, _hardware.repairable,
+                               _hardware.total_part_quantity,
+                               _hardware.total_power_dissipation)
+        elif _hardware.part == 1:
+            print _hardware.get_attributes()
+            _query = _query + ", fld_category_id={0:d}, \
+                               fld_subcategory_id={1:d}".format(
+                               _hardware.category_id, _hardware.subcategory_id)
+
+        _query = _query + " WHERE fld_revision_id={0:d} \
+                            AND fld_hardware_id={1:d}".format(
+                           _hardware.revision_id, hardware_id)
+
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        # Save the stress attributes.
+        _query = "UPDATE rtk_stress \
+                  SET fld_current_ratio={0:f}, \
+                      fld_max_rated_temperature={1:f}, \
+                      fld_min_rated_temperature={2:f}, \
+                      fld_operating_current={3:f}, fld_operating_power={4:f}, \
+                      fld_operating_voltage={5:f}, fld_power_ratio={6:f}, \
+                      fld_rated_current={7:f}, fld_rated_power={8:f}, \
+                      fld_rated_voltage={9:f}, fld_temperature_rise={10:f}, \
+                      fld_voltage_ratio={11:f}".format(
+                      _hardware.current_ratio, _hardware.max_rated_temperature,
+                      _hardware.min_rated_temperature,
+                      _hardware.operating_current, _hardware.operating_power,
+                      _hardware.operating_voltage, _hardware.power_ratio,
+                      _hardware.rated_current, _hardware.rated_power,
+                      _hardware.rated_voltage, _hardware.temperature_rise,
+                      _hardware.voltage_ratio)
+
+        if _hardware.part == 1:
+            _query = _query + ", fld_junction_temperature={0:f}, \
+                               fld_knee_temperature={1:f}, \
+                               fld_thermal_resistance={2:f}, \
+                               fld_tref={3:f}".format(
+                               _hardware.junction_temperature,
+                               _hardware.knee_temperature,
+                               _hardware.thermal_resistance,
+                               _hardware.reference_temperature)
+
+        _query = _query + " WHERE fld_hardware_id={0:d}".format(hardware_id)
+
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        # Save the reliability attributes.
+        _query = "UPDATE rtk_reliability \
+                  SET fld_add_adj_factor={1:f}, \
+                      fld_availability_logistics={2:f}, \
+                      fld_availability_mission={3:f}, \
+                      fld_avail_log_variance={4:f}, \
+                      fld_avail_mis_variance={5:f}, fld_failure_dist={6:d}, \
+                      fld_failure_parameter_1={7:f}, \
+                      fld_failure_parameter_2={8:f}, \
+                      fld_failure_parameter_3={9:f}, \
+                      fld_hazard_rate_active={10:f}, \
+                      fld_hazard_rate_dormant={11:f}, \
+                      fld_hazard_rate_logistics={12:f}, \
+                      fld_hazard_rate_method={13:f}, \
+                      fld_hazard_rate_mission={14:f}, \
+                      fld_hazard_rate_model='{15:s}', \
+                      fld_hazard_rate_percent={16:f}, \
+                      fld_hazard_rate_software={17:f}, \
+                      fld_hazard_rate_specified={18:f}, \
+                      fld_hazard_rate_type={19:d}, \
+                      fld_hr_active_variance={20:f}, \
+                      fld_hr_dormant_variance={21:f}, \
+                      fld_hr_logistics_variance={22:f}, \
+                      fld_hr_mission_variance={23:f}, \
+                      fld_hr_specified_variance={24:f}, \
+                      fld_mtbf_logistics={25:f}, fld_mtbf_mission={26:f}, \
+                      fld_mtbf_specified={27:f}, \
+                      fld_mtbf_log_variance={28:f}, \
+                      fld_mtbf_miss_variance={29:f}, \
+                      fld_mtbf_spec_variance={30:f}, \
+                      fld_mult_adj_factor={31:f}, \
+                      fld_reliability_logistics={32:f}, \
+                      fld_reliability_mission={33:f}, \
+                      fld_rel_log_variance={34:f}, \
+                      fld_rel_miss_variance={35:f}, \
+                      fld_survival_analysis={36:d} \
+                  WHERE fld_hardware_id={0:d}".format(
+                      hardware_id, _hardware.add_adj_factor,
+                      _hardware.availability_logistics,
+                      _hardware.availability_mission,
+                      _hardware.avail_log_variance,
+                      _hardware.avail_mis_variance, _hardware.failure_dist,
+                      _hardware.failure_parameter_1,
+                      _hardware.failure_parameter_2,
+                      _hardware.failure_parameter_3,
+                      _hardware.hazard_rate_active,
+                      _hardware.hazard_rate_dormant,
+                      _hardware.hazard_rate_logistics,
+                      _hardware.hazard_rate_method,
+                      _hardware.hazard_rate_mission,
+                      _hardware.hazard_rate_model,
+                      _hardware.hazard_rate_percent,
+                      _hardware.hazard_rate_software,
+                      _hardware.hazard_rate_specified,
+                      _hardware.hazard_rate_type,
+                      _hardware.hr_active_variance,
+                      _hardware.hr_dormant_variance,
+                      _hardware.hr_logistics_variance,
+                      _hardware.hr_mission_variance,
+                      _hardware.hr_specified_variance,
+                      _hardware.mtbf_logistics, _hardware.mtbf_mission,
+                      _hardware.mtbf_specified, _hardware.mtbf_log_variance,
+                      _hardware.mtbf_miss_variance,
+                      _hardware.mtbf_spec_variance,
+                      _hardware.mult_adj_factor,
+                      _hardware.reliability_logistics,
+                      _hardware.reliability_mission,
+                      _hardware.rel_log_variance,
+                      _hardware.rel_miss_variance, _hardware.survival_analysis)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+# TODO: Handle errors.
+        return (_results, _error_code)
+
+    def save_bom(self):
+        """
+        Saves all Assembly and Component data models managed by the controller.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        for _hardware in self.dicHardware.values():
+            (_results,
+             _error_code) = self.save_hardware_item(_hardware.hardware_id)
+
+        return False

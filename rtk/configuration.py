@@ -250,7 +250,16 @@ Global list for RTK Program database connectioninformation.
 |   4   | User password (MySQL only)    |
 +-------+-------------------------------+
 
-:const RTK_RISK_POINTS: Default value: [4, 10]
+:const RTK_FAILURE_PROBABILITY: default value: []
+Global list for qualitative failure probability categories.
+
+:const RTK_SEVERITY: default value: []
+Global list for failure severity categories.
+
+:const RTK_HAZARDS: default value: []
+Global list for potential hazards.
+
+:const RTK_RISK_POINTS: default value: [4, 10]
 Global list for risk level cutoffs.
 
 +-------+---------------------------+
@@ -260,6 +269,21 @@ Global list for risk level cutoffs.
 +-------+---------------------------+
 |   1   | Medium to high            |
 +-------+---------------------------+
+
+:const RTK_FMECA_METHOD: default value: 1
+Global indicator variable for the criticality method used.  1=Task 102, 2=RPN.
+
+:const RTK_RPN_FORMAT: default value: 0
+Global indicator variable for the level that the RPN is calculated.  0=Mechanism, 1=Cause.
+
+:const RTK_RPN_SEVERITY: default value: []
+Global list for RPN Severity categories.
+
+:const RTK_RPN_OCCURRENCE: default value: []
+Global list for RPN Occurrence categories.
+
+:const RTK_RPN_DETECTION: default value: []
+Global list for RPN Detection categories.
 
 :const COM_BACKEND: Default value: ''
 RTK common database backend to use; mysql or sqlite3.
@@ -336,8 +360,6 @@ CONF_DIR = ''
 LOG_DIR = ''
 PROG_DIR = ''
 
-RTK_MODE_SOURCE = 1
-
 RTK_FORMAT_FILE = []
 RTK_COLORS = []
 RTK_PREFIX = []
@@ -348,7 +370,31 @@ RTK_PAGE_NUMBER = []
 RTK_COM_INFO = []
 RTK_PROG_INFO = []
 
+# ------------------------------------------------------------------------- #
+# Risk analyses configuration options.                                      #
+# ------------------------------------------------------------------------- #
+RTK_SEVERITY = []
+RTK_FAILURE_PROBABILITY = []
+RTK_HAZARDS = []
 RTK_RISK_POINTS = [4, 10]
+
+# ------------------------------------------------------------------------- #
+# FMEA configuration options.                                               #
+# ------------------------------------------------------------------------- #
+RTK_MODE_SOURCE = 1                         # 1=FMD-97
+RTK_FMECA_METHOD = 1                        # 1=Task 102, 2=RPN
+
+RTK_RPN_FORMAT = 0                          # RPN at mechanism level.
+RTK_RPN_SEVERITY = []
+RTK_RPN_OCCURRENCE = []
+RTK_RPN_DETECTION = []
+
+# ------------------------------------------------------------------------- #
+# PoF configuration options.                                                #
+# ------------------------------------------------------------------------- #
+# TODO: Add tables to the common database for these.
+RTK_DAMAGE_MODELS = []
+RTK_OPERATING_PARAMETERS = []
 
 COM_BACKEND = ''
 BACKEND = ''
@@ -365,7 +411,6 @@ TABPOS = ['top', 'bottom', 'bottom']
 RTK_GUI_LAYOUT = 'basic'
 
 METHOD = 'STANDARD'                         # STANDARD or LRM
-FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
 
 class RTKConf(object):

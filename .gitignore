@@ -26,9 +26,12 @@ pylintout
 *.log
 *.txt
 *.csv
+docs/_temp/
 docs/generated/
 docs/build/
 docs/source/
 docs/Makefile
 /devtools/RTKModuleTemplate.py
 /FailureModes.sql
+/rtk/.coverage
+/tests/.coverage
