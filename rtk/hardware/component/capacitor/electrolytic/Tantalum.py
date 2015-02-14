@@ -90,8 +90,7 @@ class Solid(Capacitor):
         self.subcategory = 51               # Subcategory ID in the common DB.
         self.effective_resistance = 0.0
         self.piSR = 0.0
-        if self.hazard_rate_type < 7:       # MIL-HDBK-217
-            self.reference_temperature = 398.0
+        self.reference_temperature = 398.0
 
     def set_attributes(self, values):
         """
@@ -106,7 +105,7 @@ class Solid(Capacitor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values[:103])
+        (_code, _msg) = Capacitor.set_attributes(self, values)
 
         try:
             self.effective_resistance = float(values[103])
@@ -156,30 +155,35 @@ class Solid(Capacitor):
             _stress = (self.operating_voltage + sqrt(2) * self.acvapplied) / \
                        self.rated_voltage
             try:
-                self.hazard_rate_model['lambdab'] = \
-                    0.00254 * exp((_stress / 0.55)**3 + 1) * \
-                    exp(4.09 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**5.9)
+                self.base_hr = 0.00375 * ((_stress / 0.4)**3.0 + 1.0) * \
+                               exp(2.6 * ((self.temperature_active + 273) /
+                               self.reference_temperature)**9.0)
+                self.hazard_rate_model['lambdab'] = self.base_hr
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
+            # Capacitance correction factor.
+            self.piCV = (self.capacitance * 1000000.0)**0.12
+            self.hazard_rate_model['piCV'] = self.piCV
+
             # Series resistance correction factor.
             _srcf = self.effective_resistance / self.operating_voltage
             if _srcf > 0.8:
-                self.hazard_rate_model['piSR'] = 0.066
+                self.piSR = 0.066
             elif _srcf < 0.8 and _srcf >= 0.6:
-                self.hazard_rate_model['piSR'] = 0.10
+                self.piSR = 0.10
             elif _srcf < 0.6 and _srcf >= 0.4:
-                self.hazard_rate_model['piSR'] = 0.13
+                self.piSR = 0.13
             elif _srcf < 0.4 and _srcf >= 0.2:
-                self.hazard_rate_model['piSR'] = 0.20
+                self.piSR = 0.20
             elif _srcf < 0.2 and _srcf >= 0.1:
-                self.hazard_rate_model['piSR'] = 0.27
+                self.piSR = 0.27
             elif _srcf < 0.1 and _srcf >= 0.0:
-                self.hazard_rate_model['piSR'] = 0.33
+                self.piSR = 0.33
             else:
-                self.hazard_rate_model['piSR'] = 0.33
+                self.piSR = 0.33
+            self.hazard_rate_model['piSR'] = self.piSR
 
         return Capacitor.calculate(self)
 
@@ -237,10 +241,10 @@ class NonSolid(Capacitor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values[:103])
+        (_code, _msg) = Capacitor.set_attributes(self, values)
 
         try:
-            self.construction = int(values[103])
+            self.construction = int(values[119])
             self.piC = float(values[104])
         except IndexError as _err:
             _code = _error_handler(_err.args)

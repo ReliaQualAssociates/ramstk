@@ -398,9 +398,44 @@ CREATE TABLE "rtk_reliability" (
     "fld_rel_log_variance" REAL DEFAULT(0),                         -- Variance of the logistics reliability estimate.
     "fld_rel_miss_variance" REAL DEFAULT(0),                        -- Variance of the mission reliability estiamte.
     "fld_survival_analysis" INTEGER DEFAULT(0),                     -- Survival data analysis to use.
+    "fld_float1" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float2" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float3" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float4" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float5" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float6" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float7" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float8" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float9" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
+    "fld_float10" REAL NOT NULL DEFAULT(0),                         -- Float value to use as input to R(t) predictions.
+    "fld_float11" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float12" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float13" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float14" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float15" REAL NOT NULL DEFAULT(1),                         -- Float value result from R(t) predictions.
+    "fld_float16" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float17" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float18" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float19" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_float20" REAL NOT NULL DEFAULT(0),                         -- Float value result from R(t) predictions.
+    "fld_int1" INTEGER NOT NULL DEFAULT(0),                         -- Integer value to use as input to R(t) predictions.
+    "fld_int2" INTEGER NOT NULL DEFAULT(0),                         -- Integer value to use as input to R(t) predictions.
+    "fld_int3" INTEGER NOT NULL DEFAULT(0),                         -- Integer value to use as input to R(t) predictions.
+    "fld_int4" INTEGER NOT NULL DEFAULT(0),                         -- Integer value to use as input to R(t) predictions.
+    "fld_int5" INTEGER NOT NULL DEFAULT(0),                         -- Integer value to use as input to R(t) predictions.
+    "fld_int6" INTEGER NOT NULL DEFAULT(0),                         -- Integer value result from R(t) predictions.
+    "fld_int7" INTEGER NOT NULL DEFAULT(0),                         -- Integer value result from R(t) predictions.
+    "fld_int8" INTEGER NOT NULL DEFAULT(0),                         -- Integer value result from R(t) predictions.
+    "fld_int9" INTEGER NOT NULL DEFAULT(0),                         -- Integer value result from R(t) predictions.
+    "fld_int10" INTEGER NOT NULL DEFAULT(0),                        -- Integer value result from R(t) predictions.
+    "fld_varchar1" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
+    "fld_varchar2" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
+    "fld_varchar3" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
+    "fld_varchar4" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
+    "fld_varchar5" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_reliability" VALUES(0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, '', 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0);
+INSERT INTO "rtk_reliability" VALUES(0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, '', 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '');
 
 DROP TABLE IF EXISTS "rtk_allocation";
 CREATE TABLE "rtk_allocation" (
@@ -786,51 +821,6 @@ CREATE TABLE "tbl_risk_matrix" (
     "fld_probability_id" INTEGER NOT NULL DEFAULT (0),
     "fld_hazard_count" INTEGER DEFAULT (0),
     PRIMARY KEY ("fld_revision_id","fld_assembly_id", "fld_severity_id", "fld_probability_id")
-);
-
-CREATE TABLE "rtk_prediction" (
-    "fld_hardware_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_float1" REAL NOT NULL DEFAULT(0),
-    "fld_float2" REAL NOT NULL DEFAULT(0),
-    "fld_float3" REAL NOT NULL DEFAULT(0),
-    "fld_float4" REAL NOT NULL DEFAULT(0),
-    "fld_float5" REAL NOT NULL DEFAULT(0),
-    "fld_float6" REAL NOT NULL DEFAULT(0),
-    "fld_float7" REAL NOT NULL DEFAULT(0),
-    "fld_float8" REAL NOT NULL DEFAULT(0),
-    "fld_float9" REAL NOT NULL DEFAULT(0),
-    "fld_float10" REAL NOT NULL DEFAULT(0),
-    "fld_float11" REAL NOT NULL DEFAULT(0),
-    "fld_float12" REAL NOT NULL DEFAULT(0),
-    "fld_float13" REAL NOT NULL DEFAULT(0),
-    "fld_float14" REAL NOT NULL DEFAULT(0),
-    "fld_float15" REAL NOT NULL DEFAULT(1),
-    "fld_float16" REAL NOT NULL DEFAULT(0),
-    "fld_float17" REAL NOT NULL DEFAULT(0),
-    "fld_float18" REAL NOT NULL DEFAULT(0),
-    "fld_float19" REAL NOT NULL DEFAULT(0),
-    "fld_float20" REAL NOT NULL DEFAULT(0),
-    "fld_int1" INTEGER NOT NULL DEFAULT(0),
-    "fld_int2" INTEGER NOT NULL DEFAULT(0),
-    "fld_int3" INTEGER NOT NULL DEFAULT(0),
-    "fld_int4" INTEGER NOT NULL DEFAULT(0),
-    "fld_int5" INTEGER NOT NULL DEFAULT(0),
-    "fld_int6" INTEGER NOT NULL DEFAULT(0),
-    "fld_int7" INTEGER NOT NULL DEFAULT(0),
-    "fld_int8" INTEGER NOT NULL DEFAULT(0),
-    "fld_int9" INTEGER NOT NULL DEFAULT(0),
-    "fld_int10" INTEGER NOT NULL DEFAULT(0),
-    "fld_varchar1" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar2" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar3" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar4" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar5" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar6" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar7" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar8" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar9" VARCHAR(512) NOT NULL DEFAULT(''),
-    "fld_varchar10" VARCHAR(512) NOT NULL DEFAULT(''),
-    FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
 
 --

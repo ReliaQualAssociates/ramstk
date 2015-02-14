@@ -58,23 +58,6 @@ class TestCapacitorModel(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
 
         # Verify Capacitor class was properly initialized.
-        self.assertEqual(self.DUT._lst_in_labels, [_(u"Quality:"),
-                                            _(u"\u03C0<sub>Q</sub> Override:"),
-                                            _(u"Specification:"),
-                                            _(u"Spec. Sheet:"),
-                                            _(u"Rated Voltage:"),
-                                            _(u"Applied DC Voltage:"),
-                                            _(u"Applied AC Voltage:"),
-                                            _(u"Capacitance (F):")])
-        self.assertEqual(self.DUT._lst_out_labels, [_(u"Temp Rise (\u2070C):"),
-                                                _(u"Junction Temp (\u2070C):"),
-                                                "", u"\u03BB<sub>b</sub>:",
-                                                u"\u03C0<sub>Q</sub>:",
-                                                u"\u03C0<sub>E</sub>:",
-                                                u"\u03C0<sub>CV</sub>:"])
-        self.assertEqual(self.DUT._lst_derate_criteria, [[0.6, 0.6, 0.0],
-                                                         [0.9, 0.9, 0.0]])
-
         self.assertEqual(self.DUT.quality, 0)
         self.assertEqual(self.DUT.q_override, 0.0)
         self.assertEqual(self.DUT.specification, 0)
@@ -94,15 +77,22 @@ class TestCapacitorModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
-                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
-                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0,
-                   0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
-                   0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, 0.0, 0.0)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                   0.0, 1.0,
+                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                   0, 0, 1, 0.0,
+                   0, 0, 0.0, 30.0, 0.0, 358.0,
+                   0.0, 0.05, 0.00000033, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   2, 3, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -136,16 +126,22 @@ class TestCapacitorModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
-                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
-                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0,
-                   0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
-                   0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 1, 0, 0.0, 0, 0, 0.0,
-                   30.0, 0.0, 30.0, 0, 0.0, 0, 0, 0.0, None, 0.0, "", 0.0, 0.0,
-                   0.0)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                   0.0, 1.0,
+                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                   0, 0, 1, 0.0,
+                   0, 0, 0.0, 30.0, 0.0, 358.0,
+                   0.0, 0.05, 0.00000033, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   2, None, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -164,7 +160,7 @@ class TestCapacitorModel(unittest.TestCase):
                    1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
                    0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
-                   0.0, 30.0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, 0.0, 0.0)
+                   0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, '')
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -174,20 +170,40 @@ class TestCapacitorModel(unittest.TestCase):
         (TestCapacitor) get_attributes(set_attributes(values)) == values
         """
 
-        _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
-                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
-                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0,
-                   0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
-                   0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, 0.0, 0.0)
+        _in_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                      'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                      0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                      'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                      'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                      1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                      0.0, 1.0,
+                      0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                      0, 0, 1, 0.0,
+                      0, 0, 0.0, 30.0, 0.0, 358.0,
+                      0.0, 0.05, 0.00000033, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      2, 3, 1)
+        _out_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                       0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                       0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                       'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                       1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                       0.0, 1.0,
+                       0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                       0.0, 0,
+                       0, 0, 0.0, 30.0, 0.0, 358.0,
+                       0.0, 0.05, 0.00000033, 0.0, 0.0, 0.0, 0.0, 2, 3, 1, '')
 
-        self.DUT.set_attributes(_values)
+        self.DUT.set_attributes(_in_values)
         _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _values)
+        self.assertEqual(_result, _out_values)
 
     @attr(all=True, unit=True)
     def test_overstressed_mild_env(self):

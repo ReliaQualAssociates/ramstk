@@ -112,20 +112,21 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:92])
-
+        (_code, _msg) = Component.set_attributes(self, values[:96])
+        print values[96:]
         try:
-            self.quality = int(values[92])
-            self.q_override = float(values[93])
-            self.specification = int(values[94])
-            self.spec_sheet = int(values[95])
-            self.acvapplied = float(values[96])
-            self.capacitance = float(values[97])
-            self.base_hr = float(values[98])
-            self.reason = str(values[99])
+            self.q_override = float(values[96])
+            self.acvapplied = float(values[97])
+            self.capacitance = float(values[98])
+            self.base_hr = float(values[99])
             self.piQ = float(values[100])
             self.piE = float(values[101])
             self.piCV = float(values[102])
+            self.quality = int(values[116])
+            self.specification = int(values[117])
+            self.spec_sheet = int(values[118])
+            # TODO: Add field to rtk_stress to hold overstress reason.
+            self.reason = ''
         except IndexError as _err:
             _code = _error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -146,10 +147,10 @@ class Model(Component):
 
         _values = Component.get_attributes(self)
 
-        _values = _values + (self.quality, self.q_override, self.specification,
-                             self.spec_sheet, self.acvapplied,
-                             self.capacitance, self.base_hr, self.reason,
-                             self.piQ, self.piE, self.piCV)
+        _values = _values + (self.q_override, self.acvapplied,
+                             self.capacitance, self.base_hr, self.piQ,
+                             self.piE, self.piCV, self.quality,
+                             self.specification, self.spec_sheet, self.reason)
 
         return _values
 
@@ -184,9 +185,6 @@ class Model(Component):
                 return True
             self.hazard_rate_model['piE'] = self.piE
 
-            # Capacitance correction factor.
-            self.hazard_rate_model['piCV'] = 0.34 * self.capacitance**0.186
-
         # Calculate component active hazard rate.
         self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
         self.hazard_rate_active = self.hazard_rate_active * \
@@ -207,7 +205,7 @@ class Model(Component):
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current
-        self.voltage_ratio = self.operating_voltage + self.acvapplied / \
+        self.voltage_ratio = (self.operating_voltage + self.acvapplied) / \
                              self.rated_voltage
 
         return False
@@ -224,6 +222,8 @@ class Model(Component):
         _reason = ""
         _reason_num = 1
         _harsh = True
+
+        self.overstress = False
 
         # If the active environment is Benign Ground, Fixed Ground,
         # Sheltered Naval, or Space Flight it is NOT harsh.

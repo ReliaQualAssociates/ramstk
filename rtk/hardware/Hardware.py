@@ -509,9 +509,18 @@ class Model(object):                        # pylint: disable=R0902
         Calculates costs associated with the hardware.
         """
 
-        self.cost_failure = self.cost / \
-            (self.hazard_rate_logistics * self.mission_time)
-        self.cost_hour = self.cost / self.mission_time
+        try:
+            self.cost_failure = self.cost / \
+                (self.hazard_rate_logistics * self.mission_time)
+        except ZeroDivisionError:
+            # TODO: Handle errors.
+            pass
+
+        try:
+            self.cost_hour = self.cost / self.mission_time
+        except ZeroDivisionError:
+            # TODO: Handle errors.
+            pass
 
         return False
 

@@ -96,6 +96,9 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
+        # Initialize private list attribute
+        self._lst_handler_id = []
+
         # Initialize private scalar attributes.
         self._model = None
         self._allocation_model = None
@@ -109,18 +112,26 @@ class ModuleView(object):
         self.dtcPoF = args[0][4]
 
         # Create the main Hardware class treeview.
+        # TODO: Update the hardware.xml file to accomodate the prediction stuff.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Hardware', 3,
                                                     None, None,
                                                     _conf.RTK_COLORS[4],
                                                     _conf.RTK_COLORS[5])
+        _selection = self.treeview.get_selection()
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
                                          u"the system hardware."))
-        self.treeview.connect('cursor_changed', self._on_row_changed,
-                              None, None)
-        self.treeview.connect('row_activated', self._on_row_changed)
-        self.treeview.connect('button_press_event', self._on_button_press)
+
+        self._lst_handler_id.append(_selection.connect('changed',
+                                                       self._on_row_changed))
+        #self.treeview.connect('cursor_changed', self._on_row_changed,
+        #                      None, None))
+        #self._lst_handler_id.append(
+        #    self.treeview.connect('row_activated', self._on_row_changed))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_release_event',
+                                  self._on_button_press))
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
@@ -265,31 +276,34 @@ class ModuleView(object):
         """
 
         if event.button == 1:
-            self._on_row_changed(treeview, None, 0)
+            _selection = treeview.get_selection()
+            self._on_row_changed(_selection)
         elif event.button == 3:
             print "Pop-up a menu!"
 
         return False
 
-    def _on_row_changed(self, treeview, __path, __column):
+    def _on_row_changed(self, selection):
         """
         Callback method to handle events for the Hardware package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
-        :param gtk.TreeView treeview: the Hardware class gtk.TreeView().
-        :param str __path: the actived row gtk.TreeView() path.
-        :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
+        :param gtk.TreeSelection selection: the Hardware class gtk.TreeView()'s
+                                            gtk.TreeSelection().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_model, _row) = treeview.get_selection().get_selected()
+        selection.handler_block(self._lst_handler_id[0])
 
+        (_model, _row) = selection.get_selected()
         _hardware_id = _model.get_value(_row, 1)
 
         self._model = self.dtcBoM.dicHardware[_hardware_id]
 
         self._workbook.load(self._model)
+
+        selection.handler_block(self._lst_handler_id[0])
 
         return False

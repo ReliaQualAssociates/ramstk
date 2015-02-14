@@ -65,7 +65,7 @@ class Model(Hardware):                        # pylint: disable=R0902
     :ivar junction_temperature: default value: 0.0
     :ivar knee_temperature: default value: 0.0
     :ivar thermal_resistance: default value: 0.0
-    :ivar reference_temperature: default value: 0.0
+    :ivar reference_temperature: default value: 30.0
     """
 
     def __init__(self):
@@ -104,12 +104,12 @@ class Model(Hardware):                        # pylint: disable=R0902
 
         if _code == 0:
             try:
-                self.category_id = int(values[86])
-                self.subcategory_id = int(values[87])
-                self.junction_temperature = int(values[88])
-                self.knee_temperature = float(values[89])
-                self.thermal_resistance = float(values[90])
-                self.reference_temperature = float(values[91])
+                self.category_id = int(values[90])
+                self.subcategory_id = int(values[91])
+                self.junction_temperature = int(values[92])
+                self.knee_temperature = float(values[93])
+                self.thermal_resistance = float(values[94])
+                self.reference_temperature = float(values[95])
             except IndexError as _err:
                 _code = _error_handler(_err.args)
                 _msg = "ERROR: Insufficient input values."
