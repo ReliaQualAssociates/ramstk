@@ -228,7 +228,6 @@ _cmdclass = {'install_dev_docs': install_dev_docs,
 
 # Packages needed to install and run RTK.
 _requires = ["lxml >= 2.3",
-             # "PyGTK > 2.12.0", - Exclude, it doesn't seem to work.
              "matplotlib >= 1.1.1",
              "mysql-python >= 1.2.3",
              "xlrd >= 0.9.0"]

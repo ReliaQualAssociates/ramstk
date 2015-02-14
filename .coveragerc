@@ -1,0 +1,2 @@
+[run]
+omit = *FixTk*, *PIL*, *bottleneck*, *contextlib*, *csv*, *ctypes*, *dateutil*, *decimal*, *encodings*, *fractions*, *gzip*, *hmac*, *html5lib*, *httplib2*, *importlib*, *lifelines*, *lxml*, *matplotlib*, *numbers*, *numexpr*, *numpy*, *pandas*, *pygtk*, *pyparsing*, *pytz*, *scipy*, *six*, *sqlite3*, *tarfile*, *timeit*, *uuid*, *xml*, *xlwt*
