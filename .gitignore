@@ -35,3 +35,4 @@ docs/Makefile
 /FailureModes.sql
 /rtk/.coverage
 /tests/.coverage
+/.coverage
