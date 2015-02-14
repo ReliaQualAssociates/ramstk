@@ -423,6 +423,34 @@ class Allocation(object):
 
         return(_results, _error_code)
 
+    def add_allocation(self):
+        """
+        Adds a new Allocation data model to the dictionary of models controlled
+        by an instance of the Allocation data controller.
+
+        :param int hardware_id: the hardware ID of the new Allocation.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.request_allocation(self._dao)
+
+        return False
+
+    def delete_allocation(self, hardware_id):
+        """
+        Deletes an Allocation data model instance from the dictionary of models
+        controlled by an instance of the Allocation data controller.
+
+        :param int hardware_id: the hardware ID of the Allocation to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.dicAllocation.pop(hardware_id)
+
+        return False
+
     def allocate(self, hardware_id):
         """
         Performs the allocation.
