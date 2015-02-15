@@ -261,7 +261,7 @@ setup(
     license = "Proprietary",
     cmdclass = _cmdclass,
     install_requires = _requires,
-    depdendency_links = ["file::///usr/lib64/python2.7/site-packages/gtk-2.0"],
+    dependency_links = ["file::///usr/lib64/python2.7/site-packages/gtk-2.0"],
     packages = find_packages(exclude=['ez_setup']),
     include_package_data = True,
     package_data = _package_data,
