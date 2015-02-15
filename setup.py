@@ -247,14 +247,14 @@ def osx_check():
     return platform.system() == "Darwin"
 
 setup(
-    name = "RTK",
+    name = "The Reliability ToolKit (RTK)",
     version = _version,
     author = "Andrew Rowland",
     author_email = "andrew.rowland@reliaqual.com",
     maintainer = "Andrew Rowland",
     maintainer_email = "andrew.rowland@reliaqual.com",
     url = "http://rtk.reliaqual.com",
-    description = "RAM Analyses Tools",
+    description = "Reliability, Availability, Mainatainability, and Safety (RAMS) Analyses Tools",
     long_description = """RTK is a Python and PyGTK based suite of tools to assist in Reliability, Availability, Maintainability, and Safety (RAMS) analyses.""",
     download_url = "",
     platforms = "Linux",
@@ -267,6 +267,6 @@ setup(
     package_data = _package_data,
     data_files = _data_files,
     entry_points = _entry_points,
-    test_suite = nose.collector,
-    tests_require = nose
+    test_suite = "nose.collector",
+    tests_require = "nose"
     )
