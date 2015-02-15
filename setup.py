@@ -232,7 +232,7 @@ _requires = ["lxml >= 2.3",
              "mysql-python >= 1.2.3",
              "xlrd >= 0.9.0"]
 
-_entry_points = {"gui": ["RTK = rtk.main:main"]}
+_entry_points = {"gui": ["RTK = rtk.RTK:main"]}
 
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
@@ -261,7 +261,6 @@ setup(
     license = "Proprietary",
     cmdclass = _cmdclass,
     install_requires = _requires,
-    depdendency_links = ["file::///usr/lib64/python2.7/site-packages/gtk-2.0"],
     packages = find_packages(exclude=['ez_setup']),
     include_package_data = True,
     package_data = _package_data,
