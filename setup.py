@@ -38,7 +38,7 @@ if version < "2.2.3":
 
 python_version = platform.python_version()[0:3]
 
-_version = "1.0.0-alpha"
+_version = "2015.1"
 
 _confdir = "/etc/RTK"
 _datadir = "/usr/share/RTK"
@@ -226,7 +226,7 @@ _cmdclass = {'install_dev_docs': install_dev_docs,
              'install_user_docs': install_user_docs,
             }
 
-# Packages needed to install and run RTK.
+# Packages needed to run RTK.
 _requires = ["lxml >= 2.3",
              "matplotlib >= 1.1.1",
              "mysql-python >= 1.2.3",
@@ -261,9 +261,12 @@ setup(
     license = "Proprietary",
     cmdclass = _cmdclass,
     install_requires = _requires,
+    depdendency_links = ["file::///usr/lib64/python2.7/site-packages/gtk-2.0"],
     packages = find_packages(exclude=['ez_setup']),
     include_package_data = True,
     package_data = _package_data,
     data_files = _data_files,
-    entry_points = _entry_points
+    entry_points = _entry_points,
+    test_suite = nose.collector,
+    tests_require = nose
     )
