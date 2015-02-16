@@ -169,11 +169,11 @@ class install_user_docs(Command):
                 for f in files:
                     distutils.file_util.copy_file(os.path.join(root, f), "%s/%s" % (path, d))
 
-_package_data={"relkit": [""],
-               "relkit": ["config/*.conf"],
-               "relkit": ["config/*.xml"],
-               "relkit": ["config/icons/16x16/*.png"],
-               "relkit": ["config/icons/32x32/*.png"]}
+_package_data={"RTK": [""],
+               "RTK": ["config/*.conf"],
+               "RTK": ["config/*.xml"],
+               "RTK": ["config/icons/16x16/*.png"],
+               "RTK": ["config/icons/32x32/*.png"]}
 
 _data_files = [("%s/RTK/32x32" % _icondir, ["config/icons/32x32/add.png"]),
                ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
