@@ -89,7 +89,7 @@ class Chip(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -171,7 +171,7 @@ class General(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -187,7 +187,7 @@ class General(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.0003 * ((_stress / 0.3)**3 + 1) * \
                     exp(((self.temperature_active + 273) /
-                          self.reference_temperature))
+                         self.reference_temperature))
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True

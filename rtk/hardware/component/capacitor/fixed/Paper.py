@@ -93,7 +93,7 @@ class Bypass(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -110,7 +110,7 @@ class Bypass(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00086 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**18)
+                               self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
@@ -174,7 +174,7 @@ class Feedthrough(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -190,7 +190,7 @@ class Feedthrough(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00115 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**18)
+                               self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
@@ -255,7 +255,7 @@ class Metallized(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -271,7 +271,7 @@ class Metallized(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00069 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**18)
+                               self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
