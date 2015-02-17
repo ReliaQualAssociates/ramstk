@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-###########################################
-Bill of Materials (BoM) Package Data Module
-###########################################
+###############################################
+Hardware Package Bill of Materials (BoM) Module
+###############################################
 """
 
 __author__ = 'Andrew Rowland'
@@ -25,11 +25,15 @@ try:
     import configuration as _conf
     from hardware.assembly.Assembly import Model as Assembly
     from hardware.component.Component import Model as Component
+    import hardware.component.capacitor.fixed.Paper as Paper
+    import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
     import hardware.component.capacitor.electrolytic.Tantalum as Tantalum
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
     from rtk.hardware.component.Component import Model as Component
+    import rtk.hardware.component.capacitor.fixed.Paper as Paper
+    import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
     import rtk.hardware.component.capacitor.electrolytic.Tantalum as Tantalum
 
 try:
@@ -62,6 +66,11 @@ class BoM(object):
                        the Hardware ID; value is a pointer to the Hardware data
                        model instance.
     """
+
+    dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
+                         4: Paper.Metallized(),
+                         12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
+                         14: Aluminum.Wet(), 15: Aluminum.Dry()}}
 
     def __init__(self):
         """
@@ -210,16 +219,10 @@ class BoM(object):
         if subcategory < 1:
             return Component()
 
-        if category == 1:                   # Capacitor
-            if subcategory == 12:
-                _hardware = Tantalum.Solid()
-            elif subcategory == 13:
-                _hardware = Tantalum.NonSolid()
-            elif subcategory == 14:
-                _hardware = Aluminum.Wet()
-            elif subcategory == 15:
-                _hardware = Aluminum.Dry()
+        # Grab the correct component data model from the dictionary of models.
+        _hardware = self.dicComponents[category][subcategory]
 
+        # Assign the new model the appropriate category and subcategory IDs.
         _hardware.category_id = category
         _hardware.subcategory_id = subcategory
         _hardware.part = 1

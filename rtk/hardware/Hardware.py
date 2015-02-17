@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-############################
-Hardware Package Data Module
-############################
+################################
+Hardware Package Hardware Module
+################################
 """
 
 __author__ = 'Andrew Rowland'

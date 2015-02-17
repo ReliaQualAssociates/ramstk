@@ -1958,7 +1958,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self.vpnReliabilityInputs.get_child2())
         self.vpnReliabilityInputs.pack2(self._obj_inputs, True, True)
 
-        self._obj_inputs.load_217_stress_inputs(self._hardware_model)
+        if self._hardware_model.hazard_rate_type == 1:
+            self._obj_inputs.load_217_count_inputs(self._hardware_model)
+        elif self._hardware_model.hazard_rate_type == 2:
+            self._obj_inputs.load_217_stress_inputs(self._hardware_model)
 
         self.vpnReliabilityInputs.show_all()
 
@@ -2033,7 +2036,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.dtcBoM.save_hardware_item(self._hardware_model.hardware_id)
 
         elif index == 50:
-            self._hardware_model.calculate() #_hardware()
+            self._hardware_model.calculate()
 
             self._load_assessment_results_page()
 
@@ -2155,6 +2158,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _model.append(None, ['', 0, ''])
             for i in range(_n_subcats):
                 _model.append(None, [_subcats[i][1], _subcats[i][0], ''])
+
         elif index == 4:                    # Component subcategory.
             if self._hardware_model.subcategory_id != combo.get_active():
                 self._hardware_model.subcategory_id = combo.get_active()
@@ -2171,8 +2175,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 # but this will reduce the amount of rework needed for the user
                 # to update the attributes of the new Component.
                 _hardware = self.dtcBoM._load_component(
-                      self._hardware_model.category_id,
-                      self._hardware_model.subcategory_id)
+                    self._hardware_model.category_id,
+                    self._hardware_model.subcategory_id)
                 _hardware.set_attributes(_attributes)
 
                 # Update the BoM data controller dictionary and the Hardware

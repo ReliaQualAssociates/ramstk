@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-###########################
-Assembly Module Data Module
-###########################
+#########################################
+Hardware.Assembly Package Assembly Module
+#########################################
 """
 
 __author__ = 'Andrew Rowland'

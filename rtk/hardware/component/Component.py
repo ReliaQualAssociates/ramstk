@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-############################
-Component Module Data Module
-############################
+###########################################
+Hardware.Component Package Component Module
+###########################################
 """
 
 __author__ = 'Andrew Rowland'

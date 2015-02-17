@@ -126,7 +126,7 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test_set_attributes_type_error(self):
         """
         (TestSolidTantalum) set_attributes should return a 10 error code when the wrong type is passed
         """
@@ -146,8 +146,8 @@ class TestSolidTantalumModel(unittest.TestCase):
                    0.0, 0.05, 0.00000033, 0.0,
                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 0.0,
-                   None, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   2, 3, 1, 0)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   2, '', 1, 0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -205,9 +205,10 @@ class TestSolidTantalumModel(unittest.TestCase):
                        0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                        0.0, 0,
-                       0, 0, 0.0, 30.0, 0.0, 358.0,
-                       0.0, 0.05, 0.00000033, 0.0, 0.0, 0.0, 0.0, 2, 3, 1, '',
-                       0.025, 0.0)
+                       0, 0,
+                       0.0, 30.0, 0.0, 358.0,
+                       0.0, 0.05, 0.00000033, 0.025, 0.0, 0.0, 0.0, 2, 3, 1, '',
+                       0.0, 0.0)
 
         self.DUT.set_attributes(_in_values)
         _result = self.DUT.get_attributes()
@@ -223,6 +224,7 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -236,22 +238,26 @@ class TestSolidTantalumModel(unittest.TestCase):
         (TestSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results
         """
 
+        self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
+        self.DUT.quality = 1
+        self.DUT.reference_temperature = 398.0
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
-        self.DUT.capacitance = 0.0000033
+        self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piSR')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.02232394)
-        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 10.0)
-        self.assertEqual(self.DUT.hazard_rate_model['piE'], 530.0)
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.03250293)
+                               0.008913701)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.001)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 1.126584189)
         self.assertEqual(self.DUT.hazard_rate_model['piSR'], 0.13)
-        self.assertAlmostEqual(self.DUT.hazard_rate_active, 4.9993396e-07)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 2.61092913e-12)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
@@ -263,7 +269,7 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
-        self.DUT.capacitance = 0.0000033
+        self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.000000000000001
 
@@ -418,12 +424,14 @@ class TestNonSolidTantalumModel(unittest.TestCase):
 
         _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
                    '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
-                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
-                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
-                   0.0, 358.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, '',
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
+                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
+                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
+                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                   0, 0,
+                   0.0, 30.0, 0.0, 358.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, '',
                    0, 0.0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
@@ -435,22 +443,22 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         """
 
         _in_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   0.0, 0.05, 0.00000033, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0,
-                   0.025, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   2, 3, 1, 0)
+                      'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                      0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                      'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                      'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                      1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                      0.0, 1.0,
+                      0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                      0, 0, 1, 0.0,
+                      0, 0, 0.0, 30.0, 0.0, 358.0,
+                      0.0, 0.05, 0.00000033, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0,
+                      0.025, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      2, 3, 1, 0)
         _out_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
@@ -462,9 +470,10 @@ class TestNonSolidTantalumModel(unittest.TestCase):
                        0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                        0.0, 0,
-                       0, 0, 0.0, 30.0, 0.0, 358.0,
-                       0.0, 0.05, 0.00000033, 0.0, 0.0, 0.0, 0.0, 2, 3, 1, '',
-                       0, 0.0)
+                       0, 0,
+                       0.0, 30.0, 0.0, 358.0,
+                       0.0, 0.05, 0.00000033, 0.0, 0.0, 0.0, 0.0, 2, 3, 1,
+                       '', 0, 0.0)
 
         self.DUT.set_attributes(_in_values)
         _result = self.DUT.get_attributes()
@@ -480,6 +489,7 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -488,27 +498,85 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 4.0e-05)
 
     @attr(all=True, unit=True)
-    def test_calculate_217_stress(self):
+    def test_calculate_217_stress_low_temp(self):
         """
-        (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
+        self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
+        self.DUT.quality = 1
+        self.DUT.reference_temperature = 358.0
         self.DUT.operating_voltage = 1.25
-        self.DUT.acvapplied = 0.025
+        self.DUT.acvapplied = 0.0025
         self.DUT.rated_voltage = 3.3
-        self.DUT.capacitance = 0.0000033
+        self.DUT.capacitance = 0.0000027
         self.DUT.construction = 1
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piC')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.04542426)
-        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 10.0)
-        self.assertEqual(self.DUT.hazard_rate_model['piE'], 610.0)
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.03250293)
+                               0.00546151)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.875555864)
         self.assertEqual(self.DUT.hazard_rate_model['piC'], 0.3)
-        self.assertAlmostEqual(self.DUT.hazard_rate_active, 2.7018516e-06)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 8.60734309e-011)
+
+    @attr(all=True, unit=True)
+    def test_calculate_217_stress_mid_temp(self):
+        """
+        (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        """
+
+        self.DUT.environment_active = 2
+        self.DUT.hazard_rate_type = 2
+        self.DUT.quality = 1
+        self.DUT.reference_temperature = 398.0
+        self.DUT.operating_voltage = 1.25
+        self.DUT.acvapplied = 0.0025
+        self.DUT.rated_voltage = 3.3
+        self.DUT.capacitance = 0.0000027
+        self.DUT.construction = 1
+
+        self.assertFalse(self.DUT.calculate())
+        self.assertEqual(self.DUT.hazard_rate_model['equation'],
+                         'lambdab * piQ * piE * piCV * piC')
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
+                               0.003825333)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.875555864)
+        self.assertEqual(self.DUT.hazard_rate_model['piC'], 0.3)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 2.4222874e-011)
+
+    @attr(all=True, unit=True)
+    def test_calculate_217_stress_high_temp(self):
+        """
+        (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        """
+
+        self.DUT.environment_active = 2
+        self.DUT.hazard_rate_type = 2
+        self.DUT.quality = 1
+        self.DUT.reference_temperature = 448.0
+        self.DUT.operating_voltage = 1.25
+        self.DUT.acvapplied = 0.0025
+        self.DUT.rated_voltage = 3.3
+        self.DUT.capacitance = 0.0000027
+        self.DUT.construction = 1
+
+        self.assertFalse(self.DUT.calculate())
+        self.assertEqual(self.DUT.hazard_rate_model['equation'],
+                         'lambdab * piQ * piE * piCV * piC')
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
+                               0.003304474)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.875555864)
+        self.assertEqual(self.DUT.hazard_rate_model['piC'], 0.3)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 5.20785263e-011)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):

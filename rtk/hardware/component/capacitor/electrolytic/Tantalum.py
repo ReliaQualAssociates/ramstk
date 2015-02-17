@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-##########################################
-Tantalum Capacitor Sub-Package Data Module
-##########################################
+#################################################################
+Hardware.Component.Capacitor.Electrolytic Package Tantalum Module
+#################################################################
 """
 
 __author__ = 'Andrew Rowland'
@@ -69,6 +69,18 @@ class Solid(Capacitor):
         # MIL-HDBK-217F, section 10.12
     """
 
+    # MIL-HDK-217F hazard rate calculation variables.
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    _piE = [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0, 24.0, 0.4, 11.0,
+            29.0, 530.0]
+    _piQ = [0.001, 0.01, 0.03, 0.03, 0.1, 0.3, 1.0, 1.5, 10.0]
+    _lambdab_count = [0.0018, 0.0039, 0.016, 0.0097, 0.028, 0.0091, 0.011,
+                      0.034, 0.057, 0.055, 0.00072, 0.022, 0.066, 1.0]
+    lst_ref_temp = [398.0]
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    subcategory = 51                        # Subcategory ID in the common DB.
+
     def __init__(self):
         """
         Initialize a solid tantalum electrolytic capacitor data model instance.
@@ -76,21 +88,11 @@ class Solid(Capacitor):
 
         super(Solid, self).__init__()
 
-        # MIL-HDK-217F hazard rate calculation variables.
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-        self._piE = [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0,
-                     24.0, 0.4, 11.0, 29.0, 530.0]
-        self._piQ = [0.001, 0.01, 0.03, 0.03, 0.1, 0.3, 1.0, 1.5, 10.0]
-        self._lambdab_count = [0.0018, 0.0039, 0.016, 0.0097, 0.028, 0.0091,
-                               0.011, 0.034, 0.057, 0.055, 0.00072, 0.022,
-                               0.066, 1.0]
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
         # Initialize public scalar attributes.
-        self.subcategory = 51               # Subcategory ID in the common DB.
         self.effective_resistance = 0.0
         self.piSR = 0.0
-        self.reference_temperature = 398.0
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+            self.reference_temperature = 398.0
 
     def set_attributes(self, values):
         """
@@ -152,7 +154,7 @@ class Solid(Capacitor):
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV * piSR'
 
             # Base hazard rate.
-            _stress = (self.operating_voltage + sqrt(2) * self.acvapplied) / \
+            _stress = (self.operating_voltage + self.acvapplied) / \
                        self.rated_voltage
             try:
                 self.base_hr = 0.00375 * ((_stress / 0.4)**3.0 + 1.0) * \
@@ -198,6 +200,19 @@ class NonSolid(Capacitor):
         # MIL-HDBK-217F, section 10.13
     """
 
+    # MIL-HDK-217F hazard rate calculation variables.
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----
+    _piC = [0.3, 1.0, 2.0, 2.5, 3.0]
+    _piE = [1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0, 23.0, 0.5, 13.0,
+            34.0, 610.0]
+    _piQ = [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0]
+    _lambdab_count = [0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061, 0.13,
+                      0.29, 0.18, 0.0030, 0.069, 0.26, 4.0]
+    lst_ref_temp = [358.0, 398.0, 448.0]
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    subcategory = 52                        # Subcategory ID in rtkcom DB.
+
     def __init__(self):
         """
         Initializes the Fixed Non-Solid Tantalum Electrolytic Capacitor
@@ -206,21 +221,10 @@ class NonSolid(Capacitor):
 
         super(NonSolid, self).__init__()
 
-        # MIL-HDK-217F hazard rate calculation variables.
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-        self._piC = [0.3, 1.0, 2.0, 2.5, 3.0]
-        self._piE = [1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0,
-                     23.0, 0.5, 13.0, 34.0, 610.0]
-        self._piQ = [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0]
-        self._lambdab_count = [0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061,
-                               0.13, 0.29, 0.18, 0.0030, 0.069, 0.26, 4.0]
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
         # Initialize public scalar attributes.
-        self.subcategory = 52               # Subcategory ID in rtkcom DB.
         self.construction = 0
         self.piC = 0.0
-        if self.hazard_rate_type < 7:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217
             if self.max_rated_temperature == 125.0:
                 self.reference_temperature = 398.0
             elif self.max_rated_temperature == 175.0:
@@ -289,17 +293,22 @@ class NonSolid(Capacitor):
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV * piC'
 
             # Base hazard rate.
-            _stress = (self.operating_voltage + sqrt(2) * self.acvapplied) / \
+            _stress = (self.operating_voltage + self.acvapplied) / \
                        self.rated_voltage
             try:
                 self.hazard_rate_model['lambdab'] = \
-                    0.00254 * exp((_stress / 0.55)**3 + 1) * \
-                    exp(4.09 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**5.9)
+                    0.00165 * ((_stress / 0.4)**3 + 1) * \
+                    exp(2.6 * ((self.temperature_active + 273) /
+                                self.reference_temperature)**9)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
+            # Capacitance correction factor.
+            self.piCV = 0.82 * (self.capacitance * 1000000.0)**0.066
+            self.hazard_rate_model['piCV'] = self.piCV
+
+            # Construction factor.
             self.piC = self._piC[self.construction - 1]
             self.hazard_rate_model['piC'] = self.piC
 

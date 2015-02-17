@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-##########################################
-Aluminum Capacitor Sub-Package Data Module
-##########################################
+#################################################################
+Hardware.Component.Capacitor.Electrolytic Package Aluminum Module
+#################################################################
 """
 
 __author__ = 'Andrew Rowland'
@@ -49,6 +49,18 @@ class Dry(Capacitor):
         # MIL-HDBK-217F, section 10.15
     """
 
+    # MIL-HDK-217F hazard rate calculation variables.
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    _piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
+            38.0, 690.0]
+    _piQ = [3.0, 10.0]
+    _lambdab_count = [0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3, 5.4,
+                      2.0, 0.015, 0.68, 2.8, 28.0]
+    lst_ref_temp = [358]
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    subcategory = 54                        # Subcategory ID in the common DB.
+
     def __init__(self):
         """
         Initialize a dry aluminum electrolytic capacitor data model instance.
@@ -56,19 +68,8 @@ class Dry(Capacitor):
 
         super(Dry, self).__init__()
 
-        # Initialize private list attributes.
-        # MIL-HDK-217F hazard rate calculation variables.
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-        self._piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0,
-                     27.0, 0.5, 14.0, 38.0, 690.0]
-        self._piQ = [3.0, 10.0]
-        self._lambdab_count = [0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3,
-                               5.4, 2.0, 0.015, 0.68, 2.8, 28.0]
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
         # Initialize public scalar attributes.
-        self.subcategory = 54               # Subcategory ID in the common DB.
-        if self.hazard_rate_type < 7:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate(self):
@@ -89,16 +90,20 @@ class Dry(Capacitor):
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV'
 
             # Base hazard rate.
-            _stress = (self.operating_voltage + sqrt(2) * self.acvapplied) / \
+            _stress = (self.operating_voltage + self.acvapplied) / \
                        self.rated_voltage
             try:
                 self.hazard_rate_model['lambdab'] = \
-                    0.0028 * exp((_stress / 0.55)**3 + 1) * \
+                    0.0028 * ((_stress / 0.55)**3 + 1) * \
                     exp(4.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5.9)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
+
+            # Capacitance correction factor.
+            self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
+            self.hazard_rate_model['piCV'] = self.piCV
 
         return Capacitor.calculate(self)
 
@@ -115,6 +120,18 @@ class Wet(Capacitor):
         # MIL-HDBK-217F, section 10.13
     """
 
+    # MIL-HDK-217F hazard rate calculation variables.
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    _piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
+            38.0, 690.0]
+    _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
+    _lambdab_count = [0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55, 2.1, 2.6,
+                      1.2, .012, 0.49, 1.7, 21.0]
+    lst_ref_temp = [358.0, 378.0, 398.0]
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    subcategory = 53                        # Subcategory ID in rtkcom DB.
+
     def __init__(self):
         """
         Initializes the Wet Aluminum Electrolytic Capacitor Component Class.
@@ -122,19 +139,8 @@ class Wet(Capacitor):
 
         super(Wet, self).__init__()
 
-        # Initialize private list attributes.
-        # MIL-HDK-217F hazard rate calculation variables.
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-        self._piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0,
-                     27.0, 0.5, 14.0, 38.0, 690.0]
-        self._piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
-        self._lambdab_count = [0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55,
-                               2.1, 2.6, 1.2, .012, 0.49, 1.7, 21.0]
-        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
         # Initialize public scalar attributes.
-        self.subcategory = 53               # Subcategory ID in rtkcom DB.
-        if self.hazard_rate_type < 7:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217
             if self.max_rated_temperature == 105.0:
                 self.reference_temperature = 378.0
             elif self.max_rated_temperature == 125.0:
@@ -160,15 +166,19 @@ class Wet(Capacitor):
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV'
 
             # Base hazard rate.
-            _stress = (self.operating_voltage + sqrt(2) * self.acvapplied) / \
+            _stress = (self.operating_voltage + self.acvapplied) / \
                        self.rated_voltage
             try:
                 self.hazard_rate_model['lambdab'] = \
-                    0.00254 * exp((_stress / 0.5)**3 + 1) * \
+                    0.00254 * ((_stress / 0.5)**3 + 1) * \
                     exp(5.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
+
+            # Capacitance correction factor.
+            self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
+            self.hazard_rate_model['piCV'] = self.piCV
 
         return Capacitor.calculate(self)

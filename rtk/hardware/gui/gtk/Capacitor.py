@@ -67,6 +67,45 @@ class Inputs(gtk.Frame):
     attributes of a capacitor Work Book view are:
     """
 
+    dicQuality = {40: ["", "MIL-SPEC", _(u"Lower")],
+                  41: ["", "M", "Non-Est. Rel.", "Lower"],
+                  43: ["", "S", "R", "P", "M", "L",
+                       "MIL-C-18312, Non-Est. Rel.", "Lower"],
+                  49: ["", "S", "R", "P", "M", "L",
+                       "MIL-C-11015, Non-Est. Rel.", "Lower"],
+                  50: ["", "S", "R", "P", "M", "Non-Est. Rel.", "Lower"],
+                  51: ["", "D", "C", "S", "B", "R", "P", "M", "L",
+                       _(u"Lower")],
+                  52: ["", "S", "R", "P", "M", "L",
+                       _(u"MIL-C-3965, Non-Established Reliability"),
+                       _(u"Lower")],
+                  53: ["", "S", "R", "P", "M",
+                       _(u"Non-Established Reliability"), _(u"Lower")],
+                  54: ["", "MIL-SPEC", _(u"Lower")]}
+    dicSpecification = {40: ["", "MIL-C-25 (CP)", "MIL-C-12889 (CA)"],
+                        41: ["", "MIL-C-11693 (CZ/CZR)"],
+                        43: ["", "MIL-C-18312 (CH)", "MIL-C-39022 (CHR)"],
+                        49: ["", "MIL-C-11015 (CK)", "MIL-C-39014 (CKR)"],
+                        50: ["", "MIL-C-20 (CC/CCR)", "MIL-C-55681 (CDR)"],
+                        51: ["", "MIL-C-39003 (CSR)"],
+                        52: ["", "MIL-C-3965 (CL)", "MIL-C-39003 (CLR)"],
+                        53: ["", "MIL-C-39016 (CU and CUR)"],
+                        54: ["", "MIL-C-62 (CE)"]}
+    dicSpecSheet = {40: [["", u"85\u00B0C", u"125\u00B0C"],
+                         ["", u"85\u00B0C"]],
+                    41: [["", u"85\u00B0C", u"125\u00B0C", u"150\u00B0C"]],
+                    43: [["", u"85\u00B0C", u"125\u00B0C"],
+                         ["", u"85\u00B0C", u"125\u00B0C"]],
+                    49: [["", u"85\u00B0C", u"125\u00B0C", u"150\u00B0C"],
+                         ["", u"85\u00B0C", u"125\u00B0C"]],
+                    50: [["", u"85\u00B0C", u"125\u00B0C"],
+                         ["", u"85\u00B0C"]],
+                    51: [["", _(u"All")]],
+                    52: [["", u"85\u00B0C", u"125\u00B0C", u"175\u00B0C"],
+                         ["", u"125\u00B0C"]],
+                    53: [["", u"85\u00B0C"]],
+                    54: [["", u"85\u00B0C", u"105\u00B0C", u"125\u00B0C"]]}
+
     def __init__(self, model):
         """
         Creates an input frame for the Capacitor data model.
@@ -91,11 +130,17 @@ class Inputs(gtk.Frame):
                             _(u"Rated Voltage:"), _(u"Applied DC Voltage:"),
                             _(u"Applied AC Voltage:"),
                             _(u"Capacitance (F):")]
-        self._lst_quality = []
-        self._lst_specification = []
-        self._lst_specsheet = []
-        self._lst_construction = []
+        self._lst_quality = self.dicQuality[model.subcategory]
+        try:
+            self._lst_specification = self.dicSpecification[model.subcategory]
+        except KeyError:
+            self._lst_specification = []
+        try:
+            self._lst_specsheet = self.dicSpecSheet[model.subcategory]
+        except KeyError:
+            self._lst_specsheet = []
 
+        self._lst_construction = []
         self._lst_handler_id = []
 
         # ===== ===== == Initialize private scalar attributes == ===== ===== #
@@ -116,54 +161,75 @@ class Inputs(gtk.Frame):
             self.cmbSpecification = _widg.make_combo(simple=True)
         if self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
                                  55, 56, 57, 58]:
-            self._lst_labels.append(_(u"Spec. Sheet:"))
+            self._lst_labels.append(_(u"Temperature Rating:"))
             self.cmbSpecSheet = _widg.make_combo(simple=True)
 
         if self._subcategory == 51:         # Solid tantalum
-            self._lst_quality = ["", "D", "C", "S", "B", "R", "P", "M", "L",
-                                 _(u"Lower")]
-            self._lst_specification = ["", "MIL-C-39003 (CSR)"]
-            self._lst_specsheet = [["", _(u"All")]]
-
             self._lst_labels.append(_(u"Eff. Series Resistance:"))
 
             self.txtEffResistance = _widg.make_entry(width=100)
 
         elif self._subcategory == 52:       # Non-solid tantalum
-            self._lst_quality = ["", "S", "R", "P", "M", "L",
-                                 _(u"MIL-C-3965, Non-Established Reliability"),
-                                 _(u"Lower")]
-            self._lst_specification = ["", "MIL-C-3965 (CL)",
-                                       "MIL-C-39003 (CLR)"]
-            self._lst_specsheet = [["", u"85\u00B0C", u"125\u00B0C",
-                                    u"175\u00B0C"], ["", u"125\u00B0C"]]
             self._lst_construction = ["", _(u"Slug, All Tantalum"),
                                       _(u"Foil, Hermetic"),
                                       _(u"Slug, Hermetic"),
                                       _(u"Foil, Non-Hermetic"),
                                       _(u"Slug, Non-Hermetic")]
 
-            self._lst_labels[3] = _(u"Temperature Rating:")
             self._lst_labels.append(_(u"Construction:"))
 
             self.cmbConstruction = _widg.make_combo(simple=True)
 
-        elif self._subcategory == 53:       # Wet aluminum
-            self._lst_quality = ["", "S", "R", "P", "M",
-                                 _(u"Non-Established Reliability"),
-                                 _(u"Lower")]
-            self._lst_specification = ["", "MIL-C-39016 (CU and CUR)"]
-            self._lst_specsheet = [["", u"85\u00B0C"]]
+    def create_217_count_inputs(self, x_pos=5):
+        """
+        Creates the MIL-HDBK-217FN2 part count input widgets for Capacitors.
 
-            self._lst_labels[3] = _(u"Temperature Rating:")
+        :keyword int x_pos: the x position of the display widgets.
+        :return: False if successful or True if an error is encountered.
+        """
 
-        elif self._subcategory == 54:       # Dry aluminum
-            self._lst_quality = ["", "MIL-SPEC", _(u"Lower")]
-            self._lst_specification = ["", "MIL-C-62 (CE)"]
-            self._lst_specsheet = [["", u"85\u00B0C", u"105\u00B0C",
-                                    u"125\u00B0C"]]
+        _label = gtk.Label()
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"MIL-HDBK-217FN2 Part Count Inputs") +
+                          "</span>")
+        _label.set_justify(gtk.JUSTIFY_LEFT)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.show_all()
+        self.set_label_widget(_label)
 
-            self._lst_labels[3] = _(u"Temperature Rating:")
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        self.add(_scrollwindow)
+
+        # Populate all the gtk.ComboBox().
+        for i in range(len(self._lst_quality)):
+            self.cmbQuality.insert_text(i, self._lst_quality[i])
+
+        # Create and place all the labels for the inputs.
+        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels[0], _fixed, 5, 5)
+        _x_pos = max(x_pos, _x_pos) + 50
+
+        # Create the tooltips for all the input widgets.
+        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
+                                           u"level for the selected "
+                                           u"capacitor."))
+
+        # Place all the input widgets.
+        _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
+
+        # Connect signals to callback functions.
+        _index = 0
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, _index))
+        _index += 1
+
+        _fixed.show_all()
+
+        return _x_pos
 
     def create_217_stress_inputs(self, x_pos=5):
         """
@@ -198,7 +264,29 @@ class Inputs(gtk.Frame):
         (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
-        # Place the input widgets common to all Capacitor types.
+        # Create the tooltips for all the input widgets.
+        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
+                                           u"level for the selected "
+                                           u"capacitor."))
+        self.txtCommercialPiQ.set_tooltip_text(_(u"Displays the user-defined "
+                                                 u"quality factor for the "
+                                                 u"selected capacitor.  This "
+                                                 u"value over rides the "
+                                                 u"quality factor selected "
+                                                 u"above."))
+        self.txtVoltRated.set_tooltip_text(_(u"Displays the rated voltage for "
+                                             u"the selected capacitor."))
+        self.txtVoltApplied.set_tooltip_text(_(u"Display the operating DC "
+                                               u"voltage for the selected "
+                                               u"capacitor."))
+        self.txtACVoltApplied.set_tooltip_text(_(u"Displays the peak "
+                                                 u"operating AC voltage for "
+                                                 u"the selected capacitor."))
+        self.txtCapacitance.set_tooltip_text(_(u"Display the capacitance in "
+                                               u"farads for the selected "
+                                               u"capacitor."))
+
+        # Place all the input widgets.
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
         _fixed.put(self.txtVoltRated, _x_pos, _y_pos[2])
@@ -209,27 +297,27 @@ class Inputs(gtk.Frame):
         # Connect signals to callback functions.
         _index = 0
         self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, _index)) #0
+            self.cmbQuality.connect('changed', self._on_combo_changed, _index))
         _index += 1
         self._lst_handler_id.append(
             self.txtCommercialPiQ.connect('focus-out-event',
-                                          self._on_focus_out, _index))  #1
+                                          self._on_focus_out, _index))
         _index += 1
         self._lst_handler_id.append(
             self.txtVoltRated.connect('focus-out-event',
-                                      self._on_focus_out, _index))  #2
+                                      self._on_focus_out, _index))
         _index += 1
         self._lst_handler_id.append(
             self.txtVoltApplied.connect('focus-out-event',
-                                        self._on_focus_out, _index))    #3
+                                        self._on_focus_out, _index))
         _index += 1
         self._lst_handler_id.append(
             self.txtACVoltApplied.connect('focus-out-event',
-                                          self._on_focus_out, _index))  #4
+                                          self._on_focus_out, _index))
         _index += 1
         self._lst_handler_id.append(
             self.txtCapacitance.connect('focus-out-event',
-                                        self._on_focus_out, _index))    #5
+                                        self._on_focus_out, _index))
         _index += 1
 
         # Subcategory specific widgets.
@@ -252,27 +340,38 @@ class Inputs(gtk.Frame):
             _index += 1
 
         if self._subcategory == 51:         # Solid tantalum
+            self.txtEffResistance.set_tooltip_text(_(u"Displays the effective "
+                                                     u"series resistance "
+                                                     u"between the power "
+                                                     u"supply and the "
+                                                     u"capacitor."))
             _fixed.put(self.txtEffResistance, _x_pos, _y_pos[6])
             self._lst_handler_id.append(
                 self.txtEffResistance.connect('focus-out-event',
-                                              self._on_focus_out, _index))  #6
+                                              self._on_focus_out, _index))
             _index += 1
         elif self._subcategory == 52:       # Non-solid tantalum
             for i in range(len(self._lst_construction)):
                 self.cmbConstruction.insert_text(i, self._lst_construction[i])
+            self.cmbConstruction.set_tooltip_text(_(u"Displays the method of "
+                                                    u"construction for the "
+                                                    u"selected capacitor."))
             _fixed.put(self.cmbConstruction, _x_pos, _y_pos[8])
             self._lst_handler_id.append(
                 self.cmbConstruction.connect('changed',
-                                             self._on_combo_changed, _index)) #8
+                                             self._on_combo_changed, _index))
             _index += 1
         elif self._subcategory == 58:       # Gas or vacuum
             for i in range(len(self._lst_construction)):
-                self.cmbConfiguraiton.insert_text(i,
+                self.cmbConfiguration.insert_text(i,
                                                   self._lst_configuration[i])
+            self.cmbConfiguration.set_tooltip_text(_(u"Displays whether the "
+                                                     u"selected capacitor is "
+                                                     u"fixed or variable."))
             _fixed.put(self.cmbConfiguration, _x_pos, _y_pos[7])
             self._lst_handler_id.append(
                 self.cmbConfiguration.connect('changed',
-                                              self._on_combo_changed, _index))    #7
+                                              self._on_combo_changed, _index))
             _index += 1
 
         _fixed.show_all()
@@ -328,13 +427,23 @@ class Inputs(gtk.Frame):
 
         if index == 0:
             self._hardware_model.quality = combo.get_active()
-        elif index == 4:
-            self._hardware_model.specification = combo.get_active()
         elif index == 5:
             self._hardware_model.spec_sheet = combo.get_active()
-        elif index == 6 and self._subcategory == 52:
-            self._hardware_model.construction = combo.get_active()
         elif index == 5 and self._subcategory == 58:
+            self._hardware_model.configuration = combo.get_active()
+        elif index == 6 and \
+             self._subcategory in [40, 42, 43, 46, 47, 48, 49, 50, 52]:
+            self._hardware_model.specification = combo.get_active()
+            self._load_spec_sheet(self._hardware_model.specification - 1)
+        elif index == 7 and \
+             self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
+                                   55, 56, 57, 58]:
+            self._hardware_model.spec_sheet = combo.get_active()
+            self._hardware_model.reference_temperature = \
+                self._hardware_model.lst_ref_temp[combo.get_active() - 1]
+        elif index == 8 and self._subcategory == 52:
+            self._hardware_model.construction = combo.get_active()
+        elif index == 8 and self._subcategory == 58:
             self._hardware_model.configuration = combo.get_active()
 
         combo.handler_unblock(self._lst_handler_id[index])
@@ -375,6 +484,28 @@ class Inputs(gtk.Frame):
 
         return False
 
+    def _load_spec_sheet(self, specification):
+        """
+        Method to load the specification sheet gtk.ComboBox() whenever a new
+        specification is selected.
+
+        :param int specification: the selected specification index.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Remove existing entries.
+        _model = self.cmbSpecSheet.get_model()
+        _model.clear()
+
+        # Load the new entries.
+        _n_spec_sheets = len(self._lst_specsheet[specification])
+        for i in range(_n_spec_sheets):
+            self.cmbSpecSheet.insert_text(
+                i, self._lst_specsheet[specification][i])
+
+        return False
+
 
 class Results(gtk.Frame):
     """
@@ -410,7 +541,11 @@ class Results(gtk.Frame):
         self.txtPiCV = _widg.make_entry(width=100, editable=False, bold=True)
 
         # Subcategory specific attributes.
-        if self._subcategory == 51:         # Solid tantalum
+        if self._subcategory in [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+                                 53, 54, 55, 56, 57, 58]:
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CV</sub></span>"
+
+        elif self._subcategory == 51:       # Solid tantalum
             self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CV</sub>\u03C0<sub>SR</sub></span>"
             self._lst_labels.append(u"\u03C0<sub>SR</sub>:")
 
@@ -423,12 +558,6 @@ class Results(gtk.Frame):
 
             self.txtPiC = _widg.make_entry(width=100, editable=False,
                                            bold=True)
-
-        elif self._subcategory == 53:       # Wet aluminum
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CV</sub></span>"
-
-        elif self._subcategory == 54:       # Dry aluminum
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CV</sub></span>"
 
     def create_217_stress_results(self, x_pos=5):
         """
@@ -460,6 +589,16 @@ class Results(gtk.Frame):
         (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 25)
         _x_pos = max(x_pos, _x_pos) + 25
 
+        # Create the tooltips for all the results display widgets.
+        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
+                                           u"for the selected capacitor."))
+        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for the "
+                                       u"selected capacitor."))
+        self.txtPiE.set_tooltip_text(_(u"Displays the environement factor for "
+                                       u"the selected capacitor."))
+        self.txtPiCV.set_tooltip_text(_(u"Displays the capacitance correction "
+                                        u"factor for the selected capacitor."))
+
         # Place the reliability result display widgets.
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
@@ -468,8 +607,14 @@ class Results(gtk.Frame):
 
         # Subcategory specific widgets.
         if self._subcategory == 51:
+            self.txtPiSR.set_tooltip_text(_(u"Displays the effective series "
+                                            u"resistance factor for the "
+                                            u"selected capacitor."))
             _fixed.put(self.txtPiSR, _x_pos, _y_pos[5])
         elif self._subcategory == 52:
+            self.txtPiC.set_tooltip_text(_(u"Displays the construction "
+                                           u"factor for the selected "
+                                           u"capacitor."))
             _fixed.put(self.txtPiC, _x_pos, _y_pos[5])
 
         _fixed.show_all()

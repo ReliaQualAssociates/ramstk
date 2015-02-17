@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-#################################
-Capacitor Sub-Package Data Module
-#################################
+#####################################################
+Hardware.Component.Capacitor Package Capacitor Module
+#####################################################
 """
 
 __author__ = 'Andrew Rowland'
@@ -48,9 +48,14 @@ def _error_handler(message):
 
     if 'argument must be a string or a number' in message[0]:   # Type error
         _error_code = 10
+    elif 'invalid literal for int() with base 10' in message[0]:
+        _error_code = 10
     elif 'index out of range' in message[0]:   # Index error
         _error_code = 40
+    elif 'could not convert string to' in message[0]:   # Value error
+        _error_code = 50
     else:                                   # Unhandled error
+        print message
         _error_code = 1000                  # pragma: no cover
 
     return _error_code
@@ -60,6 +65,8 @@ class Model(Component):
     """
     The Capacitor data model contains the attributes and methods of a capacitor
     component.  The attributes of a Capacitor are:
+
+    :cvar category: default value: 4
 
     :ivar quality: default value: 0
     :ivar q_override: default value: 0.0
@@ -113,7 +120,7 @@ class Model(Component):
         _msg = ''
 
         (_code, _msg) = Component.set_attributes(self, values[:96])
-        print values[96:]
+
         try:
             self.q_override = float(values[96])
             self.acvapplied = float(values[97])
@@ -130,7 +137,7 @@ class Model(Component):
         except IndexError as _err:
             _code = _error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
+        except(TypeError, ValueError) as _err:
             _code = _error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
@@ -177,7 +184,10 @@ class Model(Component):
             self.hazard_rate_model['lambdab'] = self._lambdab_count[self.environment_active - 1]
 
         elif self.hazard_rate_type == 2:
-            # Environmental correction factor.
+            # Set the model's base hazard rate.
+            self.base_hr = self.hazard_rate_model['lambdab']
+
+            # Set the model's environmental correction factor.
             try:
                 self.piE = self._piE[self.environment_active - 1]
             except AttributeError:

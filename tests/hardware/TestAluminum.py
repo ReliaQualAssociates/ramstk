@@ -111,14 +111,14 @@ class TestDryAluminumModel(unittest.TestCase):
                    0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
                    0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, 0.0)
+                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test_set_attributes_type_error(self):
         """
         (TestDryAluminum) set_attributes should return a 10 error code when the wrong type is passed
         """
@@ -214,26 +214,30 @@ class TestDryAluminumModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 0.00028)
 
     @attr(all=True, unit=True)
-    def test_calculate_217_stress(self):
+    def test_calculate_217_stress_low_temp(self):
         """
         (TestDryAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results
         """
 
+        self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
+        self.DUT.reference_temperature = 358.0
+        self.DUT.quality = 1
         self.DUT.operating_voltage = 1.25
-        self.DUT.acvapplied = 0.025
+        self.DUT.acvapplied = 0.0025
         self.DUT.rated_voltage = 3.3
-        self.DUT.capacitance = 0.0000033
+        self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.05007399)
-        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 10.0)
-        self.assertEqual(self.DUT.hazard_rate_model['piE'], 690.0)
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.03250293)
-        self.assertAlmostEqual(self.DUT.hazard_rate_active, 1.1230105e-05)
+                               0.01715818)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 3.0)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.406559763)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 4.18549532e-8)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
@@ -352,14 +356,14 @@ class TestWetAluminumModel(unittest.TestCase):
                    0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
                    0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, 0.0)
+                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test_set_attributes_type_error(self):
         """
         (TestWetAluminum) set_attributes should return a 10 error code when the wrong type is passed
         """
@@ -373,11 +377,11 @@ class TestWetAluminumModel(unittest.TestCase):
                    0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
                    0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0, 0, 0.0, None, 0.0, '', 0.0, 0.0, 0.0)
+                   0, 0.0, 0, 0, 0.0, 0.0, 0.0, '', 0.0, '', 0.0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 10)
+        self.assertEqual(_error_code, 50)
 
     @attr(all=True, unit=True)
     def test_get_attributes(self):
@@ -447,6 +451,7 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
+
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -455,27 +460,82 @@ class TestWetAluminumModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 0.00021)
 
     @attr(all=True, unit=True)
-    def test_calculate_217_stress(self):
+    def test_calculate_217_stress_low_temp(self):
         """
-        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
+        self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
+        self.DUT.reference_temperature = 358.0
+        self.DUT.quality = 1
         self.DUT.operating_voltage = 1.25
-        self.DUT.acvapplied = 0.025
+        self.DUT.acvapplied = 0.0025
         self.DUT.rated_voltage = 3.3
-        self.DUT.capacitance = 0.0000033
+        self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
         self.assertFalse(self.DUT.calculate())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.10104114)
-        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 10.0)
-        self.assertEqual(self.DUT.hazard_rate_model['piE'], 690.0)
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.03250293)
-        self.assertAlmostEqual(self.DUT.hazard_rate_active, 2.26605180e-05)
+                               0.033302433)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.406559763)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 8.12365758e-10)
+
+    @attr(all=True, unit=True)
+    def test_calculate_217_stress_mid_temp(self):
+        """
+        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        """
+
+        self.DUT.environment_active = 2
+        self.DUT.hazard_rate_type = 2
+        self.DUT.reference_temperature = 378.0
+        self.DUT.quality = 1
+        self.DUT.operating_voltage = 1.25
+        self.DUT.acvapplied = 0.0025
+        self.DUT.rated_voltage = 3.3
+        self.DUT.capacitance = 0.0000027
+        self.DUT.effective_resistance = 0.5
+
+        self.assertFalse(self.DUT.calculate())
+        self.assertEqual(self.DUT.hazard_rate_model['equation'],
+                         'lambdab * piQ * piE * piCV')
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
+                               0.019678081)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.406559763)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 4.80018946e-10)
+
+    @attr(all=True, unit=True)
+    def test_calculate_217_stress_high_temp(self):
+        """
+        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 150C specification
+        """
+
+        self.DUT.environment_active = 2
+        self.DUT.hazard_rate_type = 2
+        self.DUT.reference_temperature = 398.0
+        self.DUT.quality = 1
+        self.DUT.operating_voltage = 1.25
+        self.DUT.acvapplied = 0.0025
+        self.DUT.rated_voltage = 3.3
+        self.DUT.capacitance = 0.0000027
+        self.DUT.effective_resistance = 0.5
+
+        self.assertFalse(self.DUT.calculate())
+        self.assertEqual(self.DUT.hazard_rate_model['equation'],
+                         'lambdab * piQ * piE * piCV')
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
+                               0.013419593)
+        self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.03)
+        self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['piCV'], 0.406559763)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 3.27351989e-10)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
@@ -485,7 +545,7 @@ class TestWetAluminumModel(unittest.TestCase):
 
         self.DUT.hazard_rate_type = 2
         self.DUT.operating_voltage = 1.25
-        self.DUT.acvapplied = 0.025
+        self.DUT.acvapplied = 0.0025
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 0.0000033
         self.DUT.effective_resistance = 0.5
