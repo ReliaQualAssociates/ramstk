@@ -9,6 +9,7 @@
 *.idea
 *.goutputstream*
 *.geanyprj
+*.tox
 
 
 # Python specific files to ignore

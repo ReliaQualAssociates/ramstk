@@ -254,7 +254,7 @@ setup(
     maintainer = "Andrew Rowland",
     maintainer_email = "andrew.rowland@reliaqual.com",
     url = "http://rtk.reliaqual.com",
-    description = "Reliability, Availability, Mainatainability, and Safety (RAMS) Analyses Tools",
+    description = "Reliability, Availability, Maintainability, and Safety (RAMS) Analyses Tools",
     long_description = """RTK is a Python and PyGTK based suite of tools to assist in Reliability, Availability, Maintainability, and Safety (RAMS) analyses.""",
     download_url = "",
     platforms = "Linux",

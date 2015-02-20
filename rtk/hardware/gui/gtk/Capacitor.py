@@ -68,22 +68,28 @@ class Inputs(gtk.Frame):
     """
 
     dicQuality = {40: ["", "MIL-SPEC", _(u"Lower")],
-                  41: ["", "M", "Non-Est. Rel.", "Lower"],
+                  41: ["", "M", "Non-Est. Rel.", _(u"Lower")],
                   42: ["", "S", "R", "P", "M", "L",
-                       "MIL-C-19978, Non-Est. Rel.", "Lower"],
+                       _(u"MIL-C-19978, Non-Established Reliability"),
+                       _(u"Lower")],
                   43: ["", "S", "R", "P", "M", "L",
-                       "MIL-C-18312, Non-Est. Rel.", "Lower"],
-                  44: ["", "S", "R", "P", "M", "Lower"],
-                  45: ["", "S", "R", "P", "M", "Lower"],
+                       _(u"MIL-C-18312, Non-Established Reliability"),
+                       _(u"Lower")],
+                  44: ["", "S", "R", "P", "M", _(u"Lower")],
+                  45: ["", "S", "R", "P", "M", _(u"Lower")],
                   46: ["", "T", "S", "R", "P", "M", "L",
-                       "MIL-C-5, Non-Est. Rel. Dipped",
-                       "MIL-C-5, Non-Est. Rel. Molded", "Lower"],
-                  47: ["", "MIL-C-10950", "Lower"],
+                       _(u"MIL-C-5, Non-Established Reliability, Dipped"),
+                       _(u"MIL-C-5, Non-Established Reliability, Molded"),
+                       _(u"Lower")],
+                  47: ["", "MIL-C-10950", _(u"Lower")],
                   48: ["", "S", "R", "P", "M", "L",
-                       "MIL-C-11272, Non-Est. Rel.", "Lower"],
+                       _(u"MIL-C-11272, Non-Established Reliability"),
+                       _(u"Lower")],
                   49: ["", "S", "R", "P", "M", "L",
-                       "MIL-C-11015, Non-Est. Rel.", "Lower"],
-                  50: ["", "S", "R", "P", "M", "Non-Est. Rel.", "Lower"],
+                       _(u"MIL-C-11015, Non-Established Reliability"),
+                       _(u"Lower")],
+                  50: ["", "S", "R", "P", "M",
+                       _(u"Non-Established Reliability"), _(u"Lower")],
                   51: ["", "D", "C", "S", "B", "R", "P", "M", "L",
                        _(u"Lower")],
                   52: ["", "S", "R", "P", "M", "L",
@@ -91,7 +97,11 @@ class Inputs(gtk.Frame):
                        _(u"Lower")],
                   53: ["", "S", "R", "P", "M",
                        _(u"Non-Established Reliability"), _(u"Lower")],
-                  54: ["", "MIL-SPEC", _(u"Lower")]}
+                  54: ["", "MIL-SPEC", _(u"Lower")],
+                  55: ["", "MIL-SPEC", _(u"Lower")],
+                  56: ["", "MIL-SPEC", _(u"Lower")],
+                  57: ["", "MIL-SPEC", _(u"Lower")],
+                  58: ["", "MIL-SPEC", _(u"Lower")]}
     dicSpecification = {40: ["", "MIL-C-25 (CP)", "MIL-C-12889 (CA)"],
                         41: ["", "MIL-C-11693 (CZ/CZR)"],
                         42: ["", "MIL-C-14157 (CPV)", "MIL-C-19978 (CQ/CQR)"],
@@ -100,14 +110,17 @@ class Inputs(gtk.Frame):
                         45: ["", "MIL-C-83421 (CRH)"],
                         46: ["", "MIL-C-5 (CM)", "MIL-C-39001 (CMR)"],
                         47: ["", "MIL-C-10950 (CB)"],
-                        48: ["", "S", "R", "P", "M", "L",
-                             "MIL-C-11272, Non-Est. Rel.", "Lower"],
+                        48: ["", "MIL-C-11272 (CY)", "MIL-C-23269 (CYR)"],
                         49: ["", "MIL-C-11015 (CK)", "MIL-C-39014 (CKR)"],
                         50: ["", "MIL-C-20 (CC/CCR)", "MIL-C-55681 (CDR)"],
                         51: ["", "MIL-C-39003 (CSR)"],
                         52: ["", "MIL-C-3965 (CL)", "MIL-C-39003 (CLR)"],
                         53: ["", "MIL-C-39016 (CU and CUR)"],
-                        54: ["", "MIL-C-62 (CE)"]}
+                        54: ["", "MIL-C-62 (CE)"],
+                        55: ["", "MIL-C-81 (CV)"],
+                        56: ["", "MIL-C-14409 (PC)"],
+                        57: ["", "MIL-C-92 (CT)"],
+                        58: ["", "MIL-C-23183 (CT)"]}
     dicSpecSheet = {40: [["", u"85\u00B0C", u"125\u00B0C"],
                          ["", u"85\u00B0C"]],
                     41: [["", u"85\u00B0C", u"125\u00B0C", u"150\u00B0C"]],
@@ -119,7 +132,7 @@ class Inputs(gtk.Frame):
                     44: [["", u"85\u00B0C", u"125\u00B0C"]],
                     45: [["", u"125\u00B0C"]],
                     46: [["", u"70\u00B0C", u"85\u00B0C", u"125\u00B0C",
-                          u"150\u00B0C"], ["", u"125\u00B0C", u"150\u00B0C"]]
+                          u"150\u00B0C"], ["", u"125\u00B0C", u"150\u00B0C"]],
                     47: [["", u"85\u00B0C", u"150\u00B0C"]],
                     48: [["", u"125\u00B0C", u"200\u00B0C"],
                          ["", u"125\u00B0C"]],
@@ -131,7 +144,11 @@ class Inputs(gtk.Frame):
                     52: [["", u"85\u00B0C", u"125\u00B0C", u"175\u00B0C"],
                          ["", u"125\u00B0C"]],
                     53: [["", u"85\u00B0C"]],
-                    54: [["", u"85\u00B0C", u"105\u00B0C", u"125\u00B0C"]]}
+                    54: [["", u"85\u00B0C", u"105\u00B0C", u"125\u00B0C"]],
+                    55: [["", u"85\u00B0C", u"125\u00B0C"]],
+                    56: [["", u"125\u00B0C", u"150\u00B0C"]],
+                    57: [["", u"85\u00B0C"]],
+                    58: [["", u"85\u00B0C", u"100\u00B0C", u"125\u00B0C"]]}
 
     def __init__(self, model):
         """
@@ -156,16 +173,11 @@ class Inputs(gtk.Frame):
                             _(u"\u03C0<sub>Q</sub> Override:"),
                             _(u"Rated Voltage:"), _(u"Applied DC Voltage:"),
                             _(u"Applied AC Voltage:"),
-                            _(u"Capacitance (F):")]
+                            _(u"Capacitance (F):"), _(u"Specification:"),
+                            _(u"Temperature Rating:")]
         self._lst_quality = self.dicQuality[model.subcategory]
-        try:
-            self._lst_specification = self.dicSpecification[model.subcategory]
-        except KeyError:
-            self._lst_specification = []
-        try:
-            self._lst_specsheet = self.dicSpecSheet[model.subcategory]
-        except KeyError:
-            self._lst_specsheet = []
+        self._lst_specification = self.dicSpecification[model.subcategory]
+        self._lst_specsheet = self.dicSpecSheet[model.subcategory]
 
         self._lst_construction = []
         self._lst_handler_id = []
@@ -181,16 +193,10 @@ class Inputs(gtk.Frame):
         self.txtVoltApplied = _widg.make_entry(width=100)
         self.txtACVoltApplied = _widg.make_entry(width=100)
         self.txtCapacitance = _widg.make_entry(width=100)
+        self.cmbSpecification = _widg.make_combo(simple=True)
+        self.cmbSpecSheet = _widg.make_combo(simple=True)
 
         # Subcategory specific attributes.
-        if self._subcategory in [40, 42, 43, 46, 47, 48, 49, 50, 52]:
-            self._lst_labels.append(_(u"Specification:"))
-            self.cmbSpecification = _widg.make_combo(simple=True)
-        if self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
-                                 55, 56, 57, 58]:
-            self._lst_labels.append(_(u"Temperature Rating:"))
-            self.cmbSpecSheet = _widg.make_combo(simple=True)
-
         if self._subcategory == 51:         # Solid tantalum
             self._lst_labels.append(_(u"Eff. Series Resistance:"))
 
@@ -206,6 +212,15 @@ class Inputs(gtk.Frame):
             self._lst_labels.append(_(u"Construction:"))
 
             self.cmbConstruction = _widg.make_combo(simple=True)
+
+        elif self._subcategory == 58:       # Variable vacuum
+            self._lst_configuration = ["", _(u"Fixed"), _(u"Variable")]
+
+            self.cmbConfiguration = _widg.make_combo(simple=True)
+
+            self._lst_labels.append(_(u"Configuration:"))
+
+
 
     def create_217_count_inputs(self, x_pos=5):
         """
@@ -286,6 +301,8 @@ class Inputs(gtk.Frame):
         # Populate all the gtk.ComboBox().
         for i in range(len(self._lst_quality)):
             self.cmbQuality.insert_text(i, self._lst_quality[i])
+        for i in range(len(self._lst_specification)):
+            self.cmbSpecification.insert_text(i, self._lst_specification[i])
 
         # Create and place all the labels for the inputs.
         (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 5)
@@ -312,6 +329,12 @@ class Inputs(gtk.Frame):
         self.txtCapacitance.set_tooltip_text(_(u"Display the capacitance in "
                                                u"farads for the selected "
                                                u"capacitor."))
+        self.cmbSpecification.set_tooltip_text(_(u"Selects the governing "
+                                                 u"specification for the "
+                                                 u"selected capacitor."))
+        self.cmbSpecSheet.set_tooltip_text(_(u"Selects the maximum "
+                                             u"temperature rating for the "
+                                             u"selected capacitor."))
 
         # Place all the input widgets.
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
@@ -320,6 +343,8 @@ class Inputs(gtk.Frame):
         _fixed.put(self.txtVoltApplied, _x_pos, _y_pos[3])
         _fixed.put(self.txtACVoltApplied, _x_pos, _y_pos[4])
         _fixed.put(self.txtCapacitance, _x_pos, _y_pos[5])
+        _fixed.put(self.cmbSpecification, _x_pos, _y_pos[6])
+        _fixed.put(self.cmbSpecSheet, _x_pos, _y_pos[7])
 
         # Connect signals to callback functions.
         _index = 0
@@ -346,25 +371,14 @@ class Inputs(gtk.Frame):
             self.txtCapacitance.connect('focus-out-event',
                                         self._on_focus_out, _index))
         _index += 1
-
-        # Subcategory specific widgets.
-        if self._subcategory in [40, 42, 43, 46, 47, 48, 49, 50, 52]:
-            for i in range(len(self._lst_specification)):
-                self.cmbSpecification.insert_text(i,
-                                                  self._lst_specification[i])
-
-            _fixed.put(self.cmbSpecification, _x_pos, _y_pos[6])
-            self._lst_handler_id.append(
-                self.cmbSpecification.connect('changed',
-                                              self._on_combo_changed, _index))
-            _index += 1
-        if self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
-                                 55, 56, 57, 58]:
-            _fixed.put(self.cmbSpecSheet, _x_pos, _y_pos[7])
-            self._lst_handler_id.append(
-                self.cmbSpecSheet.connect('changed',
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect('changed',
                                           self._on_combo_changed, _index))
-            _index += 1
+        _index += 1
+        self._lst_handler_id.append(
+            self.cmbSpecSheet.connect('changed',
+                                      self._on_combo_changed, _index))
+        _index += 1
 
         if self._subcategory == 51:         # Solid tantalum
             self.txtEffResistance.set_tooltip_text(_(u"Displays the effective "
@@ -372,7 +386,7 @@ class Inputs(gtk.Frame):
                                                      u"between the power "
                                                      u"supply and the "
                                                      u"capacitor."))
-            _fixed.put(self.txtEffResistance, _x_pos, _y_pos[6])
+            _fixed.put(self.txtEffResistance, _x_pos, _y_pos[8])
             self._lst_handler_id.append(
                 self.txtEffResistance.connect('focus-out-event',
                                               self._on_focus_out, _index))
@@ -389,13 +403,13 @@ class Inputs(gtk.Frame):
                                              self._on_combo_changed, _index))
             _index += 1
         elif self._subcategory == 58:       # Gas or vacuum
-            for i in range(len(self._lst_construction)):
+            for i in range(len(self._lst_configuration)):
                 self.cmbConfiguration.insert_text(i,
                                                   self._lst_configuration[i])
             self.cmbConfiguration.set_tooltip_text(_(u"Displays whether the "
                                                      u"selected capacitor is "
                                                      u"fixed or variable."))
-            _fixed.put(self.cmbConfiguration, _x_pos, _y_pos[7])
+            _fixed.put(self.cmbConfiguration, _x_pos, _y_pos[8])
             self._lst_handler_id.append(
                 self.cmbConfiguration.connect('changed',
                                               self._on_combo_changed, _index))
@@ -458,13 +472,10 @@ class Inputs(gtk.Frame):
             self._hardware_model.spec_sheet = combo.get_active()
         elif index == 5 and self._subcategory == 58:
             self._hardware_model.configuration = combo.get_active()
-        elif index == 6 and \
-             self._subcategory in [40, 42, 43, 46, 47, 48, 49, 50, 52]:
+        elif index == 6:
             self._hardware_model.specification = combo.get_active()
             self._load_spec_sheet(self._hardware_model.specification - 1)
-        elif index == 7 and \
-             self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
-                                   55, 56, 57, 58]:
+        elif index == 7:
             self._hardware_model.spec_sheet = combo.get_active()
             self._hardware_model.reference_temperature = \
                 self._hardware_model.lst_ref_temp[combo.get_active() - 1]
@@ -504,7 +515,7 @@ class Inputs(gtk.Frame):
             self._hardware_model.acvapplied = float(entry.get_text())
         elif index == 5:
             self._hardware_model.capacitance = float(entry.get_text())
-        elif index == 6 and self._subcategory == 51:
+        elif index == 8 and self._subcategory == 51:
             self._hardware_model.effective_resistance = float(entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -569,7 +580,7 @@ class Results(gtk.Frame):
 
         # Subcategory specific attributes.
         if self._subcategory in [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-                                 53, 54, 55, 56, 57, 58]:
+                                 53, 54]:
             self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CV</sub></span>"
 
         elif self._subcategory == 51:       # Solid tantalum
@@ -585,6 +596,17 @@ class Results(gtk.Frame):
 
             self.txtPiC = _widg.make_entry(width=100, editable=False,
                                            bold=True)
+
+        elif self._subcategory in [55, 56, 57]:
+                self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+                self._lst_labels.pop(4)
+
+        elif self._subcategory == 58:
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CF</sub></span>"
+            self._lst_labels[4] = u"\u03C0<sub>CF</sub>:"
+
+            self.txtPiCF = _widg.make_entry(width=100, editable=False,
+                                            bold=True)
 
     def create_217_stress_results(self, x_pos=5):
         """
@@ -630,7 +652,6 @@ class Results(gtk.Frame):
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[3])
-        _fixed.put(self.txtPiCV, _x_pos, _y_pos[4])
 
         # Subcategory specific widgets.
         if self._subcategory == 51:
@@ -643,6 +664,14 @@ class Results(gtk.Frame):
                                            u"factor for the selected "
                                            u"capacitor."))
             _fixed.put(self.txtPiC, _x_pos, _y_pos[5])
+        elif self._subcategory not in [55, 56, 57, 58]:     # Not variable
+            _fixed.put(self.txtPiCV, _x_pos, _y_pos[4])
+
+        if self._subcategory == 58:
+            self.txtPiCF.set_tooltip_text(_(u"Displays the configuration "
+                                            u"factor for the selected "
+                                            u"capacitor."))
+            _fixed.put(self.txtPiCF, _x_pos, _y_pos[4])
 
         _fixed.show_all()
 
@@ -668,5 +697,7 @@ class Results(gtk.Frame):
             self.txtPiSR.set_text(str(fmt.format(model.piSR)))
         elif self._subcategory == 52:
             self.txtPiC.set_text(str(fmt.format(model.piC)))
+        elif self._subcategory == 58:
+            self.txtPiCF.set_text(str(fmt.format(model.piCF)))
 
         return False

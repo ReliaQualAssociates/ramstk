@@ -111,7 +111,10 @@ class Film(Capacitor):
                 return True
 
             # Capacitance correction factor.
-            self.piCV = 1.6 * (self.capacitance * 1000000.0)**0.13
+            if self.specification == 1:
+                self.piCV = 1.6 * (self.capacitance * 1000000.0)**0.13
+            elif self.specification == 2:
+                self.piCV = 1.3 * (self.capacitance * 1000000.0)**0.077
             self.hazard_rate_model['piCV'] = self.piCV
 
         return Capacitor.calculate(self)

@@ -64,6 +64,7 @@ class Bypass(Capacitor):
                        0.13, 0.083, 0.0018, 0.044, 0.12, 2.1],
                       [0.0039, 0.0087, 0.042, 0.022, 0.070, 0.035, 0.047, 0.19,
                        0.35, 0.130, 0.0020, 0.056, 0.19, 2.5]]
+    lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 40                        # Subcategory ID in the common DB.
@@ -79,10 +80,7 @@ class Bypass(Capacitor):
         self.specification = 0              # MIL-C-25 or MIL-C-12889.
         self.spec_sheet = 0                 #
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
-            if self.max_rated_temperature == 125.0:
-                self.reference_temperature = 398.0
-            else:
-                self.reference_temperature = 358.0
+            self.reference_temperature = 358.0
 
     def calculate(self):
         """

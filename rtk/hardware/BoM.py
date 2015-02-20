@@ -25,16 +25,26 @@ try:
     import configuration as _conf
     from hardware.assembly.Assembly import Model as Assembly
     from hardware.component.Component import Model as Component
-    import hardware.component.capacitor.fixed.Paper as Paper
     import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
     import hardware.component.capacitor.electrolytic.Tantalum as Tantalum
+    import hardware.component.capacitor.fixed.Ceramic as Ceramic
+    import hardware.component.capacitor.fixed.Glass as Glass
+    import hardware.component.capacitor.fixed.Mica as Mica
+    import hardware.component.capacitor.fixed.Paper as Paper
+    import hardware.component.capacitor.fixed.Plastic as Plastic
+    import hardware.component.capacitor.variable.Variable as Variable
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
     from rtk.hardware.component.Component import Model as Component
-    import rtk.hardware.component.capacitor.fixed.Paper as Paper
-    import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
+    import rtk.hardware.component.capacitor.electrolytic.Aluminum as Aluminum
     import rtk.hardware.component.capacitor.electrolytic.Tantalum as Tantalum
+    import rtk.hardware.component.capacitor.fixed.Ceramic as Ceramic
+    import rtk.hardware.component.capacitor.fixed.Glass as Glass
+    import rtk.hardware.component.capacitor.fixed.Mica as Mica
+    import rtk.hardware.component.capacitor.fixed.Paper as Paper
+    import rtk.hardware.component.capacitor.fixed.Plastic as Plastic
+    import rtk.hardware.component.capacitor.variable.Variable as Variable
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -68,9 +78,14 @@ class BoM(object):
     """
 
     dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
-                         4: Paper.Metallized(),
+                         3: Plastic.Film(), 4: Paper.Metallized(),
+                         5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
+                         7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
+                         10: Ceramic.General(), 11: Ceramic.Chip(),
                          12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
-                         14: Aluminum.Wet(), 15: Aluminum.Dry()}}
+                         14: Aluminum.Wet(), 15: Aluminum.Dry(),
+                         16: Variable.Ceramic(), 17: Variable.Piston(),
+                         18: Variable.AirTrimmer(), 19: Variable.Vacuum()}}
 
     def __init__(self):
         """
