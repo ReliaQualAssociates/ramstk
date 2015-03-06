@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+"""
+######################################################
+Hardware.Component.Inductor Package Transformer Module
+######################################################
+"""
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+# -*- coding: utf-8 -*-
+#
+#       rtk.hardware.component.inductor.Transformer.py is part of the RTK
+#       Project
+#
+# All rights reserved.
+
+import gettext
+import locale
+
+try:
+    import configuration as _conf
+    from hardware.component.inductor.Inductor import Model as Inductor
+except ImportError:                         # pragma: no cover
+    import rtk.configuration as _conf
+    from rtk.hardware.component.inductor.Inductor import Model as Inductor
+
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+except locale.Error:                        # pragma: no cover
+    locale.setlocale(locale.LC_ALL, '')
+
+_ = gettext.gettext
+
+
+def _error_handler(message):
+    """
+    Converts string errors to integer error codes.
+
+    :param str message: the message to convert to an error code.
+    :return: _err_code
+    :rtype: int
+    """
+
+    if 'argument must be a string or a number' in message[0]:   # Type error
+        _error_code = 10
+    elif 'invalid literal for int() with base 10' in message[0]:
+        _error_code = 10
+    elif 'index out of range' in message[0]:   # Index error
+        _error_code = 40
+    else:                                   # Unhandled error
+        _error_code = 1000                  # pragma: no cover
+
+    return _error_code
+
+
+class Transformer(Inductor):
+    """
+    The Transformer data model contains the attributes and methods of a
+    Transformer component.  The attributes of a Transformer are:
+
+    :cvar subcategory: default value: 62
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 11.1.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    _piE = [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
+            34.0, 610.0]
+    _piQ = [[1.5, 5.0], [3.0, 7.5], [8.0, 30.0], [12.0, 30.0]]
+    _lambdab_count = [[0.0071, 0.046, 0.097, 0.038, 0.13, 0.055, 0.073, 0.081,
+                       0.10, 0.22, 0.035, 0.11, 0.31, 4.7],
+                      [0.023, 0.16, 0.35, 0.13, 0.45, 0.21, 0.27, 0.35, 0.45,
+                       0.82, 0.011, 0.37, 1.2, 16.0],
+                      [0.0035, 0.023, 0.049, 0.019, 0.065, 0.027, 0.037, 0.041,
+                       0.052, 0.11, 0.0018, 0.053, 0.16, 2.3],
+                      [0.028, 0.18, 0.39, 0.15, 0.52, 0.22, 0.29, 0.33, 0.42,
+                       0.88, 0.015, 0.42, 1.2, 19.0]]
+    # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    subcategory = 62                        # Subcategory ID in the common DB.
+
+    def __init__(self):
+        """
+        Initialize a Transformer data model instance.
+        """
+
+        super(Transformer, self).__init__()
+
+        # Initialize public scalar attributes.
+        self.family = 0
+        self.power_loss = 0.0
+        self.case_area = 0.0
+        self.weight = 0.0
+        self.input_power = 0.0
+
+    def set_attributes(self, values):
+        """
+        Sets the Transformer data model attributes.
+
+        :param tuple values: tuple of values to assign to the instance
+                             attributes.
+        :return: (_code, _msg); the error code and error message.
+        :rtype: tuple
+        """
+
+        _code = 0
+        _msg = ''
+
+        (_code, _msg) = Inductor.set_attributes(self, values)
+
+        try:
+            self.power_loss = float(values[101])
+            self.case_area = float(values[102])
+            self.weight = float(values[103])
+            self.input_power = float(values[104])
+            self.family = int(values[119])
+            # TODO: Add field to rtk_stress to hold overstress reason.
+            self.reason = ''
+        except IndexError as _err:
+            _code = _error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+
+        return(_code, _msg)
+
+    def get_attributes(self):
+        """
+        Retrieves the current values of the Transformer data model
+        attributes.
+
+        :return: (family, power_loss, case_area, weight, input_power)
+        :rtype: tuple
+        """
+
+        _values = Inductor.get_attributes(self)
+
+        _values = _values + (self.family, self.power_loss, self.case_area,
+                             self.weight, self.input_power)
+
+        return _values
+
+    def calculate(self):
+        """
+        Calculates the hazard rate for the inductive Transformer data model.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        from math import exp
+
+        self.hazard_rate_model = {}
+
+        # Quality factor.
+        self.piQ = self._piQ[self.family - 1][self.quality - 1]
+        self.hazard_rate_model['piQ'] = self.piQ
+
+        if self.hazard_rate_type == 1:
+            self.hazard_rate_model['equation'] = 'lambdab * piQ'
+            self._lambdab_count = self._lambdab_count[self.family - 1]
+
+        elif self.hazard_rate_type == 2:
+            self.hazard_rate_model['equation'] = 'lambdab * piQ * piE'
+
+            # Hot spot temperature.
+            if self.power_loss > 0.0 and self.case_area > 0.0:
+                self.hot_spot_temperature = self.temperature_active + \
+                    1.1 * (125.0 * self.power_loss / self.case_area)
+            elif self.power_loss > 0.0 and self.weight > 0.0:
+                self.hot_spot_temperature = self.temperature_active + \
+                    1.1 * (11.5 * self.power_loss / self.weight**0.6766)
+            elif self.input_power > 0.0 and self.weight > 0.0:
+                self.hot_spot_temperature = self.temperature_active + \
+                    1.1 * (2.1 * self.input_power / self.weight**0.6766)
+
+            # Base hazard rate.
+            if self.insulation_class == 1:
+                _constant = [0.0018, 329.0, 15.6]
+            elif self.insulation_class == 2:
+                _constant = [0.002, 352.0, 14.0]
+            elif self.insulation_class == 3:
+                _constant = [0.0018, 364.0, 8.7]
+            elif self.insulation_class == 4:
+                _constant = [0.002, 400.0, 10.0]
+            elif (self.specification in [1, 2] and self.insulation_class == 5):
+                _constant = [0.00125, 398.0, 3.8]
+            elif (self.specification in [1, 2] and self.insulation_class == 6):
+                _constant = [0.00159, 477.0, 8.4]
+
+            self.base_hr = _constant[0] * \
+                           exp(((self.hot_spot_temperature + 273.0) /
+                                _constant[1])**_constant[2])
+
+            # Environmental correction factor.
+            self.piE = self._piE[self.environment_active - 1]
+
+        return Inductor.calculate(self)
