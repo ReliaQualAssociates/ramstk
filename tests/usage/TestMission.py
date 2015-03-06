@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import unittest
+from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys

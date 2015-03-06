@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.variable.Variable.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.variable.Variable.py is part of the
+#       RTK Project
 #
 # All rights reserved.
 
@@ -202,7 +203,7 @@ class Ceramic(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00224 * ((_stress / 0.17)**3 + 1) * \
                     exp(1.59 * ((self.temperature_active + 273) /
-                               self.reference_temperature)**10.1)
+                                self.reference_temperature)**10.1)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
@@ -280,7 +281,7 @@ class Piston(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00000073 * ((_stress / 0.33)**3 + 1) * \
                     exp(12.1 * ((self.temperature_active + 273) /
-                               self.reference_temperature))
+                                self.reference_temperature))
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True

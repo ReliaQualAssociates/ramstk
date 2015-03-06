@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.fixed.Mica.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.fixed.Mica.py is part of the RTK
+#       Project
 #
 # All rights reserved.
 
@@ -185,7 +186,7 @@ class Mica(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00000000086 * ((_stress / 0.4)**3 + 1) * \
                     exp(16.0 * ((self.temperature_active + 273) /
-                               self.reference_temperature))
+                                self.reference_temperature))
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True

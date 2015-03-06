@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.fixed.Paper.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.fixed.Paper.py is part of the RTK
+#       Project
 #
 # All rights reserved.
 

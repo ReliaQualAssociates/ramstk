@@ -33,6 +33,12 @@ try:
     import hardware.component.capacitor.fixed.Paper as Paper
     import hardware.component.capacitor.fixed.Plastic as Plastic
     import hardware.component.capacitor.variable.Variable as Variable
+    import hardware.component.connection.Multipin as Multipin
+    import hardware.component.connection.PCB as PCB
+    import hardware.component.connection.Socket as Socket
+    import hardware.component.connection.Solder as Solder
+    import hardware.component.inductor.Coil as Coil
+    import hardware.component.inductor.Transformer as Transformer
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -45,6 +51,12 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.capacitor.fixed.Paper as Paper
     import rtk.hardware.component.capacitor.fixed.Plastic as Plastic
     import rtk.hardware.component.capacitor.variable.Variable as Variable
+    import rtk.hardware.component.connection.Multipin as Multipin
+    import rtk.hardware.component.connection.PCB as PCB
+    import rtk.hardware.component.connection.Socket as Socket
+    import rtk.hardware.component.connection.Solder as Solder
+    import rtk.hardware.component.inductor.Coil as Coil
+    import rtk.hardware.component.inductor.Transformer as Transformer
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -85,7 +97,11 @@ class BoM(object):
                          12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
                          14: Aluminum.Wet(), 15: Aluminum.Dry(),
                          16: Variable.Ceramic(), 17: Variable.Piston(),
-                         18: Variable.AirTrimmer(), 19: Variable.Vacuum()}}
+                         18: Variable.AirTrimmer(), 19: Variable.Vacuum()},
+                     2: {1: Multipin.Multipin(), 2: PCB.PCB(),
+                         3: Socket.Socket(), 4: Solder.PTH(),
+                         5: Solder.NonPTH()},
+                     3: {1: Transformer.Transformer(), 2: Coil.Coil()}}
 
     def __init__(self):
         """

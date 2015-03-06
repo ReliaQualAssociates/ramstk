@@ -54,11 +54,11 @@ class TestCauseModel(unittest.TestCase):
         self.assertEqual(self.DUT.mechanism_id, 0)
         self.assertEqual(self.DUT.cause_id, 0)
         self.assertEqual(self.DUT.description, '')
-        self.assertEqual(self.DUT.rpn_occurrence, 10)
-        self.assertEqual(self.DUT.rpn_detection, 10)
+        self.assertEqual(self.DUT.rpn_occurrence, 9)
+        self.assertEqual(self.DUT.rpn_detection, 9)
         self.assertEqual(self.DUT.rpn, 1000)
-        self.assertEqual(self.DUT.rpn_occurrence_new, 10)
-        self.assertEqual(self.DUT.rpn_detection_new, 10)
+        self.assertEqual(self.DUT.rpn_occurrence_new, 9)
+        self.assertEqual(self.DUT.rpn_detection_new, 9)
         self.assertEqual(self.DUT.rpn_new, 1000)
 
     @attr(all=True, unit=True)
@@ -112,7 +112,7 @@ class TestCauseModel(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (0, 0, 0, '', 10, 10, 1000, 10, 10, 1000))
+                         (0, 0, 0, '', 9, 9, 1000, 9, 9, 1000))
 
     @attr(all=True, unit=True)
     def test_sanity(self):

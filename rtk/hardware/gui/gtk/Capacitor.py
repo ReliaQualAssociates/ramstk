@@ -18,8 +18,6 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 import sys
 
-import pango
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -34,10 +32,6 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Import modules for localization support.
 import gettext
@@ -46,11 +40,9 @@ import locale
 # Import other RTK modules.
 try:
     import configuration as _conf
-    import utilities as _util
     import widgets as _widg
 except ImportError:
     import rtk.configuration as _conf
-    import rtk.utilities as _util
     import rtk.widgets as _widg
 
 try:
@@ -219,8 +211,6 @@ class Inputs(gtk.Frame):
             self.cmbConfiguration = _widg.make_combo(simple=True)
 
             self._lst_labels.append(_(u"Configuration:"))
-
-
 
     def create_217_count_inputs(self, x_pos=5):
         """
@@ -598,8 +588,8 @@ class Results(gtk.Frame):
                                            bold=True)
 
         elif self._subcategory in [55, 56, 57]:
-                self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
-                self._lst_labels.pop(4)
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+            self._lst_labels.pop(4)
 
         elif self._subcategory == 58:
             self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>CF</sub></span>"

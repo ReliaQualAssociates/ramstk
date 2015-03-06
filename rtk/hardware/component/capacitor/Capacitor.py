@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.Capacitor.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.Capacitor.py is part of the RTK
+#       Project
 #
 # All rights reserved.
 
@@ -169,8 +170,6 @@ class Model(Component):
         :rtype: bool
         """
 
-        from math import exp, sqrt
-
         # Quality correction factor.
         try:
             self.piQ = self._piQ[self.quality - 1]
@@ -229,7 +228,6 @@ class Model(Component):
         :rtype: bool
         """
 
-        _reason = ""
         _reason_num = 1
         _harsh = True
 

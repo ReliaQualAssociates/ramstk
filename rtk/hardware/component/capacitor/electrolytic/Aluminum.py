@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.electrolytic.Aluminum.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.electrolytic.Aluminum.py is part of
+#       the RTK Project
 #
 # All rights reserved.
 
@@ -80,7 +81,7 @@ class Dry(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -156,7 +157,7 @@ class Wet(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 

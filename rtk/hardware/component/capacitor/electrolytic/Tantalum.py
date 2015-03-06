@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.electrolytic.Tantalum.py is part of the RTK Project
+#       rtk.hardware.component.capacitor.electrolytic.Tantalum.py is part of
+#       the RTK Project
 #
 # All rights reserved.
 
@@ -144,7 +145,7 @@ class Solid(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -159,7 +160,7 @@ class Solid(Capacitor):
             try:
                 self.base_hr = 0.00375 * ((_stress / 0.4)**3.0 + 1.0) * \
                                exp(2.6 * ((self.temperature_active + 273) /
-                               self.reference_temperature)**9.0)
+                                          self.reference_temperature)**9.0)
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
@@ -283,7 +284,7 @@ class NonSolid(Capacitor):
         :rtype: bool
         """
 
-        from math import exp, sqrt
+        from math import exp
 
         self.hazard_rate_model = {}
 
@@ -299,7 +300,7 @@ class NonSolid(Capacitor):
                 self.hazard_rate_model['lambdab'] = \
                     0.00165 * ((_stress / 0.4)**3 + 1) * \
                     exp(2.6 * ((self.temperature_active + 273) /
-                                self.reference_temperature)**9)
+                               self.reference_temperature)**9)
             except(OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True

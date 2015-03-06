@@ -68,6 +68,8 @@ except ImportError:
     from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA    # noqa
     from rtk.analyses.pof.gui.gtk.WorkBook import WorkView as PoF
 import gui.gtk.Capacitor
+import gui.gtk.Connection
+import gui.gtk.Inductor
 # from Assistants import AddHardware
 
 try:
@@ -1854,7 +1856,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Load the component-specific information.
         if self._hardware_model.part == 1:
-            self.cmbHRModel.set_active(int(self._hardware_model.hazard_rate_type))
+            self.cmbHRModel.set_active(int(
+                self._hardware_model.hazard_rate_type))
             self.txtKneeTemp.set_text(
                 str('{0:0.2f}'.format(self._hardware_model.knee_temperature)))
             self.txtThetaJC.set_text(
@@ -1951,6 +1954,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if self._hardware_model.category_id == 1:
             self._obj_inputs = gui.gtk.Capacitor.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 2:
+            self._obj_inputs = gui.gtk.Connection.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 3:
+            self._obj_inputs = gui.gtk.Inductor.Inputs(self._hardware_model)
 
         self._obj_inputs.create_217_stress_inputs(5)
         if self.vpnReliabilityInputs.get_child2() is not None:
@@ -1977,6 +1984,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if self._hardware_model.category_id == 1:
             self._obj_results = gui.gtk.Capacitor.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 2:
+            self._obj_results = gui.gtk.Connection.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 3:
+            self._obj_results = gui.gtk.Inductor.Results(self._hardware_model)
 
         self._obj_results.create_217_stress_results(x_pos=5)
         if self.vpnReliabilityResults.get_child2() is not None:
@@ -2185,8 +2196,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self._hardware_model = _hardware
 
                 # Load the new attributes.
-                self._load_assessment_inputs_page()
-                self._load_assessment_results_page()
+                if self._hardware_model.subcategory_id > 0:
+                    self._load_assessment_inputs_page()
+                    self._load_assessment_results_page()
+
         elif index == 9:                    # Manufacturer.
             self._hardware_model.manufacturer = combo.get_active()
         elif index == 22:                   # Active environment.
