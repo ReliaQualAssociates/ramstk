@@ -39,3 +39,4 @@ docs/Makefile
 /.coverage
 /The_Reliability_ToolKit_RTK_.egg-info/PKG-INFO
 /The_Reliability_ToolKit_RTK_.egg-info/pbr.json
+/tests/.coveragerc

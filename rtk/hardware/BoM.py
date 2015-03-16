@@ -39,6 +39,14 @@ try:
     import hardware.component.connection.Solder as Solder
     import hardware.component.inductor.Coil as Coil
     import hardware.component.inductor.Transformer as Transformer
+    import hardware.component.integrated_circuit.Linear as Linear
+    import hardware.component.integrated_circuit.Logic as Logic
+    import hardware.component.integrated_circuit.PALPLA as PALPLA
+    import hardware.component.integrated_circuit.Microprocessor as \
+        Microprocessor
+    import hardware.component.integrated_circuit.Memory as Memory
+    import hardware.component.integrated_circuit.GaAs as GaAs
+    import hardware.component.integrated_circuit.VLSI as VLSI
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -57,6 +65,14 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.connection.Solder as Solder
     import rtk.hardware.component.inductor.Coil as Coil
     import rtk.hardware.component.inductor.Transformer as Transformer
+    import rtk.hardware.component.integrated_circuit.Linear as Linear
+    import rtk.hardware.component.integrated_circuit.Logic as Logic
+    import rtk.hardware.component.integrated_circuit.PALPLA as PALPLA
+    import rtk.hardware.component.integrated_circuit.Microprocessor as \
+        Microprocessor
+    import rtk.hardware.component.integrated_circuit.Memory as Memory
+    import rtk.hardware.component.integrated_circuit.GaAs as GaAs
+    import rtk.hardware.component.integrated_circuit.VLSI as VLSI
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -101,7 +117,12 @@ class BoM(object):
                      2: {1: Multipin.Multipin(), 2: PCB.PCB(),
                          3: Socket.Socket(), 4: Solder.PTH(),
                          5: Solder.NonPTH()},
-                     3: {1: Transformer.Transformer(), 2: Coil.Coil()}}
+                     3: {1: Transformer.Transformer(), 2: Coil.Coil()},
+                     4: {1: Linear.Linear(), 2: Logic.Logic(),
+                         3: PALPLA.PALPLA(),
+                         4: Microprocessor.Microprocessor(),
+                         5: Memory.ROM(), 6: Memory.EEPROM(), 7: Memory.DRAM(),
+                         8: Memory.SRAM(), 9: GaAs.GaAs(), 10: VLSI.VLSI()}}
 
     def __init__(self):
         """

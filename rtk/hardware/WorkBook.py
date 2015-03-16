@@ -70,6 +70,7 @@ except ImportError:
 import gui.gtk.Capacitor
 import gui.gtk.Connection
 import gui.gtk.Inductor
+import gui.gtk.IntegratedCircuit
 # from Assistants import AddHardware
 
 try:
@@ -1394,6 +1395,37 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtCost.connect('focus-out-event',
                                  self._on_focus_out, 49))
+# TODO: Move these up and reassign indices.
+        self._lst_handler_id.append(
+            self.txtMinTemp.connect('focus-out-event', self._on_focus_out, 50))
+        self._lst_handler_id.append(
+            self.txtKneeTemp.connect('focus-out-event',
+                                     self._on_focus_out, 51))
+        self._lst_handler_id.append(
+            self.txtMaxTemp.connect('focus-out-event', self._on_focus_out, 52))
+        self._lst_handler_id.append(
+            self.txtRatedVoltage.connect('focus-out-event',
+                                         self._on_focus_out, 53))
+        self._lst_handler_id.append(
+            self.txtOpVoltage.connect('focus-out-event',
+                                      self._on_focus_out, 54))
+        self._lst_handler_id.append(
+            self.txtRatedCurrent.connect('focus-out-event',
+                                         self._on_focus_out, 55))
+        self._lst_handler_id.append(
+            self.txtOpCurrent.connect('focus-out-event',
+                                      self._on_focus_out, 56))
+        self._lst_handler_id.append(
+            self.txtRatedPower.connect('focus-out-event',
+                                       self._on_focus_out, 57))
+        self._lst_handler_id.append(self.txtOpPower.connect('focus-out-event',
+                                    self._on_focus_out, 58))
+        self._lst_handler_id.append(self.txtThetaJC.connect('focus-out-event',
+                                    self._on_focus_out, 59))
+        self._lst_handler_id.append(self.txtTempRise.connect('focus-out-event',
+                                    self._on_focus_out, 60))
+        self._lst_handler_id.append(self.txtCaseTemp.connect('focus-out-event',
+                                    self._on_focus_out, 61))
 
         _fixed3.show_all()
         _fixed4.show_all()
@@ -1958,6 +1990,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_inputs = gui.gtk.Connection.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 3:
             self._obj_inputs = gui.gtk.Inductor.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 4:
+            self._obj_inputs = gui.gtk.IntegratedCircuit.Inputs(self._hardware_model)
 
         self._obj_inputs.create_217_stress_inputs(5)
         if self.vpnReliabilityInputs.get_child2() is not None:
@@ -1988,6 +2022,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_results = gui.gtk.Connection.Results(self._hardware_model)
         elif self._hardware_model.category_id == 3:
             self._obj_results = gui.gtk.Inductor.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 4:
+            self._obj_results = gui.gtk.IntegratedCircuit.Results(self._hardware_model)
 
         self._obj_results.create_217_stress_results(x_pos=5)
         if self.vpnReliabilityResults.get_child2() is not None:
@@ -2302,6 +2338,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._hardware_model.failure_parameter_3 = float(entry.get_text())
         elif index == 49:
             self._hardware_model.cost = float(entry.get_text().strip('$'))
+        elif index == 50:
+            self._hardware_model.min_rated_temperature = float(entry.get_text())
+        elif index == 51:
+            self._hardware_model.knee_temperature = float(entry.get_text())
+        elif index == 52:
+            self._hardware_model.max_rated_temperature = float(entry.get_text())
+        elif index == 53:
+            self._hardware_model.rated_voltage = float(entry.get_text())
+        elif index == 54:
+            self._hardware_model.operating_voltage = float(entry.get_text())
+        elif index == 55:
+            self._hardware_model.rated_current = float(entry.get_text())
+        elif index == 56:
+            self._hardware_model.operating_current = float(entry.get_text())
+        elif index == 57:
+            self._hardware_model.rated_power = float(entry.get_text())
+        elif index == 58:
+            self._hardware_model.operating_power = float(entry.get_text())
+        elif index == 59:
+            self._hardware_model.thermal_resistance = float(entry.get_text())
+        elif index == 60:
+            self._hardware_model.temperature_rise = float(entry.get_text())
+        elif index == 61:
+            self._hardware_model.case_temperature = float(entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])
 
