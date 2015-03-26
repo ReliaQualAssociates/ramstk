@@ -214,10 +214,11 @@ class Model(Component):
 
         _reason_num = 1
         _harsh = True
-        if self.subcategory == 9:           # GaAs
-            _max_junction_temp = 135.0
-        else:
-            _max_junction_temp = 125.0
+        # TODO: Set max junction temperature based on device type.
+        #if self.subcategory == 9:           # GaAs
+        #    _max_junction_temp = 135.0
+        #else:
+        _max_junction_temp = 125.0
 
         self.overstress = False
         self.reason = ''

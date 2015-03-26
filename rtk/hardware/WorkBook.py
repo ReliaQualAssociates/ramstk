@@ -71,6 +71,11 @@ import gui.gtk.Capacitor
 import gui.gtk.Connection
 import gui.gtk.Inductor
 import gui.gtk.IntegratedCircuit
+import gui.gtk.Meter
+import gui.gtk.Crystal
+import gui.gtk.Filter
+import gui.gtk.Fuse
+import gui.gtk.Lamp
 # from Assistants import AddHardware
 
 try:
@@ -1780,9 +1785,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.lblSubcategory.show()
             self.chkRepairable.hide()
 
-            #self._component = _util.set_part_model(self.category_id,
-            #                                       self.subcategory_id)
-
         else:
             self.cmbCategory.hide()
             self.cmbSubcategory.hide()
@@ -1992,16 +1994,28 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_inputs = gui.gtk.Inductor.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 4:
             self._obj_inputs = gui.gtk.IntegratedCircuit.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 5:
+            self._obj_inputs = gui.gtk.Meter.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 6:
+            if self._hardware_model.subcategory_id == 1:
+                self._obj_inputs = gui.gtk.Crystal.Inputs(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 2:
+                self._obj_inputs = gui.gtk.Filter.Inputs(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 3:
+                self._obj_inputs = gui.gtk.Fuse.Inputs(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 4:
+                self._obj_inputs = gui.gtk.Lamp.Inputs(self._hardware_model)
 
-        self._obj_inputs.create_217_stress_inputs(5)
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
                 self.vpnReliabilityInputs.get_child2())
         self.vpnReliabilityInputs.pack2(self._obj_inputs, True, True)
 
         if self._hardware_model.hazard_rate_type == 1:
+            self._obj_inputs.create_217_count_inputs(5)
             self._obj_inputs.load_217_count_inputs(self._hardware_model)
         elif self._hardware_model.hazard_rate_type == 2:
+            self._obj_inputs.create_217_stress_inputs(5)
             self._obj_inputs.load_217_stress_inputs(self._hardware_model)
 
         self.vpnReliabilityInputs.show_all()
@@ -2024,13 +2038,27 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_results = gui.gtk.Inductor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 4:
             self._obj_results = gui.gtk.IntegratedCircuit.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 5:
+            self._obj_results = gui.gtk.Meter.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 6:
+            if self._hardware_model.subcategory_id == 1:
+                self._obj_results = gui.gtk.Crystal.Results(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 2:
+                self._obj_results = gui.gtk.Filter.Results(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 3:
+                self._obj_results = gui.gtk.Fuse.Results(self._hardware_model)
+            elif self._hardware_model.subcategory_id == 4:
+                self._obj_results = gui.gtk.Lamp.Results(self._hardware_model)
 
-        self._obj_results.create_217_stress_results(x_pos=5)
         if self.vpnReliabilityResults.get_child2() is not None:
             self.vpnReliabilityResults.remove(
                 self.vpnReliabilityResults.get_child2())
         self.vpnReliabilityResults.pack2(self._obj_results, True, True)
 
+        if self._hardware_model.hazard_rate_type == 1:
+            self._obj_results.create_217_count_results(x_pos=5)
+        elif self._hardware_model.hazard_rate_type == 2:
+            self._obj_results.create_217_stress_results(x_pos=5)
         self._obj_results.load_217_stress_results(self._hardware_model)
 
         self.vpnReliabilityResults.show_all()
@@ -2246,6 +2274,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._hardware_model.hazard_rate_method = combo.get_active()
         elif index == 31:                   # Hazard rate prediction model.
             self._hardware_model.hazard_rate_type = combo.get_active()
+            self._load_assessment_inputs_page()
+            self._load_assessment_results_page()
         elif index == 37:                   # Failure distribution.
             self._hardware_model.failure_dist = combo.get_active()
         elif index == 48:                   # Cost calculation method.

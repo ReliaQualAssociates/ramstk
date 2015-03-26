@@ -127,8 +127,9 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
                                                             commit=False)
 
         for i in range(_n_cats):
-            _conf.RTK_CATEGORIES[i] = [_cats[i][1], _cats[i][0]]
-            _conf.RTK_SUBCATEGORIES[i] = [x[1:] for x in _subcats if x[0] == i]
+            _conf.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
+            _conf.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
+                                              if x[0] == i + 1]
 
         _query = "SELECT fld_manufacturers_noun, fld_location, fld_cage_code \
                   FROM tbl_manufacturers \

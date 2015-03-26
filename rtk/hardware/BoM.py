@@ -47,6 +47,11 @@ try:
     import hardware.component.integrated_circuit.Memory as Memory
     import hardware.component.integrated_circuit.GaAs as GaAs
     import hardware.component.integrated_circuit.VLSI as VLSI
+    import hardware.component.meter.Meter as Meter
+    import hardware.component.miscellaneous.Crystal as Crystal
+    import hardware.component.miscellaneous.Filter as Filter
+    import hardware.component.miscellaneous.Fuse as Fuse
+    import hardware.component.miscellaneous.Lamp as Lamp
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -73,6 +78,11 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.integrated_circuit.Memory as Memory
     import rtk.hardware.component.integrated_circuit.GaAs as GaAs
     import rtk.hardware.component.integrated_circuit.VLSI as VLSI
+    import rtk.hardware.component.meter.Meter as Meter
+    import rtk.hardware.component.miscellaneous.Crystal as Crystal
+    import rtk.hardware.component.miscellaneous.Filter as Filter
+    import rtk.hardware.component.miscellaneous.Fuse as Fuse
+    import rtk.hardware.component.miscellaneous.Lamp as Lamp
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -122,7 +132,10 @@ class BoM(object):
                          3: PALPLA.PALPLA(),
                          4: Microprocessor.Microprocessor(),
                          5: Memory.ROM(), 6: Memory.EEPROM(), 7: Memory.DRAM(),
-                         8: Memory.SRAM(), 9: GaAs.GaAs(), 10: VLSI.VLSI()}}
+                         8: Memory.SRAM(), 9: GaAs.GaAs(), 10: VLSI.VLSI()},
+                     5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
+                     6: {1: Crystal.Crystal(), 2: Filter.Filter(),
+                         3: Fuse.Fuse(), 4: Lamp.Lamp()}}
 
     def __init__(self):
         """
