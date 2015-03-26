@@ -174,9 +174,9 @@ INSERT INTO "tbl_subcategory" VALUES(8,76,'Connection, Non-PTH');
 INSERT INTO "tbl_subcategory" VALUES(9,77,'Elapsed Time');
 INSERT INTO "tbl_subcategory" VALUES(9,78,'Panel');
 INSERT INTO "tbl_subcategory" VALUES(10,80,'Crystal');
-INSERT INTO "tbl_subcategory" VALUES(10,81,'Lamp');
+INSERT INTO "tbl_subcategory" VALUES(10,81,'Filter, Non-Tunable Electronic');
 INSERT INTO "tbl_subcategory" VALUES(10,82,'Fuse');
-INSERT INTO "tbl_subcategory" VALUES(10,83,'Filter, Non-Tunable Electronic');
+INSERT INTO "tbl_subcategory" VALUES(10,83,'Lamp');
 
 --
 -- Program cost estimation methods.
