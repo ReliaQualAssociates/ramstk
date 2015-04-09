@@ -76,6 +76,7 @@ import gui.gtk.Crystal
 import gui.gtk.Filter
 import gui.gtk.Fuse
 import gui.gtk.Lamp
+import gui.gtk.Relay
 # from Assistants import AddHardware
 
 try:
@@ -2005,6 +2006,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self._obj_inputs = gui.gtk.Fuse.Inputs(self._hardware_model)
             elif self._hardware_model.subcategory_id == 4:
                 self._obj_inputs = gui.gtk.Lamp.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 7:
+            self._obj_inputs = gui.gtk.Relay.Inputs(self._hardware_model)
 
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
@@ -2049,6 +2052,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self._obj_results = gui.gtk.Fuse.Results(self._hardware_model)
             elif self._hardware_model.subcategory_id == 4:
                 self._obj_results = gui.gtk.Lamp.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 7:
+            self._obj_results = gui.gtk.Relay.Results(self._hardware_model)
 
         if self.vpnReliabilityResults.get_child2() is not None:
             self.vpnReliabilityResults.remove(

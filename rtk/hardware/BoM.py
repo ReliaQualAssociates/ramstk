@@ -52,6 +52,8 @@ try:
     import hardware.component.miscellaneous.Filter as Filter
     import hardware.component.miscellaneous.Fuse as Fuse
     import hardware.component.miscellaneous.Lamp as Lamp
+    import hardware.component.relay.Mechanical as Mechanical
+    import hardware.component.relay.SolidState as SolidState
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -83,6 +85,8 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.miscellaneous.Filter as Filter
     import rtk.hardware.component.miscellaneous.Fuse as Fuse
     import rtk.hardware.component.miscellaneous.Lamp as Lamp
+    import rtk.hardware.component.relay.Mechanical as Mechanical
+    import rtk.hardware.component.relay.SolidState as SolidState
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -135,7 +139,9 @@ class BoM(object):
                          8: Memory.SRAM(), 9: GaAs.GaAs(), 10: VLSI.VLSI()},
                      5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
                      6: {1: Crystal.Crystal(), 2: Filter.Filter(),
-                         3: Fuse.Fuse(), 4: Lamp.Lamp()}}
+                         3: Fuse.Fuse(), 4: Lamp.Lamp()},
+                     7: {1: Mechanical.Mechanical(),
+                         2: SolidState.SolidState()}}
 
     def __init__(self):
         """
