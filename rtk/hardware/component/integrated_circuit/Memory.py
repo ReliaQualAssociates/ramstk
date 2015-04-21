@@ -64,8 +64,6 @@ class Memory(IntegratedCircuit):
     The Memory IC data model contains the attributes and methods of a
     Memory IC component.  The attributes of a Memory IC are:
 
-    :cvar subcategory: default value: 3
-
     :ivar base_hr: default value: 0.0
     :ivar reason: default value: ""
     :ivar piE: default value: 0.0
@@ -231,7 +229,9 @@ class Memory(IntegratedCircuit):
 class DRAM(Memory):
     """
     The DRAM data model contains the attributes and methods of a DRAM
-    component.
+    component.  The attributes of a DRAM IC are:
+
+    :cvar subcategory: default value: 7
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 5.2.
@@ -296,7 +296,9 @@ class DRAM(Memory):
 class EEPROM(Memory):
     """
     The EEPROM data model contains the attributes and methods of an EEPROM
-    component.
+    component.  The attributes of a EEPROM IC are:
+
+    :cvar subcategory: default value: 6
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 5.2.
@@ -421,6 +423,9 @@ class EEPROM(Memory):
 class ROM(Memory):
     """
     The ROM data model contains the attributes and methods of a ROM component.
+    The attributes of a ROM IC are:
+
+    :cvar subcategory: default value: 5
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 5.2.
@@ -493,7 +498,9 @@ class ROM(Memory):
 class SRAM(Memory):
     """
     The SRAM data model contains the attributes and methods of a SRAM
-    component.
+    component.  The attributes of a SRAM IC are:
+
+    :cvar subcategory: default value: 8
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 5.2.

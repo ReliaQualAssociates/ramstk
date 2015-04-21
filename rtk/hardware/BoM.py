@@ -54,6 +54,14 @@ try:
     import hardware.component.miscellaneous.Lamp as Lamp
     import hardware.component.relay.Mechanical as Mechanical
     import hardware.component.relay.SolidState as SolidState
+    import hardware.component.resistor.fixed.Composition as Composition
+    import hardware.component.resistor.fixed.Film as Film
+    import hardware.component.resistor.fixed.Wirewound as Wirewound
+    import hardware.component.resistor.variable.Composition as VarComposition
+    import hardware.component.resistor.variable.Film as VarFilm
+    import hardware.component.resistor.variable.NonWirewound as NonWirewound
+    import hardware.component.resistor.variable.Thermistor as Thermistor
+    import hardware.component.resistor.variable.Wirewound as VarWirewound
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -87,6 +95,16 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.miscellaneous.Lamp as Lamp
     import rtk.hardware.component.relay.Mechanical as Mechanical
     import rtk.hardware.component.relay.SolidState as SolidState
+    import rtk.hardware.component.resistor.fixed.Composition as Composition
+    import rtk.hardware.component.resistor.fixed.Film as Film
+    import rtk.hardware.component.resistor.fixed.Wirewound as Wirewound
+    import rtk.hardware.component.resistor.variable.Composition as \
+        VarComposition
+    import rtk.hardware.component.resistor.variable.Film as VarFilm
+    import rtk.hardware.component.resistor.variable.NonWirewound as \
+        NonWirewound
+    import rtk.hardware.component.resistor.variable.Thermistor as Thermistor
+    import rtk.hardware.component.resistor.variable.Wirewound as VarWirewound
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -141,7 +159,20 @@ class BoM(object):
                      6: {1: Crystal.Crystal(), 2: Filter.Filter(),
                          3: Fuse.Fuse(), 4: Lamp.Lamp()},
                      7: {1: Mechanical.Mechanical(),
-                         2: SolidState.SolidState()}}
+                         2: SolidState.SolidState()},
+                     8: {1: Composition.Composition(), 2: Film.Film(),
+                         3: Film.FilmPower(), 4: Film.FilmNetwork(),
+                         5: Wirewound.Wirewound(),
+                         6: Wirewound.WirewoundPower(),
+                         7: Wirewound.WirewoundChassisMount(),
+                         8: Thermistor.Thermistor(),
+                         9: VarWirewound.VarWirewound(),
+                         10: VarWirewound.PrecisionWirewound(),
+                         11: VarWirewound.SemiPrecisionWirewound(),
+                         12: VarWirewound.PowerWirewound(),
+                         13: NonWirewound.NonWirewound(),
+                         14: VarComposition.VarComposition(),
+                         15: VarFilm.VarFilm()}}
 
     def __init__(self):
         """
@@ -371,17 +402,17 @@ class BoM(object):
             if hardware_type == 0:
                 _hardware = Assembly()
             _hardware.set_attributes((revision_id, self._last_id, '', '', '',
-                                       '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
-                                       50.0, '', 1, 0, 10.0, '', '', 0, '',
-                                       parent_id, hardware_type, '', 1, '',
-                                       1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0,
-                                       2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-                                       1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-                                       0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0,
-                                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0,
-                                       1, 0, 0.0))
+                                      '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
+                                      50.0, '', 1, 0, 10.0, '', '', 0, '',
+                                      parent_id, hardware_type, '', 1, '',
+                                      1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0,
+                                      2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                                      1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                                      0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                      0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0,
+                                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                      0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0,
+                                      1, 0, 0.0))
             self.dicHardware[_hardware.hardware_id] = _hardware
 
         return(_hardware, _error_code)
@@ -442,40 +473,43 @@ class BoM(object):
                       fld_tagged_part={31:d}, fld_temperature_active={32:f}, \
                       fld_temperature_dormant={33:f}, fld_vibration={34:f}, \
                       fld_year_of_manufacture={35:d}".format(
-                      _hardware.alt_part_number, _hardware.attachments,
-                      _hardware.cage_code, _hardware.comp_ref_des,
-                      _hardware.cost, _hardware.cost_failure,
-                      _hardware.cost_hour, _hardware.description,
-                      _hardware.duty_cycle, _hardware.environment_active,
-                      _hardware.environment_dormant, _hardware.figure_number,
-                      _hardware.humidity, _hardware.lcn, _hardware.level,
-                      _hardware.manufacturer, _hardware.mission_time,
-                      _hardware.name, _hardware.nsn, _hardware.overstress,
-                      _hardware.page_number, _hardware.parent_id,
-                      _hardware.part, _hardware.part_number,
-                      _hardware.quantity, _hardware.ref_des,
-                      _hardware.reliability_goal,
-                      _hardware.reliability_goal_measure, _hardware.remarks,
-                      _hardware.rpm, _hardware.specification_number,
-                      _hardware.tagged_part, _hardware.temperature_active,
-                      _hardware.temperature_dormant, _hardware.vibration,
-                      _hardware.year_of_manufacture)
+                          _hardware.alt_part_number, _hardware.attachments,
+                          _hardware.cage_code, _hardware.comp_ref_des,
+                          _hardware.cost, _hardware.cost_failure,
+                          _hardware.cost_hour, _hardware.description,
+                          _hardware.duty_cycle, _hardware.environment_active,
+                          _hardware.environment_dormant,
+                          _hardware.figure_number, _hardware.humidity,
+                          _hardware.lcn, _hardware.level,
+                          _hardware.manufacturer, _hardware.mission_time,
+                          _hardware.name, _hardware.nsn, _hardware.overstress,
+                          _hardware.page_number, _hardware.parent_id,
+                          _hardware.part, _hardware.part_number,
+                          _hardware.quantity, _hardware.ref_des,
+                          _hardware.reliability_goal,
+                          _hardware.reliability_goal_measure,
+                          _hardware.remarks, _hardware.rpm,
+                          _hardware.specification_number,
+                          _hardware.tagged_part, _hardware.temperature_active,
+                          _hardware.temperature_dormant, _hardware.vibration,
+                          _hardware.year_of_manufacture)
 
         if _hardware.part == 0:
             _query = _query + ", fld_cost_type={0:d}, fld_repairable={1:d}, \
                                fld_total_part_quantity={2:d}, \
                                fld_total_power_dissipation={3:f}".format(
-                               _hardware.cost_type, _hardware.repairable,
-                               _hardware.total_part_quantity,
-                               _hardware.total_power_dissipation)
+                                   _hardware.cost_type, _hardware.repairable,
+                                   _hardware.total_part_quantity,
+                                   _hardware.total_power_dissipation)
         elif _hardware.part == 1:
             _query = _query + ", fld_category_id={0:d}, \
                                fld_subcategory_id={1:d}".format(
-                               _hardware.category_id, _hardware.subcategory_id)
+                                   _hardware.category_id,
+                                   _hardware.subcategory_id)
 
         _query = _query + " WHERE fld_revision_id={0:d} \
                             AND fld_hardware_id={1:d}".format(
-                           _hardware.revision_id, hardware_id)
+                                _hardware.revision_id, hardware_id)
 
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
