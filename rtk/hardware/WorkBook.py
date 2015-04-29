@@ -56,7 +56,7 @@ try:
     from analyses.allocation.gui.gtk.WorkBook import WorkView as Allocation
     from analyses.hazard.gui.gtk.WorkBook import WorkView as Hazard
     from analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
-    from analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA    # noqa
+    from analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from analyses.pof.gui.gtk.WorkBook import WorkView as PoF
 except ImportError:
     import rtk.configuration as _conf
@@ -64,8 +64,8 @@ except ImportError:
     import rtk.widgets as _widg
     from rtk.analyses.allocation.gui.gtk.WorkBook import WorkView as Allocation
     from rtk.analyses.hazard.gui.gtk.WorkBook import WorkView as Hazard
-    from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem  # noqa
-    from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA    # noqa
+    from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
+    from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from rtk.analyses.pof.gui.gtk.WorkBook import WorkView as PoF
 import gui.gtk.Capacitor
 import gui.gtk.Connection
@@ -78,6 +78,8 @@ import gui.gtk.Fuse
 import gui.gtk.Lamp
 import gui.gtk.Relay
 import gui.gtk.Resistor
+import gui.gtk.Semiconductor
+import gui.gtk.Switch
 # from Assistants import AddHardware
 
 try:
@@ -1973,6 +1975,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._create_component_results()
 
         else:
+            if self.vpnReliabilityInputs.get_child2() is not None:
+                self.vpnReliabilityInputs.remove(
+                    self.vpnReliabilityInputs.get_child2())
+
             self.txtPartCount.set_text(
                 str(fmt.format(self._hardware_model.total_part_quantity)))
             self.txtTotalPwr.set_text(
@@ -2011,6 +2017,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_inputs = gui.gtk.Relay.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 8:
             self._obj_inputs = gui.gtk.Resistor.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 9:
+            self._obj_inputs = gui.gtk.Semiconductor.Inputs(self._hardware_model)
+        elif self._hardware_model.category_id == 10:
+            self._obj_inputs = gui.gtk.Switch.Inputs(self._hardware_model)
 
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
@@ -2059,6 +2069,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_results = gui.gtk.Relay.Results(self._hardware_model)
         elif self._hardware_model.category_id == 8:
             self._obj_results = gui.gtk.Resistor.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 9:
+            self._obj_results = gui.gtk.Semiconductor.Results(self._hardware_model)
+        elif self._hardware_model.category_id == 10:
+            self._obj_results = gui.gtk.Switch.Results(self._hardware_model)
 
         if self.vpnReliabilityResults.get_child2() is not None:
             self.vpnReliabilityResults.remove(

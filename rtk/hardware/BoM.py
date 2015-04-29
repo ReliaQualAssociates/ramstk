@@ -62,6 +62,22 @@ try:
     import hardware.component.resistor.variable.NonWirewound as NonWirewound
     import hardware.component.resistor.variable.Thermistor as Thermistor
     import hardware.component.resistor.variable.Wirewound as VarWirewound
+    import hardware.component.semiconductor.Diode as Diode
+    import hardware.component.semiconductor.transistor.Bipolar as Bipolar
+    import hardware.component.semiconductor.transistor.FET as FET
+    import hardware.component.semiconductor.transistor.Unijunction as \
+        Unijunction
+    import hardware.component.semiconductor.Thyristor as Thyristor
+    import hardware.component.semiconductor.optoelectronic.Detector as \
+        Detector
+    import hardware.component.semiconductor.optoelectronic.Display as Display
+    import hardware.component.semiconductor.optoelectronic.LaserDiode as \
+        LaserDiode
+    import hardware.component.switch.Breaker as Breaker
+    import hardware.component.switch.Rotary as Rotary
+    import hardware.component.switch.Sensitive as Sensitive
+    import hardware.component.switch.Thumbwheel as Thumbwheel
+    import hardware.component.switch.Toggle as Toggle
 except ImportError:                         # pragma: no cover
     import rtk.configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
@@ -105,6 +121,23 @@ except ImportError:                         # pragma: no cover
         NonWirewound
     import rtk.hardware.component.resistor.variable.Thermistor as Thermistor
     import rtk.hardware.component.resistor.variable.Wirewound as VarWirewound
+    import rtk.hardware.component.semiconductor.Diode as Diode
+    import rtk.hardware.component.semiconductor.transistor.Bipolar as Bipolar
+    import rtk.hardware.component.semiconductor.transistor.FET as FET
+    import rtk.hardware.component.semiconductor.transistor.Unijunction as \
+        Unijunction
+    import rtk.hardware.component.semiconductor.Thyristor as Thyristor
+    import rtk.hardware.component.semiconductor.optoelectronic.Detector as \
+        Detector
+    import rtk.hardware.component.semiconductor.optoelectronic.Display as \
+        Display
+    import rtk.hardware.component.semiconductor.optoelectronic.LaserDiode as \
+        LaserDiode
+    import rtk.hardware.component.switch.Breaker as Breaker
+    import rtk.hardware.component.switch.Rotary as Rotary
+    import rtk.hardware.component.switch.Sensitive as Sensitive
+    import rtk.hardware.component.switch.Thumbwheel as Thumbwheel
+    import rtk.hardware.component.switch.Toggle as Toggle
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -172,7 +205,17 @@ class BoM(object):
                          12: VarWirewound.PowerWirewound(),
                          13: NonWirewound.NonWirewound(),
                          14: VarComposition.VarComposition(),
-                         15: VarFilm.VarFilm()}}
+                         15: VarFilm.VarFilm()},
+                     9: {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
+                         3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
+                         5: Unijunction.Unijunction(),
+                         6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
+                         8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
+                         10: Thyristor.Thyristor(), 11: Detector.Detector(),
+                         12: Display.Display(), 13: LaserDiode.LaserDiode()},
+                    10: {1: Toggle.Toggle(), 2:Sensitive.Sensitive(),
+                         3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
+                         5: Breaker.Breaker()}}
 
     def __init__(self):
         """
