@@ -33,6 +33,12 @@ try:
 except ImportError:
     sys.exit(1)
 
+# Modules required for plotting.
+import matplotlib
+matplotlib.use('GTK')
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+
 # Import modules for localization support.
 import gettext
 import locale
@@ -1061,6 +1067,11 @@ class Results(gtk.Frame):
         self.txtPiQ = _widg.make_entry(width=100, editable=False, bold=True)
         self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
 
+        self.figDerate = Figure(figsize=(6, 4))
+        self.axsDerate1 = self.figDerate.add_subplot(111)
+        self.axsDerate2 = self.axsDerate1.twinx()
+        self.pltDerate = FigureCanvas(self.figDerate)
+
         if self._subcategory == 12:         # Low frequency diode
             self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>S</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
             self._lst_labels.append(u"\u03C0<sub>S</sub>:")
@@ -1333,5 +1344,124 @@ class Results(gtk.Frame):
             self.txtPiI.set_text(str(fmt.format(model.piI)))
             self.txtPiA.set_text(str(fmt.format(model.piA)))
             self.txtPiP.set_text(str(fmt.format(model.piP)))
+
+        return False
+
+    def load_derate_plot(self, model, frame):
+        """
+        Loads the stress derate plot for the Semiconductor class.
+
+        :param model: the Hardware data model to load the attributes from.
+        :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Clear the operating point and derating curve for the component.
+        self.axsDerate1.cla()
+        self.axsDerate2.cla()
+
+        # Plot the derating curve and operating point.
+        _x = [float(model.min_rated_temperature),
+              float(model.knee_temperature),
+              float(model.max_rated_temperature)]
+
+        _line0 = self.axsDerate1.plot(_x, model.lst_derate_criteria[0], 'r.-',
+                                      linewidth=2)
+        _line1 = self.axsDerate1.plot(_x, model.lst_derate_criteria[1], 'b.-',
+                                      linewidth=2)
+
+        if model.subcategory in [12, 13]:
+            _line2 = self.axsDerate1.plot(model.temperature_active,
+                                          model.power_ratio, 'go')
+            _lines = _line0 + _line1 + _line2
+
+            self.axsDerate1.set_title(
+                _(u"Power Derating Curve for %s at %s") %
+                (model.part_number, model.ref_des),
+                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                          'verticalalignment': 'baseline'})
+            _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                             _(u"Power Operating Point")])
+            self.axsDerate1.set_ylabel(r'$\mathbf{P_{op} / P_{rated}}$',
+                                       fontdict={'fontsize': 12,
+                                                 'fontweight' : 'bold',
+                                                 'rotation': 'vertical',
+                                                 'verticalalignment': 'baseline'})
+        elif model.subcategory in [14, 15, 16, 17, 18, 19, 20]:
+            _line2 = self.axsDerate1.plot(model.temperature_active,
+                                          model.power_ratio, 'go')
+            _line3 = self.axsDerate2.plot(model.temperature_active,
+                                          model.voltage_ratio, 'ms')
+            _lines = _line0 + _line1 + _line2 + _line3
+
+            self.axsDerate1.set_title(
+                _(u"Power and Voltage Derating Curve for %s at %s") %
+                (model.part_number, model.ref_des),
+                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                          'verticalalignment': 'baseline'})
+            _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                             _(u"Power Operating Point"),
+                             _(u"Voltage Operating Point")])
+        elif model.subcategory == 21:
+            _line2 = self.axsDerate2.plot(model.temperature_active,
+                                          model.voltage_ratio, 'go')
+            _line3 = self.axsDerate2.plot(model.temperature_active,
+                                          model.current_ratio, 'ms')
+            _lines = _line0 + _line1 + _line2 + _line3
+
+            self.axsDerate1.set_title(
+                _(u"Voltage and Current Derating Curve for %s at %s") %
+                (model.part_number, model.ref_des),
+                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                          'verticalalignment': 'baseline'})
+            _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                             _(u"Voltage Operating Point"),
+                             _(u"Current Operating Point")])
+
+        elif model.subcategory in [22, 23, 24]:
+            _line2 = self.axsDerate1.plot(model.temperature_active,
+                                          model.voltage_ratio, 'go')
+            _lines = _line0 + _line1 + _line2
+
+            self.axsDerate1.set_title(
+                _(u"Voltage Derating Curve for %s at %s") %
+                (model.part_number, model.ref_des),
+                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                          'verticalalignment': 'baseline'})
+            _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                             _(u"Voltage Operating Point")])
+            self.axsDerate1.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
+                                       fontdict={'fontsize': 12,
+                                                 'fontweight' : 'bold',
+                                                 'rotation': 'vertical',
+                                                 'verticalalignment': 'baseline'})
+
+        if(_x[0] != _x[2] and
+           model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
+            self.axsDerate1.axis([0.95 * _x[0], 1.05 * _x[2],
+                                  model.lst_derate_criteria[1][2],
+                                  1.05 * model.lst_derate_criteria[1][0]])
+            self.axsDerate2.axis([0.95 * _x[0], 1.05 * _x[2],
+                                  model.lst_derate_criteria[1][2],
+                                  1.05 * model.lst_derate_criteria[1][0]])
+        else:
+            self.axsDerate1.axis([0.95, 1.05, 0.0, 1.05])
+            self.axsDerate2.axis([0.95, 1.05, 0.0, 1.05])
+
+        _leg = self.axsDerate1.legend(_lines, _legend, 'upper right',
+                                      shadow=True)
+        for _text in _leg.get_texts():
+            _text.set_fontsize('small')
+
+        # Set the proper labels on the derating curve.
+        self.axsDerate1.set_xlabel(_(u"Temperature (\u2070C)"),
+                                   fontdict={'fontsize': 12,
+                                             'fontweight' : 'bold'})
+
+        self.figDerate.tight_layout()
+
+        frame.add(self.pltDerate)
+        frame.show_all()
 
         return False

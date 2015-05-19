@@ -67,6 +67,8 @@ class Model(Component):
     The Capacitor data model contains the attributes and methods of a capacitor
     component.  The attributes of a Capacitor are:
 
+    :cvar lst_derate_criteria: default value: [[0.75, 0.75, 0.0],
+                                               [0.9, 0.9, 0.0]]
     :cvar category: default value: 4
 
     :ivar quality: default value: 0
@@ -84,6 +86,9 @@ class Model(Component):
     Hazard Rate Models:
         # MIL-HDBK-217F, section 10.
     """
+
+    # Initialize class attributes.
+    lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
     category = 4
 
@@ -196,18 +201,11 @@ class Model(Component):
 
         # Calculate component active hazard rate.
         self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
-        self.hazard_rate_active = self.hazard_rate_active * \
-                                  self.quantity / 1000000.0
-
-        # Calculate the component dormant hazard rate.
-        self.hazard_rate_dormant = _calc.dormant_hazard_rate(
-            self.category_id, self.subcategory_id, self.environment_active,
-            self.environment_dormant, self.hazard_rate_active)
-
-        # Calculate the component predicted hazard rate.
-        self.hazard_rate_logistics = self.hazard_rate_active + \
-                                     self.hazard_rate_dormant + \
-                                     self.hazard_rate_software
+        self.hazard_rate_active = (self.hazard_rate_active + \
+                                   self.add_adj_factor) * \
+                                  (self.duty_cycle / 100.0) * \
+                                  self.mult_adj_factor * self.quantity
+        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
 
         # Calculate overstresses.
         self._overstressed()
@@ -216,6 +214,7 @@ class Model(Component):
         self.current_ratio = self.operating_current / self.rated_current
         self.voltage_ratio = (self.operating_voltage + self.acvapplied) / \
                              self.rated_voltage
+        self.power_ratio = self.operating_power / self.rated_power
 
         return False
 

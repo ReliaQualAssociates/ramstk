@@ -33,6 +33,12 @@ try:
 except ImportError:
     sys.exit(1)
 
+# Modules required for plotting.
+import matplotlib
+matplotlib.use('GTK')
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+
 # Import modules for localization support.
 import gettext
 import locale
@@ -600,6 +606,10 @@ class Results(gtk.Frame):
                                            bold=True)
         self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
 
+        self.figDerate = Figure(figsize=(6, 4))
+        self.axsDerate = self.figDerate.add_subplot(111)
+        self.pltDerate = FigureCanvas(self.figDerate)
+
         if self._subcategory == 67:         # Toggle
             self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>C</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>"
             self._lst_labels.append(u"\u03C0<sub>CYC</sub>:")
@@ -773,5 +783,67 @@ class Results(gtk.Frame):
             self.txtPiC.set_text(str(fmt.format(model.piC)))
             self.txtPiU.set_text(str(fmt.format(model.piU)))
             self.txtPiQ.set_text(str(fmt.format(model.piQ)))
+
+        return False
+
+    def load_derate_plot(self, model, frame):
+        """
+        Loads the stress derate plot for the Switch class.
+
+        :param model: the Hardware data model to load the attributes from.
+        :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Clear the operating point and derating curve for the component.  We
+        # do this here so the component-specific GUI will set the proper x and
+        # y-axis labels.
+        self.axsDerate.cla()
+
+        # Plot the derating curve and operating point.
+        _x = [float(model.min_rated_temperature),
+              float(model.knee_temperature),
+              float(model.max_rated_temperature)]
+
+        self.axsDerate.plot(_x, model.lst_derate_criteria[0], 'r.-',
+                            linewidth=2)
+        self.axsDerate.plot(_x, model.lst_derate_criteria[1], 'b.-',
+                            linewidth=2)
+        self.axsDerate.plot(model.temperature_active,
+                            model.current_ratio, 'go')
+        if(_x[0] != _x[2] and
+           model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
+            self.axsDerate.axis([0.95 * _x[0], 1.05 * _x[2],
+                                 model.lst_derate_criteria[1][2],
+                                 1.05 * model.lst_derate_criteria[1][0]])
+        else:
+            self.axsDerate.cla().axis([0.95, 1.05, 0.0, 1.05])
+
+        self.axsDerate.set_title(_(u"Current Derating Curve for %s at %s") %
+                                 (model.part_number, model.ref_des),
+                                 fontdict={'fontsize': 12,
+                                           'fontweight' : 'bold',
+                                           'verticalalignment': 'baseline'})
+        _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                         _(u"Current Operating Point")])
+        _leg = self.axsDerate.legend(_legend, 'upper right', shadow=True)
+        for _text in _leg.get_texts():
+            _text.set_fontsize('small')
+
+        # Set the proper labels on the derating curve.
+        self.axsDerate.set_xlabel(_(u"Temperature (\u2070C)"),
+                                  fontdict={'fontsize': 12,
+                                            'fontweight' : 'bold'})
+        self.axsDerate.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
+                                  fontdict={'fontsize': 12,
+                                            'fontweight' : 'bold',
+                                            'rotation': 'vertical',
+                                            'verticalalignment': 'baseline'})
+
+        self.figDerate.tight_layout()
+
+        frame.add(self.pltDerate)
+        frame.show_all()
 
         return False

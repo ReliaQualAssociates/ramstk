@@ -87,6 +87,9 @@ class Model(Component):
 
         super(Model, self).__init__()
 
+        # Initialize public list attributes.
+        self.lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
+
         # Initialize public scalar attributes.
         self.quality = 0                    # Quality level.
         self.construction = 0               # Relay construction.
@@ -154,26 +157,62 @@ class Model(Component):
 
         # Calculate component active hazard rate.
         self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
-        self.hazard_rate_active = self.hazard_rate_active * \
-            self.quantity / 1000000.0
+        self.hazard_rate_active = (self.hazard_rate_active + \
+                                   self.add_adj_factor) * \
+                                  (self.duty_cycle / 100.0) * \
+                                  self.mult_adj_factor * self.quantity
+        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
 
-        # Calculate the component dormant hazard rate.
-        self.hazard_rate_dormant = _calc.dormant_hazard_rate(
-            self.category_id, self.subcategory_id, self.environment_active,
-            self.environment_dormant, self.hazard_rate_active)
-
-        # Calculate the component logistics hazard rate.
-        self.hazard_rate_logistics = self.hazard_rate_active + \
-            self.hazard_rate_dormant + self.hazard_rate_software
-
-        # Calculate the component logistics MTBF.
-        try:
-            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
-        except ZeroDivisionError:           # pragma: no cover
-            self.mtbf_logistics = 0.0
+        # Calculate overstresses.
+        self._overstressed()
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current
         self.voltage_ratio = self.operating_voltage / self.rated_voltage
+        self.power_ratio = self.operating_power / self.rated_power
+
+        return False
+
+    def _overstressed(self):
+        """
+        Determines whether the Relay is overstressed based on it's rated values
+        and operating environment.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _reason_num = 1
+        _harsh = True
+
+        self.overstress = False
+
+        # If the active environment is Benign Ground, Fixed Ground,
+        # Sheltered Naval, or Space Flight it is NOT harsh.
+        if self.environment_active in [1, 2, 4, 11]:
+            _harsh = False
+#TODO: Update this after unpacking the book at the new house.
+        if harsh:
+            if self.operating_current > 0.75 * self.rated_current:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating current > 75% rated current.\n"
+                _reason_num += 1
+            #elif Aidx == 3 and Ioper > 0.40 * Irated:
+            #    self.overstress = True
+            #    self.reason = self.reason + str(_reason_num) + \
+            #                  ". Operating current > 40% rated current.\n"
+            #    _reason_num += 1
+        else:
+            if self.operating_current > 0.90 * self.rated_current:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating current > 90% rated current.\n"
+                _reason_num += 1
+            #elif Aidx == 3 and Ioper > 0.50 * Irated:
+            #    self.overstress = True
+            #    self.reason = self.reason + str(_reason_num) + \
+            #                  ". Operating current > 50% rated current.\n"
+            #    _reason_num += 1
 
         return False

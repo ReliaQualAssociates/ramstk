@@ -207,26 +207,15 @@ class Lamp(Component):
 
         # Calculate component active hazard rate.
         self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
-        self.hazard_rate_active = self.hazard_rate_active * \
-            self.quantity / 1000000.0
-
-        # Calculate the component dormant hazard rate.
-        self.hazard_rate_dormant = _calc.dormant_hazard_rate(
-            self.category_id, self.subcategory_id, self.environment_active,
-            self.environment_dormant, self.hazard_rate_active)
-
-        # Calculate the component logistics hazard rate.
-        self.hazard_rate_logistics = self.hazard_rate_active + \
-            self.hazard_rate_dormant + self.hazard_rate_software
-
-        # Calculate the component logistics MTBF.
-        try:
-            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
-        except ZeroDivisionError:           # pragma: no cover
-            self.mtbf_logistics = 0.0
+        self.hazard_rate_active = (self.hazard_rate_active + \
+                                   self.add_adj_factor) * \
+                                  (self.duty_cycle / 100.0) * \
+                                  self.mult_adj_factor * self.quantity
+        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current
         self.voltage_ratio = self.operating_voltage / self.rated_voltage
+        self.power_ratio = self.operating_power / self.rated_power
 
         return False

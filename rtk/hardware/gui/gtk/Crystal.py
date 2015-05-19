@@ -74,7 +74,7 @@ class Inputs(gtk.Frame):
 
         # ===== ===== === Initialize private list attributes === ===== ===== #
         self._lst_labels = [_(u"Quality:"), _(u"\u03C0<sub>Q</sub> Override:"),
-                           _(u"Frequency:")]
+                            _(u"Frequency:")]
 
         self._lst_handler_id = []
 
@@ -344,5 +344,19 @@ class Results(gtk.Frame):
         self.txtLambdaB.set_text(str(fmt.format(model.base_hr)))
         self.txtPiQ.set_text(str(fmt.format(model.piQ)))
         self.txtPiE.set_text(str(fmt.format(model.piE)))
+
+        return False
+
+    def load_derate_plot(self, model, frame):
+        """
+        Loads the stress derate plot for the Crystal class.
+
+        :param model: the Hardware data model to load the attributes from.
+        :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        frame.hide()
 
         return False

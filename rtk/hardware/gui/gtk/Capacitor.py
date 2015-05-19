@@ -33,6 +33,12 @@ try:
 except ImportError:
     sys.exit(1)
 
+# Modules required for plotting.
+import matplotlib
+matplotlib.use('GTK')
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.figure import Figure
+
 # Import modules for localization support.
 import gettext
 import locale
@@ -60,7 +66,8 @@ class Inputs(gtk.Frame):
     """
 
     dicQuality = {40: ["", "MIL-SPEC", _(u"Lower")],
-                  41: ["", "M", "Non-Est. Rel.", _(u"Lower")],
+                  41: ["", "M", _(u"Non-Established Reliability"),
+                       _(u"Lower")],
                   42: ["", "S", "R", "P", "M", "L",
                        _(u"MIL-C-19978, Non-Established Reliability"),
                        _(u"Lower")],
@@ -428,10 +435,10 @@ class Inputs(gtk.Frame):
         self.txtCapacitance.set_text(str('{0:0.8G}'.format(model.capacitance)))
 
         # Load subcategory specific widgets.
-        if self._subcategory in [40, 42, 43, 46, 47, 48, 49, 50, 52]:
+        if self._subcategory in [40, 41, 42, 43, 46, 47, 48, 49, 50, 52]:
             self.cmbSpecification.set_active(int(model.specification))
-        if self._subcategory in [40, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53,
-                                 55, 56, 57, 58]:
+        if self._subcategory in [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52,
+                                 53, 55, 56, 57, 58]:
             self.cmbSpecSheet.set_active(int(model.spec_sheet))
         if self._subcategory == 51:
             self.txtEffResistance.set_text(
@@ -568,6 +575,10 @@ class Results(gtk.Frame):
         self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
         self.txtPiCV = _widg.make_entry(width=100, editable=False, bold=True)
 
+        self.figDerate = Figure(figsize=(6, 4))
+        self.axsDerate = self.figDerate.add_subplot(111)
+        self.pltDerate = FigureCanvas(self.figDerate)
+
         # Subcategory specific attributes.
         if self._subcategory in [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
                                  53, 54]:
@@ -689,5 +700,67 @@ class Results(gtk.Frame):
             self.txtPiC.set_text(str(fmt.format(model.piC)))
         elif self._subcategory == 58:
             self.txtPiCF.set_text(str(fmt.format(model.piCF)))
+
+        return False
+
+    def load_derate_plot(self, model, frame):
+        """
+        Loads the stress derate plot for the Capacitor class.
+
+        :param model: the Hardware data model to load the attributes from.
+        :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Clear the operating point and derating curve for the component.  We
+        # do this here so the component-specific GUI will set the proper x and
+        # y-axis labels.
+        self.axsDerate.cla()
+
+        # Plot the derating curve and operating point.
+        _x = [float(model.min_rated_temperature),
+              float(model.knee_temperature),
+              float(model.max_rated_temperature)]
+
+        self.axsDerate.plot(_x, model.lst_derate_criteria[0], 'r.-',
+                            linewidth=2)
+        self.axsDerate.plot(_x, model.lst_derate_criteria[1], 'b.-',
+                            linewidth=2)
+        self.axsDerate.plot(model.temperature_active,
+                            model.voltage_ratio, 'go')
+        if(_x[0] != _x[2] and
+           model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
+            self.axsDerate.axis([0.95 * _x[0], 1.05 * _x[2],
+                                 model.lst_derate_criteria[1][2],
+                                 1.05 * model.lst_derate_criteria[1][0]])
+        else:
+            self.axsDerate.cla().axis([0.95, 1.05, 0.0, 1.05])
+
+        self.axsDerate.set_title(_(u"Voltage Derating Curve for %s at %s") %
+                                 (model.part_number, model.ref_des),
+                                 fontdict={'fontsize': 12,
+                                           'fontweight' : 'bold',
+                                           'verticalalignment': 'baseline'})
+        _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
+                         _(u"Voltage Operating Point")])
+        _leg = self.axsDerate.legend(_legend, 'upper right', shadow=True)
+        for _text in _leg.get_texts():
+            _text.set_fontsize('small')
+
+        # Set the proper labels on the derating curve.
+        self.axsDerate.set_xlabel(_(u"Temperature (\u2070C)"),
+                                  fontdict={'fontsize': 12,
+                                            'fontweight' : 'bold'})
+        self.axsDerate.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
+                                  fontdict={'fontsize': 12,
+                                            'fontweight' : 'bold',
+                                            'rotation': 'vertical',
+                                            'verticalalignment': 'baseline'})
+
+        self.figDerate.tight_layout()
+
+        frame.add(self.pltDerate)
+        frame.show_all()
 
         return False

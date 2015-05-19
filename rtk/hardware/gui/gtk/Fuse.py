@@ -238,3 +238,17 @@ class Results(gtk.Frame):
         self.txtPiE.set_text(str(fmt.format(model.piE)))
 
         return False
+
+    def load_derate_plot(self, model, frame):
+        """
+        Loads the stress derate plot for the Fuse class.
+
+        :param model: the Hardware data model to load the attributes from.
+        :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        frame.hide()
+
+        return False
