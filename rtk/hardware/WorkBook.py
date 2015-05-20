@@ -38,12 +38,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Modules required for plotting.
-import matplotlib
-matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-
 # Import modules for localization support.
 import gettext
 import locale
@@ -325,11 +319,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Assessment Results page widgets.
         self.chkOverstressed = _widg.make_check_button()
 
-        self.figDerate = Figure(figsize=(6, 4))
-
         self.fraDerate = gtk.Frame()
-
-        self.pltDerate = FigureCanvas(self.figDerate)
 
         self.txtActiveHt = _widg.make_entry(width=100, editable=False,
                                             bold=True)
@@ -1428,13 +1418,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtRatedPower.connect('focus-out-event',
                                        self._on_focus_out, 57))
         self._lst_handler_id.append(self.txtOpPower.connect('focus-out-event',
-                                    self._on_focus_out, 58))
+                                                            self._on_focus_out,
+                                                            58))
         self._lst_handler_id.append(self.txtThetaJC.connect('focus-out-event',
-                                    self._on_focus_out, 59))
+                                                            self._on_focus_out,
+                                                            59))
         self._lst_handler_id.append(self.txtTempRise.connect('focus-out-event',
-                                    self._on_focus_out, 60))
+                                                             self._on_focus_out,
+                                                             60))
         self._lst_handler_id.append(self.txtCaseTemp.connect('focus-out-event',
-                                    self._on_focus_out, 61))
+                                                             self._on_focus_out,
+                                                             61))
 
         _fixed3.show_all()
         _fixed4.show_all()
@@ -1465,7 +1459,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.fraDerate.props.height_request = 350
         self.fraDerate.props.width_request = 450
-        self.fraDerate = self.figDerate.add_subplot(111)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
@@ -1551,8 +1544,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         (_x_pos,
          _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
         _x_pos += 50
-        #self._component_x[1] = _x_pos
-        #self._component_y[1] = _y_pos3[3] + 170
 
         # Place the quadrant 1 widgets.
         self.txtTotalPwr.set_tooltip_text(_(u"The total power of the selected "
@@ -1587,8 +1578,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                      u"item is overstressed."))
         _fixed1.put(_textview, 4, _y_pos[3] + 60)
 
-        #self.fraDerate.add(self.pltDerate)
-        #_fixed1.put(self.fraDerate, _x_pos + 125, 5)
+        _fixed1.put(self.fraDerate, 5, _y_pos[3] + 175)
 
         # Create the labels for quadrant 2.
         _labels = [_(u"Active h(t):"), _(u"Dormant h(t):"),
@@ -1731,8 +1721,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         self._hardware_model = model
 
@@ -1906,6 +1894,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._create_component_inputs()
 
         else:
+            if self.vpnReliabilityInputs.get_child2() is not None:
+                self.vpnReliabilityInputs.remove(
+                    self.vpnReliabilityInputs.get_child2())
+
             self.cmbCostMethod.set_active(int(self._hardware_model.cost_type))
 
         return False
@@ -1975,9 +1967,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._create_component_results()
 
         else:
-            if self.vpnReliabilityInputs.get_child2() is not None:
-                self.vpnReliabilityInputs.remove(
-                    self.vpnReliabilityInputs.get_child2())
+            if self.vpnReliabilityResults.get_child2() is not None:
+                self.vpnReliabilityResults.remove(
+                    self.vpnReliabilityResults.get_child2())
+
+            self.fraDerate.hide()
 
             self.txtPartCount.set_text(
                 str(fmt.format(self._hardware_model.total_part_quantity)))
@@ -2079,19 +2073,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self.vpnReliabilityResults.get_child2())
         self.vpnReliabilityResults.pack2(self._obj_results, True, True)
 
+        if self.fraDerate.get_child() is not None:
+            self.fraDerate.remove(self.fraDerate.get_child())
+
         if self._hardware_model.hazard_rate_type == 1:
             self._obj_results.create_217_count_results(x_pos=5)
         elif self._hardware_model.hazard_rate_type == 2:
             self._obj_results.create_217_stress_results(x_pos=5)
         self._obj_results.load_217_stress_results(self._hardware_model)
+        self._obj_results.load_derate_plot(self._hardware_model,
+                                           self.fraDerate)
 
         self.vpnReliabilityResults.show_all()
 
         return False
-
-    def update(self):
-
-        pass
 
     def _on_button_clicked(self, __button, index):
         """
@@ -2135,9 +2130,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.dtcBoM.save_hardware_item(self._hardware_model.hardware_id)
 
         elif index == 50:
-            self._hardware_model.calculate()
+            self.dtcBoM.request_calculate()
 
             self._load_assessment_results_page()
+
+            self._modulebook.update_all()
 
         return False
 
@@ -2317,7 +2314,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                       method.
-        :param int index: the index in the handler ID list oc the callback
+        :param int index: the index in the handler ID list of the callback
                           signal associated with the gtk.Entry() that
                           called this method.
         :return: False if successful or True is an error is encountered.
@@ -2328,92 +2325,135 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if index == 0:
             self._hardware_model.name = entry.get_text()
+            self._modulebook.update(19, entry.get_text())
         elif index == 1:
             self._hardware_model.part_number = entry.get_text()
+            self._modulebook.update(25, entry.get_text())
         elif index == 2:
             self._hardware_model.alt_part_number = entry.get_text()
+            self._modulebook.update(2, entry.get_text())
         elif index == 5:
             self._hardware_model.ref_des = entry.get_text()
+            self._modulebook.update(27, entry.get_text())
         elif index == 6:
             self._hardware_model.comp_ref_des = entry.get_text()
+            self._modulebook.update(5, entry.get_text())
         elif index == 7:
             self._hardware_model.quantity = int(entry.get_text())
+            self._modulebook.update(26, int(entry.get_text()))
         elif index == 8:
             self._hardware_model.description = entry.get_text()
+            self._modulebook.update(9, entry.get_text())
         elif index == 10:
             self._hardware_model.cage_code = entry.get_text()
+            self._modulebook.update(4, entry.get_text())
         elif index == 11:
             self._hardware_model.lcn = entry.get_text()
+            self._modulebook.update(15, entry.get_text())
         elif index == 12:
             self._hardware_model.nsn = entry.get_text()
+            self._modulebook.update(20, entry.get_text())
         elif index == 13:
             self._hardware_model.year_of_manufacture = int(entry.get_text())
+            self._modulebook.update(37, int(entry.get_text()))
         elif index == 14:
             self._hardware_model.specification_number = entry.get_text()
+            self._modulebook.update(32, entry.get_text())
         elif index == 15:
             self._hardware_model.page_number = entry.get_text()
+            self._modulebook.update(22, entry.get_text())
         elif index == 16:
             self._hardware_model.figure_number = entry.get_text()
+            self._modulebook.update(13, entry.get_text())
         elif index == 17:
             self._hardware_model.attachments = entry.get_text()
+            self._modulebook.update(3, entry.get_text())
         elif index == 18:
             self._hardware_model.mission_time = float(entry.get_text())
+            self._modulebook.update(18, float(entry.get_text()))
         elif index == 21:
             _textbuffer = self.txtRemarks.get_child().get_child().get_buffer()
             _text = _textbuffer.get_text(*_textbuffer.get_bounds())
             self._hardware_model.remarks = _text
+            self._modulebook.update(30, _text)
         elif index == 23:
             self._hardware_model.temperature_active = float(entry.get_text())
+            self._modulebook.update(34, float(entry.get_text()))
         elif index == 25:
             self._hardware_model.temperature_dormant = float(entry.get_text())
+            self._modulebook.update(35, float(entry.get_text()))
         elif index == 26:
             self._hardware_model.duty_cycle = float(entry.get_text())
+            self._modulebook.update(10, float(entry.get_text()))
         elif index == 27:
             self._hardware_model.humidity = float(entry.get_text())
+            self._modulebook.update(14, float(entry.get_text()))
         elif index == 28:
             self._hardware_model.vibration = float(entry.get_text())
+            self._modulebook.update(36, float(entry.get_text()))
         elif index == 29:
             self._hardware_model.rpm = float(entry.get_text())
+            self._modulebook.update(31, float(entry.get_text()))
         elif index == 32:
             self._hardware_model.hazard_rate_specified = float(entry.get_text())
+            self._modulebook.update(67, float(entry.get_text()))
         elif index == 33:
             self._hardware_model.mtbf_specified = float(entry.get_text())
+            self._modulebook.update(76, float(entry.get_text()))
         elif index == 34:
             self._hardware_model.hazard_rate_software = float(entry.get_text())
+            self._modulebook.update(66, float(entry.get_text()))
         elif index == 35:
             self._hardware_model.add_adj_factor = float(entry.get_text())
+            self._modulebook.update(50, float(entry.get_text()))
         elif index == 36:
             self._hardware_model.mult_adj_factor = float(entry.get_text())
+            self._modulebook.update(80, float(entry.get_text()))
         elif index == 38:                   # Failure distribution scale
             self._hardware_model.failure_parameter_1 = float(entry.get_text())
+            self._modulebook.update(56, float(entry.get_text()))
         elif index == 39:                   # Failure distribution shape
             self._hardware_model.failure_parameter_2 = float(entry.get_text())
+            self._modulebook.update(57, float(entry.get_text()))
         elif index == 40:                   # Failure distribution location
             self._hardware_model.failure_parameter_3 = float(entry.get_text())
+            self._modulebook.update(58, float(entry.get_text()))
         elif index == 49:
             self._hardware_model.cost = float(entry.get_text().strip('$'))
+            self._modulebook.update(6, float(entry.get_text().strip('$')))
         elif index == 50:
             self._hardware_model.min_rated_temperature = float(entry.get_text())
+            self._modulebook.update(40, float(entry.get_text()))
         elif index == 51:
             self._hardware_model.knee_temperature = float(entry.get_text())
+            self._modulebook.update(93, float(entry.get_text()))
         elif index == 52:
             self._hardware_model.max_rated_temperature = float(entry.get_text())
+            self._modulebook.update(39, float(entry.get_text()))
         elif index == 53:
             self._hardware_model.rated_voltage = float(entry.get_text())
+            self._modulebook.update(47, float(entry.get_text()))
         elif index == 54:
             self._hardware_model.operating_voltage = float(entry.get_text())
+            self._modulebook.update(43, float(entry.get_text()))
         elif index == 55:
             self._hardware_model.rated_current = float(entry.get_text())
+            self._modulebook.update(45, float(entry.get_text()))
         elif index == 56:
             self._hardware_model.operating_current = float(entry.get_text())
+            self._modulebook.update(41, float(entry.get_text()))
         elif index == 57:
             self._hardware_model.rated_power = float(entry.get_text())
+            self._modulebook.update(46, float(entry.get_text()))
         elif index == 58:
             self._hardware_model.operating_power = float(entry.get_text())
+            self._modulebook.update(42, float(entry.get_text()))
         elif index == 59:
             self._hardware_model.thermal_resistance = float(entry.get_text())
+            self._modulebook.update(94, float(entry.get_text()))
         elif index == 60:
             self._hardware_model.temperature_rise = float(entry.get_text())
+            self._modulebook.update(48, float(entry.get_text()))
         elif index == 61:
             self._hardware_model.case_temperature = float(entry.get_text())
 
