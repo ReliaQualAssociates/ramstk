@@ -746,8 +746,7 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     return hr_similar
 
 
-def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
-                        lambdaa):
+def dormant_hazard_rate(component):
     """
     Calculates the dormant hazard rate based on active environment, dormant
     environment, and component category.
@@ -785,13 +784,10 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     | Transformers| 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
     +-------------+-------+--------+--------+-------+-------+-------+-------+
 
-    :param int category: the component category index.
-    :param int subcategory: the component subcategory index.
-    :param int active_env: the active environment index.
-    :param int dormant_env: the dormant environment index.
-    :param float lambdaa: the active hazard rate of the component.
-    :return: lambdad; the dormant hazard rate.
-    :rtype: float
+    :param :class: `rtk.hardware.Component` component: the rtk.Component() data
+                                                       model to calculate.
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
     """
 
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -806,63 +802,70 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
               [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
     # First find the component category/subcategory index.
-    if category == 1:                       # Capacitor
+    if component.category_id == 1:                       # Capacitor
         c_index = 3
-    elif category == 2:                     # Connection
+    elif component.category_id == 2:                     # Connection
         c_index = 7
-    elif category == 3:                     # Inductive Device.
-        if subcategory > 1:                 # Transformer
+    elif component.category_id == 3:                     # Inductive Device.
+        if component.subcategory_id > 1:                 # Transformer
             c_index = 9
-    elif category == 4:                     # Integrated Circuit
+    elif component.category_id == 4:                     # Integrated Circuit
         c_index = 0
-    elif category == 7:                     # Relay
+    elif component.category_id == 7:                     # Relay
         c_index = 6
-    elif category == 8:                     # Resistor
+    elif component.category_id == 8:                     # Resistor
         c_index = 4
-    elif category == 9:                     # Semiconductor
-        if subcategory > 0 and subcategory < 7:     # Diode
+    elif component.category_id == 9:                     # Semiconductor
+        if component.subcategory_id > 0 and \
+           component.subcategory_id < 7:                 # Diode
             c_index = 1
-        elif subcategory > 6 and subcategory < 14:  # Transistor
+        elif component.subcategory_id > 6 and \
+             component.subcategory_id < 14:     # Transistor
             c_index = 2
-    elif category == 10:                    # Switching Device
+    elif component.category_id == 10:           # Switching Device
         c_index = 5
 
     # Now find the appropriate active to passive environment index.
-    if active_env > 0 and active_env < 4:   # Ground
-        if dormant_env == 1:                # Ground
+    if component.environment_active > 0 and \
+       component.environment_active < 4:        # Ground
+        if component.environment_dormant == 1:  # Ground
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6:     # Naval
-        if dormant_env == 1:                # Ground
+    elif component.environment_active > 3 and \
+         component.environment_active < 6:      # Naval
+        if component.environment_dormant == 1:  # Ground
             e_index = 4
-        elif dormant_env == 2:              # Naval
+        elif component.environment_dormant == 2:    # Naval
             e_index = 3
         else:
             e_index = 7
-    elif active_env > 5 and active_env < 11:    # Airborne
-        if dormant_env == 1:                # Ground
+    elif component.environment_active > 5 and \
+         component.environment_active < 11:     # Airborne
+        if component.environment_dormant == 1:  # Ground
             e_index = 2
-        elif dormant_env == 3:              # Airborne
+        elif component.environment_dormant == 3:    # Airborne
             e_index = 1
         else:
             e_index = 7
-    elif active_env == 11:                  # Space
-        if dormant_env == 1:                # Ground
+    elif component.environment_active == 11:    # Space
+        if component.environment_dormant == 1:  # Ground
             e_index = 6
-        elif dormant_env == 4:              # Space
+        elif component.environment_dormant == 4:    # Space
             e_index = 5
         else:
             e_index = 7
 
     try:
-        lambdad = lambdaa * factor[c_index - 1][e_index]
+        component.hazard_rate_dormant = component.hazard_rate_active * \
+                                        factor[c_index - 1][e_index]
+        return False
     except IndexError:
-        lambdad = 0.0
+        component.hazard_rate_dormant = 0.0
+        return True
     except UnboundLocalError:
-        lambdad = 0.0
-
-    return lambdad
+        component.hazard_rate_dormant = 0.0
+        return True
 
 
 def criticality_analysis(modeca, itemca, rpn):
