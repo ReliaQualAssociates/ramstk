@@ -36,8 +36,10 @@ def error_handler(message):
 
     if "PRIMARY KEY must be unique" in message[0]:  # Primary key not unique.
         _error_code = 1555
-    elif "syntax error" in message[0]:      # Syntax error in SQL statement.
+    elif "syntax error" in message[0]:              # Syntax error in SQL statement.
         _error_code = 78
+    elif "database is locked" in message[0]:        # Database is locked.
+        _error_code = 5
     else:
         _error_code = message[0]
 

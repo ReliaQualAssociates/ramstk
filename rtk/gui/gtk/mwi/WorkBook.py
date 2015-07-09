@@ -68,6 +68,10 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
 
     RTK_COST_TYPE = {}
 
+    RTK_SW_LEVELS = {}
+    RTK_SW_APPLICATION = {}
+    RTK_SW_DEV_PHASES = {}
+
     def __init__(self, dao):
         """
         Initializes an instance of the Work View class.
@@ -223,6 +227,42 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
 
         for i in range(_n_results):
             self.RTK_COST_TYPE[i] = _results[i][0]
+
+        _query = "SELECT fld_level_desc, fld_level_id FROM tbl_software_level"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_SW_LEVELS[i] = _results[i][0]
+
+        _query = "SELECT fld_category_name, fld_category_id, \
+                         fld_category_description \
+                  FROM tbl_software_category"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_SW_APPLICATION[i] = _results[i][0]
+
+        _query = "SELECT fld_phase_desc, fld_phase_id \
+                  FROM tbl_development_phase"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        try:
+            _n_results = len(_results)
+        except TypeError:
+            _n_results = 0
+
+        for i in range(_n_results):
+            self.RTK_SW_DEV_PHASES[i] = _results[i][0]
 
         return False
 

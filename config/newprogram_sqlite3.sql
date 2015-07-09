@@ -25,13 +25,13 @@ CREATE TABLE "tbl_program_info" (
     "fld_effect_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_cause_prefix" VARCHAR(16) NOT NULL DEFAULT('CAUSE'),
     "fld_cause_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_software_prefix" VARCHAR(16) NOT NULL DEFAULT('MODULE'),
-    "fld_software_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_sftwr_prefix" VARCHAR(16) NOT NULL DEFAULT('MODULE'),
+    "fld_sftwr_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_revision_active" TINYINT NOT NULL DEFAULT(1),
     "fld_requirement_active" TINYINT NOT NULL DEFAULT(1),
     "fld_function_active" TINYINT NOT NULL DEFAULT(1),
     "fld_hardware_active" TINYINT NOT NULL DEFAULT(1),
-    "fld_software_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_sftwr_active" TINYINT NOT NULL DEFAULT(1),
     "fld_vandv_active" TINYINT NOT NULL DEFAULT(1),
     "fld_testing_active" TINYINT NOT NULL DEFAULT(1),
     "fld_rcm_active" TINYINT NOT NULL DEFAULT(1),
@@ -124,7 +124,7 @@ CREATE TABLE "tbl_revisions" (
     "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),            -- Assessed dormant failure intensity of the revision.
     "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission failure intensity of the revision.
     "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
-    "fld_failure_rate_software" REAL NOT NULL DEFAULT(0),           -- Assessed software failure intensity of the revision.
+    "fld_failure_rate_sftwr" REAL NOT NULL DEFAULT(0),           -- Assessed software failure intensity of the revision.
     "fld_mmt" REAL NOT NULL DEFAULT(0),                             -- Mean maintenance time (MMT) of the revision.
     "fld_mcmt" REAL NOT NULL DEFAULT(0),                            -- Mean corrective maintenance time (MCMT) of the revision.
     "fld_mpmt" REAL NOT NULL DEFAULT(0),                            -- Mean preventive maintenance time (MPMT) of the revision.
@@ -378,7 +378,7 @@ CREATE TABLE "rtk_reliability" (
     "fld_hazard_rate_mission" REAL DEFAULT(0),                      -- Mission hazard rate.
     "fld_hazard_rate_model" VARCHAR(512) DEFAULT(''),               -- Hazard rate mathematical model.
     "fld_hazard_rate_percent" REAL DEFAULT(0),                      -- Percent of system hazard rate attributable to this hardware item.
-    "fld_hazard_rate_software" REAL DEFAULT(0),                     -- Software hazard rate.
+    "fld_hazard_rate_sftwr" REAL DEFAULT(0),                     -- Software hazard rate.
     "fld_hazard_rate_specified" REAL DEFAULT(0),                    -- Specified hazard rate.
     "fld_hazard_rate_type" INTEGER DEFAULT(1),                      -- How the hazard rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
     "fld_hr_active_variance" REAL DEFAULT(0),                       -- Variance of the active hazard rate estimate.
@@ -737,10 +737,11 @@ CREATE TABLE "rtk_test_methods" (
 --
 -- Create tables for storing system software structure information.
 --
-CREATE TABLE "tbl_software" (
+DROP TABLE IF EXISTS "rtk_software";
+CREATE TABLE "rtk_software" (
     "fld_revision_id" INTEGER DEFAULT (0),
     "fld_software_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_level_id" INTEGER DEFAULT (0),
+    "fld_level_id" INTEGER DEFAULT (1),
     "fld_description" VARCHAR(128),
     "fld_application_id" INTEGER DEFAULT (0),
     "fld_development_id" INTEGER DEFAULT (0),
@@ -772,7 +773,7 @@ CREATE TABLE "tbl_software" (
     "fld_sr" REAL DEFAULT (0),
     "fld_s2" REAL DEFAULT (0),
     "fld_rpfom" REAL DEFAULT (0),
-    "fld_parent_module" VARCHAR(16) NOT NULL DEFAULT (0),
+    "fld_parent_id" INTEGER DEFAULT (0),
     "fld_dev_assess_type" TINYINT DEFAULT (1),
     "fld_phase_id" TINYINT DEFAULT (1),
     "fld_tcl" INTEGER DEFAULT (0),
@@ -807,312 +808,322 @@ CREATE TABLE "tbl_software" (
     "fld_os" REAL DEFAULT (0),
     "fld_ew" REAL DEFAULT (0),
     "fld_e" REAL DEFAULT (0),
-    "fld_f" REAL DEFAULT (0)
+    "fld_f" REAL DEFAULT (0),
+    "fld_cb" INTEGER DEFAULT (0),
+    "fld_ncb" INTEGER DEFAULT (0),
+    "fld_dr_test" INTEGER DEFAULT (0),
+    "fld_test_time" FLOAT DEFAULT (0),
+    "fld_dr_eot" INTEGER DEFAULT (0),
+    "fld_test_time_eot" FLOAT DEFAULT (0),
+    FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
-INSERT INTO "tbl_software" VALUES(0, 0, 0, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "-", 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
---
--- Create tables for storing hardware reliability information.
---
-CREATE TABLE "tbl_risk_matrix" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_severity_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_probability_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_hazard_count" INTEGER DEFAULT (0),
-    PRIMARY KEY ("fld_revision_id","fld_assembly_id", "fld_severity_id", "fld_probability_id")
-);
+INSERT INTO "rtk_software" VALUES(0, 0, 1, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 --
 -- Create tables for storing software reliability information.
 --
-CREATE TABLE "tbl_software_development" (
+DROP TABLE IF EXISTS "rtk_software_development";
+CREATE TABLE "rtk_software_development" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
     "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
     "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
-    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_software_id", "fld_question_id")
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
 );
-INSERT INTO "tbl_software_development" VALUES(0, 0, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 1, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 2, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 3, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 4, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 5, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 6, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 7, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 8, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 9, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 10, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 11, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 12, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 13, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 14, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 15, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 16, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 17, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 18, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 19, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 20, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 21, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 22, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 23, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 24, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 25, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 26, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 27, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 28, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 29, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 30, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 31, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 32, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 33, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 34, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 35, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 36, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 37, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 38, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 39, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 40, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 41, 0);
-INSERT INTO "tbl_software_development" VALUES(0, 42, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 0, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 1, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 2, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 3, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 4, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 5, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 6, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 7, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 8, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 9, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 10, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 11, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 12, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 13, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 14, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 15, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 16, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 17, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 18, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 19, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 20, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 21, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 22, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 23, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 24, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 25, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 26, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 27, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 28, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 29, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 30, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 31, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 32, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 33, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 34, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 35, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 36, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 37, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 38, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 39, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 40, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 41, 0);
+INSERT INTO "rtk_software_development" VALUES(0, 42, 0);
 
-CREATE TABLE "tbl_srr_ssr" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
-    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
-    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
-    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
-    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_software_id", "fld_question_id")
-);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 0, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 1, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 2, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 3, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 4, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 5, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 6, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 7, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 8, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 9, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 10, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 11, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 12, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 13, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 14, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 15, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 16, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 17, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 18, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 19, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 20, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 21, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 22, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 23, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 24, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 25, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 26, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 27, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 28, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 29, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 30, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 31, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 32, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 33, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 34, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 35, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 36, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 37, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 38, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 39, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 40, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 41, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 42, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 43, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 44, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 45, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 46, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 47, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 48, 0, 0);
-INSERT INTO "tbl_srr_ssr" VALUES(0, 49, 0, 0);
-
-CREATE TABLE "tbl_pdr" (
+DROP TABLE IF EXISTS "rtk_srr_ssr";
+CREATE TABLE "rtk_srr_ssr" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
     "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
     "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
     "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
-    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_software_id", "fld_question_id")
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
 );
-INSERT INTO "tbl_pdr" VALUES(0, 0, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 1, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 2, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 3, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 4, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 5, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 6, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 7, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 8, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 9, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 10, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 11, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 12, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 13, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 14, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 15, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 16, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 17, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 18, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 19, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 20, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 21, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 22, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 23, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 24, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 25, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 26, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 27, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 28, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 29, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 30, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 31, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 32, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 33, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 34, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 35, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 36, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 37, 0, 0);
-INSERT INTO "tbl_pdr" VALUES(0, 38, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 0, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 1, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 2, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 3, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 4, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 5, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 6, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 7, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 8, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 9, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 10, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 11, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 12, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 13, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 14, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 15, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 16, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 17, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 18, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 19, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 20, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 21, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 22, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 23, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 24, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 25, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 26, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 27, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 28, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 29, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 30, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 31, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 32, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 33, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 34, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 35, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 36, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 37, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 38, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 39, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 40, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 41, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 42, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 43, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 44, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 45, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 46, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 47, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 48, 0, 0);
+INSERT INTO "rtk_srr_ssr" VALUES(0, 49, 0, 0);
 
-CREATE TABLE "tbl_cdr" (
+DROP TABLE IF EXISTS "rtk_pdr";
+CREATE TABLE "rtk_pdr" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
     "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
     "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
     "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
-    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_software_id", "fld_question_id")
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
 );
-INSERT INTO "tbl_cdr" VALUES(0, 0, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 1, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 2, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 3, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 4, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 5, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 6, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 7, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 8, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 9, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 10, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 11, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 12, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 13, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 14, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 15, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 16, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 17, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 18, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 19, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 20, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 21, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 22, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 23, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 24, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 25, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 26, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 27, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 28, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 29, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 30, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 31, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 32, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 33, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 34, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 35, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 36, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 37, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 38, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 39, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 40, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 41, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 42, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 43, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 44, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 45, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 46, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 47, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 48, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 49, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 50, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 51, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 52, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 53, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 54, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 55, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 56, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 57, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 58, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 59, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 60, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 61, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 62, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 63, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 64, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 65, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 66, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 67, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 68, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 69, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 70, 0, 0);
-INSERT INTO "tbl_cdr" VALUES(0, 71, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 0, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 1, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 2, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 3, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 4, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 5, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 6, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 7, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 8, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 9, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 10, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 11, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 12, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 13, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 14, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 15, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 16, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 17, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 18, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 19, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 20, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 21, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 22, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 23, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 24, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 25, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 26, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 27, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 28, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 29, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 30, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 31, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 32, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 33, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 34, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 35, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 36, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 37, 0, 0);
+INSERT INTO "rtk_pdr" VALUES(0, 38, 0, 0);
 
-CREATE TABLE "tbl_trr" (
+DROP TABLE IF EXISTS "rtk_cdr";
+CREATE TABLE "rtk_cdr" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
     "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
     "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
     "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
-    FOREIGN KEY("fld_software_id") REFERENCES "tbl_software"("fld_software_id") ON DELETE CASCADE
-    PRIMARY KEY("fld_software_id", "fld_question_id")
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
 );
-INSERT INTO "tbl_trr" VALUES(0, 0, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 1, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 2, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 3, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 4, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 5, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 6, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 7, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 8, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 9, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 10, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 11, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 12, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 13, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 14, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 15, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 16, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 17, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 18, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 19, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 20, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 21, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 22, 0, 0);
-INSERT INTO "tbl_trr" VALUES(0, 23, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 0, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 1, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 2, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 3, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 4, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 5, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 6, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 7, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 8, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 9, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 10, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 11, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 12, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 13, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 14, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 15, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 16, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 17, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 18, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 19, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 20, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 21, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 22, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 23, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 24, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 25, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 26, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 27, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 28, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 29, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 30, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 31, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 32, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 33, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 34, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 35, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 36, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 37, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 38, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 39, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 40, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 41, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 42, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 43, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 44, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 45, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 46, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 47, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 48, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 49, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 50, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 51, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 52, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 53, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 54, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 55, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 56, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 57, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 58, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 59, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 60, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 61, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 62, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 63, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 64, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 65, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 66, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 67, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 68, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 69, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 70, 0, 0);
+INSERT INTO "rtk_cdr" VALUES(0, 71, 0, 0);
 
-CREATE TABLE "tbl_software_tests" (
+DROP TABLE IF EXISTS "rtk_trr";
+CREATE TABLE "rtk_trr" (
+    "fld_software_id" INTEGER NOT NULL DEFAULT (0),                 -- Software module ID.
+    "fld_question_id" INTEGER NOT NULL DEFAULT (0),                 -- Question ID.
+    "fld_y" TINYINT DEFAULT (0),                                    -- Value of Y/N question.
+    "fld_value" INTEGER DEFAULT (0),                                -- Value of quantity question.
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
+);
+INSERT INTO "rtk_trr" VALUES(0, 0, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 1, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 2, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 3, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 4, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 5, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 6, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 7, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 8, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 9, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 10, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 11, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 12, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 13, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 14, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 15, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 16, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 17, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 18, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 19, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 20, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 21, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 22, 0, 0);
+INSERT INTO "rtk_trr" VALUES(0, 23, 0, 0);
+
+DROP TABLE IF EXISTS "rtk_software_tests";
+CREATE TABLE "rtk_software_tests" (
     "fld_software_id" INTEGER NOT NULL DEFAULT (0),
     "fld_technique_id" INTEGER NOT NULL DEFAULT (0),
     "fld_recommended" TINYINT DEFAULT (0),
     "fld_used" TINYINT DEFAULT (0),
-    PRIMARY KEY("fld_software_id", "fld_technique_id")
+    FOREIGN KEY("fld_software_id") REFERENCES "rtk_software"("fld_software_id") ON DELETE CASCADE
 );
+INSERT INTO "rtk_software_tests" VALUES(0, 0, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 1, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 2, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 3, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 4, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 5, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 6, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 7, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 8, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 9, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 10, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 11, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 12, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 13, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 14, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 15, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 16, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 17, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 18, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 19, 0, 0);
+INSERT INTO "rtk_software_tests" VALUES(0, 20, 0, 0);
 
-CREATE TABLE "tbl_software_traceability" (
-    "fld_software_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_phase_id" INTEGER NOT NULL DEFAULT (0),
-    "fld_tc11" INTEGER NOT NULL DEFAULT (0),
-    "fld_tc12" INTEGER NOT NULL DEFAULT (0),
-    PRIMARY KEY("fld_software_id", "fld_phase_id")
-);
 
 --
 -- Create tables for storing validation plan information.
@@ -1178,7 +1189,7 @@ CREATE TABLE "tbl_incident" (
     "fld_cost" FLOAT DEFAULT(0),
     "fld_incident_age" INTEGER DEFAULT(0),
     "fld_hardware_id" INTEGER DEFAULT(0),
-    "fld_software_id" INTEGER DEFAULT(0),
+    "fld_sftwr_id" INTEGER DEFAULT(0),
     "fld_request_by" VARCHAR(256) DEFAULT(''),
     "fld_request_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "fld_reviewed" TINYINT DEFAULT(0),

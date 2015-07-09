@@ -49,12 +49,14 @@ from analyses.fmea.FMEA import FMEA
 from requirement.Requirement import Requirement
 from requirement.ModuleBook import ModuleView as mvwRequirement
 from stakeholder.Stakeholder import Stakeholder
-from hardware.BoM import BoM
+from hardware.BoM import BoM as HardwareBoM
 from hardware.ModuleBook import ModuleView as mvwHardware
 from analyses.allocation.Allocation import Allocation
 from analyses.hazard.Hazard import Hazard
 from analyses.similar_item.SimilarItem import SimilarItem
 from analyses.pof.PhysicsOfFailure import PoF
+from software.BoM import BoM as SoftwareBoM
+from software.ModuleBook import ModuleView as mvwSoftware
 
 # Add localization support.
 _ = gettext.gettext
@@ -202,11 +204,12 @@ class RTK(object):
         self.dtcFMEA = FMEA()
         self.dtcRequirement = Requirement()
         self.dtcStakeholder = Stakeholder()
-        dtcBoM = BoM()
+        dtcHardwareBoM = HardwareBoM()
         dtcAllocation = Allocation()
         dtcHazard = Hazard()
         dtcSimilarItem = SimilarItem()
         dtcPoF = PoF()
+        dtcSoftwareBoM = SoftwareBoM()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -235,11 +238,14 @@ class RTK(object):
                                                        self.site_dao)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware,
-                                                       dtcBoM, -1,
+                                                       dtcHardwareBoM, -1,
                                                        dtcAllocation,
                                                        dtcHazard,
                                                        dtcSimilarItem,
                                                        self.dtcFMEA, dtcPoF)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwSoftware,
+                                                       dtcSoftwareBoM, -1)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
@@ -389,8 +395,6 @@ class RTK(object):
 
         # Get a connection to the program database and then retrieve the
         # program information.
-        _query = "SELECT * FROM tbl_program_info"
-
         _query = "SELECT fld_revision_prefix, fld_revision_next_id, \
                          fld_function_prefix, fld_function_next_id, \
                          fld_assembly_prefix, fld_assembly_next_id, \

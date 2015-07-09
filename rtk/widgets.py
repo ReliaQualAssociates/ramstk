@@ -573,9 +573,9 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
     gobject_types = [gobject.type_from_name(types[ix])
                      for ix in range(len(types))]
 
-# If this is the Hardware tree, add a column for a pixbuf.
+# If this is the Hardware or Software tree, add a column for a pixbuf.
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
-    if fmt_idx == 3:
+    if fmt_idx == 3 or fmt_idx == 15:
         gobject_types.append(gtk.gdk.Pixbuf)
     elif fmt_idx == 9 or fmt_idx == 18:
         gobject_types.append(gobject.TYPE_INT)
@@ -645,7 +645,7 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
 
         column = gtk.TreeViewColumn("")
 
-# If this is the Hardware tree, add a column for a pixbuf.
+# If this is the Hardware or Software tree, add a column for a pixbuf.
 # If this is the FMECA tree, add a column for an integer and a pixbuf
         if i == 1 and fmt_idx == 3:
             column.set_visible(1)
@@ -657,6 +657,11 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
             column.set_attributes(cellpb, pixbuf=cols + 3)
+        elif i == 1 and fmt_idx == 15:
+            column.set_visible(1)
+            cellpb = gtk.CellRendererPixbuf()
+            column.pack_start(cellpb, True)
+            column.set_attributes(cellpb, pixbuf=cols)
         else:
             column.set_visible(int(visible[i].text))
             column.pack_start(cell, True)
