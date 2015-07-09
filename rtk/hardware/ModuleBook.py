@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.gui.gtk.ModuleBook.py is part of The RTK Project
+#       rtk.hardware.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -30,10 +30,6 @@ except ImportError:
     sys.exit(1)
 try:
     import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
 except ImportError:
     sys.exit(1)
 
@@ -65,30 +61,29 @@ class ModuleView(object):
     RTK Project in a hierarchical list.  The attributes of a Module Book view
     are:
 
-    :ivar _model: the :class:`rtk.hardware.BoM.Model` data model that is
+    :ivar _model: the :class:`rtk.hardware.Hardware.Model` data model that is
                   currently selected.
 
     :ivar _lst_col_order: list containing the order of the columns in the
                           Module View :class:`gtk.TreeView`.
-    :ivar _workbook: the :class:`rtk.requirement.WorkBook.WorkView` associated
+    :ivar _workbook: the :class:`rtk.hardware.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcRequirement: the :class:`rtk.requirement.Requirement.Requirement`
-                          data controller to use for accessing the Requirement
+    :ivar dtcBoM: the :class:`rtk.bom.BoM` data controller to use for accessing
+                  the Hardware data models.
+    :ivar dtcAllocation: the :class:`rtk.analyses.allocation.Allocation`
+                          data controller to use for accessing the Allocation
                           data models.
-    :ivar dtcStakeholder: the :class:`rtk.stakeholder.Stakeholder.Stakeholder`
-                          data controller to use for accessing the Stakeholder
-                          data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the list of
-                    Requirements.
+    :ivar treeview: the :class:`gtk.TreeView` displaying the hierarchical list
+                    of Hardware.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
         """
-        Initializes the Module Book view for the Function package.
+        Initializes the Module Book view for the Hardware package.
 
-        :param rtk.hardware.Hardware controller: the instance of the Hardware
-                                                 data controller to use with
-                                                 this view.
+        :param :class: `rtk.bom.BoM` controller: the instance of the BoM data
+                                                 controller to use with this
+                                                 view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Hardware
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -112,7 +107,7 @@ class ModuleView(object):
         self.dtcPoF = args[0][4]
 
         # Create the main Hardware class treeview.
-        # TODO: Update the hardware.xml file to accomodate the prediction stuff.
+# TODO: Update the hardware.xml file to accomodate the prediction stuff.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Hardware', 3,
                                                     None, None,
@@ -132,6 +127,17 @@ class ModuleView(object):
         self._lst_handler_id.append(
             self.treeview.connect('button_release_event',
                                   self._on_button_press))
+
+        i = 0
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            try:
+                if _cell.get_property('editable'):
+                    _cell.connect('edited', self._on_cell_edited,
+                                  self._lst_col_order[i])
+            except TypeError:
+                pass
+            i += 1
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
@@ -237,20 +243,109 @@ class ModuleView(object):
 
     def update(self, position, new_text):
         """
-        Updates the Module Book gtk.TreeView() with changes to the Hardware
-        data model attributes.  Called by other views when the Hardware data
-        model attributes are edited via their gtk.Widgets().
+        Updates the selected row in the Module Book gtk.TreeView() with changes
+        to the Hardware data model attributes.  Called by other views when the
+        Hardware data model attributes are edited via their gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
-        :ivar next_text: the new value of the attribute to be updated.
+        :ivar new_text: the new value of the attribute to be updated.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
-
         _model.set(_row, self._lst_col_order[position], new_text)
+
+        return False
+
+    def update_all(self):
+        """
+        Recursively updates each row in the Module Book gtk.TreeView() with
+        changes to the Hardware data model attributes.  Primarily used to
+        update the gtk.TreeView() with calculation results.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        def _update_row(model, __path, row):
+            """
+            Updates a single row.
+
+            :ivar gtk.TreeModel model: the gtk.TreeModel() to update.
+            :ivar gtk.TreePath __path: the gtk.TreePath() of the row to be
+                                       updated.
+            :ivar gtk.TreeIter row: the gtk.TreeIter() of the row to be
+                                    updated.
+            :return: False if successful or True if an error is encountered.
+            :rtype: bool
+            """
+
+            _hardware_id = model.get_value(row, 1)
+            _hardware = self.dtcBoM.dicHardware[_hardware_id]
+
+            # Update cost calculation results.
+            model.set(row, self._lst_col_order[6], _hardware.cost)
+            model.set(row, self._lst_col_order[7], _hardware.cost_failure)
+            model.set(row, self._lst_col_order[8], _hardware.cost_hour)
+
+            # Update maintainability calculation results.
+            model.set(row, self._lst_col_order[51],
+                      _hardware.availability_logistics)
+            model.set(row, self._lst_col_order[52],
+                      _hardware.availability_mission)
+            model.set(row, self._lst_col_order[53],
+                      _hardware.avail_log_variance)
+            model.set(row, self._lst_col_order[54],
+                      _hardware.avail_mis_variance)
+
+            # Update reliability calculation results.
+            model.set(row, self._lst_col_order[59],
+                      _hardware.hazard_rate_active)
+            model.set(row, self._lst_col_order[60],
+                      _hardware.hazard_rate_dormant)
+            model.set(row, self._lst_col_order[61],
+                      _hardware.hazard_rate_logistics)
+            model.set(row, self._lst_col_order[63],
+                      _hardware.hazard_rate_mission)
+            model.set(row, self._lst_col_order[65],
+                      _hardware.hazard_rate_percent)
+            model.set(row, self._lst_col_order[66],
+                      _hardware.hazard_rate_software)
+            model.set(row, self._lst_col_order[67],
+                      _hardware.hazard_rate_specified)
+            model.set(row, self._lst_col_order[69],
+                      _hardware.hr_active_variance)
+            model.set(row, self._lst_col_order[70],
+                      _hardware.hr_dormant_variance)
+            model.set(row, self._lst_col_order[71],
+                      _hardware.hr_logistics_variance)
+            model.set(row, self._lst_col_order[72],
+                      _hardware.hr_mission_variance)
+            model.set(row, self._lst_col_order[73],
+                      _hardware.hr_specified_variance)
+            model.set(row, self._lst_col_order[74], _hardware.mtbf_logistics)
+            model.set(row, self._lst_col_order[75], _hardware.mtbf_mission)
+            model.set(row, self._lst_col_order[76], _hardware.mtbf_specified)
+            model.set(row, self._lst_col_order[77],
+                      _hardware.mtbf_log_variance)
+            model.set(row, self._lst_col_order[78],
+                      _hardware.mtbf_miss_variance)
+            model.set(row, self._lst_col_order[79],
+                      _hardware.mtbf_spec_variance)
+            model.set(row, self._lst_col_order[81],
+                      _hardware.reliability_logistics)
+            model.set(row, self._lst_col_order[82],
+                      _hardware.reliability_mission)
+            model.set(row, self._lst_col_order[83], _hardware.rel_log_variance)
+            model.set(row, self._lst_col_order[84],
+                      _hardware.rel_miss_variance)
+
+            return False
+
+        _model = self.treeview.get_model()
+        _model.foreach(_update_row)
 
         return False
 
@@ -305,5 +400,72 @@ class ModuleView(object):
         self._workbook.load(self._model)
 
         selection.handler_block(self._lst_handler_id[0])
+
+        return False
+
+    def _on_cell_edited(self, __cell, __path, new_text, index):
+        """
+        Callback method to handle events for the Hardware package Module Book
+        gtk.CellRenderer().  It is called whenever a Module Book
+        gtk.CellRenderer() is edited.
+
+        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
+        :param str __path: the path of the gtk.CellRenderer() that was edited.
+        :param str new_text: the new text in the gtk.CellRenderer() that was
+                             edited.
+        :param int index: the position in the Hardware pacakge Module Book
+                          gtk.TreeView().
+        :return: false if successful and True if an error is encountered.
+        :rtype: bool
+        """
+
+        if index == 2:
+            self._model.alt_part_number = new_text
+        elif index == 3:
+            self._model.attachments = new_text
+        elif index == 4:
+            self._model.cage_code = new_text
+        elif index == 6:
+            self._model.cost = float(new_text)
+        elif index == 9:
+            self._model.description = new_text
+        elif index == 10:
+            self._model.duty_cycle = float(new_text)
+        elif index == 13:
+            self._model.figure_number = new_text
+        elif index == 14:
+            self._model.humidity = float(new_text)
+        elif index == 15:
+            self._model.lcn = new_text
+        elif index == 18:
+            self._model.mission_time = float(new_text)
+        elif index == 19:
+            self._model.name = new_text
+        elif index == 20:
+            self._model.nsn = new_text
+        elif index == 22:
+            self._model.page_number = new_text
+        elif index == 25:
+            self._model.part_number = new_text
+        elif index == 26:
+            self._model.quantity = int(new_text)
+        elif index == 27:
+            self._model.ref_des = new_text
+        elif index == 30:
+            self._model.remarks = new_text
+        elif index == 31:
+            self._model.rpm = float(new_text)
+        elif index == 32:
+            self._model.specification_number = new_text
+        elif index == 34:
+            self._model.temperature_active = float(new_text)
+        elif index == 35:
+            self._model.temperature_dormant = float(new_text)
+        elif index == 36:
+            self._model.vibration = float(new_text)
+        elif index == 37:
+            self._model.year_of_manufacture = int(new_text)
+
+        self._workbook.load(self._model)
 
         return False

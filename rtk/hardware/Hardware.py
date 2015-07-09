@@ -8,7 +8,7 @@ Hardware Package Hardware Module
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -22,11 +22,11 @@ import locale
 
 # Import other RTK modules.
 try:
+    import calculations as _calc
     import configuration as _conf
-    #from hardware.component.capacitor.Capacitor import Model as _cap
 except ImportError:                         # pragma: no cover
+    import rtk.calculations as _calc
     import rtk.configuration as _conf
-    #from rtk.hardware.component.capacitor.Capacitor import Model as _cap
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -495,48 +495,154 @@ class Model(object):                        # pylint: disable=R0902
 
         return _values
 
-    def calculate_hardware(self):
+    def calculate(self, assembly):
         """
-        Calculates various hardware attributes.
+        Iterively calculates various hardware attributes.
+
+        :param `rtk.hardware.Assembly` assembly: the rtk.Assembly() data model
+                                                 to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        self._calculate_cost()
+        assembly.hazard_rate_active = 0.0
+        assembly.hazard_rate_dormant = 0.0
+        assembly.hazard_rate_software = 0.0
+        assembly.cost = 0.0
+        assembly.total_part_quantity = 0
+        assembly.total_power_dissipation = 0.0
+
+        # First we calculate all the components that are direct children of the
+        # current assembly.
+        try:
+            _components = assembly.dicComponents[assembly.hardware_id]
+        except KeyError:
+            _components = []
+
+        for _component in _components:
+            if _component.hazard_rate_method == 1:   # Assessed
+                _component.calculate()
+            elif _component.hazard_rate_method == 2: # Specified, h(t)
+                _component.hazard_rate_active = _assembly.hazard_rate_specified
+            elif _component.hazard_rate_method == 3: # Specified, MTBF
+                _component.hazard_rate_active = 1.0 / _component.mtbf_specified
+
+            # Calculate the dormant hazard rate.
+            _calc.dormant_hazard_rate(_component)
+
+            # Calculate component derived results.
+            self._calculate_reliability(_component)
+            self._calculate_costs(_component)
+
+            # Update parent assembly hazard rates and costs.
+            assembly.hazard_rate_active += _component.hazard_rate_active
+            assembly.hazard_rate_dormant += _component.hazard_rate_dormant
+            assembly.hazard_rate_software += _component.hazard_rate_software
+            assembly.cost += _component.cost
+            assembly.total_part_quantity += _component.quantity
+            assembly.total_power_dissipation += (_component.operating_power * \
+                                                 _component.quantity)
+
+        # Then we calculate all the assemblies that are direct children of the
+        # current assembly.
+        try:
+            _assemblies = assembly.dicAssemblies[assembly.hardware_id]
+        except KeyError:
+            _assemblies = []
+
+        for _assembly in _assemblies:
+            if _assembly.hazard_rate_method == 1:   # Assessed
+                self.calculate(_assembly)
+            elif _assembly.hazard_rate_method == 2: # Specified, h(t)
+                _assembly.hazard_rate_active = _assembly.hazard_rate_specified
+            elif _assembly.hazard_rate_method == 3: # Specified, MTBF
+                _assembly.hazard_rate_active = 1.0 / _assembly.mtbf_specified
+
+            # Adjust the active hazard rate.
+            _assembly.hazard_rate_active = (_assembly.hazard_rate_active + \
+                                            _assembly.add_adj_factor) * \
+                                           (_assembly.duty_cycle / 100.0) * \
+                                           _assembly.mult_adj_factor * \
+                                           _assembly.quantity
+
+            # Calculate assembly derived results.
+            self._calculate_reliability(_assembly)
+            self._calculate_costs(_assembly)
+
+            # Update parent assembly hazard rates and costs.
+            assembly.hazard_rate_active += _assembly.hazard_rate_active
+            assembly.hazard_rate_dormant += _assembly.hazard_rate_dormant
+            assembly.hazard_rate_software += _assembly.hazard_rate_software
+            assembly.cost += _assembly.cost
+            assembly.total_part_quantity += _assembly.total_part_quantity
+            assembly.total_power_dissipation += _assembly.total_power_dissipation
+
+        # Calculate parent assembly derived results.
+        self._calculate_reliability(assembly)
+        self._calculate_costs(assembly)
 
         return False
 
-    def _calculate_cost(self):
+    def _calculate_reliability(self, hardware):
         """
-        Calculates costs associated with the hardware.
+        Calculates reliability metrics for a hardware item.
+
+        :param :class: `rtk.hardware.Hardware` hardware: the rtk.Hardware()
+                                                         data model to
+                                                         calculate costs
+                                                         metrics for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
+        from math import exp
+
+        hardware.hazard_rate_logistics = hardware.hazard_rate_active + \
+                                         hardware.hazard_rate_dormant + \
+                                         hardware.hazard_rate_software
+
         try:
-            self.cost_failure = self.cost / \
-                (self.hazard_rate_logistics * self.mission_time)
+            hardware.mtbf_logistics = 1.0 / hardware.hazard_rate_logistics
+        except ZeroDivisionError:
+            hardware.mtbf_logistics = 0.0
+
+        hardware.reliability_logistics = exp(-1.0 * \
+                                             hardware.hazard_rate_logistics * \
+                                             hardware.mission_time)
+
+        # Calculate hazard rate variances.
+        #hardware.hr_active_variance = 1.0 / (hardware.hazard_rate_active**2.0)
+        #hardware.hr_dormant_variance = 1.0 / (hardware.hazard_rate_dormant**2.0)
+        #hardware.hr_specified_variance = 1.0 / (hardware.hazard_rate_specified**2.0)
+
+        return False
+
+    def _calculate_costs(self, hardware):
+        """
+        Calculates cost metrics for a hardware item.
+
+        :param `rtk.hardware.Hardware` hardware: the rtk.Hardware() data model
+                                                 to calculate costs metrics
+                                                 for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Calculate O & M cost metrics.
+        try:
+            hardware.cost_failure = hardware.cost / \
+                (hardware.hazard_rate_logistics * hardware.mission_time)
         except ZeroDivisionError:
             # TODO: Handle errors.
             pass
 
         try:
-            self.cost_hour = self.cost / self.mission_time
+            hardware.cost_hour = hardware.cost / hardware.mission_time
         except ZeroDivisionError:
             # TODO: Handle errors.
             pass
 
         return False
-
-    def _calculate_stress(self):
-        """
-        Calculates various hardware stresses.
-        """
-
-        pass
-
-    def _calculate_reliability(self):
-        """
-        Calulates various hardware reliability metrics.
-        """
-
-        pass
 
 
 class Hardware(object):

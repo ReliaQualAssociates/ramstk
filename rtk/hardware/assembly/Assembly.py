@@ -88,7 +88,7 @@ class Model(Hardware):                        # pylint: disable=R0902
 
         super(Model, self).__init__()
 
-        # Initialize public disctionary attributes.
+        # Initialize public dictionary attributes.
         self.dicAssemblies = {}
         self.dicComponents = {}
 

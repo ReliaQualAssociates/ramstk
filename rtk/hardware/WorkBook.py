@@ -8,7 +8,7 @@ Hardware Package Work Book View
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -19,7 +19,6 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 import sys
 
 # Modules required for the GUI.
-import pango
 try:
     import pygtk
     pygtk.require('2.0')
@@ -31,10 +30,6 @@ except ImportError:
     sys.exit(1)
 try:
     import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
 except ImportError:
     sys.exit(1)
 
@@ -933,7 +928,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _create_assessment_inputs_page(self, notebook):
+    def _create_assessment_inputs_page(self, notebook):     # pylint: disable=R0914, R0915
         """
         Creates the Hardware class gtk.Notebook() page for displaying the
         assessment inputs for the selected Hardware.
@@ -2270,7 +2265,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 # previously selected Component.  Not all attributes will map,
                 # but this will reduce the amount of rework needed for the user
                 # to update the attributes of the new Component.
-                _hardware = self.dtcBoM._load_component(
+                _hardware = self.dtcBoM.load_component(
                     self._hardware_model.category_id,
                     self._hardware_model.subcategory_id)
                 _hardware.set_attributes(_attributes)
@@ -2306,7 +2301,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
         """
         Responds to gtk.Entry() focus_out signals and calls the correct
         function or method, passing any parameters as needed.

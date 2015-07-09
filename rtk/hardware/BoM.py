@@ -170,7 +170,7 @@ class BoM(object):
                        model instance.
     """
 
-    dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
+    _dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
                          3: Plastic.Film(), 4: Paper.Metallized(),
                          5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
                          7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
@@ -344,14 +344,31 @@ class BoM(object):
             if _results[i][24] == 0:
                 _hardware = Assembly()
             elif _results[i][24] == 1:
-                _hardware = self._load_component(_results[i][90],
-                                                 _results[i][91])
+                _hardware = self.load_component(_results[i][90],
+                                                _results[i][91])
             _hardware.set_attributes(_results[i])
             self.dicHardware[_hardware.hardware_id] = _hardware
 
+        for _key in self.dicHardware.keys():
+            _hardware = self.dicHardware[_key]
+            for _key2 in self.dicHardware.keys():
+                _hardware2 = self.dicHardware[_key2]
+                if(_hardware2.parent_id == _hardware.hardware_id and
+                   _hardware2.part == 0):
+                    try:
+                        _hardware.dicAssemblies[_hardware.hardware_id].append(_hardware2)
+                    except KeyError:
+                        _hardware.dicAssemblies[_hardware.hardware_id] = [_hardware2]
+                elif(_hardware2.parent_id == _hardware.hardware_id and
+                   _hardware2.part == 1):
+                    try:
+                        _hardware.dicComponents[_hardware.hardware_id].append(_hardware2)
+                    except KeyError:
+                        _hardware.dicComponents[_hardware.hardware_id] = [_hardware2]
+
         return(_results, _error_code)
 
-    def _load_component(self, category, subcategory):
+    def load_component(self, category, subcategory):
         """
         Loads the correct Component based on the category and subcategory ID's.
 
@@ -365,7 +382,7 @@ class BoM(object):
             return Component()
 
         # Grab the correct component data model from the dictionary of models.
-        _hardware = self.dicComponents[category][subcategory]
+        _hardware = self._dicComponents[category][subcategory]
 
         # Assign the new model the appropriate category and subcategory IDs.
         _hardware.category_id = category
@@ -391,7 +408,7 @@ class BoM(object):
         # By default we add the new Hardware item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
-            # TODO: Replace this with an RTK error or warning dialog and then return.
+# TODO: Replace this with an RTK error or warning dialog and then return.
             parent_id = 0
 
         _query = "INSERT INTO rtk_hardware \
@@ -708,5 +725,18 @@ class BoM(object):
         for _hardware in self.dicHardware.values():
             (_results,
              _error_code) = self.save_hardware_item(_hardware.hardware_id)
+
+        return False
+
+    def request_calculate(self):
+        """
+        Requests the Hardware BoM calculations be performed.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.dicHardware[0].calculate(self.dicHardware[0])
+        self.save_bom()
 
         return False

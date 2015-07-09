@@ -374,6 +374,6 @@ class TestHardwareModel(unittest.TestCase):
         self.DUT.hazard_rate_logistics = 0.00005132
         self.DUT.mission_time = 10.0
 
-        self.assertFalse(self.DUT._calculate_cost())
+        self.assertFalse(self.DUT._calculate_costs(self.DUT))
         self.assertEqual(self.DUT.cost_failure, 194855.80670303974)
         self.assertEqual(self.DUT.cost_hour, 10.0)

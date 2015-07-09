@@ -70,14 +70,10 @@ class Model(Hardware):                        # pylint: disable=R0902
 
     def __init__(self):
         """
-        Initialize an Component data model instance.
+        Initialize a Component data model instance.
         """
 
         super(Model, self).__init__()
-
-        # Initialize public disctionary attributes.
-        self.dicAssemblies = {}
-        self.dicComponents = {}
 
         # Initialize public scalar attributes.
         self.category_id = 0
@@ -121,18 +117,9 @@ class Model(Hardware):                        # pylint: disable=R0902
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Assembly data model attributes.
+        Retrieves the current values of the Component data model attributes.
 
-        :return: (revision_id, hardware_id, alt_part_number, attachments,
-                  cage_code, comp_ref_des, cost, cost_failure, cost_hour,
-                  cost_type, description, duty_cycle, environment_active,
-                  environment_dormant, figure_number, humidity, lcn, level,
-                  manufacturer, mission_time, name, nsn, page_number,
-                  parent_id, part, part_number, quantity, ref_des,
-                  reliability_goal, reliability_goal_measure, remarks,
-                  repairable, rpm, specification_number, temperature_active,
-                  temperature_dormant, vibration, year_of_manufacture,
-                  category_id, subcategory_id, junction_temperature,
+        :return: (category_id, subcategory_id, junction_temperature,
                   knee_temperature, thermal_resistance, reference_temperature)
         :rtype: tuple
         """

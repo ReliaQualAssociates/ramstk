@@ -1,6 +1,6 @@
 #!/usr/bin/env python -O
 """
-This is the test class for testing BoM module algorithms and models.
+This is the test class for testing Hardware BoM module algorithms and models.
 """
 
 __author__ = 'Andrew Rowland'
