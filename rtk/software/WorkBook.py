@@ -66,7 +66,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-def _set_risk_color(risk, module):
+def _set_risk_color(risk, module):          # pylint: disable=R0912
     """
     Function to find the hexadecimal code for the risk level colors.
 
@@ -170,7 +170,7 @@ def _set_risk_color(risk, module):
 
     return _color
 
-
+# TODO: Fix all docstrings; copy-paste errors.
 class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
@@ -276,10 +276,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Initializes the Work Book view for the Software package.
 
-        :param rtk.gui.gtk.mwi.WorkView workview: the Work View container to
-                                                  insert this Work Book into.
-        :param rtk.function.ModuleBook: the Function Module Book to associate
-                                        with this Work Book.
+        :param workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container to
+                         insert this Work Book into.
+        :param modulebook: the :py:class:`rtk.software.ModuleBook` to associate
+                           with this Work Book.
         """
 
         gtk.VBox.__init__(self)
@@ -676,7 +676,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
             _label.set_markup("<span weight='bold'>" +
-                              _headings[i-1] +
+                              _headings[i - 1] +
                               "</span>")
             _label.set_use_markup(True)
             _label.show_all()
@@ -836,7 +836,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 #                   _(u"Number of Requirements Tested:")]
         (_x_pos_right,
          _y_pos) = _widg.make_labels(_labels, _fxdbottomleft,
-                                     _x_pos_left+105, 5)
+                                     _x_pos_left + 105, 5)
         _x_pos_right += _x_pos_left + 150
 
         # Place the widgets in the upper left pane.
@@ -1160,7 +1160,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Loads the Software class gtk.Notebook().
 
-        :param model: the :py:class: `rtk.software.Software.Model` to load.
+        :param model: the :py:class:`rtk.software.Software.Model` to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1372,12 +1372,55 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
+    def _load_risk_map(self, parents, software, model, row=None):
+        """
+        Method to load the Software class Risk Map.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _dicRisk = {}
+
+        for _software in parents:
+            _data = [_software.software_id, _software.description]
+            _dicRisk[_software.software_id] = [_software.a_risk,
+                                               _software.d_risk, _software.sa,
+                                               _software.st, _software.sq,
+                                               _software.sl, _software.sx,
+                                               _software.sm, _software.rpfom]
+
+            # Get the hexidecimal color code for each risk factor.
+            _color = _set_risk_color(_dicRisk, _software.software_id)
+
+            if _software.parent_id == -1:   # It's the top level element.
+                row = None
+
+            _data.append(_color['A'])
+            _data.append(_color['D'])
+            _data.append(_color['SA'])
+            _data.append(_color['ST'])
+            _data.append(_color['SQ'])
+            _data.append(_color['SL'])
+            _data.append(_color['SX'])
+            _data.append(_color['SM'])
+            _data.append(_color['Risk'])
+
+            _piter = model.append(row, _data)
+
+            _parents = [_s for _s in software if _s.parent_id == _software.software_id]
+            self._load_risk_map(_parents, software, model, _piter)
+
+        self.tvwRiskMap.expand_all()
+
+        return False
+
     def _load_assessment_results_page(self):
         """
         Loads the Software class gtk.Notebook() risk assessment page.
 
         :return: False if successful or True if an error is encountered.
-        :rtype
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1401,6 +1444,68 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtEW.set_text(str(fmt.format(self._software_model.ew)))
         self.txtE.set_text(str(fmt.format(self._software_model.e_risk)))
         self.txtF.set_text(str(fmt.format(self._software_model.failure_rate)))
+
+        return False
+
+    def _request_add_software(self, software_type, model, parent, software_id):
+        """
+        Method to call the BoM data controller function 'add_software' and
+        then update the Software Work Book gtk.TreeView() with the newly added
+        software item.
+
+        :param int software_type: the type of Software item to add.
+                                  * 1 = CSCI
+                                  * 2 = Unit
+        :param gtk.TreeModel model: the gtk.TreeModel() displaying the Software
+                                    hierarchy.
+        :param gtk.TreeIter parent: the gtk.TreeIter() that will be the parent
+                                    of the newly added software item.
+        :param int software_id: the software ID of the parent Software module.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Add the new software item to the database and dtcBoM dictionary.
+        (_software, _error_code) = self.dtcBoM.add_software(
+            self._software_model.revision_id, software_type, software_id)
+
+        if software_type == 1:
+            _icon = _conf.ICON_DIR + '32x32/csci.png'
+        elif software_type == 2:
+            _icon = _conf.ICON_DIR + '32x32/unit.png'
+
+        # Update the module book view to show the new assembly.
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _data = list(_software.get_attributes()) + [_icon]
+
+        model.append(parent, _data)
+        self._modulebook.treeview.expand_all()
+
+        return False
+
+    def _request_delete_software(self):
+        """
+        Method to call the BoM data controller function 'delete_software' and
+        then update the Software Work Book gtk.TreeView() with the newly added
+        software item.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Find the selected software item.
+        _selection = self._modulebook.treeview.get_selection()
+        (_model, _row) = _selection.get_selected()
+
+        # Delete the selected software item from the database and the
+        # Software data controller dictionary.
+        self.dtcBoM.delete_software(self._software_model.software_id)
+
+        # Refresh the Software gtkTreeView().
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _model.remove(_row)
+            _selection.select_path(_path)
 
         return False
 
@@ -1491,72 +1596,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         elif index == 54:
             self.dtcBoM.request_calculate()
-
-        return False
-
-    def _request_add_software(self, software_type, model, parent, software_id):
-        """
-        Method to call the BoM data controller function 'add_software' and
-        then update the Software Work Book gtk.TreeView() with the newly added
-        software item.
-
-        :param int software_type: the type of Software item to add.
-                                  * 1 = CSCI
-                                  * 2 = Unit
-        :param gtk.TreeModel model: the gtk.TreeModel() displaying the Software
-                                    hierarchy.
-        :param gtk.TreeIter parent: the gtk.TreeIter() that will be the parent
-                                    of the newly added software item.
-        :param int software_id: the software ID of the parent Software module.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # Add the new software item to the database and dtcBoM dictionary.
-        (_software, _error_code) = self.dtcBoM.add_software(
-            self._software_model.revision_id, software_type, software_id)
-
-        if software_type == 1:
-            _icon = _conf.ICON_DIR + '32x32/csci.png'
-        elif software_type == 2:
-            _icon = _conf.ICON_DIR + '32x32/unit.png'
-
-        # Update the module book view to show the new assembly.
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        _data = list(_software.get_attributes()) + [_icon]
-
-        model.append(parent, _data)
-        self._modulebook.treeview.expand_all()
-
-        return False
-
-    def _request_delete_software(self):
-        """
-        Method to call the BoM data controller function 'delete_software' and
-        then update the Software Work Book gtk.TreeView() with the newly added
-        software item.
-
-        :param gtk.TreeModel model: the gtk.TreeModel() holding the Software
-                                    data.
-        :param gtk.TreeIter row: the gtk.TreeIter() that will be removed from
-                                 the gtk.TreeModel().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # Find the selected software item.
-        _selection = self._modulebook.treeview.get_selection()
-        (_model, _row) = _selection.get_selected()
-
-        # Delete the selected software item from the database and the
-        # Software data controller dictionary.
-        self.dtcBoM.delete_software(self._software_model.software_id)
-
-        # Refresh the Software gtkTreeView().
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _model.remove(_row)
-            _selection.select_path(_path)
 
         return False
 
@@ -1685,48 +1724,5 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._modulebook.update(75, self._software_model.test_time_eot)
 
         entry.handler_unblock(self._lst_handler_id[index])
-
-        return False
-
-    def _load_risk_map(self, parents, software, model, row=None):
-        """
-        Method to load the Software class Risk Map.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _dicRisk = {}
-
-        for _software in parents:
-            _data = [_software.software_id, _software.description]
-            _dicRisk[_software.software_id] = [_software.a_risk,
-                                               _software.d_risk, _software.sa,
-                                               _software.st, _software.sq,
-                                               _software.sl, _software.sx,
-                                               _software.sm, _software.rpfom]
-
-            # Get the hexidecimal color code for each risk factor.
-            _color = _set_risk_color(_dicRisk, _software.software_id)
-
-            if _software.parent_id == -1:   # It's the top level element.
-                row = None
-
-            _data.append(_color['A'])
-            _data.append(_color['D'])
-            _data.append(_color['SA'])
-            _data.append(_color['ST'])
-            _data.append(_color['SQ'])
-            _data.append(_color['SL'])
-            _data.append(_color['SX'])
-            _data.append(_color['SM'])
-            _data.append(_color['Risk'])
-
-            _piter = model.append(row, _data)
-
-            _parents = [_s for _s in software if _s.parent_id == _software.software_id]
-            self._load_risk_map(_parents, software, model, _piter)
-
-        self.tvwRiskMap.expand_all()
 
         return False

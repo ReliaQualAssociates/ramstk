@@ -62,17 +62,12 @@ class Model(Software):                        # pylint: disable=R0902
         The risk is based on the number of software units in a software module
         and the complexity of each unit.
 
-        For software units:
-            sx = # of conditional branching statements
-                 # of unconditional branching statements + 1
+        NM = number of units in module
+        ax = # of units with sx >= 20
+        bx = # of units with 7 <= sx < 20
+        cx = # of units with sx < 7
 
-        For software modules:
-            NM = number of units in module
-            ax = # of units with sx >= 20
-            bx = # of units with 7 <= sx < 20
-            cx = # of units with sx < 7
-
-            SX = (1.5 * ax + bx + 0.8 * cx) / NM
+        SX = (1.5 * ax + bx + 0.8 * cx) / NM
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -112,10 +107,9 @@ class Model(Software):                        # pylint: disable=R0902
             self.sx = (1.5 * self.ax + self.bx + 0.8 * self.cx) / self.nm
         except ZeroDivisionError:
             _util.rtk_error(_(u"Attempted to divide by zero when calculating "
-                              u"the software complexity risk for %s.  Perhaps "
-                              u"you forgot to answer one or more questions.  "
-                              u"If the problem persists, you may report it to "
-                              u"bugs@reliaqual.com.") % self.description)
+                              u"the software complexity risk for {0:s}.  "
+                              u"Perhaps you forgot to answer one or more "
+                              u"questions.").format(self.description))
             self.sx = 1.5
 
         return False
@@ -129,16 +123,12 @@ class Model(Software):                        # pylint: disable=R0902
         risk is based on the number of software units in a software module and
         the SLOC in each unit.
 
-        For software units:
-            SM = 1.0
+        NM = number of units in module
+        um = # of units in module with SLOC <= 100
+        wm = # of units in module with 100 < SLOC <= 500
+        xm = # of units in module with SLOC > 500
 
-        For software modules:
-            NM = number of units in module
-            um = # of units in module with SLOC <= 100
-            wm = # of units in module with 100 < SLOC <= 500
-            xm = # of units in module with SLOC > 500
-
-            SM = (0.9 * um + wm + 2.0 * xm) / NM
+        SM = (0.9 * um + wm + 2.0 * xm) / NM
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -168,10 +158,9 @@ class Model(Software):                        # pylint: disable=R0902
             self.sm = (0.9 * self.um + self.wm + 2.0 * self.xm) / self.nm
         except ZeroDivisionError:
             _util.rtk_error(_(u"Attempted to divide by zero when calculating "
-                              u"the software modularity risk for %s.  Perhaps "
-                              u"you forgot to answer one or more questions.  "
-                              u"If the problem persists, you may report it to "
-                              u"bugs@reliaqual.com.") % self.description)
+                              u"the software modularity risk for {0:s}.  "
+                              u"Perhaps you forgot to answer one or more "
+                              u"questions.").format(self.description))
             self.sm = 2.0
 
         return False

@@ -156,6 +156,10 @@ class ModuleView(object):
         Loads the Software Module Book view gtk.TreeModel() with software
         information.
 
+        :param dao: the :py:class: `rtk.dao.DAO` object used to communicate
+                    with the RTK Project database.
+        :param int revision_id: the ID of the revision to load software data
+                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -198,6 +202,8 @@ class ModuleView(object):
                               the child software for each parent.
         :param gtk.TreeModel model: the Software Module View gtk.TreeModel().
         :keyword gtk.TreeIter row: the parent gtk.TreeIter().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 # TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
         _icon = _conf.ICON_DIR + '32x32/csci.png'
@@ -308,7 +314,7 @@ class ModuleView(object):
                              edited.
         :param int index: the position in the Software pacakge Module Book
                           gtk.TreeView().
-        :return: false if successful and True if an error is encountered.
+        :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
 
