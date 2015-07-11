@@ -57,7 +57,7 @@ class BoM(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
-    :ivar _last_id: the last Software ID used.
+    :ivar _last_id: the last Software ID used in the RTK Project database.
     :ivar dicSoftware: Dictionary of the Software data models managed.  Key is
                        the Software ID; value is a pointer to the Software data
                        model instance.
@@ -80,16 +80,15 @@ class BoM(object):
         Reads the RTK Project database and loads all the Software associated
         with the selected Revision.  For each software item returned:
 
-        #. Retrieve the software assemblies and components from the RTK Project
-           database.
+        #. Retrieve the software CSCI and units from the RTK Project database.
         #. Create a CSCI or Unit data model instance as appropriate.
         #. Set the attributes of the data model instance from the returned
            results.
         #. Add the instance to the dictionary of software being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO` object to use for communicating
+                    with the RTK Project database.
         :param int revision_id: the Revision ID to select the requirements for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -176,8 +175,8 @@ class BoM(object):
         Method to retrieve the Development Environment Risk Analysis answers
         from the RTK database and load the Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -201,8 +200,8 @@ class BoM(object):
         Method to retrieve the Requirements Review Risk Analysis answers
         from the RTK database and load the Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -238,8 +237,8 @@ class BoM(object):
         Method to retrieve the Preliminary Design Review Risk Analysis answers
         from the RTK database and load the Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -271,8 +270,8 @@ class BoM(object):
         Method to retrieve the Critical Design Review Risk Analysis answers
         from the RTK database and load the Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -336,8 +335,8 @@ class BoM(object):
         Method to retrieve the Test Readiness Review Risk Analysis answers
         from the RTK database and load the Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -381,8 +380,8 @@ class BoM(object):
         Method to retrieve the Test Matrix from the RTK database and load the
         Software data model list.
 
-        :param `rtk.software.Software` software: the Software data model to
-                                                 load.
+        :param software: the :py:class:`rtk.software.Software` data model to
+                         load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -1119,6 +1118,7 @@ class BoM(object):
                            _sftwr.lst_modularity[0], _sftwr.lst_modularity[1],
                            _sftwr.lst_modularity[2], _sftwr.lst_modularity[3],
                            _sftwr.software_id)
+
         elif _sftwr.level_id == 3:          # Unit
             _query0 = "UPDATE rtk_trr \
                        SET fld_y=CASE fld_question_id \

@@ -488,8 +488,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Method to create the Software class gtk.Notebook() page for
         displaying general data about the selected Software.
 
-        :param notebook: the Software class gtk.Notebook() widget.
-        :type notebook: gtk.Notebook
+        :param gtk.Notebook notebook: the Software class gtk.Notebook() widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -589,8 +590,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Method to create the Software class gtk.Notebook() page for displaying
         the risk analysis for the selected Software.
 
-        :param notebook: the Software class gtk.Notebook() widget.
-        :type notebook: gtk.Notebook
+        :param gtk.Notebook notebook: the Software class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -714,8 +714,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Method to create the Software class gtk.Notebook() page for displaying
         the risk analysis for the selected Software.
 
-        :param notebook: the Software class gtk.Notebook() widget.
-        :type notebook: gtk.Notebook
+        :param gtk.Notebook notebook: the Software class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -987,10 +986,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Method to create the Software class gtk.Notebook() page for
         displaying reliability estimates for the selected Software.
 
-        :param self: the current instance of a Software class.
-        :type self: Software class
-        :param notebook: the Software class gtk.Notebook() widget.
-        :type notebook: gtk.Notebook
+        :param gtk.Notebook notebook: the Software class gtk.Notebook() widget.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1162,8 +1160,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Loads the Software class gtk.Notebook().
 
-        :param rtk.software.Software.Model model: the :class:`rtk.software.Software.Model`
-                                                  to load.
+        :param model: the :py:class: `rtk.software.Software.Model` to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1279,22 +1276,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Loads the Software class gtk.Notebook() risk analysis page.
 
-        Show the pages according to the following:
+        Show the pages according to the following
+
         +------------------------------+--------+----+-----+-----+-----+-----+
         |             Phase            | Level  | DE | SRR | PDR | CDR | TRR |
         +------------------------------+--------+----+-----+-----+-----+-----+
         | Any                          | System | X  |     |     |     |     |
         +------------------------------+--------+----+-----+-----+-----+-----+
         | Concept/Planning             | Module | X  |     |     |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Software Requirements Review | Module | X  |  X  |     |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Preliminary Design Review    | Module | X  |  X  |  X  |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Critical Design Review       | Module | X  |  X  |  X  |  X  |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Test Readiness Review        | Module | X  |  X  |  X  |  X  |  X  |
         +------------------------------+--------+----+-----+-----+-----+-----+
         | Concept/Planning             | Unit   | X  |     |     |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Software Requirements Review | Unit   | X  |     |     |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Preliminary Design Review    | Unit   | X  |     |     |     |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Critical Design Review       | Unit   | X  |     |     |  X  |     |
+        +------------------------------+--------+----+-----+-----+-----+-----+
         | Test Readiness Review        | Unit   | X  |     |     |  X  |  X  |
         +------------------------------+--------+----+-----+-----+-----+-----+
 

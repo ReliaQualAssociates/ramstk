@@ -63,9 +63,9 @@ def _calculate_application_risk(module):
     Control using the values in RL-TR-92-52, Worksheet 0 for average fault
     density.
 
-        Baseline (low) application risk (A) is assigned a 1.
-        Medium risk is assigned a 2.
-        High risk is assigned a 3.
+    Baseline (low) application risk (A) is assigned a 1.
+    Medium risk is assigned a 2.
+    High risk is assigned a 3.
 
     Application risks are defined as:
 
@@ -74,24 +74,43 @@ def _calculate_application_risk(module):
     | Index |          Application         |   Risk   |
     +-------+------------------------------+----------+
     |   1   | Batch (General)              |   Low    |
+    +-------+------------------------------+----------+
     |   2   | Event Control                |   Low    |
+    +-------+------------------------------+----------+
     |   3   | Process Control              |   Low    |
+    +-------+------------------------------+----------+
     |   4   | Procedure Control            |  Medium  |
+    +-------+------------------------------+----------+
     |   5   | Navigation                   |   High   |
+    +-------+------------------------------+----------+
     |   6   | Flight Dynamics              |   High   |
+    +-------+------------------------------+----------+
     |   7   | Orbital Dynamics             |   High   |
+    +-------+------------------------------+----------+
     |   8   | Message Processing           |  Medium  |
+    +-------+------------------------------+----------+
     |   9   | Diagnostics                  |  Medium  |
+    +-------+------------------------------+----------+
     |  10   | Sensor and Signal Processing |  Medium  |
+    +-------+------------------------------+----------+
     |  11   | Simulation                   |   High   |
+    +-------+------------------------------+----------+
     |  12   | Database Management          |  Medium  |
+    +-------+------------------------------+----------+
     |  13   | Data Acquisition             |  Medium  |
+    +-------+------------------------------+----------+
     |  14   | Data Presentation            |  Medium  |
+    +-------+------------------------------+----------+
     |  15   | Decision and Planning Aids   |  Medium  |
+    +-------+------------------------------+----------+
     |  16   | Pattern and Image Processing |   High   |
+    +-------+------------------------------+----------+
     |  17   | System Software              |   High   |
+    +-------+------------------------------+----------+
     |  18   | Development Tools            |   High   |
     +-------+------------------------------+----------+
+
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -120,6 +139,8 @@ def _calculate_development_risk(module):
         Low development risk (Dc > 0.9) is assigned a 0.5.
         High development risk (Dc < 0.5) is assigned a 2.
 
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -146,6 +167,8 @@ def _calculate_anomaly_risk(module):
         SA = 0.9 if AM > 0.6
         SA = 1.0 if 0.4 >= AM <= 0.6
         SA = 1.1 if AM < 0.4
+
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -198,6 +221,8 @@ def _calculate_traceability_risk(module):
         ST = 1.0 if requirements can be traced
         ST = 1.1 otherwise
 
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -234,6 +259,8 @@ def _calculate_quality_risk(module):
 
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
+
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -311,6 +338,8 @@ def _calculate_language_type_risk(module):
 
     SL = (HLOC / SLOC) + (1.4 * ALOC / SLOC)
 
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -342,6 +371,8 @@ def _calculate_risk_reduction(module):
     software based on the same factors used in RL-TR-92-52 for estimating
     software failure rates.  RTK also provides test planning guidance in
     the same manner as RL-TR-92-52.
+
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -417,6 +448,8 @@ def _calculate_reliability_estimation_number(module):
     selected software module.  The methodology is outlined in RL-TR-92-52,
     Section 300.
 
+    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -482,7 +515,7 @@ class Model(object):                        # pylint: disable=R0902
                     of this data model.  Key is the Software ID; value is a
                     pointer to the Unit data model instance.
 
-    :ivar revision_id: default value: None
+    :ivar revision_id: ID of the Revision the software module is associated with. default value: None
     :ivar software_id: default value: None
     :ivar level_id: default value: 0
     :ivar description: default value: ""
@@ -556,6 +589,10 @@ class Model(object):                        # pylint: disable=R0902
     :ivar units_test: default value: 0
     :ivar cb: default value: 0
     :ivar ncb: default value: 0
+    :ivar dr_test: default value: 0
+    :ivar test_time: default value: 0.0
+    :ivar dr_eot: default value: 0
+    :ivar test_time_eot: default value: 0.0
     """
 
     def __init__(self):
@@ -815,8 +852,7 @@ class Model(object):                        # pylint: disable=R0902
         """
         Iterively calculates various software attributes.
 
-        :param `rtk.software.Software` module: the CSCI() or Unit() data model
-                                               to calculate.
+        :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -868,6 +904,7 @@ class Model(object):                        # pylint: disable=R0902
         _calculate_reliability_estimation_number(module)
 
         return False
+
 
 class Software(object):
     """

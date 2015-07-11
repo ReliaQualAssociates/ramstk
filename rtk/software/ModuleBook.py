@@ -61,29 +61,25 @@ class ModuleView(object):
     RTK Project in a hierarchical list.  The attributes of a Module Book view
     are:
 
-    :ivar _model: the :class:`rtk.software.Software.Model` data model that is
-                  currently selected.
+    :ivar _model: the :py:class:`rtk.software.Software.Model` data model that
+                  is currently selected.
 
     :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :class:`gtk.TreeView`.
-    :ivar _workbook: the :class:`rtk.software.WorkBook.WorkView` associated
+                          Module View :py:class:`gtk.TreeView`.
+    :ivar _workbook: the :py:class:`rtk.software.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcBoM: the :class:`rtk.bom.BoM` data controller to use for accessing
-                  the Software data models.
-    :ivar dtcAllocation: the :class:`rtk.analyses.allocation.Allocation`
-                          data controller to use for accessing the Allocation
-                          data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the hierarchical list
-                    of Software.
+    :ivar dtcBoM: the :py:class:`rtk.software.BoM` data controller to use for
+                  accessing the Software data models.
+    :ivar treeview: the :py:class:`gtk.TreeView` displaying the hierarchical
+                    list of Software.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
         """
         Initializes the Module Book view for the Software package.
 
-        :param :class: `rtk.bom.BoM` controller: the instance of the BoM data
-                                                 controller to use with this
-                                                 view.
+        :param controller: the instance of the :py:class:`rtk.bom.BoM` data
+                           controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Software
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
