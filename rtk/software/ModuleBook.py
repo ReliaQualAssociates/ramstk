@@ -168,14 +168,14 @@ class ModuleView(object):
 
         # Only load the software associated with the selected Revision.
         _software = [_s for _s in _software if _s[0] == revision_id]
-        _top_reqs = [_s for _s in _software if _s[1] == 0]
+        _top_items = [_s for _s in _software if _s[1] == 0]
 
         # Clear the Software Module View gtk.TreeModel().
         _model = self.treeview.get_model()
         _model.clear()
 
         # Recusively load the Software Module View gtk.TreeModel().
-        self._load_treeview(dao, _top_reqs, _software, _model)
+        self._load_treeview(dao, _top_items, _software, _model)
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -298,7 +298,7 @@ class ModuleView(object):
 
         self._workbook.load(self._model)
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_unblock(self._lst_handler_id[0])
 
         return False
 

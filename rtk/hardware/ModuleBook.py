@@ -178,7 +178,7 @@ class ModuleView(object):
 
         # Only load the hardware associated with the selected Revision.
         _hardware = [_h for _h in _hardware if _h[0] == revision_id]
-        _top_reqs = [_h for _h in _hardware if _h[23] == -1]
+        _top_items = [_h for _h in _hardware if _h[23] == -1]
 
         # Load all the FMECA and PoF analyses.
         for _h in _hardware:
@@ -190,7 +190,7 @@ class ModuleView(object):
         _model.clear()
 
         # Recusively load the Hardware Module View gtk.TreeModel().
-        self._load_treeview(dao, _top_reqs, _hardware, _model)
+        self._load_treeview(dao, _top_items, _hardware, _model)
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -233,9 +233,8 @@ class ModuleView(object):
             _piter = model.append(row, _data)
             _parent_id = _hardware[1]
 
-            # Find the child requirements of the current parent requirement.
-            # These # will be the new parent requirements to pass to this
-            # method.
+            # Find the child hardware of the current parent hardware.  These
+            # will be the new parent hardware to pass to this method.
             _parents = [_h for _h in hardware if _h[23] == _parent_id]
             self._load_treeview(dao, _parents, hardware, model, _piter)
 
@@ -399,7 +398,7 @@ class ModuleView(object):
 
         self._workbook.load(self._model)
 
-        selection.handler_block(self._lst_handler_id[0])
+        selection.handler_unblock(self._lst_handler_id[0])
 
         return False
 

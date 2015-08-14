@@ -151,6 +151,9 @@ class ModuleView(object):
         Loads the Revision Module Book view gtk.TreeModel() with revision
         information.
 
+        :param :py:class: `rtk.dao.DAO` dao: the DAO object used to communicate
+                                             with the RTK Project database.
+        :param int revision_id: the ID of the revision to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -228,7 +231,7 @@ class ModuleView(object):
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
-        :param gtk.TreeView treeview: the Revision classt gtk.TreeView().
+        :param gtk.TreeView treeview: the Revision class gtk.TreeView().
         :param str __path: the actived row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.

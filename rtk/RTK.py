@@ -57,6 +57,9 @@ from analyses.similar_item.SimilarItem import SimilarItem
 from analyses.pof.PhysicsOfFailure import PoF
 from software.BoM import BoM as SoftwareBoM
 from software.ModuleBook import ModuleView as mvwSoftware
+from testing.Testing import Testing
+from testing.growth.Growth import Growth
+from testing.ModuleBook import ModuleView as mvwTesting
 
 # Add localization support.
 _ = gettext.gettext
@@ -198,18 +201,20 @@ class RTK(object):
         # Create data controllers.
         self.dtcMatrices = Matrix()
         self.dtcRevision = Revision()
-        self.dtcProfile = UsageProfile()
-        self.dtcDefinitions = FailureDefinition()
-        self.dtcFunction = Function()
-        self.dtcFMEA = FMEA()
-        self.dtcRequirement = Requirement()
-        self.dtcStakeholder = Stakeholder()
+        dtcProfile = UsageProfile()
+        dtcDefinitions = FailureDefinition()
+        dtcFunction = Function()
+        dtcFMEA = FMEA()
+        dtcRequirement = Requirement()
+        dtcStakeholder = Stakeholder()
         dtcHardwareBoM = HardwareBoM()
         dtcAllocation = Allocation()
         dtcHazard = Hazard()
         dtcSimilarItem = SimilarItem()
         dtcPoF = PoF()
         dtcSoftwareBoM = SoftwareBoM()
+        dtcTesting = Testing()
+        dtcGrowth = Growth()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -222,18 +227,18 @@ class RTK(object):
         # Plug-in each of the RTK module views.
         _modview = self.module_book.create_module_page(mvwRevision,
                                                        self.dtcRevision, -1,
-                                                       self.dtcProfile,
-                                                       self.dtcDefinitions)
+                                                       dtcProfile,
+                                                       dtcDefinitions)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwFunction,
-                                                       self.dtcFunction, -1,
-                                                       self.dtcFMEA,
-                                                       self.dtcProfile,
+                                                       dtcFunction, -1,
+                                                       dtcFMEA,
+                                                       dtcProfile,
                                                        self.dtcMatrices)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwRequirement,
-                                                       self.dtcRequirement, -1,
-                                                       self.dtcStakeholder,
+                                                       dtcRequirement, -1,
+                                                       dtcStakeholder,
                                                        self.dtcMatrices,
                                                        self.site_dao)
         _conf.RTK_MODULES.append(_modview)
@@ -242,10 +247,14 @@ class RTK(object):
                                                        dtcAllocation,
                                                        dtcHazard,
                                                        dtcSimilarItem,
-                                                       self.dtcFMEA, dtcPoF)
+                                                       dtcFMEA, dtcPoF)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSoftware,
                                                        dtcSoftwareBoM, -1)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwTesting,
+                                                       dtcTesting, -1,
+                                                       dtcGrowth)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
