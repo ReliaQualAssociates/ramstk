@@ -386,7 +386,6 @@ class TestGrowthAssessment(unittest.TestCase):
                                -0.0466074,
                                msg="FAIL: Scale-shape parameter covariance.")
 
-
     def test_nhpp_power_law_regression_models(self):
         """
         Test of the NHPP - Power Law parameter estimation function using
