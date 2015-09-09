@@ -332,11 +332,11 @@ Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       configuration.py is part of The RTK Project
+#       rtk.configuration.py is part of The RTK Project
 #
 # All rights reserved.
 

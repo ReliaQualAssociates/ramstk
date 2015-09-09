@@ -1126,6 +1126,128 @@ INSERT INTO "rtk_software_tests" VALUES(0, 20, 0, 0);
 
 
 --
+-- Create tables for storing program test information.
+--
+DROP TABLE IF EXISTS "rtk_tests";
+CREATE TABLE "rtk_tests" (
+    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- The ID of the revision the test is associated with.
+    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),                  -- The ID of the assembly the test is associated with.
+    "fld_test_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,       -- The ID of the test.
+    "fld_name" VARCHAR(512),                                        -- Short name of the test.
+    "fld_description" BLOB,                                         -- Long description of the test.
+    "fld_test_type" INTEGER NOT NULL DEFAULT(0),                    -- Type of test.
+    "fld_attachment" VARCHAR(512),                                  -- URL to any attachments associated with the test.
+    "fld_cum_time" REAL DEFAULT(0.0),                               -- Cumulative test time.
+    "fld_cum_failures" INTEGER DEFAULT(0.0),                        -- Cumulative number of failures.
+    "fld_confidence" REAL DEFAULT(0.75),                            -- Confidence level for GoF tests, MTBF bounds, etc.
+    "fld_consumer_risk" REAL DEFAULT(0),                            -- The probability of the consumer accepting an item that fails to meet it's reliability requirement.
+    "fld_producer_risk" REAL DEFAULT(0),                            -- The probability of the producer rejecting an item that actually meets it's reliability requirement.
+    "fld_plan_model" INTEGER DEFAULT(0),                            -- The growth planning model to use (1=Duane, 2=Crow-AMSAA, 3=SPLAN, 4=SSPLAN).
+    "fld_assess_model" INTEGER DEFAULT(0),                          -- The growth assessment model to use (1=Duane, 2=Crow-AMSAA, 3=Crow Extended)
+    "fld_tr" REAL DEFAULT(0),                                       -- Technical requirement for the program MTBF.
+    "fld_mg" REAL DEFAULT(0),                                       -- Goal MTBF for the entire test.
+    "fld_mgp" REAL DEFAULT(0),                                      -- Growth potential MTBF for the entire test.
+    "fld_num_phases" INTEGER DEFAULT(1),                            -- Number of growth test phases.
+    "fld_ttt" REAL DEFAULT(0),                                      -- Total time on test over all phases.
+    "fld_avg_growth" REAL DEFAULT(0.3),                             -- Average growth rate over all phases.
+    "fld_avg_ms" REAL DEFAULT(0),                                   -- Average management strategy over all phases.
+    "fld_avg_fef" REAL DEFAULT(0.7),                                -- Average fix effectiveness factor over all phases..
+    "fld_prob" REAL DEFAULT(0.75),                                  -- Probability of observing a failure over all phases.
+    "fld_ttff" REAL DEFAULT(0),                                     -- Time to first fix.
+    "fld_grouped" INTEGER DEFAULT(0),                               -- Indicates whether or not the observed failure times are exact (0) or grouped (1).
+    "fld_group_interval" REAL DEFAULT(0.0),                         -- The length of the grouping interval if failure times are grouped.
+    "fld_se_scale" REAL DEFAULT(0.0),                               -- The standard error of the scale paramter.
+    "fld_se_shape" REAL DEFAULT(0.0),                               -- The standard error of the shape parameter.
+    "fld_se_cum_mean" REAL DEFAULT(0.0),                            -- The standard error of the cumulative MTBF.
+    "fld_se_inst_mean" REAL DEFAULT(0.0),                           -- The standard error of the instantaneous MTBF.
+    "fld_cramer_vonmises" REAL DEFAULT(0.0),                        -- The Cramer-von Mises GoF test statistic.
+    "fld_chi_square" REAL DEFAULT(0.0),                             -- The chi-square GoF test statistic.
+    "fld_scale_ll" REAL DEFAULT(0.0),                               -- The lower bound estimate of the scale parameter of the growth model.
+    "fld_scale" REAL DEFAULT(0.0),                                  -- The point estimate of the scale parameter of the growth model.
+    "fld_scale_ul" REAL DEFAULT(0.0),                               -- The upper bound estimate of the scale parameter of the growth model.
+    "fld_shape_ll" REAL DEFAULT(0.0),                               -- The lower bound estimate of the shape parameter of the growth model.
+    "fld_shape" REAL DEFAULT(0.0),                                  -- The point estimate of the shape parameter of the growth model.
+    "fld_shape_ul" REAL DEFAULT(0.0),                               -- The upper bound estimate of the shape parameter of the growth model.
+    "fld_cum_mean_ll" REAL DEFAULT(0.0),                            -- The lower bound estimate of the cumulative MTBF.
+    "fld_cum_mean" REAL DEFAULT(0.0),                               -- The point estimate of the cumulative MTBF.
+    "fld_cum_mean_ul" REAL DEFAULT(0.0),                            -- The upper bound estimate of the cumulative MTBF.
+    "fld_inst_mean_ll" REAL DEFAULT(0.0),                           -- The lower bound estimate of the instantaneous MTBF.
+    "fld_inst_mean" REAL DEFAULT(0.0),                              -- The point estimate of the instantaneous MTBF.
+    "fld_inst_mean_ul" REAL DEFAULT(0.0)                            -- The upper bound estimate of the instantaneous MTBF.
+);
+
+DROP TABLE IF EXISTS "rtk_growth_testing";
+CREATE TABLE "rtk_growth_testing" (
+    "fld_test_id" INTEGER,                                          -- The ID of the test.
+    "fld_phase_id" INTEGER,                                         -- The ID of the test phase.
+    "fld_p_growth_rate" REAL DEFAULT(0),                            -- Planned average growth rate for the test phase.
+    "fld_p_ms" REAL DEFAULT(0),                                     -- Planned management strategy (i.e., the percent of problems that will be fixed) for the test phase.
+    "fld_p_fef_avg" REAL DEFAULT(0),                                -- Planned average fix effectiveness factor for the test phase.
+    "fld_p_prob" REAL DEFAULT(0),                                   -- Planned probability of observing a failure during the test phase.
+    "fld_p_mi" REAL DEFAULT(0),                                     -- Planned initial MTBF for the test phase.
+    "fld_p_mf" REAL DEFAULT(0),                                     -- Planned final MTBF for the test phase.
+    "fld_p_ma" REAL DEFAULT(0),                                     -- Planned average MTBF over the test phase.
+    "fld_p_test_time" REAL DEFAULT(0),                              -- Planned total test time for the test phase.
+    "fld_p_num_fails" INTEGER DEFAULT(0),                           -- Planned number of failures expected during the test phase.
+    "fld_p_start_date" INTEGER DEFAULT(719163),                     -- Planned start date of test phase.
+    "fld_p_end_date" INTEGER DEFAULT(719163),                       -- Planned end date of test phase.
+    "fld_p_weeks" REAL DEFAULT(0),                                  -- Planned length of test phase in weeks.
+    "fld_p_test_units" INTEGER DEFAULT(0),                          -- Planned number of test units used in test phase.
+    "fld_p_tpu" REAL DEFAULT(0),                                    -- Planned average test time per test unit.
+    "fld_p_tpupw" REAL DEFAULT(0),                                  -- Planned average test time per test unit per week.
+    "fld_o_growth_rate" REAL DEFAULT(0),                            -- Observed average growth rate across entire reliability growth phase.
+    "fld_o_ms" REAL DEFAULT(0),                                     -- Observed management strategy for the test phase.
+    "fld_o_fef_avg" REAL DEFAULT(0),                                -- Observed average fix effectiveness factor for the test phase.
+    "fld_o_mi" REAL DEFAULT(0),                                     -- Observed initial MTBF for the test phase.
+    "fld_o_mf" REAL DEFAULT(0),                                     -- Observed final MTBF for the test phase.
+    "fld_o_ma" REAL DEFAULT(0),                                     -- Observed average MTBF over the test phase.
+    "fld_o_test_time" REAL DEFAULT(0),                              -- Observed total test time for the test phase.
+    "fld_o_num_fails" INTEGER DEFAULT(0),                           -- Observed number of failures during the test phase.
+    "fld_o_ttff" REAL DEFAULT(0),                                   -- Observed time to first fix.
+    "fld_o_cum_mean_ll" REAL DEFAULT(0),                            -- Observed lower limit on the cumulative mean.
+    "fld_o_cum_mean" REAL DEFAULT(0),                               -- Observed point estimate of the cumulative mean.
+    "fld_o_cum_mean_ul" REAL DEFAULT(0),                            -- Observed upper limit on the cumulative mean.
+    "fld_o_inst_mean_ll" REAL DEFAULT(0),                           -- Observed lower limit on the instantaneous mean.
+    "fld_o_inst_mean" REAL DEFAULT(0),                              -- Observed point estimate for the instantaneous mean.
+    "fld_o_inst_mean_ll" REAL DEFAULT(0),                           -- Observed upper limit on the instantaneous mean.
+    PRIMARY KEY ("fld_test_id", "fld_phase_id")
+);
+
+
+CREATE TABLE "tbl_test_status" (
+    "fld_test_id" INTEGER NOT NULL,                     -- ID of the test plan.
+    "fld_update_date" INTEGER DEFAULT(719163),          -- Date the update was made.
+    "fld_cum_hours" REAL DEFAULT(0.0),                  -- Cumulative number of test hours when updated.
+    "fld_failure_rate" REAL DEFAULT(0.0),               -- Estimated failure rate.
+    "fld_mtbf" REAL DEFAULT(0.0)                        -- Estimated MTBF.
+);
+
+--
+-- Create tables for storing accelerated test planning information.
+--
+DROP TABLE IF EXISTS "tbl_pof";
+CREATE TABLE "tbl_pof" (
+    "fld_assembly_id" INTEGER DEFAULT(0),                           -- ID of the hardware assembly.
+    "fld_mode_id" INTEGER DEFAULT(0),                               -- ID of the failure mode.
+    "fld_mechanism_id" INTEGER DEFAULT(0),                          -- ID of the failure mechanism.
+    "fld_load_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,       -- ID of the operating load condition.
+    "fld_load_description" VARCHAR(512) DEFAULT(''),                -- Description of the operating load condition.
+    "fld_primary_stress" VARCHAR(256) DEFAULT(''),                  -- Description of the primary operational stress.
+    "fld_secondary_stress" VARCHAR(256) DEFAULT(''),                -- Description of the secondary operational stress.
+    "fld_tertiary_stress" VARCHAR(256) DEFAULT(''),                 -- Description of the tertiary operational stress.
+    "fld_priority" VARCHAR(256) DEFAULT(''),                        -- Priority of the failure mechanism.
+    "fld_primary_measurable" VARCHAR(256) DEFAULT(''),              -- Description of the measurable parameter for the primary stress.
+    "fld_primary_load_history" VARCHAR(256) DEFAULT(''),            -- Description of the method for quantifying the primary stress.
+    "fld_secondary_measureable" VARCHAR(256) DEFAULT(''),           -- Description of the measurable parameter for the secondary stress.
+    "fld_secondary_load_history" VARCHAR(256) DEFAULT(''),          -- Description of the method for quantifying the secondary stress.
+    "fld_tertiary_measurable" VARCHAR(256) DEFAULT(''),             -- Description of the measurable parameter for the tertiary stress.
+    "fld_tertiary_load_history" VARCHAR(256) DEFAULT(''),           -- Description of the method for quantifying the tertiary stress.
+    "fld_remarks" BLOB,                                             -- User remarks/notes.
+    "fld_parent" VARCHAR(16) NOT NULL DEFAULT('0')                  -- Path of the parent failure mode or failure mechanism.
+);
+
+
+--
 -- Create tables for storing validation plan information.
 --
 CREATE TABLE "tbl_validation" (
@@ -1316,7 +1438,8 @@ CREATE TABLE "tbl_dataset" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0)
 );
 
-CREATE TABLE "tbl_survival_data" (
+DROP TABLE IF EXISTS "rtk_survival_data";
+CREATE TABLE "rtk_survival_data" (
     "fld_record_id" INTEGER NOT NULL,
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
     "fld_left_interval" FLOAT DEFAULT(0),
@@ -1341,95 +1464,6 @@ CREATE TABLE "tbl_nevada_chart" (
     "fld_return_date" INTEGER DEFAULT(719163),
     "fld_number_returned" INTEGER DEFAULT(0)
 );
-
---
--- Create tables for storing program test information.
---
-DROP TABLE IF EXISTS "tbl_tests";
-CREATE TABLE "tbl_tests" (
-    "fld_revision_id" INTEGER NOT NULL DEFAULT(0),      -- The ID of the revision the test is associated with.
-    "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),      -- The ID of the assembly the test is associated with.
-    "fld_test_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_test_name" VARCHAR(512),                       -- Short name of the test.
-    "fld_test_description" BLOB,                        -- Long description of the test.
-    "fld_test_type" INTEGER NOT NULL DEFAULT(0),        -- Type of test.
-    "fld_mi" REAL DEFAULT(0),                           --
-    "fld_mg" REAL DEFAULT(0),                           --
-    "fld_mgp" REAL DEFAULT(0),                          --
-    "fld_tr" REAL DEFAULT(0),                           --
-    "fld_consumer_risk" REAL DEFAULT(0),                --
-    "fld_producer_risk" REAL DEFAULT(0),                --
-    "fld_rg_plan_model" INTEGER DEFAULT(0),             --
-    "fld_rg_assess_model" INTEGER DEFAULT(0),           --
-    "fld_num_phases" INTEGER DEFAULT(1),                --
-    "fld_attachment" VARCHAR(512),                      --
-    "fld_ttt" REAL DEFAULT(0),                          --
-    "fld_avg_growth" REAL DEFAULT(0.3),                 --
-    "fld_avg_ms" REAL DEFAULT(0),                       -- Average management strategy for test.
-    "fld_prob" REAL DEFAULT(0.75),                      -- Probability of observing a failure during test.
-    "fld_ttff" REAL DEFAULT(0),                         -- Time to first failure.
-    "fld_avg_fef" REAL DEFAULT(0.7),                    -- Average fix effectiveness factor for test.
-    "fld_grouped" INTEGER DEFAULT(0),                   -- Indicates whether or not the observed failure times are exact (0) or grouped (1).
-    "fld_group_interval" REAL DEFAULT(0.0),             -- The length of the grouping interval if failure times are grouped.
-    "fld_cum_time" REAL DEFAULT(0.0),                   -- Cumulative test time.
-    "fld_cum_failures" INTEGER DEFAULT(0.0),            -- Cumulative number of failures.
-    "fld_confidence" REAL DEFAULT(0.75)                 -- Confidence level for GoF tests, MTBF bounds, etc.
-);
-
-CREATE TABLE "tbl_rel_growth" (
-    "fld_test_id" INTEGER,
-    "fld_phase_id" INTEGER,
-    "fld_growth_rate" REAL DEFAULT(0),                  -- Average growth rate across entire reliability growth phase.
-    "fld_ms" REAL DEFAULT(0),                           -- Management strategy (i.e., the percent of problems that will be fixed).
-    "fld_fef_avg" REAL DEFAULT(0),                      -- Average fix effectiveness factor across entire reliability growth phase.
-    "fld_mi" REAL DEFAULT(0),                           -- Initial MTBF for the test phase.
-    "fld_mf" REAL DEFAULT(0),                           -- Final MTBF for the test phase.
-    "fld_ma" REAL DEFAULT(0),                           -- Average MTBF over the test phase.
-    "fld_ff_prob" REAL DEFAULT(0),                      -- Probability of observing a failure during test phase.
-    "fld_ti" REAL DEFAULT(0),                           -- Time to first failure.
-    "fld_test_time" REAL DEFAULT(0),                    -- Total test time for the test phase.
-    "fld_num_fails" INTEGER DEFAULT(0),                 -- Number of failures expected during the test phase.
-    "fld_start_date" INTEGER DEFAULT(719163),           -- Start date of test phase.
-    "fld_end_date" INTEGER DEFAULT(719163),             -- End date of test phase.
-    "fld_weeks" REAL DEFAULT(0),                        -- Length of test phase in weeks
-    "fld_test_units" INTEGER DEFAULT(0),                -- Number of test units used in test phase.
-    "fld_tpu" REAL DEFAULT(0),                          -- Average test time per test unit.
-    "fld_tpupw" REAL DEFAULT(0),                        -- Average test time per test unit per week.
-    PRIMARY KEY ("fld_test_id", "fld_phase_id")
-);
-
-CREATE TABLE "tbl_test_status" (
-    "fld_test_id" INTEGER NOT NULL,                     -- ID of the test plan.
-    "fld_update_date" INTEGER DEFAULT(719163),          -- Date the update was made.
-    "fld_cum_hours" REAL DEFAULT(0.0),                  -- Cumulative number of test hours when updated.
-    "fld_failure_rate" REAL DEFAULT(0.0),               -- Estimated failure rate.
-    "fld_mtbf" REAL DEFAULT(0.0)                        -- Estimated MTBF.
-);
-
---
--- Create tables for storing accelerated test planning information.
---
-DROP TABLE IF EXISTS "tbl_pof";
-CREATE TABLE "tbl_pof" (
-    "fld_assembly_id" INTEGER DEFAULT(0),                           -- ID of the hardware assembly.
-    "fld_mode_id" INTEGER DEFAULT(0),                               -- ID of the failure mode.
-    "fld_mechanism_id" INTEGER DEFAULT(0),                          -- ID of the failure mechanism.
-    "fld_load_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,       -- ID of the operating load condition.
-    "fld_load_description" VARCHAR(512) DEFAULT(''),                -- Description of the operating load condition.
-    "fld_primary_stress" VARCHAR(256) DEFAULT(''),                  -- Description of the primary operational stress.
-    "fld_secondary_stress" VARCHAR(256) DEFAULT(''),                -- Description of the secondary operational stress.
-    "fld_tertiary_stress" VARCHAR(256) DEFAULT(''),                 -- Description of the tertiary operational stress.
-    "fld_priority" VARCHAR(256) DEFAULT(''),                        -- Priority of the failure mechanism.
-    "fld_primary_measurable" VARCHAR(256) DEFAULT(''),              -- Description of the measurable parameter for the primary stress.
-    "fld_primary_load_history" VARCHAR(256) DEFAULT(''),            -- Description of the method for quantifying the primary stress.
-    "fld_secondary_measureable" VARCHAR(256) DEFAULT(''),           -- Description of the measurable parameter for the secondary stress.
-    "fld_secondary_load_history" VARCHAR(256) DEFAULT(''),          -- Description of the method for quantifying the secondary stress.
-    "fld_tertiary_measurable" VARCHAR(256) DEFAULT(''),             -- Description of the measurable parameter for the tertiary stress.
-    "fld_tertiary_load_history" VARCHAR(256) DEFAULT(''),           -- Description of the method for quantifying the tertiary stress.
-    "fld_remarks" BLOB,                                             -- User remarks/notes.
-    "fld_parent" VARCHAR(16) NOT NULL DEFAULT('0')                  -- Path of the parent failure mode or failure mechanism.
-);
-
 
 --
 -- Create tables for storing maintenance planning analysis information.
