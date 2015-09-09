@@ -40,3 +40,10 @@ docs/Makefile
 /The_Reliability_ToolKit_RTK_.egg-info/PKG-INFO
 /The_Reliability_ToolKit_RTK_.egg-info/pbr.json
 /tests/.coveragerc
+/RTK.anjuta
+/.anjuta/default.profile
+/.anjuta/session/anjuta.session
+/.anjuta/session/dock-layout.xml
+/.anjuta_sym_db.db
+/RTKUML.xmi
+/rtk/metricData.sql
