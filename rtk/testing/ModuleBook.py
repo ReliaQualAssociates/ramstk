@@ -277,7 +277,7 @@ class ModuleView(object):
 
         return False
 
-    def _on_cell_edited(self, __cell, __path, new_text, index):
+    def _on_cell_edited(self, __cell, __path, __new_text, __index):
         """
         Callback method to handle events for the Testing package Module Book
         gtk.CellRenderer().  It is called whenever a Module Book
@@ -285,14 +285,14 @@ class ModuleView(object):
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str __path: the path of the gtk.CellRenderer() that was edited.
-        :param str new_text: the new text in the gtk.CellRenderer() that was
-                             edited.
-        :param int index: the position in the Testing pacakge Module Book
-                          gtk.TreeView().
+        :param str __new_text: the new text in the gtk.CellRenderer() that was
+                               edited.
+        :param int __index: the position in the Testing pacakge Module Book
+                            gtk.TreeView().
         :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Use this function or delete it.
         self._workbook.load(self._model)
 
         return False

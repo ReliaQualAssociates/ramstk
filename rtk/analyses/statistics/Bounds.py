@@ -219,13 +219,12 @@ def calculate_beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     :rtype: tuple of floats
     """
 
-    from scipy.stats import norm            # pylint: disable=E0611
-
     if alpha < 0.0:
-        _util.rtk_information(_(u"Confidence level take a value between 0 and "
-                                u"100 inclusive [0, 100].  Please select and "
-                                u"appropriate confidence level and try "
-                                u"again."))
+# TODO: Move to the view module.
+        #_util.rtk_information(_(u"Confidence level take a value between 0 and "
+        #                        u"100 inclusive [0, 100].  Please select and "
+        #                        u"appropriate confidence level and try "
+        #                        u"again."))
         return a, m, b, 0.0
     elif alpha > 1.0:
         _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))

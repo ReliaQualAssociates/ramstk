@@ -24,7 +24,7 @@ import locale
 import numpy as np
 from math import exp, log, sqrt
 from scipy.optimize import fsolve
-from scipy.stats import chi2, linregress      # pylint: disable=E0611
+from scipy.stats import chi2                # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
@@ -76,15 +76,15 @@ def _gr(gr, mi, mf, ttt, t1):
     return (ttt / t1)**gr + (mf / mi) * (gr - 1)
 
 
-def running_sum(a):
+def running_sum(values):
     """
     Function used to calculate the running sum of values from a list.
 
-    :param list a: the list of values to calculate the running sum.
+    :param list values: the list of values to calculate the running sum.
     """
 
     _total = 0
-    for _item in a:
+    for _item in values:
         _total += _item
         yield _total
 
@@ -981,11 +981,10 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
 
         return False
 
-    def assess_growth_rate(self, phase=0):
+    def assess_growth_rate(self):
         """
         Method to assess the actual growth rate occuring during a Growth Test.
 
-        :param int phase: the test phase to assess the actual growth rate for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
