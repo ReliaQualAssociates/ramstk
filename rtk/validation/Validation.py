@@ -229,9 +229,8 @@ class Validation(object):
     manage one or more Validation data models.  The attributes of a
     Validation data controller are:
 
-    :ivar :py:class:`rtk.dao.DAO` _dao: the Data Access Object to use when
-                                        communicating with the RTK Project
-                                        database.
+    :ivar _dao: the :class:`rtk.dao.DAO` to use when communicating with the RTK
+                Project database.
     :ivar int _last_id: the last Validation ID used.
     :ivar dict dicTasks: Dictionary of the Validation data models managed.  Key
                          is the Validation ID; value is a pointer to the

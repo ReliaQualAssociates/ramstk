@@ -60,7 +60,6 @@ class Model(object):
 
     :ivar int _int_mission_id: default value: -1
     :ivar float _flt_test_termination_time: default value: 0.0
-
     :ivar int revision_id: default value: None
     :ivar int assembly_id: default value: None
     :ivar int test_id: default value: 0
@@ -165,8 +164,8 @@ class Testing(object):
     model and an RTK view model.  A single Testing controller can manage one or
     more Testing data models.  The attributes of a Testing data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-    Project database.
+    :ivar _dao: the :class:`rtk.dao.DAO` to use when communicating with the RTK
+                Project database.
     :ivar _last_id: the last Testing ID used.
     :ivar dicTests: Dictionary of the Testing data models managed.  Key is the
                     Test ID; value is a pointer to the Testing data model

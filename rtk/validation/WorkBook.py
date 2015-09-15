@@ -74,14 +74,47 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                 signals for each gtk.Widget() associated with
                                 an editable Validation attribute.
 
-    :ivar :py:class:`rtk.gui.gtk.WorkBook` _workview: the RTK top level Work
-                                                      View window to embed the
-                                                      Validation Work Book
-                                                      into.
-    :ivar :py:class:`rtk.validation.Validation.Model` _model: the Validation
-                                                              data model whose
-                                                              attributes are
-                                                              being displayed.
+    :ivar _workview: the RTK top level :py:class:`rtk.gui.gtk.WorkBook` window
+                     to embed the Validation Work Book into.
+    :ivar _model: the Validation :py:class:`rtk.validation.Validation.Model`
+                  whose attributes are being displayed.
+    :ivar dtcValidation: the :py:class:`rtk.validation.Validation.Validation`
+                         to use with this Work Book.
+
+    :ivar gtk.Button btnEndDate:
+    :ivar gtk.Button btnStartDate:
+    :ivar gtk.Combo cmbTaskType:
+    :ivar gtk.Combo cmbMeasurementUnit:
+    :ivar gtk.SpinButton spnStatus:
+    :ivar gtk.Entry txtID:
+    :ivar gtk.Entry txtMaxAcceptable:
+    :ivar gtk.Entry txtMeanAcceptable:
+    :ivar gtk.Entry txtMinAcceptable:
+    :ivar gtk.Entry txtVarAcceptable:
+    :ivar gtk.Entry txtSpecification:
+    :ivar gtk.Entry txtTask:
+    :ivar gtk.Entry txtEndDate:
+    :ivar gtk.Entry txtStartDate:
+    :ivar gtk.Entry txtMinTime:
+    :ivar gtk.Entry txtExpTime:
+    :ivar gtk.Entry txtMaxTime:
+    :ivar gtk.Entry txtMinCost:
+    :ivar gtk.Entry txtExpCost:
+    :ivar gtk.Entry txtMaxCost:
+    :ivar gtk.Entry txtMeanTimeLL:
+    :ivar gtk.Entry txtMeanTime:
+    :ivar gtk.Entry txtMeanTimeUL:
+    :ivar gtk.Entry txtMeanCostLL:
+    :ivar gtk.Entry txtMeanCost:
+    :ivar gtk.Entry txtMeanCostUL:
+    :ivar gtk.Entry txtProjectTimeLL:
+    :ivar gtk.Entry txtProjectTime:
+    :ivar gtk.Entry txtProjectTimeUL:
+    :ivar gtk.Entry txtProjectCostLL:
+    :ivar gtk.Entry txtProjectCost:
+    :ivar gtk.Entry txtProjectCostUL:
+    :ivar mpl.FigureCanvas pltPlot1:
+    :ivar mpl.Axes axAxis1:
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
@@ -120,44 +153,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     +----------+-------------------------------------------+
     |    16    | txtMaxCost `focus_out_event`              |
     +----------+-------------------------------------------+
-
-    :ivar :py:class:`rtk.validation.Validation.Validation` dtcValidation: the
-        data controller to use with this Work Book.
-
-    :ivar gtk.Button btnEndDate:
-    :ivar gtk.Button btnStartDate:
-    :ivar gtk.Combo cmbTaskType:
-    :ivar gtk.Combo cmbMeasurementUnit:
-    :ivar gtk.SpinButton spnStatus:
-    :ivar gtk.Entry txtID:
-    :ivar gtk.Entry txtMaxAcceptable:
-    :ivar gtk.Entry txtMeanAcceptable:
-    :ivar gtk.Entry txtMinAcceptable:
-    :ivar gtk.Entry txtVarAcceptable:
-    :ivar gtk.Entry txtSpecification:
-    :ivar gtk.Entry txtTask:
-    :ivar gtk.Entry txtEndDate:
-    :ivar gtk.Entry txtStartDate:
-    :ivar gtk.Entry txtMinTime:
-    :ivar gtk.Entry txtExpTime:
-    :ivar gtk.Entry txtMaxTime:
-    :ivar gtk.Entry txtMinCost:
-    :ivar gtk.Entry txtExpCost:
-    :ivar gtk.Entry txtMaxCost:
-    :ivar gtk.Entry txtMeanTimeLL:
-    :ivar gtk.Entry txtMeanTime:
-    :ivar gtk.Entry txtMeanTimeUL:
-    :ivar gtk.Entry txtMeanCostLL:
-    :ivar gtk.Entry txtMeanCost:
-    :ivar gtk.Entry txtMeanCostUL:
-    :ivar gtk.Entry txtProjectTimeLL:
-    :ivar gtk.Entry txtProjectTime:
-    :ivar gtk.Entry txtProjectTimeUL:
-    :ivar gtk.Entry txtProjectCostLL:
-    :ivar gtk.Entry txtProjectCost:
-    :ivar gtk.Entry txtProjectCostUL:
-    :ivar mpl.FigureCanvas pltPlot1:
-    :ivar mpl.Axes axAxis1:
     """
 
     def __init__(self, workview, modulebook):
@@ -486,7 +481,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _fxdGenDataQuad1.put(self.txtID, _x_pos, 5)
         _fxdGenDataQuad1.put(self.txtTask, _x_pos, 35)
-        _buffer = self.txtTask.get_child().get_child()
         _fxdGenDataQuad1.put(self.cmbTaskType, _x_pos, _y_pos[0])
         _fxdGenDataQuad1.put(self.txtSpecification, _x_pos, _y_pos[1])
         _fxdGenDataQuad1.put(self.cmbMeasurementUnit, _x_pos, _y_pos[2] - 3)
@@ -542,6 +536,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _fxdGenDataQuad4.show_all()
 
+        # Connect widgets to callback functions.
+        _buffer = self.txtTask.get_child().get_child()
         self._lst_handler_id.append(_buffer.connect('focus-out-event',
                                                     self._on_focus_out, 0))
         self._lst_handler_id.append(self.cmbTaskType.connect(

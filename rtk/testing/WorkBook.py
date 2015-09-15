@@ -438,7 +438,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _create_planning_inputs_page(self, notebook):     # pylint: disable=R0914, R0915
+    def _create_planning_inputs_page(self, notebook):   # pylint: disable=R0914, R0915
         """
         Creates the Testing class gtk.Notebook() page for displaying the test
         planning inputs for the selected Test.
@@ -479,7 +479,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _create_feasibility_page(self, notebook):       # pylint: disable=R0914, R0915
+    def _create_feasibility_page(self, notebook):   # pylint: disable=R0914, R0915
         """
         Creates the Testing class gtk.Notebook() page for displaying the test
         feasibility assessment for the selected Test.
@@ -521,7 +521,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _create_test_result_page(self, notebook):     # pylint: disable=R0914, R0915
+    def _create_test_result_page(self, notebook):   # pylint: disable=R0914, R0915
         """
         Creates the Testing class gtk.Notebook() page for displaying the test
         results for the selected Test.
@@ -803,7 +803,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+    def _on_focus_out(self, entry, __event, index): # pylint: disable=R0912
         """
         Responds to gtk.Entry() focus_out signals and calls the correct
         function or method, passing any parameters as needed.

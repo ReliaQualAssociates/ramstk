@@ -328,37 +328,37 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        if index == 2:
+        if self._lst_col_order[index] == 2:
             self._model.task_description = new_text
-        elif index == 3:
+        elif self._lst_col_order[index] == 3:
             self._model.task_type = _conf.RTK_TASK_TYPE.index(new_text) + 1
-        elif index == 4:
+        elif self._lst_col_order[index] == 4:
             self._model.task_specification = new_text
-        elif index == 5:
+        elif self._lst_col_order[index] == 5:
             self._model.measurement_unit = _conf.RTK_MEASUREMENT_UNITS.index(new_text) + 1
-        elif index == 6:
+        elif self._lst_col_order[index] == 6:
             self._model.min_acceptable = float(new_text)
-        elif index == 7:
+        elif self._lst_col_order[index] == 7:
             self._model.mean_acceptable = float(new_text)
-        elif index == 8:
+        elif self._lst_col_order[index] == 8:
             self._model.max_acceptable = float(new_text)
-        elif index == 9:
+        elif self._lst_col_order[index] == 9:
             self._model.variance_acceptable = float(new_text)
-        elif index == 12:
+        elif self._lst_col_order[index] == 12:
             self._model.status = float(new_text)
-        elif index == 13:
+        elif self._lst_col_order[index] == 13:
             self._model.minimum_time = float(new_text)
-        elif index == 14:
+        elif self._lst_col_order[index] == 14:
             self._model.average_time = float(new_text)
-        elif index == 15:
+        elif self._lst_col_order[index] == 15:
             self._model.maximum_time = float(new_text)
-        elif index == 18:
+        elif self._lst_col_order[index] == 18:
             self._model.minimum_cost = float(new_text)
-        elif index == 19:
+        elif self._lst_col_order[index] == 19:
             self._model.average_cost = float(new_text)
-        elif index == 20:
+        elif self._lst_col_order[index] == 20:
             self._model.maximum_cost = float(new_text)
-        elif index == 23:
+        elif self._lst_col_order[index] == 23:
             self._model.confidence = float(new_text)
 
         self._workbook.load(self._model)

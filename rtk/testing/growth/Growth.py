@@ -38,6 +38,7 @@ except ImportError:                         # pragma: no cover
     import rtk.analyses.statistics.CrowAMSAA as CrowAMSAA
     import rtk.analyses.statistics.Bounds as Bounds
     from rtk.testing.Testing import Model as Testing
+    from rtk.testing.Testing import Testing as dtcTesting
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

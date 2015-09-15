@@ -130,9 +130,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
     Work Book view are:
 
     :ivar list _lst_handler_id: default value: []
-
-    :ivar :py:class:`rtk.testing.growth.Model` _testing_model: default value: None
-
+    :ivar _testing_model: :py:class:`rtk.testing.growth.Model`
     :ivar gtk.Button btnFindMTBFI:
     :ivar gtk.Button btnFindTTFF:
     :ivar gtk.CheckButton chkFixMTBFI:
@@ -143,9 +141,9 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
     :ivar gtk.CheckButton chkFixAverageFEF:
     :ivar gtk.CheckButton chkFixProgramProb:
     :ivar gtk.CheckButton chkFixTTFF:
-    :ivar gtk.ComboBox cmbPlanModel:
+    :ivar gtk.ComboBox cmbPlanModel: selects and displays the planning model.
     :ivar gtk.ComboBox cmbAssessModel:
-    :ivar :py:class:`rtk.testing.growth.Growth` dtcGrowth:
+    :ivar dtcGrowth: :py:class:`rtk.testing.growth.Growth`
     :ivar gtk.SpinButton spnNumPhases:
     :ivar gtk.TreeView tvwRGPlanDetails:
     :ivar gtk.Entry txtTechReq:
@@ -1865,7 +1863,7 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         Method to load the Reliability Growth plot.
 
         :return: False if successful or True if an error is encountered.
-        :rtype : boolean
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
