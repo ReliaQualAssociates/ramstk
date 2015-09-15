@@ -60,6 +60,8 @@ from software.ModuleBook import ModuleView as mvwSoftware
 from testing.Testing import Testing
 from testing.growth.Growth import Growth
 from testing.ModuleBook import ModuleView as mvwTesting
+from validation.Validation import Validation
+from validation.ModuleBook import ModuleView as mvwValidation
 
 # Add localization support.
 _ = gettext.gettext
@@ -215,6 +217,7 @@ class RTK(object):
         dtcSoftwareBoM = SoftwareBoM()
         dtcTesting = Testing()
         dtcGrowth = Growth()
+        dtcValidation = Validation()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -255,6 +258,9 @@ class RTK(object):
         _modview = self.module_book.create_module_page(mvwTesting,
                                                        dtcTesting, -1,
                                                        dtcGrowth)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwValidation,
+                                                       dtcValidation, -1)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
@@ -384,6 +390,16 @@ class RTK(object):
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_USERS = _results
+
+        _query = "SELECT fld_validation_type_desc FROM tbl_validation_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_TASK_TYPE = [_task[0] for _task in _results]
+
+        _query = "SELECT fld_measurement_code FROM tbl_measurement_units"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_MEASUREMENT_UNITS = [_unit[0] for _unit in _results]
 
         return False
 

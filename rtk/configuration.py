@@ -396,8 +396,17 @@ RTK_RPN_DETECTION = []
 RTK_DAMAGE_MODELS = []
 RTK_OPERATING_PARAMETERS = []
 
+# ------------------------------------------------------------------------- #
+# Hardware configuration options.                                           #
+# ------------------------------------------------------------------------- #
 RTK_CATEGORIES = {}
 RTK_SUBCATEGORIES = {}
+
+# ------------------------------------------------------------------------- #
+# Validation configuration options.                                         #
+# ------------------------------------------------------------------------- #
+RTK_TASK_TYPE = []
+RTK_MEASUREMENT_UNITS = []
 
 COM_BACKEND = ''
 BACKEND = ''

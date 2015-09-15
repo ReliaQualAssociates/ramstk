@@ -1214,14 +1214,6 @@ CREATE TABLE "rtk_growth_testing" (
 );
 
 
-CREATE TABLE "tbl_test_status" (
-    "fld_test_id" INTEGER NOT NULL,                     -- ID of the test plan.
-    "fld_update_date" INTEGER DEFAULT(719163),          -- Date the update was made.
-    "fld_cum_hours" REAL DEFAULT(0.0),                  -- Cumulative number of test hours when updated.
-    "fld_failure_rate" REAL DEFAULT(0.0),               -- Estimated failure rate.
-    "fld_mtbf" REAL DEFAULT(0.0)                        -- Estimated MTBF.
-);
-
 --
 -- Create tables for storing accelerated test planning information.
 --
@@ -1250,11 +1242,12 @@ CREATE TABLE "tbl_pof" (
 --
 -- Create tables for storing validation plan information.
 --
-CREATE TABLE "tbl_validation" (
+DROP TABLE IF EXISTS "rtk_validation";
+CREATE TABLE "rtk_validation" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),
     "fld_validation_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_task_desc" BLOB,
-    "fld_task_type" VARCHAR(256) DEFAULT(''),
+    "fld_task_type" INTEGER DEFAULT(0),
     "fld_task_specification" VARCHAR(128) NOT NULL DEFAULT(''),
     "fld_measurement_unit" INTEGER DEFAULT(0),
     "fld_min_acceptable" REAL DEFAULT(0),
@@ -1273,7 +1266,16 @@ CREATE TABLE "tbl_validation" (
     "fld_average_cost" REAL DEFAULT(0),
     "fld_maximum_cost" REAL DEFAULT(0),
     "fld_mean_cost" REAL DEFAULT(0),
-    "fld_cost_variance" REAL DEFAULT(0)
+    "fld_cost_variance" REAL DEFAULT(0),
+    "fld_confidence" REAL DEFAULT(95.0)
+);
+
+DROP TABLE IF EXISTS "rtk_validation_status";
+CREATE TABLE "rtk_validation_status" (
+    "fld_revision_id" INTEGER DEFAULT(0),
+    "fld_update_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL PRIMARY KEY,
+    "fld_time_remaining" REAL DEFAULT(0),
+    "fld_cost_remaining" REAL DEFAULT(0)
 );
 
 CREATE TABLE "tbl_validation_matrix" (
@@ -1281,13 +1283,6 @@ CREATE TABLE "tbl_validation_matrix" (
     "fld_requirement_id" INTEGER NOT NULL,
     "fld_revision_id" INTEGER DEFAULT(1),
     PRIMARY KEY ("fld_validation_id","fld_requirement_id")
-);
-
-CREATE TABLE "tbl_validation_status" (
-    "fld_revision_id" INTEGER DEFAULT(0),
-    "fld_update_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL PRIMARY KEY,
-    "fld_time_remaining" REAL DEFAULT(0),
-    "fld_cost_remaining" REAL DEFAULT(0)
 );
 
 --
