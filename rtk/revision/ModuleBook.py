@@ -103,6 +103,7 @@ class ModuleView(object):
         # Initialize private scalar attributes.
         self._model = None
         self._listbook = None
+        self._dao = None
 
         # Initialize public scalar attributes.
         self.dtcRevision = controller
@@ -130,6 +131,12 @@ class ModuleView(object):
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
+        _scrollwindow.show_all()
+
+        _icon = _conf.ICON_DIR + '32x32/revision.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _image = gtk.Image()
+        _image.set_from_pixbuf(_icon)
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" + _(u"Revisions") + "</span>")
@@ -138,9 +145,12 @@ class ModuleView(object):
         _label.show_all()
         _label.set_tooltip_text(_(u"Displays the program revisions."))
 
-        _scrollwindow.show_all()
+        _hbox = gtk.HBox()
+        _hbox.pack_start(_image)
+        _hbox.pack_end(_label)
+        _hbox.show_all()
 
-        view.notebook.insert_page(_scrollwindow, tab_label=_label,
+        view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
                                   position=position)
 
         # Create a Work View to associate with this Module View.
@@ -157,6 +167,8 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
+
+        self._dao = dao
 
         (_revisions, __) = self.dtcRevision.request_revisions(dao)
 
@@ -245,6 +257,21 @@ class ModuleView(object):
 
         _usage_model = self.dtcProfile.dicProfiles[_revision_id]
         _definitions = self.dtcDefinitions.dicDefinitions[_revision_id]
+
+        # Load the hardware list for the selected revision.
+        _query = "SELECT fld_name, fld_hardware_id, fld_description \
+                  FROM rtk_hardware \
+                  WHERE fld_revision_id={0:d} \
+                  AND fld_part=0".format(self._model.revision_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        _conf.RTK_HARDWARE_LIST = [_assembly for _assembly in _results]
+
+        # Load the software list for the selected revision.
+        _query = "SELECT fld_description, fld_software_id, fld_description \
+                  FROM rtk_software \
+                  WHERE fld_revision_id={0:d}".format(self._model.revision_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        _conf.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
         self._workbook.load(self._model, _usage_model, _definitions)
 

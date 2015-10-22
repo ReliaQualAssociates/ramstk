@@ -132,6 +132,11 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
+        _icon = _conf.ICON_DIR + '32x32/software.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _image = gtk.Image()
+        _image.set_from_pixbuf(_icon)
+
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" + _(u"Software") +
                           "</span>")
@@ -141,7 +146,12 @@ class ModuleView(object):
         _label.set_tooltip_text(_(u"Displays the system software structure "
                                   u"for the selected revision."))
 
-        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_label,
+        _hbox = gtk.HBox()
+        _hbox.pack_start(_image)
+        _hbox.pack_end(_label)
+        _hbox.show_all()
+
+        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
                                       position=position)
 
         # Create a List View to associate with this Module View.
