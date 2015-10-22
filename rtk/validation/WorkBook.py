@@ -611,6 +611,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                   u"selected V&V task."))
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
+        return False
+
     def _create_plot_tab(self, notebook):
         """
         Method to create the gtk.Notebook() tab and populate it with the

@@ -470,7 +470,10 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         if self.listview.get_child() is not None:
             self.listview.remove(self.listview.get_child())
 
-        _listbook = _conf.RTK_MODULES[page_num]._listbook
+        try:
+            _listbook = _conf.RTK_MODULES[page_num]._listbook
+        except IndexError:
+            _listbook = None
 
         if _listbook is not None:
             self.listview.add(_listbook)
@@ -479,7 +482,10 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         if self.workview.get_child() is not None:
             self.workview.remove(self.workview.get_child())
 
-        _workbook = _conf.RTK_MODULES[page_num]._workbook
+        try:
+            _workbook = _conf.RTK_MODULES[page_num]._workbook
+        except IndexError:
+            _workbook = None
 
         if _workbook is not None:
             self.workview.add(_workbook)

@@ -104,7 +104,7 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         self.set_default_size(_width, _height)
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)
-        self.move((_width / 2), (_height / 3))
+        self.move((_width / 1), (_height / 2))
 
         self.connect('delete_event', self.destroy)
 

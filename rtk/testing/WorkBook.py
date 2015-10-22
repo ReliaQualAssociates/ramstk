@@ -394,6 +394,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed.put(self.txtCumFails, _x_pos, _y_pos1[5])
         _fixed.put(self.txtAttachment, _x_pos, _y_pos1[6])
 
+        # Configure the gtk.SpinButtons.
+        self.spnConfidence.set_digits(int(_conf.PLACES))
+        self.spnConfidence.set_increments(0.1, 1.0)
+        self.spnConfidence.set_range(0.0, 100.0)
+
+        self.spnConsumerRisk.set_digits(int(_conf.PLACES))
+        self.spnConsumerRisk.set_increments(0.1, 1.0)
+        self.spnConsumerRisk.set_range(0.0, 100.0)
+
+        self.spnProducerRisk.set_digits(int(_conf.PLACES))
+        self.spnProducerRisk.set_increments(0.1, 1.0)
+        self.spnProducerRisk.set_range(0.0, 100.0)
+
+        # Connect gtk.Widget() signals to callback methods.
         _textview = self.txtDescription.get_child().get_child()
         self._lst_handler_id.append(
             _textview.connect('focus-out-event', self._on_focus_out, 0))
@@ -408,19 +422,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.spnProducerRisk.connect('value-changed',
                                          self._on_value_changed, 4))
-
-        # Configure the gtk.SpinButtons.
-        self.spnConfidence.set_digits(int(_conf.PLACES))
-        self.spnConfidence.set_increments(0.1, 1.0)
-        self.spnConfidence.set_range(0.0, 100.0)
-
-        self.spnConsumerRisk.set_digits(int(_conf.PLACES))
-        self.spnConsumerRisk.set_increments(0.1, 1.0)
-        self.spnConsumerRisk.set_range(0.0, 100.0)
-
-        self.spnProducerRisk.set_digits(int(_conf.PLACES))
-        self.spnProducerRisk.set_increments(0.1, 1.0)
-        self.spnProducerRisk.set_range(0.0, 100.0)
 
         _fixed.show_all()
 
