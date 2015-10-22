@@ -464,7 +464,7 @@ class Function(object):
                          SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
                          SUM(1.0 / mttr), SUM(1.0 / fld_mmt), \
                          SUM(t2.fld_cost) \
-                  FROM tbl_system AS t2 \
+                  FROM rtk_hardware AS t2 \
                   INNER JOIN tbl_functional_matrix AS t1 \
                   ON t2.fld_assembly_id = t1.fld_assembly_id \
                   WHERE t1.fld_function_id={0:d} \

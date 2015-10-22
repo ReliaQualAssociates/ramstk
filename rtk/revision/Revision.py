@@ -509,7 +509,7 @@ class Revision(object):
                          SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
                          SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt), \
                          SUM(fld_cost), COUNT(fld_assembly_id) \
-                  FROM tbl_system \
+                  FROM rtk_hardware \
                   WHERE fld_revision_id={0:d} \
                   AND fld_part=1".format(revision_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
@@ -526,7 +526,7 @@ class Revision(object):
                              SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
                              SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt), \
                              SUM(fld_cost) \
-                      FROM tbl_system \
+                      FROM rtk_hardware \
                       WHERE fld_revision_id={0:d} \
                       AND fld_level=1 AND fld_part=0".format(revision_id)
             (_results, _error_code, __) = self._dao.execute(_query,
@@ -543,7 +543,7 @@ class Revision(object):
                              fld_failure_rate_mission, \
                              (1.0 / fld_mpmt),(1.0 / fld_mcmt), \
                              (1.0 / fld_mttr), (1.0 / fld_mmt), fld_cost \
-                      FROM tbl_system \
+                      FROM rtk_hardware \
                       WHERE fld_revision_id={0:d} \
                       AND fld_level=0".format(revision_id)
             (_results, _error_code, __) = self._dao.execute(_query,
