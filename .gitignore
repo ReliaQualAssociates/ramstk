@@ -47,3 +47,4 @@ docs/Makefile
 /.anjuta_sym_db.db
 /RTKUML.xmi
 /rtk/metricData.sql
+/devtools/CodeCounts.sql

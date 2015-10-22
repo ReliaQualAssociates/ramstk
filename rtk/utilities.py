@@ -821,6 +821,89 @@ def import_project(__widget, __app):
     return False
 
 
+def select_source_file(assistant, title):
+    """
+    Function to select the file containing the data to import to the open RTK
+    Program database.
+
+    :param gtk.Assistant assistant: the gtk.Assistant() calling this function.
+    :return: _headers, _contents; lists containing the column headings and
+             each line from the source file.
+    :rtype: lists
+    """
+
+    # Get the user's selected file and write the results.
+    _dialog = gtk.FileChooserDialog(title, None,
+                                    gtk.DIALOG_MODAL |
+                                    gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+    _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+    _dialog.set_current_folder(_conf.PROG_DIR)
+
+    # Set some filters to select all files or only some text files.
+    _filter = gtk.FileFilter()
+    _filter.set_name(u"All files")
+    _filter.add_pattern("*")
+    _dialog.add_filter(_filter)
+
+    _filter = gtk.FileFilter()
+    _filter.set_name("Text Files (csv, txt)")
+    _filter.add_mime_type("text/csv")
+    _filter.add_mime_type("text/txt")
+    _filter.add_mime_type("application/xls")
+    _filter.add_pattern("*.csv")
+    _filter.add_pattern("*.txt")
+    _filter.add_pattern("*.xls")
+    _dialog.add_filter(_filter)
+
+    # Run the dialog and write the file.
+    _headers = []
+    _contents = []
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _filename = _dialog.get_filename()
+        _file = open(_filename, 'r')
+
+        __, _extension = os.path.splitext(_filename)
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
+        for _line in _file:
+            _contents.append([_line.rstrip('\n')])
+
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
+
+        _dialog.destroy()
+
+    else:
+        _dialog.destroy()
+        assistant.destroy()
+
+    return _headers, _contents
+
+
+def missing_to_default(field, default):
+    """
+    Function to convert missing values from the external file into default
+    values before loading into the open RTK Program database.
+
+    :param field: the original, missing, value.
+    :param default: the new, default, value.
+    :return: field; the new value if field is an emtpy string, the old value
+             otherwise.
+    :rtype: any
+    """
+
+    if field == '':
+        return default
+    else:
+        return field
+
+
 def confirm_action(_prompt_, _image_='default', _parent_=None):
     """
     Dialog to confirm user actions such as deleting a Project.
@@ -1623,10 +1706,9 @@ def date_select(__widget, __event=None, entry=None):
     """
     Function to select a date from a calendar widget.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param entry: the gtk.Entry() widget in which to display the date.
-    :type entry: gtk.Entry
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param gtk.Entry entry: the gtk.Entry() widget in which to display the
+                            date.
     :return: _date
     :rtype: date string (YYYY-MM-DD)
     """
@@ -1696,9 +1778,9 @@ def set_cursor(app, cursor):
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    app.winTree.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.winParts.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 

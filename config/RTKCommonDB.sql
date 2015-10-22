@@ -385,6 +385,30 @@ INSERT INTO "tbl_incident_type" VALUES(7,'Test Information');
 INSERT INTO "tbl_incident_type" VALUES(8,'Manuals');
 INSERT INTO "tbl_incident_type" VALUES(9,'Other');
 
+DROP TABLE IF EXISTS "tbl_criticality";
+CREATE TABLE "tbl_criticality" (
+    "fld_criticality_id" INTEGER NOT NULL,
+    "fld_criticality_name" VARCHAR(256),
+    "fld_criticality_cat" VARCHAR(218),
+    "fld_criticality_description" BLOB
+, "fld_criticality_value" INTEGER);
+INSERT INTO "tbl_criticality" VALUES(1,'Catastrophic','I','Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.',4);
+INSERT INTO "tbl_criticality" VALUES(2,'Critical','II','Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.',3);
+INSERT INTO "tbl_criticality" VALUES(3,'Marginal','III','Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.',2);
+INSERT INTO "tbl_criticality" VALUES(4,'Negligble','IV','Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.',1);
+
+DROP TABLE IF EXISTS "rtk_detection_methods";
+CREATE TABLE "rtk_detection_methods" (
+    "fld_detection_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fld_detection_method" VARCHAGE(256) DEFAULT('')
+);
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Code Review");
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Error/Anomaly Analysis");
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Structure Analysis");
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Random Testing");
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Functional Testing");
+INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Branch Testing");
+
 CREATE TABLE "tbl_incident_relevency" (
   "fld_relevency_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_relevency_q" VARCHAR(512),

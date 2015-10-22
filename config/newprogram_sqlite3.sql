@@ -1138,22 +1138,22 @@ CREATE TABLE "rtk_tests" (
     "fld_test_type" INTEGER NOT NULL DEFAULT(0),                    -- Type of test.
     "fld_attachment" VARCHAR(512),                                  -- URL to any attachments associated with the test.
     "fld_cum_time" REAL DEFAULT(0.0),                               -- Cumulative test time.
-    "fld_cum_failures" INTEGER DEFAULT(0.0),                        -- Cumulative number of failures.
+    "fld_cum_failures" INTEGER DEFAULT(0),                          -- Cumulative number of failures.
     "fld_confidence" REAL DEFAULT(0.75),                            -- Confidence level for GoF tests, MTBF bounds, etc.
-    "fld_consumer_risk" REAL DEFAULT(0),                            -- The probability of the consumer accepting an item that fails to meet it's reliability requirement.
-    "fld_producer_risk" REAL DEFAULT(0),                            -- The probability of the producer rejecting an item that actually meets it's reliability requirement.
+    "fld_consumer_risk" REAL DEFAULT(0.0),                          -- The probability of the consumer accepting an item that fails to meet it's reliability requirement.
+    "fld_producer_risk" REAL DEFAULT(0.0),                          -- The probability of the producer rejecting an item that actually meets it's reliability requirement.
     "fld_plan_model" INTEGER DEFAULT(0),                            -- The growth planning model to use (1=Duane, 2=Crow-AMSAA, 3=SPLAN, 4=SSPLAN).
     "fld_assess_model" INTEGER DEFAULT(0),                          -- The growth assessment model to use (1=Duane, 2=Crow-AMSAA, 3=Crow Extended)
-    "fld_tr" REAL DEFAULT(0),                                       -- Technical requirement for the program MTBF.
-    "fld_mg" REAL DEFAULT(0),                                       -- Goal MTBF for the entire test.
-    "fld_mgp" REAL DEFAULT(0),                                      -- Growth potential MTBF for the entire test.
+    "fld_tr" REAL DEFAULT(0.0),                                     -- Technical requirement for the program MTBF.
+    "fld_mg" REAL DEFAULT(0.0),                                     -- Goal MTBF for the entire test.
+    "fld_mgp" REAL DEFAULT(0.0),                                    -- Growth potential MTBF for the entire test.
     "fld_num_phases" INTEGER DEFAULT(1),                            -- Number of growth test phases.
-    "fld_ttt" REAL DEFAULT(0),                                      -- Total time on test over all phases.
+    "fld_ttt" REAL DEFAULT(0.0),                                    -- Total time on test over all phases.
     "fld_avg_growth" REAL DEFAULT(0.3),                             -- Average growth rate over all phases.
-    "fld_avg_ms" REAL DEFAULT(0),                                   -- Average management strategy over all phases.
+    "fld_avg_ms" REAL DEFAULT(0.0),                                 -- Average management strategy over all phases.
     "fld_avg_fef" REAL DEFAULT(0.7),                                -- Average fix effectiveness factor over all phases..
     "fld_prob" REAL DEFAULT(0.75),                                  -- Probability of observing a failure over all phases.
-    "fld_ttff" REAL DEFAULT(0),                                     -- Time to first fix.
+    "fld_ttff" REAL DEFAULT(0.0),                                     -- Time to first fix.
     "fld_grouped" INTEGER DEFAULT(0),                               -- Indicates whether or not the observed failure times are exact (0) or grouped (1).
     "fld_group_interval" REAL DEFAULT(0.0),                         -- The length of the grouping interval if failure times are grouped.
     "fld_se_scale" REAL DEFAULT(0.0),                               -- The standard error of the scale paramter.
@@ -1288,17 +1288,18 @@ CREATE TABLE "tbl_validation_matrix" (
 --
 -- Create tables for storing program incident information.
 --
-CREATE TABLE "tbl_incident" (
+DROP TABLE IF EXISTS "rtk_incident";
+CREATE TABLE "rtk_incident" (
     "fld_revision_id" INTEGER DEFAULT(0),
     "fld_incident_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_incident_category" VARCHAR(256) DEFAULT(''),
-    "fld_incident_type" VARCHAR(256) DEFAULT(''),
+    "fld_incident_category" INTEGER DEFAULT(0),
+    "fld_incident_type" INTEGER DEFAULT(0),
     "fld_short_description" VARCHAR(512),
     "fld_long_description" BLOB,
-    "fld_criticality" VARCHAR(256) DEFAULT(''),
-    "fld_detection_method" VARCHAR(256),
+    "fld_criticality" INTEGER DEFAULT(0),
+    "fld_detection_method" INTEGER DEFAULT(0),
     "fld_remarks" BLOB,
-    "fld_status" VARCHAR(256) DEFAULT(''),
+    "fld_status" INTEGER DEFAULT(0),
     "fld_test_found" VARCHAR(512),
     "fld_test_case" VARCHAR(512),
     "fld_execution_time" FLOAT DEFAULT(0),
@@ -1307,85 +1308,87 @@ CREATE TABLE "tbl_incident" (
     "fld_incident_age" INTEGER DEFAULT(0),
     "fld_hardware_id" INTEGER DEFAULT(0),
     "fld_sftwr_id" INTEGER DEFAULT(0),
-    "fld_request_by" VARCHAR(256) DEFAULT(''),
+    "fld_request_by" INTEGER DEFAULT(0),
     "fld_request_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "fld_reviewed" TINYINT DEFAULT(0),
-    "fld_reviewed_by" VARCHAR(256) DEFAULT(''),
+    "fld_reviewed_by" INTEGER DEFAULT(0),
     "fld_reviewed_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "fld_approved" TINYINT DEFAULT(0),
-    "fld_approved_by" VARCHAR(256) DEFAULT(''),
+    "fld_approved_by" INTEGER DEFAULT(0),
     "fld_approved_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "fld_complete" TINYINT DEFAULT(0),
-    "fld_complete_by" VARCHAR(256) DEFAULT(''),
+    "fld_complete_by" INTEGER DEFAULT(0),
     "fld_complete_date" INTEGER DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "fld_life_cycle" VARCHAR(256) DEFAULT(''),
+    "fld_life_cycle" INTEGER DEFAULT(0),
     "fld_analysis" BLOB,
     "fld_accepted" TINYINT DEFAULT(0)
 );
 
-CREATE TABLE "tbl_incident_detail" (
-    "fld_incident_id" VARCHAR(32) NOT NULL,
-    "fld_part_num" VARCHAR(128) DEFAULT(''),
+DROP TABLE IF EXISTS "rtk_incident_detail";
+CREATE TABLE "rtk_incident_detail" (
+    "fld_incident_id" INTEGER NOT NULL,
+    "fld_component_id" INTEGER NOT NULL,
     "fld_age_at_incident" REAL DEFAULT (0),
-    "fld_failure" INTEGER DEFAULT (0),
-    "fld_suspension" INTEGER DEFAULT (0),
-    "fld_cnd_nff" INTEGER DEFAULT (0),
-    "fld_occ_fault" INTEGER DEFAULT (0),
-    "fld_initial_installation" INTEGER DEFAULT (0),
-    "fld_interval_censored" INTEGER DEFAULT (0),
-    "fld_use_op_time" INTEGER DEFAULT (0),
-    "fld_use_cal_time" INTEGER DEFAULT (0),
+    "fld_failure" TINYINT DEFAULT (0),
+    "fld_suspension" TINYINT DEFAULT (0),
+    "fld_cnd_nff" TINYINT DEFAULT (0),
+    "fld_occ_fault" TINYINT DEFAULT (0),
+    "fld_initial_installation" TINYINT DEFAULT (0),
+    "fld_interval_censored" TINYINT DEFAULT (0),
+    "fld_use_op_time" TINYINT DEFAULT (0),
+    "fld_use_cal_time" TINYINT DEFAULT (0),
     "fld_ttf" REAL DEFAULT (0),
     "fld_mode_type" INTEGER DEFAULT(0),
-    "fld_relevant_1" TINYINT DEFAULT (0),
-    "fld_relevant_2" TINYINT DEFAULT (0),
-    "fld_relevant_3" TINYINT DEFAULT (0),
-    "fld_relevant_4" TINYINT DEFAULT (0),
-    "fld_relevant_5" TINYINT DEFAULT (0),
-    "fld_relevant_6" TINYINT DEFAULT (0),
-    "fld_relevant_7" TINYINT DEFAULT (0),
-    "fld_relevant_8" TINYINT DEFAULT (0),
-    "fld_relevant_9" TINYINT DEFAULT (0),
-    "fld_relevant_10" TINYINT DEFAULT (0),
-    "fld_relevant_11" TINYINT DEFAULT (0),
-    "fld_relevant_12" TINYINT DEFAULT (0),
-    "fld_relevant_13" TINYINT DEFAULT (0),
-    "fld_relevant_14" TINYINT DEFAULT (0),
-    "fld_relevant_15" TINYINT DEFAULT (0),
-    "fld_relevant_16" TINYINT DEFAULT (0),
-    "fld_relevant_17" TINYINT DEFAULT (0),
-    "fld_relevant_18" TINYINT DEFAULT (0),
-    "fld_relevant_19" TINYINT DEFAULT (0),
-    "fld_relevant_20" TINYINT DEFAULT (0),
-    "fld_relevant" TINYINT DEFAULT (0),
-    "fld_chargeable_1" TINYINT DEFAULT (0),
-    "fld_chargeable_2" TINYINT DEFAULT (0),
-    "fld_chargeable_3" TINYINT DEFAULT (0),
-    "fld_chargeable_4" TINYINT DEFAULT (0),
-    "fld_chargeable_5" TINYINT DEFAULT (0),
-    "fld_chargeable_6" TINYINT DEFAULT (0),
-    "fld_chargeable_7" TINYINT DEFAULT (0),
-    "fld_chargeable_8" TINYINT DEFAULT (0),
-    "fld_chargeable_9" TINYINT DEFAULT (0),
-    "fld_chargeable_10" TINYINT DEFAULT (0),
-    "fld_chargeable" TINYINT DEFAULT (0),
-    PRIMARY KEY ("fld_incident_id", "fld_part_num")
+    "fld_relevant_1" TINYINT DEFAULT (-1),
+    "fld_relevant_2" TINYINT DEFAULT (-1),
+    "fld_relevant_3" TINYINT DEFAULT (-1),
+    "fld_relevant_4" TINYINT DEFAULT (-1),
+    "fld_relevant_5" TINYINT DEFAULT (-1),
+    "fld_relevant_6" TINYINT DEFAULT (-1),
+    "fld_relevant_7" TINYINT DEFAULT (-1),
+    "fld_relevant_8" TINYINT DEFAULT (-1),
+    "fld_relevant_9" TINYINT DEFAULT (-1),
+    "fld_relevant_1-1" TINYINT DEFAULT (-1),
+    "fld_relevant_11" TINYINT DEFAULT (-1),
+    "fld_relevant_12" TINYINT DEFAULT (-1),
+    "fld_relevant_13" TINYINT DEFAULT (-1),
+    "fld_relevant_14" TINYINT DEFAULT (-1),
+    "fld_relevant_15" TINYINT DEFAULT (-1),
+    "fld_relevant_16" TINYINT DEFAULT (-1),
+    "fld_relevant_17" TINYINT DEFAULT (-1),
+    "fld_relevant_18" TINYINT DEFAULT (-1),
+    "fld_relevant_19" TINYINT DEFAULT (-1),
+    "fld_relevant_2-1" TINYINT DEFAULT (-1),
+    "fld_relevant" TINYINT DEFAULT (-1),
+    "fld_chargeable_1" TINYINT DEFAULT (-1),
+    "fld_chargeable_2" TINYINT DEFAULT (-1),
+    "fld_chargeable_3" TINYINT DEFAULT (-1),
+    "fld_chargeable_4" TINYINT DEFAULT (-1),
+    "fld_chargeable_5" TINYINT DEFAULT (-1),
+    "fld_chargeable_6" TINYINT DEFAULT (-1),
+    "fld_chargeable_7" TINYINT DEFAULT (-1),
+    "fld_chargeable_8" TINYINT DEFAULT (-1),
+    "fld_chargeable_9" TINYINT DEFAULT (-1),
+    "fld_chargeable_1-1" TINYINT DEFAULT (-1),
+    "fld_chargeable" TINYINT DEFAULT (-1),
+    PRIMARY KEY ("fld_incident_id", "fld_component_id")
 );
 
-CREATE TABLE "tbl_actions" (
+DROP TABLE IF EXISTS "rtk_incident_actions";
+CREATE TABLE "rtk_incident_actions" (
     "fld_incident_id" INTEGER NOT NULL,
     "fld_action_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "fld_prescribed_action" BLOB,
-    "fld_action_taken" BLOB,
-    "fld_owner" INTEGER NOT NULL DEFAULT (0),
-    "fld_due_date" datetime,
+    "fld_prescribed_action" BLOB DEFAULT(''),
+    "fld_action_taken" BLOB DEFAULT(''),
+    "fld_action_owner" INTEGER DEFAULT(0),
+    "fld_due_date" INTEGER DEFAULT (datetime(CURRENT_TIMESTAMP, '30 days')),
     "fld_status" INTEGER NOT NULL DEFAULT (0),
-    "fld_approved_by" INTEGER NOT NULL DEFAULT (0),
-    "fld_approved_date" datetime,
-    "fld_approved" TINYINT,
-    "fld_closed_by" INTEGER NOT NULL DEFAULT (0),
-    "fld_closed_date" datetime,
-    "fld_closed" TINYINT
+    "fld_approved_by" INTEGER DEFAULT(0),
+    "fld_approved_date" INTEGER DEFAULT(0),
+    "fld_approved" INTEGER DEFAULT(0),
+    "fld_closed_by" INTEGER DEFAULT(0),
+    "fld_closed_date" INTEGER DEFAULT(0),
+    "fld_closed" INTEGER DEFAULT(0)
 );
 
 --

@@ -3,7 +3,7 @@
 
       incident_format.xml is part of the RTK Project
 
-      Copyright 2007-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2007-2015 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
       All rights reserved.
 -->
@@ -37,7 +37,7 @@ experience. -->
             <usertitle>Incident Category</usertitle>
             <datatype>gchararray</datatype>
             <position>2</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -46,7 +46,7 @@ experience. -->
             <usertitle>Incident Type</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -73,7 +73,7 @@ experience. -->
             <usertitle>Criticality</usertitle>
             <datatype>gchararray</datatype>
             <position>6</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -82,7 +82,7 @@ experience. -->
             <usertitle>Detection Method</usertitle>
             <datatype>gchararray</datatype>
             <position>7</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -100,7 +100,7 @@ experience. -->
             <usertitle>Status</usertitle>
             <datatype>gchararray</datatype>
             <position>9</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -136,7 +136,7 @@ experience. -->
             <usertitle>Affected Unit</usertitle>
             <datatype>gchararray</datatype>
             <position>13</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -181,7 +181,7 @@ experience. -->
             <usertitle>Requested By</usertitle>
             <datatype>gchararray</datatype>
             <position>18</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -199,7 +199,7 @@ experience. -->
             <usertitle>Reviewed</usertitle>
             <datatype>gint</datatype>
             <position>20</position>
-            <widget>text</widget>
+            <widget>toggle</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -208,7 +208,7 @@ experience. -->
             <usertitle>Reviewed By</usertitle>
             <datatype>gchararray</datatype>
             <position>21</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -226,7 +226,7 @@ experience. -->
             <usertitle>Approved</usertitle>
             <datatype>gint</datatype>
             <position>23</position>
-            <widget>text</widget>
+            <widget>toggle</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -235,7 +235,7 @@ experience. -->
             <usertitle>Approved By</usertitle>
             <datatype>gchararray</datatype>
             <position>24</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -253,7 +253,7 @@ experience. -->
             <usertitle>Closed</usertitle>
             <datatype>gint</datatype>
             <position>26</position>
-            <widget>text</widget>
+            <widget>toggle</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -262,7 +262,7 @@ experience. -->
             <usertitle>Closed By</usertitle>
             <datatype>gchararray</datatype>
             <position>27</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -280,7 +280,7 @@ experience. -->
             <usertitle>Life Cycle</usertitle>
             <datatype>gchararray</datatype>
             <position>29</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
@@ -298,7 +298,7 @@ experience. -->
             <usertitle>Accepted</usertitle>
             <datatype>gint</datatype>
             <position>31</position>
-            <widget>text</widget>
+            <widget>toggle</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

@@ -370,6 +370,9 @@ RTK_PAGE_NUMBER = []
 RTK_COM_INFO = []
 RTK_PROG_INFO = []
 
+RTK_HARDWARE_LIST = []
+RTK_SOFTWARE_LIST = []
+
 # ------------------------------------------------------------------------- #
 # Risk analyses configuration options.                                      #
 # ------------------------------------------------------------------------- #
@@ -407,6 +410,17 @@ RTK_SUBCATEGORIES = {}
 # ------------------------------------------------------------------------- #
 RTK_TASK_TYPE = []
 RTK_MEASUREMENT_UNITS = []
+
+# ------------------------------------------------------------------------- #
+# Incident configuration options.                                           #
+# ------------------------------------------------------------------------- #
+RTK_USERS = []
+RTK_INCIDENT_CATEGORY = []
+RTK_INCIDENT_TYPE = []
+RTK_INCIDENT_STATUS = []
+RTK_INCIDENT_CRITICALITY = []
+RTK_LIFECYCLE = []
+RTK_DETECTION_METHODS = []
 
 COM_BACKEND = ''
 BACKEND = ''

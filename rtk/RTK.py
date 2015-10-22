@@ -62,6 +62,10 @@ from testing.growth.Growth import Growth
 from testing.ModuleBook import ModuleView as mvwTesting
 from validation.Validation import Validation
 from validation.ModuleBook import ModuleView as mvwValidation
+from incident.Incident import Incident
+from incident.action.Action import Action
+from incident.component.Component import Component
+from incident.ModuleBook import ModuleView as mvwIncident
 
 # Add localization support.
 _ = gettext.gettext
@@ -218,6 +222,9 @@ class RTK(object):
         dtcTesting = Testing()
         dtcGrowth = Growth()
         dtcValidation = Validation()
+        dtcIncident = Incident()
+        dtcAction = Action()
+        dtcComponent = Component()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -261,6 +268,10 @@ class RTK(object):
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwValidation,
                                                        dtcValidation, -1)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwIncident,
+                                                       dtcIncident, -1,
+                                                       dtcAction, dtcComponent)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
@@ -400,6 +411,43 @@ class RTK(object):
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_MEASUREMENT_UNITS = [_unit[0] for _unit in _results]
+
+        _query = "SELECT fld_user_lname || ', ' || fld_user_fname \
+                  FROM tbl_users \
+                  ORDER BY fld_user_lname ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_USERS = [_user[0] for _user in _results]
+
+        _query = "SELECT fld_incident_cat_name FROM tbl_incident_category"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_INCIDENT_CATEGORY = [_category[0] for _category in _results]
+
+        _query = "SELECT fld_incident_type_name FROM tbl_incident_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_INCIDENT_TYPE = [_type[0] for _type in _results]
+
+        _query = "SELECT fld_status_name FROM tbl_status"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_INCIDENT_STATUS = [_status[0] for _status in _results]
+
+        _query = "SELECT fld_criticality_name FROM tbl_criticality"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_INCIDENT_CRITICALITY = [_crit[0] for _crit in _results]
+
+        _query = "SELECT fld_lifecycle_name FROM tbl_lifecycles"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_LIFECYCLE = [_lifecycle[0] for _lifecycle in _results]
+
+        _query = "SELECT fld_detection_method FROM rtk_detection_methods"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_DETECTION_METHODS = [_method[0] for _method in _results]
 
         return False
 
