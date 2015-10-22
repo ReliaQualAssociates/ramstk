@@ -383,13 +383,13 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
     Utility function to create gtk.Label() widgets.
 
     :param str text: the text to display in the gtk.Label() widget.
-    :keyword int width: width of the gtk.Label() widget.  Default is 190.
-    :keyword int height: height of the gtk.Label() widget.  Default is 25.
-    :keyword boolean bold: boolean indicating whether text should be bold.
-                           Default is True.
-    :keyword boolean wrap: boolean indicating whether the label text should
-                           wrap or not.
-    :keyword justify: the justification type when the label wraps and contains
+    :param int width: width of the gtk.Label() widget.  Default is 190.
+    :param int height: height of the gtk.Label() widget.  Default is 25.
+    :param bool bold: boolean indicating whether text should be bold.  Default
+                      is True.
+    :param bool wrap: boolean indicating whether the label text should wrap or
+                      not.
+    :param justify: the justification type when the label wraps and contains
                     more than one line.  Default is gtk.JUSTIFY_LEFT.
     :type justify: GTK Justification Constant
     :return: _label
