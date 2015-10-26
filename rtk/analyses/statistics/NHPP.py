@@ -28,6 +28,7 @@ from analyses.statistics.Bounds import *
 from analyses.statistics.CrowAMSAA import *
 from analyses.statistics.Duane import *
 
+
 def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
     """
     Function to estimate the parameters (alpha and beta) of the NHPP power law

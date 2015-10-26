@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       tests.verification.TestIncident.py is part of The RTK Project
+#       tests.incident.TestIncident.py is part of The RTK Project
 #
 # All rights reserved.
 
