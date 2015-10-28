@@ -25,7 +25,7 @@ import dao.DAO as _dao
 from software.CSCI import Model
 from software.Unit import Model as Unit
 
-class TestHardwareModel(unittest.TestCase):
+class TestCSCIModel(unittest.TestCase):
     """
     Class for testing the CSCI data model class.
     """

@@ -25,7 +25,7 @@ import dao.DAO as _dao
 from software.Unit import Model
 
 
-class TestHardwareModel(unittest.TestCase):
+class TestUnitModel(unittest.TestCase):
     """
     Class for testing the Unit data model class.
     """
