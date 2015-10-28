@@ -289,7 +289,7 @@ class Thumbwheel(Switch):
 
             # Retrieve the part category, subcategory, active environment,
             # dormant environment, software hazard rate, and quantity.
-            # TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
+# TODO: Replace these with instance attributes after splitting out Assembly and Component as sub-classes of Hardware.
             _category_id = systemmodel.get_value(systemrow, 11)
             _subcategory_id = systemmodel.get_value(systemrow, 78)
             _active_env = systemmodel.get_value(systemrow, 22)
@@ -350,8 +350,8 @@ class Thumbwheel(Switch):
 
             # Calculate overstresses.
             (_overstress,
-             self.reason) = _calc.overstressed(partmodel, partrow,
-                                               systemmodel, systemrow)
+             self.reason) = _overstressed(partmodel, partrow,
+                                          systemmodel, systemrow)
 
             partmodel.set_value(partrow, 48, _hrmodel['lambdab1'])
             partmodel.set_value(partrow, 49, _hrmodel['lambdab2'])
@@ -367,6 +367,71 @@ class Thumbwheel(Switch):
             systemmodel.set_value(systemrow, 88, list(_hrmodel.items()))
 
             return False
+
+        def _overstressed(partmodel, partrow):
+            """
+            Method to determine whether the component is overstressed based on
+            derating rules.
+
+            Currently only default derating rules from Reliability Toolkit:
+            Commercial Practices Edition, Section 6.3.3 are used.
+
+            +----------------------------+-------------------+
+            |                            |    Environment    |
+            |     Derating Parameter     | Severe  | Benign  |
+            +============================+=========+=========+
+            | Resistive Load Current     |   75%   |   90%   |
+            +----------------------------+---------+---------+
+            | Capacitive Load Current    |   75%   |   90%   |
+            +----------------------------+---------+---------+
+            | Inductive Load Current     |   40%   |   50%   |
+            +----------------------------+---------+---------+
+            | Contact Power              |   50%   |   60%   |
+            +----------------------------+---------+---------+
+
+            :param gtk.TreeModel partmodel: the winParts full gtk.TreeModel().
+            :param gtk.TreeIter partrow: the currently selected gtk.TreeIter()
+                                         in the winParts full gtk.TreeModel().
+            :return: _overstress, _reason; boolean indicating if part is
+                                           overstressed and string indicating
+                                           the reason for overstress.
+            :rtype: tuple
+            """
+
+            # Set default values.
+            _overstress = False
+            _reason = ""
+            _harsh = True
+
+            # Find the active environment.
+            _Eidx = systemmodel.get_value(systemrow, 22)
+
+            # If the active environment is Benign Ground, Fixed Ground,
+            # Sheltered Naval, or Space Flight it is NOT harsh.
+            if _Eidx in [1, 2, 4, 11]:
+                _harsh = False
+
+            _Aidx = partmodel.get_value(partrow, 5)
+            _Ioper = partmodel.get_value(partrow, 62)
+            _Irated = partmodel.get_value(partrow, 92)
+
+            if _harsh:
+                if _Aidx < 3:
+                    _derate = 0.75
+                elif _Aidx == 3:
+                    _derate = 0.40
+            else:
+                if _Aidx < 3:
+                    _derate = 0.90
+                elif _Aidx == 3:
+                    _derate = 0.50
+
+            if _Ioper > _derate * _Irated:
+                _overstress = True
+                _reason = "Operating current > %f% rated current.\n" % \
+                          _derate * 100.0
+
+            return _overstress, _reason
 
         _calc_model = systemmodel.get_value(systemrow, 10)
 

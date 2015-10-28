@@ -640,5 +640,59 @@ All rights reserved. -->
             <editable>0</editable>
             <visible>0</visible>
         </column>
+        <column>
+            <defaulttitle>Conditional Branches</defaulttitle>
+            <usertitle>Conditional Branches</usertitle>
+            <datatype>gint</datatype>
+            <position>70</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Non-Conditional Branches</defaulttitle>
+            <usertitle>Non-Conditional Branches</usertitle>
+            <datatype>gint</datatype>
+            <position>71</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Number of Discrepancy Reports During Test</defaulttitle>
+            <usertitle>Total Number of Discrepancy Reports During Test</usertitle>
+            <datatype>gint</datatype>
+            <position>72</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time</defaulttitle>
+            <usertitle>Total Test Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>73</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Number of Discrepancy Reports During Last Three Test Periods</defaulttitle>
+            <usertitle>Total Number of Discrepancy Reports During Last Three Test Periods</usertitle>
+            <datatype>gint</datatype>
+            <position>74</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time During Last Three Test Periods</defaulttitle>
+            <usertitle>Total Test Time During Last Three Test Periods</usertitle>
+            <datatype>gfloat</datatype>
+            <position>75</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
     </tree>
 </root>

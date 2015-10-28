@@ -825,7 +825,8 @@ All rights reserved. -->
             <defaulttitle>Specification ID</defaulttitle>
             <usertitle>Specification ID</usertitle>
             <datatype>gint</datatype>
-            <position>101</position><widget>text</widget>
+            <position>101</position>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

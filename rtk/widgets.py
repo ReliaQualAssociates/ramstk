@@ -108,7 +108,7 @@ class CellRendererML(gtk.CellRendererText):
         scrolled_window = gtk.ScrolledWindow()
         scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolled_window.set_property('visible', True)
-        #self.textedit_window.vbox.pack_start(scrolled_window)
+        # self.textedit_window.vbox.pack_start(scrolled_window)
 
         scrolled_window.add(self.textedit)
         self.textedit_window.vbox.add(scrolled_window)
@@ -383,13 +383,13 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
     Utility function to create gtk.Label() widgets.
 
     :param str text: the text to display in the gtk.Label() widget.
-    :keyword int width: width of the gtk.Label() widget.  Default is 190.
-    :keyword int height: height of the gtk.Label() widget.  Default is 25.
-    :keyword boolean bold: boolean indicating whether text should be bold.
-                           Default is True.
-    :keyword boolean wrap: boolean indicating whether the label text should
-                           wrap or not.
-    :keyword justify: the justification type when the label wraps and contains
+    :param int width: width of the gtk.Label() widget.  Default is 190.
+    :param int height: height of the gtk.Label() widget.  Default is 25.
+    :param bool bold: boolean indicating whether text should be bold.  Default
+                      is True.
+    :param bool wrap: boolean indicating whether the label text should wrap or
+                      not.
+    :param justify: the justification type when the label wraps and contains
                     more than one line.  Default is gtk.JUSTIFY_LEFT.
     :type justify: GTK Justification Constant
     :return: _label
@@ -528,8 +528,8 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
     :param int fmt_idx: the index of the format file to use when creating the
                         gtk.TreeView().
     :param RTK app: the RTK application.
-    :param list cmblist: the list of items to load into the
-                         gtk.CellRendererCombo().
+    :keyword list cmblist: the list of items to load into the
+                           gtk.CellRendererCombo().
     :keyword str bg_col: the background color to use for each row.  Defaults to
                          white.
     :keyword str fg_col: the foreground (text) color to use for each row.
@@ -573,11 +573,11 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
     gobject_types = [gobject.type_from_name(types[ix])
                      for ix in range(len(types))]
 
-# If this is the Hardware tree, add a column for a pixbuf.
+# If this is the Hardware, Software, or Testing tree, add a column for a pixbuf.
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
-    if fmt_idx == 3:
+    if fmt_idx in [3, 11, 15]:
         gobject_types.append(gtk.gdk.Pixbuf)
-    elif fmt_idx == 9 or fmt_idx == 18:
+    elif fmt_idx in [9, 18]:
         gobject_types.append(gobject.TYPE_INT)
         gobject_types.append(gobject.TYPE_STRING)
         gobject_types.append(gobject.TYPE_BOOLEAN)
@@ -645,7 +645,7 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
 
         column = gtk.TreeViewColumn("")
 
-# If this is the Hardware tree, add a column for a pixbuf.
+# If this is the Hardware, Software, FMECA, or Testing tree, add a column for a pixbuf.
 # If this is the FMECA tree, add a column for an integer and a pixbuf
         if i == 1 and fmt_idx == 3:
             column.set_visible(1)
@@ -657,6 +657,16 @@ def make_treeview(name, fmt_idx, app, cmblist=[''], bg_col='white',
             cellpb = gtk.CellRendererPixbuf()
             column.pack_start(cellpb, True)
             column.set_attributes(cellpb, pixbuf=cols + 3)
+        elif i == 1 and fmt_idx == 11:
+            column.set_visible(1)
+            cellpb = gtk.CellRendererPixbuf()
+            column.pack_start(cellpb, True)
+            column.set_attributes(cellpb, pixbuf=cols)
+        elif i == 1 and fmt_idx == 15:
+            column.set_visible(1)
+            cellpb = gtk.CellRendererPixbuf()
+            column.pack_start(cellpb, True)
+            column.set_attributes(cellpb, pixbuf=cols)
         else:
             column.set_visible(int(visible[i].text))
             column.pack_start(cell, True)
@@ -868,7 +878,7 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
     if y1 is not None:
         if _type_[0] == 1:
             line, = axis.step(x, y1, _marker_[0], where='mid')
-            for i in range(n_points):           # pylint: disable=W0612
+            for i in range(n_points):
                 line.set_ydata(y1)
             _lst_min_.append(min(y1))
             _lst_max_.append(max(y1))

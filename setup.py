@@ -38,7 +38,7 @@ if version < "2.2.3":
 
 python_version = platform.python_version()[0:3]
 
-_version = "1.0.0-alpha"
+_version = "2015.1"
 
 _confdir = "/etc/RTK"
 _datadir = "/usr/share/RTK"
@@ -169,11 +169,11 @@ class install_user_docs(Command):
                 for f in files:
                     distutils.file_util.copy_file(os.path.join(root, f), "%s/%s" % (path, d))
 
-_package_data={"relkit": [""],
-               "relkit": ["config/*.conf"],
-               "relkit": ["config/*.xml"],
-               "relkit": ["config/icons/16x16/*.png"],
-               "relkit": ["config/icons/32x32/*.png"]}
+_package_data={"RTK": [""],
+               "RTK": ["config/*.conf"],
+               "RTK": ["config/*.xml"],
+               "RTK": ["config/icons/16x16/*.png"],
+               "RTK": ["config/icons/32x32/*.png"]}
 
 _data_files = [("%s/RTK/32x32" % _icondir, ["config/icons/32x32/add.png"]),
                ("%s/RTK/32x32" % _icondir, ["config/icons/32x32/assembly.png"]),
@@ -226,14 +226,13 @@ _cmdclass = {'install_dev_docs': install_dev_docs,
              'install_user_docs': install_user_docs,
             }
 
-# Packages needed to install and run RTK.
+# Packages needed to run RTK.
 _requires = ["lxml >= 2.3",
-             # "PyGTK > 2.12.0", - Exclude, it doesn't seem to work.
              "matplotlib >= 1.1.1",
              "mysql-python >= 1.2.3",
-             "xlrd >= 0.9.0", 'pygtk']
+             "xlrd >= 0.9.0"]
 
-_entry_points = {"gui": ["RTK = rtk.main:main"]}
+_entry_points = {"gui": ["RTK = rtk.RTK:main"]}
 
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
@@ -248,14 +247,14 @@ def osx_check():
     return platform.system() == "Darwin"
 
 setup(
-    name = "RTK",
+    name = "The Reliability ToolKit (RTK)",
     version = _version,
     author = "Andrew Rowland",
     author_email = "andrew.rowland@reliaqual.com",
     maintainer = "Andrew Rowland",
     maintainer_email = "andrew.rowland@reliaqual.com",
     url = "http://rtk.reliaqual.com",
-    description = "RAM Analyses Tools",
+    description = "Reliability, Availability, Maintainability, and Safety (RAMS) Analyses Tools",
     long_description = """RTK is a Python and PyGTK based suite of tools to assist in Reliability, Availability, Maintainability, and Safety (RAMS) analyses.""",
     download_url = "",
     platforms = "Linux",
@@ -266,5 +265,7 @@ setup(
     include_package_data = True,
     package_data = _package_data,
     data_files = _data_files,
-    entry_points = _entry_points
+    entry_points = _entry_points,
+    test_suite = "nose.collector",
+    tests_require = "nose"
     )

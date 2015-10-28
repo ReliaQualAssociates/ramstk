@@ -23,24 +23,11 @@ try:
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Add NLS support.
 _ = gettext.gettext
 
 import numpy as np
-from math import ceil, exp, log, sqrt
 
 import configuration as _conf
 import utilities as _util
@@ -50,10 +37,9 @@ def calculate_part(model):
     """
     Calculates the hazard rate for a component.
 
-    :param model: the component's h(t) prediction model and the input
-                  variables.  The keys are the model variables and the values
-                  are the values of the variable in the key.
-    :type model: dictionary
+    :param dict model: the component's h(t) prediction model and the input
+                       variables.  The keys are the model variables and the
+                       values are the values of the variable in the key.
     :return: _lambdap, the calculated h(t).
     :rtype: float
     """
@@ -64,7 +50,7 @@ def calculate_part(model):
     for i in range(len(_keys)):
         vars()[_keys[i]] = _values[i]
 
-    _lambdap = eval(model['equation'])
+    _lambdap = eval(model['equation'])      # pylint: disable=W0123
 
     return _lambdap
 
@@ -125,7 +111,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     |            | Max Junction Temp          |  125C   |   N/A   |
     +------------+----------------------------+---------+---------+
     | GaAs Micro | Max Junction Temp          |  135C   |   N/A   |
-    | circuits   +----------------------------+---------+---------+
+    | circuits   |                            |         |         |
     +------------+----------------------------+---------+---------+
     | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
     | processors +----------------------------+---------+---------+
@@ -170,14 +156,6 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     |            +----------------------------+---------+---------+
     |            | Max Junction Temp          |  125C   |   N/A   |
     +------------+----------------------------+---------+---------+
-    | Switches   | Resistive Load Current     |   75%   |   90%   |
-    |            +----------------------------+---------+---------+
-    |            | Capacitive Load Current    |   75%   |   90%   |
-    |            +----------------------------+---------+---------+
-    |            | Inductive Load Current     |   40%   |   50%   |
-    |            +----------------------------+---------+---------+
-    |            | Contact Power              |   50%   |   60%   |
-    +------------+----------------------------+---------+---------+
 
     :param partmodel: the winParts full gtk.TreeModel().
     :type partmodel: gtk.TreeModel
@@ -203,9 +181,7 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     harsh = True
 
     Eidx = systemmodel.get_value(systemrow, 22)
-    Tknee = partmodel.get_value(partrow, 43)
     Tmax = partmodel.get_value(partrow, 55)
-    Tmin = partmodel.get_value(partrow, 56)
 
     category = systemmodel.get_value(systemrow, 11)
     subcategory = systemmodel.get_value(systemrow, 78)
@@ -770,8 +746,7 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     return hr_similar
 
 
-def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
-                        lambdaa):
+def dormant_hazard_rate(component):
     """
     Calculates the dormant hazard rate based on active environment, dormant
     environment, and component category.
@@ -809,13 +784,10 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
     | Transformers| 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
     +-------------+-------+--------+--------+-------+-------+-------+-------+
 
-    :param int category: the component category index.
-    :param int subcategory: the component subcategory index.
-    :param int active_env: the active environment index.
-    :param int dormant_env: the dormant environment index.
-    :param float lambdaa: the active hazard rate of the component.
-    :return: lambdad; the dormant hazard rate.
-    :rtype: float
+    :param :class: `rtk.hardware.Component` component: the rtk.Component() data
+                                                       model to calculate.
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
     """
 
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -830,79 +802,83 @@ def dormant_hazard_rate(category, subcategory, active_env, dormant_env,
               [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
     # First find the component category/subcategory index.
-    if category == 1:                       # Capacitor
+    if component.category_id == 1:                       # Capacitor
         c_index = 3
-    elif category == 2:                     # Connection
+    elif component.category_id == 2:                     # Connection
         c_index = 7
-    elif category == 3:                     # Inductive Device.
-        if subcategory > 1:                 # Transformer
+    elif component.category_id == 3:                     # Inductive Device.
+        if component.subcategory_id > 1:                 # Transformer
             c_index = 9
-    elif category == 4:                     # Integrated Circuit
+    elif component.category_id == 4:                     # Integrated Circuit
         c_index = 0
-    elif category == 7:                     # Relay
+    elif component.category_id == 7:                     # Relay
         c_index = 6
-    elif category == 8:                     # Resistor
+    elif component.category_id == 8:                     # Resistor
         c_index = 4
-    elif category == 9:                     # Semiconductor
-        if subcategory > 0 and subcategory < 7:     # Diode
+    elif component.category_id == 9:                     # Semiconductor
+        if component.subcategory_id > 0 and \
+           component.subcategory_id < 7:                 # Diode
             c_index = 1
-        elif subcategory > 6 and subcategory < 14:  # Transistor
+        elif component.subcategory_id > 6 and \
+             component.subcategory_id < 14:     # Transistor
             c_index = 2
-    elif category == 10:                    # Switching Device
+    elif component.category_id == 10:           # Switching Device
         c_index = 5
 
     # Now find the appropriate active to passive environment index.
-    if active_env > 0 and active_env < 4:   # Ground
-        if dormant_env == 1:                # Ground
+    if component.environment_active > 0 and \
+       component.environment_active < 4:        # Ground
+        if component.environment_dormant == 1:  # Ground
             e_index = 0
         else:
             e_index = 7
-    elif active_env > 3 and active_env < 6: # Naval
-        if dormant_env == 1:                # Ground
+    elif component.environment_active > 3 and \
+         component.environment_active < 6:      # Naval
+        if component.environment_dormant == 1:  # Ground
             e_index = 4
-        elif dormant_env == 2:              # Naval
+        elif component.environment_dormant == 2:    # Naval
             e_index = 3
         else:
             e_index = 7
-    elif active_env > 5 and active_env < 11:        # Airborne
-        if dormant_env == 1:                # Ground
+    elif component.environment_active > 5 and \
+         component.environment_active < 11:     # Airborne
+        if component.environment_dormant == 1:  # Ground
             e_index = 2
-        elif dormant_env == 3:              # Airborne
+        elif component.environment_dormant == 3:    # Airborne
             e_index = 1
         else:
             e_index = 7
-    elif active_env == 11:                  # Space
-        if dormant_env == 1:                # Ground
+    elif component.environment_active == 11:    # Space
+        if component.environment_dormant == 1:  # Ground
             e_index = 6
-        elif dormant_env == 4:              # Space
+        elif component.environment_dormant == 4:    # Space
             e_index = 5
         else:
             e_index = 7
 
     try:
-        lambdad = lambdaa * factor[c_index - 1][e_index]
+        component.hazard_rate_dormant = component.hazard_rate_active * \
+                                        factor[c_index - 1][e_index]
+        return False
     except IndexError:
-        lambdad = 0.0
+        component.hazard_rate_dormant = 0.0
+        return True
     except UnboundLocalError:
-        lambdad = 0.0
-
-    return lambdad
+        component.hazard_rate_dormant = 0.0
+        return True
 
 
 def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
 
-    :param modeca: list containing inputs for the MIL-STD-1629A mode
-                   criticality calculation.
-    :type modeca: list of mixed types
-    :param itemca: list containing inputs for the MIL-STD-1629A item
-                   criticality calculation.
-    :type itemca: list of mixed types
-    :param rpn: list containing inputs for the automotive criticality
-                calculation.
-    :type rpn: list of mixed types
-    :return: modeca, itemca, rpn
+    :param list modeca: list containing inputs for the MIL-STD-1629A mode
+                        criticality calculation.
+    :param list itemca: list containing inputs for the MIL-STD-1629A item
+                        criticality calculation.
+    :param list rpn: list containing inputs for the automotive criticality
+                     calculation.
+    :return: modeca, itemca, rpn; mode criticality, item criticality, and RPN.
     :rtype: list, list, list
     """
 
@@ -916,7 +892,7 @@ def criticality_analysis(modeca, itemca, rpn):
     _keys = modeca.keys()
     for i in range(len(_keys)):
         modeca[_keys[i]][4] = modeca[_keys[i]][0] * modeca[_keys[i]][1] * \
-                              modeca[_keys[i]][2] * modeca[_keys[i]][3]
+            modeca[_keys[i]][2] * modeca[_keys[i]][3]
         modeca[_keys[i]][5] = modeca[_keys[i]][1] * modeca[_keys[i]][2]
 
     # Now calculate the item criticality in accordance with MIL-STD-1629A.
@@ -926,44 +902,39 @@ def criticality_analysis(modeca, itemca, rpn):
         for k in range(len(_cats)):
             _crit = 0.0
             _modes = [j[0] for j in itemca[_keys[i]] if j[1] == _cats[k]]
-            for l in range(len(_modes)):
-                _crit += modeca[_modes[l]][4]
+            for _m in range(len(_modes)):
+                _crit += modeca[_modes[_m]][4]
 
             if _cats[k] is not None and _cats[k] != '' and \
                _crit is not None and _crit != '':
                 _item_crit = _item_crit + _util.none_to_string(_cats[k]) + \
-                             ": " + \
-                             str(fmt.format(_util.none_to_string(_crit))) + \
-                             "\n"
+                    ": " + str(fmt.format(_util.none_to_string(_crit))) + "\n"
 
         itemca[_keys[i]].append(_item_crit)
 
-    # now calculate the rpn criticality.
+    # Now calculate the rpn criticality.
     _keys = rpn.keys()
     for i in range(len(_keys)):
         rpn[_keys[i]][3] = rpn[_keys[i]][0] * rpn[_keys[i]][1] * \
-                           rpn[_keys[i]][2]
+            rpn[_keys[i]][2]
         rpn[_keys[i]][7] = rpn[_keys[i]][4] * rpn[_keys[i]][5] * \
-                           rpn[_keys[i]][6]
+            rpn[_keys[i]][6]
 
     return modeca, itemca, rpn
 
 
-def beta_bounds(a, m, b, alpha):
+def beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     """
     Function to calculate the mean, standard error, and bounds on the mean of
     a beta distribution.  These are the project management estimators, not
     exact calculations.
 
-    :param a: the minimum expected value.
-    :type a: float
-    :param m: most likely value.
-    :type m: float
-    :param b: the maximum expected value.
-    :type b: float
-    :param alpha: the desired confidence level.
-    :type alpha: float
-    :return: _meanll, _mean, _meanul; the calculated mean and bounds.
+    :param float a: the minimum expected value.
+    :param float m: most likely value.
+    :param float b: the maximum expected value.
+    :param float alpha: the desired confidence level.
+    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
+                                           standard error.
     :rtype: tuple of floats
     """
 
@@ -989,34 +960,33 @@ def beta_bounds(a, m, b, alpha):
     return _meanll, _mean, _meanul, _sd
 
 
-def calculate_field_ttf(_dates_):
+def calculate_field_ttf(dates):
     """
     Function to calculate the time to failure (TTF) of field incidents.
 
-    :param _dates_: tuple containing start and end date for calculating
-                    time to failure.
+    :param tuple dates: tuple containing start and end date for calculating
+                        time to failure.
+    :return: _ttf.days; the number of days between the start and end date.
+    :rtype: float
     """
 
     from datetime import datetime
 
-    _start = datetime(*time.strptime(_dates_[0], "%Y-%m-%d")[0:5]).date()
-    _fail = datetime(*time.strptime(_dates_[1], "%Y-%m-%d")[0:5]).date()
-    ttf = _fail - _start
+    _start = datetime.strptime(dates[0], "%Y-%m-%d")
+    _fail = datetime.strptime(dates[1], "%Y-%m-%d")
+    _ttf = _fail - _start
+    print _ttf.days
+    return _ttf.days
 
-    return ttf.days
 
-
-def smooth_curve(x, y, num):
+def smooth_curve(x, y, num):                # pylint: disable=C0103
     """
     Function to produce smoothed plots where there are a small number of data
     points in the original data set.
 
-    :param x: a numpy array of the raw x-values.
-    :type x: numpy array
-    :param y: a numpy array of the raw y-values.
-    :type y: numpy array
-    :param num: the number of points to generate.
-    :type num: integer
+    :param array x: a numpy array of the raw x-values.
+    :param array y: a numpy array of the raw y-values.
+    :param int num: the number of points to generate.
     :return: _new_x, _new_y
     :rtype: list
     """
@@ -1024,8 +994,9 @@ def smooth_curve(x, y, num):
     from scipy.interpolate import spline    # pylint: disable=E0611
 
     _error = False
-    x=np.array(x)
-    y=np.array(y)
+    x = np.array(x)
+    y = np.array(y)
+
     # Create a new set of x values to be used for smoothing the data.  The new
     # x values are in the range of the minimum and maximum x values passed to
     # the function.  The number of new data points between these values is
@@ -1042,7 +1013,7 @@ def smooth_curve(x, y, num):
         _error = True
         _new_y = np.zeros(num)              # pylint: disable=E1101
 
-    _new_x = _new_x.tolist()
+    _new_x = _new_x.tolist()                # pylint: disable=E1103
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error

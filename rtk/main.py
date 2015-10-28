@@ -21,7 +21,7 @@ import logging
 import os
 import sys
 
-from time import sleep
+# from time import sleep
 
 import configuration as _conf
 import mysql as _mysql
@@ -32,7 +32,6 @@ import tree as _tree
 import utilities as _util
 
 from dataset import Dataset
-from component import Component
 from function import Function
 from hardware import Hardware
 from incident import Incident
@@ -87,7 +86,7 @@ def main():
     return 0
 
 
-class SplashScreen():
+class SplashScreen(object):
     """
     This is the splash screen class.
     """
@@ -117,9 +116,9 @@ class SplashScreen():
         _vbox = gtk.VBox(False, 1)
         self.window.add(_vbox)
 
-        #_image = gtk.Image()
-        #_image.set_from_file("/home/andrew/.config/RTK/icons/ReliaFree.png")
-        #_vbox.pack_start(_image, True, True)
+        # _image = gtk.Image()
+        # _image.set_from_file("/home/andrew/.config/RTK/icons/ReliaFree.png")
+        # _vbox.pack_start(_image, True, True)
 
         _label = gtk.Label(_(u"Copyright 2007 - 2014, Andrew Rowland"))
         _label.set_alignment(0, 0.5)
@@ -135,69 +134,15 @@ class RTK(object):
 
     def __init__(self):
 
-        # Set the gtk+ theme on Windows.
-        if sys.platform.startswith('win'):
-            # These themes perform well on Windows.
-            # Amaranth
-            # Aurora
-            # Bluecurve
-            # Blueprint
-            # Blueprint-Green
-            # Candido-Calm
-            # CleanIce
-            # CleanIce - Dark
-            # Clearlooks
-            # Metal
-            # MurrinaBlue
-            # Nodoka-Midnight
-            # Rezlooks-Snow
-
-            # These themes perform poorly.
-            # Bluecurve-BerriesAndCream
-            # MurrinaChrome
-            gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\GTK\\2.0\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
-
         self.ProgCnx = None
-
-        # Import the test data file if we are executing in developer mode.
-        if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
-            _conf.MODE = 'developer'
-
-        # Read the configuration file.
-        _util.read_configuration()
-
-        if os.name == 'posix':
-            _conf.OS = 'Linux'
-        elif os.name == 'nt':
-            _conf.OS = 'Windows'
-
-        # Create loggers for the application.  The first is to store log
-        # information for RTK developers.  The second is to log errors for the
-        # user.  The user can use these errors to help find problems with their
-        # inputs and sich.
-        __user_log = _conf.LOG_DIR + '/RTK_user.log'
-        __error_log = _conf.LOG_DIR + '/RTK_error.log'
-        __import_log = _conf.LOG_DIR + '/RTK_import.log'
-
-        if not _util.dir_exists(_conf.LOG_DIR):
-            os.makedirs(_conf.LOG_DIR)
-
-        if _util.file_exists(__user_log):
-            os.remove(__user_log)
-        if _util.file_exists(__error_log):
-            os.remove(__error_log)
-        if _util.file_exists(__import_log):
-            os.remove(__import_log)
-
-        self.debug_log = _util.create_logger("RTK.debug", logging.DEBUG,
-                                             __error_log)
-        self.user_log = _util.create_logger("RTK.user", logging.WARNING,
-                                            __user_log)
-        self.import_log = _util.create_logger("RTK.import", logging.WARNING,
-                                              __import_log)
-
         self.LOADED = False
         self.partlist = {}
+
+        self._read_configuration()
+
+        (self.debug_log,
+         self.user_log,
+         self.import_log) = self._initialize_loggers()
 
         # Find out who is using RTK and when.
         self._UID = getpass.getuser()
@@ -214,37 +159,7 @@ class RTK(object):
             _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
             self.ComCnx = self.COMDB.get_connection(_database)
 
-        # Read the license file and compare to the product key in the site
-        # database.  If they are not equal, quit the application.
-        _license_file = _conf.DATA_DIR + '/license.key'
-        try:
-            _license_file = open(_license_file, 'r')
-        except IOError:
-            _util.rtk_warning(_(u"Cannot find license file %s.  "
-                                u"If your license file is elsewhere, "
-                                u"please place it in %s." %
-                              (_license_file, _conf.DATA_DIR)))
-            sys.exit(2)
-
-        _license_key = _license_file.readline().rstrip('\n')
-        _license_file.close()
-
-        _query = "SELECT fld_product_key, fld_expire_date \
-                  FROM tbl_site_info"
-        _results = self.COMDB.execute_query(_query, None, self.ComCnx)
-
-        if _license_key != _results[0][0]:
-            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
-                              u"key is incorrect.  Closing the RTK "
-                              u"application."))
-            sys.exit(2)
-
-        if datetime.datetime.today().toordinal() > _results[0][1]:
-            _expire_date = str(datetime.datetime.fromordinal(int(
-                _results[0][1])).strftime('%Y-%m-%d'))
-            _util.rtk_error(_(u"Invalid license (Expired).  Your license "
-                              u"expired on %s.  Closing RTK application." %
-                              _expire_date))
+        if self._validate_license():
             sys.exit(2)
 
         # Get a connection to the program database.
@@ -275,12 +190,134 @@ class RTK(object):
 
         self.icoStatus = gtk.StatusIcon()
         icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
-        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 16, 16)
+        icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, 22, 22)
         self.icoStatus.set_from_pixbuf(icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"program database."))
 
         self.winTree.present()
+
+    def _read_configuration(self):
+        """
+        Method to read the site configuration and RTK configuration files.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        # Set the gtk+ theme on Windows.
+        if sys.platform.startswith('win'):
+            # These themes perform well on Windows.
+            # Amaranth
+            # Aurora
+            # Bluecurve
+            # Blueprint
+            # Blueprint-Green
+            # Candido-Calm
+            # CleanIce
+            # CleanIce - Dark
+            # Clearlooks
+            # Metal
+            # MurrinaBlue
+            # Nodoka-Midnight
+            # Rezlooks-Snow
+
+            # These themes perform poorly.
+            # Bluecurve-BerriesAndCream
+            # MurrinaChrome
+            gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\GTK\\2.0\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
+
+        # Import the test data file if we are executing in developer mode.
+        if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
+            _conf.MODE = 'developer'
+
+        # Read the configuration file.
+        _util.read_configuration()
+
+        if os.name == 'posix':
+            _conf.OS = 'Linux'
+        elif os.name == 'nt':
+            _conf.OS = 'Windows'
+
+        return False
+
+    def _initialize_loggers(self):
+        """
+        Method to create loggers for the RTK application.
+
+        :return: _debug_log, _user_log, _import_log
+        :rtype: tuple
+        """
+
+        # Create loggers for the application.  The first is to store log
+        # information for RTK developers.  The second is to log errors for the
+        # user.  The user can use these errors to help find problems with their
+        # inputs and sich.
+        __user_log = _conf.LOG_DIR + '/RTK_user.log'
+        __error_log = _conf.LOG_DIR + '/RTK_error.log'
+        __import_log = _conf.LOG_DIR + '/RTK_import.log'
+
+        if not _util.dir_exists(_conf.LOG_DIR):
+            os.makedirs(_conf.LOG_DIR)
+
+        if _util.file_exists(__user_log):
+            os.remove(__user_log)
+        if _util.file_exists(__error_log):
+            os.remove(__error_log)
+        if _util.file_exists(__import_log):
+            os.remove(__import_log)
+
+        _debug_log = _util.create_logger("RTK.debug", logging.DEBUG,
+                                         __error_log)
+        _user_log = _util.create_logger("RTK.user", logging.WARNING,
+                                        __user_log)
+        _import_log = _util.create_logger("RTK.import", logging.WARNING,
+                                          __import_log)
+
+        return(_debug_log, _user_log, _import_log)
+
+    def _validate_license(self):
+        """
+        Method to validate the license and the license expiration date.
+
+        :return: False if successful or true if an error is encountered.
+        :rtype: boolean
+        """
+
+        # Read the license file and compare to the product key in the site
+        # database.  If they are not equal, quit the application.
+        _license_file = _conf.DATA_DIR + '/license.key'
+        try:
+            _license_file = open(_license_file, 'r')
+        except IOError:
+            _util.rtk_warning(_(u"Cannot find license file %s.  "
+                                u"If your license file is elsewhere, "
+                                u"please place it in %s." %
+                                (_license_file, _conf.DATA_DIR)))
+            return True
+
+        _license_key = _license_file.readline().rstrip('\n')
+        _license_file.close()
+
+        _query = "SELECT fld_product_key, fld_expire_date \
+                  FROM tbl_site_info"
+        _results = self.COMDB.execute_query(_query, None, self.ComCnx)
+
+        if _license_key != _results[0][0]:
+            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
+                              u"key is incorrect.  Closing the RTK "
+                              u"application."))
+            return True
+
+        if datetime.datetime.today().toordinal() > _results[0][1]:
+            _expire_date = str(datetime.datetime.fromordinal(int(
+                _results[0][1])).strftime('%Y-%m-%d'))
+            _util.rtk_error(_(u"Invalid license (Expired).  Your license "
+                              u"expired on %s.  Closing RTK application." %
+                              _expire_date))
+            return True
+
+        return False
 
     def load_system(self):
         """
@@ -293,25 +330,25 @@ class RTK(object):
 
         # Get a connection to the program database and then retrieve the
         # program information.
-        query = "SELECT * FROM tbl_program_info"
+        _query = "SELECT * FROM tbl_program_info"
         if _conf.BACKEND == 'mysql':
             self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO)
         elif _conf.BACKEND == 'sqlite3':
             self.ProgCnx = self.DB.get_connection(_conf.RTK_PROG_INFO[2])
 
-        results = self.DB.execute_query(query, None, self.ProgCnx)
+        results = self.DB.execute_query(_query, None, self.ProgCnx)
 
-        _query_ = "SELECT fld_revision_prefix, fld_revision_next_id, \
-                          fld_function_prefix, fld_function_next_id, \
-                          fld_assembly_prefix, fld_assembly_next_id, \
-                          fld_part_prefix, fld_part_next_id, \
-                          fld_fmeca_prefix, fld_fmeca_next_id, \
-                          fld_mode_prefix, fld_mode_next_id, \
-                          fld_effect_prefix, fld_effect_next_id, \
-                          fld_cause_prefix, fld_cause_next_id, \
-                          fld_software_prefix, fld_software_next_id \
-                   FROM tbl_program_info"
-        _results_ = self.DB.execute_query(_query_, None, self.ProgCnx)
+        _query = "SELECT fld_revision_prefix, fld_revision_next_id, \
+                         fld_function_prefix, fld_function_next_id, \
+                         fld_assembly_prefix, fld_assembly_next_id, \
+                         fld_part_prefix, fld_part_next_id, \
+                         fld_fmeca_prefix, fld_fmeca_next_id, \
+                         fld_mode_prefix, fld_mode_next_id, \
+                         fld_effect_prefix, fld_effect_next_id, \
+                         fld_cause_prefix, fld_cause_next_id, \
+                         fld_software_prefix, fld_software_next_id \
+                  FROM tbl_program_info"
+        _results_ = self.DB.execute_query(_query, None, self.ProgCnx)
 
         _conf.RTK_PREFIX = [_element_ for _element_ in _results_[0]]
 
@@ -353,25 +390,6 @@ class RTK(object):
         _query = "SELECT * FROM tbl_incident \
                   WHERE fld_revision_id=%d" % self.REVISION.revision_id
         self.winParts.load_incident_tree(_query)
-
-        #if _conf.RTK_MODULES[0] == 1:       # Revisions
-        #    self.REVISION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[1] == 1:     # Functions
-         #   self.FUNCTION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[2] == 1:     # Requirements
-         #   self.REQUIREMENT.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[3] == 1:     # Hardware
-         #   self.HARDWARE.load_tree()
-        #elif _conf.RTK_MODULES[4] == 1:     # Software
-         #   self.SOFTWARE.load_tree()
-        #elif _conf.RTK_MODULES[5] == 1:     # V&V Tracking
-         #   self.VALIDATION.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[6] == 1:     # Reliability Testing
-         #   self.TESTING.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[7] == 1:     # Field incident tracking
-         #   self.INCIDENT.treeview.grab_focus()
-        #elif _conf.RTK_MODULES[8] == 1:     # Survival analysis
-         #   self.DATASET.treeview.grab_focus()
 
         self.LOADED = True
 

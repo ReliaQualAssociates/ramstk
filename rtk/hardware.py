@@ -533,7 +533,7 @@ class Hardware(object):
         # Define public Hardware class dictionary attributes.
         self.dicPaths = {0: '0'}
 
-        # Create the main HARDWARE class treeview.
+        # Create the main Hardware class treeview.
         (self.treeview,
          self._col_order) = _widg.make_treeview('Hardware', 3, self._app,
                                                 [''], _conf.RTK_COLORS[6],
@@ -2455,7 +2455,7 @@ class Hardware(object):
                                         self._callback_entry, 'text', 86)
 
             # Create the component-specific widgets for quadrant #1.
-            # TODO: Move to the Component class.
+# TODO: Move this to the Component class.
             _labels = [_(u"Calculation Model:")]
 
             (_x_pos,
@@ -2473,7 +2473,7 @@ class Hardware(object):
 
             self.cmbCalcModel.connect('changed', self._callback_combo, 10)
 
-            # TODO: Move this to the Component class.
+# TODO: Move this to the Component class.
             _labels = [_(u"Min Rated Temp:"), _(u"Knee Temp:"),
                        _(u"Max Rated Temp:"), _(u"Rated Voltage:"),
                        _(u"Operating Voltage:"), _(u"Rated Current:"),
@@ -3445,7 +3445,7 @@ class Hardware(object):
             displaying the physics of failure analysis for the selected
             Hardware.
 
-            :param rtk.hardware self: the current instance of a Hardware class.
+            :param rtk.Hardware self: the current instance of a Hardware class.
             :param gtk.NoteBook notebook: the Hardware class gtk.Notebook().
             :return: False if successful or True if an error is encountered.
             :rtype: boolean
@@ -3474,19 +3474,19 @@ class Hardware(object):
                                            u"component."))
             self.tvwPoF.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
-            _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+            _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
                                    gobject.TYPE_STRING, gobject.TYPE_STRING,
-                                   gobject.TYPE_STRING)
+                                   gobject.TYPE_STRING, gobject.TYPE_STRING)
             self.tvwPoF.set_model(_model)
 
-            _labels = [_(u"Failure Mechanism"),
+            _labels = [_(u"Load ID"), _(u"Failure\nMechanism"),
                        _(u"Relevant\nLoading\nCondition"),
-                       _(u"Primary Stress"),
-                       _(u"Secondary Stress"), _(u"Tertiary Stress"),
+                       _(u"Primary\nStress"),
+                       _(u"Secondary\nStress"), _(u"Tertiary\nStress"),
                        _(u"Priority"),
                        _(u"Primary Stress\nMeasurable\nParameter"),
                        _(u"Method to\nClassify\nLoad History"),
@@ -3496,23 +3496,88 @@ class Hardware(object):
                        _(u"Method to\nClassify\nLoad History"),
                        _(u"Remarks")]
             for i in range(13):
-                _cell = gtk.CellRendererText()
-                if i > 0:
-                    _cell.set_property('editable', 1)
-                    _cell.set_property('background', 'white')
-                    #_cell.connect('edited', self._pof_edit, i)
-                else:
+                _column = gtk.TreeViewColumn()
+                # Create the proper gtk.CellRenderer().
+                if i == 0:
+                    _cell = gtk.CellRendererText()
                     _cell.set_property('editable', 0)
                     _cell.set_property('background', 'grey')
+                    _column.set_visible(False)
+                elif i == 1:
+                    _cell = gtk.CellRendererText()
+                    _cell.set_property('editable', 0)
+                    _cell.set_property('background', 'grey')
+                elif i == 2:
+                    _cell = gtk.CellRendererCombo()
+                    _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+                    _cellmodel.append([""])
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('foreground', 'black')
+                    _cell.set_property('has-entry', False)
+                    _cell.set_property('model', _cellmodel)
+                    _cell.set_property('text-column', 0)
+                    _cell.set_property('wrap-width', 250)
+                    _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+                    _cell.set_property('yalign', 0.1)
+                    _query = "SELECT fld_condition_name \
+                              FROM tbl_op_condition"
+                    _results = self._app.COMDB.execute_query(_query, None,
+                                                             self._app.ComCnx)
+                    for j in range(len(_results)):
+                        _cellmodel.append([_results[j][0]])
+                elif i in [7, 9, 11]:
+                    _cell = gtk.CellRendererCombo()
+                    _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+                    _cellmodel.append([""])
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('foreground', 'black')
+                    _cell.set_property('has-entry', False)
+                    _cell.set_property('model', _cellmodel)
+                    _cell.set_property('text-column', 0)
+                    _cell.set_property('wrap-width', 250)
+                    _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+                    _cell.set_property('yalign', 0.1)
+                    _query = "SELECT fld_measurement_name \
+                              FROM tbl_measurements"
+                    _results = self._app.COMDB.execute_query(_query, None,
+                                                             self._app.ComCnx)
+                    for j in range(len(_results)):
+                        _cellmodel.append([_results[j][0]])
+                elif i in [8, 10, 12]:
+                    _cell = gtk.CellRendererCombo()
+                    _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+                    _cellmodel.append([""])
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('foreground', 'black')
+                    _cell.set_property('has-entry', False)
+                    _cell.set_property('model', _cellmodel)
+                    _cell.set_property('text-column', 0)
+                    _cell.set_property('wrap-width', 250)
+                    _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+                    _cell.set_property('yalign', 0.1)
+                    _query = "SELECT fld_history_name \
+                              FROM tbl_load_history"
+                    _results = self._app.COMDB.execute_query(_query, None,
+                                                             self._app.ComCnx)
+                    for j in range(len(_results)):
+                        _cellmodel.append([_results[j][0]])
+                else:
+                    _cell = gtk.CellRendererText()
+                    _cell.set_property('editable', 1)
+                    _cell.set_property('background', 'white')
 
-                _column = gtk.TreeViewColumn()
                 _label = _widg.make_column_heading(_labels[i])
                 _column.set_widget(_label)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i)
                 _column.set_resizable(True)
-                _column.connect('notify::width', _widg.resize_wrap, _cell)
                 self.tvwPoF.append_column(_column)
+
+                _cell.connect('edited', _widg.edit_tree, i, _model)
+                _column.connect('notify::width', _widg.resize_wrap, _cell)
 
             _label = gtk.Label()
             _label.set_markup("<span weight='bold'>" +
@@ -3523,15 +3588,13 @@ class Hardware(object):
             _label.set_tooltip_text(_(u"Physics of failure analysis for the "
                                       u"selected assembly."))
 
-            notebook.insert_page(_frame,
-                                 tab_label=_label,
-                                 position=-1)
+            notebook.insert_page(_frame, tab_label=_label, position=-1)
 
             return False
 
         _notebook = gtk.Notebook()
 
-        # Set the user's preferred gtk.Notebook tab position.
+        # Set the user's preferred gtk.Notebook() tab position.
         if _conf.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
         elif _conf.TABPOS[2] == 'right':
@@ -3548,7 +3611,7 @@ class Hardware(object):
         _create_assessment_inputs_tab(self, _notebook)
         _create_assessment_results_tab(self, _notebook)
         _create_fmeca_tab(self, _notebook)
-        #_create_pof_tab(self, _notebook)
+        _create_pof_tab(self, _notebook)
 
         return _notebook
 
@@ -4069,7 +4132,7 @@ class Hardware(object):
             :rtype: bool
             """
 
-            _query = "SELECT t2.fld_mechanism_description, \
+            _query = "SELECT t1.fld_load_id, t2.fld_mechanism_description, \
                              t1.fld_load_description, t1.fld_primary_stress, \
                              t1.fld_secondary_stress, t1.fld_tertiary_stress, \
                              t1.fld_priority, t1.fld_primary_measurable, \
@@ -4092,12 +4155,12 @@ class Hardware(object):
             _model = self.tvwPoF.get_model()
             _model.clear()
             for i in range(_n_mechanisms):
-                _data = [_util.none_to_string(_results[i][0]), _results[i][1],
+                _data = [_results[i][0], _util.none_to_string(_results[i][1]),
                          _results[i][2], _results[i][3], _results[i][4],
                          _results[i][5], _results[i][6], _results[i][7],
                          _results[i][8], _results[i][9], _results[i][10],
-                         _results[i][11],
-                         _util.none_to_string(_results[i][12])]
+                         _results[i][11], _results[i][12],
+                         _util.none_to_string(_results[i][13])]
                 _model.append(_data)
 
             return False
@@ -4124,7 +4187,7 @@ class Hardware(object):
         _load_assessment_inputs_tab(self)
         self.load_assessment_results_tab()
         self._load_fmeca_tab()
-        #_load_pof_page(self)
+        _load_pof_page(self)
 
         # Load and show the assembly-specific pages if the selected hardware
         # item is an assembly.  Otherwise, hide the assembly-specific pages.
@@ -5861,7 +5924,7 @@ class Hardware(object):
 
         def _save_line_item(model, __path, row, self):
             """
-            Saves a single row in the HARDWARE class FMEA/FMECA gtk.TreeModel
+            Saves a single row in the Hardware class FMEA/FMECA gtk.TreeModel()
             to the open RTK Program database.
 
             :param gtk.TreeModel model: the Hardware class FMEA/FMECA
@@ -6004,6 +6067,65 @@ class Hardware(object):
             return False
 
         _model = self.tvwFMECA.get_model()
+        _model.foreach(_save_line_item, self)
+
+        return False
+
+    def _save_pof(self):
+        """
+        Method to save the Hardware class physics of failure analysis
+        information to the open RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        def _save_line_item(model, __path, row, self):
+            """
+            Saves a single row in the Hardware class PoF gtk.TreeModel()
+            to the open RTK Program database.
+
+            :param gtk.TreeModel model: the Hardware class PoF gtk.TreeModel().
+            :param str __path: the path of the active row in the Hardware class
+                               PoF gtk.TreeModel().
+            :param gtk.TreeIter row: the selected gtk.TreeIter() in the
+                                     Hardware class PoF gtk.TreeView().
+            :return: False if successful or True if an error is encountered.
+            :rtype: boolean
+            """
+
+            _query = "UPDATE tbl_pof \
+                      SET fld_load_description='{0:s}', \
+                          fld_primary_stress='{1:s}', \
+                          fld_secondary_stress='{2:s}', \
+                          fld_tertiary_stress='{3:s}', \
+                          fld_priority='{4:s}', \
+                          fld_primary_measurable='{5:s}', \
+                          fld_primary_load_history='{6:s}', \
+                          fld_secondary_measureable='{7:s}', \
+                          fld_secondary_load_history='{8:s}', \
+                          fld_tertiary_measurable='{9:s}', \
+                          fld_tertiary_load_history='{10:s}', \
+                          fld_remarks='{11:s}' \
+                      WHERE fld_assembly_id={12:d} \
+                      AND fld_load_id={13:d}".format(
+                     model.get_value(row, 2), model.get_value(row, 3),
+                     model.get_value(row, 4), model.get_value(row, 5),
+                     model.get_value(row, 6), model.get_value(row, 7),
+                     model.get_value(row, 8), model.get_value(row, 9),
+                     model.get_value(row, 10), model.get_value(row, 11),
+                     model.get_value(row, 12), model.get_value(row, 13),
+                     self.assembly_id, model.get_value(row, 0))
+            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
+                                              commit=True):
+                _util.rtk_error(_(u"Problem saving the physics of failure "
+                                  u"analysis to the open RTK Program "
+                                  u"database."))
+                return True
+
+            return False
+
+        _model = self.tvwPoF.get_model()
         _model.foreach(_save_line_item, self)
 
         return False
@@ -6346,7 +6468,14 @@ class Hardware(object):
                     for i in range(len(cells)):
                         cells[i].set_property('background', 'light gray')
                         cells[i].set_property('editable', 0)
-
+#_(u"Revision ID"), _(u"Assembly ID"), _(u"Description"),
+#_(u"Included?"), _(u"Number of\nSub-Systems"), _(u"Number of\nSub-Elements"),
+#_(u"Operating\nTime"), _(u"Duty Cycle"), _(u"Intricacy\n(1-10)"),
+#_(u"State of\nthe Art\n(1-10)"), _(u"Operating\nTime (1-10)"), _(u"Environment\n(1-10)"),
+#_(u"Weighting\nFactor"), _(u"Percent\nWeighting\nFactor"), _(u"Current\nFailure\nRate"),
+#_(u"Allocated\nFailure\nRate"), _(u"Current\nMTBF"), _(u"Allocated\nMTBF"),
+#_(u"Current\nReliability"), _(u"Allocated\nReliability"), _(u"Current\nAvailability"),
+#_(u"Allocated\nAvailability")
             elif i == 2:                    # AGREE apportionment selected.
                 for col in 0, 1, 4, 8, 9, 10, 11, 13, 19, 20, 21:
                     self.tvwAllocation.get_column(col).set_visible(0)
@@ -6593,7 +6722,7 @@ class Hardware(object):
 
             if self.part:                   # Update the Parts List.
                 # self.model.set_value(self.selected_row, _index_, _text_)
-                print "TODO: Write code to update parts list."
+                pass
 
             self._update_attributes()
 
@@ -6796,7 +6925,7 @@ class Hardware(object):
             if page_num in [1, 2, 3]:
                 page_num += 3
 
-        if page_num == 0:                   # General data tab.
+        if page_num == 0:                   # General data page.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6807,7 +6936,7 @@ class Hardware(object):
             self.btnAddItem.set_tooltip_text(_(u"Add components to the "
                                                u"currently selected "
                                                u"assembly."))
-        elif page_num == 1:                 # Allocation tab
+        elif page_num == 1:                 # Allocation page.
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6823,7 +6952,7 @@ class Hardware(object):
             self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
                                                    u"results for the selected "
                                                    u"assembly."))
-        elif page_num == 2:                 # Hazard analysis tab
+        elif page_num == 2:                 # Hazard analysis page.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.show()
@@ -6845,7 +6974,7 @@ class Hardware(object):
                                               u"risk analyses."))
             self.btnEdit.set_tooltip_text(_(u"Create/edit current risk "
                                             u"analysis functions."))
-        elif page_num == 3:                 # Similar items tab
+        elif page_num == 3:                 # Similar items page.
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6862,7 +6991,7 @@ class Hardware(object):
                                               u"similar item analyses."))
             self.btnEdit.set_tooltip_text(_(u"Create/edit current similar "
                                             u"item analysis functions."))
-        elif page_num == 4:                 # Assessment inputs tab
+        elif page_num == 4:                 # Assessment inputs page.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6876,7 +7005,7 @@ class Hardware(object):
             self.btnAnalyze.set_tooltip_text(_(u"Calculate the hardware "
                                                u"metrics in the open RTK "
                                                u"Program Database."))
-        elif page_num == 5:                 # Assessment results tab
+        elif page_num == 5:                 # Assessment results page.
             self.btnAddItem.show()
             self.btnFMECAAdd.hide()
             self.btnRemoveItem.hide()
@@ -6884,7 +7013,7 @@ class Hardware(object):
             self.btnSaveResults.show()
             self.btnRollup.hide()
             self.btnEdit.hide()
-        elif page_num == 6:                 # FMEA/FMECA tab
+        elif page_num == 6:                 # FMEA/FMECA page.
             self.btnAddItem.hide()
             self.btnFMECAAdd.show()
             self.btnRemoveItem.show()
@@ -6902,24 +7031,18 @@ class Hardware(object):
                                                    u"the selected assembly."))
             self.btnRollup.set_tooltip_text(_(u"Summarizes the lower level "
                                               u"FMEA/FMECA results."))
-        elif page_num == 7:                 # Maintenance planning tab
+        elif page_num == 7:                 # Physics of failure analysis page.
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
-            self.btnRemoveItem.show()
-            self.btnAnalyze.show()
+            self.btnRemoveItem.hide()
+            self.btnAnalyze.hide()
             self.btnSaveResults.show()
             self.btnRollup.hide()
             self.btnEdit.hide()
-            self.btnAddItem.set_tooltip_text(_(u"Add a new maintenance "
-                                               u"activity."))
-            self.btnRemoveItem.set_tooltip_text(_(u"Remove the currently "
-                                                  u"selected maintenance "
-                                                  u"activity."))
-            # self.btnAnalyze.set_tooltip_text(_(u"Calculates the selected "
-            #                                    u"allocation method."))
-            # self.btnSaveResults.set_tooltip_text(_(u"Saves the allocation "
-            #                                        u"results for the "
-            #                                        u"selected assembly."))
+            self.btnSaveResults.set_tooltip_text(_(u"Saves the physics of "
+                                                   u"failure analysis for the "
+                                                   u"selected hardware "
+                                                   u"item."))
         else:
             self.btnAddItem.hide()
             self.btnFMECAAdd.hide()
@@ -6950,12 +7073,12 @@ class Hardware(object):
         # assembly-specific code.  Otherwise, add 3 to the page number to
         # account for the missing assembly-specific pages in the notebook.
         if not self.part:
-            if _page_ == 1:                 # Allocation tab.
+            if _page_ == 1:                 # Allocation page.
                 if button.get_name() == 'Analyze':
                     self._allocate()
                 elif button.get_name() == 'Save':
                     self._save_allocation()
-            elif _page_ == 2:               # Hazard analysis tab.
+            elif _page_ == 2:               # Hazard analysis page.
                 if button.get_name() == 'Add':
                     _query = "INSERT INTO tbl_risk_analysis \
                               (fld_revision_id, fld_assembly_id) \
@@ -7005,7 +7128,7 @@ class Hardware(object):
                     self._trickle_down_risk()
                 elif button.get_name() == 'Edit':
                     self._edit_function(index=0)
-            elif _page_ == 3:               # Similar item analysis tab.
+            elif _page_ == 3:               # Similar item analysis page.
                 if button.get_name() == 'Analyze':
                     self._calculate_sia()
                 elif button.get_name() == 'Save':
@@ -7017,7 +7140,7 @@ class Hardware(object):
         else:
             _page_ += 3
 
-        if _page_ == 0:                     # General data tab.
+        if _page_ == 0:                     # General data page.
             if button.get_name() == 'Add':
                 self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -7025,7 +7148,7 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 4:                   # Assessment inputs tab.
+        elif _page_ == 4:                   # Assessment inputs page.
             if button.get_name() == 'Add':
                 self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -7033,7 +7156,7 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 5:                   # Assessment results tab.
+        elif _page_ == 5:                   # Assessment results page.
             if button.get_name() == 'Add':
                 self.add_hardware(button, 2)
             elif button.get_name() == 'Analyze':
@@ -7041,7 +7164,7 @@ class Hardware(object):
                 self.calculate(_row_)
             elif button.get_name() == 'Save':
                 self.save_hardware()
-        elif _page_ == 6:                   # FMEA/FMECA tab.
+        elif _page_ == 6:                   # FMEA/FMECA page.
             if button.get_label() == 'Mode':
                 # Find the id of the next failure mode.
                 _query = "SELECT MAX(fld_mode_id) \
@@ -7118,16 +7241,16 @@ class Hardware(object):
                     self._load_fmeca_tab()
 
                 # Insert a new record in the physics of failure table.
-                #_query = "INSERT INTO tbl_pof \
-                #          (fld_assembly_id, fld_mode_id, fld_mechanism_id) \
-                #          VALUES (%d, %d, %d)" % (self.assembly_id,
-                #                                  _mode_id, _next_id)
-                #if not self._app.DB.execute_query(_query, None,
-                #                                  self._app.ProgCnx,
-                #                                  commit=True):
-                #    _util.rtk_error(_(u"Error adding new failure mechanism to "
-                #                      u"the open RTK Program database physics "
-                #                      u"of failure table."))
+                _query = "INSERT INTO tbl_pof \
+                          (fld_assembly_id, fld_mode_id, fld_mechanism_id) \
+                          VALUES (%d, %d, %d)" % (self.assembly_id,
+                                                  _mode_id, _next_id)
+                if not self._app.DB.execute_query(_query, None,
+                                                  self._app.ProgCnx,
+                                                  commit=True):
+                    _util.rtk_error(_(u"Error adding new failure mechanism to "
+                                      u"the open RTK Program database physics "
+                                      u"of failure table."))
 
             elif button.get_label() == 'Control':
                 # Find the id and gtk.TreeIter of the parent failure mechanism.
@@ -7349,15 +7472,9 @@ class Hardware(object):
 
             elif button.get_name() == 'Save':
                 self._save_fmeca()
-        elif _page_ == 7:  # Maintenance planning tab.
-            if button.get_name() == 'Add':
-                print "Add maintenance activity"
-            elif button.get_name() == 'Remove':
-                print "Remove maintenance activity"
-            elif button.get_name() == 'Analyze':
-                print "Maintenance costs"
-            elif button.get_name() == 'Save':
-                print "Saving maintenance policy"
+        elif _page_ == 7:                   # Physics of failure analysis page.
+            if button.get_name() == 'Save':
+                self._save_pof()
 
         return False
 
@@ -7377,8 +7494,8 @@ class Hardware(object):
 
             :param gtk.TreeModel model: the gtk.TreeModel() from which to
                                         read/write allocation data.
-            :param integer N: the number of assemblies to which the reliability
-                              requirement is allocated.
+            :param int N: the number of assemblies to which the reliability
+                          requirement is allocated.
             :param float Ts: the mission or operating time.
             :param float Rs: the reliability requirement.
             :return: False if successful or True if an error is encountered.
@@ -7390,7 +7507,7 @@ class Hardware(object):
             except ZeroDivisionError:
                 return True
 
-            _Ri_ = Rs ** _Wi_  # @IgnorePep8
+            _Ri_ = Rs ** _Wi_
 
             try:
                 _FRi_ = -1.0 * log(_Ri_) / Ts

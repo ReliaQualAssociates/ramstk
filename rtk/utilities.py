@@ -8,11 +8,11 @@ application.
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       utilities.py is part of The RTK Project
+#       rtk.utilities.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -178,27 +178,42 @@ def read_configuration():
     _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
     # Get color information.
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'revisionfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'functionbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'functionfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'requirementbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'requirementfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'assemblybg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'assemblyfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'validationbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'validationfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'revisionbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'revisionfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'functionbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'functionfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'requirementbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'requirementfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'assemblybg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'assemblyfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'validationbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'validationfg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgbg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgfg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracabg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracafg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partbg'))
     _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'overstressbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'overstressfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'taggedfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'nofrmodelfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'overstressbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'overstressfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'taggedbg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'taggedfg'))
+    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+                                                          'nofrmodelfg'))
     try:
         _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                               'softwarebg'))
@@ -221,8 +236,8 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     :param str log_level: the level of messages to log.
     :param str log_file: the full path of the log file for this logger instance
                          to write to.
-    :param boolean to_tty: boolean indicating whether this logger will also
-                           dump messages to the terminal.
+    :keyword boolean to_tty: boolean indicating whether this logger will also
+                             dump messages to the terminal.
     :return: _logger
     :rtype:
     """
@@ -286,7 +301,7 @@ def none_to_string(string):
     :rtype: str
     """
 
-    if string is None:
+    if string is None or string == 'None':
         return ''
     else:
         return string
@@ -326,13 +341,14 @@ def date_to_ordinal(date):
 
     try:
         return parse(str(date)).toordinal()
-    except ValueError, TypeError:
+    except(ValueError, TypeError):
         return parse('01/01/70').toordinal()
 
 
 def ordinal_to_date(ordinal):
     """
-    Converts ordinal dates to date strings in ISO-8601 format.
+    Converts ordinal dates to date strings in ISO-8601 format.  Defaults to
+    the current date if a bad value is passed as the argument.
 
     :param int ordinal: the ordinal date to convert.
     :return: the ISO-8601 date representation of the passed ordinal.
@@ -344,23 +360,24 @@ def ordinal_to_date(ordinal):
     try:
         return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
     except ValueError:
-        return str(datetime.fromordinal(719163).strftime('%Y-%m-%d')),
+        ordinal = datetime.now().toordinal()
+        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
 
 
-def tuple_to_list(tuple, list):
+def tuple_to_list(origtuple, origlist):
     """
     Appends a tuple to a list.
 
-    :param tuple _tuple: the tuple to add to the list.
-    :param list _list: the existing list to add the tuple elements to.
-    :return: list; the orginal list with the tuple items added.
+    :param tuple origtuple: the tuple to add to the list.
+    :param list origlist: the existing list to add the tuple elements to.
+    :return: origlist; the orginal list with the tuple items added.
     :rtype: list
     """
 
-    for i in range(len(tuple)):
-        list.append(tuple[i])
+    for i in range(len(origtuple)):
+        origlist.append(origtuple[i])
 
-    return list
+    return origlist
 
 
 def dir_exists(directory):
@@ -411,7 +428,7 @@ def create_project(widget, app):
         label = _widg.make_label(_(u"New Program Name"))
         txtProgName = _widg.make_entry()
         dialog.vbox.pack_start(label)       # pylint: disable=E1101
-        dialog.vbox.pack_start(txtProgName) # pylint: disable=E1101
+        dialog.vbox.pack_start(txtProgName)     # pylint: disable=E1101
         label.show()
         txtProgName.show()
 
@@ -482,11 +499,11 @@ def create_project(widget, app):
     elif _conf.BACKEND == 'sqlite3':
         _dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program "
                                                 u"Database"),
-                                       action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                       buttons=(gtk.STOCK_NEW,
-                                                gtk.RESPONSE_ACCEPT,
-                                                gtk.STOCK_CANCEL,
-                                                gtk.RESPONSE_REJECT))
+                                        action=gtk.FILE_CHOOSER_ACTION_SAVE,
+                                        buttons=(gtk.STOCK_NEW,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
         _dialog.set_current_folder(_conf.PROG_DIR)
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -506,7 +523,7 @@ def create_project(widget, app):
                                             u"Overwrite?") %
                                           _new_program, width=-1, height=-1,
                                           bold=False, wrap=True)
-                _dlgConfirm.vbox.pack_start(_label)
+                _dlgConfirm.vbox.pack_start(_label)     # pylint: disable=E1101
                 _label.show()
 
                 if _dlgConfirm.run() == gtk.RESPONSE_YES:
@@ -542,10 +559,10 @@ def open_project(__widget, app, dlg=1, filename=''):
 
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
     :param rtk app: the current instance of the RTK application.
-    :param int dlg: whether or not to display a file chooser dialog.
-                    * 0 = No
-                    * 1 = Yes (default)
-    :param str filename: the full path to the RTK Program database to open.
+    :keyword int dlg: whether or not to display a file chooser dialog.
+                      0 = No
+                      1 = Yes (default)
+    :keyword str filename: the full path to the RTK Program database to open.
     """
 
     if app.LOADED:
@@ -587,9 +604,9 @@ def open_project(__widget, app, dlg=1, filename=''):
 
         for i in range(len(results)):
             # Don't display the MySQL administrative/test databases.
-            if(results[i][0] != 'information_schema' and \
-               results[i][0] != 'test' and \
-               results[i][0] != 'mysql' and \
+            if(results[i][0] != 'information_schema' and
+               results[i][0] != 'test' and
+               results[i][0] != 'mysql' and
                results[i][0] != 'RTKcom' and
                results[i][0] != '#mysql50#lost+found'):
                 model.append(None, [results[i][0]])
@@ -600,7 +617,7 @@ def open_project(__widget, app, dlg=1, filename=''):
         if dialog.run() == gtk.RESPONSE_ACCEPT:
             (_model, _row) = treeview.get_selection().get_selected()
             _conf.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
-            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH)) # pylint: disable=E1101
+            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))     # pylint: disable=E1101
             app.load_system()
 
         dialog.destroy()
@@ -620,7 +637,6 @@ def open_project(__widget, app, dlg=1, filename=''):
             # Set some filters to select all files or only some text files.
             _filter = gtk.FileFilter()
             _filter.set_name(_(u"RTK Project Files"))
-            #_filter.add_mime_type("text/txt")
             _filter.add_pattern("*.rfb")
             _filter.add_pattern("*.rtk")
             _dialog.add_filter(_filter)
@@ -666,7 +682,7 @@ def save_project(__widget, app):
     app.FUNCTION.save_function()
     app.HARDWARE.save_hardware()
     app.SOFTWARE.save_software()
-    #app.winParts.save_component()
+    # app.winParts.save_component()
 
     # Update the next ID for each type of object.
     _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
@@ -688,7 +704,7 @@ def save_project(__widget, app):
     # conf.write_configuration()
 
     _query = "VACUUM"
-    print app.DB.execute_query(query, None, app.ProgCnx)
+    print app.DB.execute_query(_query, None, app.ProgCnx)
 
     set_cursor(app, gtk.gdk.LEFT_PTR)
 
@@ -764,7 +780,8 @@ def delete_project(__widget, app):
 
         dialog = gtk.FileChooserDialog(_(u"RTK - Delete Program"),
                                        None,
-                                       gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       gtk.DIALOG_MODAL |
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                         gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
@@ -780,13 +797,13 @@ def delete_project(__widget, app):
             dialog.destroy()
 
 
-def import_project(__widget, app):
+def import_project(__widget, __app):
     """
     Imports project information from external files such as Excel, CVS, other
     delimited text files, etc.
 
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param rtk app: the current instance of the RTK application.
+    :param rtk __app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
     :rtype: boolean
     """
@@ -802,6 +819,89 @@ def import_project(__widget, app):
     _dialog.destroy()
 
     return False
+
+
+def select_source_file(assistant, title):
+    """
+    Function to select the file containing the data to import to the open RTK
+    Program database.
+
+    :param gtk.Assistant assistant: the gtk.Assistant() calling this function.
+    :return: _headers, _contents; lists containing the column headings and
+             each line from the source file.
+    :rtype: lists
+    """
+
+    # Get the user's selected file and write the results.
+    _dialog = gtk.FileChooserDialog(title, None,
+                                    gtk.DIALOG_MODAL |
+                                    gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+    _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+    _dialog.set_current_folder(_conf.PROG_DIR)
+
+    # Set some filters to select all files or only some text files.
+    _filter = gtk.FileFilter()
+    _filter.set_name(u"All files")
+    _filter.add_pattern("*")
+    _dialog.add_filter(_filter)
+
+    _filter = gtk.FileFilter()
+    _filter.set_name("Text Files (csv, txt)")
+    _filter.add_mime_type("text/csv")
+    _filter.add_mime_type("text/txt")
+    _filter.add_mime_type("application/xls")
+    _filter.add_pattern("*.csv")
+    _filter.add_pattern("*.txt")
+    _filter.add_pattern("*.xls")
+    _dialog.add_filter(_filter)
+
+    # Run the dialog and write the file.
+    _headers = []
+    _contents = []
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _filename = _dialog.get_filename()
+        _file = open(_filename, 'r')
+
+        __, _extension = os.path.splitext(_filename)
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
+        for _line in _file:
+            _contents.append([_line.rstrip('\n')])
+
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
+
+        _dialog.destroy()
+
+    else:
+        _dialog.destroy()
+        assistant.destroy()
+
+    return _headers, _contents
+
+
+def missing_to_default(field, default):
+    """
+    Function to convert missing values from the external file into default
+    values before loading into the open RTK Program database.
+
+    :param field: the original, missing, value.
+    :param default: the new, default, value.
+    :return: field; the new value if field is an emtpy string, the old value
+             otherwise.
+    :rtype: any
+    """
+
+    if field == '':
+        return default
+    else:
+        return field
 
 
 def confirm_action(_prompt_, _image_='default', _parent_=None):
@@ -825,7 +925,7 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
 
     label = _widg.make_label(_prompt_)
     hbox.pack_end(label)
-    dialog.vbox.pack_start(hbox)
+    dialog.vbox.pack_start(hbox)            # pylint: disable=E1101
     hbox.show_all()
 
     if dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -952,7 +1052,6 @@ def cut_copy_paste(__widget, action):
                        2 = paste
     """
 
-    # TODO: Write code to cut/copy/paste.
     clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(),
                               "CLIPBOARD")
 
@@ -987,7 +1086,6 @@ def select_all(widget):
     :param gtk.Widget widget: the gtk.Widget() that called this function.
     """
 
-    # TODO: Write code to select all items in treeviews.
     return False
 
 
@@ -1003,13 +1101,13 @@ def find(widget, action):
     return False
 
 
-def find_all_in_list(_list, value, start=0):
+def find_all_in_list(searchlist, value, start=0):
     """
     Finds all instances of value in the list starting at position start.
 
-    :param list _list: the list to search.
+    :param list searchlist: the list to search.
     :param any value: the value to search for in the list.
-    :param int start: the position in the list to start the search.
+    :keyword int start: the position in the list to start the search.
     :return: positions; the list of positions where the value is found.
     :rtype: int
     """
@@ -1017,7 +1115,7 @@ def find_all_in_list(_list, value, start=0):
     positions = []
     i = start - 1
     try:
-        i = _list.index(value, i+1)
+        i = searchlist.index(value, i+1)
         positions.append(i)
         return positions
     except ValueError:
@@ -1127,8 +1225,7 @@ def add_parts_system_hierarchy(__widget, app):
     _n_added = 0
     for i in range(len(_results)):
         # Create a description from the part prefix and part index.
-        _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + \
-                     str(_conf.RTK_PREFIX[7])
+        _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + str(_conf.RTK_PREFIX[7])
 
         _parent = app.HARDWARE.dicPaths[_results[i][1]]
 
@@ -1150,7 +1247,7 @@ def add_parts_system_hierarchy(__widget, app):
                     u"open RTK database."))
 
     app.REVISION.load_tree()
-    #TODO: Need to find and select the previously selected revision before loading the hardware tree.
+# TODO: Need to find and select the previously selected revision before loading the hardware tree.
     app.HARDWARE.load_tree()
 
     set_cursor(app, gtk.gdk.LEFT_PTR)
@@ -1609,10 +1706,9 @@ def date_select(__widget, __event=None, entry=None):
     """
     Function to select a date from a calendar widget.
 
-    :param __widget: the gtk.Widget() that called this function.
-    :type __widget: gtk.Widget
-    :param entry: the gtk.Entry() widget in which to display the date.
-    :type entry: gtk.Entry
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param gtk.Entry entry: the gtk.Entry() widget in which to display the
+                            date.
     :return: _date
     :rtype: date string (YYYY-MM-DD)
     """
@@ -1665,7 +1761,7 @@ def set_cursor(app, cursor):
                                   - gtk.gdk.GUMBY
                                   - gtk.gdk.HAND1
                                   - gtk.gdk.HAND2
-                                  - gtk.gdk.LEFT_PTR - used for non-busy cursor
+                                  - gtk.gdk.LEFT_PTR - non-busy cursor
                                   - gtk.gdk.PENCIL
                                   - gtk.gdk.PLUS
                                   - gtk.gdk.QUESTION_ARROW
@@ -1678,17 +1774,18 @@ def set_cursor(app, cursor):
                                   - gtk.gdk.SB_V_DOUBLE_ARROW
                                   - gtk.gdk.TCROSS
                                   - gtk.gdk.TOP_LEFT_ARROW
-                                  - gtk.gdk.WATCH - used when application is busy
+                                  - gtk.gdk.WATCH - when application is busy
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    app.winTree.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.winParts.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
+    app.window.set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 
     return False
+
 
 def long_call(app):
     """
@@ -2065,7 +2162,7 @@ class Options(gtk.Window):
         _fixed.put(self.rdoTesting, 5, 185)
         _fixed.put(self.rdoIncident, 5, 215)
         _fixed.put(self.rdoSurvival, 5, 245)
-        #_fixed.put(self.rdoAllocation, 5, 275)
+        # _fixed.put(self.rdoAllocation, 5, 275)
         _fixed.put(self.rdoPart, 5, 275)
         _fixed.put(self.rdoRiskAnalysis, 5, 305)
         _fixed.put(self.rdoSimilarItem, 5, 335)
@@ -2304,11 +2401,14 @@ class Options(gtk.Window):
                 self.btnIncidentFGColor.set_color(gtk.gdk.Color('#000000'))
             # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partbg'))
             # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partfg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'overstressbg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'overstressfg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+            #                                            'overstressbg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+            #                                            'overstressfg'))
             # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedbg'))
             # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedfg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'nofrmodelfg'))
+            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
+            #                                            'nofrmodelfg'))
 
         return False
 
@@ -2488,8 +2588,8 @@ class Options(gtk.Window):
             _query = "SELECT fld_user_id, fld_user_lname, fld_user_fname, \
                              fld_user_email, fld_user_phone, fld_user_group \
                       FROM tbl_users"
-            _header = ["", "User Last Name", "User First Name", "eMail", "Phone",
-                       "Work Group"]
+            _header = ["", "User Last Name", "User First Name", "eMail",
+                       "Phone", "Work Group"]
             _pad = ()
 
         _results = self._app.COMDB.execute_query(_query, None,
@@ -2740,13 +2840,13 @@ class Options(gtk.Window):
 
             try:
                 _parser.set('General', 'listtabpos',
-                        self.cmbListBookTabPosition.get_active_text().lower())
+                    self.cmbListBookTabPosition.get_active_text().lower())
             except AttributeError:
                 _parser.set('General', 'listtabpos', 'right')
 
             try:
                 _parser.set('General', 'booktabpos',
-                        self.cmbWorkBookTabPosition.get_active_text().lower())
+                    self.cmbWorkBookTabPosition.get_active_text().lower())
             except AttributeError:
                 _parser.set('General', 'booktabpos', 'bottom')
 
@@ -2908,7 +3008,7 @@ class Options(gtk.Window):
             _file.write("\t\t<column>\n")
             _file.write("\t\t\t<defaulttitle>%s</defaulttitle>\n" %
                         _model.get_value(_row, 0))
-            _file.write("\t\t\t<usertitle>%s</usertitle>\n"%
+            _file.write("\t\t\t<usertitle>%s</usertitle>\n" %
                         _model.get_value(_row, 1))
             _file.write("\t\t\t<datatype>%s</datatype>\n" %
                         _model.get_value(_row, 5))

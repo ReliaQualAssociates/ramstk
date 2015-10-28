@@ -3,7 +3,7 @@
 
       validation_format.xml is part of the RTK Project
 
-      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland
+      Copyright (C) 2007-2015 Andrew "Weibullguy" Rowland
                               <andrew.rowland@reliaqual.com>
 -->
 
@@ -216,6 +216,15 @@ experience. -->
             <usertitle>Project Cost Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>22</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence</defaulttitle>
+            <usertitle>Confidence</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>

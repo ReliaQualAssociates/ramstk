@@ -867,8 +867,10 @@ def crow_amsaa_chi_square(F, X, _lambda, beta, grouped=True):
 # +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ +++++ #
 def var_covar(N, T, alpha, beta):
     """
-    Function to calculate the variance-covariance matrix for the NHPP - Power
-    Law model parameters.  Used for Crow-AMSAA models too.
+    Function to calculate the variance-covariance matrix for the:
+
+        * NHPP - Power Law model parameters
+        * Crow-AMSAA model model parameters
 
     :param int N: total number of failures in the data set.
     :param float T: total observation time or maximum failure time.

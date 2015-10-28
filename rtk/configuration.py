@@ -250,7 +250,16 @@ Global list for RTK Program database connectioninformation.
 |   4   | User password (MySQL only)    |
 +-------+-------------------------------+
 
-:const RTK_RISK_POINTS: Default value: [4, 10]
+:const RTK_FAILURE_PROBABILITY: default value: []
+Global list for qualitative failure probability categories.
+
+:const RTK_SEVERITY: default value: []
+Global list for failure severity categories.
+
+:const RTK_HAZARDS: default value: []
+Global list for potential hazards.
+
+:const RTK_RISK_POINTS: default value: [4, 10]
 Global list for risk level cutoffs.
 
 +-------+---------------------------+
@@ -260,6 +269,21 @@ Global list for risk level cutoffs.
 +-------+---------------------------+
 |   1   | Medium to high            |
 +-------+---------------------------+
+
+:const RTK_FMECA_METHOD: default value: 1
+Global indicator variable for the criticality method used.  1=Task 102, 2=RPN.
+
+:const RTK_RPN_FORMAT: default value: 0
+Global indicator variable for the level that the RPN is calculated.  0=Mechanism, 1=Cause.
+
+:const RTK_RPN_SEVERITY: default value: []
+Global list for RPN Severity categories.
+
+:const RTK_RPN_OCCURRENCE: default value: []
+Global list for RPN Occurrence categories.
+
+:const RTK_RPN_DETECTION: default value: []
+Global list for RPN Detection categories.
 
 :const COM_BACKEND: Default value: ''
 RTK common database backend to use; mysql or sqlite3.
@@ -308,16 +332,15 @@ Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
 __author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       configuration.py is part of The RTK Project
+#       rtk.configuration.py is part of The RTK Project
 #
 # All rights reserved.
 
 import ConfigParser
-import sys
 from os import environ, path, makedirs, name
 
 # Add localization support.
@@ -337,8 +360,6 @@ CONF_DIR = ''
 LOG_DIR = ''
 PROG_DIR = ''
 
-RTK_MODE_SOURCE = 1
-
 RTK_FORMAT_FILE = []
 RTK_COLORS = []
 RTK_PREFIX = []
@@ -349,7 +370,57 @@ RTK_PAGE_NUMBER = []
 RTK_COM_INFO = []
 RTK_PROG_INFO = []
 
+RTK_HARDWARE_LIST = []
+RTK_SOFTWARE_LIST = []
+
+# ------------------------------------------------------------------------- #
+# Risk analyses configuration options.                                      #
+# ------------------------------------------------------------------------- #
+RTK_SEVERITY = []
+RTK_FAILURE_PROBABILITY = []
+RTK_HAZARDS = []
 RTK_RISK_POINTS = [4, 10]
+
+# ------------------------------------------------------------------------- #
+# FMEA configuration options.                                               #
+# ------------------------------------------------------------------------- #
+RTK_MODE_SOURCE = 1                         # 1=FMD-97
+RTK_FMECA_METHOD = 1                        # 1=Task 102, 2=RPN
+
+RTK_RPN_FORMAT = 0                          # RPN at mechanism level.
+RTK_RPN_SEVERITY = []
+RTK_RPN_OCCURRENCE = []
+RTK_RPN_DETECTION = []
+
+# ------------------------------------------------------------------------- #
+# PoF configuration options.                                                #
+# ------------------------------------------------------------------------- #
+# TODO: Add tables to the common database for these.
+RTK_DAMAGE_MODELS = []
+RTK_OPERATING_PARAMETERS = []
+
+# ------------------------------------------------------------------------- #
+# Hardware configuration options.                                           #
+# ------------------------------------------------------------------------- #
+RTK_CATEGORIES = {}
+RTK_SUBCATEGORIES = {}
+
+# ------------------------------------------------------------------------- #
+# Validation configuration options.                                         #
+# ------------------------------------------------------------------------- #
+RTK_TASK_TYPE = []
+RTK_MEASUREMENT_UNITS = []
+
+# ------------------------------------------------------------------------- #
+# Incident configuration options.                                           #
+# ------------------------------------------------------------------------- #
+RTK_USERS = []
+RTK_INCIDENT_CATEGORY = []
+RTK_INCIDENT_TYPE = []
+RTK_INCIDENT_STATUS = []
+RTK_INCIDENT_CRITICALITY = []
+RTK_LIFECYCLE = []
+RTK_DETECTION_METHODS = []
 
 COM_BACKEND = ''
 BACKEND = ''
@@ -357,7 +428,7 @@ BACKEND = ''
 LOCALE = 'en_US'
 OS = ''
 
-FRMULT = 1.0
+FRMULT = 1000000.0
 PLACES = 6
 RTK_MTIME = 10.0
 
@@ -366,7 +437,6 @@ TABPOS = ['top', 'bottom', 'bottom']
 RTK_GUI_LAYOUT = 'basic'
 
 METHOD = 'STANDARD'                         # STANDARD or LRM
-FMECA = 0                                   # 0=qualitative, 1=quantitative CA
 
 
 class RTKConf(object):
@@ -532,7 +602,7 @@ class RTKConf(object):
             fixed.put(cmbDBType, 345, y_pos)
 
             fixed.show_all()
-            dialog.vbox.pack_start(fixed)
+            dialog.vbox.pack_start(fixed)   # pylint: disable=E1101
 
             if dialog.run() == -3:
                 RTKcomlist = []

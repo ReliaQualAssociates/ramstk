@@ -51,11 +51,13 @@ class Function(object):
     The Function class is used to represent a function in a system being
     analyzed.
 
+    :ivar _code: initial_value: ''
+    :ivar _type: initial_value: 0
+
     :ivar revision_id: initial_value: 0
     :ivar function_id: initial_value: 0
     :ivar availability: initial_value: 0.0
     :ivar mission_availability: initial_value: 0.0
-    :ivar code: initial_value: ''
     :ivar cost: initial_value: 0.0
     :ivar mission_hazard_rate: initial_value: 0.0
     :ivar hazard_rate: initial_value: 0.0
@@ -69,7 +71,6 @@ class Function(object):
     :ivar remarks: initial_value: ''
     :ivar n_modes: initial_value: 0
     :ivar n_parts: initial_value: 0
-    :ivar type: initial_value: 0
     :ivar parent_id: initial_value: ''
     :ivar level: initial_value: 0
     :ivar safety_critical: initial_value: 1
@@ -82,20 +83,21 @@ class Function(object):
         :param RTK application: the current instance of the RTK application.
         """
 
-        # Define private Function class attributes.
+        # Define private Function class scalar attributes.
         self._app = application
+        self._code = ''
+        self._type = 0
 
         # Define private Function class dictionary attributes.
 
         # Define private Function class list attributes.
         self._lst_handler_id = []
 
-        # Define public Function class attributes.
+        # Define public Function class scalar attributes.
         self.revision_id = 0
         self.function_id = 0
         self.availability = 0.0
         self.mission_availability = 0.0
-        self.code = ''
         self.cost = 0.0
         self.mission_hazard_rate = 0.0
         self.hazard_rate = 0.0
@@ -109,7 +111,6 @@ class Function(object):
         self.remarks = ''
         self.n_modes = 0
         self.n_parts = 0
-        self.type = 0
         self.parent_id = ''
         self.level = 0
         self.safety_critical = 1
@@ -194,6 +195,7 @@ class Function(object):
         self.treeview.connect('cursor_changed', self._treeview_row_changed,
                               None, None)
         self.treeview.connect('row_activated', self._treeview_row_changed)
+        self.treeview.connect('button_press_event', self._treeview_clicked)
 
         # Connect the cells to the callback function.
         for i in [4, 14, 15]:
@@ -1064,7 +1066,7 @@ class Function(object):
             :rtype: boolean
             """
 
-            self.txtCode.set_text(self.code)
+            self.txtCode.set_text(self._code)
             self.txtTotalCost.set_text(str(locale.currency(self.cost)))
 
             _textbuffer_ = self.txtName.get_child().get_child().get_buffer()
@@ -1148,7 +1150,7 @@ class Function(object):
             self.availability = _model.get_value(_row, self._lst_col_order[2])
             self.mission_availability = _model.get_value(_row,
                                                     self._lst_col_order[3])
-            self.code = _model.get_value(_row, self._lst_col_order[4])
+            self._code = _model.get_value(_row, self._lst_col_order[4])
             self.cost = _model.get_value(_row, self._lst_col_order[5])
             self.mission_hazard_rate = _model.get_value(_row,
                                                         self._lst_col_order[6])
@@ -1163,7 +1165,7 @@ class Function(object):
             self.remarks = _model.get_value(_row, self._lst_col_order[15])
             self.n_modes = _model.get_value(_row, self._lst_col_order[16])
             self.n_parts = _model.get_value(_row, self._lst_col_order[17])
-            self.type = _model.get_value(_row, self._lst_col_order[18])
+            self._type = _model.get_value(_row, self._lst_col_order[18])
             self.parent_id = _model.get_value(_row, self._lst_col_order[19])
             self.level = _model.get_value(_row, self._lst_col_order[20])
             self.safety_critical = _model.get_value(_row,
@@ -1192,7 +1194,8 @@ class Function(object):
         """
 
         if event.button == 1:
-            self._treeview_row_changed(treeview, None, 0)
+            self.update_attributes()
+            self.load_notebook()
         elif event.button == 3:
             print "Pop-up a menu!"
 
@@ -1212,32 +1215,8 @@ class Function(object):
         :rtype: boolean
         """
 
-        (_model_, _row_) = treeview.get_selection().get_selected()
-
-        if _row_ is not None:
-            self.function_id = int(_model_.get_value(_row_, 1))
-            self.availability = float(_model_.get_value(_row_, 2))
-            self.mission_availability = float(_model_.get_value(_row_, 3))
-            self.code = str(_model_.get_value(_row_, 4))
-            self.cost = float(_model_.get_value(_row_, 5))
-            self.mission_hazard_rate = float(_model_.get_value(_row_, 6))
-            self.hazard_rate = float(_model_.get_value(_row_, 7))
-            self.mmt = float(_model_.get_value(_row_, 8))
-            self.mcmt = float(_model_.get_value(_row_, 9))
-            self.mpmt = float(_model_.get_value(_row_, 10))
-            self.mission_mtbf = float(_model_.get_value(_row_, 11))
-            self.mtbf = float(_model_.get_value(_row_, 12))
-            self.mttr = float(_model_.get_value(_row_, 12))
-            self.name = _util.none_to_string(_model_.get_value(_row_, 14))
-            self.remarks = _util.none_to_string(_model_.get_value(_row_, 15))
-            self.n_modes = int(_model_.get_value(_row_, 16))
-            self.n_parts = int(_model_.get_value(_row_, 17))
-            self.type = int(_model_.get_value(_row_, 18))
-            self.parent_id = str(_model_.get_value(_row_, 19))
-            self.level = int(_model_.get_value(_row_, 20))
-            self.safety_critical = int(_model_.get_value(_row_, 21))
-
-            self.load_notebook()
+        self.update_attributes()
+        self.load_notebook()
 
         return False
 

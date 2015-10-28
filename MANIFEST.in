@@ -1,5 +1,9 @@
 recursive-include config *.conf *.png *.sql *.xml
-recursive-include docs *.pdf *.tar.xz
-exclude docs/developer/*.xls
-exclude *.cfg
-recursive-exclude rtk *.pyc
+recursive-include docs *.html *.tar.xz
+recursive-exclude rtk *.pyo
+recursive-exclude docs/build *
+recursive-exclude docs/_temp *
+recursive-exclude docs/source *
+
+include tox.ini
+recursive-include test *
