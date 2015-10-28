@@ -48,3 +48,5 @@ docs/Makefile
 /RTKUML.xmi
 /rtk/metricData.sql
 /devtools/CodeCounts.sql
+/tests/testing/.coverage
+/tests/_test_results/testing.html

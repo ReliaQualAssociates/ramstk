@@ -20,16 +20,26 @@ _ = gettext.gettext
 
 # Import mathematical functions.
 import numpy as np
-from numpy.linalg import inv
-from math import exp, log, sqrt
-from scipy.stats import chi2, norm, t        # pylint: disable=E0611
+from scipy.optimize import fsolve
+from scipy.stats import norm, t        # pylint: disable=E0611
 
-from analyses.statistics.Bounds import *
-from analyses.statistics.CrowAMSAA import *
-from analyses.statistics.Duane import *
+try:
+    from analyses.statistics.Bounds import calculate_crow_bounds, \
+                                           calculate_fisher_bounds, \
+                                           calculate_variance_covariance
+    from analyses.statistics.CrowAMSAA import calculate_crow_amsaa_parameters
+    from analyses.statistics.Duane import calculate_duane_parameters, \
+                                          calculate_duane_standard_error
+except ImportError:
+    from rtk.analyses.statistics.Bounds import calculate_crow_bounds, \
+                                               calculate_fisher_bounds, \
+                                               calculate_variance_covariance
+    from rtk.analyses.statistics.CrowAMSAA import calculate_crow_amsaa_parameters
+    from rtk.analyses.statistics.Duane import calculate_duane_parameters, \
+                                              calculate_duane_standard_error
 
 
-def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
+def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   # pylint: disable=C0103, R0913, R0914
     """
     Function to estimate the parameters (alpha and beta) of the NHPP power law
     model.  The NHPP power law model used in RTK is:
@@ -39,8 +49,8 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
 
         * cumulative failure intensity = m(t) = alpha * t^(-beta)
 
-    :param int F: list of failure counts.
-    :param float X: list of individual failures times.
+    :param list F: list of failure counts.
+    :param list X: list of individual failures times.
     :param int confmeth: the method for calculating confidence bounds.
     :param int fitmeth: method used to fit the data
                         1 = MLE (default)
@@ -72,7 +82,7 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
     _critical_value_t = abs(t.ppf((1.0 - alpha) / 2.0, sum(F) - 2))
 
     # If no observation time was passed, use the maximum failure time and set
-    # the _typeii_ variable True to indicate this is a failure truncated
+    # the _typeii variable True to indicate this is a failure truncated
     # dataset.
     if t_star == 0.0:
         t_star = max(X)
@@ -101,7 +111,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
         elif confmeth == 3:                 # Fisher matrix bounds.
             # Calculate the variance-covariance matrix for the NHPP - Power Law
             # parameters.
-
             _var_covar = calculate_variance_covariance(sum(F), t_star,
                                                        _alpha_hat, _beta_hat)
 
@@ -127,11 +136,11 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
 
         # Calculate the bounding values for the alpha (scale) parameter.
         try:
-            _alpha_lower = 1.0 / (_b_hat * exp(_critical_value_t * _se_lnb))
+            _alpha_lower = 1.0 / (_b_hat * np.exp(_critical_value_t * _se_lnb))
         except (OverflowError, ZeroDivisionError):
             _alpha_lower = _alpha_hat
         try:
-            _alpha_upper = 1.0 / (_b_hat * exp(-_critical_value_t * _se_lnb))
+            _alpha_upper = 1.0 / (_b_hat * np.exp(-_critical_value_t * _se_lnb))
         except (OverflowError, ZeroDivisionError):
             _alpha_upper = _alpha_hat
 
@@ -143,81 +152,85 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):
             [_beta_lower, _beta_hat, _beta_upper])
 
 
-def loglinear(_F_, _X_, _fitmeth_, _type_, _conf_=0.75, _T_star_=0.0):
+def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: disable=C0103
     """
     Function to estimate the parameters (gamma0 and gamma1) of the NHPP
-    loglinear model.
+    loglinear model.  There is no regression function for this model.
 
-    Keyword Arguments:
-    _F_       -- list of failure counts.
-    _X_       -- list of individual failures times.
-    _fitmeth_ -- method used to fit the data (1=MLE, 2=regression).
-    _type_    -- the confidence level type
-                 (1=lower one-sided, 2=upper one-sided, 3=two-sided).
-    _conf_    -- the confidence level.
-    _T_star_  -- the end of the observation period for time terminated, or
-                 Type I, tests.
+    :param list F: list of failure counts.
+    :param list X: list of individual failures times.
+    :param int confmeth: the method for calculating confidence bounds.
+    :param int conftype: the confidence level type
+                         1 = lower one-sided
+                         2 = upper one-sided
+                         3 = two-sided (default)
+    :param float alpha: the confidence level.
+    :param float t_star: the end of the observation period for time terminated,
+                         or Type I, tests.  Defaults to 0.0.
+    :return: [_gamma0_lower, _gamma0_hat, _gamma0_upper],
+             [_gamma1_lower, _gamma1_hat, _gamma1_upper]
+    :rtype: tuple of lists
     """
 
-    # Initialize variables.
-    _n_ = 0.0
-    _T_ = 0.0
-    _M_ = 0.0
-    _SSE_ = 0.0
-
-    _typeii_ = False
-
-    _loglinear_ = []
-
-    _z_norm_ = norm.ppf(_conf_)
-
     # Define the function that will be set equal to zero and solved for gamma1.
-    def _gamma1(_g1_, _Tj_, _r_, _Ta_):
-        """ Function for estimating the gamma1 value. """
+    def _gamma1(gamma1, T, r, Ta):          # pylint: disable=C0103
+        """
+        Function for estimating the gamma1 value.
+
+        :param float gamma1:
+        :param float T: the sum of individual failure times.
+        :param int r: the total number of failures observed.
+        :param float Ta: the latest observed failure time.
+        :return: _g1; the starting estimate of the gamma1 parameter.
+        :rtype: float
+        """
 
         # Calculate interim values.
-        a = _r_ / _g1_
-        b = _r_ * _Ta_ * exp(_g1_ * _Ta_)
-        c = exp(_g1_ * _Ta_) - 1.0
+        _a = r / gamma1
+        _b = r * Ta * np.exp(gamma1 * Ta)
+        _c = np.exp(gamma1 * Ta) - 1.0
 
-        return _Tj_ + a - (b / c)
+        _g1 = T + _a - (_b / _c)
+
+        return _g1
+
+    # Initialize variables.
+    _g0 = [0.0, 0.0, 0.0]
+    _g1 = [0.0, 0.0, 0.0]
+    _typeii = False
+
+    # Ensure failure times are of type float.
+    X = [float(x) for x in X]
+
+    # Ensure the confidence level is expressed as a decimal, then find the
+    # standard normal and student-t critical values for constructing
+    # confidence bounds on the parameters.
+    if alpha > 1.0:
+        alpha = alpha / 100.0
+    _z_norm = norm.ppf(alpha)
+    _critical_value_t = abs(t.ppf((1.0 - alpha) / 2.0, sum(F) - 2))
 
     # If no observation time was passed, use the maximum failure time and set
-    #  the typeii_ variable True to indicate this is a failure truncated
+    # the _typeii variable True to indicate this is a failure truncated
     # dataset.
-    if _T_star_ == 0.0:
-        _T_star_ = sum(_X_)
-        _typeii_ = True
+    if t_star == 0.0:
+        t_star = sum(X)
+        _typeii = True
 
-    if not _typeii_:
-        _N_ = len(_X_) - 1
+    if not _typeii:
+        _N = sum(F) - 1
     else:
-        _N_ = len(_X_) - 2
+        _N = sum(F) - 2
 
-    for i in range(len(_X_)):
+    _T = sum(X)
 
-        # Increment the total number of failures and the total time on test
-        # then calculate the cumulative MTBF.
-        _n_ += float(_F_[i])
-        _T_ += float(_X_[i])
-        _M_ = _T_ / _n_
+    # Calculate the Loglinear parameters.
+    _g1[1] = fsolve(_gamma1, 0.001, args=(_T, _N, t_star))[0]
+    _g0[1] = np.log((_N * _g1[1]) / (np.exp(_g1[1] * t_star) - 1.0))
 
-        # Calculate the Loglinear parameters.  There is no regression function
-        # for this model.
-        g1 = fsolve(_gamma1, 0.000001, args=(_T_, _n_, _T_star_))[0]
-        g0 = log((_n_ * g1) / (exp(g1 * _T_star_) - 1.0))
+    #if confmeth == 1:                       # Crow bounds.
 
-        # Calculate the cumulative and instantaneous failure intensity.
-        _lc_hat_ = exp(g0 + g1 * _T_)
-        #_li_hat_ = (1.0 - _alpha_hat_) * _lc_hat_
+    #elif confmeth == 3:                     # Fisher matrix bounds.
 
-        # Calculate the cumulative and instantaneous MTBF from the model.
-        try:
-            _mc_hat_ = 1.0 / _lc_hat_
-        except ZeroDivisionError:
-            print g0, g1, _T_
-        #_mi_hat_ = _mc_hat_ / (1.0 - _alpha_hat_)
-
-        _loglinear_.append([_T_, _n_, _M_, g0, g1, _mc_hat_, _lc_hat_])
-
-    return False
+    print _g0, _g1
+    return(_g0, _g1)

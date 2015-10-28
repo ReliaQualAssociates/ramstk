@@ -1282,7 +1282,7 @@ CREATE TABLE "tbl_validation_matrix" (
     "fld_validation_id" INTEGER NOT NULL,
     "fld_requirement_id" INTEGER NOT NULL,
     "fld_revision_id" INTEGER DEFAULT(1),
-    PRIMARY KEY ("fld_validation_id","fld_requirement_id")
+    PRIMARY KEY ("fld_validation_id", "fld_requirement_id")
 );
 
 --
@@ -1394,8 +1394,10 @@ CREATE TABLE "rtk_incident_actions" (
 --
 -- Create tables for storing survival analysis datasets.
 --
-CREATE TABLE "tbl_dataset" (
-    "fld_dataset_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+DROP TABLE IF EXISTS "rtk_survival";
+CREATE TABLE "rtk_survival" (
+    "fld_revision_id" INTEGER DEFAULT(0),
+    "fld_survival_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_assembly_id" INTEGER DEFAULT(0),
     "fld_description" VARCHAR(512),
     "fld_source" INTEGER DEFAULT(0),
@@ -1408,14 +1410,14 @@ CREATE TABLE "tbl_dataset" (
     "fld_num_rel_points" INTEGER DEFAULT(0),
     "fld_num_suspension" INTEGER DEFAULT(0),
     "fld_num_failures" INTEGER DEFAULT(0),
-    "fld_scale" FLOAT DEFAULT(0),
     "fld_scale_ll" FLOAT DEFAULT(0),
+    "fld_scale" FLOAT DEFAULT(0),
     "fld_scale_ul" FLOAT DEFAULT(0),
-    "fld_shape" FLOAT DEFAULT(0),
     "fld_shape_ll" FLOAT DEFAULT(0),
+    "fld_shape" FLOAT DEFAULT(0),
     "fld_shape_ul" FLOAT DEFAULT(0),
-    "fld_location" FLOAT DEFAULT(0),
     "fld_location_ll" FLOAT DEFAULT(0),
+    "fld_location" FLOAT DEFAULT(0),
     "fld_location_ul" FLOAT DEFAULT(0),
     "fld_variance_1" FLOAT DEFAULT(0),
     "fld_variance_2" FLOAT DEFAULT(0),
@@ -1432,35 +1434,38 @@ CREATE TABLE "tbl_dataset" (
     "fld_start_time" FLOAT DEFAULT(0),          -- Minimum failure time for filtering survival data records.
     "fld_start_date" INTEGER DEFAULT(719163),   -- Start date for filtering survival data records.
     "fld_end_date" INTEGER DEFAULT(719163),     -- End date for filtering survival data records.
-    "fld_nevada_chart" INTEGER DEFAULT(0),      -- Whether or not the dataset includes a Nevada chart.
-    "fld_revision_id" INTEGER NOT NULL DEFAULT(0)
+    "fld_nevada_chart" INTEGER DEFAULT(0)       -- Whether or not the dataset includes a Nevada chart.
 );
 
 DROP TABLE IF EXISTS "rtk_survival_data";
 CREATE TABLE "rtk_survival_data" (
-    "fld_record_id" INTEGER NOT NULL,
+    "fld_survival_id" INTEGER NOT NULL DEFAULT(0),
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_left_interval" FLOAT DEFAULT(0),
-    "fld_right_interval" FLOAT DEFAULT(0),
-    "fld_status" VARCHAR(64) DEFAULT(''),
-    "fld_quantity" INTEGER DEFAULT(1),
-    "fld_unit" VARCHAR(256),
-    "fld_part_num" VARCHAR(128),
-    "fld_market" VARCHAR(32),
-    "fld_model" VARCHAR(32),
-    "fld_tbf" FLOAT DEFAULT(0),
-    "fld_mode_type" INTEGER DEFAULT(1),
-    "fld_assembly_id" INTEGER DEFAULT (0),
-    "fld_request_date" INTEGER DEFAULT (719163),
-    PRIMARY KEY ("fld_record_id", "fld_dataset_id")
-);
-
-CREATE TABLE "tbl_nevada_chart" (
-    "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_ship_date" INTEGER DEFAULT(719163),
-    "fld_number_shipped" INTEGER DEFAULT(1),
-    "fld_return_date" INTEGER DEFAULT(719163),
-    "fld_number_returned" INTEGER DEFAULT(0)
+    "fld_record_id" INTEGER NOT NULL DEFAULT(0),
+    "fld_assembly_id" INTEGER DEFAULT(0),           -- The ID of the failure assembly.
+    "fld_failure_date" INTEGER DEFAULT(719163),     -- Date the failure occurred or was discovered.
+    "fld_left_interval" FLOAT DEFAULT(0),           -- Beginning time of the failure interval (same as right for exact failure times).
+    "fld_right_interval" FLOAT DEFAULT(0),          -- Ending time of the failure interval (same as left for exact failure times).
+    "fld_status" INTEGER DEFAULT(0),                -- Indicates whether the record is an event (0), right-censored (1), left-censored (2), or interval censored (3).
+    "fld_quantity" INTEGER DEFAULT(1),              -- The number of failures occuring at the failure time.
+    "fld_tbf" FLOAT DEFAULT(0),                     -- Time between failures for the assembly ID.
+    "fld_mode_type" INTEGER DEFAULT(1),             -- The failure mode type.
+    "fld_nevada_chart" INTEGER DEFAULT(0),          -- Indicates data set is in a Nevada chart format.
+    "fld_ship_date" INTEGER DEFAULT(719163),        -- Date shipped (used with Nevada charts).
+    "fld_number_shipped" INTEGER DEFAULT(1),        -- Number of items shipped  (used with Nevada charts).
+    "fld_return_date" INTEGER DEFAULT(719163),      -- Date of return (used with Nevada charts).
+    "fld_number_returned" INTEGER DEFAULT(0),       -- Number returned (used with Nevada charts).
+    "fld_user_float_1" FLOAT DEFAULT(0),
+    "fld_user_float_2" FLOAT DEFAULT(0),
+    "fld_user_float_3" FLOAT DEFAULT(0),
+    "fld_user_integer_1" INTEGER DEFAULT(0),
+    "fld_user_integer_2" INTEGER DEFAULT(0),
+    "fld_user_integer_3" INTEGER DEFAULT(0),
+    "fld_user_string_1" VARCHAR(256),
+    "fld_user_string_2" VARCHAR(256),
+    "fld_user_string_3" VARCHAR(256),
+    PRIMARY KEY("fld_survival_id", "fld_dataset_id", "fld_record_id"),
+    FOREIGN KEY("fld_survival_id") REFERENCES "rtk_survival"("fld_survival_id") ON DELETE CASCADE
 );
 
 --

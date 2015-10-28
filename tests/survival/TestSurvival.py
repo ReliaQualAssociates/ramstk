@@ -23,7 +23,7 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
-from survival.Survival import Model #, Survival
+from survival.Survival import Model, Survival
 
 
 class TestSurvivalModel(unittest.TestCase):
@@ -50,6 +50,7 @@ class TestSurvivalModel(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Model))
 
         self.assertEqual(self.DUT._nevada_chart, False)
+        self.assertEqual(self.DUT.dicDatasets, {})
         self.assertEqual(self.DUT.scale, [0.0, 0.0, 0.0])
         self.assertEqual(self.DUT.shape, [0.0, 0.0, 0.0])
         self.assertEqual(self.DUT.location, [0.0, 0.0, 0.0])
@@ -119,8 +120,8 @@ class TestSurvivalModel(unittest.TestCase):
 
         _values = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
                    12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
-                   23, 24.0, 25.0, 26.0, 27.0, 28.0, 30.0, 31.0, 32.0, 33.0,
-                   34.0, 35.0, 36.0, 37.0, 38.0)
+                   24.0, 25.0, 26.0, 27.0, 28.0, 30.0, 31.0, 32.0, 33.0, 34.0,
+                   35.0, 36.0, 37.0, 38.0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -134,7 +135,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.assertEqual(self.DUT.get_attributes(),
                          (0, 0, 0, '', 0, 0, 0.75, 0, 0, 0, 100.0, 0, 0, 0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0,
                           [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
                           [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]))
 
@@ -150,8 +151,8 @@ class TestSurvivalModel(unittest.TestCase):
                    33.0, 34.0, 35.0, 36.0, 37.0, 38.0)
         _results = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
                    12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
-                   23, [24.0, 25.0, 26.0], [27.0, 28.0, 29.0],
-                   [30.0, 31.0, 32.0], [33.0, 34.0, 35.0], [36.0, 37.0, 38.0])
+                   [23.0, 24.0, 25.0], [26.0, 27.0, 28.0],
+                   [29.0, 30.0, 31.0], [32.0, 33.0, 34.0], [35.0, 36.0, 37.0])
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -173,7 +174,7 @@ class TestSurvivalController(unittest.TestCase):
 
         self.DUT = Survival()
 
-    @attr(all=True, unit=False)
+    @attr(all=True, unit=True)
     def test_controller_create(self):
         """
         (TestSurvival) __init__ should create a Survival data controller
@@ -182,42 +183,151 @@ class TestSurvivalController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Survival))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
-        self.assertEqual(self.DUT.dicSurvivals, {})
+        self.assertEqual(self.DUT.dicSurvival, {})
 
-    @attr(all=True, integration=False)
-    def test_request_survivals(self):
+    @attr(all=True, integration=True)
+    def test_request_survival(self):
         """
-        (TestSurvival) request_tasks should return 0 on success
+        (TestSurvival) request_survival should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_survivals(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
 
-    @attr(all=True, integration=False)
+    @attr(all=True, integration=True)
     def test_add_survival(self):
         """
-        (TestSurvival) add_task should return 0 on success
+        (TestSurvival) add_survival should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_survivals(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
         self.assertEqual(self.DUT.add_survival(0)[1], 0)
 
-    @attr(all=True, integration=False)
+    @attr(all=True, integration=True)
+    def test_delete_survival(self):
+        """
+        (TestSurvival) delete_survival should return 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
+        _survival = self.DUT.dicSurvival[max(self.DUT.dicSurvival.keys())]
+
+        self.assertEqual(self.DUT.delete_survival(_survival.survival_id)[1], 0)
+
+    @attr(all=True, integration=True)
     def test_save_survival(self):
         """
-        (TestSurvival) save_task returns 0 on success
+        (TestSurvival) save_survival returns 0 on success
         """
 
-        _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
-                   5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
-                   12, 1, 719163, True, 1, 719163, False, 1, 719164, False, 1,
-                   719163, 3, 'Analysis', True)
+        _values = (0, 1, 2, 'Test Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10,
+                   11, 12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21,
+                   22, 23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0,
+                   32.0, 33.0, 34.0, 35.0, 36.0, 37.0)
 
-        self.assertEqual(self.DUT.request_survivals(self._dao, 0)[1], 0)
-        _survival = self.DUT.dicSurvivals[min(self.DUT.dicSurvivals.keys())]
+        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
         _survival.set_attributes(_values)
 
         (_results, _error_code) = self.DUT.save_survival(min(
-                                                self.DUT.dicSurvivals.keys()))
+                                                self.DUT.dicSurvival.keys()))
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_save_all_survivals(self):
+        """
+        (TestSurvival) save_all_survivals returns False on success
+        """
+
+        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
+        self.assertFalse(self.DUT.save_all_survivals())
+
+    @attr(all=True, integration=True)
+    def test_request_datasets(self):
+        """
+        (TestSurvival) request_datasets should return 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)
+
+        self.assertEqual(self.DUT.request_datasets(min(self.DUT.dicSurvival.keys()))[1], 0)
+
+    @attr(all=True, integration=True)
+    def test_add_dataset(self):
+        """
+        (TestSurvival) add_dataset should return 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
+        self.DUT.add_dataset(_survival.survival_id)
+
+    @attr(all=True, integration=True)
+    def test_delete_dataset(self):
+        """
+        (TestSurvival) delete_dataset should return 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
+
+        self.DUT.request_datasets(_survival.survival_id)
+        _dataset = _survival.dicDatasets[max(_survival.dicDatasets.keys())]
+
+        self.DUT.delete_dataset(_survival.survival_id, _dataset.dataset_id)
+
+    @attr(all=True, integration=True)
+    def test_save_dataset(self):
+        """
+        (TestSurvival) save_dataset returns 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)[1]
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
+        self.DUT.request_datasets(_survival.survival_id)
+        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
+        _record = _dataset.dicRecords[min(_dataset.dicRecords.keys())]
+        _record[2] = 138.6
+
+        (_results, _error_code) = self.DUT.save_dataset(_survival.survival_id,
+                                                        _dataset.dataset_id)
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_add_record(self):
+        """
+        (TestSurvival) add_record should return 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
+        self.DUT.request_datasets(_survival.survival_id)
+        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
+
+        (_results, _error_code) = self.DUT.add_record(_survival.survival_id,
+                                                      _dataset.dataset_id)
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_delete_record(self):
+        """
+        (TestSurvival) delete_record should return 0 on success
+        """
+
+        self.DUT.request_survival(self._dao, 0)
+        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
+        self.DUT.request_datasets(_survival.survival_id)
+        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
+        _record = _dataset.dicRecords[min(_dataset.dicRecords.keys())]
+
+        (_results, _error_code) = self.DUT.delete_record(_survival.survival_id,
+                                                         _dataset.dataset_id,
+                                                         _record[0])
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
