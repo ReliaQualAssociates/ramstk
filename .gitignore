@@ -90,3 +90,5 @@ docs/Makefile
 /tests/_test_results/usage_unit_tests.html
 /tests/_test_results/validation_integration_tests.html
 /tests/_test_results/validation_unit_tests.html
+/tests/_test_results/cloc.xsl
+/tests/_test_results/code_count.xml
