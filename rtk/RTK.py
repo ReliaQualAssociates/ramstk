@@ -184,7 +184,12 @@ class RTK(object):
         """
         Method to initialize the RTK controller.
         """
+
         RTK_INTERFACE = 1
+
+        # Initialize public scalar attributes.
+        self.loaded = False
+
         # Read the site configuration file.
         _read_configuration()
 
@@ -230,7 +235,7 @@ class RTK(object):
         if RTK_INTERFACE == 0:              # Single window.
             pass
         else:                               # Multiple windows.
-            self.module_book = ModuleView()
+            self.module_book = ModuleView(self)
             self.list_book = self.module_book.create_listview()
             self.work_book = self.module_book.create_workview(self.site_dao)
 
@@ -280,7 +285,7 @@ class RTK(object):
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"program database."))
-        self.open_project()
+        #self.open_project()
         self.module_book.present()
 
     def _validate_license(self):
@@ -453,14 +458,14 @@ class RTK(object):
 
     def open_project(self):
         """
-        Method to open an RTK Prooject database and load it into the views.
+        Method to open an RTK Program database and load it into the views.
         """
 
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
         # Connect to the project database.
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self.project_dao = DAO(_database)
+        #_database = '/home/andrew/projects/RTKTestDB.rtk'
+        self.project_dao = DAO(_conf.RTK_PROG_INFO[2])
 
         self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
@@ -520,6 +525,8 @@ class RTK(object):
         #_conf.METHOD = results[0][36]
 
         self.module_book.statusbar.pop(2)
+
+        self.loaded = True
 
 if __name__ == '__main__':
 

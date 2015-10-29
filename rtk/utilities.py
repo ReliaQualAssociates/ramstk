@@ -552,20 +552,20 @@ def create_project(widget, app):
     return False
 
 
-def open_project(__widget, app, dlg=1, filename=''):
+def open_project(__widget, application, dlg=1, filename=''):
     """
     Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
 
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param rtk app: the current instance of the RTK application.
+    :param rtk application: the current instance of the RTK application.
     :keyword int dlg: whether or not to display a file chooser dialog.
                       0 = No
                       1 = Yes (default)
     :keyword str filename: the full path to the RTK Program database to open.
     """
 
-    if app.LOADED:
+    if application.loaded:
         rtk_information(_(u"A database is already open.  Only one database "
                           u"can be open at a time in RTK.  You must quit the "
                           u"RTK application before a new database can be "
@@ -618,7 +618,7 @@ def open_project(__widget, app, dlg=1, filename=''):
             (_model, _row) = treeview.get_selection().get_selected()
             _conf.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
             dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))     # pylint: disable=E1101
-            app.load_system()
+            application.open_project()
 
         dialog.destroy()
 
@@ -636,7 +636,7 @@ def open_project(__widget, app, dlg=1, filename=''):
 
             # Set some filters to select all files or only some text files.
             _filter = gtk.FileFilter()
-            _filter.set_name(_(u"RTK Project Files"))
+            _filter.set_name(_(u"RTK Program Databases"))
             _filter.add_pattern("*.rfb")
             _filter.add_pattern("*.rtk")
             _dialog.add_filter(_filter)
@@ -649,13 +649,13 @@ def open_project(__widget, app, dlg=1, filename=''):
             if _dialog.run() == gtk.RESPONSE_ACCEPT:
                 _conf.RTK_PROG_INFO[2] = _dialog.get_filename()
                 _dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))    # pylint: disable=E1101
-                app.load_system()
+                application.open_project()
 
             _dialog.destroy()
 
         else:
             _conf.RTK_PROG_INFO[2] = filename
-            app.load_system()
+            application.open_project()
 
     return False
 

@@ -43,8 +43,10 @@ import locale
 # Import other RTK modules.
 try:
     import configuration as _conf
+    import utilities as _util
 except ImportError:
     import rtk.configuration as _conf
+    import rtk.utilities as _util
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -61,13 +63,16 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
     This is the Module view for the pyGTK multiple window interface.
     """
 
-    def __init__(self):
+    def __init__(self, application):
         """
         Initializes an instance of the Module view class.
         """
 
         # Initialize private list attributes.
         self._lst_handler_id = []
+
+        # Initialize private scalar attributes.
+        self._application = application
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -202,15 +207,15 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '16x16/open.png')
-        _menu_item.set_label(_("Open"))
+        _menu_item.set_label(_(u"Open"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.open_project, self._app)
+        _menu_item.connect('activate', _util.open_project, self._application)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '16x16/save.png')
-        _menu_item.set_label(_("Save"))
+        _menu_item.set_label(_(u"Save"))
         _menu_item.set_image(_image)
         #_menu_item.connect('activate', _util.save_project, self._app)
         _menu.append(_menu_item)
@@ -364,7 +369,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/open.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', _util.open_project, self._app)
+        _button.connect('clicked', _util.open_project, self._application)
         _toolbar.insert(_button, _position)
         _position += 1
 
