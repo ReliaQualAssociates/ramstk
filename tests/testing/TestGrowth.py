@@ -1056,9 +1056,17 @@ class TestGrowthController(unittest.TestCase):
         (TestGrowth) request_test_data should return a tuple on success
         """
 
+        _test = (0, 7, 1, u'Test Plan', u'Description', 4, u'Attachment', 0.0,
+                 0, 0.75, 0.0, 0.0, 0, 0, 0.0, 0.0, 0.0, 1, 0.0, 0.3, 0.0, 0.7,
+                 0.75, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
         self.DUT._dao = self._dao
 
-        self.assertEqual(self.DUT.request_test_data(1), ([], 0))
+        self.DUT.request_tests(self._dao, _test)
+        _test_id = min(self.DUT.dicTests.keys())
+
+        self.assertEqual(self.DUT._request_test_data(_test_id), ([], 0))
 
 # TODO: Test that method fails when no Testing inputs exist in database.
     @attr(all=True, integration=True)
@@ -1074,7 +1082,7 @@ class TestGrowthController(unittest.TestCase):
         self.assertEqual(self.DUT.request_tests(self._dao, _test)[1], 0)
         (_results, _error_code) = self.DUT.add_test(0, 7)
 
-        self.assertTrue(isinstance(self.DUT.dicGrowth[self.DUT._last_id],
+        self.assertTrue(isinstance(self.DUT.dicTests[self.DUT._last_id],
                                    Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

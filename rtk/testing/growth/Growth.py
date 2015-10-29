@@ -1083,12 +1083,13 @@ class Growth(dtcTesting):
 
         _test = self.dicTests[test_id]
 
-        _query = "SELECT fld_record_id, fld_request_date, \
+        _query = "SELECT fld_record_id, fld_failure_date, \
                          fld_left_interval, fld_right_interval, \
                          fld_quantity \
                   FROM rtk_survival_data \
                   WHERE fld_dataset_id=%d \
-                  ORDER BY fld_request_date" % test_id
+                  AND fld_source=1 \
+                  ORDER BY fld_failure_date" % test_id
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         _test.dic_test_data = {}
@@ -1207,7 +1208,8 @@ class Growth(dtcTesting):
 
         _query = "DELETE FROM rtk_survival_data \
                   WHERE fld_record_id=%d \
-                  AND fld_dataset_id=%d" % (record_id, dataset_id)
+                  AND fld_dataset_id=%d \
+                  AND fld_source=1" % (record_id, dataset_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)
@@ -1344,10 +1346,11 @@ class Growth(dtcTesting):
         _n_records = len(_test.dic_test_data.keys())
         for i in range(_n_records):
             _query = "UPDATE rtk_survival_data \
-                      SET fld_request_date={2:d}, fld_left_interval={3:f}, \
+                      SET fld_failure_date={2:d}, fld_left_interval={3:f}, \
                           fld_right_interval={4:f}, fld_quantity={5:d} \
                       WHERE fld_dataset_id={0:d} \
-                      AND fld_record_id={1:d}".format(
+                      AND fld_record_id={1:d} \
+                      AND fld_source=1".format(
                           _test.test_id, i, _test.dic_test_data[i][0],
                           _test.dic_test_data[i][1], _test.dic_test_data[i][2],
                           _test.dic_test_data[i][3])

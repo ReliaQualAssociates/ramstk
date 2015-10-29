@@ -1400,13 +1400,13 @@ CREATE TABLE "rtk_survival" (
     "fld_survival_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_assembly_id" INTEGER DEFAULT(0),
     "fld_description" VARCHAR(512),
-    "fld_source" INTEGER DEFAULT(0),
+    "fld_source" INTEGER DEFAULT(0),                -- Source of failure data: 0=field, 1=growth test
     "fld_distribution_id" INTEGER DEFAULT(0),
     "fld_confidence" FLOAT DEFAULT(50),
     "fld_confidence_type" INTEGER DEFAULT(0),
     "fld_confidence_method" INTEGER DEFAULT(0),
     "fld_fit_method" INTEGER DEFAULT(0),
-    "fld_rel_time" FLOAT DEFAULT(0),            -- Maximum failure time for filtering survival data records.
+    "fld_rel_time" FLOAT DEFAULT(0),                -- Maximum failure time for filtering survival data records.
     "fld_num_rel_points" INTEGER DEFAULT(0),
     "fld_num_suspension" INTEGER DEFAULT(0),
     "fld_num_failures" INTEGER DEFAULT(0),
@@ -1431,10 +1431,10 @@ CREATE TABLE "rtk_survival" (
     "fld_aic" FLOAT DEFAULT(0),
     "fld_bic" FLOAT DEFAULT(0),
     "fld_mle" FLOAT DEFAULT(0),
-    "fld_start_time" FLOAT DEFAULT(0),          -- Minimum failure time for filtering survival data records.
-    "fld_start_date" INTEGER DEFAULT(719163),   -- Start date for filtering survival data records.
-    "fld_end_date" INTEGER DEFAULT(719163),     -- End date for filtering survival data records.
-    "fld_nevada_chart" INTEGER DEFAULT(0)       -- Whether or not the dataset includes a Nevada chart.
+    "fld_start_time" FLOAT DEFAULT(0),              -- Minimum failure time for filtering survival data records.
+    "fld_start_date" INTEGER DEFAULT(719163),       -- Start date for filtering survival data records.
+    "fld_end_date" INTEGER DEFAULT(719163),         -- End date for filtering survival data records.
+    "fld_nevada_chart" INTEGER DEFAULT(0)           -- Whether or not the dataset includes a Nevada chart.
 );
 
 DROP TABLE IF EXISTS "rtk_survival_data";
@@ -1443,6 +1443,7 @@ CREATE TABLE "rtk_survival_data" (
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
     "fld_record_id" INTEGER NOT NULL DEFAULT(0),
     "fld_assembly_id" INTEGER DEFAULT(0),           -- The ID of the failure assembly.
+    "fld_source" INTEGER DEFAULT(0),                -- Source of failure data: 0=field, 1=growth test
     "fld_failure_date" INTEGER DEFAULT(719163),     -- Date the failure occurred or was discovered.
     "fld_left_interval" FLOAT DEFAULT(0),           -- Beginning time of the failure interval (same as right for exact failure times).
     "fld_right_interval" FLOAT DEFAULT(0),          -- Ending time of the failure interval (same as left for exact failure times).

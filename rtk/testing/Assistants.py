@@ -312,7 +312,8 @@ class AddRGRecord(gtk.Assistant):
 
         _query = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
                   FROM rtk_survival_data \
-                  WHERE fld_dataset_id=%d" % self._testing_model.test_id
+                  WHERE fld_dataset_id=%d \
+                  AND fld_source=1" % self._testing_model.test_id
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         if _results[0][0] is None or _results[0][0] == '':
@@ -336,16 +337,13 @@ class AddRGRecord(gtk.Assistant):
                                   '%Y-%m-%d').toordinal()
         _query = "INSERT INTO rtk_survival_data \
                   (fld_record_id, fld_dataset_id, fld_left_interval, \
-                   fld_right_interval, fld_quantity, fld_unit, \
-                   fld_part_num, fld_market, fld_model, fld_mode_type, \
-                   fld_assembly_id, fld_request_date) \
-                  VALUES (%d, %d, %f, %f, %d, '%s', '%s', '%s', '%s', \
-                          %d, %d, %d)" % (_last_id,
-                                          self._testing_model.test_id,
-                                          0.0, _time, _n_fails, '', '', '',
-                                          '', 0,
-                                          self._testing_model.assembly_id,
-                                          _date)
+                   fld_right_interval, fld_quantity, fld_mode_type, \
+                   fld_assembly_id, fld_failure_date, fld_source) \
+                  VALUES (%d, %d, %f, %f, %d, %d, %d, %d, 1)" % (_last_id,
+                                             self._testing_model.test_id,
+                                             0.0, _time, _n_fails, 0,
+                                             self._testing_model.assembly_id,
+                                             _date)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         self._testing_model.dic_test_data[_last_id] = [_date, 0.0, _time,
