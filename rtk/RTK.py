@@ -66,6 +66,7 @@ from incident.Incident import Incident
 from incident.action.Action import Action
 from incident.component.Component import Component
 from incident.ModuleBook import ModuleView as mvwIncident
+from survival.Survival import Survival
 
 # Add localization support.
 _ = gettext.gettext
@@ -230,6 +231,7 @@ class RTK(object):
         dtcIncident = Incident()
         dtcAction = Action()
         dtcComponent = Component()
+        dtcSurvival = Survival()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -285,7 +287,7 @@ class RTK(object):
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"program database."))
-        #self.open_project()
+
         self.module_book.present()
 
     def _validate_license(self):
@@ -336,9 +338,23 @@ class RTK(object):
         Reads the common database and assigns results to global configuration
         variables.  These variables will be available to all RTK modules.
 
-        :return:
-        :rtype:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _query = "SELECT DISTINCT fld_stakeholder \
+                  FROM tbl_stakeholders \
+                  ORDER BY fld_stakeholder ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_STAKEHOLDERS = _results
+
+        _query = "SELECT DISTINCT fld_group \
+                  FROM rtk_affinity_groups \
+                  ORDER BY fld_group ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_AFFINITY_GROUPS = _results
 
         _query = "SELECT * FROM tbl_severity"
         (_results, _error_code, __) = self.site_dao.execute(_query,

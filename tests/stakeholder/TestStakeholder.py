@@ -59,6 +59,7 @@ class TestStakeholderModel(unittest.TestCase):
         self.assertEqual(self.DUT.planned_rank, 3)
         self.assertEqual(self.DUT.improvement, 1.0)
         self.assertEqual(self.DUT.overall_weight, 0.0)
+        self.assertEqual(self.DUT.requirement, '')
 
     @attr(all=True, unit=True)
     def test_stakeholder_set_attributes(self):
@@ -67,7 +68,7 @@ class TestStakeholderModel(unittest.TestCase):
         """
 
         _values = (0, 0, 'Stakeholder', 'Description', 'Affinity Group', 2,
-                   4, 2, 1.6, 1.2, 1.0, 2.0, 3.0, 4.0, 5.0)
+                   4, 2, 1.6, 1.2, 'Requirement', 1.0, 2.0, 3.0, 4.0, 5.0)
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
@@ -79,7 +80,7 @@ class TestStakeholderModel(unittest.TestCase):
         """
 
         _values = (0, 0, 'Stakeholder', 'Description', 'Affinity Group', 2,
-                   4, 2, 1.6, 1.2, 1.0, None, 3.0, 4.0, 5.0)
+                   4, 2, 1.6, 1.2, 'Requirement', 1.0, None, 3.0, 4.0, 5.0)
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
@@ -103,7 +104,7 @@ class TestStakeholderModel(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (None, None, '', '', '', 1, 1, 3, 1.0, 0.0,
+                         (None, None, '', '', '', 1, 1, 3, 1.0, 0.0, '',
                           1.0, 1.0, 1.0, 1.0, 1.0))
 
     @attr(all=True, unit=True)
@@ -113,7 +114,7 @@ class TestStakeholderModel(unittest.TestCase):
         """
 
         _values = (0, 0, 'Stakeholder', 'Description', 'Affinity Group', 2,
-                   4, 2, 1.6, 1.2, 1.0, 2.0, 3.0, 4.0, 5.0)
+                   4, 2, 1.6, 1.2, 'Requirement', 1.0, 2.0, 3.0, 4.0, 5.0)
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -126,7 +127,7 @@ class TestStakeholderModel(unittest.TestCase):
         """
 
         _values = (0, 0, 'Stakeholder', 'Description', 'Affinity Group', 2,
-                   4, 2, 1.6, 1.2, 1.0, 2.0, 3.0, 4.0, 5.0)
+                   4, 2, 1.6, 1.2, 1, 1.0, 2.0, 3.0, 4.0, 5.0)
         self.DUT.set_attributes(_values)
         self.assertFalse(self.DUT.calculate_weight())
         self.assertEqual(self.DUT.improvement, 0.6)

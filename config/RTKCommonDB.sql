@@ -1205,6 +1205,17 @@ INSERT INTO "tbl_load_history" VALUES(6, "Time at Load");
 INSERT INTO "tbl_load_history" VALUES(7, "Time at Maximum");
 INSERT INTO "tbl_load_history" VALUES(8, "Time at Minimum");
 
+--
+-- Affinity groups
+--
+CREATE TABLE "rtk_affinity_groups" (
+    "fld_group_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,      -- Affinity group ID
+    "fld_group" VARCHAR(256)
+);
+INSERT INTO "rtk_affinity_groups" VALUES(0, "Reliability");
+INSERT INTO "rtk_affinity_groups" VALUES(1, "Durability");
+INSERT INTO "rtk_affinity_groups" VALUES(2, "Cost");
+
 DELETE FROM "sqlite_sequence";
 INSERT INTO "sqlite_sequence" VALUES('tbl_allocation_models',5);
 INSERT INTO "sqlite_sequence" VALUES('tbl_calculation_model',7);

@@ -18,30 +18,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     from analyses.statistics.Distributions import time_between_failures
+    from utilities import error_handler
 except ImportError:
     from rtk.analyses.statistics.Distributions import time_between_failures
-
-
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10                                            # pragma: no cover
-    elif 'invalid literal for int() with base 10' in message[0]:    # Value error
-        _error_code = 10
-    elif 'index out of range' in message[0]:                        # Index error
-        _error_code = 40
-    else:                                                           # Unhandled error
-        print message
-        _error_code = 1000                                          # pragma: no cover
-
-    return _error_code
+    from rtk.utilities import error_handler
 
 
 class Model(object):                       # pylint: disable=R0902, R0904
@@ -92,10 +72,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.survival_id = int(values[0])
             self.dataset_id = int(values[1])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

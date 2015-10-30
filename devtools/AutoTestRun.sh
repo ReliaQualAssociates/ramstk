@@ -45,7 +45,7 @@ do
 			DIRECTORY=$2
 			;;
 		-c|--cloc)
-			CLOC=1
+			RUNCLOC=1
 			;;
 	esac
 	shift
@@ -87,7 +87,7 @@ then
 
 fi
 
-if [ "x$CLOC" != "x" ];
+if [ "x$RUNCLOC" != "x" ];
 then
 	cloc_run
 fi

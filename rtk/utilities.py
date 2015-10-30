@@ -393,6 +393,28 @@ def dir_exists(directory):
     return os.path.isdir(directory)
 
 
+def error_handler(message):
+    """
+    Function to convert string errors to integer error codes.
+
+    :param str message: the message to convert to an error code.
+    :return: _err_code
+    :rtype: int
+    """
+
+    if 'argument must be a string or a number' in message[0]:       # Type error
+        _error_code = 10                                            # pragma: no cover
+    elif 'invalid literal for int() with base 10' in message[0]:    # Value error
+        _error_code = 10
+    elif 'index out of range' in message[0]:                        # Index error
+        _error_code = 40
+    else:                                                           # Unhandled error
+        print message
+        _error_code = 1000                                          # pragma: no cover
+
+    return _error_code
+
+
 def file_exists(_file):
     """
     Helper function to check if a file exists.

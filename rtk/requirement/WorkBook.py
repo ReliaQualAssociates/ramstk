@@ -910,60 +910,42 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Move this to RTK.py and create an application-wide dict.
-        # Load the stakeholder gtk.CellRendererCombo with a list of
-        # distinct stakeholders already entered into the database.
-        #_query = "SELECT DISTINCT fld_stakeholder \
-        #          FROM tbl_stakeholder_input \
-        #          ORDER BY fld_stakeholder ASC"
-        #_results = self._dao.execute_query(_query, commit=False)
-        #try:
-        #    _n_stakeholders = len(_results)
-        #except TypeError:
-        #    _n_stakeholders = 0
 
-        #_cell = self.tvwStakeholderInput.get_column(
-        #    self._lst_stakeholder_col_order[1]).get_cell_renderers()
-        #_model = _cell[0].get_property('model')
-        #_model.clear()
-        #for i in range(_n_stakeholders):
-        #    _model.append([_results[i][0]])
-# TODO: Move this to RTK.py and create an application-wide dict.
-        # Load the stakeholder gtk.CellRendererCombo with a list of distinct
-        # affinity groups already entered into the database.
-        #_query = "SELECT DISTINCT fld_group \
-        #          FROM tbl_stakeholder_input \
-        #          ORDER BY fld_group ASC"
-        #_results = self._dao.execute_query(_query, commit=False)
-        #try:
-        #    _n_groups_ = len(_results_)
-        #except TypeError:
-        #    _n_groups_ = 0
+        _cell = self.tvwStakeholderInput.get_column(
+            self._lst_stakeholder_col_order[1]).get_cell_renderers()
+        _model = _cell[0].get_property('model')
+        _model.clear()
+        for i in range(len(_conf.RTK_STAKEHOLDERS)):
+            _model.append([_conf.RTK_STAKEHOLDERS[i][0]])
 
-        #_cell_ = self.tvwStakeholderInput.get_column(
-        #    self._lst_stakeholder_col_order[3]).get_cell_renderers()
-        #_model_ = _cell_[0].get_property('model')
-        #_model_.clear()
-        #for i in range(_n_groups_):
-        #    _model_.append([_results_[i][0]])
+        _cell_ = self.tvwStakeholderInput.get_column(
+            self._lst_stakeholder_col_order[3]).get_cell_renderers()
+        _model_ = _cell_[0].get_property('model')
+        _model_.clear()
+        for i in range(len(_conf.RTK_AFFINITY_GROUPS)):
+            _model_.append([_conf.RTK_AFFINITY_GROUPS[i][0]])
 
         # Load the stakeholder gtk.CellRendererCombo with a list of existing
         # requirement codes in the database.
-        #_query = "SELECT fld_requirement_code, fld_requirement_desc \
-        #          FROM tbl_requirements \
-        #          WHERE fld_revision_id={0:d}".format(self._requirement_model.revision_id)
-        #_results = self._app.DB.execute_query(_query, commit=False)
-        #try:
-        #    _n_requirements = len(_results)
-        #except TypeError:
-        #    _n_requirements = 0
+        _query = "SELECT fld_code, fld_description \
+                  FROM tbl_requirements \
+                  WHERE fld_revision_id={0:d}".format(
+                    self._requirement_model.revision_id)
+        (_requirements,
+         _error_code,
+         __) = self.dtcRequirement._dao.execute(_query, commit=False)
+        try:
+            _n_requirements = len(_requirements)
+        except TypeError:
+            _n_requirements = 0
 
-        #_cell = self.tvwStakeholderInput.get_column(
-        #    self._lst_stakeholder_col_order[9]).get_cell_renderers()
-        #_model = _cell[0].get_property('model')
-        #_model.clear()
-        #for i in range(_n_requirements):
-        #    _model.append([_results[i][0] + ' - ' + _results[i][1]])
+        _cell = self.tvwStakeholderInput.get_column(
+            self._lst_stakeholder_col_order[9]).get_cell_renderers()
+        _model = _cell[0].get_property('model')
+        _model.clear()
+        _model.append([""])
+        for i in range(_n_requirements):
+            _model.append([_requirements[i][0] + ' - ' + _requirements[i][1]])
 
         # Now load the Stakeholder Inputs gtk.TreeView.
         _model = self.tvwStakeholderInput.get_model()
@@ -972,9 +954,10 @@ class WorkView(gtk.VBox):
             _data = (_input.input_id, _input.stakeholder, _input.description,
                      _input.group, _input.priority, _input.customer_rank,
                      _input.planned_rank, _input.improvement,
-                     _input.overall_weight, _input.lst_user_floats[0],
-                     _input.lst_user_floats[1], _input.lst_user_floats[2],
-                     _input.lst_user_floats[3], _input.lst_user_floats[4])
+                     _input.overall_weight, _input.requirement,
+                     _input.lst_user_floats[0], _input.lst_user_floats[1],
+                     _input.lst_user_floats[2], _input.lst_user_floats[3],
+                     _input.lst_user_floats[4])
             _model.append(None, _data)
 
         return False
@@ -1321,7 +1304,8 @@ class WorkView(gtk.VBox):
             _model[path][position] = float(new_text)
 
         _values = (self._requirement_model.revision_id, _id) + \
-                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+
         _stakeholder = self.dtcStakeholder.dicStakeholders[_id]
         (_error_code, _error_msg) = _stakeholder.set_attributes(_values)
 # TODO: Handle errors.

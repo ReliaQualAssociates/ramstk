@@ -212,6 +212,7 @@ CREATE TABLE "tbl_stakeholder_input" (
     "fld_planned_rank" INTEGER DEFAULT(3),                          -- Planned satisfaction rating of the new product for the input.
     "fld_improvement" FLOAT DEFAULT(1.0),                           -- The improvement factor on the satisfaction rating.
     "fld_overall_weight" FLOAT DEFAULT(0.0),                        -- Overall weighting factor for the need/desire.
+    "fld_requirement" VARCHAR(512) DEFAULT(''),                     -- Implementing requirement.
     "fld_user_float_1" FLOAT DEFAULT(0.0),                          -- User defined float value.
     "fld_user_float_2" FLOAT DEFAULT(0.0),                          -- User defined float value.
     "fld_user_float_3" FLOAT DEFAULT(0.0),                          -- User defined float value.
