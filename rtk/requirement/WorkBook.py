@@ -918,12 +918,12 @@ class WorkView(gtk.VBox):
         for i in range(len(_conf.RTK_STAKEHOLDERS)):
             _model.append([_conf.RTK_STAKEHOLDERS[i][0]])
 
-        _cell_ = self.tvwStakeholderInput.get_column(
+        _cell = self.tvwStakeholderInput.get_column(
             self._lst_stakeholder_col_order[3]).get_cell_renderers()
-        _model_ = _cell_[0].get_property('model')
-        _model_.clear()
+        _model = _cell[0].get_property('model')
+        _model.clear()
         for i in range(len(_conf.RTK_AFFINITY_GROUPS)):
-            _model_.append([_conf.RTK_AFFINITY_GROUPS[i][0]])
+            _model.append([_conf.RTK_AFFINITY_GROUPS[i][0]])
 
         # Load the stakeholder gtk.CellRendererCombo with a list of existing
         # requirement codes in the database.

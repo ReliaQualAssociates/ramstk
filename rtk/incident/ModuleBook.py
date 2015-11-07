@@ -123,8 +123,8 @@ class ModuleView(object):
                                                     None, _conf.RTK_COLORS[12],
                                                     _conf.RTK_COLORS[13])
 
-        self.treeview.set_tooltip_text(_(u"Displays the list of verification "
-                                         u"and incident tasks."))
+        self.treeview.set_tooltip_text(_(u"Displays the list of program "
+                                         u"incidents."))
 
         # Populate the incident category gtk.CellRendererCombo().
         _cell = self.treeview.get_column(
