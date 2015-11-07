@@ -67,6 +67,7 @@ from incident.action.Action import Action
 from incident.component.Component import Component
 from incident.ModuleBook import ModuleView as mvwIncident
 from survival.Survival import Survival
+from survival.ModuleBook import ModuleView as mvwSurvival
 
 # Add localization support.
 _ = gettext.gettext
@@ -279,6 +280,9 @@ class RTK(object):
         _modview = self.module_book.create_module_page(mvwIncident,
                                                        dtcIncident, -1,
                                                        dtcAction, dtcComponent)
+        _conf.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwSurvival,
+                                                       dtcSurvival, -1)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()

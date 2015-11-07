@@ -3,7 +3,7 @@
 
       dataset_format.xml is part of the RTK Project
 
-      Copyright 2011 - 2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2011 - 2015 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 -->
@@ -132,8 +132,8 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Scale Parameter</defaulttitle>
-            <usertitle>Scale Parameter</usertitle>
+            <defaulttitle>Scale Parameter, Lower Bound</defaulttitle>
+            <usertitle>Scale Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>13</position>
             <widget>text</widget>
@@ -141,8 +141,8 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Scale Parameter, Lower Bound</defaulttitle>
-            <usertitle>Scale Parameter, Lower Bound</usertitle>
+            <defaulttitle>Scale Parameter</defaulttitle>
+            <usertitle>Scale Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>14</position>
             <widget>text</widget>
@@ -159,8 +159,8 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Shape Parameter</defaulttitle>
-            <usertitle>Shape Parameter</usertitle>
+            <defaulttitle>Shape Parameter, Lower Bound</defaulttitle>
+            <usertitle>Shape Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
             <position>16</position>
             <widget>text</widget>
@@ -168,8 +168,8 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Shape Parameter, Lower Bound</defaulttitle>
-            <usertitle>Shape Parameter, Lower Bound</usertitle>
+            <defaulttitle>Shape Parameter</defaulttitle>
+            <usertitle>Shape Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>17</position>
             <widget>text</widget>
@@ -186,21 +186,21 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Location Parameter</defaulttitle>
-            <usertitle>Location Parameter</usertitle>
-            <datatype>gfloat</datatype>
-            <position>19</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
             <defaulttitle>Location Parameter, Lower Bound</defaulttitle>
             <usertitle>Location Parameter, Lower Bound</usertitle>
             <datatype>gfloat</datatype>
-            <position>20</position>
+            <position>19</position>
             <editable>0</editable>
             <widget>text</widget>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Location Parameter</defaulttitle>
+            <usertitle>Location Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>

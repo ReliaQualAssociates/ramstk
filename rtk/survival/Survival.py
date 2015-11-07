@@ -452,7 +452,8 @@ class Survival(object):
 
         for i in range(_n_datasets):
             _values = (_results[i][0], _results[i][1])
-            (_records, __) = self.request_records(_results[i][1])
+            (_records, __) = self.request_records(_results[i][0],
+                                                  _results[i][1])
             _dataset = Dataset()
             _dataset.set_attributes(_values)
             _dataset.load_records(_records)
@@ -546,11 +547,12 @@ class Survival(object):
 
         return(_results, _error_code)
 
-    def request_records(self, dataset_id):
+    def request_records(self, survival_id, dataset_id):
         """
         Method to read the RTK Project database and load all the records
         associated with the selected Dataset object.
 
+        :param int survival_id: the Survival ID the dataset is associated with.
         :param int dataset_id: the Dataset ID to retrieve the records for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -567,7 +569,8 @@ class Survival(object):
                          fld_user_integer_3, fld_user_string_1, \
                          fld_user_string_2, fld_user_string_3 \
                   FROM rtk_survival_data \
-                  WHERE fld_dataset_id={0:d}".format(dataset_id)
+                  WHERE fld_survival_id={0:d} \
+                  AND fld_dataset_id={1:d}".format(survival_id, dataset_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         return(_results, _error_code)
