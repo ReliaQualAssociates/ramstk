@@ -116,7 +116,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :param int current_id: the Record ID of the current failure or
                                suspension.
         :return: False on success or True if an error is encountered.
-        :rtype: bool
+        :rtype: boolean
         """
 
         _p_record = self.dicRecords[previous_id]

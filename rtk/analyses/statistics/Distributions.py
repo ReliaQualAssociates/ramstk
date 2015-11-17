@@ -114,7 +114,8 @@ def format_data_set(data, start, end):
     # the start time and after the end time.
     _data = sorted(data, key=lambda x: float(x[2]))
     _data = [_rec for _rec in _data if float(_rec[1]) >= start]
-    _data = [_rec for _rec in _data if float(_rec[2]) <= end]
+    if end > 0.0:
+        _data = [_rec for _rec in _data if float(_rec[2]) <= end]
 
     # Expand the data set so there is one record for each failure.  Loop
     # through the failure quantity passed for each record.
@@ -772,7 +773,7 @@ class LogNormal(object):
         # Initialize lists to hold results.
         _parameters = [0.0, 0.0]            # Scale and shape parameters.
         _variance = [0.0, 0.0, 0.0]         # Scale variance, covariance,
-                                            # location variance.
+                                            # shape variance.
         _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
 
         # Format the input data set.
@@ -803,7 +804,8 @@ class LogNormal(object):
 
         _fI = fisher_information(self.log_pdf, _parameters, _data[:, 4])
         _variance[0] = 1.0 / np.diag(_fI)[0]
-        _variance[1] = 1.0 / np.diag(_fI)[1]
+        _variance[1] = 1.0 / _fI[0][1]
+        _variance[2] = 1.0 / np.diag(_fI)[1]
 
         _gof[0] = self.log_likelihood([_parameters[0], _parameters[1]], _data)
         _gof[1] = -2.0 * _gof[0] + 2.0

@@ -262,16 +262,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._workview = workview
         self._modulebook = modulebook
         self._model = None
-        self._dataset_id = None
         self._record_id = None
 
         # Initialize public scalar attributes.
         # Create the Analyses Input page widgets.
-        self.btnAddDataset = _widg.make_button(height=30, width=30,
-                                               image='add')
         self.btnAddRecord = _widg.make_button(width=35, image='add')
-        self.btnRemoveDataset = _widg.make_button(height=30, width=30,
-                                                  image='remove')
         self.btnRemoveRecord = _widg.make_button(width=35, image='remove')
         self.btnCalculate = _widg.make_button(width=35, image='calculate')
         self.btnSaveRecord = _widg.make_button(width=35, image='save')
@@ -282,7 +277,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.chkParts = _widg.make_check_button(label=_(u"Decompose results "
                                                         u"to parts"))
 
-        self.cmbDatasets = _widg.make_combo(width=50)
         self.cmbAssembly = _widg.make_combo(simple=False)
         self.cmbConfType = _widg.make_combo()
         self.cmbConfMethod = _widg.make_combo()
@@ -307,7 +301,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.tvwNevadaChart = gtk.TreeView()
 
-        self.txtConfidence = _widg.make_entry(width=100)
+        self.txtConfidence = _widg.make_entry(width=50)
         self.txtDescription = _widg.make_entry(width=200)
         self.txtStartTime = _widg.make_entry(width=100)
         self.txtEndTime = _widg.make_entry(width=100)
@@ -474,46 +468,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _position = 0
 
-        _button = gtk.MenuToolButton(None, label="")
+        _button = gtk.ToolButton()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button.set_icon_widget(_image)
-        _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"Dataset"))
-        _menu_item.set_tooltip_text(_(u"Add a new data set to the open RTK "
-                                      u"Program database."))
-        #_menu_item.connect('activate', AddDataset, self._app)
-        _menu.add(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Records"))
-        _menu_item.set_tooltip_text(_(u"Add a record to the selected data "
-                                      u"set."))
-        #_menu_item.connect('activate', self._add_record)
-        _menu.add(_menu_item)
-        _button.set_menu(_menu)
-        _menu.show_all()
-        _button.show()
+        _button.set_name('Assign')
+        _button.connect('clicked', self._on_button_clicked, 4)
+        _button.set_tooltip_text(_(u"Add a new Survival analysis to the open "
+                                   u"RTK Program database for the selected "
+                                   u"revision."))
         _toolbar.insert(_button, _position)
         _position += 1
 
-        # Remove items button.
-        _button = gtk.MenuToolButton(None, label="")
+        _button = gtk.ToolButton()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
-        _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"Dataset"))
-        _menu_item.set_tooltip_text(_(u"Removes the selected data set from "
-                                      u"the open RTK Program database."))
-        #_menu_item.connect('activate', self._delete_data_set)
-        _menu.add(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Records"))
-        _menu_item.set_tooltip_text(_(u"Removes the selected record from the "
-                                      u"selected data set."))
-        #_menu_item.connect('activate', self._delete_record)
-        _menu.add(_menu_item)
-        _button.set_menu(_menu)
-        _menu.show_all()
-        _button.show()
+        _button.set_name('Assign')
+        _button.connect('clicked', self._on_button_clicked, 5)
+        _button.set_tooltip_text(_(u"Remove the selected Survival analysis "
+                                   u"from the open RTK Program database."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -523,7 +497,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert-assembly.png')
         _button.set_icon_widget(_image)
         _button.set_name('Assign')
-        #_button.connect('clicked', self._consolidate_dataset)
+        _button.connect('clicked', self._on_button_clicked, 6)
         _button.set_tooltip_text(_(u"Consolidates the records in the selected "
                                    u"data set."))
         _toolbar.insert(_button, _position)
@@ -535,7 +509,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         _button.set_icon_widget(_image)
         _button.set_name('Calculate')
-        #_button.connect('clicked', self._calculate)
+        _button.connect('clicked', self._on_button_clicked, 7)
         _button.set_tooltip_text(_(u"Analyzes the selected data set."))
         _toolbar.insert(_button, _position)
         _position += 1
@@ -546,7 +520,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
         _button.set_name('Save')
-        #_button.connect('clicked', self._save_dataset)
+        _button.connect('clicked', self._on_button_clicked, 8)
         _button.set_tooltip_text(_(u"Saves the selected data set and it's "
                                    u"records."))
         _toolbar.insert(_button, _position)
@@ -605,7 +579,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = gtk.HBox()
+        _hbox = gtk.HPaned()
         _hbox2 = gtk.HBox()
         _vbox = gtk.VBox()
 
@@ -617,13 +591,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _bbox.pack_start(self.btnCalculate, False, False)
         _bbox.pack_start(self.btnSaveRecord, False, False)
 
-        self.btnAddDataset.set_tooltip_text(_(u"Adds a dataset to the "
-                                              u"selected survival analysis."))
         self.btnAddRecord.set_tooltip_text(_(u"Adds a record to the selected "
                                              u"dataset."))
-        self.btnRemoveDataset.set_tooltip_text(_(u"Removes the selected "
-                                                 u"dataset from the survival "
-                                                 u"analysis."))
         self.btnRemoveRecord.set_tooltip_text(_(u"Removes the selected record "
                                                 u"from the dataset."))
         self.btnCalculate.set_tooltip_text(_(u"Calculates interarrival times "
@@ -633,19 +602,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                               u"database."))
 
         self._lst_handler_id.append(
-            self.btnAddDataset.connect('clicked', self._on_button_clicked, 0))
-        self._lst_handler_id.append(
-            self.btnAddRecord.connect('clicked', self._on_button_clicked, 1))
-        self._lst_handler_id.append(
-            self.btnRemoveDataset.connect('clicked',
-                                          self._on_button_clicked, 2))
+            self.btnAddRecord.connect('clicked', self._on_button_clicked, 0))
         self._lst_handler_id.append(
             self.btnRemoveRecord.connect('clicked',
-                                         self._on_button_clicked, 3))
+                                         self._on_button_clicked, 1))
         self._lst_handler_id.append(
-            self.btnCalculate.connect('clicked', self._on_button_clicked, 4))
+            self.btnCalculate.connect('clicked', self._on_button_clicked, 2))
         self._lst_handler_id.append(
-            self.btnSaveRecord.connect('clicked', self._on_button_clicked, 5))
+            self.btnSaveRecord.connect('clicked', self._on_button_clicked, 3))
 
         #self.tvwDataset.set_rubber_banding(True)
         #self.tvwDataset.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
@@ -661,11 +625,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.fraDataset.add(_hbox2)
 
         _fixed = gtk.Fixed()
-        _label = _widg.make_label(_(u"Select dataset:"))
-        _fixed.put(_label, 10, 5)
-        _fixed.put(self.cmbDatasets, 135, 5)
-        _fixed.put(self.btnAddDataset, 205, 5)
-        _fixed.put(self.btnRemoveDataset, 240, 5)
+        #_label = _widg.make_label(_(u"Select dataset:"))
+        #_fixed.put(_label, 10, 5)
+        #_fixed.put(self.cmbDatasets, 135, 5)
+        #_fixed.put(self.btnAddDataset, 205, 5)
+        #_fixed.put(self.btnRemoveDataset, 240, 5)
 
         _frame = gtk.Frame()
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
@@ -681,7 +645,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.fraNevadaChart.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         self.fraNevadaChart.add(_scrollwindow)
 
-        _hbox.pack_start(_vbox, True, True)
+        _hbox.pack1(_vbox, True, True)
 
         _fixed = gtk.Fixed()
 
@@ -689,7 +653,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         _frame.add(_fixed)
 
-        _hbox.pack_end(_frame, True, True)
+        _hbox.pack2(_frame, True, True)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display analysis input information. #
@@ -715,6 +679,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Create the Dataset treeview on the left side.
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
+                               gobject.TYPE_STRING, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_INT, gobject.TYPE_STRING)
         self.tvwDataset.set_model(_model)
@@ -731,8 +696,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _column.set_visible(1)
         self.tvwDataset.append_column(_column)
 
-        _labels = [_(u"Affected\nHardware"), _(u"Left"), _(u"Right"),
-                   _(u"Quantity")]
+        _labels = [_(u"Event Date"), _(u"Affected\nHardware"), _(u"Left"),
+                   _(u"Right"), _(u"Interarrival\nTime"), _(u"Quantity")]
         for i in range(len(_labels)):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 1)
@@ -756,12 +721,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _cell.set_property('has-entry', False)
         _cell.set_property('model', _cellmodel)
         _cell.set_property('text-column', 0)
-        _cell.connect('changed', self._on_cellrenderer_edited, 5, _model)
+        _cell.connect('changed', self._on_cellrenderer_edited, 7, _model)
         _column = gtk.TreeViewColumn()
         _label = _widg.make_column_heading(_(u"Status"))
         _column.set_widget(_label)
         _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=5)
+        _column.set_attributes(_cell, text=7)
         _column.set_visible(1)
         self.tvwDataset.append_column(_column)
 
@@ -862,41 +827,39 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed.show_all()
 
         self._lst_handler_id.append(
-            self.cmbDatasets.connect('changed', self._on_combo_changed, 6))
+            self.cmbAssembly.connect('changed', self._on_combo_changed, 4))
         self._lst_handler_id.append(
-            self.cmbAssembly.connect('changed', self._on_combo_changed, 7))
+            self.cmbSource.connect('changed', self._on_combo_changed, 5))
         self._lst_handler_id.append(
-            self.cmbSource.connect('changed', self._on_combo_changed, 8))
+            self.cmbDistribution.connect('changed', self._on_combo_changed, 6))
         self._lst_handler_id.append(
-            self.cmbDistribution.connect('changed', self._on_combo_changed, 9))
+            self.cmbConfType.connect('changed', self._on_combo_changed, 7))
         self._lst_handler_id.append(
-            self.cmbConfType.connect('changed', self._on_combo_changed, 10))
+            self.cmbConfMethod.connect('changed', self._on_combo_changed, 8))
         self._lst_handler_id.append(
-            self.cmbConfMethod.connect('changed', self._on_combo_changed, 11))
-        self._lst_handler_id.append(
-            self.cmbFitMethod.connect('changed', self._on_combo_changed, 12))
+            self.cmbFitMethod.connect('changed', self._on_combo_changed, 9))
         self._lst_handler_id.append(
             self.txtDescription.connect('focus-out-event',
-                                        self._on_focus_out, 13))
+                                        self._on_focus_out, 10))
         self._lst_handler_id.append(
             self.txtConfidence.connect('focus-out-event',
-                                       self._on_focus_out, 14))
+                                       self._on_focus_out, 11))
         self._lst_handler_id.append(
             self.txtStartTime.connect('focus-out-event',
-                                      self._on_focus_out, 15))
+                                      self._on_focus_out, 12))
         self._lst_handler_id.append(
             self.txtEndTime.connect('focus-out-event',
-                                    self._on_focus_out, 16))
+                                    self._on_focus_out, 13))
         self._lst_handler_id.append(
             self.txtRelPoints.connect('focus-out-event',
-                                      self._on_focus_out, 17))
+                                      self._on_focus_out, 14))
         self._lst_handler_id.append(
             self.txtStartDate.connect('focus-out-event',
-                                      self._on_focus_out, 18))
-        self.txtStartDate.connect('changed', self._on_focus_out, None, 18)
+                                      self._on_focus_out, 15))
+        self.txtStartDate.connect('changed', self._on_focus_out, None, 15)
         self._lst_handler_id.append(
-            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 19))
-        self.txtEndDate.connect('changed', self._on_focus_out, None, 19)
+            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 16))
+        self.txtEndDate.connect('changed', self._on_focus_out, None, 16)
         self.btnStartDate.connect('button-release-event',
                                   _util.date_select, self.txtStartDate)
         self.btnEndDate.connect('button-release-event', _util.date_select,
@@ -1456,18 +1419,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: boolean
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
         self._model = model
 
-        # ------------------------------------------------------------------- #
-        # Load the analysis inputs page.                                      #
-        # ------------------------------------------------------------------- #
+        self._load_analysis_inputs_page()
+        self._load_dataset_records()
+        self._load_analysis_results_page()
+
+        self._notebook.set_current_page(0)
+
+        return False
+
+    def _load_analysis_inputs_page(self):
+        """
+        Method to load the gtk.Widgets() on the analysis inputs page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+
         _index = 0
         _model = self.cmbAssembly.get_model()
         _row = _model.get_iter_root()
         while _row is not None:
-            if _model.get_value(_row, 1) == str(model.assembly_id):
+            if _model.get_value(_row, 1) == str(self._model.assembly_id):
                 break
             else:
                 _row = _model.iter_next(_row)
@@ -1481,31 +1457,38 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.chkGroup.hide()
             self.chkParts.hide()
 
-        self.cmbSource.set_active(model.source)
-        self.cmbDistribution.set_active(model.distribution_id)
-        self.cmbConfType.set_active(model.confidence_type)
-        self.cmbConfMethod.set_active(model.confidence_method)
-        self.cmbFitMethod.set_active(model.fit_method)
+        self.cmbSource.set_active(self._model.source)
+        self.cmbDistribution.set_active(self._model.distribution_id)
+        self.cmbConfType.set_active(self._model.confidence_type)
+        self.cmbConfMethod.set_active(self._model.confidence_method)
+        self.cmbFitMethod.set_active(self._model.fit_method)
 
-        self.txtDescription.set_text(model.description)
-        self.txtConfidence.set_text(str(model.confidence))
-        self.txtStartTime.set_text(str(model.start_time))
-        self.txtEndTime.set_text(str(model.end_time))
-        self.txtRelPoints.set_text(str(model.n_rel_points))
+        self.txtDescription.set_text(self._model.description)
+        self.txtConfidence.set_text(str(self._model.confidence))
+        self.txtStartTime.set_text(str(self._model.start_time))
+        self.txtEndTime.set_text(str(self._model.end_time))
+        self.txtRelPoints.set_text(str(self._model.n_rel_points))
 
-        _start_date = _util.ordinal_to_date(model.start_date)
-        _end_date = _util.ordinal_to_date(model.end_date)
+        _start_date = _util.ordinal_to_date(self._model.start_date)
+        _end_date = _util.ordinal_to_date(self._model.end_date)
         self.txtStartDate.set_text(str(_start_date))
         self.txtEndDate.set_text(str(_end_date))
-
-        self._load_dataset_tree()
 
         #if self._nevada_chart != 0:
         #    self._load_nevada_chart()
 
-        # ------------------------------------------------------------------- #
-        # Load the analysis results page.                                     #
-        # ------------------------------------------------------------------- #
+        return False
+
+    def _load_analysis_results_page(self):
+        """
+        Method to load the gtk.Widgets() on the analysis results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+
         # Clear the page.
         for _child in self.hpnAnalysisResults.get_children():
             self.hpnAnalysisResults.remove(_child)
@@ -1566,17 +1549,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.vpnAnalysisResults.pack1(self.fraSummary, True, True)
 
         # Update summary information.
-        self.txtNumSuspensions.set_text(str(model.n_suspensions))
-        self.txtNumFailures.set_text(str(model.n_failures))
+        self.txtNumSuspensions.set_text(str(self._model.n_suspensions))
+        self.txtNumFailures.set_text(str(self._model.n_failures))
 
         # Update mean cumulative function information.
-        if model.distribution_id == 1:
+        if self._model.distribution_id == 1:
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
             self.vpnAnalysisResults.pack2(self.fraNonParStats, True, True)
 
-            self.txtMHB.set_text(str(fmt.format(model.mhb)))
-            self.txtLP.set_text(str(fmt.format(model.lp)))
-            self.txtLR.set_text(str(fmt.format(model.lr)))
+            self.txtMHB.set_text(str(fmt.format(self._model.mhb)))
+            self.txtLP.set_text(str(fmt.format(self._model.lp)))
+            self.txtLR.set_text(str(fmt.format(self._model.lr)))
 
             self.lblCumMTBF.set_markup(_(u"<span>MTBF:</span>"))
             self.lblCumFI.set_markup(_(u"<span>Failure Intensity:</span>"))
@@ -1588,7 +1571,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtRhoPValue.show()
 
         # Update Kaplan-Meier analysis information.
-        elif model.distribution_id == 2:
+        elif self._model.distribution_id == 2:
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
 
             self.lblMTBFi.set_markup(_(u"<span>MTBF:</span>"))
@@ -1616,22 +1599,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtHazardRateUL.hide()
 
         # Update NHPP Power Law analysis information.
-        elif model.distribution_id == 3:
+        elif self._model.distribution_id == 3:
             self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
             self.vpnAnalysisResults.pack2(self.fraParStats, True, True)
 
-            _b_hat = str(fmt.format(model.scale[1]))
-            _alpha_hat = str(fmt.format(model.shape[1]))
+            _b_hat = str(fmt.format(self._model.scale[1]))
+            _alpha_hat = str(fmt.format(self._model.shape[1]))
             self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = "
                                        u"%s T<sup>%s</sup></span>") %
                                      (_b_hat, _alpha_hat))
 
-            self.txtScaleLL.set_text(str(fmt.format(model.scale[0])))
-            self.txtScale.set_text(str(fmt.format(model.scale[1])))
-            self.txtScaleUL.set_text(str(fmt.format(model.scale[2])))
-            self.txtShapeLL.set_text(str(fmt.format(model.shape[0])))
-            self.txtShape.set_text(str(fmt.format(model.shape[1])))
-            self.txtShapeUL.set_text(str(fmt.format(model.shape[2])))
+            self.txtScaleLL.set_text(str(fmt.format(self._model.scale[0])))
+            self.txtScale.set_text(str(fmt.format(self._model.scale[1])))
+            self.txtScaleUL.set_text(str(fmt.format(self._model.scale[2])))
+            self.txtShapeLL.set_text(str(fmt.format(self._model.shape[0])))
+            self.txtShape.set_text(str(fmt.format(self._model.shape[1])))
+            self.txtShapeUL.set_text(str(fmt.format(self._model.shape[2])))
 
             self.lblCumMTBF.set_markup(_(u"<span>Cumulative MTBF:</span>"))
             self.lblMTBFi.set_markup(_(u"<span>Instantaneous MTBF:</span>"))
@@ -1667,43 +1650,56 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         else:
             self.vpnAnalysisResults.pack2(self.fraParStats, True, True)
 
-            self.txtScaleLL.set_text(str(fmt.format(model.scale[0])))
-            self.txtScale.set_text(str(fmt.format(model.scale[1])))
-            self.txtScaleUL.set_text(str(fmt.format(model.scale[2])))
-            self.txtShapeLL.set_text(str(fmt.format(model.shape[0])))
-            self.txtShape.set_text(str(fmt.format(model.shape[1])))
-            self.txtShapeUL.set_text(str(fmt.format(model.shape[2])))
-            self.txtLocationLL.set_text(str(fmt.format(model.location[0])))
-            self.txtLocation.set_text(str(fmt.format(model.location[1])))
-            self.txtLocationUL.set_text(str(fmt.format(model.location[2])))
+            self.txtScaleLL.set_text(str(fmt.format(self._model.scale[0])))
+            self.txtScale.set_text(str(fmt.format(self._model.scale[1])))
+            self.txtScaleUL.set_text(str(fmt.format(self._model.scale[2])))
+            self.txtShapeLL.set_text(str(fmt.format(self._model.shape[0])))
+            self.txtShape.set_text(str(fmt.format(self._model.shape[1])))
+            self.txtShapeUL.set_text(str(fmt.format(self._model.shape[2])))
+            self.txtLocationLL.set_text(
+                str(fmt.format(self._model.location[0])))
+            self.txtLocation.set_text(
+                str(fmt.format(self._model.location[1])))
+            self.txtLocationUL.set_text(
+                str(fmt.format(self._model.location[2])))
             # Scale variance.
-            self.txtScaleScale.set_text(str(fmt.format(model.variance[0])))
+            self.txtScaleScale.set_text(
+                str(fmt.format(self._model.variance[0])))
             # Shape variance.
-            self.txtShapeShape.set_text(str(fmt.format(model.variance[1])))
+            self.txtShapeShape.set_text(
+                str(fmt.format(self._model.variance[1])))
             # Location variance.
             self.txtLocationLocation.set_text(
-                str(fmt.format(model.variance[2])))
+                str(fmt.format(self._model.variance[2])))
             # Shape-scale covariance.
-            self.txtShapeScale.set_text(str(fmt.format(model.covariance[0])))
+            self.txtShapeScale.set_text(
+                str(fmt.format(self._model.covariance[0])))
             # Scale-shape covariance.
-            self.txtScaleShape.set_text(str(fmt.format(model.covariance[0])))
+            self.txtScaleShape.set_text(
+                str(fmt.format(self._model.covariance[0])))
             # Scale-location covariance.
-            self.txtScaleLocation.set_text(str(fmt.format(model.covariance[1])))
+            self.txtScaleLocation.set_text(
+                str(fmt.format(self._model.covariance[1])))
             # Location-scale covariance.
-            self.txtLocationScale.set_text(str(fmt.format(model.covariance[1])))
+            self.txtLocationScale.set_text(
+                str(fmt.format(self._model.covariance[1])))
             # Shape-location covariance.
-            self.txtShapeLocation.set_text(str(fmt.format(model.covariance[2])))
+            self.txtShapeLocation.set_text(
+                str(fmt.format(self._model.covariance[2])))
             # Location-shape covariance.
-            self.txtLocationShape.set_text(str(fmt.format(model.covariance[2])))
-            self.txtAIC.set_text(str(fmt.format(model.aic)))
-            self.txtBIC.set_text(str(fmt.format(model.bic)))
-            self.txtMLE.set_text(str(fmt.format(model.mle)))
+            self.txtLocationShape.set_text(
+                str(fmt.format(self._model.covariance[2])))
+            self.txtAIC.set_text(str(fmt.format(self._model.aic)))
+            self.txtBIC.set_text(str(fmt.format(self._model.bic)))
+            self.txtMLE.set_text(str(fmt.format(self._model.mle)))
 
             self.lblMTBFi.set_markup(_(u"<span>MTBF:</span>"))
             self.lblFIi.set_markup(_(u"<span>Failure Intensity:</span>"))
             self.lblScale.set_markup(_(u"<span>Scale</span>"))
             self.lblShape.set_markup(_(u"<span>Shape</span>"))
             self.lblLocation.set_markup(_(u"<span></span>"))
+
+            self.vpnAnalysisResults.show_all()
 
             # Show the instantaneous MTBF and failure intensity results.
             self.lblMTBFi.show()
@@ -1716,22 +1712,38 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtHazardRateiUL.show()
 
             # Show the variance-covariance matrix for the parameters.
-            self.lblRowScale.show()
-            self.lblRowShape.show()
-            self.lblColScale.show()
-            self.lblColShape.show()
-            self.txtScaleScale.show()
-            self.txtShapeShape.show()
-            self.txtShapeScale.show()
-            self.txtScaleShape.show()
+            if self._model.distribution_id == 5:    # Exponential
+                self.lblShape.hide()
+                self.txtShape.hide()
+                self.txtShapeLL.hide()
+                self.txtShapeUL.hide()
+                self.lblRowShape.hide()
+                self.lblColShape.hide()
+                self.txtShapeShape.hide()
+                self.txtShapeScale.hide()
+                self.txtScaleShape.hide()
+            else:
+                self.lblShape.show()
+                self.txtShape.show()
+                self.txtShapeLL.show()
+                self.txtShapeUL.show()
+                self.lblRowShape.show()
+                self.lblColShape.show()
+                self.txtShapeShape.show()
+                self.txtShapeScale.show()
+                self.txtScaleShape.show()
 
-            # Show the GoF statistics.
-            self.lblAIC.show()
-            self.lblBIC.show()
-            self.lblMLE.show()
-            self.txtAIC.show()
-            self.txtBIC.show()
-            self.txtMLE.show()
+            self.lblRowLocation.hide()
+            self.lblColLocation.hide()
+            self.lblLocation.hide()
+            self.txtLocation.hide()
+            self.txtLocationLL.hide()
+            self.txtLocationUL.hide()
+            self.txtLocationLocation.hide()
+            self.txtScaleLocation.hide()
+            self.txtLocationScale.hide()
+            self.txtShapeLocation.hide()
+            self.txtLocationShape.hide()
 
             # Hide the cumulative MTBF and failure intensity results.
             self.lblCumMTBF.hide()
@@ -1745,27 +1757,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _load_dataset_tree(self):
+    def _load_dataset_records(self):
         """
-        Method to load the Dataset list for the selected Survival analysis.
+        Method to load the Survival analysis records into the dataset
+        gtk.TreeView().
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _model = self.cmbDatasets.get_model()
-        _model.clear()
-        _model.append([""])
-        for _dataset in self._model.dicDatasets.values():
-            _model.append([_dataset.dataset_id])
-
-        return False
-
-    def _load_dataset_records(self, dataset_id):
-        """
-        Method to load the Dataset records into the dataset gtk.TreeView()
-
-        :param int dataset_id: the ID of the Dataset records to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -1773,8 +1769,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.tvwDataset.get_model()
         _model.clear()
 
-        _results = self._modulebook.request_load_records(self._model.survival_id,
-                                                         dataset_id)
+        _results = self._modulebook.request_load_records(self._model.survival_id)
 
         try:
             _n_events = len(_results)
@@ -1782,9 +1777,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _n_events = 0
 
         for i in range(_n_events):
+            _date = _util.ordinal_to_date(_results[i][2])
             _status = self._lst_status[_results[i][5]]
-            _model.append([_results[i][0], _results[i][20], _results[i][3],
-                           _results[i][4], _results[i][6], _status])
+            _model.append([_results[i][0], _date, _results[i][20],
+                           _results[i][3], _results[i][4], _results[i][7],
+                           _results[i][6], _status])
 
         return False
 
@@ -1839,23 +1836,29 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         if index == 0:
-            self._modulebook.request_add_dataset(self._model.survival_id)
+            self._modulebook.request_add_record(self._model.survival_id)
+            self._load_dataset_records()
         elif index == 1:
-            self._modulebook.request_add_record(self._model.survival_id,
-                                                self._dataset_id)
-        elif index == 2:
-            self._modulebook.request_delete_dataset(self._model.survival_id,
-                                                    self._dataset_id)
-        elif index == 3:
             self._modulebook.request_delete_record(self._model.survival_id,
-                                                   self._dataset_id,
                                                    self._record_id)
-        elif index == 4:                    # Calculate TBF
-            print "Calculate interarrival times"
-            self._modulebook.request_calculate_tbf()
+            self._load_dataset_records()
+        elif index == 2:
+            self._modulebook.request_calculate_tbf(self._model.survival_id)
+            self._modulebook.request_save_records(self._model.survival_id)
+            self._load_dataset_records()
+        elif index == 3:
+            self._modulebook.request_save_records(self._model.survival_id)
+        elif index == 4:
+            print "Add Survival analysis"
         elif index == 5:
-            self._modulebook.request_save_dataset(self._model.survival_id,
-                                                  self._dataset_id)
+            print "Remove Survival analysis"
+        elif index == 6:
+            print "Consolidate dataset"
+        elif index == 7:
+            self._model.estimate_parameters()
+            self._load_analysis_results_page()
+        elif index == 8:
+            self._modulebook.request_save_survival(self._model.survival_id)
 
         return False
 
@@ -1871,33 +1874,37 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param int position: the column position of the edited
                              gtk.CellRenderer().  Where position is:
                              0 = record ID
-                             1 = part number
-                             2 = left of failure interval
-                             3 = right of failure interval
-                             4 = quantity
-                             5 = status
+                             1 = event date
+                             2 = affected hardware
+                             3 = left of failure interval
+                             4 = right of failure interval
+                             5 = interarrival time
+                             6 = quantity
+                             7 = status
         :param gtk.TreeModel model: the gtk.TreeModel() the edited
                                     gtk.CellRenderer() belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        _dataset = self._model.dicDatasets[self._dataset_id]
-        _record = _dataset.dicRecords[self._record_id]
+        _record = self._model.dicRecords[self._record_id]
 
-        if position == 1:
+        if position == 2:
             model[path][position] = new_text
             #_record[0] = new_text
-        elif position == 2:
-            model[path][position] = float(new_text)
-            _record[2] = float(new_text)
         elif position == 3:
             model[path][position] = float(new_text)
-            _record[3] = float(new_text)
+            _record[2] = float(new_text)
         elif position == 4:
+            model[path][position] = float(new_text)
+            _record[3] = float(new_text)
+        elif position == 5:
+            model[path][position] = float(new_text)
+            _record[6] = float(new_text)
+        elif position == 6:
             model[path][position] = int(new_text)
             _record[5] = int(new_text)
-        elif position == 5:
+        elif position == 7:
             _model = cell.get_property('model')
             _new_text = _model.get_value(new_text, 0)
             model[path][position] = _new_text
@@ -1921,34 +1928,28 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         combo.handler_block(self._lst_handler_id[index])
 
-        if index == 6:
-            try:
-                self._dataset_id = int(combo.get_active_text())
-                self._load_dataset_records(int(combo.get_active_text()))
-            except TypeError:
-                pass
-        elif index == 7:                    # Assembly ID
+        if index == 4:                    # Assembly ID
             self._model.assembly_id = combo.get_active()
         #    _new_text = _conf.RTK_INCIDENT_TYPE[combo.get_active() - 1]
         #    self._modulebook.update(index, _new_text)
-        elif index == 8:                    # Source of records
+        elif index == 5:                    # Source of records
             self._model.source = combo.get_active()
         #    _new_text = _conf.RTK_INCIDENT_CRITICALITY[combo.get_active() - 1]
         #    self._modulebook.update(index + 2, _new_text)
-        elif index == 9:                    # Statistical distribution
+        elif index == 6:                    # Statistical distribution
             self._model.distribution_id = combo.get_active()
         #    _new_text = _conf.RTK_INCIDENT_STATUS[combo.get_active() - 1]
         #    self._modulebook.update(index + 4, _new_text)
-        elif index == 10:                   # Confidence type
+        elif index == 7:                   # Confidence type
             self._model.confidence_type = combo.get_active()
-        elif index == 11:                   # Confidence method
+        elif index == 8:                   # Confidence method
             self._model.confidence_method = combo.get_active()
         #    _row = combo.get_active_iter()
         #    try:
         #        self._model.software_id = int(_model.get_value(_row, 1))
         #    except ValueError:
         #        self._model.software_id = 0
-        elif index == 12:                   # Fit method
+        elif index == 9:                   # Fit method
             self._model.fit_method = combo.get_active()
         #    _new_text = _conf.RTK_USERS[combo.get_active() - 1]
         #    self._modulebook.update(index + 10, _new_text)
@@ -1973,31 +1974,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 13:
+        if index == 10:
             _new_text = _util.date_to_ordinal(entry.get_text())
             self._model.description = entry.get_text()
             #self._modulebook.update(index + 18, _new_text)
-        elif index == 14:
+        elif index == 11:
             _new_text = float(entry.get_text())
             self._model.confidence = _new_text
             #self._modulebook.update(index - 7, _new_text)
-        elif index == 15:
+        elif index == 12:
             _new_text = float(entry.get_text())
             self._model.start_time = _new_text
             #self._modulebook.update(index - 7, _new_text)
-        elif index == 16:
+        elif index == 13:
             _new_text = float(entry.get_text())
             self._model.end_time = _new_text
             #self._modulebook.update(index - 5, _new_text)
-        elif index == 17:
+        elif index == 14:
             _new_text = int(entry.get_text())
             self._model.n_rel_points = _new_text
             #self._modulebook.update(index - 5, _new_text)
-        elif index == 18:
+        elif index == 15:
             _new_text = _util.date_to_ordinal(entry.get_text())
             self._model.start_date = _new_text
             #self._modulebook.update(index - 5, _new_text)
-        elif index == 19:
+        elif index == 16:
             _new_text = _util.date_to_ordinal(entry.get_text())
             self._model.end_date = _new_text
             #self._modulebook.update(index - 5, _new_text)

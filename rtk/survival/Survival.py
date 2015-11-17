@@ -16,32 +16,16 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
+from collections import OrderedDict
 
 try:
-    from survival.Dataset import Model as Dataset
+    import analyses.survival.MCF as _mcf
+    from analyses.statistics.Distributions import *
+    from utilities import error_handler
 except ImportError:
-    from rtk.survival.Dataset import Model as Dataset
-
-
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10                                            # pragma: no cover
-    elif 'invalid literal for int() with base 10' in message[0]:    # Value error
-        _error_code = 10
-    elif 'index out of range' in message[0]:                        # Index error
-        _error_code = 40
-    else:                                                           # Unhandled error
-        _error_code = 1000                                          # pragma: no cover
-
-    return _error_code
+    import rtk.analyses.survival.MCF as _mcf
+    from rtk.analyses.statistics.Distributions import *
+    from rtk.utilities import error_handler
 
 
 class Model(object):                       # pylint: disable=R0902, R0904
@@ -49,6 +33,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
     The Survival data model contains the attributes and methods for an
     Survival. The attributes of an Survival model are:
 
+    :ivar dicRecords: default value: {}
     :ivar _nevada_chart: default value: False
     :ivar scale: default value: [0.0, 0.0, 0.0]
     :ivar shape: default value: [0.0, 0.0, 0.0]
@@ -94,7 +79,31 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self._nevada_chart = False      # Dataset created from a Nevada chart.
 
         # Initialize public dict attributes.
-        self.dicDatasets = {}
+        # Key is the record ID, value is a list with the following:
+        #   Position    Information
+        #       0       Assembly ID
+        #       1       Date of failure
+        #       2       Left of interval
+        #       3       Right of interval (same as left for exact time)
+        #       4       Status of event
+        #       5       Number of failures in interval
+        #       6       Interarrival time (TBF)
+        #       7       Failure mode type
+        #       8       Record is from Nevada chart
+        #       9       Ship date
+        #      10       Number shipped
+        #      11       Return date
+        #      12       Number returned
+        #      13       User float 1
+        #      14       User float 2
+        #      15       User float 3
+        #      16       User integer 1
+        #      17       User integer 2
+        #      18       User integer 3
+        #      19       User string 1
+        #      20       User string 2
+        #      21       User string 3
+        self.dicRecords = {}
 
         # Initialize public list attributes.
         # The following lists are for storing bounded statistics associated
@@ -111,7 +120,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         # The following list is for storing the covariance for all statistics.
         # The format is:
-        # [Scale-Shape, Scale-Location, Shape-Location estimate]
+        # [Scale-Shape, Scale-Location, Shape-Location]
         self.covariance = [0.0, 0.0, 0.0]
 
         # Initialize public scalar attributes.
@@ -120,11 +129,16 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.assembly_id = 0
         self.description = ''
         self.source = 0
-        self.distribution_id = 0
+        self.distribution_id = 0            # 1=MCF, 2=Kaplan-Meier,
+                                            # 3=NHPP-Power Law,
+                                            # 4=NHPP-LogLinear, 5=Exponential,
+                                            # 6=Lognormal, 7=Normal, 8=Weibull,
+                                            # 9=WeiBayes
         self.confidence = 0.75
-        self.confidence_type = 0
-        self.confidence_method = 0          # 0=lower, 1=upper, 2=two-sided
-        self.fit_method = 0
+        self.confidence_type = 0            # 1=Lower, 2=Upper, 3=Two-sided
+        self.confidence_method = 0          # 1=Crow, 2=Duane, 3=Fisher,
+                                            # 4=Likelihood, 5=Bootstrap
+        self.fit_method = 0                 # 1=MLE, 2=Rank Regression
         self.rel_time = 100.0
         self.n_rel_points = 0
         self.n_suspensions = 0
@@ -195,10 +209,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.covariance[1] = float(values[37])
             self.covariance[2] = float(values[38])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -227,6 +241,119 @@ class Model(object):                       # pylint: disable=R0902, R0904
                    self.variance, self.covariance)
 
         return _values
+
+    def calculate_tbf(self, previous_id, current_id):
+        """
+        Method to calculate the time between failure of subsequent failures in
+        a dataset.
+
+        :param int previous_id: the Record ID of the previous failure or
+                                suspension.
+        :param int current_id: the Record ID of the current failure or
+                               suspension.
+        :return: False on success or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _p_record = self.dicRecords[previous_id]
+        _c_record = self.dicRecords[current_id]
+
+        _previous = [previous_id, _p_record[0], _p_record[2], _p_record[3],
+                     _p_record[5], _p_record[4]]
+        _current = [current_id, _c_record[0], _c_record[2], _c_record[3],
+                    _c_record[5], _c_record[4]]
+
+        _c_record[6] = time_between_failures(_previous, _current)
+
+        return False
+
+    def estimate_parameters(self):
+        """
+        Method to fit data a parametric distribution and estimate the
+        parameters of the fitted distribution.
+
+                * 0 = Observed unit ID
+                * 1 = Interval start time
+                * 2 = Interval end time
+                * 3 = Time between failures or interarrival time
+                * 4 = Status of observation
+                * 5 = Quantity of observations
+                * 6 = Date of observation
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _data = []
+        for _record in self.dicRecords.values():
+            _data.append((_record[0], _record[2], _record[3], _record[6],
+                          _record[4], _record[5], _record[1]))
+
+        if self.distribution_id == 1:
+            _data = _mcf.format_data(self.dicRecords)
+            _meancf = _mcf.mean_cumulative_function(_data)
+            print _meancf
+        elif self.distribution_id == 2:
+            print "Kaplan-Meier"
+        elif self.distribution_id == 3:
+            print "NHPP - Power Law"
+        elif self.distribution_id == 4:
+            print "NHPP - Log Linear"
+        elif self.distribution_id == 5:
+            if self.fit_method == 1:
+                _results = Exponential().maximum_likelihood_estimate(
+                                _data, self.start_time, self.end_time)
+                self.scale[1] = _results[0][0]
+                self.variance[0] = _results[1][0]
+                self.mle = _results[2][0]
+                self.aic = _results[2][1]
+                self.bic = _results[2][2]
+            elif self.fit_method == 2:
+                print "Exponential Rank Regression"
+        elif self.distribution_id == 6:
+            if self.fit_method == 1:
+                _results = LogNormal().maximum_likelihood_estimate(
+                                _data, self.start_time, self.end_time)
+                self.scale[1] = _results[0][0]
+                self.shape[1] = _results[0][1]
+                self.variance[0] = _results[1][0]   # Scale
+                self.variance[1] = _results[1][2]   # Shape
+                self.covariance[0] = _results[1][1] # Scale-Shape
+                self.mle = _results[2][0]
+                self.aic = _results[2][1]
+                self.bic = _results[2][2]
+            elif self.fit_method == 2:
+                print "LogNormal Rank Regression"
+        elif self.distribution_id == 7:
+            if self.fit_method == 1:
+                _results = Gaussian().maximum_likelihood_estimate(
+                                _data, self.start_time, self.end_time)
+                self.scale[1] = _results[0][0]
+                self.shape[1] = _results[0][1]
+                self.variance[0] = _results[1][0]   # Scale
+                self.variance[1] = _results[1][2]   # Shape
+                self.covariance[0] = _results[1][1] # Scale-Shape
+                self.mle = _results[2][0]
+                self.aic = _results[2][1]
+                self.bic = _results[2][2]
+            elif self.fit_method == 2:
+                print "Normal Rank Regression"
+        elif self.distribution_id == 8:
+            if self.fit_method == 1:
+                _results = Weibull().maximum_likelihood_estimate(
+                                _data, self.start_time, self.end_time)
+                self.scale[1] = _results[0][0]
+                self.shape[1] = _results[0][1]
+                self.variance[0] = _results[1][0]   # Scale
+                self.variance[1] = _results[1][2]   # Shape
+                self.covariance[0] = _results[1][1] # Scale-Shape
+                self.mle = _results[2][0]
+                self.aic = _results[2][1]
+                self.bic = _results[2][2]
+            elif self.fit_method == 2:
+                print "Weibull Rank Regression"
+
+        return False
 
 
 class Survival(object):
@@ -420,143 +547,25 @@ class Survival(object):
                       _survival._nevada_chart)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
-
-    def request_datasets(self, survival_id):
-        """
-        Method to read the RTK Project database and load all the Datasets
-        associated with the selected Survival object.  For each Dataset
-        returned:
-
-        #. Retrieve the datasets from the RTK Project database.
-        #. Create a Dataset data model instance.
-        #. Set the attributes of the data model instance from the returned
-           results.
-        #. Add the instance to the dictionary of Datasets associated with
-           the Survival object.
-
-        :param int survival_id: the Survival ID to select the datasets for.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "SELECT DISTINCT fld_survival_id, fld_dataset_id \
-                  FROM rtk_survival_data \
-                  WHERE fld_survival_id={0:d}".format(survival_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
-
-        try:
-            _n_datasets = len(_results)
-        except TypeError:
-            _n_datasets = 0
-
-        for i in range(_n_datasets):
-            _values = (_results[i][0], _results[i][1])
-            (_records, __) = self.request_records(_results[i][0],
-                                                  _results[i][1])
-            _dataset = Dataset()
-            _dataset.set_attributes(_values)
-            _dataset.load_records(_records)
-            _survival = self.dicSurvival[survival_id]
-            _survival.dicDatasets[_results[i][1]] = _dataset
-
-        return(_results, _error_code)
-
-    def add_dataset(self, survival_id):
-        """
-        Adds a new Dataset to the RTK Program's database.
-
-        :param int survival_id: the Survival ID to add the new Dataset to.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "SELECT MAX(fld_dataset_id) \
-                  FROM rtk_survival_data \
-                  WHERE fld_survival_id={0:d}".format(survival_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
-
-        if _results[0][0] is None:
-            _last_id = 1
-        else:
-            _last_id = _results[0][0] + 1
-
-        _query = "INSERT INTO rtk_survival_data \
-                  (fld_survival_id, fld_dataset_id) \
-                  VALUES ({0:d}, {1:d})".format(survival_id, _last_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
-        # If the new Dataset was added successfully to the RTK Project
-        # database:
-        #   1. Retrieve the ID of the newly inserted Dataset.
-        #   2. Create a new Dataset model instance.
-        #   3. Set the attributes of the new Dataset model instance.
-        #   4. Add the new Dataset model to the Survival model dataset
-        #      dictionary.
-        if _results:
-            _dataset = Dataset()
-            _dataset.set_attributes((survival_id, _last_id))
-            _survival = self.dicSurvival[survival_id]
-            _survival.dicDatasets[_last_id] = _dataset
-
-        return(_results, _error_code)
-
-    def delete_dataset(self, survival_id, dataset_id):
-        """
-        Method to delete the selected Dataset from the open RTK Program
-        database.
-
-        :param int survival_id: the ID of the Survival analysis the dataset
-                                belongs to.
-        :param int dataset_id: the ID of the Dataset to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "DELETE FROM rtk_survival_data \
-                  WHERE fld_dataset_id={0:d}".format(dataset_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
-        # Remove the dataset from the Survival analysis Dataset dictionary.
-        if _results:
-            _survival = self.dicSurvival[survival_id]
-            _survival.dicDatasets.pop(dataset_id)
-
-        return(_results, _error_code)
-
-    def save_dataset(self, survival_id, dataset_id):
-        """
-        Method to save the Dataset information to the open RTK Program
-        database.
-
-        :param int survival_id: the ID of the Survival analysis the Dataset
-                                belongs to.
-        :param int dataset_id: the ID of the Dataset to save.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _survival = self.dicSurvival[survival_id]
-        _dataset = _survival.dicDatasets[dataset_id]
-
-        for _record_id in _dataset.dicRecords.keys():
+        # Save all the records.
+        for _record_id in _survival.dicRecords.keys():
             (_results,
-             _error_code) = self.save_record(survival_id, dataset_id,
-                                             _record_id,
-                                             _dataset.dicRecords[_record_id])
+             _error_code) = self.save_record(survival_id, _record_id,
+                                             _survival.dicRecords[_record_id])
 
         return(_results, _error_code)
 
-    def request_records(self, survival_id, dataset_id):
+    def request_records(self, survival_id):
         """
         Method to read the RTK Project database and load all the records
-        associated with the selected Dataset object.
+        associated with the selected Survival analysis object.
 
         :param int survival_id: the Survival ID the dataset is associated with.
-        :param int dataset_id: the Dataset ID to retrieve the records for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
+
+        _dict = {}
 
         _query = "SELECT fld_record_id, fld_assembly_id, fld_failure_date, \
                          fld_left_interval, fld_right_interval, \
@@ -570,25 +579,36 @@ class Survival(object):
                          fld_user_string_2, fld_user_string_3 \
                   FROM rtk_survival_data \
                   WHERE fld_survival_id={0:d} \
-                  AND fld_dataset_id={1:d}".format(survival_id, dataset_id)
+                  ORDER BY fld_left_interval".format(survival_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+
+        try:
+            _n_records = len(_results)
+        except TypeError:
+            _n_records = 0
+
+        _survival = self.dicSurvival[survival_id]
+        for i in range(_n_records):
+           _dict[_results[i][0]] = list(_results[i][1:])
+
+        _survival.dicRecords = OrderedDict(sorted(_dict.items(),
+                                           key=lambda t: t[1][3]))
 
         return(_results, _error_code)
 
-    def add_record(self, survival_id, dataset_id):
+    def add_record(self, survival_id):
         """
         Method to add a Record to the selected Dataset.
 
         :param int survival_id: the ID of the Survival analysis the Dataset
                                 belongs to.
-        :param int dataset_id: the ID of the Dataset to add the Record to.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
         _query = "SELECT MAX(fld_record_id) \
                   FROM rtk_survival_data \
-                  WHERE fld_dataset_id={0:d}".format(dataset_id)
+                  WHERE fld_survival_id={0:d}".format(survival_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         if _results[0][0] is None:
@@ -597,27 +617,24 @@ class Survival(object):
             _last_id = _results[0][0] + 1
 
         _query = "INSERT INTO rtk_survival_data \
-                  (fld_survival_id, fld_dataset_id, fld_record_id) \
-                  VALUES ({0:d}, {1:d}, {2:d})".format(survival_id, dataset_id,
-                                                       _last_id)
+                  (fld_survival_id, fld_record_id) \
+                  VALUES ({0:d}, {1:d})".format(survival_id, _last_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         if _results:
             _survival = self.dicSurvival[survival_id]
-            _dataset = _survival.dicDatasets[dataset_id]
-            _dataset.dicRecords[_last_id] = (0, 719163, 0.0, 0.0, 0, 1, 0.0, 1,
-                                             0, 719163, 1, 719163, 0, 0.0, 0.0,
-                                             0.0, 0, 0, 0, '', '', '')
+            _survival.dicRecords[_last_id] = (0, 719163, 0.0, 0.0, 0, 1, 0.0,
+                                              1, 0, 719163, 1, 719163, 0, 0.0,
+                                              0.0, 0.0, 0, 0, 0, '', '', '')
 
         return(_results, _error_code)
 
-    def delete_record(self, survival_id, dataset_id, record_id):
+    def delete_record(self, survival_id, record_id):
         """
         Method to delete the selected Record.
 
         :param int survival_id: the ID of the Survival analysis the Dataset
                                 belongs to.
-        :param int dataset_id: the ID of the Dataset the Record belongs to.
         :param int record_id: the ID of the Record to delete.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -625,25 +642,21 @@ class Survival(object):
 
         _query = "DELETE FROM rtk_survival_data \
                   WHERE fld_survival_id={0:d} \
-                  AND fld_dataset_id={1:d} \
-                  AND fld_record_id={2:d}".format(survival_id, dataset_id,
-                                                  record_id)
+                  AND fld_record_id={1:d}".format(survival_id, record_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         if _results:
             _survival = self.dicSurvival[survival_id]
-            _dataset = _survival.dicDatasets[dataset_id]
-            _dataset.dicRecords.pop(record_id)
+            _survival.dicRecords.pop(record_id)
 
         return(_results, _error_code)
 
-    def save_record(self, survival_id, dataset_id, record_id, record):
+    def save_record(self, survival_id, record_id, record):
         """
         Method to save a Dataset Record to the open RTK Program database.
 
         :param int survival_id: the ID of the Survival analysis the Dataset
                                 belongs to.
-        :param int dataset_id: the ID of the Dataset the Record belongs to.
         :param int record_id: the ID of the Record to save.
         :param list record: the record values to save.
         :return: (_results, _error_code)
@@ -651,32 +664,30 @@ class Survival(object):
         """
 
         _query = "UPDATE rtk_survival_data \
-                  SET fld_assembly_id={3:d}, fld_failure_date={4:d}, \
-                      fld_left_interval={5:f}, fld_right_interval={6:f}, \
-                      fld_status={7:d}, fld_quantity={8:d}, fld_tbf={9:f}, \
-                      fld_mode_type={10:d}, fld_nevada_chart={11:d}, \
-                      fld_ship_date={12:d}, fld_number_shipped={13:d}, \
-                      fld_return_date={14:d}, fld_number_returned={15:d}, \
-                      fld_user_float_1={16:f}, fld_user_float_2={17:f}, \
-                      fld_user_float_3={18:f}, fld_user_integer_1={19:d}, \
-                      fld_user_integer_2={20:d}, fld_user_integer_3={21:d}, \
-                      fld_user_string_1='{22:s}', fld_user_string_2='{23:s}', \
-                      fld_user_string_3='{24:s}' \
+                  SET fld_assembly_id={2:d}, fld_failure_date={3:d}, \
+                      fld_left_interval={4:f}, fld_right_interval={5:f}, \
+                      fld_status={6:d}, fld_quantity={7:d}, fld_tbf={8:f}, \
+                      fld_mode_type={9:d}, fld_nevada_chart={10:d}, \
+                      fld_ship_date={11:d}, fld_number_shipped={12:d}, \
+                      fld_return_date={13:d}, fld_number_returned={14:d}, \
+                      fld_user_float_1={15:f}, fld_user_float_2={16:f}, \
+                      fld_user_float_3={17:f}, fld_user_integer_1={18:d}, \
+                      fld_user_integer_2={19:d}, fld_user_integer_3={20:d}, \
+                      fld_user_string_1='{21:s}', fld_user_string_2='{22:s}', \
+                      fld_user_string_3='{23:s}' \
                   WHERE fld_survival_id={0:d} \
-                  AND fld_dataset_id={1:d} \
-                  AND fld_record_id={2:d}".format(survival_id, dataset_id,
-                                                  record_id, record[0],
-                                                  record[1], record[2],
-                                                  record[3], record[4],
-                                                  record[5], record[6],
-                                                  record[7], record[8],
-                                                  record[9], record[10],
-                                                  record[11], record[12],
-                                                  record[13], record[14],
-                                                  record[15], record[16],
-                                                  record[17], record[18],
-                                                  record[19], record[20],
-                                                  record[21])
+                  AND fld_record_id={1:d}".format(survival_id, record_id,
+                                                  record[0], record[1],
+                                                  record[2], record[3],
+                                                  record[4], record[5],
+                                                  record[6], record[7],
+                                                  record[8], record[9],
+                                                  record[10], record[11],
+                                                  record[12], record[13],
+                                                  record[14], record[15],
+                                                  record[16], record[17],
+                                                  record[18], record[19],
+                                                  record[20], record[21])
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         if not _results:

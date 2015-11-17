@@ -32,6 +32,15 @@ class TestMeanCumulativeFunction(unittest.TestCase):
     Class for testing the MCF data model class.
     """
 
+    #@attr(all=True, unit=True)
+    #def test_format_data(self)
+    #    """
+    #    (TestMCF) format_data should return a dictionary of lists on success
+    #    """
+
+    #    _data =
+    #    format_data(_data)
+
     @attr(all=True, unit=True)
     def test_d_matrix(self):
         """

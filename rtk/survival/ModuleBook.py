@@ -211,103 +211,100 @@ class ModuleView(object):
 
         return False
 
-    def request_add_dataset(self, survival_id):
+    def request_save_survival(self, survival_id):
         """
-        Method to request a Dataset be added to the selected Survival analysis.
+        Method to request the selected Survival analysis be saved.
 
-        :param int survival_id: the ID of the Survival analysis the selected
-                                Dataset belongs to.
+        :param int survival_id: the ID of the Survival analysis to save.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_results, _error_code) = self.dtcSurvival.add_dataset(survival_id)
+        (_results, _error_code) = self.dtcSurvival.save_survival(survival_id)
 
         return False
 
-    def request_delete_dataset(self, survival_id):
-        """
-        Method to request the selected Dataset be deleted from the selected
-        Survival analysis.
-
-        :param int survival_id: the ID of the Survival analysis the selected
-                                Dataset belongs to.
-        :param int dataset_id: the ID of the Dataset to delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        (_results, _error_code) = self.dtcSurvival.delete_dataset(survival_id,
-                                                                  dataset_id)
-
-        return False
-
-    def request_save_dataset(self, survival_id, dataset_id):
-        """
-        Method to request the selected Dataset be saved.
-
-        :param int survival_id: the ID of the Survival analysis the selected
-                                Dataset belongs to.
-        :param int dataset_id: the ID of the Dataset to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        (_results, _error_code) = self.dtcSurvival.save_dataset(survival_id,
-                                                                dataset_id)
-
-        return False
-
-    def request_load_records(self, survival_id, dataset_id):
+    def request_load_records(self, survival_id):
         """
         Loads the Survival Module Book view gtk.TreeModel() with Survival
         analyses information.
 
         :param in survival_id: the ID of the Survival analysis associated with
                                the Dataset.
-        :param int dataset_id: the ID of the Dataset records to retrieve.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_dataset,
-         __) = self.dtcSurvival.request_records(survival_id, dataset_id)
+        (_records, __) = self.dtcSurvival.request_records(survival_id)
 
-        return _dataset
+        return _records
 
-    def request_add_record(self, survival_id, dataset_id):
+    def request_add_record(self, survival_id):
         """
         Method to request a record be added to the selected Dataset.
 
         :param int survival_id: the ID of the Survival analysis the record will
                                 be added to.
-        :param int dataset_id: the ID of the Dataset the record will be added
-                               to.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
-        (_result, _error_code) = self.dtcSurvival.add_record(survival_id,
-                                                             dataset_id)
+        (_result, _error_code) = self.dtcSurvival.add_record(survival_id)
 
         return False
 
-    def request_delete_record(self, survival_id, dataset_id, record_id):
+    def request_delete_record(self, survival_id, record_id):
         """
         Method to request a record be deleted from the selected Dataset.
 
         :param int survival_id: the ID of the Survival analysis the record will
                                 be deleted from.
-        :param int dataset_id: the ID of the Dataset the record will be deleted
-                               from.
         :param int record_id: the ID of the record to be deleted.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
         (_result, _error_code) = self.dtcSurvival.delete_record(survival_id,
-                                                                dataset_id,
                                                                 record_id)
+
+        return False
+
+    def request_save_records(self, survival_id):
+        """
+        Method to request the Survival analysis records be saved.
+
+        :param int survival_id: the ID of the Survival analysis to save the
+                                records for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _survival = self.dtcSurvival.dicSurvival[survival_id]
+
+        for _record_id in _survival.dicRecords.keys():
+            (_results, _error_code) = self.dtcSurvival.save_record(
+                                        survival_id, _record_id,
+                                        _survival.dicRecords[_record_id])
+
+        return False
+
+    def request_calculate_tbf(self, survival_id):
+        """
+        Method to request the interarrival times be calculated in a dataset.
+
+        :param int survival_id: the ID of the Survival analyses the dataset
+                                belongs to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        _survival = self.dtcSurvival.dicSurvival[survival_id]
+        _records = _survival.dicRecords
+
+        _keys = [_key for _key in _records.keys()]
+        _records[_keys[0]][6] = _records[_keys[0]][3]
+        for i in range(len(_keys) - 1):
+            _survival.calculate_tbf(_keys[i], _keys[i + 1])
 
         return False
 
@@ -380,7 +377,7 @@ class ModuleView(object):
         _survival_id = _model.get_value(_row, 0)
 
         self._model = self.dtcSurvival.dicSurvival[_survival_id]
-        self.dtcSurvival.request_datasets(_survival_id)
+        self.dtcSurvival.request_records(_survival_id)
 
         self._workbook.load(self._model)
 

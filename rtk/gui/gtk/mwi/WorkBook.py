@@ -108,6 +108,7 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
 
         self.connect('delete_event', self.destroy)
 
+        # TODO: Move this method to the RTK.py file where common stuff is loaded.
         self._load_globals()
 
         self.show_all()

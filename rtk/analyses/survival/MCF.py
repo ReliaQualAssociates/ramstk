@@ -21,6 +21,42 @@ from scipy.stats import norm
 from math import log, sqrt
 
 
+def format_data(data):
+    """
+    Helper function to coerce the dataset into the proper format for passing to
+    the mean_cumulative_function.
+
+    :param dict data: an ordered dictionary of dataset records.
+    :return: _data; a dictionary with Unit ID being the key and a list of
+                    failure and censoring times as the value.
+    :rtype: dict
+    """
+
+    _data = {}
+    _times = []
+    _unit = data[min(data.keys())][0]
+
+    for _value in data.values():
+        if _value[0] == _unit:
+            for i in range(_value[5]):
+                if _value[4] == 0:          # Event
+                    _times.append(_value[3])
+                elif _value[4] == 1:        # Right censored
+                    _times.append(str(_value[3]) + '+')
+        else:
+            _data[_unit] = _times
+            _unit = _value[0]
+            for i in range(_value[5]):
+                if _value[4] == 0:
+                    _times = [_value[3]]
+                elif _value[4] == 1:
+                    _times = [str(_value[3]) + '+']
+
+    _data[_unit] = _times
+
+    return _data
+
+
 def d_matrix(data, times):
     """
     Function to create d.(tk) array for use in calculating the mean cumulative
