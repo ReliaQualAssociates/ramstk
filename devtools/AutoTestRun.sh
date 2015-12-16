@@ -21,21 +21,16 @@ integration_test_run() {
 	$NOSETESTS --quiet --with-coverage --cover-branches --with-html --html-file="_test_results/${DIRECTORY}_integration_tests.html" --attr=integration=True ./$DIRECTORY
 }
 
-cloc_run() {
-
-    cd _test_results/
-
-	$CLOC --by-file --xsl=cloc.xsl --report_file=code_count.xml ../../rtk
-
-    cd ../
-
-}
-
 # Get command line arguments.
 while [ $# -gt 0 ];
 do
 	case "$1" in
 
+        -a|--all)
+            ALL=1
+            UNIT=1
+            INTEGRATION=1
+            ;;
 		-u|--unit)
 			UNIT=1
 			DIRECTORY=$2
@@ -44,16 +39,15 @@ do
 			INTEGRATION=1
 			DIRECTORY=$2
 			;;
-		-c|--cloc)
-			RUNCLOC=1
-			;;
 	esac
 	shift
 done
 
 if [ "x$DIRECTORY" == "x" ];
 then
-	DIRECTORY="allocation dao datamodels failure_definition function hardware incident requirement revision software stakeholder survival testing usage validation"
+	DIRECTORY="allocation dao datamodels failure_definition fmea function
+    hardware hazard incident pof prediction requirement revision similar_item
+    software stakeholder statistics survival testing usage validation"
 	ALL=1
 fi
 
@@ -87,9 +81,6 @@ then
 
 fi
 
-if [ "x$RUNCLOC" != "x" ];
-then
-	cloc_run
-fi
+chown -R andrew.users /home/andrew/projects/RTK/tests/_test_results
 
 exit 0
