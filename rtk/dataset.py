@@ -505,7 +505,7 @@ class Dataset(object):
             :param gtk.Notebook notebook: the Dataset class gtk.Notebook()
                                           widget.
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -802,7 +802,7 @@ class Dataset(object):
             :param notebook: the Dataset class gtk.Notebook() widget.
             :type notebook: gtk.Notebook
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1186,7 +1186,7 @@ class Dataset(object):
             :param notebook: the Dataset class gtk.Notebook() widget.
             :type notebook: gtk.Notebook
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1233,7 +1233,7 @@ class Dataset(object):
             :param notebook: the Dataset class gtk.Notebook() widget.
             :type notebook: gtk.Notebook
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1357,7 +1357,7 @@ class Dataset(object):
         Loads the Dataset class gtk.TreeModel().
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1396,7 +1396,7 @@ class Dataset(object):
         Method to load the Dataset class gtk.Notebook().
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         def _load_analyses_input_page(self):
@@ -1477,7 +1477,7 @@ class Dataset(object):
         Loads the gtk.Widgets() with analyses results for the Dataset class.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -1726,7 +1726,7 @@ class Dataset(object):
         Method used to load the survival data set in the gtk.TreeView().
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Load the gtk.TreeView() containing the list of failure/censoring
@@ -1758,7 +1758,7 @@ class Dataset(object):
         data set.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         import pango
@@ -1889,7 +1889,7 @@ class Dataset(object):
                              gtk.TreeColumn() headers.
         :type col_headings: list of strings
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Remove the existing model from the gtk.TreeView.
@@ -1920,7 +1920,7 @@ class Dataset(object):
         Method to update the Dataset class gtk.TreeModel().
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -1956,7 +1956,7 @@ class Dataset(object):
         Method to update the Dataset class attributes.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -2023,7 +2023,7 @@ class Dataset(object):
                       9 =
         :type event: gtk.gdk.Event
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         if event.button == 1:
@@ -2046,7 +2046,7 @@ class Dataset(object):
         :param __column: the activated gtk.TreeViewColumn().
         :type __column: integer
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = self.treeview.get_selection().get_selected()
@@ -2078,7 +2078,7 @@ class Dataset(object):
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: gtk.ToolButton
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _n_new_records = _util.add_items(_(u"RTK - Add Data Set Records"),
@@ -2127,7 +2127,7 @@ class Dataset(object):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -2153,7 +2153,7 @@ class Dataset(object):
         :param gtk.Button __button: the gtk.ToolButton() that called this
                                     method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -2206,7 +2206,7 @@ class Dataset(object):
         :param gtk.Button __button: the gtk.Button() widget that called this
                                     method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         def _save_line_item(model, __path, row, self):
@@ -2220,7 +2220,7 @@ class Dataset(object):
             :param gtk.TreeITer row: the selected gtk.TreeIter() in the Dataset
                                      class gtk.TreeModel().
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             _values = (model.get_value(row, 1), model.get_value(row, 2),
@@ -2285,7 +2285,7 @@ class Dataset(object):
         :param gtk.Button __button: the gtk.Button() widget that called this
                                     method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         def _save_line_item(model, __path, row, self):
@@ -2300,7 +2300,7 @@ class Dataset(object):
             :param gtk.TreeIter row: the selected gtk.TreeIter() in the Dataset
                                      records gtk.TreeModel().
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             _query = "UPDATE tbl_survival_data \
@@ -2345,7 +2345,7 @@ class Dataset(object):
                       8 = Fit method
         :type index: integer
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         if index == 1:
@@ -2423,7 +2423,7 @@ class Dataset(object):
                       with the data from the calling gtk.Entry().
         :type index: integer
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         from datetime import datetime
@@ -2465,7 +2465,7 @@ class Dataset(object):
         :param treemodel: the gtk.TreeModel() for the gtk.TreeView().
         :type treemodel: gtk.TreeModel
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         model = cell.get_property('model')
@@ -2495,7 +2495,7 @@ class Dataset(object):
                         gtk.CellRendererText().
         :type convert: string
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         from datetime import datetime
@@ -2530,7 +2530,7 @@ class Dataset(object):
                            3 = Results Breakdown
         :type __page_num: integer
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         return False
@@ -2542,7 +2542,7 @@ class Dataset(object):
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -3542,7 +3542,7 @@ class Dataset(object):
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _util.set_cursor(self._app, gtk.gdk.WATCH)
@@ -3590,7 +3590,7 @@ class Dataset(object):
         :param __button: the gtk.Button() that called this function.
         :type __button: gtk.Button
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _query = "SELECT fld_record_id, fld_unit, fld_left_interval, \

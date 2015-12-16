@@ -507,7 +507,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
                                         method.
         :keyword data: any user-supplied data.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         gtk.main_quit()
