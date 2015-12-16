@@ -109,7 +109,7 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         self.connect('delete_event', self.destroy)
 
         # TODO: Move this method to the RTK.py file where common stuff is loaded.
-        self._load_globals()
+        #self._load_globals()
 
         self.show_all()
 
@@ -118,23 +118,23 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         Loads the globally used dictionaries from the RTK Site database.
         """
 
-        _query = "SELECT * FROM tbl_category \
-                  ORDER BY fld_category_noun ASC"
-        (_cats, _error_code, __) = self.site_dao.execute(_query, commit=False)
-        try:
-            _n_cats = len(_cats)
-        except TypeError:
-            _n_cats = 0
+        #_query = "SELECT * FROM tbl_category \
+        #          ORDER BY fld_category_noun ASC"
+        #(_cats, _error_code, __) = self.site_dao.execute(_query, commit=False)
+        #try:
+        #    _n_cats = len(_cats)
+        #except TypeError:
+        #    _n_cats = 0
 
-        _query = "SELECT * FROM tbl_subcategory \
-                  ORDER BY fld_category_id ASC"
-        (_subcats, _error_code, __) = self.site_dao.execute(_query,
-                                                            commit=False)
+        #_query = "SELECT * FROM tbl_subcategory \
+        #          ORDER BY fld_category_id ASC"
+        #(_subcats, _error_code, __) = self.site_dao.execute(_query,
+        #                                                    commit=False)
 
-        for i in range(_n_cats):
-            _conf.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
-            _conf.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
-                                              if x[0] == i + 1]
+        #for i in range(_n_cats):
+        #    _conf.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
+        #    _conf.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
+        #                                      if x[0] == i + 1]
 
         _query = "SELECT fld_manufacturers_noun, fld_location, fld_cage_code \
                   FROM tbl_manufacturers \
@@ -276,7 +276,7 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                         method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         gtk.main_quit()

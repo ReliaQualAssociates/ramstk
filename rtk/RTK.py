@@ -299,7 +299,7 @@ class RTK(object):
         Method to validate the license and the license expiration date.
 
         :return: False if successful or true if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Read the license file and compare to the product key in the site
@@ -346,6 +346,28 @@ class RTK(object):
         :rtype: bool
         """
 
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the component category and component sub-category lists.     #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        _query = "SELECT * FROM tbl_category \
+                  ORDER BY fld_category_noun ASC"
+        (_cats, _error_code, __) = self.site_dao.execute(_query, commit=False)
+        try:
+            _n_cats = len(_cats)
+        except TypeError:
+            _n_cats = 0
+
+        _query = "SELECT * FROM tbl_subcategory \
+                  ORDER BY fld_category_id ASC"
+        (_subcats, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+
+        for i in range(_n_cats):
+            _conf.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
+            _conf.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
+                                              if x[0] == i + 1]
+
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         _query = "SELECT DISTINCT fld_stakeholder \
                   FROM tbl_stakeholders \
                   ORDER BY fld_stakeholder ASC"
@@ -370,7 +392,9 @@ class RTK(object):
                                                             commit=False)
         _conf.RTK_FAILURE_PROBABILITY = _results
 
-        # Retrieve RPN categories.
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the RPN category lists.                                      #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         _query = "SELECT * FROM tbl_rpn_severity"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
@@ -394,16 +418,31 @@ class RTK(object):
 
         _conf.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 
-        # Retrieve the list of hazards to include in the hazard analysis
-        # worksheet.
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the hazards list.                                            #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         _query = "SELECT fld_category, fld_subcategory \
                   FROM tbl_hazards"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_HAZARDS = _results
 
-        #_conf.RTK_ACTIVE_ENVIRONMENTS
-        #_conf.RTK_DORMANT_ENVIRONMENTS
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the active and dormant environment lists.                    #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        _query = "SELECT fld_active_environ_code, fld_active_environ_noun \
+                  FROM tbl_active_environs"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_ACTIVE_ENVIRON = [[_environ[1], _environ[0]]
+                                   for _environ in _results]
+
+        _query = "SELECT fld_dormant_environ_noun \
+                  FROM tbl_dormant_environs"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_DORMANT_ENVIRON = [_environ[0] for _environ in _results]
+
         #_conf.RTK_QUALITY_LEVELS
         _query = "SELECT fld_criticality_id, fld_criticality_name, \
                          fld_criticality_cat \
@@ -422,11 +461,6 @@ class RTK(object):
                                                             commit=False)
         _conf.RTK_STATUS = _results
 
-        _query = "SELECT fld_user_lname, fld_user_fname FROM tbl_users"
-        (_results, _error_code, __) = self.site_dao.execute(_query,
-                                                            commit=False)
-        _conf.RTK_USERS = _results
-
         _query = "SELECT fld_validation_type_desc FROM tbl_validation_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
@@ -444,6 +478,9 @@ class RTK(object):
                                                             commit=False)
         _conf.RTK_USERS = [_user[0] for _user in _results]
 
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the program incident lists.                                  #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         _query = "SELECT fld_incident_cat_name FROM tbl_incident_category"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
@@ -473,6 +510,57 @@ class RTK(object):
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_DETECTION_METHODS = [_method[0] for _method in _results]
+
+        _query = "SELECT fld_manufacturers_noun, fld_location, fld_cage_code \
+                  FROM tbl_manufacturers \
+                  ORDER BY fld_manufacturers_noun ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_MANUFACTURERS = [[_man[0], _man[1], _man[2]]
+                                   for _man in _results]
+
+        _query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_HR_TYPE = [_type[0] for _type in _results]
+
+        _query = "SELECT fld_model_noun FROM tbl_calculation_model"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_HR_MODEL = [_model[0] for _model in _results]
+
+        _query = "SELECT fld_distribution_noun FROM tbl_distributions"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_S_DIST = [_dist[0] for _dist in _results]
+
+        _query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_MTTR_TYPE = [_type[0] for _type in _results]
+
+        _query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_COST_TYPE = [_type[0] for _type in _results]
+
+        _query = "SELECT fld_level_desc, fld_level_id FROM tbl_software_level"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_SW_LEVELS = [_level[0] for _level in _results]
+
+        _query = "SELECT fld_category_name, fld_category_id, \
+                         fld_category_description \
+                  FROM tbl_software_category"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_SW_APPLICATION = [_app[0] for _app in _results]
+
+        _query = "SELECT fld_phase_desc, fld_phase_id \
+                  FROM tbl_development_phase"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        _conf.RTK_SW_DEV_PHASES = [_phase[0] for _phase in _results]
 
         return False
 
