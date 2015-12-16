@@ -969,4 +969,4 @@ class TestHFGaAsFETModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.hazard_rate_model['piM'], 2.0)
         self.assertEqual(self.DUT.hazard_rate_model['piQ'], 0.5)
         self.assertEqual(self.DUT.hazard_rate_model['piE'], 2.0)
-        self.assertAlmostEqual(self.DUT.hazard_rate_active, 1.0197255E-06)
+        self.assertAlmostEqual(self.DUT.hazard_rate_active, 7.6479385E-07)

@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       TestEnvironment.py is part of The RTK Project
+#       rtk.tests.dao.TestDAO.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -39,7 +39,7 @@ class TestSQLite3Model(unittest.TestCase):
         Method to setup the test fixture for the Environment model class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self.DUT = _dao(_database)
 
     @attr(all=True, unit=True)

@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       TestTesting.py is part of The RTK Project
+#       rtk.tests.testing.TestTesting.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,9 +34,6 @@ class TestTestingModel(unittest.TestCase):
         """
         Setup the test fixture for the Testing class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -131,7 +128,7 @@ class TestTestingController(unittest.TestCase):
         Sets up the test fixture for the Testing class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Testing()

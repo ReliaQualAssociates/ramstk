@@ -85,7 +85,7 @@ class TestCSCIModel(unittest.TestCase):
         self.assertEqual(self.DUT.um, 0)
         self.assertEqual(self.DUT.wm, 0)
         self.assertEqual(self.DUT.xm, 0)
-        self.assertEqual(self.DUT.sm, 0.0)
+        self.assertEqual(self.DUT.sm, 1.0)
         self.assertEqual(self.DUT.df, 0.0)
         self.assertEqual(self.DUT.sr, 0.0)
         self.assertEqual(self.DUT.s2, 0.0)

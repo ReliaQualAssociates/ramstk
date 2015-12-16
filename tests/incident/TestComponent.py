@@ -37,9 +37,6 @@ class TestIncidentComponentModel(unittest.TestCase):
         Setup the test fixture for the IncidentComponent class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -68,8 +65,8 @@ class TestIncidentComponentModel(unittest.TestCase):
         self.assertEqual(self.DUT.use_cal_time, 0)
         self.assertEqual(self.DUT.ttf, 0.0)
         self.assertEqual(self.DUT.mode_type, 0)
-        self.assertEqual(self.DUT.relevant, 0)
-        self.assertEqual(self.DUT.chargeable, 0)
+        self.assertEqual(self.DUT.relevant, -1)
+        self.assertEqual(self.DUT.chargeable, -1)
 
     @attr(all=True, unit=True)
     def test_set_attributes(self):
@@ -120,8 +117,8 @@ class TestIncidentComponentModel(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (None, None, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, 0,
-                          0, [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                         (None, None, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, -1,
+                          -1, [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                               -1, -1, -1, -1, -1, -1, -1, -1],
                              [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]))
 
@@ -152,7 +149,7 @@ class TestIncidentComponentController(unittest.TestCase):
         Sets up the test fixture for the Incident Component class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Component()

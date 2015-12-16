@@ -1,0 +1,10 @@
+../rtk/gui
+../rtk/analyses/allocation/gui
+../rtk/analyses/fmea/gui
+../rtk/analyses/hazard/gui
+../rtk/analyses/pof/gui
+../rtk/analyses/similar_item/gui
+../rtk/hardware/gui
+../rtk/software/gui
+../rtk/survival/gui
+../rtk/testing/gui

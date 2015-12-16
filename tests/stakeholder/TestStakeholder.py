@@ -35,9 +35,6 @@ class TestStakeholderModel(unittest.TestCase):
         Setup the test fixture for the Stakeholder class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Model()
 
     @attr(all=True, unit=True)

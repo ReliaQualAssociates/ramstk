@@ -22,7 +22,7 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
-from software.Software import Model, Software
+from software.Software import Model, Software, _calculate_application_risk, _calculate_development_risk, _calculate_anomaly_risk, _calculate_traceability_risk, _calculate_quality_risk, _calculate_language_type_risk, _calculate_risk_reduction, _calculate_reliability_estimation_number
 
 
 class TestSoftwareModel(unittest.TestCase):
@@ -34,9 +34,6 @@ class TestSoftwareModel(unittest.TestCase):
         """
         Setup the test fixture for the Software class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -216,15 +213,15 @@ class TestSoftwareModel(unittest.TestCase):
 
         self.DUT.application_id = 1
 
-        self.assertFalse(self.DUT._calculate_application_risk(self.DUT))
+        self.assertFalse(_calculate_application_risk(self.DUT))
         self.assertEqual(self.DUT.a_risk, 1.0)
 
         self.DUT.application_id = 4
-        self.DUT._calculate_application_risk(self.DUT)
+        _calculate_application_risk(self.DUT)
         self.assertEqual(self.DUT.a_risk, 2.0)
 
         self.DUT.application_id = 5
-        self.DUT._calculate_application_risk(self.DUT)
+        _calculate_application_risk(self.DUT)
         self.assertEqual(self.DUT.a_risk, 3.0)
 
     @attr(all=True, unit=True)
@@ -237,21 +234,21 @@ class TestSoftwareModel(unittest.TestCase):
                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                     1]
-        self.assertFalse(self.DUT._calculate_development_risk(self.DUT))
+        self.assertFalse(_calculate_development_risk(self.DUT))
         self.assertEqual(self.DUT.d_risk, 0.5)
 
         self.DUT.lst_development = [0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1,
                                     0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0,
                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                                     1]
-        self.DUT._calculate_development_risk(self.DUT)
+        _calculate_development_risk(self.DUT)
         self.assertEqual(self.DUT.d_risk, 2.0)
 
         self.DUT.lst_development = [1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1,
                                     1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
                                     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                     0]
-        self.DUT._calculate_development_risk(self.DUT)
+        _calculate_development_risk(self.DUT)
         self.assertEqual(self.DUT.d_risk, 1.0)
 
     @attr(all=True, unit=True)
@@ -264,7 +261,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.lst_anomaly_mgmt = [[5, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0,
                                       1, 1, 1, 0, 1, 0]]
 
-        self.assertFalse(self.DUT._calculate_anomaly_risk(self.DUT))
+        self.assertFalse(_calculate_anomaly_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.am, 0.3684211)
         self.assertEqual(self.DUT.sa, 0.9)
 
@@ -273,7 +270,7 @@ class TestSoftwareModel(unittest.TestCase):
                                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
                                      1, 1, 0, 1, 0]]
 
-        self.assertFalse(self.DUT._calculate_anomaly_risk(self.DUT))
+        self.assertFalse(_calculate_anomaly_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.am, 0.1428571)
         self.assertEqual(self.DUT.sa, 0.9)
 
@@ -286,19 +283,19 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.phase_id = 2
         self.DUT.lst_traceability = [[1, 0]]
 
-        self.assertFalse(self.DUT._calculate_traceability_risk(self.DUT))
+        self.assertFalse(_calculate_traceability_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.st, 1.0)
 
         self.DUT.phase_id = 3
         self.DUT.lst_traceability = [[], [0, 0]]
 
-        self.assertFalse(self.DUT._calculate_traceability_risk(self.DUT))
+        self.assertFalse(_calculate_traceability_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.st, 1.1)
 
         self.DUT.phase_id = 4
         self.DUT.lst_traceability = [[], [], [1, 1]]
 
-        self.assertFalse(self.DUT._calculate_traceability_risk(self.DUT))
+        self.assertFalse(_calculate_traceability_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.st, 1.0)
 
     @attr(all=True, unit=True)
@@ -311,7 +308,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.lst_sftw_quality = [[1, 1, 1, 1, 1, 1, 0, 1, 5, 4, 4, 4, 1, 1,
                                       1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
-        self.assertFalse(self.DUT._calculate_quality_risk(self.DUT))
+        self.assertFalse(_calculate_quality_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.dr, 0.12)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
@@ -321,7 +318,7 @@ class TestSoftwareModel(unittest.TestCase):
                                       3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
                                       0, 0, 0]]
 
-        self.assertFalse(self.DUT._calculate_quality_risk(self.DUT))
+        self.assertFalse(_calculate_quality_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.dr, 0.2631579)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
@@ -334,7 +331,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.sloc = 150
         self.DUT.aloc = 15
 
-        self.assertFalse(self.DUT._calculate_language_type_risk(self.DUT))
+        self.assertFalse(_calculate_language_type_risk(self.DUT))
         self.assertEqual(self.DUT.hloc, 135)
         self.assertAlmostEqual(self.DUT.sl, 0.14)
 
@@ -356,11 +353,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
-        self.assertFalse(self.DUT.calculate_risk_reduction(self.DUT))
-        self.assertEqual(self.DUT.te, 4)
-        self.assertAlmostEqual(self.DUT.tm, 1.1)
-        self.assertAlmostEqual(self.DUT.tc, 1.2244897959183674)
-        self.assertAlmostEqual(self.DUT.t_risk, 5.387755102040817)
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2244898)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2244898)
 
     @attr(all=True, unit=True)
     def test_calculate_risk_reduction_budget(self):
@@ -380,11 +377,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
-        self.assertFalse(self.DUT.calculate_risk_reduction(self.DUT))
-        self.assertAlmostEqual(self.DUT.te, 3.9485542)
-        self.assertAlmostEqual(self.DUT.tm, 1.1)
-        self.assertAlmostEqual(self.DUT.tc, 1.2895069532237673)
-        self.assertAlmostEqual(self.DUT.t_risk, 5.6008569519749285)
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertAlmostEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2895070)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2895070)
 
     @attr(all=True, unit=True)
     def test_calculate_risk_reduction_schedule(self):
@@ -404,11 +401,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
-        self.assertFalse(self.DUT.calculate_risk_reduction(self.DUT))
-        self.assertAlmostEqual(self.DUT.te, 4.960000000000001)
-        self.assertAlmostEqual(self.DUT.tm, 1.1)
-        self.assertAlmostEqual(self.DUT.tc, 1.2895069532237673)
-        self.assertAlmostEqual(self.DUT.t_risk, 7.035549936788876)
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertAlmostEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2895070)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2895070)
 
     @attr(all=True, unit=True)
     def test_calculate_reliability_estimation_number(self):
@@ -427,7 +424,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.test_time_eot = 1.3
         self.DUT.t_risk = 7.035549936788876
 
-        self.assertFalse(self.DUT.calculate_reliability_estimation_number(self.DUT))
+        self.assertFalse(_calculate_reliability_estimation_number(self.DUT))
         self.assertAlmostEqual(self.DUT.ew, 1.8823529)
         self.assertAlmostEqual(self.DUT.ev, 81.1)
         self.assertAlmostEqual(self.DUT.ft1, 9.8387097)

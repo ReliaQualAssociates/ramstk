@@ -36,9 +36,6 @@ class TestGrowthModel(unittest.TestCase):
         Setup the test fixture for the Reliability Growth class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Model()
 
     @attr(all=True, unit=True)

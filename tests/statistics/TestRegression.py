@@ -174,7 +174,7 @@ class TestRegression(unittest.TestCase):
                  (u'', 143.687, 143.687, 143.687, 1, 1), (u'', 134.763, 134.763, 134.763, 1, 1),
                  (u'', 88.862, 88.862, 88.862, 1, 1), (u'', 143.918, 143.918, 143.918, 1, 1)]
 
-        _fit = regression(_data, 0.0, 10000000.0, 2)
+        _fit = regression(_data, 0.0, 10000000.0)
 
         # Test the parameter estimation.
         self.assertAlmostEqual(_fit[0][0], 0.0108368)
@@ -212,7 +212,7 @@ class TestRegression(unittest.TestCase):
                           ['', 90.0, 90.0, 10.0, 1, 1],
                           ['', 100.0, 100.0, 10.0, 1, 1]])
 
-        _fit = regression(_data, 0.0, 10000000.0, 2, dist='lognormal')
+        _fit = regression(_data, 0.0, 10000000.0, dist='lognormal')
 
         # Check the mean.
         self.assertAlmostEqual(_fit[0][0], 3.51585540,
@@ -297,7 +297,7 @@ class TestRegression(unittest.TestCase):
                  (u'', 0.0, 106.149, 106.149, 1, 1), (u'', 0.0, 104.320, 104.320, 1, 1),
                  (u'', 0.0, 115.681, 115.681, 1, 1), (u'', 0.0, 95.920, 95.920, 1, 1)]
 
-        _fit = regression(_data, 0.0, 10000000.0, 2, dist='normal')
+        _fit = regression(_data, 0.0, 10000000.0, dist='normal')
 
         # Check the mean.
         self.assertAlmostEqual(_fit[0][0], 100.5283533,
@@ -340,7 +340,7 @@ class TestRegression(unittest.TestCase):
                           ['', 0.0, 93.0, 93.0, 1, 1],
                           ['', 0.0, 120.0, 120.0, 1, 1]])
 
-        _fit = regression(_data, 0.0, 10000000.0, 2, dist='weibull')
+        _fit = regression(_data, 0.0, 10000000.0, dist='weibull')
 
         # Check the scale parameter (eta).
         self.assertAlmostEqual(_fit[0][0], 76.3454154,

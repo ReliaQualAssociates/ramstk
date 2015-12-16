@@ -23,6 +23,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from software.Unit import Model
+from software.Software import _calculate_anomaly_risk, _calculate_quality_risk
 
 
 class TestUnitModel(unittest.TestCase):
@@ -34,9 +35,6 @@ class TestUnitModel(unittest.TestCase):
         """
         Setup the test fixture for the Unit class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -132,7 +130,7 @@ class TestUnitModel(unittest.TestCase):
                                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
                                       1, 1, 0, 1, 0]]
 
-        self.assertFalse(self.DUT._calculate_anomaly_risk(self.DUT))
+        self.assertFalse(_calculate_anomaly_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.am, 0.1428571)
         self.assertEqual(self.DUT.sa, 0.9)
 
@@ -147,6 +145,6 @@ class TestUnitModel(unittest.TestCase):
                                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
                                       1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.assertFalse(self.DUT._calculate_quality_risk(self.DUT))
+        self.assertFalse(_calculate_quality_risk(self.DUT))
         self.assertAlmostEqual(self.DUT.dr, 0.5263158)
         self.assertAlmostEqual(self.DUT.sq, 1.0)
