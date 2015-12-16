@@ -5,11 +5,6 @@ Survival Package Work Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.survival.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,16 +36,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Plotting package.
-import matplotlib
-matplotlib.use('GTK')
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import configuration as _conf
@@ -56,7 +45,18 @@ except ImportError:
     import rtk.configuration as _conf
     import rtk.utilities as _util
     import rtk.widgets as _widg
-#from Assistants import AddSurvival, AddComponents, FilterSurvival, ImportSurvival
+import gui.gtk.Exponential
+import gui.gtk.Gaussian
+import gui.gtk.KaplanMeier
+import gui.gtk.LogNormal
+import gui.gtk.MCF
+import gui.gtk.NHPP
+import gui.gtk.Weibull
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -82,160 +82,121 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     :ivar dtcSurvival: the :py:class:`rtk.survival.Survival.Survival`
                          to use with this Work Book.
 
-    :ivar btnCalculate:
-    :ivar btnSave:
-    :ivar chkGroup:
-    :ivar chkParts:
-    :ivar cmbAssembly:
-    :ivar cmbConfType:
-    :ivar cmbConfMethod:
-    :ivar cmbDistribution:
-    :ivar cmbFitMethod:
-    :ivar cmbSource:
-    :ivar fraDataset:
-    :ivar fraNevadaChart:
-    :ivar lblFitMethod:
-    :ivar lblConfMethod:
-    :ivar tvwDataset:
-    :ivar tvwNevadaChart:
-    :ivar txtConfidence:
-    :ivar txtDescription:
-    :ivar txtStartTime:
-    :ivar txtEndTime:
-    :ivar txtRelPoints:
-    :ivar txtStartDate:
-    :ivar txtEndDate:
-    :ivar btnStartDate:
-    :ivar btnEndDate:
-    :ivar fraSummary:
-    :ivar fraNonParStats:
-    :ivar fraNonParEst:
-    :ivar fraParStats:
-    :ivar hpnAnalysisResults:
-    :ivar vpnAnalysisResults:
-    :ivar lblCumMTBF:
-    :ivar lblMTBFi:
-    :ivar lblCumFI:
-    :ivar lblFIi:
-    :ivar txtNumSuspensions:
-    :ivar txtNumFailures:
-    :ivar txtMTBF:
-    :ivar txtMTBFLL:
-    :ivar txtMTBFUL:
-    :ivar txtMTBFi:
-    :ivar txtMTBFiLL:
-    :ivar txtMTBFiUL:
-    :ivar txtHazardRate:
-    :ivar txtHazardRateLL:
-    :ivar txtHazardRateUL:
-    :ivar txtHazardRatei:
-    :ivar txtHazardRateiLL:
-    :ivar txtHazardRateiUL:
-    :ivar lblMHBResult:
-    :ivar lblZLPResult:
-    :ivar lblZLRResult:
-    :ivar lblRhoResult:
-    :ivar txtMHB:
-    :ivar txtChiSq:
-    :ivar txtMHBPValue:
-    :ivar txtLP:
-    :ivar txtZLPNorm:
-    :ivar txtZLPPValue:
-    :ivar txtLR:
-    :ivar txtZLRNorm:
-    :ivar txtZLRPValue:
-    :ivar txtRho:
-    :ivar txtRhoNorm:
-    :ivar txtRhoPValue:
-    :ivar lblScale:
-    :ivar lblShape:
-    :ivar lblLocation:
-    :ivar lblRowScale:
-    :ivar lblRowShape:
-    :ivar lblRowLocation:
-    :ivar lblColScale:
-    :ivar lblColShape:
-    :ivar lblColLocation:
-    :ivar lblModel:
-    :ivar lblAIC:
-    :ivar lblBIC:
-    :ivar lblMLE:
-    :ivar txtScale:
-    :ivar txtScaleLL:
-    :ivar txtScaleUL:
-    :ivar txtShape:
-    :ivar txtShapeLL:
-    :ivar txtShapeUL:
-    :ivar txtLocation:
-    :ivar txtLocationLL:
-    :ivar txtLocationUL:
-    :ivar txtShapeShape:
-    :ivar txtShapeScale:
-    :ivar txtShapeLocation:
-    :ivar txtScaleShape:
-    :ivar txtScaleScale:
-    :ivar txtScaleLocation:
-    :ivar txtLocationShape:
-    :ivar txtLocationScale:
-    :ivar txtLocationLocation:
-    :ivar txtAIC:
-    :ivar txtBIC:
-    :ivar txtMLE:
-    :ivar tvwNonParResults:
-    :ivar figFigure1:
-    :ivar pltPlot1:
-    :ivar axAxis1:
-    :ivar figFigure2:
-    :ivar pltPlot2:
-    :ivar axAxis2:
-    :ivar figFigure3:
-    :ivar pltPlot3:
-    :ivar axAxis3:
-    :ivar figFigure4:
-    :ivar pltPlot4:
-    :ivar axAxis4:
-    :ivar vbxPlot1:
-    :ivar vbxPlot2:
-    :ivar fraResultsByChildAssembly:
-    :ivar fraResultsByPart:
-    :ivar hpnResultsBreakdown:
-    :ivar tvwResultsByChildAssembly:
-    :ivar tvwResultsByPart:
-    :ivar btnAssign:
-    :ivar btnCancel:
+    :ivar gtk.Button btnCalculate: gtk.Button() to calculate the interarrival
+                                   times of the dataset.
+    :ivar gtk.Button btnSaveRecord: gtk.Button() to save the records in the
+                                    dataset.
+    :ivar gtk.Button btnStartDate: gtk.Button() to launch the calendar widget
+                                   for selecting the start date.
+    :ivar gtk.Button btnEndDate: gtk.Button() to launch the calendar widget
+                                 for selecting the end date.
+    :ivar gtk.Button btnAssign: gtk.Button() to assign analysis results to
+                                the selected assembly.
+    :ivar gtk.Button btnCancel: gtk.Button() to
+    :ivar gtk.CheckButton chkGroup: gtk.CheckButton() to indicate the analysis
+                                    results should be decomposed to child
+                                    assemblies.
+    :ivar gtk.CheckButton chkParts: gtk.CheckButton() to indicate the analysis
+                                    results should be decomposed to child
+                                    components.
+    :ivar gtk.ComboBox cmbAssembly: gtk.ComboBox() to select the affected
+                                    Assembly.
+    :ivar gtk.ComboBox cmbConfType: gtk.ComboBox() to select the type of
+                                    confidence bounds (lower one-sided,
+                                    two-sided, upper one-sided)
+    :ivar gtk.ComboBox cmbConfMethod: gtk.ComboBox() to select the method for
+                                      calculating the confidence bounds.
+    :ivar gtk.ComboBox cmbDistribution: gtk.ComboBox() to select the
+                                        statistical distribution to fit the
+                                        dataset to.
+    :ivar gtk.ComboBox cmbFitMethod: gtk.ComboBox() to select the method for
+                                     fitting the dataset to a statistical
+                                     distribution.
+    :ivar gtk.ComboBox cmbSource: gtk.ComboBox() to select the source of the
+                                  dataset.
+    :ivar gtk.TreeView tvwDataset: gtk.TreeView() to display the dataset
+                                   records.
+    :ivar gtk.TreeView tvwNevadaChart: gtk.TreeView() to display the dataset
+                                       records as a Nevada Chart.
+    :ivar gtk.TreeView tvwResultsByChildAssembly: gtk.TreeView() to display the
+                                                  decomposed analysis results
+                                                  to the next level child
+                                                  assemblies.
+    :ivar gtk.TreeView tvwResultsByPart: gtk.TreeView() to display the
+                                         decomposed analysis results to the
+                                         components.
+    :ivar gtk.Entry txtConfidence: gtk.Entry() to display the confidence level.
+    :ivar gtk.Entry txtDescription: gtk.Entry() to display the description of
+                                    the Survival analysis.
+    :ivar gtk.Entry txtStartTime: gtk.Entry() to display the first time at
+                                  which to calculate various characteristics of
+                                  a statistical model (e.g., hazard rate, mtbf,
+                                  reliability function).
+    :ivar gtk.Entry txtEndTime: gtk.Entry() to display the last time at which
+                                to calculate various characteristics of a
+                                statistical model (e.g., hazard rate, mtbf,
+                                reliability function).
+    :ivar gtk.Entry txtRelPoints: gtk.Entry() to display the number of points
+                                  to calculate various characteristics of a
+                                  statistical model (e.g., hazard rate, mtbf,
+                                  reliability function).
+    :ivar gtk.Entry txtStartDate: gtk.Entry() to display the first date to
+                                  include in the dataset used in the analysis.
+    :ivar gtk.Entry txtEndDate: gtk.Entry() to display the last date to
+                                include in the dataset used in the analysis.
+    :ivar gtk.Entry txtNumSuspensions: gtk.Entry() to display the number of
+                                       suspensions in the dataset.
+    :ivar gtk.Entry txtNumFailures: gtk.Entry() to display the number of
+                                    failures in the dataset.
 
     +----------+--------------------------------------------+
     | Position | Widget - Signal                            |
     +==========+============================================+
-    |     0    | chkGroup - 'toggled'                       |
+    |     0    | btnAddRecord - 'clicked'                   |
     +----------+--------------------------------------------+
-    |     1    | chkParts - 'toggled'                       |
+    |     1    | btnRemoveRecord - 'clicked'                |
     +----------+--------------------------------------------+
-    |     2    | cmbAssembly - 'changed'                    |
+    |     2    | btnCalculate - 'clicked'                   |
     +----------+--------------------------------------------+
-    |     3    | cmbConfType - 'changed'                    |
+    |     3    | btnSaveRecord - 'clicked'                  |
     +----------+--------------------------------------------+
-    |     4    | cmbConfMethod - 'changed'                  |
+    |     4    | cmbAssembly - 'changed'                    |
     +----------+--------------------------------------------+
-    |     5    | cmbDistribution - 'changed'                |
+    |     5    | cmbSource - 'changed'                      |
     +----------+--------------------------------------------+
-    |     6    | cmbFitMethod - 'changed'                   |
+    |     6    | cmbDistribution - 'changed'                |
     +----------+--------------------------------------------+
-    |     7    | cmbSource - 'changed'                      |
+    |     7    | cmbConfType - 'changed'                    |
     +----------+--------------------------------------------+
-    |     8    | txtConfidence - 'focus_out_event'          |
+    |     8    | cmbConfMethod - 'changed'                  |
     +----------+--------------------------------------------+
-    |     9    | txtDescription - 'focus_out_event'         |
+    |     9    | cmbFitMethod - 'changed'                   |
     +----------+--------------------------------------------+
-    |    10    | txtStartTime - 'focus_out_event'           |
+    |    10    | txtDescription - 'focus-out-event'         |
     +----------+--------------------------------------------+
-    |    11    | txtEndTime - 'focus_out_event'             |
+    |    11    | txtConfidence - 'focus-out-event'          |
     +----------+--------------------------------------------+
-    |    12    | txtRelPoints - 'focus_out_event'           |
+    |    12    | txtStartTime - 'focus-out-event'           |
     +----------+--------------------------------------------+
-    |    13    | txtStartDate - 'focus_out_event'           |
+    |    13    | txtEndTime - 'focus-out-event'             |
     +----------+--------------------------------------------+
-    |    14    | txtEndDate - 'focus_out_event'             |
+    |    14    | txtRelPoints - 'focus-out-event'           |
+    +----------+--------------------------------------------+
+    |    15    | txtStartDate - 'focus-out-event'           |
+    +----------+--------------------------------------------+
+    |    15    | txtStartDate - 'changed'                   |
+    +----------+--------------------------------------------+
+    |    16    | txtEndDate - 'focus-out-event'             |
+    +----------+--------------------------------------------+
+    |    16    | txtEndDate - 'changed'                     |
+    +----------+--------------------------------------------+
+    |    17    | btnStartDate - 'button-release-event'      |
+    +----------+--------------------------------------------+
+    |    18    | btnEndDate - 'button-release-event'        |
+    +----------+--------------------------------------------+
+    |    19    | chkGroup - 'toggled'                       |
+    +----------+--------------------------------------------+
+    |    20    | chkParts - 'toggled'                       |
     +----------+--------------------------------------------+
     """
 
@@ -255,6 +216,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Initialize private list attributes.
         self._lst_handler_id = []
+        self._lst_results = [gui.gtk.MCF.Results(),
+                             gui.gtk.KaplanMeier.Results(),
+                             gui.gtk.NHPP.Results(), gui.gtk.NHPP.Results(),
+                             gui.gtk.Exponential.Results(),
+                             gui.gtk.LogNormal.Results(),
+                             gui.gtk.Gaussian.Results(),
+                             gui.gtk.Weibull.Results()]
+        self._lst_plots = [gui.gtk.MCF.Plots(), gui.gtk.KaplanMeier.Plots(),
+                           gui.gtk.NHPP.Plots(), gui.gtk.NHPP.Plots(),
+                           gui.gtk.Exponential.Plots(),
+                           gui.gtk.LogNormal.Plots(), gui.gtk.Gaussian.Plots(),
+                           gui.gtk.Weibull.Plots()]
         self._lst_status = [_(u"Event"), _(u"Right Censored"),
                             _(u"Left Censored"), _(u"Interval Censored")]
 
@@ -263,6 +236,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._modulebook = modulebook
         self._model = None
         self._record_id = None
+        self._obj_results = None
+        self._obj_plots = None
 
         # Initialize public scalar attributes.
         # Create the Analyses Input page widgets.
@@ -271,6 +246,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.btnCalculate = _widg.make_button(width=35, image='calculate')
         self.btnSaveRecord = _widg.make_button(width=35, image='save')
 
+        self.chkGrouped = _widg.make_check_button(label=_(u"Failure data is "
+                                                          u"grouped"))
         self.chkGroup = _widg.make_check_button(label=_(u"Decompose results "
                                                         u"to children "
                                                         u"assemblies"))
@@ -283,14 +260,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbDistribution = _widg.make_combo()
         self.cmbFitMethod = _widg.make_combo()
         self.cmbSource = _widg.make_combo()
-
-        self.fraDataset = _widg.make_frame(label=_(u"Dataset Records"))
-        self.fraNevadaChart = _widg.make_frame(label=_(u"Nevada Chart "
-                                                       u"Records"))
-
-        self.lblFitMethod = _widg.make_label(_(u"Fit Method:"), 150, 25)
-        self.lblConfMethod = _widg.make_label(_(u"Confidence Method:"),
-                                              150, 25)
 
         self.tvwDataset = gtk.TreeView()
         self.tvwDataset.set_search_column(0)
@@ -315,133 +284,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.btnEndDate = _widg.make_button(height=25, width=25,
                                             label="...", image=None)
 
-        # Create the Analyses Results page widgets.
-        self.fraSummary = _widg.make_frame(label=_(u"Summary of Results"))
-        self.fraNonParStats = _widg.make_frame(label=_(u"Non-Parametric "
-                                                       u"Statistics"))
-        self.fraNonParEst = _widg.make_frame(label=_(u"Parameter Estimates"))
-        self.fraParStats = _widg.make_frame(label=_(u"Parameter Estimates"))
-
-        self.hpnAnalysisResults = gtk.HPaned()
-
-        self.vpnAnalysisResults = gtk.VPaned()
-
-        # Upper left quadrant widgets.
-        self.lblCumMTBF = _widg.make_label(_(u"Cumulative MTBF:"), width=-1)
-        self.lblMTBFi = _widg.make_label(_(u"Instantaneous MTBF:"), width=-1)
-        self.lblCumFI = _widg.make_label(_(u"Cumulative Failure Intensity:"),
-                                         width=-1)
-        self.lblFIi = _widg.make_label(_(u"Instantaneous Failure Intensity:"),
-                                       width=-1)
-
-        self.txtNumSuspensions = _widg.make_entry(width=50, editable=False)
-        self.txtNumFailures = _widg.make_entry(width=50, editable=False)
-
-        self.txtMTBF = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFLL = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFUL = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFi = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFiLL = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFiUL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRate = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateLL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateUL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRatei = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateiLL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateiUL = _widg.make_entry(width=100, editable=False)
-
-        # Lower left quadrant non-parametric widgets.
-        self.lblMHBResult = _widg.make_label(_(u""), width=150)
-        self.lblZLPResult = _widg.make_label(_(u""), width=150)
-        self.lblZLRResult = _widg.make_label(_(u""), width=150)
-        self.lblRhoResult = _widg.make_label(_(u""), width=150)
-
-        self.txtMHB = _widg.make_entry(width=100)
-        self.txtChiSq = _widg.make_entry(width=100)
-        self.txtMHBPValue = _widg.make_entry(width=100)
-        self.txtLP = _widg.make_entry(width=100)
-        self.txtZLPNorm = _widg.make_entry(width=100)
-        self.txtZLPPValue = _widg.make_entry(width=100)
-        self.txtLR = _widg.make_entry(width=100)
-        self.txtZLRNorm = _widg.make_entry(width=100)
-        self.txtZLRPValue = _widg.make_entry(width=100)
-        self.txtRho = _widg.make_entry(width=100)
-        self.txtRhoNorm = _widg.make_entry(width=100)
-        self.txtRhoPValue = _widg.make_entry(width=100)
-
-        # Lower left quadrant parametric widgets.
-        self.lblScale = _widg.make_label(_(u"Scale"), width=150)
-        self.lblShape = _widg.make_label(_(u"Shape"), width=150)
-        self.lblLocation = _widg.make_label(_(u"Location"), width=150)
-        self.lblRowScale = _widg.make_label(_(u"Scale"), width=150)
-        self.lblRowShape = _widg.make_label(_(u"Shape"), width=150)
-        self.lblRowLocation = _widg.make_label(_(u"Location"), width=150)
-        self.lblColScale = _widg.make_label(_(u"Scale"), width=150)
-        self.lblColShape = _widg.make_label(_(u"Shape"), width=150)
-        self.lblColLocation = _widg.make_label(_(u"Location"), width=150)
-        self.lblModel = _widg.make_label("", width=350)
-        self.lblAIC = _widg.make_label("AIC", width=150)
-        self.lblBIC = _widg.make_label("BIC", width=150)
-        self.lblMLE = _widg.make_label("MLE", width=150)
-
-        self.txtScale = _widg.make_entry(width=100, editable=False)
-        self.txtScaleLL = _widg.make_entry(width=100, editable=False)
-        self.txtScaleUL = _widg.make_entry(width=100, editable=False)
-        self.txtShape = _widg.make_entry(width=100, editable=False)
-        self.txtShapeLL = _widg.make_entry(width=100, editable=False)
-        self.txtShapeUL = _widg.make_entry(width=100, editable=False)
-        self.txtLocation = _widg.make_entry(width=100, editable=False)
-        self.txtLocationLL = _widg.make_entry(width=100, editable=False)
-        self.txtLocationUL = _widg.make_entry(width=100, editable=False)
-
-        self.txtShapeShape = _widg.make_entry(width=100, editable=False)
-        self.txtShapeScale = _widg.make_entry(width=100, editable=False)
-        self.txtShapeLocation = _widg.make_entry(width=100, editable=False)
-        self.txtScaleShape = _widg.make_entry(width=100, editable=False)
-        self.txtScaleScale = _widg.make_entry(width=100, editable=False)
-        self.txtScaleLocation = _widg.make_entry(width=100, editable=False)
-        self.txtLocationShape = _widg.make_entry(width=100, editable=False)
-        self.txtLocationScale = _widg.make_entry(width=100, editable=False)
-        self.txtLocationLocation = _widg.make_entry(width=100, editable=False)
-        self.txtAIC = _widg.make_entry(width=100, editable=False)
-        self.txtBIC = _widg.make_entry(width=100, editable=False)
-        self.txtMLE = _widg.make_entry(width=100, editable=False)
-
-        self.tvwNonParResults = gtk.TreeView()
-
-        # Create the Plot page widgets.
-        _height = 100 #(self._app.winWorkBook.height * 0.01) / 2.0
-        _width = 200 #(self._app.winWorkBook.width * 0.01) / 2.0
-        self.figFigure1 = Figure(figsize=(_width, _height))
-        self.pltPlot1 = FigureCanvas(self.figFigure1)
-        self.pltPlot1.mpl_connect('button_press_event', _widg.expand_plot)
-        self.axAxis1 = self.figFigure1.add_subplot(111)
-        self.figFigure2 = Figure(figsize=(_width, _height))
-        self.pltPlot2 = FigureCanvas(self.figFigure2)
-        self.pltPlot2.mpl_connect('button_press_event', _widg.expand_plot)
-        self.axAxis2 = self.figFigure2.add_subplot(111)
-        self.figFigure3 = Figure(figsize=(_width, _height))
-        self.pltPlot3 = FigureCanvas(self.figFigure3)
-        self.pltPlot3.mpl_connect('button_press_event', _widg.expand_plot)
-        self.axAxis3 = self.figFigure3.add_subplot(111)
-        self.figFigure4 = Figure(figsize=(_width, _height))
-        self.pltPlot4 = FigureCanvas(self.figFigure4)
-        self.pltPlot4.mpl_connect('button_press_event', _widg.expand_plot)
-        self.axAxis4 = self.figFigure4.add_subplot(111)
-        self.vbxPlot1 = gtk.VBox()
-        self.vbxPlot2 = gtk.VBox()
-
         # Create the analysis results breakdown page widgets.
-        self.fraResultsByChildAssembly = _widg.make_frame(label=_(u"Summary "
-                                                                  u"of "
-                                                                  u"Results "
-                                                                  u"By Child "
-                                                                  u"Assembly"))
-        self.fraResultsByPart = _widg.make_frame(label=_(u"Summary of Results "
-                                                         u"By Part"))
-
-        self.hpnResultsBreakdown = gtk.HPaned()
-
         self.tvwResultsByChildAssembly = gtk.TreeView()
         self.tvwResultsByPart = gtk.TreeView()
 
@@ -472,7 +315,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Assign')
         _button.connect('clicked', self._on_button_clicked, 4)
         _button.set_tooltip_text(_(u"Add a new Survival analysis to the open "
                                    u"RTK Program database for the selected "
@@ -484,7 +326,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Assign')
         _button.connect('clicked', self._on_button_clicked, 5)
         _button.set_tooltip_text(_(u"Remove the selected Survival analysis "
                                    u"from the open RTK Program database."))
@@ -496,19 +337,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert-assembly.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Assign')
         _button.connect('clicked', self._on_button_clicked, 6)
         _button.set_tooltip_text(_(u"Consolidates the records in the selected "
                                    u"data set."))
-        _toolbar.insert(_button, _position)
-        _position += 1
+        # _toolbar.insert(_button, _position)
+        # _position += 1
 
         # Calculate button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Calculate')
         _button.connect('clicked', self._on_button_clicked, 7)
         _button.set_tooltip_text(_(u"Analyzes the selected data set."))
         _toolbar.insert(_button, _position)
@@ -519,7 +358,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Save')
         _button.connect('clicked', self._on_button_clicked, 8)
         _button.set_tooltip_text(_(u"Saves the selected data set and it's "
                                    u"records."))
@@ -531,7 +369,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/import.png')
         _button.set_icon_widget(_image)
-        _button.set_name('Assign')
         #_button.connect('clicked', AssignMTBFResults, self._app)
         _button.set_tooltip_text(_(u"Assigns MTBF and hazard rate results to "
                                    u"the selected assembly."))
@@ -545,7 +382,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Method to create the Survival class gtk.Notebook().
         """
-
+# TODO: Add the results breakdown page.
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
@@ -559,21 +396,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self._create_analyses_input_page(_notebook)
-        self._create_analyses_results_page(_notebook)
-        self._create_plot_page(_notebook)
-        self._create_results_breakdown_page(_notebook)
+        #self._create_results_breakdown_page(_notebook)
+
+        for __, _dist in enumerate(self._lst_results):
+            _dist.create_results_page()
+        for __, _dist in enumerate(self._lst_plots):
+            _dist.create_plot_page()
 
         return _notebook
 
-    def _create_analyses_input_page(self, notebook):
+    def _create_analyses_input_page(self, notebook):    # pylint: disable=R0914
         """
-        Method to create the Dataset class gtk.Notebook() page for
-        displaying assessment inputs for the selected data set.
+        Method to create the Dataset class gtk.Notebook() page for displaying
+        assessment inputs for the selected data set.
 
-        :param rtk.Dataset self: the current instance of a Dataset class.
         :param gtk.Notebook notebook: the Dataset class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -611,9 +450,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.btnSaveRecord.connect('clicked', self._on_button_clicked, 3))
 
-        #self.tvwDataset.set_rubber_banding(True)
-        #self.tvwDataset.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwDataset)
@@ -621,31 +457,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hbox2.pack_start(_bbox, False, False)
         _hbox2.pack_end(_scrollwindow)
 
-        self.fraDataset.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.fraDataset.add(_hbox2)
-
         _fixed = gtk.Fixed()
-        #_label = _widg.make_label(_(u"Select dataset:"))
-        #_fixed.put(_label, 10, 5)
-        #_fixed.put(self.cmbDatasets, 135, 5)
-        #_fixed.put(self.btnAddDataset, 205, 5)
-        #_fixed.put(self.btnRemoveDataset, 240, 5)
+        _fixed.put(self.chkGrouped, 10, 5)
+        # _label = _widg.make_label(_(u"Select dataset:"))
+        # _fixed.put(_label, 10, 5)
+        # _fixed.put(self.cmbDatasets, 135, 5)
+        # _fixed.put(self.btnAddDataset, 205, 5)
+        # _fixed.put(self.btnRemoveDataset, 240, 5)
 
         _frame = gtk.Frame()
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_fixed)
 
         _vbox.pack_start(_frame, False, False)
-        _vbox.pack_end(self.fraDataset)
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwNevadaChart)
+        _frame = _widg.make_frame(label=_(u"Dataset Records"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_hbox2)
 
-        self.fraNevadaChart.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.fraNevadaChart.add(_scrollwindow)
-
-        _hbox.pack1(_vbox, True, True)
+        _vbox.pack_end(_frame, True, True)
+        _hbox.pack1(_vbox, True, False)
 
         _fixed = gtk.Fixed()
 
@@ -674,7 +505,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                     [_(u"Fisher Matrix")], [_(u"Likelihood")],
                     [_(u"Bootstrap")]]
         _widg.load_combo(self.cmbConfMethod, _results)
-        _results = [["MLE"], [_(u"Rank Regression")]]
+        _results = [["MLE"], [_(u"Regression")]]
         _widg.load_combo(self.cmbFitMethod, _results)
 
         # Create the Dataset treeview on the left side.
@@ -696,23 +527,33 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _column.set_visible(1)
         self.tvwDataset.append_column(_column)
 
-        _labels = [_(u"Event Date"), _(u"Affected\nHardware"), _(u"Left"),
-                   _(u"Right"), _(u"Interarrival\nTime"), _(u"Quantity")]
-        for i in range(len(_labels)):
-            _cell = gtk.CellRendererText()
+        _headings = [_(u"Event\nDate"), _(u"Affected\nHardware"),
+                     _(u"Left of\nInterval"), _(u"Right of\nInterval"),
+                     _(u"Interarrival\nTime"), _(u"Quantity")]
+        for _index, _heading in enumerate(_headings):
+            if _index == 1:
+                _cell = gtk.CellRendererCombo()
+                _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+                _cell.set_property('has-entry', False)
+                _cell.set_property('model', _cellmodel)
+                _cell.set_property('text-column', 0)
+            else:
+                _cell = gtk.CellRendererText()
             _cell.set_property('editable', 1)
             _cell.set_property('background', 'white')
-            _cell.connect('edited', self._on_cellrenderer_edited, i+1, _model)
+            _cell.connect('edited', self._on_cellrenderer_edited, _index + 1,
+                          _model)
             _column = gtk.TreeViewColumn()
-            _label = _widg.make_column_heading(_labels[i])
+            _label = _widg.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=i+1)
-            _column.set_sort_column_id(i+1)
+            _column.set_attributes(_cell, text=_index + 1)
+            _column.set_sort_column_id(_index + 1)
             self.tvwDataset.append_column(_column)
 
         _cell = gtk.CellRendererCombo()
         _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+        _cellmodel.append([""])
         _cellmodel.append([_(u"Event")])
         _cellmodel.append([_(u"Right Censored")])
         _cellmodel.append([_(u"Left Censored")])
@@ -732,8 +573,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Create the labels for the left half of the right side.
         _labels = [_(u"Assembly:"), _(u"Description:"), _(u"Data Source:"),
-                   _(u"Distribution:"), _(""), _(u"Confidence:"),
-                   _(u"Confidence Type:"), _("")]
+                   _(u"Distribution:"), _("Fit Method:"), _(u"Confidence:"),
+                   _(u"Confidence Type:"), _("Confidence Method:")]
         (_x_pos1, _y_pos1) = _widg.make_labels(_labels, _fixed, 5, 5)
         _x_pos1 += 55
 
@@ -784,6 +625,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                              u"select the start date."))
         self.btnEndDate.set_tooltip_text(_(u"Launches the calendar to select "
                                            u"the end date."))
+        self.chkGrouped.set_tooltip_text(_(u"Indicates whether the failure "
+                                           u"suspension data is grouped."))
         self.chkGroup.set_tooltip_text(_(u"When checked, the MTBF and failure "
                                          u"intensity results will be "
                                          u"distributed to all next-level "
@@ -806,11 +649,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed.put(self.txtDescription, _x_pos1, _y_pos1[1])
         _fixed.put(self.cmbSource, _x_pos1, _y_pos1[2])
         _fixed.put(self.cmbDistribution, _x_pos1, _y_pos1[3])
-        _fixed.put(self.lblFitMethod, 5, _y_pos1[4])
         _fixed.put(self.cmbFitMethod, _x_pos1, _y_pos1[4])
         _fixed.put(self.txtConfidence, _x_pos1, _y_pos1[5])
         _fixed.put(self.cmbConfType, _x_pos1, _y_pos1[6])
-        _fixed.put(self.lblConfMethod, 5, _y_pos1[7])
         _fixed.put(self.cmbConfMethod, _x_pos1, _y_pos1[7])
 
         # Place widgets on the right side.
@@ -821,8 +662,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed.put(self.btnStartDate, _x_pos2 + 105, _y_pos2[3])
         _fixed.put(self.txtEndDate, _x_pos2, _y_pos2[4])
         _fixed.put(self.btnEndDate, _x_pos2 + 105, _y_pos2[4])
-        _fixed.put(self.chkGroup, _x_pos2, _y_pos2[4] + 30)
-        _fixed.put(self.chkParts, _x_pos2, _y_pos2[4] + 60)
+        #_fixed.put(self.chkGroup, _x_pos2, _y_pos2[4] + 30)
+        #_fixed.put(self.chkParts, _x_pos2, _y_pos2[4] + 60)
 
         _fixed.show_all()
 
@@ -864,6 +705,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                   _util.date_select, self.txtStartDate)
         self.btnEndDate.connect('button-release-event', _util.date_select,
                                 self.txtEndDate)
+        self._lst_handler_id.append(
+            self.chkGrouped.connect('toggled', self._on_toggled, 17))
 
         self.chkGroup.hide()
         self.chkParts.hide()
@@ -881,437 +724,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _create_analyses_results_page(self, notebook):
-        """
-        Method to create the Dataset class gtk.Notebook() page for
-        displaying assessment results for the selected data set.
-
-        :param gtk.Notebook notebook: the Dataset class gtk.Notebook() widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        self.hpnAnalysisResults.pack1(self.vpnAnalysisResults)
-
-        self.fraSummary.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.vpnAnalysisResults.pack1(self.fraSummary)
-
-        self.fraNonParStats.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.vpnAnalysisResults.pack2(self.fraNonParStats)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwNonParResults)
-        self.fraNonParEst.add(_scrollwindow)
-        self.fraNonParEst.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        self.hpnAnalysisResults.pack2(self.fraNonParEst)
-
-        self.fraParStats.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        self.lblScale.set_use_markup(True)
-        self.lblShape.set_use_markup(True)
-        self.lblLocation.set_use_markup(True)
-        self.lblMHBResult.set_use_markup(True)
-        self.lblZLPResult.set_use_markup(True)
-        self.lblZLRResult.set_use_markup(True)
-        self.lblRhoResult.set_use_markup(True)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display analysis results.           #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        self.txtMHB.set_tooltip_markup(_(u"Displays the value of the "
-                                         u"MIL-HDBK test for trend."))
-        self.txtChiSq.set_tooltip_markup(_(u"Displays the chi square "
-                                           u"critical value for the "
-                                           u"MIL-HDBK test for trend."))
-        self.txtMHBPValue.set_tooltip_markup(_(u"Displays the p-value for "
-                                               u"the MIL-HDBK test for "
-                                               u"trend."))
-        self.txtLP.set_tooltip_markup(_(u"Displays the value of the "
-                                        u"LaPlace test for trend."))
-        self.txtZLPNorm.set_tooltip_markup(_(u"Displays the standard "
-                                             u"normal critical value for "
-                                             u"the LaPlace test for "
-                                             u"trend."))
-        self.txtZLPPValue.set_tooltip_markup(_(u"Displays the p-value for "
-                                               u"the Laplace test for "
-                                               u"trend."))
-        self.txtLR.set_tooltip_markup(_(u"Displays the value of the "
-                                        u"Lewis-Robinson test for trend."))
-        self.txtZLRNorm.set_tooltip_markup(_(u"Displays the standard "
-                                             u"normal critical value for "
-                                             u"the Lewis-Robinson test "
-                                             u"for trend."))
-        self.txtZLRPValue.set_tooltip_markup(_(u"Displays the p-value for "
-                                               u"the Lewis-Robinson test "
-                                               u"for trend."))
-        self.txtRho.set_tooltip_markup(_(u"Displays the value of the lag "
-                                         u"1 sample serial correlation "
-                                         u"coefficient."))
-        self.txtRhoNorm.set_tooltip_markup(_(u"Displays the standard "
-                                             u"normal critical value for "
-                                             u"the lag 1 sample serial "
-                                             u"correlation coefficient."))
-        self.txtRhoPValue.set_tooltip_markup(_(u"Displays the p-value for "
-                                               u"the lag 1 sample serial "
-                                               u"correlation "
-                                               u"coefficient."))
-        self.txtScale.set_tooltip_markup(_(u"Displays the point estimate "
-                                           u"of the scale parameter."))
-        self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the scale parameter."))
-        self.txtScaleUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the scale parameter."))
-        self.txtShape.set_tooltip_markup(_(u"Displays the point estimate "
-                                           u"of the shape parameter."))
-        self.txtShapeLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the shape parameter."))
-        self.txtShapeUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the shape parameter."))
-        self.txtLocation.set_tooltip_markup(_(u"Displays the point "
-                                              u"estimate of the location "
-                                              u"parameter."))
-        self.txtLocationLL.set_tooltip_markup(_(u"Displays the lower "
-                                                u"<span>\u03B1</span>% "
-                                                u"bound on the location "
-                                                u"parameter."))
-        self.txtLocationUL.set_tooltip_markup(_(u"Displays the upper "
-                                                u"<span>\u03B1</span>% "
-                                                u"bound on the location "
-                                                u"parameter."))
-        self.txtShapeShape.set_tooltip_markup(_(u"Displays the variance "
-                                                u"of the shape "
-                                                u"parameter."))
-        self.txtShapeScale.set_tooltip_markup(_(u"Displays the covariance "
-                                                u"of the shape and scale "
-                                                u"parameters."))
-        self.txtShapeLocation.set_tooltip_markup(_(u"Displays the "
-                                                   u"covariance of the "
-                                                   u"shape and location"
-                                                   u" parameters."))
-        self.txtScaleShape.set_tooltip_markup(_(u"Displays the covariance "
-                                                u"of the scale and shape "
-                                                u"parameters."))
-        self.txtScaleScale.set_tooltip_markup(_(u"Displays the variance "
-                                                u"of the scale "
-                                                u"parameter."))
-        self.txtScaleLocation.set_tooltip_markup(_(u"Displays the "
-                                                   u"covariance of the "
-                                                   u"scale and location "
-                                                   u"parameters."))
-        self.txtLocationShape.set_tooltip_markup(_(u"Displays the "
-                                                   u"covariance of the "
-                                                   u"location and shape "
-                                                   u"parameters."))
-        self.txtLocationScale.set_tooltip_markup(_(u"Displays the "
-                                                   u"covariance of the "
-                                                   u"location and scale "
-                                                   u"parameters."))
-        self.txtLocationLocation.set_tooltip_markup(_(u"Displays the "
-                                                      u"variance of the "
-                                                      u"location "
-                                                      u"parameter."))
-        self.txtAIC.set_tooltip_markup(_(u"Displays the value of Aikike's "
-                                         u"information criterion."))
-        self.txtBIC.set_tooltip_markup(_(u"Displays the value of Bayes' "
-                                         u"information criterion."))
-        self.txtMLE.set_tooltip_markup(_(u"Displays the likelihood "
-                                         u"value."))
-        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number "
-                                                    u"of suspensions in "
-                                                    u"the data set."))
-        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
-                                                 u"failures in the dat "
-                                                 u"set."))
-        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate "
-                                          u"of the MTBF."))
-        self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower "
-                                            u"<span>\u03B1</span>% bound "
-                                            u"on the MTBF."))
-        self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper "
-                                            u"<span>\u03B1</span>% bound "
-                                            u"on the MTBF."))
-        self.txtHazardRate.set_tooltip_markup(_(u"Displays the point "
-                                                u"estimate of the hazard "
-                                                u"rate."))
-        self.txtHazardRateLL.set_tooltip_markup(_(u"Displays the lower "
-                                                  u"<span>\u03B1</span>% "
-                                                  u"bound on the hazard "
-                                                  u"rate."))
-        self.txtHazardRateUL.set_tooltip_markup(_(u"Displays the upper "
-                                                  u"<span>\u03B1</span>% "
-                                                  u"bound on the hazard "
-                                                  u"rate."))
-        self.txtMTBFi.set_tooltip_markup(_(u"Displays the point estimate "
-                                           u"of the instantaneous MTBF."))
-        self.txtMTBFiLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the instantaneous "
-                                             u"MTBF."))
-        self.txtMTBFiUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% bound "
-                                             u"on the instantaneous "
-                                             u"MTBF."))
-        self.txtHazardRatei.set_tooltip_markup(_(u"Displays the point "
-                                                 u"estimate the "
-                                                 u"instantaneous failure "
-                                                 u"intensity."))
-        self.txtHazardRateiLL.set_tooltip_markup(_(u"Displays the lower "
-                                                   u"<span>\u03B1</span>% "
-                                                   u"bound on the "
-                                                   u"instantaneous "
-                                                   u"failure intensity."))
-        self.txtHazardRateiUL.set_tooltip_markup(_(u"Displays the upper "
-                                                   u"<span>\u03B1</span>% "
-                                                   u"bound on the "
-                                                   u"instantaneous "
-                                                   u"failure intensity."))
-
-        # Build the summary of results container.  The summary is used for
-        # all analyses.
-        _fixed = gtk.Fixed()
-        _labels = [_(u"Number of Suspensions:"), _(u"Number of Failures:"),
-                   _(u"LCL"), _(u"Estimate"), _(u"UCL")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels[0:2], _fixed, 5, 5)
-        _x_pos = max(_x_pos, self.lblCumMTBF.size_request()[0])
-        _x_pos = max(_x_pos, self.lblMTBFi.size_request()[0])
-        _x_pos = max(_x_pos, self.lblCumFI.size_request()[0])
-        _x_pos = max(_x_pos, self.lblFIi.size_request()[0])
-        _x_pos += 25
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-        self.fraSummary.add(_scrollwindow)
-
-        _fixed.put(self.txtNumSuspensions, _x_pos, _y_pos[0])
-        _fixed.put(self.txtNumFailures, _x_pos, _y_pos[1])
-
-        _label = _widg.make_label(_labels[2], width=150)
-        _fixed.put(_label, _x_pos, _y_pos[1] + 30)
-        _label = _widg.make_label(_labels[3], width=150)
-        _fixed.put(_label, _x_pos + 105, _y_pos[1] + 30)
-        _label = _widg.make_label(_labels[4], width=150)
-        _fixed.put(_label, _x_pos + 210, _y_pos[1] + 30)
-
-        _fixed.put(self.lblCumMTBF, 5, _y_pos[1] + 60)
-        _fixed.put(self.txtMTBFLL, _x_pos, _y_pos[1] + 60)
-        _fixed.put(self.txtMTBF, _x_pos + 105, _y_pos[1] + 60)
-        _fixed.put(self.txtMTBFUL, _x_pos + 210, _y_pos[1] + 60)
-        _fixed.put(self.lblModel, _x_pos + 315, _y_pos[1] + 60)
-
-        _fixed.put(self.lblMTBFi, 5, _y_pos[1] + 90)
-        _fixed.put(self.txtMTBFiLL, _x_pos, _y_pos[1] + 90)
-        _fixed.put(self.txtMTBFi, _x_pos + 105, _y_pos[1] + 90)
-        _fixed.put(self.txtMTBFiUL, _x_pos + 210, _y_pos[1] + 90)
-
-        _fixed.put(self.lblCumFI, 5, _y_pos[1] + 120)
-        _fixed.put(self.txtHazardRateUL, _x_pos, _y_pos[1] + 120)
-        _fixed.put(self.txtHazardRate, _x_pos + 105, _y_pos[1] + 120)
-        _fixed.put(self.txtHazardRateLL, _x_pos + 210, _y_pos[1] + 120)
-
-        _fixed.put(self.lblFIi, 5, _y_pos[1] + 150)
-        _fixed.put(self.txtHazardRateiLL, _x_pos, _y_pos[1] + 150)
-        _fixed.put(self.txtHazardRatei, _x_pos + 105, _y_pos[1] + 150)
-        _fixed.put(self.txtHazardRateiUL, _x_pos + 210, _y_pos[1] + 150)
-
-        # Build the non-parametric goodness of fit statistics container.
-        _fixed = gtk.Fixed()
-        _labels = [_(u"MIL\nHandbook"), _(u"Laplace"),
-                   _(u"Lewis\nRobinson"),
-                   _(u"Serial\nCorrelation\nCoefficient")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 30)
-        _x_pos += 20
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-        self.fraNonParStats.add(_scrollwindow)
-
-        _label = _widg.make_label(_(u"Test Statistic"), width=150)
-        _fixed.put(_label, _x_pos + 5, 5)
-        _fixed.put(self.txtMHB, _x_pos + 5, _y_pos[0])
-        _fixed.put(self.txtLP, _x_pos + 5, _y_pos[1])
-        _fixed.put(self.txtLR, _x_pos + 5, _y_pos[2])
-        _fixed.put(self.txtRho, _x_pos + 5, _y_pos[3])
-
-        _label = _widg.make_label(_(u"Critical Value"), width=150)
-        _fixed.put(_label, _x_pos + 105, 5)
-        _fixed.put(self.txtChiSq, _x_pos + 105, _y_pos[0])
-        _fixed.put(self.txtZLPNorm, _x_pos + 105, _y_pos[1])
-        _fixed.put(self.txtZLRNorm, _x_pos + 105, _y_pos[2])
-        _fixed.put(self.txtRhoNorm, _x_pos + 105, _y_pos[3])
-
-        _label = _widg.make_label(_(u"p-Value"), width=150)
-        _fixed.put(_label, _x_pos + 210, 5)
-        _fixed.put(self.txtMHBPValue, _x_pos + 210, _y_pos[0])
-        _fixed.put(self.txtZLPPValue, _x_pos + 210, _y_pos[1])
-        _fixed.put(self.txtZLRPValue, _x_pos + 210, _y_pos[2])
-        _fixed.put(self.txtRhoPValue, _x_pos + 210, _y_pos[3])
-
-        _fixed.put(self.lblMHBResult, _x_pos + 315, _y_pos[0])
-        _fixed.put(self.lblZLPResult, _x_pos + 315, _y_pos[1])
-        _fixed.put(self.lblZLRResult, _x_pos + 315, _y_pos[2])
-        _fixed.put(self.lblRhoResult, _x_pos + 315, _y_pos[3])
-
-        # Build the parametric statistics container.
-        _fixed = gtk.Fixed()
-        _x_pos = max(self.lblScale.size_request()[0],
-                     self.lblShape.size_request()[0])
-        _x_pos = max(_x_pos, self.lblLocation.size_request()[0])
-        _x_pos = max(_x_pos, self.lblRowScale.size_request()[0])
-        _x_pos = max(_x_pos, self.lblRowShape.size_request()[0])
-        _x_pos = max(_x_pos, self.lblRowLocation.size_request()[0])
-        _x_pos += 20
-
-        _y_inc = max(self.lblScale.size_request()[1], 25) + 5
-        _y_pos = [_y_inc]
-        _y_inc += max(self.lblShape.size_request()[1], 25) + 5
-        _y_pos.append(_y_inc)
-        _y_inc += max(self.lblLocation.size_request()[1], 25) + 5
-        _y_pos.append(_y_inc)
-        _y_inc += max(self.lblRowScale.size_request()[1], 55) + 5
-        _y_pos.append(_y_inc)
-        _y_inc += max(self.lblRowShape.size_request()[1], 25) + 5
-        _y_pos.append(_y_inc)
-        _y_inc += max(self.lblRowLocation.size_request()[1], 25) + 5
-        _y_pos.append(_y_inc)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-        self.fraParStats.add(_scrollwindow)
-
-        # Place the parameter estimates widgets.
-        _label = _widg.make_label(_(u"LCL"), width=150)
-        _fixed.put(_label, _x_pos, 5)
-        _label = _widg.make_label(_(u"Estimate"), width=150)
-        _fixed.put(_label, _x_pos + 105, 5)
-        _label = _widg.make_label(_(u"UCL"), width=150)
-        _fixed.put(_label, _x_pos + 210, 5)
-
-        _fixed.put(self.lblScale, 5, _y_pos[0])
-        _fixed.put(self.txtScaleLL, _x_pos, _y_pos[0])
-        _fixed.put(self.txtScale, _x_pos + 105, _y_pos[0])
-        _fixed.put(self.txtScaleUL, _x_pos + 210, _y_pos[0])
-
-        _fixed.put(self.lblShape, 5, _y_pos[1])
-        _fixed.put(self.txtShapeLL, _x_pos, _y_pos[1])
-        _fixed.put(self.txtShape, _x_pos + 105, _y_pos[1])
-        _fixed.put(self.txtShapeUL, _x_pos + 210, _y_pos[1])
-
-        _fixed.put(self.lblLocation, 5, _y_pos[2])
-        _fixed.put(self.txtLocationLL, _x_pos, _y_pos[2])
-        _fixed.put(self.txtLocation, _x_pos + 105, _y_pos[2])
-        _fixed.put(self.txtLocationUL, _x_pos + 210, _y_pos[2])
-
-        # Place the variance-covariance matrix.
-        _fixed.put(self.lblColScale, _x_pos, _y_pos[2] + 30)
-        _fixed.put(self.lblColShape, _x_pos + 105, _y_pos[2] + 30)
-        _fixed.put(self.lblColLocation, _x_pos + 210, _y_pos[2] + 30)
-
-        _fixed.put(self.lblRowScale, 5, _y_pos[3])
-        _fixed.put(self.txtScaleScale, _x_pos, _y_pos[3])
-        _fixed.put(self.txtScaleShape, _x_pos + 105, _y_pos[3])
-        _fixed.put(self.txtScaleLocation, _x_pos + 210, _y_pos[3])
-
-        _fixed.put(self.lblRowShape, 5, _y_pos[4])
-        _fixed.put(self.txtShapeScale, _x_pos, _y_pos[4])
-        _fixed.put(self.txtShapeShape, _x_pos + 105, _y_pos[4])
-        _fixed.put(self.txtShapeLocation, _x_pos + 210, _y_pos[4])
-
-        _fixed.put(self.lblRowLocation, 5, _y_pos[5])
-        _fixed.put(self.txtLocationScale, _x_pos, _y_pos[5])
-        _fixed.put(self.txtLocationShape, _x_pos + 105, _y_pos[5])
-        _fixed.put(self.txtLocationLocation, _x_pos + 210, _y_pos[5])
-
-        # Place the parametric goodness of fit statistics.
-        _fixed.put(self.lblAIC, 5, _y_pos[5] + 30)
-        _fixed.put(self.lblBIC, 5, _y_pos[5] + 60)
-        _fixed.put(self.lblMLE, 5, _y_pos[5] + 90)
-        _fixed.put(self.txtAIC, _x_pos, _y_pos[5] + 30)
-        _fixed.put(self.txtBIC, _x_pos, _y_pos[5] + 60)
-        _fixed.put(self.txtMLE, _x_pos, _y_pos[5] + 90)
-
-        _fixed.show_all()
-
-        self.lblModel.hide()
-
-        # Insert the tab.
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Analysis\nResults") + "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(_(u"Displays analysis results for the "
-                                  u"selected dataset."))
-        notebook.insert_page(self.hpnAnalysisResults, tab_label=_label,
-                             position=-1)
-
-        return False
-
-    def _create_plot_page(self, notebook):
-        """
-        Method to create the Dataset class gtk.Notebook() page for
-        displaying plots for the selected data set.
-
-        :param gtk.Notebook notebook: the Dataset class gtk.Notebook() widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = gtk.HBox()
-
-        _frame = _widg.make_frame(label=_(u"Survival Analysis Plots"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_hbox)
-        _frame.show_all()
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display general information.        #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox.pack_start(self.vbxPlot1)
-
-        self.vbxPlot1.pack_start(self.pltPlot1)
-        self.vbxPlot1.pack_start(self.pltPlot3)
-
-        _hbox.pack_start(self.vbxPlot2)
-
-        self.vbxPlot2.pack_start(self.pltPlot2)
-        self.vbxPlot2.pack_start(self.pltPlot4)
-
-        # Insert the page.
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>Analysis\nPlots</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(_(u"Displays survival analyses plots."))
-        notebook.insert_page(_frame, tab_label=_label, position=-1)
-
-        return False
-
     def _create_results_breakdown_page(self, notebook):
         """
-        Method to create the Dataset class gtk.Notebook() page for
-        displaying results decomposed to child assemblies and/or components
-        for the selected data set.
+        Method to create the Dataset class gtk.Notebook() page for displaying
+        results decomposed to child assemblies and/or components for the
+        selected data set.
 
         :param gtk.Notebook notebook: the Dataset class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -1323,17 +744,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwResultsByChildAssembly)
 
-        self.fraResultsByChildAssembly.add(_scrollwindow)
+        _frame = _widg.make_frame(_(u"Summary of Results By Child Assembly"))
+        _frame.add(_scrollwindow)
 
-        _hpaned.pack1(self.fraResultsByChildAssembly, True, True)
+        _hpaned.pack1(_frame, True, True)
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwResultsByPart)
 
-        self.fraResultsByPart.add(_scrollwindow)
+        _frame = _widg.make_frame(_(u"Summary of Results By Component"))
+        _frame.add(_scrollwindow)
 
-        _hpaned.pack2(self.fraResultsByPart, True, True)
+        _hpaned.pack2(_frame, True, True)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display general information.        #
@@ -1346,23 +769,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                gobject.TYPE_FLOAT, gobject.TYPE_STRING)
         self.tvwResultsByChildAssembly.set_model(_model)
 
-        _labels = [_(u"Hardware\nItem"), _(u"Number of\nFailures"), _(u""),
-                   _(u"MTBF\nLower Bound"), _(u"MTBF"),
-                   _(u"MTBF\nUpper Bound"),
-                   _(u"Failure Intensity\nLower Bound"),
-                   _(u"Failure\nIntensity"),
-                   _(u"Failure Intensity\nUpper Bound")]
-        for i in range(len(_labels)):
+        _headings = [_(u"Hardware\nItem"), _(u"Number of\nFailures"), _(u""),
+                     _(u"MTBF\nLower Bound"), _(u"MTBF"),
+                     _(u"MTBF\nUpper Bound"),
+                     _(u"Failure Intensity\nLower Bound"),
+                     _(u"Failure\nIntensity"),
+                     _(u"Failure Intensity\nUpper Bound")]
+        for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
             _column = gtk.TreeViewColumn()
-            _label = _widg.make_column_heading(_labels[i])
+            _label = _widg.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=i, background=9)
+            _column.set_attributes(_cell, text=_index, background=9)
             _column.set_clickable(True)
             _column.set_resizable(True)
-            _column.set_sort_column_id(i)
+            _column.set_sort_column_id(_index)
             self.tvwResultsByChildAssembly.append_column(_column)
 
         # Table of results allocated to each part.
@@ -1377,22 +800,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.tvwResultsByPart.set_headers_clickable(True)
         self.tvwResultsByPart.set_reorderable(True)
 
-        _labels = [_(u"Part\nNumber"), _(u"Number of\nFailures"), _(u""),
-                   _(u"MTBF\nLower Bound"), _(u"MTBF"),
-                   _(u"MTBF\nUpper Bound"),
-                   _(u"Failure Intensity\nLower Bound"),
-                   _(u"Failure\nIntensity"),
-                   _(u"Failure Intensity\nUpper Bound")]
-        for i in range(len(_labels)):
+        _headings = [_(u"Part\nNumber"), _(u"Number of\nFailures"), _(u""),
+                     _(u"MTBF\nLower Bound"), _(u"MTBF"),
+                     _(u"MTBF\nUpper Bound"),
+                     _(u"Failure Intensity\nLower Bound"),
+                     _(u"Failure\nIntensity"),
+                     _(u"Failure Intensity\nUpper Bound")]
+        for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
             _column = gtk.TreeViewColumn()
-            _label = _widg.make_column_heading(_labels[i])
+            _label = _widg.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=i, background=8)
+            _column.set_attributes(_cell, text=_index, background=8)
             _column.set_clickable(True)
-            _column.set_sort_column_id(i)
+            _column.set_sort_column_id(_index)
             self.tvwResultsByPart.append_column(_column)
 
         # Insert the tab.
@@ -1403,8 +826,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
         _label.set_tooltip_text(_(u"Displays analysis results for the "
-                                  u"selected data set broken down by "
-                                  u"child assembly and part number."))
+                                  u"selected data set broken down by child "
+                                  u"assembly and part number."))
         notebook.insert_page(_hpaned, tab_label=_label, position=-1)
 
         return False
@@ -1416,15 +839,38 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param model: the :py:class:`rtk.survival.Survival.Model` whose
                       attributes will be loaded into the display widgets.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
-
+# TODO: Load dataset records into a Nevada chart.
+# TODO: Load the results breakdown page.
         self._model = model
 
         self._load_analysis_inputs_page()
         self._load_dataset_records()
-        self._load_analysis_results_page()
 
+        # Remove existing results and plots pages.
+        if self._obj_results is not None:
+            self._notebook.remove_page(1)
+        if self._obj_plots is not None:
+            self._notebook.remove_page(1)
+
+        # Get the correct results and plots object for the selected s-model.
+        self._obj_results = self._lst_results[self._model.distribution_id - 1]
+        self._obj_plots = self._lst_plots[self._model.distribution_id - 1]
+
+        # Insert the s-model results and plots pages.
+        self._notebook.insert_page(self._obj_results,
+                                   tab_label=self._obj_results.lblPage,
+                                   position=1)
+        self._notebook.insert_page(self._obj_plots,
+                                   tab_label=self._obj_plots.lblPage,
+                                   position=2)
+
+        # Load the s-model results and plots pages.
+        self._obj_results.load_results_page(self._model)
+        self._obj_plots.load_plots(self._model)
+
+        self._notebook.show_all()
         self._notebook.set_current_page(0)
 
         return False
@@ -1434,29 +880,24 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Method to load the gtk.Widgets() on the analysis inputs page.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        # Load the gtk.ComboBox() with system hardware names.
+        self.cmbAssembly.handler_block(self._lst_handler_id[4])
+        _widg.load_combo(self.cmbAssembly, _conf.RTK_HARDWARE_LIST,
+                         simple=False)
+        self.cmbAssembly.handler_unblock(self._lst_handler_id[4])
 
-        _index = 0
-        _model = self.cmbAssembly.get_model()
-        _row = _model.get_iter_root()
-        while _row is not None:
-            if _model.get_value(_row, 1) == str(self._model.assembly_id):
-                break
-            else:
-                _row = _model.iter_next(_row)
-                _index += 1
+        # Load the dataset gtk.TreeView() column with system hardware names.
+        _column = self.tvwDataset.get_column(2)
+        _cell = _column.get_cell_renderers()[0]
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        for j in range(len(_conf.RTK_HARDWARE_LIST)):
+            _cellmodel.append([_conf.RTK_HARDWARE_LIST[j][0]])
 
-        self.cmbAssembly.set_active(_index)
-        if _index in [1, 2, 3, 4]:
-            self.chkGroup.show()
-            self.chkParts.show()
-        else:
-            self.chkGroup.hide()
-            self.chkParts.hide()
-
+        self.cmbAssembly.set_active(self._model.assembly_id)
         self.cmbSource.set_active(self._model.source)
         self.cmbDistribution.set_active(self._model.distribution_id)
         self.cmbConfType.set_active(self._model.confidence_type)
@@ -1464,9 +905,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbFitMethod.set_active(self._model.fit_method)
 
         self.txtDescription.set_text(self._model.description)
-        self.txtConfidence.set_text(str(self._model.confidence))
+        if self._model.confidence < 1.0:
+            _confidence = self._model.confidence * 100.0
+        else:
+            _confidence = self._model.confidence
+        self.txtConfidence.set_text(str(_confidence))
         self.txtStartTime.set_text(str(self._model.start_time))
-        self.txtEndTime.set_text(str(self._model.end_time))
+        self.txtEndTime.set_text(str(self._model.rel_time))
         self.txtRelPoints.set_text(str(self._model.n_rel_points))
 
         _start_date = _util.ordinal_to_date(self._model.start_date)
@@ -1474,286 +919,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtStartDate.set_text(str(_start_date))
         self.txtEndDate.set_text(str(_end_date))
 
-        #if self._nevada_chart != 0:
-        #    self._load_nevada_chart()
-
-        return False
-
-    def _load_analysis_results_page(self):
-        """
-        Method to load the gtk.Widgets() on the analysis results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-
-        # Clear the page.
-        for _child in self.hpnAnalysisResults.get_children():
-            self.hpnAnalysisResults.remove(_child)
-        for _child in self.vpnAnalysisResults.get_children():
-            self.vpnAnalysisResults.remove(_child)
-
-        # Hide widgets that are not used for all analyses.  These will be
-        # shown as appropriate for the analysis results being loaded.
-        self.lblMTBFi.hide()
-        self.lblFIi.hide()
-        self.lblRhoResult.hide()
-        self.txtMTBFiLL.hide()
-        self.txtMTBFi.hide()
-        self.txtMTBFiUL.hide()
-        self.txtHazardRateiLL.hide()
-        self.txtHazardRatei.hide()
-        self.txtHazardRateiUL.hide()
-        self.lblModel.hide()
-
-        # Hide the parameter estimate widgets.
-        self.lblLocation.hide()
-        self.txtLocation.hide()
-        self.txtLocationLL.hide()
-        self.txtLocationUL.hide()
-
-        # Hide the variance-covariance matrix widgets.
-        self.lblRowScale.hide()
-        self.lblRowShape.hide()
-        self.lblRowLocation.hide()
-        self.lblColScale.hide()
-        self.lblColShape.hide()
-        self.lblColLocation.hide()
-        self.txtScaleScale.hide()
-        self.txtShapeShape.hide()
-        self.txtLocationLocation.hide()
-        self.txtShapeScale.hide()
-        self.txtScaleShape.hide()
-        self.txtScaleLocation.hide()
-        self.txtLocationScale.hide()
-        self.txtShapeLocation.hide()
-        self.txtLocationShape.hide()
-
-        # Hide the non-parametric GoF statistic widgets.
-        self.lblRhoResult.hide()
-        self.txtRho.hide()
-        self.txtRhoNorm.hide()
-        self.txtRhoPValue.hide()
-
-        # Hide the parametric GoF statistic widgets.
-        self.lblAIC.hide()
-        self.lblBIC.hide()
-        self.lblMLE.hide()
-        self.txtAIC.hide()
-        self.txtBIC.hide()
-        self.txtMLE.hide()
-
-        self.hpnAnalysisResults.pack1(self.vpnAnalysisResults, True, True)
-        self.vpnAnalysisResults.pack1(self.fraSummary, True, True)
-
-        # Update summary information.
-        self.txtNumSuspensions.set_text(str(self._model.n_suspensions))
-        self.txtNumFailures.set_text(str(self._model.n_failures))
-
-        # Update mean cumulative function information.
-        if self._model.distribution_id == 1:
-            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
-            self.vpnAnalysisResults.pack2(self.fraNonParStats, True, True)
-
-            self.txtMHB.set_text(str(fmt.format(self._model.mhb)))
-            self.txtLP.set_text(str(fmt.format(self._model.lp)))
-            self.txtLR.set_text(str(fmt.format(self._model.lr)))
-
-            self.lblCumMTBF.set_markup(_(u"<span>MTBF:</span>"))
-            self.lblCumFI.set_markup(_(u"<span>Failure Intensity:</span>"))
-
-            # Show widgets specific to MCF.
-            self.lblRhoResult.show()
-            self.txtRho.show()
-            self.txtRhoNorm.show()
-            self.txtRhoPValue.show()
-
-        # Update Kaplan-Meier analysis information.
-        elif self._model.distribution_id == 2:
-            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
-
-            self.lblMTBFi.set_markup(_(u"<span>MTBF:</span>"))
-            self.lblFIi.set_markup(_(u"<span>Failure Intensity:</span>"))
-
-            # Show widgets necessary for Kaplan-Meier results.
-            self.lblMTBFi.show()
-            self.txtMTBFiLL.show()
-            self.txtMTBFi.show()
-            self.txtMTBFiUL.show()
-            self.lblFIi.show()
-            self.txtHazardRateiLL.show()
-            self.txtHazardRatei.show()
-            self.txtHazardRateiUL.show()
-
-            # Hide the cumulative MTBF and failure intensity results.
-            self.lblCumMTBF.hide()
-            self.lblCumFI.hide()
-            self.lblModel.hide()
-            self.txtMTBFLL.hide()
-            self.txtMTBF.hide()
-            self.txtMTBFUL.hide()
-            self.txtHazardRateLL.hide()
-            self.txtHazardRate.hide()
-            self.txtHazardRateUL.hide()
-
-        # Update NHPP Power Law analysis information.
-        elif self._model.distribution_id == 3:
-            self.hpnAnalysisResults.pack2(self.fraNonParEst, True, True)
-            self.vpnAnalysisResults.pack2(self.fraParStats, True, True)
-
-            _b_hat = str(fmt.format(self._model.scale[1]))
-            _alpha_hat = str(fmt.format(self._model.shape[1]))
-            self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = "
-                                       u"%s T<sup>%s</sup></span>") %
-                                     (_b_hat, _alpha_hat))
-
-            self.txtScaleLL.set_text(str(fmt.format(self._model.scale[0])))
-            self.txtScale.set_text(str(fmt.format(self._model.scale[1])))
-            self.txtScaleUL.set_text(str(fmt.format(self._model.scale[2])))
-            self.txtShapeLL.set_text(str(fmt.format(self._model.shape[0])))
-            self.txtShape.set_text(str(fmt.format(self._model.shape[1])))
-            self.txtShapeUL.set_text(str(fmt.format(self._model.shape[2])))
-
-            self.lblCumMTBF.set_markup(_(u"<span>Cumulative MTBF:</span>"))
-            self.lblMTBFi.set_markup(_(u"<span>Instantaneous MTBF:</span>"))
-            self.lblCumFI.set_markup(_(u"<span>Cumulative Failure Intensity:"
-                                       u"</span>"))
-            self.lblFIi.set_markup(_(u"<span>Instantaneous Failure Intensity:"
-                                     u"</span>"))
-            self.lblScale.set_markup(_(u"b"))
-            self.lblShape.set_markup(_(u"\u03B1"))
-
-            # Show labels necessary for NHPP Power Law results.
-            self.lblCumMTBF.show()
-            self.lblCumFI.show()
-            self.lblModel.show()
-            self.lblMTBFi.show()
-            self.lblFIi.show()
-
-            # Show gtk.Entry() necessary for NHPP Power Law results.
-            self.txtMTBFLL.show()
-            self.txtMTBF.show()
-            self.txtMTBFUL.show()
-            self.txtHazardRateLL.show()
-            self.txtHazardRate.show()
-            self.txtHazardRateUL.show()
-            self.txtMTBFiLL.show()
-            self.txtMTBFi.show()
-            self.txtMTBFiUL.show()
-            self.txtHazardRateiLL.show()
-            self.txtHazardRatei.show()
-            self.txtHazardRateiUL.show()
-
-        # Update parametric analysis information.
-        else:
-            self.vpnAnalysisResults.pack2(self.fraParStats, True, True)
-
-            self.txtScaleLL.set_text(str(fmt.format(self._model.scale[0])))
-            self.txtScale.set_text(str(fmt.format(self._model.scale[1])))
-            self.txtScaleUL.set_text(str(fmt.format(self._model.scale[2])))
-            self.txtShapeLL.set_text(str(fmt.format(self._model.shape[0])))
-            self.txtShape.set_text(str(fmt.format(self._model.shape[1])))
-            self.txtShapeUL.set_text(str(fmt.format(self._model.shape[2])))
-            self.txtLocationLL.set_text(
-                str(fmt.format(self._model.location[0])))
-            self.txtLocation.set_text(
-                str(fmt.format(self._model.location[1])))
-            self.txtLocationUL.set_text(
-                str(fmt.format(self._model.location[2])))
-            # Scale variance.
-            self.txtScaleScale.set_text(
-                str(fmt.format(self._model.variance[0])))
-            # Shape variance.
-            self.txtShapeShape.set_text(
-                str(fmt.format(self._model.variance[1])))
-            # Location variance.
-            self.txtLocationLocation.set_text(
-                str(fmt.format(self._model.variance[2])))
-            # Shape-scale covariance.
-            self.txtShapeScale.set_text(
-                str(fmt.format(self._model.covariance[0])))
-            # Scale-shape covariance.
-            self.txtScaleShape.set_text(
-                str(fmt.format(self._model.covariance[0])))
-            # Scale-location covariance.
-            self.txtScaleLocation.set_text(
-                str(fmt.format(self._model.covariance[1])))
-            # Location-scale covariance.
-            self.txtLocationScale.set_text(
-                str(fmt.format(self._model.covariance[1])))
-            # Shape-location covariance.
-            self.txtShapeLocation.set_text(
-                str(fmt.format(self._model.covariance[2])))
-            # Location-shape covariance.
-            self.txtLocationShape.set_text(
-                str(fmt.format(self._model.covariance[2])))
-            self.txtAIC.set_text(str(fmt.format(self._model.aic)))
-            self.txtBIC.set_text(str(fmt.format(self._model.bic)))
-            self.txtMLE.set_text(str(fmt.format(self._model.mle)))
-
-            self.lblMTBFi.set_markup(_(u"<span>MTBF:</span>"))
-            self.lblFIi.set_markup(_(u"<span>Failure Intensity:</span>"))
-            self.lblScale.set_markup(_(u"<span>Scale</span>"))
-            self.lblShape.set_markup(_(u"<span>Shape</span>"))
-            self.lblLocation.set_markup(_(u"<span></span>"))
-
-            self.vpnAnalysisResults.show_all()
-
-            # Show the instantaneous MTBF and failure intensity results.
-            self.lblMTBFi.show()
-            self.lblFIi.show()
-            self.txtMTBFiLL.show()
-            self.txtMTBFi.show()
-            self.txtMTBFiUL.show()
-            self.txtHazardRateiLL.show()
-            self.txtHazardRatei.show()
-            self.txtHazardRateiUL.show()
-
-            # Show the variance-covariance matrix for the parameters.
-            if self._model.distribution_id == 5:    # Exponential
-                self.lblShape.hide()
-                self.txtShape.hide()
-                self.txtShapeLL.hide()
-                self.txtShapeUL.hide()
-                self.lblRowShape.hide()
-                self.lblColShape.hide()
-                self.txtShapeShape.hide()
-                self.txtShapeScale.hide()
-                self.txtScaleShape.hide()
-            else:
-                self.lblShape.show()
-                self.txtShape.show()
-                self.txtShapeLL.show()
-                self.txtShapeUL.show()
-                self.lblRowShape.show()
-                self.lblColShape.show()
-                self.txtShapeShape.show()
-                self.txtShapeScale.show()
-                self.txtScaleShape.show()
-
-            self.lblRowLocation.hide()
-            self.lblColLocation.hide()
-            self.lblLocation.hide()
-            self.txtLocation.hide()
-            self.txtLocationLL.hide()
-            self.txtLocationUL.hide()
-            self.txtLocationLocation.hide()
-            self.txtScaleLocation.hide()
-            self.txtLocationScale.hide()
-            self.txtShapeLocation.hide()
-            self.txtLocationShape.hide()
-
-            # Hide the cumulative MTBF and failure intensity results.
-            self.lblCumMTBF.hide()
-            self.lblCumFI.hide()
-            self.txtMTBFLL.hide()
-            self.txtMTBF.hide()
-            self.txtMTBFUL.hide()
-            self.txtHazardRateLL.hide()
-            self.txtHazardRate.hide()
-            self.txtHazardRateUL.hide()
+        # if self._nevada_chart != 0:
+        #     self._load_nevada_chart()
 
         return False
 
@@ -1763,7 +930,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         gtk.TreeView().
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _model = self.tvwDataset.get_model()
@@ -1779,9 +946,134 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         for i in range(_n_events):
             _date = _util.ordinal_to_date(_results[i][2])
             _status = self._lst_status[_results[i][5]]
-            _model.append([_results[i][0], _date, _results[i][20],
+            _model.append([_results[i][0], _date, _results[i][1],
                            _results[i][3], _results[i][4], _results[i][7],
                            _results[i][6], _status])
+
+        return False
+
+    def _load_nevada_chart(self):
+        """
+        Method to load the Survival analysis records into the Nevada chart
+        gtk.TreeView().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        import pango
+        from datetime import date, datetime
+
+        _nevada = {}
+
+        _query = "SELECT DISTINCT(fld_ship_date), fld_number_shipped \
+                  FROM tbl_nevada_chart \
+                  WHERE fld_dataset_id=%d \
+                  ORDER BY fld_ship_date" % self.dataset_id
+        _ships = self._dao.execute_query(_query, commit=False)
+
+        _query = "SELECT fld_ship_date, fld_return_date, fld_number_returned \
+                  FROM tbl_nevada_chart \
+                  WHERE fld_dataset_id=%d \
+                  ORDER BY fld_ship_date, fld_return_date" % self.dataset_id
+        _returns = self._dao.execute_query(_query, commit=False)
+
+        try:
+            _n_periods = len(_ships)
+        except TypeError:
+            _n_periods = 0
+
+        try:
+            _n_returns = len(_returns)
+        except TypeError:
+            _n_returns = 0
+
+        # Create a dictionary with the following:
+        #
+        #     Key = shipment date (month-year).
+        #   Value = list with each position containing:
+        #       0 = the number of units shipped.
+        #       1 = dictionary of returned units where the key is the return
+        #           date and the value is the number of units returned.
+        #
+        #   {u'Jan-08': [32, {u'Mar-08': 0, u'Feb-08': 0}]}
+        #
+        # Create a list of GObject types to use for creating the gtkListStore()
+        # used to display the Nevada chart.
+        _gobject_types = [gobject.TYPE_STRING, gobject.TYPE_STRING,
+                          gobject.TYPE_INT, gobject.TYPE_STRING]
+        for i in range(_n_periods):
+            _date_ship = datetime.strftime(
+                date.fromordinal(_ships[i][0]), '%b-%y')
+            _nevada[_date_ship] = [_ships[i][1], {}]
+
+        _n_cols = 2
+        _headings = [_(u"Ship Date"), _(u"Number\nShipped")]
+        for i in range(_n_returns):
+            _date_ship = datetime.strftime(
+                date.fromordinal(_returns[i][0]), '%b-%y')
+            _date_return = datetime.strftime(
+                date.fromordinal(_returns[i][1]), '%b-%y')
+            _nevada[_date_ship][1][_date_return] = _returns[i][2]
+            _n_cols = max(_n_cols, len(_nevada[_date_ship][1]) + 2)
+            if _date_return not in _headings:
+                _headings.append(_date_return)
+                _gobject_types.append(gobject.TYPE_INT)
+                _gobject_types.append(gobject.TYPE_STRING)
+
+        # Create the gtk.ListStore() and columns for the Nevada chart
+        # gtk.TreeView().
+        j = 0
+        _model = gtk.ListStore(*_gobject_types)
+        for i in range(_n_cols):
+            _cell = gtk.CellRendererText()       # Value to be displayed.
+            _cell.set_property('editable', 0)
+            _cell.set_property('wrap-width', 250)
+            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            _cell.set_property('xalign', 0.5)
+            _cell.set_property('yalign', 0.1)
+
+            _column = gtk.TreeViewColumn("")
+            _label = gtk.Label(_column.get_title())
+            _label.set_line_wrap(True)
+            _label.set_alignment(xalign=0.5, yalign=0.5)
+            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.set_markup("<span weight='bold'>" +
+                              _headings[i] + "</span>")
+            _label.set_use_markup(True)
+            _label.show_all()
+            _column.set_widget(_label)
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, text=j, background=j + 1)
+            _column.set_resizable(True)
+            _column.set_alignment(0.5)
+
+            _cell = gtk.CellRendererText()       # Cell background color.
+            _cell.set_property('visible', False)
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, text=j + 1)
+
+            self.tvwNevadaChart.append_column(_column)
+
+            j += 2
+
+        self.tvwNevadaChart.set_model(_model)
+
+        # Load the Nevada chart gtk.ListStore() with the data.
+        _date_ship = _nevada.keys()
+        _date_return = _headings[2:]
+        for _index, _sdate in enumerate(_date_ship):
+            _returns = _nevada[_date_ship[_index]][1].keys()
+            _data = [_date_ship[_index], 'light gray',
+                     _nevada[_date_ship[_index]][0], 'light gray']
+            for _jndex, _rdate in enumerate(_date_return):
+                if _date_return[_jndex] not in _returns:
+                    _data.append(0)
+                    _data.append('light gray')
+                else:
+                    _data.append(_nevada[_date_ship[_index]][1][_date_return[_jndex]])
+                    _data.append('#FFFFFF')
+            _model.append(_data)
 
         return False
 
@@ -1790,35 +1082,68 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Updates the Work Book widgets with changes to the Survival data model
         attributes.  Called by other views when the Survival data model
         attributes are edited via their gtk.Widgets().
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        self.cmbCategory.handler_block(self._lst_handler_id[2])
-        self.cmbCategory.set_active(self._model.survival_category)
-        self.cmbCategory.handler_unblock(self._lst_handler_id[2])
+        self.cmbAssembly.handler_block(self._lst_handler_id[4])
+        self.cmbAssembly.set_active(self._model.assembly_id)
+        self.cmbAssembly.handler_unblock(self._lst_handler_id[4])
 
-        self.cmbType.handler_block(self._lst_handler_id[3])
-        self.cmbType.set_active(self._model.survival_type)
-        self.cmbType.handler_unblock(self._lst_handler_id[3])
+        self.cmbSource.handler_block(self._lst_handler_id[5])
+        self.cmbSource.set_active(self._model.source)
+        self.cmbSource.handler_unblock(self._lst_handler_id[5])
 
-        self.cmbCriticality.handler_block(self._lst_handler_id[4])
-        self.cmbCriticality.set_active(self._model.criticality)
-        self.cmbCriticality.handler_unblock(self._lst_handler_id[4])
+        self.cmbDistribution.handler_block(self._lst_handler_id[6])
+        self.cmbDistribution.set_active(self._model.distribution_id)
+        self.cmbDistribution.handler_unblock(self._lst_handler_id[6])
 
-        self.cmbStatus.handler_block(self._lst_handler_id[5])
-        self.cmbStatus.set_active(self._model.status)
-        self.cmbStatus.handler_unblock(self._lst_handler_id[5])
+        self.cmbConfType.handler_block(self._lst_handler_id[7])
+        self.cmbConfType.set_active(self._model.confidence_type)
+        self.cmbConfType.handler_unblock(self._lst_handler_id[7])
 
-        self.cmbLifeCycle.handler_block(self._lst_handler_id[9])
-        self.cmbLifeCycle.set_active(self._model.life_cycle)
-        self.cmbLifeCycle.handler_unblock(self._lst_handler_id[9])
+        self.cmbConfMethod.handler_block(self._lst_handler_id[8])
+        self.cmbConfMethod.set_active(self._model.confidence_method)
+        self.cmbConfMethod.handler_unblock(self._lst_handler_id[8])
 
-        self.cmbDetectionMethod.handler_block(self._lst_handler_id[14])
-        self.cmbDetectionMethod.set_active(self._model.detection_method)
-        self.cmbDetectionMethod.handler_unblock(self._lst_handler_id[14])
+        self.cmbFitMethod.handler_block(self._lst_handler_id[9])
+        self.cmbFitMethod.set_active(self._model.fit_method)
+        self.cmbFitMethod.handler_unblock(self._lst_handler_id[9])
 
-        self.txtTest.set_text(_util.none_to_string(self._model.test))
-        self.txtTestCase.set_text(_util.none_to_string(self._model.test_case))
-        self.txtExecutionTime.set_text(str(self._model.execution_time))
+        self.txtDescription.handler_block(self._lst_handler_id[10])
+        self.txtDescription.set_text(self._model.description)
+        self.txtDescription.handler_unblock(self._lst_handler_id[10])
+
+        self.txtConfidence.handler_block(self._lst_handler_id[11])
+        if self._model.confidence < 1.0:
+            _confidence = self._model.confidence * 100.0
+        else:
+            _confidence = self._model.confidence
+        self.txtConfidence.set_text(str(_confidence))
+        self.txtConfidence.handler_unblock(self._lst_handler_id[11])
+
+        self.txtStartTime.handler_block(self._lst_handler_id[12])
+        self.txtStartTime.set_text(str(self._model.start_time))
+        self.txtStartTime.handler_unblock(self._lst_handler_id[12])
+
+        self.txtEndTime.handler_block(self._lst_handler_id[13])
+        self.txtEndTime.set_text(str(self._model.rel_time))
+        self.txtEndTime.handler_unblock(self._lst_handler_id[13])
+
+        self.txtRelPoints.handler_block(self._lst_handler_id[14])
+        self.txtRelPoints.set_text(str(self._model.n_rel_points))
+        self.txtRelPoints.handler_unblock(self._lst_handler_id[14])
+
+        self.txtStartDate.handler_block(self._lst_handler_id[15])
+        _start_date = _util.ordinal_to_date(self._model.start_date)
+        self.txtStartDate.set_text(str(_start_date))
+        self.txtStartDate.handler_unblock(self._lst_handler_id[15])
+
+        self.txtEndDate.handler_block(self._lst_handler_id[16])
+        _end_date = _util.ordinal_to_date(self._model.end_date)
+        self.txtEndDate.set_text(str(_end_date))
+        self.txtEndDate.handler_unblock(self._lst_handler_id[16])
 
         return False
 
@@ -1849,14 +1174,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 3:
             self._modulebook.request_save_records(self._model.survival_id)
         elif index == 4:
-            print "Add Survival analysis"
+            self._modulebook.request_add_survival(self._model.revision_id)
         elif index == 5:
-            print "Remove Survival analysis"
-        elif index == 6:
-            print "Consolidate dataset"
+            self._modulebook.request_delete_survival(self._model.survival_id)
+        #elif index == 6:
+        #    self._modulebook.request_consolidate_dataset(
+        #        self._model.survival_id)
         elif index == 7:
             self._model.estimate_parameters()
-            self._load_analysis_results_page()
+            self.load(self._model)
         elif index == 8:
             self._modulebook.request_save_survival(self._model.survival_id)
 
@@ -1884,33 +1210,33 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param gtk.TreeModel model: the gtk.TreeModel() the edited
                                     gtk.CellRenderer() belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _record = self._model.dicRecords[self._record_id]
 
         if position == 2:
             model[path][position] = new_text
-            #_record[0] = new_text
+            _record.assembly_id = new_text
         elif position == 3:
-            model[path][position] = float(new_text)
-            _record[2] = float(new_text)
+            _record.left_interval = float(new_text)
+            model[path][position] = _record.left_interval
         elif position == 4:
-            model[path][position] = float(new_text)
-            _record[3] = float(new_text)
+            _record.right_interval = float(new_text)
+            model[path][position] = _record.right_interval
         elif position == 5:
-            model[path][position] = float(new_text)
-            _record[6] = float(new_text)
+            _record.interarrival_time = float(new_text)
+            model[path][position] = _record.interarrival_time
         elif position == 6:
-            model[path][position] = int(new_text)
-            _record[5] = int(new_text)
+            _record.n_failures = int(new_text)
+            model[path][position] = _record.n_failures
         elif position == 7:
             _model = cell.get_property('model')
             _new_text = _model.get_value(new_text, 0)
-            model[path][position] = _new_text
-            for j in (i for i,x in enumerate(self._lst_status)
+            for j in (i for i, x in enumerate(self._lst_status)
                       if x == _new_text):
-                _record[4] = int(j)
+                _record.status = int(j)
+            model[path][position] = _record.status
 
         return False
 
@@ -1930,29 +1256,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if index == 4:                    # Assembly ID
             self._model.assembly_id = combo.get_active()
-        #    _new_text = _conf.RTK_INCIDENT_TYPE[combo.get_active() - 1]
+        #    _new_text = _conf.RTK_HARDWARE_LIST[combo.get_active() - 1][0]
         #    self._modulebook.update(index, _new_text)
         elif index == 5:                    # Source of records
             self._model.source = combo.get_active()
-        #    _new_text = _conf.RTK_INCIDENT_CRITICALITY[combo.get_active() - 1]
-        #    self._modulebook.update(index + 2, _new_text)
+            self._modulebook.update(index - 2, self._model.source)
         elif index == 6:                    # Statistical distribution
             self._model.distribution_id = combo.get_active()
-        #    _new_text = _conf.RTK_INCIDENT_STATUS[combo.get_active() - 1]
-        #    self._modulebook.update(index + 4, _new_text)
+            self._modulebook.update(index - 2, self._model.distribution_id)
         elif index == 7:                   # Confidence type
             self._model.confidence_type = combo.get_active()
+            self._modulebook.update(index - 1, self._model.confidence_type)
         elif index == 8:                   # Confidence method
             self._model.confidence_method = combo.get_active()
-        #    _row = combo.get_active_iter()
-        #    try:
-        #        self._model.software_id = int(_model.get_value(_row, 1))
-        #    except ValueError:
-        #        self._model.software_id = 0
+            self._modulebook.update(index - 1, self._model.confidence_method)
         elif index == 9:                   # Fit method
             self._model.fit_method = combo.get_active()
-        #    _new_text = _conf.RTK_USERS[combo.get_active() - 1]
-        #    self._modulebook.update(index + 10, _new_text)
+            self._modulebook.update(index - 1, self._model.fit_method)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1975,41 +1295,60 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 10:
-            _new_text = _util.date_to_ordinal(entry.get_text())
             self._model.description = entry.get_text()
-            #self._modulebook.update(index + 18, _new_text)
+            self._modulebook.update(index - 8, self._model.description)
         elif index == 11:
             _new_text = float(entry.get_text())
+            if _new_text > 1.0:
+                _new_text = _new_text / 100.0
             self._model.confidence = _new_text
-            #self._modulebook.update(index - 7, _new_text)
+            self._modulebook.update(index - 6, self._model.confidence)
         elif index == 12:
-            _new_text = float(entry.get_text())
-            self._model.start_time = _new_text
-            #self._modulebook.update(index - 7, _new_text)
+            self._model.start_time = float(entry.get_text())
+            self._modulebook.update(index + 22, self._model.start_time)
         elif index == 13:
-            _new_text = float(entry.get_text())
-            self._model.end_time = _new_text
-            #self._modulebook.update(index - 5, _new_text)
+            self._model.rel_time = float(entry.get_text())
+            self._modulebook.update(index - 4, self._model.rel_time)
         elif index == 14:
-            _new_text = int(entry.get_text())
-            self._model.n_rel_points = _new_text
-            #self._modulebook.update(index - 5, _new_text)
+            self._model.n_rel_points = int(entry.get_text())
+            self._modulebook.update(index - 4, self._model.n_rel_points)
         elif index == 15:
-            _new_text = _util.date_to_ordinal(entry.get_text())
-            self._model.start_date = _new_text
-            #self._modulebook.update(index - 5, _new_text)
+            self._model.start_date = _util.date_to_ordinal(entry.get_text())
+            self._modulebook.update(index + 20, self._model.start_date)
         elif index == 16:
-            _new_text = _util.date_to_ordinal(entry.get_text())
-            self._model.end_date = _new_text
-            #self._modulebook.update(index - 5, _new_text)
+            self._model.end_date = _util.date_to_ordinal(entry.get_text())
+            self._modulebook.update(index + 20, self._model.end_date)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
         return False
 
+    def _on_toggled(self, button, index):
+        """
+        Method to respond to gtk.CheckButton() toggled signals.
+
+        :param gtk.CheckButton button: the gtk.CheckButton() that called this
+                                       method.
+        :param int index: the index in the handler ID list of the callback
+                          signal associated with the gtk.CheckButton() that
+                          called this method.
+        :return: False if successful or True is an error is encountered.
+        :rtype: bool
+        """
+
+        button.handler_block(self._lst_handler_id[index])
+
+        if index == 17:
+            self._model.grouped = button.get_active()
+
+        button.handler_unblock(self._lst_handler_id[index])
+
+        return False
+
     def _on_record_select(self, treeview, __path, __column):
         """
-        Method to respond to the Dataset record gtk.TreeView() mouse clicks.
+        Method to respond to the Survival dataset record gtk.TreeView() mouse
+        clicks.
 
         :param gtk.TreeView treeview: the Dataset gtk.TreeView().
         :param str __path: the path in the Dataset gtk.TreeView() of the
@@ -2017,7 +1356,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param gtk.TreeColumn __column: the selected column in the Dataset
                                         gtk.TreeView().
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = treeview.get_selection().get_selected()

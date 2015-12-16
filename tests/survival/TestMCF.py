@@ -15,6 +15,8 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
+from collections import OrderedDict
+
 import unittest
 from nose.plugins.attrib import attr
 import numpy as np
@@ -24,6 +26,7 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
+from survival.Record import Model as Record
 from analyses.survival.MCF import *
 
 
@@ -32,14 +35,28 @@ class TestMeanCumulativeFunction(unittest.TestCase):
     Class for testing the MCF data model class.
     """
 
-    #@attr(all=True, unit=True)
-    #def test_format_data(self)
-    #    """
-    #    (TestMCF) format_data should return a dictionary of lists on success
-    #    """
+    @attr(all=True, unit=True)
+    def test_format_data(self):
+        """
+        (TestMCF) format_data should return a dictionary of lists on success
+        """
 
-    #    _data =
-    #    format_data(_data)
+        _data = {}
+        _assembly_id = [0, 0, 0, 0, 1, 1, 1]
+        _fail_times = [56.7, 116.4, 152.1, 198.4, 233.3, 286.1, 322.9]
+        _status = [0, 0, 0, 1, 0, 0, 1]
+        _n_failures = [1, 1, 1, 1, 1, 2, 1]
+        for i in range(len(_fail_times)):
+            _record = Record()
+            _record.assembly_id = _assembly_id[i]
+            _record.right_interval = _fail_times[i]
+            _record.status = _status[i]
+            _record.n_failures = _n_failures[i]
+            _data[i] = _record
+
+        self.assertEqual(format_data(_data),
+                         {0: [56.7, 116.4, 152.1, '198.4+'],
+                          1: [233.3, 286.1, 286.1, '322.9+']})
 
     @attr(all=True, unit=True)
     def test_d_matrix(self):

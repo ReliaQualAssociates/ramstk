@@ -4,11 +4,6 @@ Contains functions for performing calculations associated with the Crow-AMSAA
 model.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.statistics.CrowAMSAA.py is part of The RTK Project
@@ -17,12 +12,18 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add NLS support.
 import gettext
-_ = gettext.gettext
 
-# Import mathematical functions.
-import numpy as np
+# Import modules for mathematics.
 from math import log
+import numpy as np
 from scipy.optimize import fsolve
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 # These are the Cramer-von Mises critical values for Crow-AMSAA GoF tests.
@@ -101,18 +102,19 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
     .. hlist::
     :columns: 1
 
-        * cumulative failure intensity = lambda_c = lambda * T^(beta - 1)
-        * cumulative MTBF = MTBFc = (1 / lambda) * T^(1- beta)
-        * instantaneous failure intensity = lambda_i = lambda * beta * T^(beta - 1)
+        * cumulative failure intensity = lambda_c = alpha * T^(beta - 1)
+        * cumulative MTBF = MTBFc = (1 / alpha) * T^(1- beta)
+        * instantaneous failure intensity = lambda_i = alpha * beta * T^(beta - 1)
         * instantaneous MTBF = MTBFi = 1 / lambda_i
 
-    :param int n_failures: list of failure counts at each failure time.
-    :param float fail_times: list of failure times.
+    :param list n_failures: list of failure counts at each failure time.
+    :param list fail_times: list of failure times.
     :param float t_star: the termination time for time terminated (Type I)
                          tests.
     :param bool grouped: indicates whether or not the failure times are
                          exact (default) or grouped.
-    :return: estimates of the Crow-AMSAA parameters
+    :return: (_alpha_hat, _beta_hat); estimates of the Crow-AMSAA scale
+             parameter and shape parameter
     :rtype: tuple
     """
 
@@ -170,10 +172,12 @@ def calculate_crow_amsaa_mean(est_time, alpha, beta): # pylint: disable=C0103
     Crow-AMSAA model used is:
 
     .. math::
-    cumulative mean &= mean_c = (1 / lambda) * T^((1 - beta) \\
-    instantaneous mean &= mean_i = 1 / (lambda * beta * T^(beta - 1))
+    cumulative mean &= mean_c = (1 / alpha) * T^((1 - beta) \\
+    instantaneous mean &= mean_i = 1 / (alpha * beta * T^(beta - 1))
 
     :param float est_time: the time at which to calculate the means.
+    :param float alpha: the scale parameter used to calculate the means.
+    :param float beta: the shape parameter used to calculate the means.
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -213,7 +217,7 @@ def calculate_cramer_vonmises(n_failures, fail_times, beta, t_star=0.0,
     """
 
     _m = len(fail_times)
-    _N = sum(n_failures)
+    _N = np.sum(n_failures)
 
     # If the test was failure terminated (Type II), set the termination
     # time equal to the last failure time and unbias the beta estimate.
@@ -264,7 +268,7 @@ def calculate_crow_amsaa_chi_square(n_failures, fail_times, beta, ttt,
         _chi_square = 2.0 * _N / beta
 
     elif grouped:
-        _X = [0.0] + fail_times
+        fail_times = [0.0] + fail_times
 
         _theta = [_N * (fail_times[i] - fail_times[i - 1]) / ttt
                   for i in range(1, len(fail_times))]

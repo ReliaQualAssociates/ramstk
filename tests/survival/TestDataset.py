@@ -38,7 +38,7 @@ class TestDatasetModel(unittest.TestCase):
 
         self.DUT = Model()
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_create(self):
         """
         (TestDataset) __init__ should return an Dataset model
@@ -50,7 +50,7 @@ class TestDatasetModel(unittest.TestCase):
         self.assertEqual(self.DUT.survival_id, None)
         self.assertEqual(self.DUT.dataset_id, None)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_set_attributes(self):
         """
         (TestDataset) set_attributes should return a 0 error code on success
@@ -66,7 +66,7 @@ class TestDatasetModel(unittest.TestCase):
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_set_attributes_wrong_type(self):
         """
         (TestDataset) set_attributes should return a 10 error code when passed a wrong data type
@@ -82,7 +82,7 @@ class TestDatasetModel(unittest.TestCase):
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_set_attributes_missing_index(self):
         """
         (TestDataset) set_attributes should return a 40 error code when too few items are passed
@@ -98,7 +98,7 @@ class TestDatasetModel(unittest.TestCase):
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 1000)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_get_attributes(self):
         """
         (TestDataset) get_attributes should return a tuple of attribute values
@@ -106,7 +106,7 @@ class TestDatasetModel(unittest.TestCase):
 
         self.assertEqual(self.DUT.get_attributes(), (None, None, {}))
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_sanity(self):
         """
         (TestDataset) get_attributes(set_attributes(values)) == values
@@ -130,7 +130,7 @@ class TestDatasetModel(unittest.TestCase):
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _results)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_tbf(self):
         """
         (TestDataset) calculate_tbf should return False on success with the current record's tbf = 238.0

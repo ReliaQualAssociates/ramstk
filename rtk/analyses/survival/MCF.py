@@ -34,25 +34,25 @@ def format_data(data):
 
     _data = {}
     _times = []
-    _unit = data[min(data.keys())][0]
+    _assembly_id = data[data.keys()[0]].assembly_id
 
-    for _value in data.values():
-        if _value[0] == _unit:
-            for i in range(_value[5]):
-                if _value[4] == 0:          # Event
-                    _times.append(_value[3])
-                elif _value[4] == 1:        # Right censored
-                    _times.append(str(_value[3]) + '+')
+    for _record in data.values():
+        if _record.assembly_id == _assembly_id:
+            for i in range(_record.n_failures):
+                if _record.status == 0:     # Event
+                    _times.append(_record.right_interval)
+                elif _record.status == 1:   # Right censored
+                    _times.append(str(_record.right_interval) + '+')
         else:
-            _data[_unit] = _times
-            _unit = _value[0]
-            for i in range(_value[5]):
-                if _value[4] == 0:
-                    _times = [_value[3]]
-                elif _value[4] == 1:
-                    _times = [str(_value[3]) + '+']
+            _data[_assembly_id] = _times
+            _assembly_id = _record.assembly_id
+            for i in range(_record.n_failures):
+                if _record.status == 0:
+                    _times = [_record.right_interval]
+                elif _record.status == 1:
+                    _times = [str(_record.right_interval) + '+']
 
-    _data[_unit] = _times
+    _data[_record.assembly_id] = _times
 
     return _data
 
@@ -216,16 +216,14 @@ def mcf_variance(delta, d, delta_dot, d_bar):
     """
     Function to calculate the variance of d(tk) for the MCF.
 
-    :param delta: the matrix of indicator variables for operating systems.
-    :type delta: numpy matrix
-    :param d: the matrix of the number of system recurrences.
-    :type d: numpy matrix
-    :param delta_dot: an array containing the risk population at each observed
-                      failure time.
-    :type delta_dot: numpy array
-    :param d_bar: an array containing the fraction of the risk population that
-                  failed at each observed failure time.
-    :type d_bar: numpy array
+    :param numpy matrix delta: the matrix of indicator variables for operating
+                               systems.
+    :param numpy matrix d: the matrix of the number of system recurrences.
+    :param numpy array delta_dot: an array containing the risk population at
+                                  each observed failure time.
+    :param numpy array d_bar: an array containing the fraction of the risk
+                              population that failed at each observed failure
+                              time.
     :return: _variance_mu; an array containing the variance of the MCF at each
              observed failure time.
     :rtype: numpy array
@@ -253,8 +251,7 @@ def mil_handbook(times):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    :param times: an array of failure times,
-    :type times: numpy array
+    :param numpy array times: an array of failure times.
     :return: _mhb; the MIL-HDBK test statistic
     :rtype: float
     """
@@ -278,8 +275,7 @@ def laplace(times, N):
     The null hypothesis is rejected if the statistic exceeds the critical value
     for a chosen significance level.
 
-    :param times: an array of failure times,
-    :type times: numpy array
+    :param numpy array times: an array of failure times.
     :param int N: the total number of failures.
     :return: _zlp; the Laplace test statistic
     :rtype: float
@@ -361,6 +357,9 @@ def serial_correlation(times, N, k=1):
     _temp1 = sum([(t - _t_bar)**2.0 for t in _tbf[:_r - k]])
     _temp2 = sum([(t - _t_bar)**2.0 for t in _tbf[k:]])
 
-    _rho = sqrt(N - k) * _numerator / sqrt(_temp1 * _temp2)
+    try:
+        _rho = sqrt(N - k) * _numerator / sqrt(_temp1 * _temp2)
+    except ZeroDivisionError:
+        _rho = 0.0
 
     return _rho

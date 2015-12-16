@@ -31,14 +31,6 @@ class TestDuane(unittest.TestCase):
     Class for testing the Crow-AMSAA model functions.
     """
 
-    def setUp(self):
-        """
-        Setup the test fixture for the Crow-AMSAA model functions.
-        """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
     @attr(all=True, unit=True)
     def test_calculate_crow_amsaa_parameters_exact(self):
         """

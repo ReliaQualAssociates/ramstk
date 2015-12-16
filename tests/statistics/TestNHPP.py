@@ -79,34 +79,31 @@ class TestNHPP(unittest.TestCase):
 
         # Check the value of beta and alpha for exact failure times using MLE
         # and 90% two-sided confidence bounds.
-        self.assertEqual(power_law(self.CROW_EXACT_FAILS,
-                                   self.CROW_EXACT_TIMES,
-                                   3, fitmeth=1, conftype=3, alpha=0.90)[0],
-                         [0.13928340594382735,
-                          0.42394221488057504,
-                          1.2903690884062031])
+        _results = power_law(self.CROW_EXACT_FAILS, self.CROW_EXACT_TIMES, 3,
+                             fitmeth=1, conftype=3, alpha=0.90)[0]
+        self.assertAlmostEqual(_results[0], 0.1392834)
+        self.assertAlmostEqual(_results[1], 0.4239422)
+        self.assertAlmostEqual(_results[2], 1.2903691)
 
-        self.assertEqual(power_law(self.CROW_EXACT_FAILS,
-                                   self.CROW_EXACT_TIMES,
-                                   3, fitmeth=1, conftype=3, alpha=0.90)[1],
-                         [0.46736466889703443,
-                          0.6142103999317297,
-                          0.8071949817571866])
+        _results = power_law(self.CROW_EXACT_FAILS, self.CROW_EXACT_TIMES, 3,
+                             fitmeth=1, conftype=3, alpha=0.90)[1]
+        self.assertAlmostEqual(_results[0], 0.4673647)
+        self.assertAlmostEqual(_results[1], 0.6142104)
+        self.assertAlmostEqual(_results[2], 0.8071950)
 
     @attr(all=True, unit=True)
     def test_nhpp_power_law_mle_model_fisher_bounds_alpha_big(self):
         """
-        (TestNHPP) power_law should return a list of parameter estimates when using MLE and Fisher bounds when passing an confidence level > 1.
+        (TestNHPP) power_law should return a list of parameter estimates when using MLE and Fisher bounds when passing a confidence level > 1.
         """
 
         # Check the value of beta and alpha for exact failure times using MLE
         # and 90% two-sided confidence bounds.
-        self.assertEqual(power_law(self.CROW_EXACT_FAILS,
-                                   self.CROW_EXACT_TIMES,
-                                   3, fitmeth=1, conftype=3, alpha=90)[0],
-                         [0.13928340594382735,
-                          0.42394221488057504,
-                          1.2903690884062031])
+        _results = power_law(self.CROW_EXACT_FAILS, self.CROW_EXACT_TIMES, 3,
+                             fitmeth=1, conftype=3, alpha=90)[0]
+        self.assertAlmostEqual(_results[0], 0.1392834)
+        self.assertAlmostEqual(_results[1], 0.4239422)
+        self.assertAlmostEqual(_results[2], 1.2903691)
 
     @attr(all=True, unit=True)
     def test_nhpp_power_law_mle_model_crow_bounds(self):
@@ -155,14 +152,14 @@ class TestNHPP(unittest.TestCase):
         # times using regression and 90% two-sided confidence bounds.
         self.assertEqual(power_law(self.DUANE_FAILS, self.DUANE_TIMES,
                                    3, fitmeth=2, conftype=3, alpha=0.90)[0],
-                         [1.4557332904506253,
-                          1.6306995597672382,
-                          1.826695227531624])
+                         [0.45881779062955202,
+                          0.51396363200664490,
+                          0.57573751589493760])
         self.assertEqual(power_law(self.DUANE_FAILS, self.DUANE_TIMES,
                                    3, fitmeth=2, conftype=3, alpha=0.90)[1],
-                         [1.9311200103035631,
-                          1.945662956921184,
-                          1.9602059035388051])
+                         [0.37222330715953877,
+                          0.3867662537771597,
+                          0.40130920039478057])
 
     @attr(all=True, unit=False)
     def test_nhpp_loglinear_model_fisher_bounds(self):

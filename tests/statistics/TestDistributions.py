@@ -23,7 +23,10 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-from analyses.statistics.Distributions import Exponential, Gaussian, LogNormal, Weibull, time_between_failures
+from analyses.statistics.Distributions import Exponential, Gaussian, \
+                                              LogNormal, Weibull, \
+                                              time_between_failures
+from survival.Record import Model as Record
 
 
 class TestExponentialDistribution(unittest.TestCase):
@@ -201,11 +204,11 @@ class TestExponentialDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        np.testing.assert_array_equal(_fit, [[0.010623949536239687, 0.0],
-                                             [1.3218705847856434e-06, 0.0, 0.0],
-                                             [-354.46019736384773,
-                                              710.92039472769545,
-                                              712.38083502783411]])
+        self.assertAlmostEqual(_fit[0][0], 0.01062395)
+        self.assertAlmostEqual(_fit[1][0], 1.1530528E-06)
+        self.assertAlmostEqual(_fit[2][0], -354.4601974)
+        self.assertAlmostEqual(_fit[2][1], 710.9203947)
+        self.assertAlmostEqual(_fit[2][2], 712.3808350)
 
     @attr(all=True, unit=True)
     def test_maximum_likelihood_estimate_interval_censored(self):
@@ -227,8 +230,8 @@ class TestExponentialDistribution(unittest.TestCase):
 
         _para = [0.0106235]
 
-        _probs = self.DUT.theoretical_distribution(np.array(self.EXP_TEST),
-                                                   _para)
+        _data = [x[1] for x in self.EXP_TEST]
+        _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
                                        [0.01669728, 0.02079404, 0.02941086,
                                         0.03832994, 0.04412548, 0.05311054,
@@ -452,11 +455,14 @@ class TestGaussianDistribution(unittest.TestCase):
         _fit = self.DUT.maximum_likelihood_estimate(self.NORM_TEST, 0.0,
                                                     10000000.0)
 
-        self.assertAlmostEqual(_fit, [[100.52835329999998, 10.544214011396397],
-                                      [0.013433998289642346,
-                                       0.00016325951747108081, 0.0],
-                                      [-4925.9514001639964, 9853.9028003279927,
-                                       9855.3632406281322]])
+        self.assertAlmostEqual(_fit[0][0], 100.5283533)
+        self.assertAlmostEqual(_fit[0][1], 10.5442140)
+        self.assertAlmostEqual(_fit[1][0], 0.01223150)
+        self.assertAlmostEqual(_fit[1][1], -0.001286301)
+        self.assertAlmostEqual(_fit[1][2], 0.0001352713)
+        self.assertAlmostEqual(_fit[2][0], -4925.9514001639964)
+        self.assertAlmostEqual(_fit[2][1], 9853.9028003279927)
+        self.assertAlmostEqual(_fit[2][2], 9855.3632406281322)
 
     @attr(all=True, unit=False)
     def test_maximum_likelihood_estimate_interval_censored(self):
@@ -479,45 +485,45 @@ class TestGaussianDistribution(unittest.TestCase):
         (TestGaussianDistribution) theoretical_distribution should return a numpy array of floats on success.
         """
 
-        _para = [3.51585540, 0.9693628]
+        _para = [100.0, 10.0]
 
-        _probs = self.DUT.theoretical_distribution(np.array(self.NORM_TEST),
-                                                   _para)
+        _data = [x[2] for x in self.NORM_TEST]
+        _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
-                                       [0.77301140, 0.79636301, 0.80551501,
-                                        0.80624920, 0.81735471, 0.81942240,
-                                        0.82257652, 0.82605078, 0.83608092,
-                                        0.83922062, 0.84005099, 0.84163904,
-                                        0.84435988, 0.84479835, 0.84507431,
-                                        0.84836621, 0.84944693, 0.85111299,
-                                        0.85203744, 0.85234566, 0.85272977,
-                                        0.85415243, 0.85528031, 0.85666638,
-                                        0.85689079, 0.85737507, 0.85753684,
-                                        0.85822295, 0.85880074, 0.86012441,
-                                        0.86060177, 0.86076122, 0.86158798,
-                                        0.86182135, 0.86216929, 0.86223968,
-                                        0.86286644, 0.86400292, 0.86449086,
-                                        0.86478895, 0.86526870, 0.86542813,
-                                        0.86632323, 0.86691495, 0.86735151,
-                                        0.86793960, 0.86799512, 0.86921549,
-                                        0.86968384, 0.87020654, 0.87047337,
-                                        0.87212572, 0.87215129, 0.87226626,
-                                        0.87380341, 0.87409002, 0.87466902,
-                                        0.87532714, 0.87570796, 0.87590704,
-                                        0.87603407, 0.87684149, 0.87830426,
-                                        0.87849002, 0.87883063, 0.87892403,
-                                        0.88178762, 0.88206840, 0.88207032,
-                                        0.88231385, 0.88264647, 0.88309757,
-                                        0.88323038, 0.88357289, 0.88369935,
-                                        0.88389529, 0.88495985, 0.88515122,
-                                        0.88586842, 0.88714058, 0.88768691,
-                                        0.88904682, 0.88913022, 0.88921532,
-                                        0.89049046, 0.89106983, 0.89143317,
-                                        0.89195297, 0.89229887, 0.89474384,
-                                        0.89600337, 0.89650663, 0.89698740,
-                                        0.89866273, 0.89868643, 0.90140525,
-                                        0.90588223, 0.90589229, 0.90644214,
-                                        0.92002587])
+                                       [0.00115070, 0.00641597, 0.01235841,
+                                        0.01301714, 0.02812460, 0.03234459,
+                                        0.03992991, 0.05016230, 0.09433900,
+                                        0.11387019, 0.11957780, 0.13116522,
+                                        0.15317756, 0.15699142, 0.15943080,
+                                        0.19092301, 0.20225321, 0.22070927,
+                                        0.23147437, 0.23514724, 0.23978324,
+                                        0.25752324, 0.27222418, 0.29105681,
+                                        0.29418487, 0.30100925, 0.30331145,
+                                        0.31320004, 0.32168218, 0.34163684,
+                                        0.34900802, 0.35149033, 0.36452106,
+                                        0.36824693, 0.37383999, 0.37497701,
+                                        0.38518154, 0.40404143, 0.41227372,
+                                        0.41734122, 0.42555592, 0.42830153,
+                                        0.44385597, 0.45426219, 0.46199856,
+                                        0.47249481, 0.47348988, 0.49553194,
+                                        0.50406914, 0.51364117, 0.51854413,
+                                        0.54910482, 0.54957989, 0.55171679,
+                                        0.58035432, 0.58570099, 0.59650076,
+                                        0.60876437, 0.61585027, 0.61955033,
+                                        0.62190962, 0.63686817, 0.66374292,
+                                        0.66712929, 0.67332024, 0.67501361,
+                                        0.72581352, 0.73065660, 0.73068962,
+                                        0.73486700, 0.74053641, 0.74815657,
+                                        0.75038443, 0.75609618, 0.75819245,
+                                        0.76142690, 0.77869699, 0.78174497,
+                                        0.79300721, 0.81232592, 0.82035007,
+                                        0.83957191, 0.84071480, 0.84187650,
+                                        0.85874547, 0.86606909, 0.87055108,
+                                        0.87681266, 0.88088053, 0.90734807,
+                                        0.91940791, 0.92392809, 0.92808828,
+                                        0.94139589, 0.94157110, 0.95935197,
+                                        0.97959721, 0.97963165, 0.98144719,
+                                        0.99914482])
 
 
 class TestLogNormalDistribution(unittest.TestCase):
@@ -683,13 +689,14 @@ class TestLogNormalDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        np.testing.assert_array_equal(_fit, [[3.5158562951854764,
-                                              0.84919082792737277],
-                                             [0.013718125432992872,
-                                              0.018092667346311871, 0.0],
-                                             [-66.798518958197803,
-                                              135.59703791639561,
-                                              135.09136536016146]])
+        self.assertAlmostEqual(_fit[0][0], 3.5158563)
+        self.assertAlmostEqual(_fit[0][1], 0.8491908)
+        self.assertAlmostEqual(_fit[1][0], 0.003004906)
+        self.assertAlmostEqual(_fit[1][1], -0.0008767578)
+        self.assertAlmostEqual(_fit[1][2], 0.0002558164)
+        self.assertAlmostEqual(_fit[2][0], -66.7985190)
+        self.assertAlmostEqual(_fit[2][1], 135.5970379)
+        self.assertAlmostEqual(_fit[2][2], 135.09136536)
 
     @attr(all=True, unit=True)
     def test_maximum_likelihood_estimate_interval_censored(self):
@@ -717,8 +724,8 @@ class TestLogNormalDistribution(unittest.TestCase):
 
         _para = [3.51585540, 0.9693628]
 
-        _probs = self.DUT.theoretical_distribution(np.array(self.LOGN_TEST),
-                                                   _para)
+        _data = [x[1] for x in self.LOGN_TEST]
+        _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
                                        [0.02472972, 0.10554292, 0.20252142,
                                         0.29596331, 0.37982014, 0.45305838,
@@ -910,14 +917,14 @@ class TestWeibullDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        np.testing.assert_array_equal(_fit, [[73.526132273502554,
-                                              1.9326764449560938, 0.0],
-                                             [318.97182199677735,
-                                              0.67677512433323617,
-                                              62.586199984304315],
-                                             [-3917.8639405196277,
-                                              7837.7278810392554,
-                                              7836.3749106226342]])
+        self.assertAlmostEqual(_fit[0][0], 73.5261323)
+        self.assertAlmostEqual(_fit[0][1], 1.9326764)
+        self.assertAlmostEqual(_fit[1][0], 241.3395431)
+        self.assertAlmostEqual(_fit[1][1], 1.166965e-02)
+        self.assertAlmostEqual(_fit[1][2], 1.6781977)
+        self.assertAlmostEqual(_fit[2][0], -3917.8639405)
+        self.assertAlmostEqual(_fit[2][1], 7837.7278810)
+        self.assertAlmostEqual(_fit[2][2], 7836.3749106)
 
     @attr(all=True, unit=True)
     def test_maximum_likelihood_estimate_interval_censored(self):
@@ -940,8 +947,8 @@ class TestWeibullDistribution(unittest.TestCase):
 
         _para = [76.3454154, 1.4269671]
 
-        _probs = self.DUT.theoretical_distribution(np.array(self.EXP_TEST),
-                                                   _para)
+        _data = [x[1] for x in self.EXP_TEST]
+        _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
                                        [0.00396191, 0.00543068, 0.00894684,
                                         0.01311430, 0.01607735, 0.02103208,
@@ -984,53 +991,62 @@ class TestTBF(unittest.TestCase):
     Class to test time between failure calculations.
     """
 
-    DATA = [[0, u'A', 50.0, 50.0, 1, 'Event'],
-            [1, u'A', 200.0, 200.0, 1, 1],
-            [2, u'A', 200, 0.0, 1, 2],
-            [3, u'B', 0.0, 50.0, 1, 'Interval Censored'],
-            [4, u'B', 50.0, 100.0, 1, 3],
-            [5, u'C', 0.0, 200.0, 1, 'Left Censored'],
-            [6, u'C', 200.0, 0.0, 1, 'Right Censored']]
+    DATA = {0: (59, '', 719163, 16.0, 16.0, 0, 1, 16.0, 1, 0, 719163, 719163,
+                0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+            1: (59, '', 719163, 34.0, 34.0, 0, 1, 18.0, 1, 0, 719163, 719163,
+                0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+            2: (59, '', 719163, 53.0, 53.0, 0, 1, 19.0, 1, 0, 719163, 719163,
+                0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+            3: (59, '', 719163, 5.0, 75.0, 0, 3, 22.0, 1, 0, 719163, 719163,
+                0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+            4: (59, '', 719163, 93.0, 93.0, 1, 1, 18.0, 1, 0, 719163, 719163,
+                0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None')}
+
+    def setUp(self):
+        """
+        Setup the test fixture for the Exponential distribution class.
+        """
+
+        self.record1 = Record()
+        self.record1.set_attributes(self.DATA[0])
+        self.record2 = Record()
+        self.record2.set_attributes(self.DATA[1])
+        self.record3 = Record()
+        self.record3.set_attributes(self.DATA[2])
+        self.record4 = Record()
+        self.record4.set_attributes(self.DATA[3])
+        self.record5 = Record()
+        self.record5.set_attributes(self.DATA[4])
 
     @attr(all=True, unit=True)
     def test_exact_failure_times(self):
         """
-        Test of the time between failure calculation for exact failure times.
+        (TestTBF) Test of the time between failure calculation for exact failure times.
         """
 
         # Test exact failure time records.
-        self.assertEqual(time_between_failures(self.DATA[-1], self.DATA[0]),
-                         50.0)
+        self.assertEqual(time_between_failures(self.record1, self.record2),
+                         18.0)
 
-        self.assertEqual(time_between_failures(self.DATA[0], self.DATA[1]),
-                         150.0)
+        self.assertEqual(time_between_failures(self.record2, self.record3),
+                         19.0)
 
     @attr(all=True, unit=True)
     def test_right_censored_times(self):
         """
-        Test of the time between failure calculation for right censored failure times.
+        (TestTBF) Test of the time between failure calculation for right censored failure times.
         """
 
         # Test right censored records.
-        self.assertEqual(time_between_failures(self.DATA[1], self.DATA[2]),
-                         np.inf)
-
-        self.assertEqual(time_between_failures(self.DATA[5], self.DATA[6]),
-                         np.inf)
+        self.assertEqual(time_between_failures(self.record4, self.record5),
+                         1E+99)
 
     @attr(all=True, unit=True)
     def test_interval_censored_times(self):
         """
-        Test of the time between failure calculation for interval censored failure times.
+        (TestTBF) Test of the time between failure calculation for interval censored failure times.
         """
 
         # Test interval censored records.
-        self.assertEqual(time_between_failures(self.DATA[2], self.DATA[3]),
-                         25.0)
-
-        self.assertEqual(time_between_failures(self.DATA[3], self.DATA[4]),
-                         50.0)
-
-        self.assertEqual(time_between_failures(self.DATA[4],
-                                               self.DATA[5]),
-                         100.0)
+        self.assertEqual(time_between_failures(self.record3, self.record4),
+                         22.0)

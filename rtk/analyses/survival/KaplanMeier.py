@@ -3,11 +3,6 @@
 Contains functions for performing Kaplan-Meier survival analysis.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.survival.KaplanMeier.py is part of The RTK Project
@@ -15,13 +10,67 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 # Import mathematical functions.
+from math import sqrt
 import lifelines as nonpar
 import numpy as np
 from scipy.stats import norm                # pylint: disable=E0611
-from math import sqrt
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
-def kaplan_meier(data, start, end, conf=0.75, conftype=3):
+def format_data(data):
+    """
+    Function to create a dataset in the proper format to pass to the
+    kaplan-meier function.
+
+    :param dict data: a dictionary whose key is the record ID and value is a
+                      list with the following:
+                      Position    Information
+                          0       Survival ID
+                          1       Assembly ID
+                          2       Date of failure
+                          3       Left of interval
+                          4       Right of interval (same as left for exact
+                                  time)
+                          5       Status of event
+                          6       Number of failures in interval
+                          7       Interarrival time (TBF)
+                          8       Failure mode type
+                          9       Record is from Nevada chart
+                         10       Ship date
+                         11       Return date
+                         12       User float 1
+                         13       User float 2
+                         14       User float 3
+                         15       User integer 1
+                         16       User integer 2
+                         17       User integer 3
+                         18       User string 1
+                         19       User string 2
+                         20       User string 3
+    :return: _data, _n_failures
+    :rtype: list of tuples, int
+    """
+
+    _n_failures = 0
+    _data = []
+    for i in data.keys():
+        _record = (i, data[i].left_interval, data[i].right_interval,
+                   data[i].interarrival_time, data[i].status,
+                   data[i].n_failures, data[i].failure_date)
+        _data.append(_record)
+
+        # Keep a running count of the number of failures.
+        if data[i].status in [0, 3]:
+            _n_failures += data[i].n_failures
+
+    return _data, _n_failures
+
+
+def kaplan_meier(data, start, end, conf=0.75, conftype=3):  # pylint: disable=W0613
     """
     Function to calculate the Kaplan-Meier survival function estimates.
 
@@ -34,9 +83,9 @@ def kaplan_meier(data, start, end, conf=0.75, conftype=3):
                             * 4 = Status of observation
                             * 5 = Quantity of observations
                             * 6 = Date of observation
-    :param float endtime: time at which to stop analysis (helps eliminate
-                          stretched plots due to small number of events at
-                          high hours).
+    :param float start: time at which to start analysis.
+    :param float end: time at which to stop analysis (helps eliminate stretched
+                      plots due to small number of events at high hours).
     :param float conf: the confidence level of the KM estimates.
     :param int conftype: the confidence interval type for the KM estimates.
                          Confidence type is one of:
@@ -55,7 +104,7 @@ def kaplan_meier(data, start, end, conf=0.75, conftype=3):
 
     _kmf = nonpar.KaplanMeierFitter(alpha=conf)
 
-    # Sort data by the right if the interval.  Remove records occurring before
+    # Sort data by the right of the interval.  Remove records occurring before
     # the start time and after the end time.
     _data = sorted(data, key=lambda x: (float(x[2]), float(x[1])))
     _data = [_rec for _rec in _data if float(_rec[1]) >= start]
@@ -121,13 +170,11 @@ def kaplan_meier_mean(data, rank, conf=0.75):
                          * Point estimate of the survival function at time t.
                          * Upper bound on the survival function at time t.
     :param float conf: the desired confidence for the bounding values.
-    :return: _mtbf; matrix of mean values where each row contains the
-             following, in order:
-             * Lower bound on the mean value.
-             * Point estimate of the mean value.
-             * Upper bound on the mean value.
-             * Variance of the mean value.
-    :rtype: list of lists
+    :return: _mtbf; tuple of mean time between failure estimates, in order:
+             * Lower bound on the MTBF.
+             * Point estimate of the MTBF.
+             * Upper bound on the MTBF.
+    :rtype: tuple
     """
 
     # Determine the confidence bound z-value.
@@ -136,7 +183,6 @@ def kaplan_meier_mean(data, rank, conf=0.75):
     _x = np.insert(np.diff(data[:, 2]), 0, 1)
 
     _failures = data[np.where(_x != 0)]
-    _indices = np.where(_x != 0)
 
     _A = _failures[:-1, 2] * (_failures[1:, 0] - _failures[:-1, 0])
     _mtbf = np.sum(_A) + _failures[0, 0]
@@ -202,7 +248,7 @@ def kaplan_meier_hazard(data):
     _h_ul = np.ma.divide(_H_ul, _times)
 
     # Combine the results together into a single numpy matrix.
-    _hazard = np.vstack((_h_ll, _h, _h_ul,
+    _hazard = np.vstack((_times, _h_ll, _h, _h_ul,
                          _H_ll, _H, _H_ul,
                          _logH_ll, _logH, _logH_ul))
 

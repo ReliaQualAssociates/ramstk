@@ -5,18 +5,11 @@ Survival Package Module View
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
-# -*- coding: utf-8 -*-
-#
-#       rtk.survival.ModuleBook.py is part of The RTK Project
-#
-# All rights reserved.
-
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,10 +26,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import configuration as _conf
@@ -48,6 +37,17 @@ except ImportError:
     import rtk.widgets as _widg
 #from ListBook import ListView
 from WorkBook import WorkView
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+# -*- coding: utf-8 -*-
+#
+#       rtk.survival.ModuleBook.py is part of The RTK Project
+#
+# All rights reserved.
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -65,8 +65,8 @@ class ModuleView(object):
     :ivar list _lst_handler_id: list containing the ID's of the callback
                                 signals for each gtk.Widget() associated with
                                 an editable Survival attribute.
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :py:class:`gtk.TreeView`.
+    :ivar list _lst_col_order: list containing the order of the columns in the
+                               Module View :py:class:`gtk.TreeView`.
     :ivar _model: the :py:class:`rtk.survival.Survival.Model` data model
                   that is currently selected.
     :ivar _listbook: the :py:class:`rtk.survival.ListBook.ListView`
@@ -76,17 +76,11 @@ class ModuleView(object):
     :ivar dtcSurvival: the :py:class:`rtk.survival.Survival` data
                          controller to use for accessing the Survival data
                          models.
-    :ivar dtcActions: the :py:class:`rtk.survival.action.Action` data
-                      controller to use for accessing the Survival Action data
-                      models.
-    :ivar dtcComponents: the :py:class:`rtk.survival.component.Component` data
-                         controller to use for accessing the Survival Component
-                         data models.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of
-                    Survival tasks.
+    :ivar gtk.TreeView treeview: the gtk.TreeView() displaying the list of
+                                 Survival analyses.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):
+    def __init__(self, controller, rtk_view, position, *args):  # pylint: disable=W0613
         """
         Initializes the Module Book view for the Survival package.
 
@@ -97,7 +91,6 @@ class ModuleView(object):
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
                              the Survival view.  Pass -1 to add to the end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Initialize private dict attributes.
@@ -129,7 +122,7 @@ class ModuleView(object):
             _cell = _column.get_cell_renderers()[0]
             try:
                 if _cell.get_property('editable'):
-                    _cell.connect('edited', self._on_cell_edited,
+                    _cell.connect('edited', self._on_cellrenderer_edited,
                                   self._lst_col_order[i])
             except TypeError:
                 pass
@@ -174,7 +167,7 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self._workbook = WorkView(rtk_view.workview, self)
 
-    def request_load_data(self, dao, revision_id, query=None):
+    def request_load_data(self, dao, revision_id):
         """
         Loads the Survival Module Book view gtk.TreeModel() with Survival
         analyses information.
@@ -184,7 +177,7 @@ class ModuleView(object):
         :param int revision_id: the ID of the revision to load survival data
                                 for.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         self._dao = dao
@@ -211,13 +204,52 @@ class ModuleView(object):
 
         return False
 
+    def request_add_survival(self, revision_id):
+        """
+        Method to request adding a new Survival analysis to the selected
+        revision.
+
+        :param int revision_id: the Revision ID to add the new Survival
+                                analysis to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        (_results, _error_code) = self.dtcSurvival.add_survival(revision_id)
+
+        # If the Survival analysis was successfully added to the database, add
+        # it from the list.
+        if _results:
+            self.request_load_data(self._dao, revision_id)
+
+        return False
+
+    def request_delete_survival(self, survival_id):
+        """
+        Method to request deleting the selected Survival analysis.
+
+        :param int survival_id: the Survival ID to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        (_results, _error_code) = self.dtcSurvival.delete_survival(survival_id)
+
+        # If the Survival analysis was successfully removed from the database,
+        # remove it from the list.
+        if _results:
+            (_model, _row) = self.treeview.get_selected().get_selection()
+            _model.remove(_row)
+
+        return False
+
     def request_save_survival(self, survival_id):
         """
         Method to request the selected Survival analysis be saved.
 
         :param int survival_id: the ID of the Survival analysis to save.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_results, _error_code) = self.dtcSurvival.save_survival(survival_id)
@@ -232,7 +264,7 @@ class ModuleView(object):
         :param in survival_id: the ID of the Survival analysis associated with
                                the Dataset.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_records, __) = self.dtcSurvival.request_records(survival_id)
@@ -246,7 +278,7 @@ class ModuleView(object):
         :param int survival_id: the ID of the Survival analysis the record will
                                 be added to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_result, _error_code) = self.dtcSurvival.add_record(survival_id)
@@ -261,7 +293,7 @@ class ModuleView(object):
                                 be deleted from.
         :param int record_id: the ID of the record to be deleted.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_result, _error_code) = self.dtcSurvival.delete_record(survival_id,
@@ -276,15 +308,14 @@ class ModuleView(object):
         :param int survival_id: the ID of the Survival analysis to save the
                                 records for.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _survival = self.dtcSurvival.dicSurvival[survival_id]
 
         for _record_id in _survival.dicRecords.keys():
             (_results, _error_code) = self.dtcSurvival.save_record(
-                                        survival_id, _record_id,
-                                        _survival.dicRecords[_record_id])
+                survival_id, _record_id, _survival.dicRecords[_record_id])
 
         return False
 
@@ -295,25 +326,42 @@ class ModuleView(object):
         :param int survival_id: the ID of the Survival analyses the dataset
                                 belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _survival = self.dtcSurvival.dicSurvival[survival_id]
         _records = _survival.dicRecords
 
         _keys = [_key for _key in _records.keys()]
-        _records[_keys[0]][6] = _records[_keys[0]][3]
+        _records[_keys[0]].interarrival_time = _records[_keys[0]].right_interval
         for i in range(len(_keys) - 1):
             _survival.calculate_tbf(_keys[i], _keys[i + 1])
+
+        return False
+
+    def request_consolidate_dataset(self, survival_id):
+        """
+        Consolidates the data set so there are only unique failure times,
+        suspension times, and intervals with a quantity value rather than a
+        single record for each failure.
+
+        :param int survival_id: the Survival ID of the dataset to consolidate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.dtcSurvival.consolidate_dataset()
+
+        # Reload the dataset tree.
+        self.request_load_records(survival_id)
 
         return False
 
     def update(self, position, new_text):
         """
         Updates the selected row in the Module Book gtk.TreeView() with changes
-        to the Survival data model attributes.  Called by other views when
-        the Survival data model attributes are edited via their
-        gtk.Widgets().
+        to the Survival data model attributes.  Called by other views when the
+        Survival data model attributes are edited via their gtk.Widgets().
 
         :param int position: the ordinal position in the Module Book
                              gtk.TreeView() of the data being updated.
@@ -367,7 +415,7 @@ class ModuleView(object):
         :param str __path: the actived row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -385,7 +433,7 @@ class ModuleView(object):
 
         return False
 
-    def _on_cell_edited(self, __cell, __path, new_text, index):
+    def _on_cellrenderer_edited(self, __cell, __path, new_text, index):
         """
         Callback method to handle events for the Survival package Module Book
         gtk.CellRenderer().  It is called whenever a Module Book
@@ -401,6 +449,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
+        from datetime import datetime
+
         if self._lst_col_order[index] == 2:
             try:
                 self._model.description = new_text
@@ -411,6 +461,31 @@ class ModuleView(object):
                 self._model.confidence = float(new_text)
             except ValueError:
                 self._model.confidence = 0.75
+        elif self._lst_col_order[index] == 34:
+            try:
+                self._model.start_time = float(new_text)
+            except ValueError:
+                self._model.start_time = 0.0
+        elif self._lst_col_order[index] == 9:
+            try:
+                self._model.rel_time = float(new_text)
+            except ValueError:
+                self._model.rel_time = 100.0
+        elif self._lst_col_order[index] == 10:
+            try:
+                self._model.n_rel_points = int(new_text)
+            except ValueError:
+                self._model.n_rel_points = 10
+        elif self._lst_col_order[index] == 35:
+            try:
+                self._model.start_date = _util.date_to_ordinal(new_text)
+            except ValueError:
+                self._model.start_date = datetime.today().toordinal()
+        elif self._lst_col_order[index] == 36:
+            try:
+                self._model.end_date = _util.date_to_ordinal(new_text)
+            except ValueError:
+                self._model.end_date = datetime.today().toordinal()
 
         self._workbook.update()
 

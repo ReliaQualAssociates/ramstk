@@ -3,27 +3,27 @@
 This is the test class for testing Survival module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.survival.TestSurvival.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-import numpy as np
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+import unittest
+from nose.plugins.attrib import attr
+import numpy as np
+
 import dao.DAO as _dao
 from survival.Survival import Model, Survival
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestSurvivalModel(unittest.TestCase):
@@ -36,9 +36,6 @@ class TestSurvivalModel(unittest.TestCase):
         Setup the test fixture for the Survival class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -49,8 +46,13 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
 
-        self.assertEqual(self.DUT._nevada_chart, False)
-        self.assertEqual(self.DUT.dicDatasets, {})
+        self.assertEqual(self.DUT.dicRecords, {})
+        self.assertEqual(self.DUT.dicMTBF, {})
+        self.assertEqual(self.DUT.dicReliability, {})
+        np.testing.assert_array_equal(self.DUT.hazard, np.array([]))
+        np.testing.assert_array_equal(self.DUT.km, np.array([]))
+        np.testing.assert_array_equal(self.DUT.mcf, np.array([]))
+        np.testing.assert_array_equal(self.DUT.nhpp, [])
         self.assertEqual(self.DUT.scale, [0.0, 0.0, 0.0])
         self.assertEqual(self.DUT.shape, [0.0, 0.0, 0.0])
         self.assertEqual(self.DUT.location, [0.0, 0.0, 0.0])
@@ -81,6 +83,9 @@ class TestSurvivalModel(unittest.TestCase):
         self.assertEqual(self.DUT.start_date, 0)
         self.assertEqual(self.DUT.end_date, 0)
         self.assertEqual(self.DUT.n_datasets, 0)
+        self.assertEqual(self.DUT.chisq, 0.0)
+        self.assertEqual(self.DUT.cvm, 0.0)
+        self.assertEqual(self.DUT.grouped, 0)
 
     @attr(all=True, unit=True)
     def test_set_attributes(self):
@@ -91,7 +96,7 @@ class TestSurvivalModel(unittest.TestCase):
         _values = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
                    12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
                    23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
-                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0)
+                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -106,7 +111,7 @@ class TestSurvivalModel(unittest.TestCase):
         _values = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
                    12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
                    23, 24.0, 25.0, 26.0, 27.0, 28.0, None, 30.0, 31.0, 32.0,
-                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0)
+                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -121,7 +126,7 @@ class TestSurvivalModel(unittest.TestCase):
         _values = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
                    12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
                    24.0, 25.0, 26.0, 27.0, 28.0, 30.0, 31.0, 32.0, 33.0, 34.0,
-                   35.0, 36.0, 37.0, 38.0)
+                   35.0, 36.0, 37.0, 38.0, 39.0, 0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -135,8 +140,8 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.assertEqual(self.DUT.get_attributes(),
                          (0, 0, 0, '', 0, 0, 0.75, 0, 0, 0, 100.0, 0, 0, 0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0,
-                          [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+                          0, [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
                           [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]))
 
     @attr(all=True, unit=True)
@@ -145,14 +150,15 @@ class TestSurvivalModel(unittest.TestCase):
         (TestSurvival) get_attributes(set_attributes(values)) == values
         """
 
-        _values = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
-                   12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
+        _values = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11,
+                   12, 13, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
                    23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
-                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0)
-        _results = (0, 1, 2, 'Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10, 11,
-                   12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
-                   [23.0, 24.0, 25.0], [26.0, 27.0, 28.0],
-                   [29.0, 30.0, 31.0], [32.0, 33.0, 34.0], [35.0, 36.0, 37.0])
+                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 0)
+        _results = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11,
+                    12, 13, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0,
+                    37.0, 38.0, 39.0, 0, [14.0, 15.0, 16.0],
+                    [17.0, 18.0, 19.0], [20.0, 21.0, 22.0], [23.0, 24.0, 25.0],
+                    [26.0, 27.0, 28.0])
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -229,7 +235,7 @@ class TestSurvivalController(unittest.TestCase):
         _survival.set_attributes(_values)
 
         (_results, _error_code) = self.DUT.save_survival(min(
-                                                self.DUT.dicSurvival.keys()))
+            self.DUT.dicSurvival.keys()))
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

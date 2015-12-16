@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 """
-Contains functions for performing calculations associated with NHPP models.
+###################################################
+Non-Homogoneous Poisson Process Calculations Module
+###################################################
 """
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -14,15 +11,15 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 #
 # All rights reserved.
 
-# Add NLS support.
+# Import module for NLS support.
 import gettext
-_ = gettext.gettext
 
-# Import mathematical functions.
+# Import modules for mathematics support.
 import numpy as np
 from scipy.optimize import fsolve
 from scipy.stats import norm, t        # pylint: disable=E0611
 
+# Import other RTK modules.
 try:
     from analyses.statistics.Bounds import calculate_crow_bounds, \
                                            calculate_fisher_bounds, \
@@ -34,9 +31,17 @@ except ImportError:
     from rtk.analyses.statistics.Bounds import calculate_crow_bounds, \
                                                calculate_fisher_bounds, \
                                                calculate_variance_covariance
-    from rtk.analyses.statistics.CrowAMSAA import calculate_crow_amsaa_parameters
+    from rtk.analyses.statistics.CrowAMSAA import \
+                calculate_crow_amsaa_parameters
     from rtk.analyses.statistics.Duane import calculate_duane_parameters, \
                                               calculate_duane_standard_error
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   # pylint: disable=C0103, R0913, R0914
@@ -47,7 +52,8 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
     .. hlist::
        :columns: 1
 
-        * cumulative failure intensity = m(t) = alpha * t^(-beta)
+        * cumulative MTBF = m(t) = (1.0 / alpha) * t^(1 - beta)
+        * cumulative failure intensity = lambda(t) = alpha * t^(beta - 1)
 
     :param list F: list of failure counts.
     :param list X: list of individual failures times.
@@ -124,29 +130,36 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
              _beta_upper) = calculate_fisher_bounds(_beta_hat,
                                                     _var_covar[1][1], alpha)
 
-    elif fitmeth == 2:                        # Regression
+    elif fitmeth == 2:                      # Regression
         # Estimate the Duane parameters and transform to the NHPP - Power Law
-        # parameters.
-        _b_hat, _beta_hat = calculate_duane_parameters(F, X)
-        _alpha_hat = 1.0 / _b_hat
+        # parameters.  Parameters are returned scale, shape.
+        _b_hat, _a_hat = calculate_duane_parameters(F, X)
+
+        # Convert Duane parameters to Crow-AMSAA parameters.
+        try:
+            _alpha_hat = 1.0 / _b_hat
+        except ZeroDivisionError:
+            _alpha_hat = 1.0
+
+        _beta_hat = 1.0 - _a_hat
 
         # Calculate the standard errors on the parameter estimates.
-        _se_beta, _se_lnb = calculate_duane_standard_error(F, X, _b_hat,
-                                                           _beta_hat)
-
-        # Calculate the bounding values for the alpha (scale) parameter.
-        try:
-            _alpha_lower = 1.0 / (_b_hat * np.exp(_critical_value_t * _se_lnb))
-        except (OverflowError, ZeroDivisionError):
-            _alpha_lower = _alpha_hat
-        try:
-            _alpha_upper = 1.0 / (_b_hat * np.exp(-_critical_value_t * _se_lnb))
-        except (OverflowError, ZeroDivisionError):
-            _alpha_upper = _alpha_hat
+        _se_beta, _se_lnb = calculate_duane_standard_error(F, X, _a_hat,
+                                                           _b_hat)
 
         # Calculate the bounding values for the beta (shape) parameter.
-        _beta_lower = _beta_hat - _critical_value_t * _se_beta
-        _beta_upper = _beta_hat + _critical_value_t * _se_beta
+        try:
+            _beta_lower = 1.0 - (_a_hat + _critical_value_t * _se_beta)
+        except (OverflowError, ZeroDivisionError):
+            _beta_lower = _beta_hat
+        try:
+            _beta_upper = 1.0 - (_a_hat - _critical_value_t * _se_beta)
+        except (OverflowError, ZeroDivisionError):
+            _beta_upper = _beta_hat
+
+        # Calculate the bounding values for the alpha (scale) parameter.
+        _alpha_lower = _alpha_hat * np.exp(-_critical_value_t * _se_lnb)
+        _alpha_upper = _alpha_hat * np.exp(_critical_value_t * _se_lnb)
 
     return ([_alpha_lower, _alpha_hat, _alpha_upper],
             [_beta_lower, _beta_hat, _beta_upper])

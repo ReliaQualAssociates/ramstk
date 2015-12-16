@@ -92,3 +92,6 @@ docs/Makefile
 /tests/_test_results/validation_unit_tests.html
 /tests/_test_results/cloc.xsl
 /tests/_test_results/code_count.xml
+/tests/_test_results/cloc.xml
+/tests/_test_results/prediction_integration_tests.html
+/tests/_test_results/prediction_unit_tests.html

@@ -105,7 +105,7 @@ def bernard_ranks(data, grouped=False):
     return np.array(_mr, dtype=float)
 
 
-def regression(data, start, end, fitmeth, dist='exponential'):  # pylint: disable=R0914
+def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     """
     Function to fit data to a parametric distribution and find point estimates
     of the parameters using regression.  It is up to the calling function to
@@ -113,7 +113,7 @@ def regression(data, start, end, fitmeth, dist='exponential'):  # pylint: disabl
 
     :param array-like data: the data set to fit.  This is a list of tuples
                             where each tuple contains the following, in order:
-                            * 0 = Observed unit ID
+                            * 0 = Record ID
                             * 1 = Interval start time
                             * 2 = Interval end time
                             * 3 = Time between failures or interarrival time
@@ -124,9 +124,6 @@ def regression(data, start, end, fitmeth, dist='exponential'):  # pylint: disabl
                         exclude outliers.
     :param float end: the maximum time to include in the fit.  Used to exclude
                       outliers.
-    :param int fitmeth: method used to fit data to the selected distribution.
-                        * 1 = maximum likelihood estimation (preferred)
-                        * 2 = rank regression
     :param str dist: the noun name of the distribution to fit.  Defaults to
                      the exponential distribution.
     :return: _fit; [[scale estimate, shape estimate, location estimate],
@@ -222,7 +219,7 @@ def regression(data, start, end, fitmeth, dist='exponential'):  # pylint: disabl
         _parameters[1] = 1.0 / _p[1]
         _parameters[0] = -_p[0] * _parameters[1]
 
-    elif dist == 'normal':
+    elif dist == 'gaussian' or dist == 'normal':
         _df = _n_records - 2
         _y_linear = norm.ppf(_median_rank)
 
@@ -245,20 +242,20 @@ def regression(data, start, end, fitmeth, dist='exponential'):  # pylint: disabl
         _parameters[1] = _p[1]
         _parameters[0] = np.exp(-_p[0] / _p[1])
 
-    _info = np.array([x for x in _info['fvec'] if np.logical_not(np.isnan(x))])
+    _yhat = np.array([x for x in _info['fvec'] if np.logical_not(np.isnan(x))])
 
     # Calculate the variance and covariance of the parameters.
-    _RSS = np.sum(_info**2.0)
-    _MSE = _RSS / _df
+    _SSE = np.sum(_yhat**2.0)
+    _MSE = _SSE / _df
     _cov = _MSE * _covar
-    _variance[0] = _cov[1][1]
-    _variance[1] = _cov[0][1]
-    _variance[2] = _cov[0][0]
+    _variance[0] = _cov[1][1]               # Scale
+    _variance[1] = _cov[0][1]               # Scale-Shape
+    _variance[2] = _cov[0][0]               # Shape
 
-    # Calculate MLE, AIC, and BIC.
-    _s2b = _RSS / _n_records
+    # Calculate the log-likelihood, AIC, and BIC.
+    _s2b = _SSE / _n_records
     _gof[0] = -_n_records / 2.0 * np.log(2.0 * np.pi) - \
-        _n_records / 2.0 * np.log(_s2b) - 1.0 / (2.0 * _s2b) * _RSS
+        _n_records / 2.0 * np.log(_s2b) - 1.0 / (2.0 * _s2b) * _SSE
     _gof[1] = -2.0 * _gof[0] + 2.0
     _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
 
@@ -291,7 +288,7 @@ def rank_regression_y(x, y):                # pylint: disable=C0103
 
     _n_failures = np.size(x)
 
-    # Calculate the slope and intecept of the regression line.
+    # Calculate the slope and intercept of the regression line.
     _b_hat = (_sum_xy - (_sum_x * _sum_y / _n_failures)) / \
              (_sum_x_sq - (_sum_x**2.0 / _n_failures))
     _a_hat = (_sum_y / _n_failures) - (_b_hat * (_sum_x / _n_failures))

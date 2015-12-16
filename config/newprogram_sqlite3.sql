@@ -1443,7 +1443,7 @@ CREATE TABLE "rtk_survival_data" (
     "fld_survival_id" INTEGER NOT NULL DEFAULT(0),
     "fld_dataset_id" INTEGER NOT NULL DEFAULT(0),
     "fld_record_id" INTEGER NOT NULL DEFAULT(0),
-    "fld_assembly_id" INTEGER DEFAULT(0),           -- The ID of the failure assembly.
+    "fld_name" VARCHAR(256) DEFAULT(0),             -- The name of the failed assembly.
     "fld_source" INTEGER DEFAULT(0),                -- Source of failure data: 0=field, 1=growth test
     "fld_failure_date" INTEGER DEFAULT(719163),     -- Date the failure occurred or was discovered.
     "fld_left_interval" FLOAT DEFAULT(0),           -- Beginning time of the failure interval (same as right for exact failure times).

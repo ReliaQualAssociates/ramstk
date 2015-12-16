@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 """
-Contains functions for performing maximum likelihood estimation analysis.
+######################################
+Statistics Package Distribution Module
+######################################
 """
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.statistics.MLE.py is part of The RTK Project
+#       rtk.analyses.statistics.Distributions.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -19,10 +16,16 @@ import inspect
 # Import mathematical functions.
 import numpy as np
 import scipy.misc as misc
-#import scipy.optimize as optim
+from scipy.special import gamma
+# import scipy.optimize as optim
 from scipy.stats import expon, exponweib, lognorm, norm     # pylint: disable=E0611
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
+# TODO: Re-write all distributions to accept Survival data model dicRecords as data input.
 def fisher_information(model, p0, X, noise=1.0):    # pylint: disable=C0103
     """
     Function to calculate the Fisher information matrix for model sampled on
@@ -62,35 +65,33 @@ def time_between_failures(previous, current):
     """
     Function to calculate times between failure (interarrival times).
 
-    :param list previous: the previous data set record.
-    :param list current: the current data set record.
-                         0 = record ID
-                         1 = unit
-                         2 = left interval
-                         3 = right interval
-                         4 = quantity
-                         5 = status
+    :param dict previous: the previous data set Record.
+    :param dict current: the current data set Record.
     :return: _tbf; the time between previous and current failures.
     :rtype: float
     """
 
-    if current[5] == 'Event' or str(current[5]) == '1':
-        if current[1] == previous[1]:
-            _tbf = current[3] - previous[3]
+    if current.status == 'Event' or str(current.status) == '0':
+        if current.left_interval == 0.0:
+            _tbf = current.right_interval
+        elif current.assembly_id == previous.assembly_id:
+            _tbf = current.right_interval - previous.right_interval
         else:
-            _tbf = current[3]
-    elif current[5] == 'Right Censored' or str(current[5]) == '2':
-        _tbf = np.inf
-    elif(current[5] == 'Left Censored' or current[5] == 'Interval Censored' or
-         str(current[5]) == '3'):
-        _time1 = (previous[3] - previous[2]) / 2.0 + previous[2]
-        _time2 = (current[3] - current[2]) / 2.0 + current[2]
-        if current[1] == previous[1]:
+            _tbf = current.right_interval
+    elif current.status == 'Right Censored' or str(current.status) == '1':
+        _tbf = 1E99
+    elif(current.status == 'Left Censored' or str(current.status) == '2' or
+         current.status == 'Interval Censored' or str(current.status) == '3'):
+        _time1 = ((previous.right_interval -
+                   previous.left_interval) / 2.0) + previous.left_interval
+        _time2 = ((current.right_interval -
+                   current.left_interval) / 2.0) + current.left_interval
+        if current.assembly_id == previous.assembly_id:
             _tbf = _time2 - _time1
         else:
             _tbf = _time2
     else:
-        _tbf = current[3] - previous[3]
+        _tbf = current.right_interval - previous.right_interval
 
     return _tbf
 
@@ -100,7 +101,17 @@ def format_data_set(data, start, end):
     Function to format the data set and turn it into a numpy array for use in
     the maximum likelihood estimator functions for each distribution.
 
-    :param list data: the data set to format.
+    :param list data: the data set to format.  This is a list of tuples where
+                      each tuple has the following:
+                            * 0 - Unit ID
+                            * 1 - left of interval
+                            * 2 - right of interval
+                            * 3 - time between failure
+                            * 4 - status of observation
+                                    * 1 - event
+                                    * 2 - right censored
+                                    * 3 - interval censored
+                            * 5 - quantity
     :param float start: the minimum time to include in the fit.  Used to
                         exclude outliers.
     :param float end: the maximum time to include in the fit.  Used to
@@ -120,22 +131,27 @@ def format_data_set(data, start, end):
     # Expand the data set so there is one record for each failure.  Loop
     # through the failure quantity passed for each record.
     _data2 = []
-    for i in range(len(_data)):
-        for j in range(int(_data[i][5])):
-            _data2.append((_data[i][0], _data[i][1], _data[i][2], _data[i][3],
-                           _data[i][4], 1))
+    for __, _record in enumerate(_data):
+        for __ in range(int(_record[5])):
+            _data2.append((_record[0], _record[1], _record[2], _record[3],
+                           _record[4], 1))
     _data = np.array(_data2)
 
     # Replace the string status with integer status.
+    _n_suspensions = 0
+    _n_failures = 0
     for _record in _data:
         if _record[4] == 'Right Censored' or str(_record[4]) == '2':
             _record[2] = np.inf
             _record[4] = 2
+            _n_suspensions += 1
         elif(_record[4] == 'Left Censored' or
              _record[4] == 'Interval Censored' or str(_record[4]) == '3'):
             _record[4] = 3
+            _n_failures += 1
         else:
             _record[4] = 1
+            _n_failures += 1
 
     # Coerce the data set into the form necessary for fitting to functions.
     _data = np.vstack((_data[:, 1], _data[:, 2], _data[:, 5], _data[:, 4],
@@ -143,7 +159,7 @@ def format_data_set(data, start, end):
     _data = np.array(np.transpose(_data), dtype=float)
     _n_records = len(_data)
 
-    return (_data, _n_records)
+    return (_data, _n_records, _n_suspensions, _n_failures)
 
 
 class Exponential(object):
@@ -151,7 +167,7 @@ class Exponential(object):
     Class for the Exponential distribution.
     """
 
-    def log_pdf(self, data, theta, gamma=0.0):  # pylint: disable=C0103, R0201
+    def log_pdf(self, data, theta, loc=0.0):  # pylint: disable=C0103, R0201
         """
         Method to calculate the logarithm of the exponential probability
         density function (pdf).
@@ -159,22 +175,22 @@ class Exponential(object):
         :param ndarray data: the data points at which to calculate the
                              logarithm of the pdf.
         :param float theta: the scale parameter.
-        :param float gamma: the location parameter.
+        :param float loc: the location parameter.
         :return: the value(s) of the logarithm of the pdf.
         :rtype: ndarray
         """
 
-        return np.log(theta) - theta * (data - gamma)
+        return np.log(theta) - theta * (data - loc)
 
-    def log_likelihood(self, theta, gamma, data):   # pylint: disable=C0103, R0201, W0613
+    def log_likelihood(self, theta, loc, data):   # pylint: disable=C0103, R0201, W0613
         """
         Method to calculate the value of the log likelihood function for the
         exponential distribution.
 
         :param float theta: the scale parameter at which to evaluate the
                             log-likelihood.
-        :param float gamma: the location parameter at which to evaluate the
-                            log-likelihood.
+        :param float loc: the location parameter at which to evaluate the
+                          log-likelihood.
         :param ndarray data: the data set to calculate the log-likelihood for.
                              * 0 - left of the observation time interval
                              * 1 - right of the observation time interval
@@ -299,7 +315,8 @@ class Exponential(object):
         _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
 
         # Format the input data set.
-        (_data, _n_records) = format_data_set(data, start, end)
+        (_data, _n_records,
+         _n_suspensions, _n_failures) = format_data_set(data, start, end)
 
         # Provide an estimate of theta assuming no suspensions and using
         # the right of the interval.  Use this as the starting value to
@@ -314,14 +331,14 @@ class Exponential(object):
         # scipy.stats.
         _parameters[0] = 1.0 / expon.fit(_data[:, 4], floc=0)[1]
 
-        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 4])
+        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 3])
         _variance[0] = 1.0 / _fI[0, 0]
 
         _gof[0] = self.log_likelihood(_parameters[0], _parameters[1], _data)
         _gof[1] = -2.0 * _gof[0] + 2.0
         _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
 
-        _fit = [_parameters, _variance, _gof]
+        _fit = [_parameters, _variance, _gof, _n_suspensions, _n_failures]
 
         return _fit
 
@@ -335,18 +352,109 @@ class Exponential(object):
                              lists or list of tuples where index 1 is the left
                              of the interval and index 2 is the right of the
                              interval.  The other indices are not used.
-        :param list para: list with the values of the distribution parameters.
+        :param list params: list with the values of the distribution
+                            parameters.
         :return: _y; the probabilities of the theoretical distribution with
                  parameters para.
         :rtype: ndarray
         """
 
-        # TODO: Write a test for Exponential.theoretical_distribution.
-
-        _x = np.sort(np.array(data[:, 2], dtype=float))
+        _x = np.sort(np.array(data, dtype=float))
         _y = 1.0 - np.exp(-params[0] * _x)
 
         return _y
+
+    def hazard_function(self, scale, start_time, end_time, step_time):  # pylint: disable=R0201
+        """
+        Method to calculate the hazard function for the Exponential
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (lambda) for the Exponential
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the hazard
+                                 function.
+        :param float end_time: the last time to calculate the hazard function.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the hazard function.
+        :return: _hazard; a dict of lists where the key is the time at which
+                 the hazard functions was calculated and the value is a list
+                 of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _hazard = {}
+
+        for _time in range(int(start_time), int(end_time), step_time):
+            _hazard[_time] = scale
+
+        return _hazard
+
+    def mean(self, scale, start_time, end_time, step_time): # pylint: disable=R0201
+        """
+        Method to calculate the hazard function for the Exponential
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (lambda) for the Exponential
+                            distribution to calculate the means for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _mean; a dict of lists where the key is the time at which
+                 the means were calculated and the value is a list of the lower
+                 bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _mean = {}
+
+        for _time in range(int(start_time), int(end_time), step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = 1.0 / scale[2]
+            _values[1] = 1.0 / scale[1]
+            _values[2] = 1.0 / scale[0]
+
+            _mean[_time] = _values
+
+        return _mean
+
+    def reliability_function(self, scale, start_time, end_time, step_time): # pylint: disable=R0201
+        """
+        Method to calculate the reliability function for the Exponential
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (lambda) for the Exponential
+                            distribution to calculate the reliability function
+                            for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _reliability; a dict of lists where the key is the time at
+                 which the reliability function was calculated and the value is
+                 a list of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _reliability = {}
+
+        for _time in range(int(start_time), int(end_time), step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = np.exp(-scale[0] * _time)
+            _values[1] = np.exp(-scale[1] * _time)
+            _values[2] = np.exp(-scale[2] * _time)
+
+            _reliability[_time] = _values
+
+        return _reliability
 
 
 class Gaussian(object):
@@ -377,8 +485,8 @@ class Gaussian(object):
         Method to calculate the value of the log likelihood function for the
         gaussian distribution.
 
-        :param float x: the parameter values at which to evaluate the
-                        log-likelihood.
+        :param list x: the parameter values at which to evaluate the
+                       log-likelihood.
         :param ndarray data: the data set to calculate the log-likelihood for.
                              * 0 - left of the observation time interval
                              * 1 - right of the observation time interval
@@ -507,9 +615,11 @@ class Gaussian(object):
                                 * 2 = Interval end time
                                 * 3 = Time between failures or interarrival
                                       time
-                                * 4 = Status of observation
+                                * 4 = Status of observation, where status is:
+                                    * 1 - event
+                                    * 2 - right censored
+                                    * 3 - interval censored
                                 * 5 = Quantity of observations
-                                * 6 = Date of observation
         :param float start: the minimum time to include in the fit.  Used to
                             exclude outliers.
         :param float end: the maximum time to include in the fit.  Used to
@@ -528,8 +638,15 @@ class Gaussian(object):
                                             # location variance.
         _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
 
-        # Format the input data set.
-        (_data, _n_records) = format_data_set(data, start, end)
+        # Format the input data set.  Returns a list of lists where each inner
+        # list is a failure event in the format:
+        #   * 0 - left of interval
+        #   * 1 - right of interval
+        #   * 2 - quantity
+        #   * 3 - status (1 = event, 2 = right censored, 3 = interval censored
+        #   * 4 - interarrival time
+        (_data, _n_records,
+         _n_suspensions, _n_failures) = format_data_set(data, start, end)
 
         # Provide an estimate of mu and sigma assuming no suspensions and
         # using the right of the interval.  Use these as the starting
@@ -548,22 +665,24 @@ class Gaussian(object):
         _interval_t = (_interval_lt + _interval_rt) / 2.0
         _data[np.where(_data[:, 3] == 3), 1] = _interval_t
 
-        (_mu, _sigma) = norm.fit(np.array(_data[:, 4], dtype=float))
+        (_mu, _sigma) = norm.fit(np.array(_data[:, 1], dtype=float))
         #optim.fsolve(self.partial_derivatives, [_mu, _sigma],
-        #              args=np.array(_data, dtype=float))
+        #              args=np.array(data, dtype=float))
 
         _parameters[0] = _mu
         _parameters[1] = _sigma
 
-        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 4])
+        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 3])
         _variance[0] = 1.0 / np.diag(_fI)[0]
-        _variance[1] = 1.0 / np.diag(_fI)[1]
+        _variance[1] = 1.0 / _fI[0][1]
+        _variance[2] = 1.0 / np.diag(_fI)[1]
 
+        # Calculate the MLE, AIC, and BIC
         _gof[0] = self.log_likelihood([_parameters[0], _parameters[1]], _data)
-        _gof[1] = -2.0 * _gof[0] + 2.0
-        _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
+        _gof[1] = -2.0 * _gof[0] + 4.0
+        _gof[2] = -2.0 * _gof[0] + 4.0 * np.log(_n_records)
 
-        _fit = [_parameters, _variance, _gof]
+        _fit = [_parameters, _variance, _gof, _n_suspensions, _n_failures]
 
         return _fit
 
@@ -584,14 +703,123 @@ class Gaussian(object):
         :rtype: ndarray
         """
 
-        # TODO: Write a test for Gaussian.theoretical_distribution.
+        _x = np.sort(np.array(data, dtype=float))
 
-        _x = np.sort(np.array(data[:, 2], dtype=float))
-
-        _x = (np.log(_x + 0.01) - params[0]) / params[1]
+        _x = (_x - params[0]) / params[1]
         _y = norm.cdf(_x)
 
         return _y
+
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+        """
+        Method to calculate the hazard function for the Exponential
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the list scale parameters (mu) for the Gaussian
+                            distribution to calculate the hazard function for.
+        :param float shape: the list shape parameters (sigma) for the Gaussian
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the hazard
+                                 function.
+        :param float end_time: the last time to calculate the hazard function.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the hazard function.
+        :return: _hazard; a dict of lists where the key is the time at which
+                 the hazard functions was calculated and the value is a list
+                 of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _hazard = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+            try:
+                _values[0] = np.exp(-0.5 * ((_time - scale[0]) /
+                                            shape[0])**2.0) / \
+                             (shape[0] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[0] = 0.0
+            try:
+                _values[1] = np.exp(-0.5 * ((_time - scale[1]) /
+                                            shape[1])**2.0) / \
+                             (shape[1] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[1] = 0.0
+            try:
+                _values[2] = np.exp(-0.5 * ((_time - scale[2]) /
+                                            shape[2])**2.0) / \
+                             (shape[2] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[2] = 0.0
+
+            _hazard[_time] = _values
+
+        return _hazard
+
+    def mean(self, scale, start_time, end_time, step_time): # pylint: disable=R0201
+        """
+        Method to calculate the means for the Gaussian distribution between
+        start_time and end_time in intervals of step_time.  This method
+        calculates the point estimate as well as the bounding values at each
+        time step.
+
+        :param float scale: the scale parameter (lambda) for the Gaussian
+                            distribution to calculate the means for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _mean; a dict of lists where the key is the time at which
+                 the means were calculated and the value is a list of the lower
+                 bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _mean = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _mean[_time] = scale
+
+        return _mean
+
+    def reliability_function(self, scale, shape, start_time, end_time,
+                             step_time):    # pylint: disable=R0201
+        """
+        Method to calculate the reliability function for the Gaussian
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (mu) for the Gaussian
+                            distribution to calculate the reliability function
+                            for.
+        :param float shape: the list shape parameters (sigma) for the Gaussian
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _reliability; a dict of lists where the key is the time at
+                 which the reliability function was calculated and the value is
+                 a list of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _reliability = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = 1.0 - norm.cdf((_time - scale[2]) / shape[2])
+            _values[1] = 1.0 - norm.cdf((_time - scale[1]) / shape[1])
+            _values[2] = 1.0 - norm.cdf((_time - scale[0]) / shape[0])
+
+            _reliability[_time] = _values
+
+        return _reliability
 
 
 class LogNormal(object):
@@ -777,7 +1005,8 @@ class LogNormal(object):
         _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
 
         # Format the input data set.
-        (_data, _n_records) = format_data_set(data, start, end)
+        (_data, _n_records,
+         _n_suspensions, _n_failures) = format_data_set(data, start, end)
 
         # Provide an estimate of mu and sigma assuming no suspensions and
         # using the right of the interval.  Use these as the starting
@@ -802,16 +1031,17 @@ class LogNormal(object):
         _parameters[0] = np.log(_mu)
         _parameters[1] = _sigma
 
-        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 4])
+        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 3])
         _variance[0] = 1.0 / np.diag(_fI)[0]
         _variance[1] = 1.0 / _fI[0][1]
         _variance[2] = 1.0 / np.diag(_fI)[1]
 
+        # Calculate the MLE, AIC, and BIC.
         _gof[0] = self.log_likelihood([_parameters[0], _parameters[1]], _data)
-        _gof[1] = -2.0 * _gof[0] + 2.0
-        _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
+        _gof[1] = -2.0 * _gof[0] + 4.0
+        _gof[2] = -2.0 * _gof[0] + 4.0 * np.log(_n_records)
 
-        _fit = [_parameters, _variance, _gof]
+        _fit = [_parameters, _variance, _gof, _n_suspensions, _n_failures]
 
         return _fit
 
@@ -832,14 +1062,131 @@ class LogNormal(object):
         :rtype: ndarray
         """
 
-        # TODO: Write a test for LogNormal.theoretical_distribution.
-
-        _x = np.sort(np.array(data[:, 2], dtype=float))
+        _x = np.sort(np.array(data, dtype=float))
 
         _x = (np.log(_x + 0.01) - params[0]) / params[1]
         _y = norm.cdf(_x)
 
         return _y
+
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+        """
+        Method to calculate the hazard function for the LogNormal
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the list scale parameters (mu) for the LogNormal
+                            distribution to calculate the hazard function for.
+        :param float shape: the list shape parameters (sigma) for the LogNormal
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the hazard
+                                 function.
+        :param float end_time: the last time to calculate the hazard function.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the hazard function.
+        :return: _hazard; a dict of lists where the key is the time at which
+                 the hazard functions was calculated and the value is a list
+                 of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _hazard = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+            try:
+                _values[0] = np.exp(-0.5 * (np.log(_time) - scale[0] /
+                                            shape[0])**2.0) / \
+                             (_time * shape[0] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[0] = 0.0
+            try:
+                _values[1] = np.exp(-0.5 * (np.log(_time) - scale[1] /
+                                            shape[1])**2.0) / \
+                             (_time * shape[1] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[1] = 0.0
+            try:
+                _values[2] = np.exp(-0.5 * (np.log(_time) - scale[2] /
+                                            shape[2])**2.0) / \
+                             (_time * shape[2] * np.sqrt(2.0 * np.pi))
+            except ZeroDivisionError:
+                _values[2] = 0.0
+
+            _hazard[_time] = _values
+
+        return _hazard
+
+    def mean(self, scale, shape, start_time, end_time, step_time):  # pylint: disable=R0201
+        """
+        Method to calculate the means for the LogNormal distribution between
+        start_time and end_time in intervals of step_time.  This method
+        calculates the point estimate as well as the bounding values at each
+        time step.
+
+        :param float scale: the scale parameter (mu) for the LogNormal
+                            distribution to calculate the means for.
+        :param float shape: the list shape parameters (sigma) for the LogNormal
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _mean; a dict of lists where the key is the time at which
+                 the means were calculated and the value is a list of the lower
+                 bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _mean = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = np.exp(scale[0] + 0.5 * shape[0]**2.0)
+            _values[1] = np.exp(scale[1] + 0.5 * shape[1]**2.0)
+            _values[2] = np.exp(scale[2] + 0.5 * shape[2]**2.0)
+
+            _mean[_time] = _values
+
+        return _mean
+
+    def reliability_function(self, scale, shape, start_time, end_time,
+                             step_time):    # pylint: disable=R0201
+        """
+        Method to calculate the reliability function for the LogNormal
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (mu) for the LogNormal
+                            distribution to calculate the reliability function
+                            for.
+        :param float shape: the list shape parameters (sigma) for the LogNormal
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _reliability; a dict of lists where the key is the time at
+                 which the reliability function was calculated and the value is
+                 a list of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _reliability = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = 1.0 - norm.cdf((np.log(_time) - scale[2]) / shape[2])
+            _values[1] = 1.0 - norm.cdf((np.log(_time) - scale[1]) / shape[1])
+            _values[2] = 1.0 - norm.cdf((np.log(_time) - scale[0]) / shape[0])
+
+            _reliability[_time] = _values
+
+        return _reliability
 
 
 class Weibull(object):
@@ -1003,7 +1350,6 @@ class Weibull(object):
                                       time
                                 * 4 = Status of observation
                                 * 5 = Quantity of observations
-                                * 6 = Date of observation
         :param float start: the minimum time to include in the fit.  Used to
                             exclude outliers.
         :param float end: the maximum time to include in the fit.  Used to
@@ -1024,7 +1370,8 @@ class Weibull(object):
         _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
 
         # Format the input data set.
-        (_data, _n_records) = format_data_set(data, start, end)
+        (_data, _n_records,
+         _n_suspensions, _n_failures) = format_data_set(data, start, end)
 
         # Provide an estimate of eta and beta assuming no suspensions and
         # using the right of the interval.  Use these as the starting
@@ -1038,16 +1385,17 @@ class Weibull(object):
         _parameters[0] = _eta
         _parameters[1] = _beta
 
-        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 4])
+        _fI = fisher_information(self.log_pdf, _parameters, _data[:, 3])
         _variance[0] = 1.0 / np.diag(_fI)[0]
         _variance[1] = 1.0 / np.diag(_fI)[1]
         _variance[2] = 1.0 / _fI[0, 1]
 
+        # Calculate the MLE, AIC, and BIC.
         _gof[0] = self.log_likelihood([_parameters[0], _parameters[1]], _data)
-        _gof[1] = -2.0 * _gof[0] + 2.0
-        _gof[2] = -2.0 * _gof[0] + (np.log(_n_records) - np.log(np.pi))
+        _gof[1] = -2.0 * _gof[0] + 4.0
+        _gof[2] = -2.0 * _gof[0] + 4.0 * np.log(_n_records)
 
-        _fit = [_parameters, _variance, _gof]
+        _fit = [_parameters, _variance, _gof, _n_suspensions, _n_failures]
 
         return _fit
 
@@ -1068,10 +1416,132 @@ class Weibull(object):
         :rtype: ndarray
         """
 
-        # TODO: Write a test for Weibull.theoretical_distribution.
-
-        _x = np.sort(np.array(data[:, 2], dtype=float))
+        _x = np.sort(np.array(data, dtype=float))
 
         _y = 1.0 - np.exp(-(_x / params[0])**params[1])
-        print _y
+
         return _y
+
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+        """
+        Method to calculate the hazard function for the Weibull distribution
+        between start_time and end_time in intervals of step_time.  This method
+        calculates the point estimate as well as the bounding values at each
+        time step.
+
+        :param float scale: the list scale parameters (eta) for the Weibull
+                            distribution to calculate the hazard function for.
+        :param float shape: the list shape parameters (beta) for the Weibull
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the hazard
+                                 function.
+        :param float end_time: the last time to calculate the hazard function.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the hazard function.
+        :return: _hazard; a dict of lists where the key is the time at which
+                 the hazard functions was calculated and the value is a list
+                 of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _hazard = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+            try:
+                _values[0] = (shape[0] / scale[0]) * \
+                             (_time / scale[0])**(shape[0] - 1.0)
+            except ZeroDivisionError:
+                _values[0] = 0.0
+            try:
+                _values[1] = (shape[1] / scale[1]) * \
+                             (_time / scale[1])**(shape[1] - 1.0)
+            except ZeroDivisionError:
+                _values[1] = 0.0
+            try:
+                _values[2] = (shape[2] / scale[2]) * \
+                             (_time / scale[2])**(shape[2] - 1.0)
+            except ZeroDivisionError:
+                _values[2] = 0.0
+
+            _hazard[_time] = _values
+
+        return _hazard
+
+    def mean(self, scale, shape, start_time, end_time, step_time):  # pylint: disable=R0201
+        """
+        Method to calculate the means for the Weibull distribution between
+        start_time and end_time in intervals of step_time.  This method
+        calculates the point estimate as well as the bounding values at each
+        time step.
+
+        :param float scale: the scale parameter (eta) for the Weibull
+                            distribution to calculate the means for.
+        :param float shape: the list shape parameters (beta) for the Weibull
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _mean; a dict of lists where the key is the time at which
+                 the means were calculated and the value is a list of the lower
+                 bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _mean = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+            try:
+                _values[0] = scale[0] * gamma((1.0 / shape[0]) + 1)
+            except ZeroDivisionError:
+                _values[0] = 0.0
+            try:
+                _values[1] = scale[1] * gamma((1.0 / shape[1]) + 1)
+            except ZeroDivisionError:
+                _values[1] = 0.0
+            try:
+                _values[2] = scale[2] * gamma((1.0 / shape[2]) + 1)
+            except ZeroDivisionError:
+                _values[2] = 0.0
+
+            _mean[_time] = _values
+
+        return _mean
+
+    def reliability_function(self, scale, shape, start_time, end_time,
+                             step_time):    # pylint: disable=R0201
+        """
+        Method to calculate the reliability function for the Weibull
+        distribution between start_time and end_time in intervals of step_time.
+        This method calculates the point estimate as well as the bounding
+        values at each time step.
+
+        :param float scale: the scale parameter (eta) for the Weibull
+                            distribution to calculate the reliability function
+                            for.
+        :param float shape: the list shape parameters (beta) for the Weibull
+                            distribution to calculate the hazard function for.
+        :param float start_time: the first time to calculate the mean.
+        :param float end_time: the last time to calculate the mean.
+        :param int step_time: the interval of time between start_time and
+                              end_time to calculate the mean.
+        :return: _reliability; a dict of lists where the key is the time at
+                 which the reliability function was calculated and the value is
+                 a list of the lower bound, point estimate, and upper bound.
+        :rtype: dict
+        """
+
+        _reliability = {}
+
+        for _time in range(start_time, end_time, step_time):
+            _values = [0.0, 0.0, 0.0]
+
+            _values[0] = np.exp(-(_time / scale[2])**shape[2])
+            _values[1] = np.exp(-(_time / scale[1])**shape[1])
+            _values[2] = np.exp(-(_time / scale[0])**shape[0])
+
+            _reliability[_time] = _values
+
+        return _reliability

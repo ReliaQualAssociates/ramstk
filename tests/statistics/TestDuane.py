@@ -31,14 +31,6 @@ class TestDuane(unittest.TestCase):
     Class for testing the Duane model functions.
     """
 
-    def setUp(self):
-        """
-        Setup the test fixture for the Duane model functions.
-        """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
     @attr(all=True, unit=True)
     def test_calculate_duane_parameters(self):
         """
@@ -54,8 +46,8 @@ class TestDuane(unittest.TestCase):
                       14600.0, 22000.0]
 
         _alpha, _beta = calculate_duane_parameters(n_failures, fail_times)
-        self.assertAlmostEqual(_alpha, 0.6132337)
-        self.assertAlmostEqual(_beta, 1.9456630)
+        self.assertAlmostEqual(_alpha, 1.9456630)
+        self.assertAlmostEqual(_beta, 0.6132337)
 
     @attr(all=True, unit=True)
     def test_calculate_duane_parameters_zero_division(self):

@@ -120,8 +120,12 @@ def calculate_fisher_bounds(metric, variance, alpha):
         alpha = alpha / 100.0
     _z_norm = norm.ppf(alpha)
 
-    _fisher_l = metric * exp(-_z_norm * sqrt(variance) / metric)
-    _fisher_u = metric * exp(_z_norm * sqrt(variance) / metric)
+    if metric == 0.0:
+        _fisher_l = 0.0
+        _fisher_u = 0.0
+    else:
+        _fisher_l = metric * exp(-_z_norm * sqrt(variance) / metric)
+        _fisher_u = metric * exp(_z_norm * sqrt(variance) / metric)
 
     return _fisher_l, _fisher_u
 
