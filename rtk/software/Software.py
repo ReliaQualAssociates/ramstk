@@ -276,10 +276,12 @@ def _calculate_quality_risk(module):
                module.lst_sftw_quality[0][10] == 1:
                 _ratios[1] = 1
         except ZeroDivisionError:
-            _util.rtk_error(_(u"Attempted to divide by zero when "
-                              u"calculating the software quality risk for "
-                              u"{0:s}.  Perhaps you forgot to answer one or "
-                              u"more questions.").format(module.description))
+            print ""
+# TODO: Move this to the view module.
+        #    _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                      u"calculating the software quality risk for "
+        #                      u"{0:s}.  Perhaps you forgot to answer one or "
+        #                      u"more questions.").format(module.description))
 
         _n_yes = sum(module.lst_sftw_quality[0][:8]) + \
                  sum(module.lst_sftw_quality[0][12:]) + \
@@ -306,11 +308,13 @@ def _calculate_quality_risk(module):
                module.lst_sftw_quality[1][14] > 0.75:
                 _ratios[4] = 1
         except ZeroDivisionError:
-            _util.rtk_error(_(u"Attempted to divide by zero when "
-                              u"calculating the software quality risk for "
-                              u"{0:s}.  Perhaps you forgot to answer one "
-                              u"or more questions.").format(
-                                  module.description))
+            print ""
+# TODO: Move this to the view module.
+        #    _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                      u"calculating the software quality risk for "
+        #                      u"{0:s}.  Perhaps you forgot to answer one "
+        #                     u"or more questions.").format(
+        #                         module.description))
 
         _n_yes = sum(module.lst_sftw_quality[1][:2]) + \
                  sum(module.lst_sftw_quality[1][4:6]) + \
@@ -392,11 +396,13 @@ def _calculate_risk_reduction(module):
         else:
             _test_ratio = 1.0
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when "
-                          u"calculating the test effort risk "
-                          u"reduction for {0:s}.  Perhaps you forgot "
-                          u"to answer one or more questions.").format(
-                              module.description))
+        print ""
+# TODO: Move this to the view module.
+        #_util.rtk_error(_(u"Attempted to divide by zero when "
+        #                  u"calculating the test effort risk "
+        #                  u"reduction for {0:s}.  Perhaps you forgot "
+        #                  u"to answer one or more questions.").format(
+        #                      module.description))
 
     module.te = 1.0
     if _test_ratio > 0.4:
@@ -412,11 +418,13 @@ def _calculate_risk_reduction(module):
         elif module.tu / module.tt < 0.5:
             module.tm = 1.1
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when "
-                          u"calculating the test method risk "
-                          u"reduction for {0:s}.  Perhaps you forgot "
-                          u"to answer one or more questions.").format(
-                              module.description))
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when "
+    #                      u"calculating the test method risk "
+    #                      u"reduction for {0:s}.  Perhaps you forgot "
+    #                      u"to answer one or more questions.").format(
+    #                          module.description))
 
     # Calculate the risk reduction due to test coverage.
     try:
@@ -430,11 +438,13 @@ def _calculate_risk_reduction(module):
         else:
             _VS = 1.0
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when "
-                          u"calculating the test coverage risk "
-                          u"reduction for {0:s}.  Perhaps you forgot "
-                          u"to answer one or more questions.").format(
-                              module.description))
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when "
+    #                      u"calculating the test coverage risk "
+    #                      u"reduction for {0:s}.  Perhaps you forgot "
+    #                      u"to answer one or more questions.").format(
+    #                          module.description))
         _VS = 1.0
     module.tc = 1.0 / _VS
 
@@ -457,10 +467,12 @@ def _calculate_reliability_estimation_number(module):
     try:
         module.ew = module.et / float(module.et - module.os)
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when calculating "
-                          u"the workload for {0:s}.  Perhaps you forgot "
-                          u"to provide one or more inputs.").format(
-                              module.description))
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the workload for {0:s}.  Perhaps you forgot "
+    #                      u"to provide one or more inputs.").format(
+    #                          module.description))
 
     module.ev = 0.1 + 4.5 * module.ec
 
@@ -469,17 +481,22 @@ def _calculate_reliability_estimation_number(module):
     try:
         module.ft1 = module.dr_test / module.test_time
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when calculating "
-                          u"the average failure rate during test for "
-                          u"{0:s}.  Perhaps you forgot to provide one or "
-                          u"more inputs.").format(module.description))
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the average failure rate during test for "
+    #                      u"{0:s}.  Perhaps you forgot to provide one or "
+    #                      u"more inputs.").format(module.description))
+
     try:
         module.ft2 = module.dr_eot / module.test_time_eot
     except ZeroDivisionError:
-        _util.rtk_error(_(u"Attempted to divide by zero when calculating "
-                          u"the average failure rate at end of test for "
-                          u"{0:s}.  Perhaps you forgot to provide one or "
-                          u"more inputs.").format(module.description))
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the average failure rate at end of test for "
+    #                      u"{0:s}.  Perhaps you forgot to provide one or "
+    #                      u"more inputs.").format(module.description))
 
     _T1 = 0.02 * module.t_risk
     _T2 = 0.14 * module.t_risk
@@ -707,6 +724,8 @@ class Model(object):                        # pylint: disable=R0902
         self.test_time = 0.0
         self.dr_eot = 0
         self.test_time_eot = 0.0
+        self.units = 0
+        self.units_test = 0
 
     def set_attributes(self, values):
         """

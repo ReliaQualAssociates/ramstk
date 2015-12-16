@@ -813,11 +813,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Plot the expected time and expected time limits.
         _widg.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
-                        None, _title_=_(u"Total Validation Effort"),
-                        _xlab_=_(u"Date"),
-                        _ylab_=_(u"Total Time for All Tasks "),
-                        _marker_=['r--', 'b-', 'g--'],
-                        _type_=[4, 4, 4, 4])
+                        None, _title=_(u"Total Validation Effort"),
+                        _xlab=_(u"Date"),
+                        _ylab=_(u"Total Time for All Tasks "),
+                        _marker=['r--', 'b-', 'g--'],
+                        _type=[4, 4, 4, 4])
 
         # Plot the actual burn-down of total hours.
         self.dtcValidation.dicStatus[date.today().toordinal()] = _y4[len(_y4) - 1]

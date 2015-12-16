@@ -32,7 +32,7 @@ class DAO(object):
         :param str database: the full path of the database to connect to.
         :keyword int db_type: the type of database to connect to.  Options are:
                               * SQLite3 = 0 (default)
-                              * MySQL.MariaDB = 1
+                              * MySQL/MariaDB = 1
         """
 
         if db_type == 0:

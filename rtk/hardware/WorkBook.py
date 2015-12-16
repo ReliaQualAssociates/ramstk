@@ -5,11 +5,6 @@ Hardware Package Work Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -32,10 +31,6 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-
-# Import modules for localization support.
-import gettext
-import locale
 
 # Import other RTK modules.
 try:
@@ -76,6 +71,11 @@ try:
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 _ = gettext.gettext
 
 
@@ -89,61 +89,61 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     :ivar _hardware_model: the Hardware data model whose attributes are being
                            displayed.
 
-    :ivar _dic_definitions: dictionary containing pointers to the failure
-                            definitions for the Revision being displayed.  Key
-                            is the Failure Definition ID; value is the pointer
-                            to the Failure Definition data model.
+    :ivar dict _dic_definitions: dictionary containing pointers to the failure
+                                 definitions for the Revision being displayed.
+                                 Key is the Failure Definition ID; value is the
+                                 pointer to the Failure Definition data model.
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Hardware attribute.
+    :ivar list _lst_handler_id: list containing the ID's of the callback
+                                signals for each gtk.Widget() associated with
+                                an editable Hardware attribute.
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |     0    | txtName `focus_out_event`                 |
+    |     0    | txtName - `focus_out_event`               |
     +----------+-------------------------------------------+
-    |     1    | txtPartNum `focus_out_event`              |
+    |     1    | txtPartNum - `focus_out_event`            |
     +----------+-------------------------------------------+
-    |     2    | txtAltPartNum `focus_out_event`           |
+    |     2    | txtAltPartNum - `focus_out_event`         |
     +----------+-------------------------------------------+
-    |     3    | cmbCategory `changed`                     |
+    |     3    | cmbCategory - `changed`                   |
     +----------+-------------------------------------------+
-    |     4    | cmbSubcategory `changed`                  |
+    |     4    | cmbSubcategory - `changed`                |
     +----------+-------------------------------------------+
-    |     5    | txtRefDes `focus_out_event`               |
+    |     5    | txtRefDes - `focus_out_event`             |
     +----------+-------------------------------------------+
-    |     6    | txtCompRefDes `focus_out_event`           |
+    |     6    | txtCompRefDes - `focus_out_event`         |
     +----------+-------------------------------------------+
-    |     7    | txtQuantity `focus_out_event`             |
+    |     7    | txtQuantity - `focus_out_event`           |
     +----------+-------------------------------------------+
-    |     8    | txtDescription `focus_out_event`          |
+    |     8    | txtDescription - `focus_out_event`        |
     +----------+-------------------------------------------+
-    |     9    | cmbManufacturer `changed`                 |
+    |     9    | cmbManufacturer - `changed`               |
     +----------+-------------------------------------------+
-    |    10    | txtCAGECode `focus_out_event`             |
+    |    10    | txtCAGECode - `focus_out_event`           |
     +----------+-------------------------------------------+
-    |    11    | txtLCN `focus_out_event`                  |
+    |    11    | txtLCN - `focus_out_event`                |
     +----------+-------------------------------------------+
-    |    12    | txtNSN `focus_out_event`                  |
+    |    12    | txtNSN - `focus_out_event`                |
     +----------+-------------------------------------------+
-    |    13    | txtYearMade `focus_out_event`             |
+    |    13    | txtYearMade - `focus_out_event`           |
     +----------+-------------------------------------------+
-    |    14    | txtSpecification `focus_out_event`        |
+    |    14    | txtSpecification - `focus_out_event`      |
     +----------+-------------------------------------------+
-    |    15    | txtPageNum `focus_out_event`              |
+    |    15    | txtPageNum - `focus_out_event`            |
     +----------+-------------------------------------------+
-    |    16    | txtFigNum `focus_out_event`               |
+    |    16    | txtFigNum - `focus_out_event`             |
     +----------+-------------------------------------------+
-    |    17    | txtAttachments `focus_out_event`          |
+    |    17    | txtAttachments - `focus_out_event`        |
     +----------+-------------------------------------------+
-    |    18    | txtMissionTime `focus_out_event`          |
+    |    18    | txtMissionTime - `focus_out_event`        |
     +----------+-------------------------------------------+
-    |    19    | chkRepairable `toggled`                   |
+    |    19    | chkRepairable - `toggled`                 |
     +----------+-------------------------------------------+
-    |    20    | chkTagged `toggled`                       |
+    |    20    | chkTagged - `toggled`                     |
     +----------+-------------------------------------------+
-    |    21    | txtRemarks `focus_out_event`              |
+    |    21    | txtRemarks - `focus_out_event`            |
     +----------+-------------------------------------------+
 
     :ivar dtcHardware: the :class:`rtk.hardware.Hardware.Hardware` data
@@ -1039,34 +1039,32 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbHRMethod.get_model()
         _model.clear()
         self.cmbHRMethod.append_text("")
-        for _idx in self._workview.RTK_HR_TYPE:
-            self.cmbHRMethod.append_text(self._workview.RTK_HR_TYPE[_idx])
+        for __, _type in enumerate(_conf.RTK_HR_TYPE):
+            self.cmbHRMethod.append_text(_type)
 
         _model = self.cmbHRModel.get_model()
         _model.clear()
         self.cmbHRModel.append_text("")
-        for _idx in self._workview.RTK_HR_MODEL:
-            self.cmbHRModel.append_text(self._workview.RTK_HR_MODEL[_idx])
+        for __, _model in enumerate(_conf.RTK_HR_MODEL):
+            self.cmbHRModel.append_text(_model)
 
         _model = self.cmbFailDist.get_model()
         _model.clear()
         self.cmbFailDist.append_text("")
-        for _idx in self._workview.RTK_S_DIST:
-            self.cmbFailDist.append_text(self._workview.RTK_S_DIST[_idx])
+        for __, _dist in enumerate(_conf.RTK_S_DIST):
+            self.cmbFailDist.append_text(_dist)
 
         _model = self.cmbActEnviron.get_model()
         _model.clear()
         self.cmbActEnviron.append_text("")
-        for _idx in self._workview.RTK_ACTIVE_ENVIRON:
-            self.cmbActEnviron.append_text(
-                self._workview.RTK_ACTIVE_ENVIRON[_idx][0])
+        for __, _environ in enumerate(_conf.RTK_ACTIVE_ENVIRON):
+            self.cmbActEnviron.append_text(_environ[0])
 
         _model = self.cmbDormantEnviron.get_model()
         _model.clear()
         self.cmbDormantEnviron.append_text("")
-        for _idx in self._workview.RTK_DORMANT_ENVIRON:
-            self.cmbDormantEnviron.append_text(
-                self._workview.RTK_DORMANT_ENVIRON[_idx])
+        for __, _environ in enumerate(_conf.RTK_DORMANT_ENVIRON):
+            self.cmbDormantEnviron.append_text(_environ)
 
         # Create the labels for quadrant 1.
         _labels = [_(u"Active Environment:"), _(u"Active Temp:"),
@@ -1301,14 +1299,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbMTTRMethod.get_model()
         _model.clear()
         self.cmbMTTRMethod.append_text("")
-        for _idx in self._workview.RTK_MTTR_TYPE:
-            self.cmbMTTRMethod.append_text(self._workview.RTK_MTTR_TYPE[_idx])
+        for __, _type in enumerate(_conf.RTK_MTTR_TYPE):
+            self.cmbMTTRMethod.append_text(_type)
 
         _model = self.cmbRepairDist.get_model()
         _model.clear()
         self.cmbRepairDist.append_text("")
-        for _idx in self._workview.RTK_S_DIST:
-            self.cmbRepairDist.append_text(self._workview.RTK_S_DIST[_idx])
+        for __, _dist in enumerate(_conf.RTK_S_DIST):
+            self.cmbRepairDist.append_text(_dist)
 
         self.cmbMTTRMethod.set_tooltip_text(_(u"Selects the method of "
                                               u"assessing the mean time to "
@@ -1372,8 +1370,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbCostMethod.get_model()
         _model.clear()
         self.cmbCostMethod.append_text("")
-        for _idx in self._workview.RTK_COST_TYPE:
-            self.cmbCostMethod.append_text(self._workview.RTK_COST_TYPE[_idx])
+        for __, _type in enumerate(_conf.RTK_COST_TYPE):
+            self.cmbCostMethod.append_text(_type)
 
         self.cmbCostMethod.set_tooltip_text(_(u"Select the method for "
                                               u"assessing the cost of the "

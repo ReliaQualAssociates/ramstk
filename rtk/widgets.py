@@ -288,7 +288,7 @@ def load_combo(combo, entries, simple=True, index=0):
     :keyword int index: the index in the list to display.  Only used when doing
                         a simple load.  Default is 0.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _model = combo.get_model()
@@ -748,7 +748,7 @@ def edit_tree(cell, path, new_text, position, model):
     :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                 belongs to.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _convert = gobject.type_name(model.get_column_type(position))
@@ -778,7 +778,7 @@ def cell_toggled(cell, path, position, model):
     :param gtk.TreeModel model: the gtk.TreeModel() the
                                 gtk.CellRendererToggle() belongs to.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     model[path][position] = not cell.get_active()
@@ -796,7 +796,7 @@ def resize_wrap(column, __param, cell):
     :param gtk.CellRenderer cell: the gtk.CellRenderer() that needs to be
                                   resized.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _width = column.get_width()
@@ -836,8 +836,8 @@ def make_column_heading(heading=""):
 
 
 def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
-              _title_="", _xlab_="", _ylab_="", _type_=[1, 1, 1, 1],
-              _marker_=['g-', 'r-', 'b-', 'k--']):
+              _title="", _xlab="", _ylab="", _type=[1, 1, 1, 1],
+              _marker=['g-', 'r-', 'b-', 'k--']):
     """
     Function to load the matplotlib plots.
 
@@ -856,16 +856,14 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
                        2 = plot
                        3 = histogram
                        4 = date plot
-    :keyword str marker: list of the markers to use on the plot. Options are:
+    :keyword str marker: list of the markers to use on the plot. Defaults are:
                          g- = green solid line
                          r- = red solid line
                          b- = blue solid line
                          k- = black dashed line
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
-
-    import heapq
 
     n_points = len(x)
 
@@ -873,102 +871,146 @@ def load_plot(axis, plot, x, y1=None, y2=None, y3=None, y4=None,
 
     axis.grid(True, which='both')
 
-    _lst_min_ = []
-    _lst_max_ = []
+    _x_min = min(x)
+    _x_max = max(x)
+    _y_min = 0.0
+    _y_max = 1.0
+    _lst_min = [0.0]
+    _lst_max = []
     if y1 is not None:
-        if _type_[0] == 1:
-            line, = axis.step(x, y1, _marker_[0], where='mid')
-            for i in range(n_points):
-                line.set_ydata(y1)
-            _lst_min_.append(min(y1))
-            _lst_max_.append(max(y1))
-        elif _type_[0] == 2:
-            line, = axis.plot(x, y1, _marker_[0], linewidth=2)
-            for i in range(n_points):
-                line.set_ydata(y1)
-            _lst_min_.append(min(y1))
-            _lst_max_.append(max(y1))
-        elif _type_[0] == 3:
+        if _type[0] == 1:
+            line, = axis.step(x, y1, _marker[0], where='mid')
+            line.set_ydata(y1)
+            _lst_min.append(min(y1))
+            _lst_max.append(max(y1))
+        elif _type[0] == 2:
+            line, = axis.plot(x, y1, _marker[0], linewidth=2)
+            line.set_ydata(y1)
+            _lst_min.append(min(y1))
+            _lst_max.append(max(y1))
+        elif _type[0] == 3:
             axis.grid(False, which='both')
-            n, bins, __patches = axis.hist(x, bins=y1, color=_marker_[0])
-            _lst_min_.append(min(n))
-            _lst_max_.append(max(n))
-        elif _type_[0] == 4:
-            line, = axis.plot_date(x, y1, _marker_[0],
+            n, bins, __patches = axis.hist(x, bins=y1, color=_marker[0])
+            _x_min = min(bins)
+            _x_max = max(bins)
+            _lst_min.append(min(n))
+            _lst_max.append(max(n) + 1)
+        elif _type[0] == 4:
+            line, = axis.plot_date(x, y1, _marker[0],
                                    xdate=True, linewidth=2)
-            _lst_min_.append(min(y1))
-            _lst_max_.append(max(y1))
+            _lst_min.append(min(y1))
+            _lst_max.append(max(y1))
+        _y_min = min(y1)
+        _y_max = max(y1)
 
     if y2 is not None:
-        if _type_[1] == 1:
-            line2, = axis.step(x, y2, _marker_[1], where='mid')
-            for i in range(n_points):
-                line2.set_ydata(y2)
-        elif _type_[1] == 2:
-            line2, = axis.plot(x, y2, _marker_[1], linewidth=2)
-            for i in range(n_points):
-                line2.set_ydata(y2)
-        elif _type_[1] == 3:
+        if _type[1] == 1:
+            line2, = axis.step(x, y2, _marker[1], where='mid')
+            line2.set_ydata(y2)
+            _lst_min.append(min(y2))
+            _lst_max.append(max(y2))
+        elif _type[1] == 2:
+            line2, = axis.plot(x, y2, _marker[1], linewidth=2)
+            line2.set_ydata(y2)
+            _lst_min.append(min(y2))
+            _lst_max.append(max(y2))
+        elif _type[1] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=len(y2),
-                                             color=_marker_[1])
-        elif _type_[1] == 4:
-            line2, = axis.plot_date(x, y2, _marker_[1],
+            n, bins, __patches = axis.hist(x, bins=len(y2),
+                                           color=_marker[1])
+            _x_min = min(bins)
+            _x_max = max(bins)
+            _lst_min.append(min(n))
+            _lst_max.append(max(n) + 1)
+        elif _type[1] == 4:
+            line2, = axis.plot_date(x, y2, _marker[1],
                                     xdate=True, linewidth=2)
-        _lst_min_.append(min(y2))
-        _lst_max_.append(max(y2))
+            _lst_min.append(min(y2))
+            _lst_max.append(max(y2))
+        _y_min = min(y2)
+        _y_max = max(y2)
 
     if y3 is not None:
-        if _type_[2] == 1:
-            line3, = axis.step(x, y3, _marker_[2], where='mid')
-            for i in range(n_points):
-                line3.set_ydata(y3)
-        elif _type_[2] == 2:
-            line3, = axis.plot(x, y3, _marker_[2], linewidth=2)
-            for i in range(n_points):
-                line3.set_ydata(y3)
-        elif _type_[2] == 3:
+        if _type[2] == 1:
+            line3, = axis.step(x, y3, _marker[2], where='mid')
+            line3.set_ydata(y3)
+            _lst_min.append(min(y3))
+            _lst_max.append(max(y3))
+        elif _type[2] == 2:
+            line3, = axis.plot(x, y3, _marker[2], linewidth=2)
+            line3.set_ydata(y3)
+            _lst_min.append(min(y3))
+            _lst_max.append(max(y3))
+        elif _type[2] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=len(y3),
-                                             color=_marker_[2])
-        elif _type_[2] == 4:
-            line3, = axis.plot_date(x, y3, _marker_[2],
+            n, bins, __patches = axis.hist(x, bins=len(y3),
+                                           color=_marker[2])
+            _x_min = min(bins)
+            _x_max = max(bins)
+            _lst_min.append(min(n))
+            _lst_max.append(max(n) + 1)
+        elif _type[2] == 4:
+            line3, = axis.plot_date(x, y3, _marker[2],
                                     xdate=True, linewidth=2)
-        _lst_min_.append(min(y3))
-        _lst_max_.append(max(y3))
+            _lst_min.append(min(y3))
+            _lst_max.append(max(y3))
+        _y_min = min(y3)
+        _y_max = max(y3)
 
     if y4 is not None:
-        if _type_[3] == 1:
-            line4, = axis.step(x, y4, _marker_[3], where='mid')
-            for i in range(n_points):
-                line4.set_ydata(y4)
-        elif _type_[3] == 2:
-            line4, = axis.plot(x, y4, _marker_[3], linewidth=2)
-            for i in range(n_points):
-                line4.set_ydata(y4)
-        elif _type_[3] == 3:
+        if _type[3] == 1:
+            line4, = axis.step(x, y4, _marker[3], where='mid')
+            line4.set_ydata(y4)
+            _lst_min.append(min(y4))
+            _lst_max.append(max(y4))
+        elif _type[3] == 2:
+            line4, = axis.plot(x, y4, _marker[3], linewidth=2)
+            line4.set_ydata(y4)
+            _lst_min.append(min(y4))
+            _lst_max.append(max(y4))
+        elif _type[3] == 3:
             axis.grid(False, which='both')
-            __n, bins, __patches = axis.hist(x, bins=len(y4),
-                                             color=_marker_[3])
-        elif _type_[3] == 4:
-            line4, = axis.plot_date(x, y4, _marker_[3],
+            n, bins, __patches = axis.hist(x, bins=len(y4),
+                                           color=_marker[3])
+            _x_min = min(bins)
+            _x_max = max(bins)
+            _lst_min.append(min(n))
+            _lst_max.append(max(n) + 1)
+        elif _type[3] == 4:
+            line4, = axis.plot_date(x, y4, _marker[3],
                                     xdate=True, linewidth=2)
-        _lst_min_.append(min(y4))
-        _lst_max_.append(max(y4))
+            _lst_min.append(min(y4))
+            _lst_max.append(max(y4))
+        _y_min = min(y4)
+        _y_max = max(y4)
 
-    axis.set_title(_title_)
-    axis.set_xlabel(_xlab_)
-    axis.set_ylabel(_ylab_)
+    axis.set_title(_title, {'fontsize': 16, 'fontweight': 'bold',
+                            'verticalalignment': 'baseline',
+                            'horizontalalignment': 'center'})
+
+    # Set the x-axis label.
+    _x_pos = (_x_max - _x_min) / 2.0
+    _y_pos = _y_min - 0.65
+    axis.set_xlabel(_xlab, {'fontsize': 14, 'fontweight': 'bold',
+                            'verticalalignment': 'center',
+                            'horizontalalignment': 'center',
+                            'x': _x_pos, 'y': _y_pos})
+
+    # Set the y-axis label.
+    axis.set_ylabel(_ylab, {'fontsize': 14, 'fontweight': 'bold',
+                            'verticalalignment': 'center',
+                            'horizontalalignment': 'center',
+                            'rotation':'vertical'})
 
     # Get the minimum and maximum y-values to set the axis bounds.  If the
     # maximum value is infinity, use the next largest value and so forth.
-    _min_ = min(_lst_min_)
-    _max = heapq.nlargest(2, _lst_max_)
-    for i, _max in enumerate(_lst_max_):
-        if _max < _lst_max_[i] and _lst_max_[i] != float('inf'):
-            _max = _lst_max_[i]
+    _min = min(_lst_min)
+    _max = _lst_max[0]
+    for i in range(1, len(_lst_max)):
+        if _max < _lst_max[i] and _lst_max[i] != float('inf'):
+            _max = _lst_max[i]
 
-    axis.set_ybound(_min_, _max)
+    axis.set_ybound(_min, _max)
 
     plot.draw()
 
@@ -1014,7 +1056,7 @@ def create_legend(axis, text, fontsize='small', legframeon=False,
                            string.
     :keyword float lwd: the linewidth of the box around the legend.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _legend = axis.legend(text, frameon=legframeon, loc=location, ncol=legncol,
@@ -1035,7 +1077,7 @@ def expand_plot(event):
     :param matplotlib.MouseEvent event: the matplotlib MouseEvent() that called
                                         this method.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _plot = event.canvas
@@ -1069,7 +1111,7 @@ def close_plot(__window, __event, plot, parent):
                                          expanded.
     :param gtk.Widget parent: the original parent gtk.Widget() for the plot.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     plot.reparent(parent)

@@ -192,7 +192,7 @@ class Model(Component):
         if self.environment_active in [1, 2, 4, 11]:
             _harsh = False
 #TODO: Update this after unpacking the book at the new house.
-        if harsh:
+        if _harsh:
             if self.operating_current > 0.75 * self.rated_current:
                 self.overstress = True
                 self.reason = self.reason + str(_reason_num) + \

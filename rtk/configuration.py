@@ -329,11 +329,6 @@ Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
                 List Book.
 """
 
-__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.configuration.py is part of The RTK Project
@@ -345,11 +340,17 @@ from os import environ, path, makedirs, name
 
 # Add localization support.
 import gettext
-_ = gettext.gettext
 
 # Import other RTK modules.
 import utilities as _util
 import widgets as _widg
+
+_ = gettext.gettext
+
+__author__ = 'Andrew Rowland <andrew.rowland@reliaqual.com>'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 MODE = ''
 
@@ -529,7 +530,7 @@ class RTKConf(object):
             if not _util.file_exists(self._conf_file):
                 self.create_default_configuration()
 
-    def create_default_configuration(self):
+    def create_default_configuration(self):     # pylint: disable=R0914
         """
         Creates a default configuration file in the user's configuration
         directory.

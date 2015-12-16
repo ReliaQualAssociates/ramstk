@@ -5,11 +5,6 @@ this module as _util in other modules that need to interact with the RTK
 application.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.utilities.py is part of The RTK Project
@@ -20,6 +15,11 @@ import sys
 import os
 import os.path
 from os import environ, name
+
+# Add localization support.
+import gettext
+
+from ConfigParser import SafeConfigParser, NoOptionError
 
 # Modules required for the GUI.
 try:
@@ -40,16 +40,17 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Add localization support.
-import gettext
-_ = gettext.gettext
-
-from ConfigParser import SafeConfigParser, NoOptionError
-
 # Import other RTK modules.
 import configuration as _conf
 import login as _login
 import widgets as _widg
+
+_ = gettext.gettext
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 def read_configuration():
@@ -387,7 +388,7 @@ def dir_exists(directory):
     :param str directory: a string representing the directory path to check
                           for.
     :return: False if the directory does not exist, True otherwise.
-    :rtype: boolean
+    :rtype: bool
     """
 
     return os.path.isdir(directory)
@@ -421,7 +422,7 @@ def file_exists(_file):
 
     :param str _file: a string representing the filepath to check for.
     :return: True if the file exists, False otherwise.
-    :rtype: boolean
+    :rtype: bool
     """
 
     return os.path.isfile(_file)
@@ -434,7 +435,7 @@ def create_project(widget, app):
     :param gtk.Widget widget: the gtk.Widget() that called this function.
     :param rtk app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     set_cursor(app, gtk.gdk.WATCH)
@@ -689,7 +690,7 @@ def save_project(__widget, app):
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
     :param rtk app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     if not app.LOADED:
@@ -742,7 +743,7 @@ def delete_project(__widget, app):
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
     :param rtk app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     if _conf.BACKEND == 'mysql':
@@ -827,7 +828,7 @@ def import_project(__widget, __app):
     :param gtk.Widget __widget: the gtk.Widget() that called this function.
     :param rtk __app: the current instance of the RTK application.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _dialog = gtk.FileChooserDialog(_(u"Select Project to Import"), None,
@@ -1137,7 +1138,7 @@ def find_all_in_list(searchlist, value, start=0):
     positions = []
     i = start - 1
     try:
-        i = searchlist.index(value, i+1)
+        i = searchlist.index(value, i + 1)
         positions.append(i)
         return positions
     except ValueError:
@@ -1186,7 +1187,7 @@ def build_comp_ref_des(model, __path, row):
     :param gtk.TreeIter row: the currently selected gtk.TreeIter() in the
                              Hardware class gtk.TreeModel().
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _ref_des = model.get_value(row, 68)
@@ -1217,7 +1218,7 @@ def add_parts_system_hierarchy(__widget, app):
     :param gtk.Widget __widget: the gtk.Widget() that called the function.
     :param rtk app: the current instance of the RTK application.
     :return: False if successul or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     set_cursor(app, gtk.gdk.WATCH)
@@ -1290,7 +1291,7 @@ def component_add(app, values):
                          - Parent Assembly
                          - Part Number
     :return: False if successul or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _error = False
@@ -1340,283 +1341,6 @@ def component_add(app, values):
     return _error
 
 
-def set_part_model(category, subcategory):
-    """
-    This functions sets the Component class part model based on the category
-    and subcategory.
-
-    :param int category: the component category for part.
-    :param int subcategory: the component sub-category for the part.
-    :return: _part
-    :rtype: rtk.Component()
-    """
-
-    if category <= 0 or subcategory <= 0:   # No category or subcategory
-        _part = None
-    elif category == 1:                     # Capacitor
-        if subcategory == 1:
-            from capacitors.fixed import CeramicGeneral
-            _part = CeramicGeneral()
-        elif subcategory == 2:
-            from capacitors.fixed import CeramicChip
-            _part = CeramicChip()
-        elif subcategory == 3:
-            from capacitors.electrolytic import AluminumDry
-            _part = AluminumDry()
-        elif subcategory == 4:
-            from capacitors.electrolytic import Aluminum
-            _part = Aluminum()
-        elif subcategory == 5:
-            from capacitors.electrolytic import TantalumNonSolid
-            _part = TantalumNonSolid()
-        elif subcategory == 6:
-            from capacitors.electrolytic import TantalumSolid
-            _part = TantalumSolid()
-        elif subcategory == 7:
-            from capacitors.fixed import PaperFeedthrough
-            _part = PaperFeedthrough()
-        elif subcategory == 8:
-            from capacitors.fixed import Glass
-            _part = Glass()
-        elif subcategory == 9:
-            from capacitors.fixed import MetallizedPaper
-            _part = MetallizedPaper()
-        elif subcategory == 10:
-            from capacitors.fixed import Mica
-            _part = Mica()
-        elif subcategory == 11:
-            from capacitors.fixed import MicaButton
-            _part = MicaButton()
-        elif subcategory == 12:
-            from capacitors.fixed import PlasticFilm
-            _part = PlasticFilm()
-        elif subcategory == 13:
-            from capacitors.fixed import PaperBypass
-            _part = PaperBypass()
-        elif subcategory == 14:
-            from capacitors.fixed import Plastic
-            _part = Plastic()
-        elif subcategory == 15:
-            from capacitors.fixed import SuperMetallizedPlastic
-            _part = SuperMetallizedPlastic()
-        elif subcategory == 16:
-            from capacitors.variable import Gas
-            _part = Gas()
-        elif subcategory == 17:
-            from capacitors.variable import AirTrimmer
-            _part = AirTrimmer()
-        elif subcategory == 18:
-            from capacitors.variable import Ceramic
-            _part = Ceramic()
-        elif subcategory == 19:
-            from capacitors.variable import Piston
-            _part = Piston()
-    elif category == 2:                    # Connection
-        if subcategory == 4:
-            from connections.socket import ICSocket
-            _part = ICSocket()
-        elif subcategory == 5:
-            from connections.multipin import Multipin
-            _part = Multipin()
-        elif subcategory == 6:
-            from connections.pcb import PCBEdge
-            _part = PCBEdge()
-        elif subcategory == 7:
-            from connections.solder import PTH
-            _part = PTH()
-        else:
-            from connections.solder import Solder
-            _part = Solder(subcategory)
-    elif category == 3:                    # Inductive Device
-        if subcategory == 1:
-            from inductors.coil import Coil
-            _part = Coil()
-        elif subcategory == 2:
-            from inductors.transformer import Audio
-            _part = Audio()
-        elif subcategory == 3:
-            from inductors.transformer import Power
-            _part = Power()
-        elif subcategory == 4:
-            from inductors.transformer import LowPowerPulse
-            _part = LowPowerPulse()
-        elif subcategory == 5:
-            from inductors.transformer import RF
-            _part = RF()
-
-    elif category == 4:                    # Integrated circuit
-        if subcategory == 1:
-            from integrated_circuits.gaas import GaAsDigital
-            _part = GaAsDigital()
-        elif subcategory == 2:
-            from integrated_circuits.gaas import GaAsMMIC
-            _part = GaAsMMIC()
-        elif subcategory == 3:
-            from integrated_circuits.linear import Linear
-            _part = Linear()
-        elif subcategory == 4:
-            from integrated_circuits.logic import Logic
-            _part = Logic()
-        elif subcategory == 5:
-            from integrated_circuits.memory import MemoryDRAM
-            _part = MemoryDRAM()
-        elif subcategory == 6:
-            from integrated_circuits.memory import MemoryEEPROM
-            _part = MemoryEEPROM()
-        elif subcategory == 7:
-            from integrated_circuits.memory import MemoryROM
-            _part = MemoryROM()
-        elif subcategory == 8:
-            from integrated_circuits.memory import MemorySRAM
-            _part = MemorySRAM()
-        elif subcategory == 9:
-            from integrated_circuits.microprocessor import Microprocessor
-            _part = Microprocessor()
-        elif subcategory == 10:
-            from integrated_circuits.palpla import PALPLA
-            _part = PALPLA()
-        elif subcategory == 11:
-            from integrated_circuits.vlsi import VLSI
-            _part = VLSI()
-
-    elif category == 5:                     # Meter
-        if subcategory == 1:
-            from meters.meter import ElapsedTime
-            _part = ElapsedTime()
-        elif subcategory == 2:
-            from meters.meter import Panel
-            _part = Panel()
-
-    elif category == 6:                     # Miscellaneous
-        if subcategory == 1:
-            from miscellaneous.crystal import Crystal
-            _part = Crystal()
-        elif subcategory == 2:
-            from miscellaneous.filter import Filter
-            _part = Filter()
-        elif subcategory == 3:
-            from miscellaneous.fuse import Fuse
-            _part = Fuse()
-        elif subcategory == 4:
-            from miscellaneous.lamp import Lamp
-            _part = Lamp()
-
-    elif category == 7:              # Relay
-        if subcategory == 1:
-            from relays.relay import Mechanical
-            _part = Mechanical()
-        elif subcategory == 2:
-            from relays.relay import SolidState
-            _part = SolidState()
-
-    elif category == 8:              # Resistor
-        if subcategory == 1:
-            from resistors.fixed import Composition
-            _part = Composition()
-        elif subcategory == 2:
-            from resistors.fixed import Film
-            _part = Film()
-        elif subcategory == 3:
-            from resistors.fixed import FilmNetwork
-            _part = FilmNetwork()
-        elif subcategory == 4:
-            from resistors.fixed import FilmPower
-            _part = FilmPower()
-        elif subcategory == 5:
-            from resistors.fixed import Wirewound
-            _part = Wirewound()
-        elif subcategory == 6:
-            from resistors.fixed import WirewoundPower
-            _part = WirewoundPower()
-        elif subcategory == 7:
-            from resistors.fixed import WirewoundPowerChassis
-            _part = WirewoundPowerChassis()
-        elif subcategory == 8:
-            from resistors.thermistor import Thermistor
-            _part = Thermistor()
-        elif subcategory == 9:
-            from resistors.variable import Composition
-            _part = Composition()
-        elif subcategory == 10:
-            from resistors.variable import NonWirewound
-            _part = NonWirewound()
-        elif subcategory == 11:
-            from resistors.variable import VarFilm
-            _part = VarFilm()
-        elif subcategory == 12:
-            from resistors.variable import VarWirewound
-            _part = VarWirewound()
-        elif subcategory == 13:
-            from resistors.variable import VarWirewoundPower
-            _part = VarWirewoundPower()
-        elif subcategory == 14:
-            from resistors.variable import WirewoundPrecision
-            _part = WirewoundPrecision()
-        elif subcategory == 15:
-            from resistors.variable import WirewoundSemiPrecision
-            _part = WirewoundSemiPrecision()
-
-    elif category == 9:              # Semiconductor
-        if subcategory == 1:
-            from semiconductors.diode import HighFrequency
-            _part = HighFrequency()
-        elif subcategory == 2:
-            from semiconductors.diode import LowFrequency
-            _part = LowFrequency()
-        elif subcategory == 3:
-            from semiconductors.optoelectronics import Display
-            _part = Display()
-        elif subcategory == 4:
-            from semiconductors.optoelectronics import Detector
-            _part = Detector()
-        elif subcategory == 5:
-            from semiconductors.optoelectronics import LaserDiode
-            _part = LaserDiode()
-        elif subcategory == 6:
-            from semiconductors.thyristor import Thyristor
-            _part = Thyristor()
-        elif subcategory == 7:
-            from semiconductors.transistor import HFGaAsFET
-            _part = HFGaAsFET()
-        elif subcategory == 8:
-            from semiconductors.transistor import HFHPBipolar
-            _part = HFHPBipolar()
-        elif subcategory == 9:
-            from semiconductors.transistor import HFLNBipolar
-            _part = HFLNBipolar()
-        elif subcategory == 10:
-            from semiconductors.transistor import HFSiFET
-            _part = HFSiFET()
-        elif subcategory == 11:
-            from semiconductors.transistor import LFBipolar
-            _part = LFBipolar()
-        elif subcategory == 12:
-            from semiconductors.transistor import LFSiFET
-            _part = LFSiFET()
-        elif subcategory == 13:
-            from semiconductors.transistor import Unijunction
-            _part = Unijunction()
-
-    elif category == 10:             # Switching Device
-        if subcategory == 1:
-            from switches.breaker import Breaker
-            _part = Breaker()
-        elif subcategory == 2:
-            from switches.rotary import Rotary
-            _part = Rotary()
-        elif subcategory == 3:
-            from switches.sensitive import Sensitive
-            _part = Sensitive()
-        elif subcategory == 4:
-            from switches.thumbwheel import Thumbwheel
-            _part = Thumbwheel()
-        elif subcategory == 5:
-            from switches.toggle import Toggle
-            _part = Toggle()
-
-    return _part
-
-
 def add_failure_modes(app, revision_id, assembly_id, category_id,
                       subcategory_id):
     """
@@ -1628,7 +1352,7 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
     :param int category_id: the component category ID.
     :param int subcategory_id: the component subcategory ID.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _err = False
@@ -1698,7 +1422,7 @@ def trickledown(model, row, index_, value_):
                        information to trickle down.
     :param any value_: the value of the parameter to trickle down.
     :return: False if successful or True if an error is encountered.
-    :rtype: boolean
+    :rtype: bool
     """
 
     _n_children = model.iter_n_children(row)
@@ -2442,7 +2166,7 @@ class Options(gtk.Window):
                                             this method.
         :param int rtk_colors: the position in the RTK_COLORS global variable.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Retrieve the six digit hexidecimal version of the selected color.
@@ -2474,7 +2198,7 @@ class Options(gtk.Window):
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                       method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         from lxml import etree
@@ -2565,7 +2289,7 @@ class Options(gtk.Window):
         :param position: the column position of the edited gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         model[path][position] = not cell.get_active()
@@ -2578,7 +2302,7 @@ class Options(gtk.Window):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False
-        :rtype: boolean
+        :rtype: bool
         """
 
         if self.rdoMeasurement.get_active():
@@ -2644,7 +2368,7 @@ class Options(gtk.Window):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Add a new row.
@@ -2665,7 +2389,7 @@ class Options(gtk.Window):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = self.tvwListEditor.get_selection().get_selected()
@@ -2756,7 +2480,7 @@ class Options(gtk.Window):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         from shutil import copyfile
@@ -2793,7 +2517,7 @@ class Options(gtk.Window):
         Method to save the configuration changes made by the user.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # Save the active modules for the open RTK Program database.
@@ -2825,7 +2549,7 @@ class Options(gtk.Window):
         Method to save the default values to the RTK configuration file.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _conf_file = _conf.CONF_DIR + 'RTK.conf'
@@ -2856,19 +2580,19 @@ class Options(gtk.Window):
 
             try:
                 _parser.set('General', 'treetabpos',
-                    self.cmbModuleBookTabPosition.get_active_text().lower())
+                            self.cmbModuleBookTabPosition.get_active_text().lower())
             except AttributeError:
                 _parser.set('General', 'treetabpos', 'top')
 
             try:
                 _parser.set('General', 'listtabpos',
-                    self.cmbListBookTabPosition.get_active_text().lower())
+                            self.cmbListBookTabPosition.get_active_text().lower())
             except AttributeError:
                 _parser.set('General', 'listtabpos', 'right')
 
             try:
                 _parser.set('General', 'booktabpos',
-                    self.cmbWorkBookTabPosition.get_active_text().lower())
+                            self.cmbWorkBookTabPosition.get_active_text().lower())
             except AttributeError:
                 _parser.set('General', 'booktabpos', 'bottom')
 
@@ -2919,7 +2643,7 @@ class Options(gtk.Window):
             :param gtk.TreeIter row: the selected gtk.TreeIter() in the List
                                      Editor gtk.TreeModel().
             :return: False if successful or True if an error is encountered.
-            :rtype: boolean
+            :rtype: bool
             """
 
             if self.rdoMeasurement.get_active():
@@ -2996,7 +2720,7 @@ class Options(gtk.Window):
         Method for saving the gtk.TreeView() layout file.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_name, _fmt_idx) = self._get_format_info()
@@ -3058,7 +2782,7 @@ class Options(gtk.Window):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         self.destroy()
