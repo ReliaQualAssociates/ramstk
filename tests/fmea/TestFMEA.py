@@ -3,14 +3,9 @@
 This is the test class for testing the FMEA class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       TestFMEA.py is part of The RTK Project
+#       rtk.tests.fmea.TestFMEA.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -25,6 +20,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import dao.DAO as _dao
 
 from analyses.fmea.FMEA import *
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestFMEAModel(unittest.TestCase):
@@ -110,7 +110,7 @@ class TestFMEAController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = FMEA()

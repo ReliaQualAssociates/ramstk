@@ -5,11 +5,6 @@ FMEA Package Work Book View
 ###########################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.fmea.gui.gtk.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 import pango
@@ -38,10 +37,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -52,6 +47,11 @@ except ImportError:
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddControlAction
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -74,6 +74,28 @@ def get_mode_id(mode):
     """
 
     return mode.mode_id
+
+
+def _on_start_edit(cell, editable, __path, index):
+    """
+    Responds to editing-started signals from the FMECA gtk.TreeView().
+
+    :param gtk.CellRenderer cell: the gtk.CellRenderer() that called this
+                                  method.
+    :param gtk.CellEditable editable: the gtk.CellEditable() that is
+                                      associated with the calling
+                                      gtk.CellRenderer().
+    :param str __path: the path of the selected gtk.TreeIter().
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+
+    if isinstance(editable, gtk.Entry):
+        if index in [32, 36, 38]:
+            _util.date_select(cell, None, editable)
+
+    return False
+
 
 class WorkView(gtk.HBox):                   # pylint: disable=R0902
     """
@@ -291,8 +313,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 elif i == 14:               # Severity classification
                     _results = [_s[1] for _s in _conf.RTK_SEVERITY]
 
-                for j in range(len(_results)):
-                    _cellmodel.append([_results[j]])
+                for __, _result in enumerate(_results):
+                    _cellmodel.append([_result])
 
             elif i in [6, 7, 8, 9, 10, 11, 12, 13, 41]:
                 _cell = gtk.CellRendererText()
@@ -390,8 +412,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                     _results = _conf.RTK_RPN_OCCURRENCE
                 else:
                     _results = _conf.RTK_RPN_DETECTION
-                for j in range(len(_results)):
-                    _cellmodel.append([_results[j][1]])
+                for __, _result in enumerate(_results):
+                    _cellmodel.append([_result[1]])
 
             elif i == 30:
                 _cell = gtk.CellRendererToggle()
@@ -418,8 +440,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                     _results = [_s[0] + ', ' + _s[1] for _s in _conf.RTK_USERS]
                 elif i == 33:
                     _results = [_s[0] for _s in _conf.RTK_STATUS]
-                for j in range(len(_results)):
-                    _cellmodel.append([_results[j]])
+                for __, _result in enumerate(_results):
+                    _cellmodel.append([_result])
 
             elif i in [32, 34, 36, 38]:
                 _cell = gtk.CellRendererText()
@@ -428,7 +450,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _cell.set_property('visible', 1)
                 _cell.set_property('yalign', 0.1)
                 _cell.connect('edited', self._on_cell_edit, i + 1)
-                _cell.connect('editing-started', self._on_start_edit, i)
+                _cell.connect('editing-started', _on_start_edit, i)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 1, background=58,
                                        editable=50)
@@ -605,7 +627,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # Find all the FMEA/FMECA for the selected Hardware Item.
         _modes = self.dtcFMECA.dicDFMEA[hardware_id].dicModes.values()
         _modes = sorted(_modes, key=get_mode_id)
-        _criticality = 1
         _severity = ['', '']
         _occurrence = ['', '']
         _detection = ['', '']
@@ -1232,29 +1253,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _model.clear()
 
         _model.append([""])
-        for i in range(len(phases)):
-            _model.append([phases[i][5]])
-            self._dic_phases[phases[i][5]] = phases[i][3:5]
-
-        return False
-
-    def _on_start_edit(self, cell, editable, __path, index):
-        """
-        Responds to editing-started signals from the FMECA gtk.TreeView().
-
-        :param gtk.CellRenderer cell: the gtk.CellRenderer() that called this
-                                      method.
-        :param gtk.CellEditable editable: the gtk.CellEditable() that is
-                                          associated with the calling
-                                          gtk.CellRenderer().
-        :param str __path: the path of the selected gtk.TreeIter().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if isinstance(editable, gtk.Entry):
-            if index in [32, 36, 38]:
-                _date = _util.date_select(cell, None, editable)
+        for __, _phase in enumerate(phases):
+            _model.append([_phase[5]])
+            self._dic_phases[_phase[5]] = _phase[3:5]
 
         return False
 

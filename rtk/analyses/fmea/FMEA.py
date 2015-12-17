@@ -5,11 +5,6 @@ FMEA Module
 ===========
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.fmea.FMEA.py is part of The RTK Project
@@ -31,33 +26,17 @@ from Cause import Model as Cause
 from Control import Model as Control
 from Action import Model as Action
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    elif 'invalid literal' in message[0]:   # Value error
-        _error_code = 50
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class OutOfRangeError(Exception):
@@ -148,7 +127,7 @@ class FMEA(object):
         self.dicPhases = {}
 
     def request_fmea(self, dao, assembly_id=None,
-                     function_id=None, revision_id=None):    # pylint: disable=R0914
+                     function_id=None, revision_id=None):
         """
         Method to load the entire FMEA for a Function or Hardware item.
         Starting at the Mode level, the steps to create the FMEA are:
@@ -378,7 +357,7 @@ class FMEA(object):
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
         try:
             _fmea.dicModes.pop(mode_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -430,7 +409,7 @@ class FMEA(object):
 
         try:
             _mode.dicMechanisms.pop(mechanism_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -485,7 +464,7 @@ class FMEA(object):
 
         try:
             _mechanism.dicCauses.pop(cause_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -548,7 +527,7 @@ class FMEA(object):
         try:
             _mechanism.dicControls.pop(control_id)
             _cause.dicControls.pop(control_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -611,7 +590,7 @@ class FMEA(object):
         try:
             _mechanism.dicActions.pop(action_id)
             _cause.dicActions.pop(action_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)

@@ -5,11 +5,6 @@ Allocation Package Data Module
 ##############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.allocation.Allocation.py is part of The RTK Project
@@ -25,6 +20,11 @@ try:
     import Configuration as _conf
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -85,9 +85,6 @@ class Model(object):
 
         # Initialize private scalar attributes.  These are set as a convenience
         # for performing allocations.
-        self._duty_cycle = 100.0
-        self._hazard_rate = 0.0
-        self._mission_time = 10.0
 
         # Initialize public scalar attributes.
         self.hardware_id = None
@@ -110,6 +107,9 @@ class Model(object):
         self.parent_id = -1
         self.method = 0
         self.goal_measure = 0
+        self.duty_cycle = 100.0
+        self.hazard_rate = 0.0
+        self.mission_time = 10.0
 
     def set_attributes(self, values):
         """
@@ -145,9 +145,9 @@ class Model(object):
             self.parent_id = int(values[17])
             self.method = int(values[18])
             self.goal_measure = int(values[19])
-            self._duty_cycle = float(values[20])
-            self._hazard_rate = float(values[21])
-            self._mission_time = float(values[22])
+            self.duty_cycle = float(values[20])
+            self.hazard_rate = float(values[21])
+            self.mission_time = float(values[22])
         except IndexError as _err:
             _code = _error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -203,7 +203,7 @@ class Model(object):
 
         try:
             self.hazard_rate_alloc = -1.0 * log(self.reliability_alloc) / \
-                                     self._mission_time
+                                     self.mission_time
             self.mtbf_alloc = 1.0 / self.hazard_rate_alloc
         except(ZeroDivisionError, ValueError):
             return True
@@ -224,7 +224,7 @@ class Model(object):
 
         from math import exp, log
 
-        _time_i = self._mission_time * self._duty_cycle / 100.0
+        _time_i = self.mission_time * self.duty_cycle / 100.0
 
         try:
             self.mtbf_alloc = (n_children * self.weight_factor * _time_i) / \
@@ -237,8 +237,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc * \
-                                     self._mission_time)
+        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
+                                     self.mission_time)
 
         return False
 
@@ -256,7 +256,7 @@ class Model(object):
         from math import exp
 
         try:
-            self.weight_factor = self._hazard_rate / system_hr
+            self.weight_factor = self.hazard_rate / system_hr
         except ZeroDivisionError:
             return True
 
@@ -267,8 +267,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc * \
-                                     self._mission_time)
+        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
+                                     self.mission_time)
 
         return False
 
@@ -291,7 +291,11 @@ class Model(object):
         self.weight_factor = self.int_factor * self.soa_factor * \
                              self.op_time_factor * self.env_factor
 
-        self.percent_wt_factor = float(self.weight_factor) / float(cum_weight)
+        try:
+            self.percent_wt_factor = float(self.weight_factor) / \
+                                     float(cum_weight)
+        except ZeroDivisionError:
+            self.percent_wt_factor = 0.0
 
         self.hazard_rate_alloc = self.percent_wt_factor * parent_goal
 
@@ -300,8 +304,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc * \
-                                     self._mission_time)
+        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
+                                     self.mission_time)
 
         return False
 
@@ -318,7 +322,7 @@ class Model(object):
 
         if self.goal_measure == 1:          # Reliability goal
             try:
-                self.mtbf_goal = -1.0 * self._mission_time / \
+                self.mtbf_goal = -1.0 * self.mission_time / \
                                  log(self.reliability_goal)
             except(ValueError, ZeroDivisionError):
                 return True
@@ -331,7 +335,7 @@ class Model(object):
             except ZeroDivisionError:
                 return True
 
-            self.reliability_goal = exp(-1.0 * self._mission_time / \
+            self.reliability_goal = exp(-1.0 * self.mission_time /
                                         self.mtbf_goal)
 
         elif self.goal_measure == 3:        # MTBF goal
@@ -340,7 +344,7 @@ class Model(object):
             except ZeroDivisionError:
                 return True
 
-            self.reliability_goal = exp(-1.0 * self._mission_time / \
+            self.reliability_goal = exp(-1.0 * self.mission_time /
                                         self.mtbf_goal)
 
         return False
@@ -413,7 +417,7 @@ class Allocation(object):
 
         try:
             _n_allocations = len(_results)
-        except TypeError as _err:
+        except TypeError:
             _n_allocations = 0
 
         for i in range(_n_allocations):
@@ -462,12 +466,12 @@ class Allocation(object):
         _allocation = self.dicAllocation[hardware_id]
 
         _parent_goal = _allocation.reliability_goal
-        _parent_hr = _allocation._hazard_rate
+        _parent_hr = _allocation.hazard_rate
 
         _children = [_a for _a in self.dicAllocation.values()
                      if _a.parent_id == hardware_id]
-        _allocation.weight_factor = sum([_a.int_factor * _a.soa_factor * \
-                                         _a.op_time_factor * _a.env_factor \
+        _allocation.weight_factor = sum([_a.int_factor * _a.soa_factor *
+                                         _a.op_time_factor * _a.env_factor
                                          for _a in _children])
         _n_children = len(_children)
         for _child in _children:

@@ -3,26 +3,26 @@
 This is the test class for testing Hazard module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestHazard.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+import unittest
+from nose.plugins.attrib import attr
+
 import dao.DAO as _dao
 from analyses.hazard.Hazard import Model, Hazard
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
 
 class TestHazardModel(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestHazardModel(unittest.TestCase):
         Setup the test fixture for the Hazard class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -274,7 +274,7 @@ class TestHazardController(unittest.TestCase):
         Sets up the test fixture for the Hazard class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 

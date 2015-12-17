@@ -331,7 +331,7 @@ Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.configuration.py is part of The RTK Project
+#       rtk.Configuration.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -500,7 +500,7 @@ class RTKConf(object):
             else:
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
 
-            self._conf_file = self.conf_dir + 'site.conf'
+            self.conf_file = self.conf_dir + 'site.conf'
 
         elif level == 'user':
             self.conf_dir = _HOMEDIR + '/.config/RTK/'
@@ -525,9 +525,9 @@ class RTKConf(object):
             else:
                 self.prog_dir = _HOMEDIR
 
-            self._conf_file = self.conf_dir + 'RTK.conf'
+            self.conf_file = self.conf_dir + 'RTK.conf'
 
-            if not _util.file_exists(self._conf_file):
+            if not _util.file_exists(self.conf_file):
                 self.create_default_configuration()
 
     def create_default_configuration(self):     # pylint: disable=R0914
@@ -550,9 +550,7 @@ class RTKConf(object):
             _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
             _HOMEDIR = environ['USERPROFILE']
 
-        _PROGDIR = _HOMEDIR + '/analyses/rtk/'
-
-        if basename(self._conf_file) == 'site.conf':
+        if basename(self.conf_file) == 'site.conf':
             dialog = _widg.make_dialog(_(u"RTK common database "
                                          u"information..."))
 
@@ -641,7 +639,7 @@ class RTKConf(object):
             config.set('Backend', 'type', RTKcomlist[5])
             config.set('Backend', 'path', self.SITE_DIR)
 
-        elif basename(self._conf_file) == 'RTK.conf':
+        elif basename(self.conf_file) == 'RTK.conf':
 
             # Create the directories needed for the user.
             if not _util.dir_exists(self.conf_dir):
@@ -744,7 +742,7 @@ class RTKConf(object):
             config.set('Colors', 'nofrmodelfg', '#A52A2A')
 
         try:
-            parser = open(self._conf_file, 'w')
+            parser = open(self.conf_file, 'w')
             config.write(parser)
             parser.close()
             return True
@@ -758,7 +756,7 @@ class RTKConf(object):
         Writes changes to the user's configuration file.
         """
 
-        if _util.file_exists(self._conf_file):
+        if _util.file_exists(self.conf_file):
             config = ConfigParser.ConfigParser()
             config.add_section('General')
             config.set('General', 'reportsize', 'letter')
@@ -851,7 +849,7 @@ class RTKConf(object):
             config.set('Colors', 'softwarefg', RTK_COLORS[22])
 
             try:
-                parser = open(self._conf_file, 'w')
+                parser = open(self.conf_file, 'w')
                 config.write(parser)
                 parser.close()
             except EnvironmentError:
@@ -865,9 +863,9 @@ class RTKConf(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if _util.file_exists(self._conf_file):
+        if _util.file_exists(self.conf_file):
             config = ConfigParser.ConfigParser()
-            config.read(self._conf_file)
+            config.read(self.conf_file)
         else:
             config = None
 

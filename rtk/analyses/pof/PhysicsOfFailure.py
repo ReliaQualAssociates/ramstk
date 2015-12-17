@@ -5,11 +5,6 @@ Physics of Failure Module
 =========================
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.pof.PhysicsOfFailure.py is part of The RTK Project
@@ -29,6 +24,11 @@ from Mechanism import Model as Mechanism
 from Load import Model as Load
 from Stress import Model as Stress
 from Method import Model as Method
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -155,7 +155,7 @@ class PoF(object):
 
             _query = "SELECT * FROM rtk_op_loads \
                       WHERE fld_mechanism_id={0:d}".format(
-                      _mechanism.mechanism_id)
+                          _mechanism.mechanism_id)
             (_loads, _error_code, __) = self._dao.execute(_query, commit=False)
             try:
                 _n_loads = len(_loads)
@@ -183,7 +183,7 @@ class PoF(object):
 
                     _query = "SELECT * FROM rtk_test_methods \
                               WHERE fld_stress_id={0:d}".format(
-                              _stress.stress_id)
+                                  _stress.stress_id)
                     (_methods, _error_code, __) = self._dao.execute(_query)
                     try:
                         _n_methods = len(_methods)
@@ -253,7 +253,7 @@ class PoF(object):
 
         try:
             _pof.dicMechanisms.pop(mechanism_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -305,7 +305,7 @@ class PoF(object):
 
         try:
             _mechanism.dicLoads.pop(load_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -361,7 +361,7 @@ class PoF(object):
 
         try:
             _load.dicStresses.pop(stress_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)
@@ -422,7 +422,7 @@ class PoF(object):
 
         try:
             _stress.dicMethods.pop(method_id)
-        except KeyError as _err:
+        except KeyError:
             _error_code = 60
 
         return(_results, _error_code)

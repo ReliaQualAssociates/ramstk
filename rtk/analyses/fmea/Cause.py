@@ -5,37 +5,22 @@ FMEA Cause Module
 #################
 """
 
+# -*- coding: utf-8 -*-
+#
+#       rtk.analyses.fmea.Cause.py is part of The RTK Project
+#
+# All rights reserved.
+
+# Import other RTK modules.
+try:
+    import Utilities as _util
+except ImportError:
+    import rtk.Utilities as _util
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-# -*- coding: utf-8 -*-
-#
-#       Cause.py is part of The RTK Project
-#
-# All rights reserved.
-
-
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    elif 'invalid literal' in message[0]:   # Value error
-        _error_code = 50
-    else:                                   # Unhandled error
-        _error_code = 1000
-
-    return _error_code
 
 
 class Model(object):
@@ -102,13 +87,13 @@ class Model(object):
             self.rpn_detection_new = int(values[8])
             self.rpn_new = int(values[9])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

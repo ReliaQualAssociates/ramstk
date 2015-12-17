@@ -5,11 +5,6 @@ FMEA Mode Module
 ################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.fmea.Mode.py is part of The RTK Project
@@ -23,8 +18,15 @@ import locale
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -177,13 +179,13 @@ class Model(object):
             self.single_point = int(values[25])
             self.remarks = str(values[26])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -239,12 +241,12 @@ class Model(object):
         :rtype: tuple
         """
 
-        if not 0.0 <= item_hr:
+        if item_hr < 0.0:
             raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
         if not 0.0 <= ratio <= 1.0:
             raise OutOfRangeError(_(u"Failure mode ratio is outside the range "
                                     u"of [0.0, 1.0]."))
-        if not 0.0 <= op_time:
+        if op_time < 0.0:
             raise OutOfRangeError(_(u"Failure mode operating time has a "
                                     u"negative value."))
         if not 0.0 <= effect_prob <= 1.0:
@@ -254,10 +256,10 @@ class Model(object):
         _mode_hr = item_hr * ratio
         _mode_crit = _mode_hr * op_time * effect_prob
 
-        if not 0.0 <= _mode_hr:
+        if _mode_hr < 0.0:
             raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
                                     u"value."))
-        if not 0.0 <= _mode_crit:
+        if _mode_crit < 0.0:
             raise OutOfRangeError(_(u"Failure mode criticality has a negative "
                                     u"value."))
 

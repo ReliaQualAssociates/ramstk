@@ -5,11 +5,6 @@ Allocation Module Work Book View
 ################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.allocation.gui.gtk.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 import pango
@@ -38,10 +37,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -50,6 +45,11 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -57,7 +57,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected Allocation.
@@ -68,8 +68,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         """
         Initializes the Work Book view for the Allocation module.
 
-        :param rtk.analyses.allocation.Allocation controller: the Allocation
-                                                              data controller.
+        :param controller: the :py:class:`rtk.analyses.allocation.Allocation`
+                           data controller.
         """
 
         gtk.HBox.__init__(self)
@@ -84,8 +84,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         self.btnSaveAllocation = _widg.make_button(width=35, image='save')
         self.btnTrickledown = _widg.make_button(width=35, image='trickledown')
 
-        self.chkApplyResults = _widg.make_check_button(_(u"Apply results to "
-                                                         u"hardware"))
+        # self.chkApplyResults = _widg.make_check_button(_(u"Apply results to "
+        #                                                  u"hardware"))
 
         self.cmbAllocationMethod = _widg.make_combo(width=150)
         self.cmbAllocationGoal = _widg.make_combo(width=150)
@@ -100,8 +100,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
     def create_page(self):
         """
-        Creates the page for displaying the reliability allocation analysis for
-        the selected Hardware item.
+        Creates the page for displaying the reliability Allocation analysis.
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
@@ -225,7 +224,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                                         self._on_button_clicked, 2))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display the allocation analysis.    #
+        # Place the widgets used to display the Allocation analysis.    #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.Combo()
         _results = [[_(u"Equal Apportionment"), 0],
@@ -314,7 +313,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def load_page(self, controller, hardware_id, parent_row=None):
+    def load_page(self, controller, hardware_id, parent_row=None):  # pylint: disable=R0914
         """
         Loads the Allocation Module Book gtk.TreeModel() with allocation
         information.
@@ -326,8 +325,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         _model = self.tvwAllocation.get_model()
-
-        _parent = self.dtcAllocation.dicAllocation[hardware_id]
 
         # Find the immediate child assemblies.
         _children = [_a for _a in self.dtcAllocation.dicAllocation.values()
@@ -342,7 +339,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             _reliability = _hardware.reliability_logistics
             _data = [_child.hardware_id, _name, _child.included,
                      _child.n_sub_systems, _child.n_sub_elements,
-                     _child._mission_time, _child._duty_cycle,
+                     _child.mission_time, _child.duty_cycle,
                      _child.int_factor, _child.soa_factor,
                      _child.op_time_factor, _child.env_factor,
                      _child.weight_factor, _child.percent_wt_factor,
@@ -393,7 +390,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         _allocation = self.dtcAllocation.dicAllocation[hardware_id]
 
-        _heading = _(u"Weighting Factor")
         if _allocation.method == 1:         # Equal apportionment selected.
             for _col in 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
@@ -401,9 +397,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'light gray')
-                    _cells[i].set_property('editable', 0)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
 
         elif _allocation.method == 2:       # AGREE apportionment selected.
             for _col in 0, 2, 3, 7, 8, 9, 10, 12, 19, 20:
@@ -412,18 +408,17 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'light gray')
-                    _cells[i].set_property('editable', 0)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
             for _col in 4, 6:
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'white')
-                    _cells[i].set_property('editable', 1)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
 
-            _heading = _(u"Importance Measure")
         elif _allocation.method == 3:   # ARINC apportionment selected.
             for _col in 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
@@ -431,9 +426,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'light gray')
-                    _cells[i].set_property('editable', 0)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
 
         elif _allocation.method == 4:   # Feasibility of Objectives selected.
             for _col in 0, 2, 3, 4, 5, 6, 19, 20:
@@ -442,16 +437,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'light gray')
-                    _cells[i].set_property('editable', 0)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
             for _col in 7, 8, 9, 10:
                 self.tvwAllocation.get_column(_col).set_visible(1)
                 _column = self.tvwAllocation.get_column(_col)
                 _cells = _column.get_cell_renderers()
-                for i in range(len(_cells)):
-                    _cells[i].set_property('background', 'white')
-                    _cells[i].set_property('editable', 1)
+                for __, _cell in enumerate(_cells):
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
 
         return False
 
@@ -517,7 +512,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         if index == 4:
             _allocation.n_sub_elements = int(new_text)
         elif index == 6:
-            _allocation._duty_cycle = float(new_text)
+            _allocation.duty_cycle = float(new_text)
         elif index == 7:
             _allocation.int_factor = int(new_text)
         elif index == 8:

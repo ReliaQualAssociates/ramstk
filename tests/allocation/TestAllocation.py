@@ -3,26 +3,26 @@
 This is the test class for testing Allocation module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       TestAllocation.py is part of The RTK Project
+#       rtk.tests.allocation.TestAllocation.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
 
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from analyses.allocation.Allocation import Model, Allocation
+import unittest
+from nose.plugins.attrib import attr
+
+import rtk.dao.DAO as _dao
+from rtk.analyses.allocation.Allocation import Model, Allocation
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestAllocationModel(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestAllocationModel(unittest.TestCase):
         Setup the test fixture for the Allocation class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -47,10 +47,6 @@ class TestAllocationModel(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
-
-        self.assertEqual(self.DUT._duty_cycle, 100.0)
-        self.assertEqual(self.DUT._hazard_rate, 0.0)
-        self.assertEqual(self.DUT._mission_time, 10.0)
 
         self.assertEqual(self.DUT.hardware_id, None)
         self.assertEqual(self.DUT.reliability_goal, 1.0)
@@ -72,6 +68,9 @@ class TestAllocationModel(unittest.TestCase):
         self.assertEqual(self.DUT.parent_id, -1)
         self.assertEqual(self.DUT.method, 0)
         self.assertEqual(self.DUT.goal_measure, 0)
+        self.assertEqual(self.DUT.duty_cycle, 100.0)
+        self.assertEqual(self.DUT.hazard_rate, 0.0)
+        self.assertEqual(self.DUT.mission_time, 10.0)
 
     @attr(all=True, unit=True)
     def test_set_attributes(self):
@@ -170,7 +169,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) equal_apportionment should return True when the mission time is zero
         """
 
-        self.DUT._mission_time = 0.0
+        self.DUT.mission_time = 0.0
         self.assertTrue(self.DUT.equal_apportionment(5, 0.95))
 
     @attr(all=True, unit=True)
@@ -207,7 +206,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) agree_apportionment should return True when the duty cycle is zero
         """
 
-        self.DUT._duty_cycle = 0.0
+        self.DUT.duty_cycle = 0.0
         self.assertTrue(self.DUT.agree_apportionment(5, 0.0))
 
     @attr(all=True, unit=True)
@@ -216,7 +215,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) agree_apportionment should return True when the mission time is zero
         """
 
-        self.DUT._mission_time = 0.0
+        self.DUT.mission_time = 0.0
         self.assertTrue(self.DUT.agree_apportionment(5, 0.0))
 
     @attr(all=True, unit=True)
@@ -225,7 +224,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) arinc_apportionment should return False on success
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.assertFalse(self.DUT.arinc_apportionment(0.0005, 0.0004))
 
         self.assertAlmostEqual(self.DUT.reliability_alloc, 0.99920031)
@@ -238,7 +237,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) arinc_apportionment should return True when passed a zero current hazard rate
         """
 
-        self.DUT._hazard_rate = 0.0
+        self.DUT.hazard_rate = 0.0
         self.assertTrue(self.DUT.arinc_apportionment(0.0005, 0.0004))
 
     @attr(all=True, unit=True)
@@ -247,7 +246,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) arinc_apportionment should return True when passed a zero system hazard rate
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.assertTrue(self.DUT.arinc_apportionment(0.0, 0.0004))
 
     @attr(all=True, unit=True)
@@ -256,7 +255,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) arinc_apportionment should return True when passed a zero goal hazard rate
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.assertTrue(self.DUT.arinc_apportionment(0.0005, 0.0))
 
     @attr(all=True, unit=True)
@@ -265,8 +264,8 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) arinc_apportionment should return False with a mission time of zero
         """
 
-        self.DUT._hazard_rate = 0.0001
-        self.DUT._mission_time = 0.0
+        self.DUT.hazard_rate = 0.0001
+        self.DUT.mission_time = 0.0
         self.assertFalse(self.DUT.arinc_apportionment(0.0005, 0.0004))
 
     @attr(all=True, unit=True)
@@ -275,7 +274,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) foo_apportionment should return False on success
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.DUT.int_factor = 3
         self.DUT.soa_factor = 7
         self.DUT.op_time_factor = 10
@@ -292,7 +291,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) foo_apportionment should return True when the cumulative weight is zero
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.DUT.int_factor = 3
         self.DUT.soa_factor = 7
         self.DUT.op_time_factor = 10
@@ -300,12 +299,12 @@ class TestAllocationModel(unittest.TestCase):
         self.assertTrue(self.DUT.foo_apportionment(0, 0.0004))
 
     @attr(all=True, unit=True)
-    def test_foo_apportionment_zero_cum_weight(self):
+    def test_foo_apportionment_zero_hazard_rate(self):
         """
         (TestAllocation) foo_apportionment should return True when the goal hazard rate is zero
         """
 
-        self.DUT._hazard_rate = 0.0001
+        self.DUT.hazard_rate = 0.0001
         self.DUT.int_factor = 3
         self.DUT.soa_factor = 7
         self.DUT.op_time_factor = 10
@@ -330,7 +329,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return False on success passing reliability goal
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.reliability_goal = 0.975
         self.DUT.goal_measure = 1
 
@@ -344,7 +343,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return True when passing reliability goal of zero
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.reliability_goal = 0.0
         self.DUT.goal_measure = 1
 
@@ -356,7 +355,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return False on success passing MTBF goal
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.mtbf_goal = 400.0
         self.DUT.goal_measure = 3
 
@@ -370,7 +369,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return True when passing MTBF goal of zero
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.mtbf_goal = 0.0
         self.DUT.goal_measure = 3
 
@@ -382,7 +381,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return False on success passing hazard rate goal
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.hazard_rate_goal = 0.00015
         self.DUT.goal_measure = 2
 
@@ -396,7 +395,7 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) _calculate_goals should return True when passing hazard rate goal of zero
         """
 
-        self.DUT._mission_time = 10.0
+        self.DUT.mission_time = 10.0
         self.DUT.hazard_rate_goal = 0.0
         self.DUT.goal_measure = 2
 
@@ -413,7 +412,7 @@ class TestAllocationController(unittest.TestCase):
         Sets up the test fixture for the Allocation class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 

@@ -5,11 +5,6 @@ Hazard Module Work Book View
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.hazard.gui.gtk.WorkBook.py is part of The RTK Project
@@ -17,9 +12,13 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
-from lxml import etree
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
+from lxml import etree
 import pango
 try:
     import pygtk
@@ -39,10 +38,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -51,6 +46,11 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -58,7 +58,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.HBox):                   # pylint: disable=R0902
     """
     The Work Book view displays all the attributes for the selected
@@ -91,7 +91,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         self.show_all()
 
-    def create_page(self):
+    def create_page(self):                  # pylint: disable=R0914
         """
         Creates the page for displaying the hazard analysis for the selected
         Hardware item.
@@ -271,7 +271,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         return False
 
-    def load_page(self, controller, hardware_id, path=None):
+    def load_page(self, controller, hardware_id, path=None):    # pylint: disable=R0914
         """
         Loads the Hazard Analysis gtk.TreeModel() with hazard information.
 
@@ -317,7 +317,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                      _hazard.user_float_2, _hazard.user_float_3,
                      _hazard.user_int_1, _hazard.user_int_2,
                      _hazard.user_int_3]
-            _piter = _model.append(parent_row, _data)
+            _model.append(parent_row, _data)
 
         if path is None:
             _root = _model.get_iter_root()

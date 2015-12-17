@@ -3,28 +3,26 @@
 This is the test class for testing the Mechanism class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestMechanism.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
-# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
 
+import dao.DAO as _dao
 from analyses.fmea.Mechanism import *
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestMechanismModel(unittest.TestCase):
@@ -97,14 +95,14 @@ class TestMechanismModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_attributes_wrong_value(self):
         """
-        (TestMechanism) set_attributes should return 50 with bad value
+        (TestMechanism) set_attributes should return 10 with bad value
         """
 
         _values = (0, 0, 10, 'Test Mechanism', 10, 1000, 10, 10, 1000, 0)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 50)
+        self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
     def test_get_attributes(self):

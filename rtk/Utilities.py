@@ -7,7 +7,7 @@ application.
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.utilities.py is part of The RTK Project
+#       rtk.Utilities.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -67,11 +67,11 @@ def read_configuration():
 
     # Get a config instance for the site configuration file.
     conf = _conf.RTKConf('site')
-    if not file_exists(conf._conf_file):
-        rtk_warning(_(u"Site configuration file %s not found.  This typically "
-                      u"indicates RTK was installed improperly or RTK files "
-                      u"have been corrupted.  You may try to uninstall and "
-                      u"re-install RTK.") % conf._conf_file)
+    if not file_exists(conf.conf_file):
+        rtk_warning(_(u"Site configuration file {0:s} not found.  This "
+                      u"typically indicates RTK was installed improperly or "
+                      u"RTK files have been corrupted.  You may try to "
+                      u"uninstall and re-install RTK.") % conf.conf_file)
         return True
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
@@ -375,8 +375,8 @@ def tuple_to_list(origtuple, origlist):
     :rtype: list
     """
 
-    for i in range(len(origtuple)):
-        origlist.append(origtuple[i])
+    for __, _tuple in enumerate(origtuple):
+        origlist.append(_tuple)
 
     return origlist
 
@@ -407,6 +407,8 @@ def error_handler(message):
         _error_code = 10                                            # pragma: no cover
     elif 'invalid literal for int() with base 10' in message[0]:    # Value error
         _error_code = 10
+    elif 'could not convert string to float' in message[0]:         # Value error
+        _error_code = 10
     elif 'index out of range' in message[0]:                        # Index error
         _error_code = 40
     else:                                                           # Unhandled error
@@ -428,7 +430,7 @@ def file_exists(_file):
     return os.path.isfile(_file)
 
 
-def create_project(widget, app):
+def create_project(widget, app):            # pylint: disable=R0914
     """
     Creates a new RTK Project.
 
@@ -495,27 +497,18 @@ def create_project(widget, app):
 
         queries = sqlfile.read().split(';')
         program = "USE '%s'"
-        results = app.DB.execute_query(program,
-                                       new_program,
-                                       cnx,
-                                       commit=True)
-        for i in range(len(queries)):
-            results = app.DB.execute_query(queries[i], cnx, commit=True)
+        results = app.DB.execute_query(program, new_program, cnx, commit=True)
+        for __, _query in enumerate(queries):
+            results = app.DB.execute_query(_query, cnx, commit=True)
 
         values = (new_program, user, passwd)
         query = "GRANT DELETE, INSERT, SELECT, UPDATE \
                  ON %s.* TO '%s'@'%%' \
                  IDENTIFIED BY '%s'"
-        results = app.DB.execute_query(query,
-                                       values,
-                                       cnx,
-                                       commit=False)
+        results = app.DB.execute_query(query, values, cnx, commit=False)
 
         query = "FLUSH PRIVILEGES"
-        results = app.DB.execute_query(query,
-                                       None,
-                                       cnx,
-                                       commit=False)
+        results = app.DB.execute_query(query, None, cnx, commit=False)
 
         cnx.close()
 
@@ -575,7 +568,7 @@ def create_project(widget, app):
     return False
 
 
-def open_project(__widget, application, dlg=1, filename=''):
+def open_project(__widget, application, dlg=1, filename=''):    # pylint: disable=R0914
     """
     Shows the RTK databases available on the selected server and allows the
     user to select the one he/she wishes to use.
@@ -594,7 +587,7 @@ def open_project(__widget, application, dlg=1, filename=''):
                           u"RTK application before a new database can be "
                           u"opened."))
         return True
-
+# TODO: Update the MySQL/MariaDB code.
     if _conf.BACKEND == 'mysql':
 
         login = _login.Login(_(u"RTK Program Database Login"))
@@ -604,9 +597,7 @@ def open_project(__widget, application, dlg=1, filename=''):
 
         query = "SHOW DATABASES"
         cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
-        results = app.DB.execute_query(query,
-                                       None,
-                                       cnx)
+        results = app.DB.execute_query(query, None, cnx)
 
         dialog = _widg.make_dialog(_(u"RTK: Open Program"))
 
@@ -625,14 +616,14 @@ def open_project(__widget, application, dlg=1, filename=''):
         scrollwindow.set_size_request((width / 6), (height / 6))
         scrollwindow.add(treeview)
 
-        for i in range(len(results)):
+        for __, _database in enumerate(results):
             # Don't display the MySQL administrative/test databases.
-            if(results[i][0] != 'information_schema' and
-               results[i][0] != 'test' and
-               results[i][0] != 'mysql' and
-               results[i][0] != 'RTKcom' and
-               results[i][0] != '#mysql50#lost+found'):
-                model.append(None, [results[i][0]])
+            if(_database[0] != 'information_schema' and
+               _database[0] != 'test' and
+               _database[0] != 'mysql' and
+               _database[0] != 'RTKcom' and
+               _database[0] != '#mysql50#lost+found'):
+                model.append(None, [_database[0]])
 
         dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
         scrollwindow.show_all()
@@ -813,7 +804,8 @@ def delete_project(__widget, app):
         else:
             dialog.destroy()
 
-        if(confirm_action(_(u"Really delete %s?") % project), 'question'):
+        if(confirm_action(_(u"Really delete {0:s}?").format(project)),
+           'question'):
             os.remove(project)
             dialog.destroy()
         else:
@@ -1098,7 +1090,7 @@ def paste(clipboard, contents, user_data):
     :param str contents: the contents of the clipboard.
     :param any user_data: user data.
     """
-
+# TODO: Write copy/cut/paste functions.
     print contents
 
 
@@ -1108,7 +1100,7 @@ def select_all(widget):
 
     :param gtk.Widget widget: the gtk.Widget() that called this function.
     """
-
+# TODO: Write select all function.
     return False
 
 
@@ -1120,7 +1112,7 @@ def find(widget, action):
     :param int action: whether to find (0), find next (1), find previous (2),
                        or replace(3).
     """
-
+# TODO: Write find/replace function.
     return False
 
 
@@ -1149,7 +1141,7 @@ def undo():
     """
     Undoes the last change.
     """
-
+# TODO: Write undo function.
     return False
 
 
@@ -1157,7 +1149,7 @@ def redo():
     """
     Re-does the last change.
     """
-
+# TODO: Write redo function.
     return False
 
 
@@ -1246,15 +1238,15 @@ def add_parts_system_hierarchy(__widget, app):
     _results = app.DB.execute_query(_query, None, app.ProgCnx)
 
     _n_added = 0
-    for i in range(len(_results)):
+    for __, _part_num in enumerate(_results):
         # Create a description from the part prefix and part index.
         _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + str(_conf.RTK_PREFIX[7])
 
-        _parent = app.HARDWARE.dicPaths[_results[i][1]]
+        _parent = app.HARDWARE.dicPaths[_part_num[1]]
 
         # Create a tuple of values to pass to the component_add queries.
         _values = (_revision_id, _assembly_id, _part_name, 1,
-                   _parent, _results[i][0])
+                   _parent, _part_num[0])
 
         # Add the new component to each table needing a new entry and increment
         # the count of components added.
@@ -1326,12 +1318,12 @@ def component_add(app, values):
 
     # Add a record to the functional matrix table for each function that exists
     # in the open RTK program database.
-    for j in range(len(_functions)):
+    for __, _function in enumerate(_functions):
         _query = "INSERT INTO tbl_functional_matrix \
                   (fld_revision_id, fld_function_id, \
                    fld_assembly_id, fld_relationship) \
                   VALUES(%d, %d, %d, '')" % \
-                 (values[0], _functions[j][0], values[1])
+                 (values[0], _function[0], values[1])
         if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
             app.debug_log.error("utilities.py:component_add - Failed to add "
                                 "new component to the functional matrix "
@@ -1545,12 +1537,12 @@ def long_call(app):
     app.winWorkBook.window.set_cursor(None)
 
 
-class Options(gtk.Window):
+class Options(gtk.Window):                  # pylint: disable=R0902
     """
     An assistant to provide a GUI to the various configuration files for RTK.
     """
 
-    def __init__(self, application):
+    def __init__(self, application):        # pylint: disable=R0915
         """
         Allows a user to set site-wide options.
 
@@ -2236,10 +2228,11 @@ class Options(gtk.Window):
         _model = self.tvwEditTree.get_model()
         _model.clear()
 
-        for i in range(len(_default)):
-            _data = [_default[i].text, _user[i].text, int(_position[i].text),
-                     int(_editable[i].text), int(_visible[i].text),
-                     _datatype[i].text, _widget[i].text]
+        for _index, __ in enumerate(_default):
+            _data = [_default[_index].text, _user[_index].text,
+                     int(_position[_index].text), int(_editable[_index].text),
+                     int(_visible[_index].text), _datatype[_index].text,
+                     _widget[_index].text]
             _model.append(_data)
 
         if _conf.RTK_PROG_INFO[2] == '':
@@ -2347,12 +2340,12 @@ class Options(gtk.Window):
 
         # Update the column headings and set appropriate columns visible.
         _columns = self.tvwListEditor.get_columns()
-        for i in range(len(_columns)):
-            _columns[i].set_title(_header[i])
-            if _header[i] == '':
-                _columns[i].set_visible(False)
+        for _index, _column in enumerate(_columns):
+            _column.set_title(_header[_index])
+            if _header[_index] == '':
+                _column.set_visible(False)
             else:
-                _columns[i].set_visible(True)
+                _column.set_visible(True)
 
         # Load the results.
         _model = self.tvwListEditor.get_model()

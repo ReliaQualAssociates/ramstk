@@ -6,11 +6,11 @@ This is the test class for testing the Cause class.
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       TestCause.py is part of The RTK Project
+#       rtk.tests.fmea.TestCause.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -97,13 +97,13 @@ class TestCauseModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_good_attributes_wrong_value(self):
         """
-        set_attributes should return 50 with bad value
+        set_attributes should return 10 with bad value
         """
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes((0, 1, 'Test Cause', 2, 4, 5,
                                                 200, 5, 4, 100))
-        self.assertEqual(_error_code, 50)
+        self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
     def test_get_attributes(self):
