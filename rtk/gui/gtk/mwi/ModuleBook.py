@@ -5,11 +5,6 @@ PyGTK Multi-Window Interface Module Book View
 =============================================
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       ModuleBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Import modules required for the GUI.
 try:
@@ -32,23 +31,21 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
-
-import gettext
-import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
+    import Configuration as _conf
+    import Utilities as _util
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
 from ListBook import ListView
 from WorkBook import WorkView
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -56,6 +53,22 @@ except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+
+def destroy(__widget, __event=None):
+    """
+    Quits the RTK application when the X in the upper right corner is pressed.
+
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                    function.
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+
+    gtk.main_quit()
+
+    return False
 
 
 class ModuleView(gtk.Window):               # pylint: disable=R0904
@@ -73,6 +86,10 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         # Initialize private scalar attributes.
         self._application = application
+
+        # Initialize public scalar attributes.
+        self.listview = None
+        self.workview = None
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -96,7 +113,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.set_position(gtk.WIN_POS_NONE)
         self.move(0, 0)
 
-        self.connect('delete_event', self.destroy)
+        self.connect('delete_event', destroy)
 
         _vbox = gtk.VBox()
 
@@ -146,13 +163,13 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return self.listview
 
-    def create_workview(self, dao):
+    def create_workview(self):
         """
         Creates an instance of the Work View container for RTK module List
         Books.
         """
 
-        self.workview = WorkView(dao)
+        self.workview = WorkView()
 
         return self.workview
 
@@ -408,7 +425,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self.destroy)
+        _button.connect('clicked', destroy)
         _toolbar.insert(_button, _position)
 
         _toolbar.show_all()
@@ -437,28 +454,28 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         the RTK model and load it into the RTK module view.
 
         :param view: the RTK module view class instance to load with data.
-        :param rtk.dao.DAO dao: the data access object for the view to pass to
-                                the data controller.
+        :param dao: the :py:class:`rtk.dao.DAO` for the view to pass to the
+                    data controller.
         :return:
         :rtype:
         """
 
         _page = None
 
-        if view._workbook is not None:
-            self.workview.add(view._workbook)
+        if view.workbook is not None:
+            self.workview.add(view.workbook)
             self.workview.show_all()
 
         _page = view.request_load_data(dao, revision_id)
 
         return _page
 
-    def _on_switch_page(self, notebook, page, page_num):
+    def _on_switch_page(self, __notebook, __page, page_num):
         """
         Called whenever the Module Book gtk.Notebook() page is changed.
 
-        :param gtk.Notebook notebook: the Tree Book notebook widget.
-        :param gtk.Widget page: the newly selected page's child widget.
+        :param gtk.Notebook __notebook: the Tree Book notebook widget.
+        :param gtk.Widget __page: the newly selected page's child widget.
         :param int page_num: the newly selected page number.
                              0 = Revision Tree
                              1 = Function Tree
@@ -476,7 +493,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             self.listview.remove(self.listview.get_child())
 
         try:
-            _listbook = _conf.RTK_MODULES[page_num]._listbook
+            _listbook = _conf.RTK_MODULES[page_num].listbook
         except IndexError:
             _listbook = None
 
@@ -488,28 +505,11 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             self.workview.remove(self.workview.get_child())
 
         try:
-            _workbook = _conf.RTK_MODULES[page_num]._workbook
+            _workbook = _conf.RTK_MODULES[page_num].workbook
         except IndexError:
             _workbook = None
 
         if _workbook is not None:
             self.workview.add(_workbook)
-
-        return False
-
-    def destroy(self, __widget, __event=None, data=None):
-        """
-        Quits the RTK application when the X in the upper right corner is
-        pressed.
-
-        :param gtk.Widget __widget: the gtk.Widget() that called this method.
-        :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
-                                        method.
-        :keyword data: any user-supplied data.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        gtk.main_quit()
 
         return False

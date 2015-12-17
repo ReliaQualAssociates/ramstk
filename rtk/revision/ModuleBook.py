@@ -43,13 +43,13 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import widgets as _widg
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
     from usage.UsageProfile import UsageProfile
     from failure_definition.FailureDefinition import FailureDefinition
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
     from rtk.usage.UsageProfile import UsageProfile
     from rtk.failure_definition.FailureDefinition import FailureDefinition
 from WorkBook import WorkView
@@ -102,7 +102,7 @@ class ModuleView(object):
 
         # Initialize private scalar attributes.
         self._model = None
-        self._listbook = None
+        self.listbook = None
         self._dao = None
 
         # Initialize public scalar attributes.
@@ -112,8 +112,8 @@ class ModuleView(object):
 
         # Create the main Revision class treeview.
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Revision', 0, None,
-                                                    None, _conf.RTK_COLORS[0],
+         self._lst_col_order) = _widg.make_treeview('Revision', 0,
+                                                    _conf.RTK_COLORS[0],
                                                     _conf.RTK_COLORS[1])
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
@@ -154,7 +154,7 @@ class ModuleView(object):
                                   position=position)
 
         # Create a Work View to associate with this Module View.
-        self._workbook = WorkView(view.workview, self)
+        self.workbook = WorkView(view.workview, self)
 
     def request_load_data(self, dao, revision_id=None):
         """
@@ -273,7 +273,7 @@ class ModuleView(object):
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
         _conf.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
-        self._workbook.load(self._model, _usage_model, _definitions)
+        self.workbook.load(self._model, _usage_model, _definitions)
 
         return False
 
@@ -312,6 +312,6 @@ class ModuleView(object):
         elif self._lst_col_order[position] == 22:
             self._model.code = str(new_text)
 
-        self._workbook.update()
+        self.workbook.update()
 
         return False

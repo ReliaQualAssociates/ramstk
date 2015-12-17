@@ -43,11 +43,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import widgets as _widg
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -64,20 +64,21 @@ class ModuleView(object):
     The Module Book view displays all the Revisions associated with the RTK
     Project in a flat list.  The attributes of a Module Book view are:
 
-    :ivar _model: the :class:`rtk.function.Function.Model` data model that is
-                  currently selected.
-    :ivar _fmea_model: the :class:`rtk.fmea.FMEA.Model` data model that is
+    :ivar _model: the :py:class:`rtk.function.Function.Model` data model that
+                  is currently selected.
+    :ivar _fmea_model: the :py:class:`rtk.fmea.FMEA.Model` data model that is
                        currently selected.
-    :ivar _lst_col_order: list containing the order of the columns in the
+    :ivar list _lst_col_order: list containing the order of the columns in the
                           Module View :class:`gtk.TreeView`.
-    :ivar _workbook: the :class:`rtk.revision.WorkBook.WorkView` associated
+    :ivar _workbook: the :py:class:`rtk.function.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcFunction: the :class:`rtk.function.Function.Function` data
+    :ivar dtcFunction: the :py:class:`rtk.function.Function.Function` data
                        controller to use for accessing the Function data
                        models.
-    :ivar dtcFMEA: the :class:`rtk.fmea.FMEA.FMEA` data controller to use for
-                   accessing the FMEA data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the list of Functions.
+    :ivar dtcFMEA: the :py:class:`rtk.fmea.FMEA.FMEA` data controller to use
+                   for accessing the FMEA data models.
+    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of
+                    Functions.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
@@ -107,8 +108,8 @@ class ModuleView(object):
 
         # Create the main Function class treeview.
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Function', 1, None,
-                                                    None, _conf.RTK_COLORS[2],
+         self._lst_col_order) = _widg.make_treeview('Function', 1,
+                                                    _conf.RTK_COLORS[2],
                                                     _conf.RTK_COLORS[3])
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
@@ -151,10 +152,10 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self._listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
 
         # Create a Work View to associate with this Module View.
-        self._workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id):
         """
@@ -187,7 +188,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        self._listbook.load(revision_id)
+        self.listbook.load(revision_id)
 
         return False
 
@@ -293,7 +294,7 @@ class ModuleView(object):
             self._fmea_model = self.dtcFMEA.dicFFMEA[_function_id]
 
         _profile_model = self.dtcProfile.dicProfiles[self._model.revision_id]
-        self._workbook.load(self._model, self._fmea_model, _profile_model)
+        self.workbook.load(self._model, self._fmea_model, _profile_model)
 
         return False
 
@@ -332,6 +333,6 @@ class ModuleView(object):
         elif self._lst_col_order[position] == 15:
             self._model.remarks = str(new_text)
 
-        self._workbook.update()
+        self.workbook.update()
 
         return False

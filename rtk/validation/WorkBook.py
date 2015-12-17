@@ -46,14 +46,14 @@ from matplotlib.patches import Ellipse
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
-    import widgets as _widg
+    import Configuration as _conf
+    import Utilities as _util
+    import gui.gtk.Widgets as _widg
     from analyses.statistics.Bounds import calculate_beta_bounds
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    import rtk.gui.gtk.Widgets as _widg
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
 # from Assistants import AddTask
 
@@ -813,11 +813,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Plot the expected time and expected time limits.
         _widg.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
-                        None, _title=_(u"Total Validation Effort"),
-                        _xlab=_(u"Date"),
-                        _ylab=_(u"Total Time for All Tasks "),
-                        _marker=['r--', 'b-', 'g--'],
-                        _type=[4, 4, 4, 4])
+                        None, title=_(u"Total Validation Effort"),
+                        xlab=_(u"Date"),
+                        ylab=_(u"Total Time for All Tasks "),
+                        marker=['r--', 'b-', 'g--'],
+                        type=[4, 4, 4, 4])
 
         # Plot the actual burn-down of total hours.
         self.dtcValidation.dicStatus[date.today().toordinal()] = _y4[len(_y4) - 1]

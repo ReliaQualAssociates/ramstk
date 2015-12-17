@@ -39,13 +39,13 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
-    import widgets as _widg
+    import Configuration as _conf
+    import Utilities as _util
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    import rtk.gui.gtk.Widgets as _widg
 #from ListBook import ListView
 from WorkBook import WorkView
 
@@ -106,8 +106,8 @@ class ModuleView(object):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._workbook = None
-        self._listbook = None
+        self.workbook = None
+        self.listbook = None
         self._model = None
         self._dao = None
 
@@ -119,8 +119,8 @@ class ModuleView(object):
 
         # Create the main Incident class treeview.
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Incidents', 14, None,
-                                                    None, _conf.RTK_COLORS[12],
+         self._lst_col_order) = _widg.make_treeview('Incidents', 14,
+                                                    _conf.RTK_COLORS[12],
                                                     _conf.RTK_COLORS[13])
 
         self.treeview.set_tooltip_text(_(u"Displays the list of program "
@@ -225,10 +225,10 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        #self._listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
 
         # Create a Work View to associate with this Module View.
-        self._workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id, query=None):
         """
@@ -294,7 +294,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self._listbook.load(revision_id)
+        #self.listbook.load(revision_id)
 
         return False
 
@@ -494,7 +494,7 @@ class ModuleView(object):
 
         self._model = self.dtcIncident.dicIncidents[_incident_id]
 
-        self._workbook.load(self._model)
+        self.workbook.load(self._model)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -557,6 +557,6 @@ class ModuleView(object):
             except ValueError:
                 self._model.life_cycle = 0
 
-        self._workbook.update()
+        self.workbook.update()
 
         return False

@@ -43,11 +43,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import widgets as _widg
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -115,7 +115,6 @@ class ModuleView(object):
         # Create the main Requirement class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Requirement', 2,
-                                                    None, None,
                                                     _conf.RTK_COLORS[4],
                                                     _conf.RTK_COLORS[5])
 # TODO: Move this to RTK.py and create an application-wide dict.
@@ -202,10 +201,10 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self._listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
 
         # Create a Work View to associate with this Module View.
-        self._workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id):
         """
@@ -239,7 +238,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self._listbook.load(revision_id)
+        #self.listbook.load(revision_id)
 
         return False
 
@@ -339,7 +338,7 @@ class ModuleView(object):
         _requirement_id = _model.get_value(_row, 1)
         self._model = self.dtcRequirement.dicRequirements[_requirement_id]
 
-        self._workbook.load(self._model)
+        self.workbook.load(self._model)
 
         return False
 
@@ -386,6 +385,6 @@ class ModuleView(object):
         elif self._lst_col_order[position] == 10:
             self._model.owner = str(new_text)
 
-        self._workbook.update()
+        self.workbook.update()
 
         return False

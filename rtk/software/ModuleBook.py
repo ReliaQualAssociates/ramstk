@@ -39,11 +39,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import widgets as _widg
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
 #from ListBook import ListView
 from WorkBook import WorkView
 
@@ -99,7 +99,6 @@ class ModuleView(object):
         # Create the main Software class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Software', 15,
-                                                    None, None,
                                                     _conf.RTK_COLORS[21],
                                                     _conf.RTK_COLORS[22])
         _selection = self.treeview.get_selection()
@@ -155,11 +154,11 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self._listbook = None
-        #self._listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = None
+        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
 
         # Create a Work View to associate with this Module View.
-        self._workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id):
         """
@@ -196,7 +195,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self._listbook.load(revision_id)
+        #self.listbook.load(revision_id)
 
         return False
 
@@ -306,7 +305,7 @@ class ModuleView(object):
 
         self._model = self.dtcBoM.dicSoftware[_software_id]
 
-        self._workbook.load(self._model)
+        self.workbook.load(self._model)
 
         selection.handler_unblock(self._lst_handler_id[0])
 
@@ -331,6 +330,6 @@ class ModuleView(object):
         if index == 3:
             self._model.description = new_text
 
-        self._workbook.load(self._model)
+        self.workbook.load(self._model)
 
         return False

@@ -3,11 +3,6 @@
 This is the main program for the RTK application.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       RTK.py is part of the RTK Project
@@ -31,11 +26,9 @@ except ImportError:
     sys.exit(1)
 
 from gui.gtk.mwi.ModuleBook import ModuleView
-from gui.gtk.mwi.ListBook import ListView
-from gui.gtk.mwi.WorkBook import WorkView
 
-import configuration as _conf
-import utilities as _util
+import Configuration as _conf
+import Utilities as _util
 
 from dao.DAO import DAO
 from datamodels.matrix.Matrix import Matrix
@@ -68,6 +61,11 @@ from incident.component.Component import Component
 from incident.ModuleBook import ModuleView as mvwIncident
 from survival.Survival import Survival
 from survival.ModuleBook import ModuleView as mvwSurvival
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 _ = gettext.gettext
@@ -182,7 +180,7 @@ class RTK(object):
     This is the RTK controller class.
     """
 
-    def __init__(self):
+    def __init__(self):                     # pylint: disable=R0914
         """
         Method to initialize the RTK controller.
         """
@@ -191,6 +189,7 @@ class RTK(object):
 
         # Initialize public scalar attributes.
         self.loaded = False
+        self.project_dao = None
 
         # Read the site configuration file.
         _read_configuration()
@@ -240,7 +239,7 @@ class RTK(object):
         else:                               # Multiple windows.
             self.module_book = ModuleView(self)
             self.list_book = self.module_book.create_listview()
-            self.work_book = self.module_book.create_workview(self.site_dao)
+            self.work_book = self.module_book.create_workview()
 
         # Plug-in each of the RTK module views.
         _modview = self.module_book.create_module_page(mvwRevision,
@@ -337,7 +336,7 @@ class RTK(object):
 
         return False
 
-    def _load_commons(self):
+    def _load_commons(self):                # pylint: disable=R0914
         """
         Reads the common database and assigns results to global configuration
         variables.  These variables will be available to all RTK modules.
@@ -435,7 +434,7 @@ class RTK(object):
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
         _conf.RTK_ACTIVE_ENVIRON = [[_environ[1], _environ[0]]
-                                   for _environ in _results]
+                                    for _environ in _results]
 
         _query = "SELECT fld_dormant_environ_noun \
                   FROM tbl_dormant_environs"
@@ -443,7 +442,7 @@ class RTK(object):
                                                             commit=False)
         _conf.RTK_DORMANT_ENVIRON = [_environ[0] for _environ in _results]
 
-        #_conf.RTK_QUALITY_LEVELS
+        # _conf.RTK_QUALITY_LEVELS
         _query = "SELECT fld_criticality_id, fld_criticality_name, \
                          fld_criticality_cat \
                   FROM tbl_criticality"
@@ -572,7 +571,7 @@ class RTK(object):
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
         # Connect to the project database.
-        #_database = '/home/andrew/projects/RTKTestDB.rtk'
+        # _database = '/home/andrew/projects/RTKTestDB.rtk'
         self.project_dao = DAO(_conf.RTK_PROG_INFO[2])
 
         self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
@@ -599,9 +598,9 @@ class RTK(object):
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
-                                     u"%s." % _conf.RTK_PROG_INFO[2]))
-        self.module_book.set_title(_(u"RTK - Analyzing %s" %
-                                   _conf.RTK_PROG_INFO[2]))
+                                     u"{0:s}.".format(_conf.RTK_PROG_INFO[2])))
+        self.module_book.set_title(_(u"RTK - Analyzing {0:s}".format(
+            _conf.RTK_PROG_INFO[2])))
 
         # Find which modules are active in this project.
         _query = "SELECT fld_revision_active, fld_function_active, \
@@ -630,7 +629,7 @@ class RTK(object):
                 self.module_book.notebook.remove_page(i)
             i += 1
 
-        #_conf.METHOD = results[0][36]
+        # _conf.METHOD = results[0][36]
 
         self.module_book.statusbar.pop(2)
 
