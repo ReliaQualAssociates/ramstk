@@ -46,7 +46,7 @@ done
 if [ "x$DIRECTORY" == "x" ];
 then
 	DIRECTORY="allocation dao datamodels failure_definition fmea function
-    hardware hazard incident pof prediction requirement revision similar_item
+    hardware hazard incident pof requirement revision similar_item
     software stakeholder statistics survival testing usage validation"
 	ALL=1
 fi
