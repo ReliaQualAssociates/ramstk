@@ -342,8 +342,8 @@ from os import environ, path, makedirs, name
 import gettext
 
 # Import other RTK modules.
-import utilities as _util
-import widgets as _widg
+import Utilities as _util
+import gui.gtk.Widgets as _widg
 
 _ = gettext.gettext
 

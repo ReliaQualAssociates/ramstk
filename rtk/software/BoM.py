@@ -22,12 +22,12 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
     from software.Software import Model as Software
     from software.CSCI import Model as CSCI
     from software.Unit import Model as Unit
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.software.Software import Model as Software
     from rtk.software.CSCI import Model as CSCI
     from rtk.software.Unit import Model as Unit

@@ -38,11 +38,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import widgets as _widg
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
 
 # Add localization support.
 import locale

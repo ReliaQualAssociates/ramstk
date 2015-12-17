@@ -22,11 +22,11 @@ import locale
 
 try:
     import calculations as _calc
-    import configuration as _conf
+    import Configuration as _conf
     from hardware.component.Component import Model as Component
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.hardware.component.Component import Model as Component
 
 # Add localization support.

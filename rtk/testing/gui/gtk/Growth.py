@@ -53,14 +53,14 @@ import numpy as np
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
-    import widgets as _widg
+    import Configuration as _conf
+    import Utilities as _util
+    import gui.gtk.Widgets as _widg
     from testing.Assistants import MTTFFCalculator, AddRGRecord
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    import rtk.gui.gtk.Widgets as _widg
     from rtk.testing.Assistants import MTTFFCalculator, AddRGRecord
 
 try:

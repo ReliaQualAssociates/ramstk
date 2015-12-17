@@ -33,8 +33,8 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import widgets as _widg
-import configuration as _conf
+import gui.gtk.Widgets as _widg
+import Configuration as _conf
 
 # login.py contains code to create a window that allows the user to enter login
 # information for the MySQL server to use.  This includes server, port, MySQL

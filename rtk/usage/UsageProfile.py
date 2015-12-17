@@ -22,9 +22,9 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
 except ImportError:
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
 from Mission import Model as Mission
 from Phase import Model as Phase
 from Environment import Model as Environment

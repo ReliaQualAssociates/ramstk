@@ -41,9 +41,9 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import configuration as _conf
+import Configuration as _conf
 import login as _login
-import widgets as _widg
+import gui.gtk.Widgets as _widg
 
 _ = gettext.gettext
 

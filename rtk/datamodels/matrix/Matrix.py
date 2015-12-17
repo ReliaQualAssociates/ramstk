@@ -22,10 +22,10 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
     from datamodels.cell.Cell import Model as Cell
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.datamodels.cell.Cell import Model as Cell
 
 

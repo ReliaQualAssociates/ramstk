@@ -22,11 +22,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
+    import Configuration as _conf
+    import Utilities as _util
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

@@ -18,8 +18,8 @@ except ImportError:
     has_mysqldb = False
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
+import Configuration as _conf
+import Utilities as _util
 
 class MySQLInterface:
 

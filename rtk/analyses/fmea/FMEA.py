@@ -22,9 +22,9 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
 from Mode import Model as Mode
 from Mechanism import Model as Mechanism
 from Cause import Model as Cause

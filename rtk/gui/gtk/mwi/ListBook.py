@@ -39,9 +39,9 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
 except ImportError:
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

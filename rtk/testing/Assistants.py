@@ -41,13 +41,13 @@ from scipy.stats import norm
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
-    import widgets as _widg
+    import Configuration as _conf
+    import Utilities as _util
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    import rtk.gui.gtk.Widgets as _widg
 
 # Add localization support.
 try:

@@ -22,7 +22,7 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
     from hardware.assembly.Assembly import Model as Assembly
     from hardware.component.Component import Model as Component
     import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
@@ -79,7 +79,7 @@ try:
     import hardware.component.switch.Thumbwheel as Thumbwheel
     import hardware.component.switch.Toggle as Toggle
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.hardware.assembly.Assembly import Model as Assembly
     from rtk.hardware.component.Component import Model as Component
     import rtk.hardware.component.capacitor.electrolytic.Aluminum as Aluminum

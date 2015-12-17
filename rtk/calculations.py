@@ -29,8 +29,8 @@ _ = gettext.gettext
 
 import numpy as np
 
-import configuration as _conf
-import utilities as _util
+import Configuration as _conf
+import Utilities as _util
 
 
 def calculate_part(model):

@@ -23,7 +23,7 @@ import sys
 import pango
 
 # Import other RTK modules.
-import configuration as _conf
+import Configuration as _conf
 
 # Modules required for the GUI.
 try:

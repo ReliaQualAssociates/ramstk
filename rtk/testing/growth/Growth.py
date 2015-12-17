@@ -28,13 +28,13 @@ from scipy.stats import chi2                # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
+    import Configuration as _conf
     import analyses.statistics.CrowAMSAA as CrowAMSAA
     import analyses.statistics.Bounds as Bounds
     from testing.Testing import Model as Testing
     from testing.Testing import Testing as dtcTesting
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     import rtk.analyses.statistics.CrowAMSAA as CrowAMSAA
     import rtk.analyses.statistics.Bounds as Bounds
     from rtk.testing.Testing import Model as Testing

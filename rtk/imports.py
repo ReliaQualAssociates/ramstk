@@ -38,8 +38,8 @@ _ = gettext.gettext
 import xlrd
 
 # Import other RTK modules.
-import configuration as _conf
-import widgets as _widg
+import Configuration as _conf
+import gui.gtk.Widgets as _widg
 
 class ImportAssistant:
 

@@ -45,13 +45,13 @@ import locale
 
 # Import other RTK modules.
 try:
-    import configuration as _conf
-    import utilities as _util
-    import widgets as _widg
+    import Configuration as _conf
+    import Utilities as _util
+    import gui.gtk.Widgets as _widg
 except ImportError:
-    import rtk.configuration as _conf
-    import rtk.utilities as _util
-    import rtk.widgets as _widg
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddRequirement
 
 try:
@@ -218,7 +218,7 @@ class WorkView(gtk.VBox):
         # Stakeholder input page widgets.
         (self.tvwStakeholderInput,
          self._lst_stakeholder_col_order) = _widg.make_treeview('Stakeholder',
-                                                                10, None, None)
+                                                                10)
 
         self.btnAddInput = _widg.make_button(width=35, image='add')
         self.btnRemoveInput = _widg.make_button(width=35, image='remove')

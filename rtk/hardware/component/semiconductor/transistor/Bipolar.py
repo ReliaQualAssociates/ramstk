@@ -21,11 +21,11 @@ import gettext
 import locale
 
 try:
-    import configuration as _conf
+    import Configuration as _conf
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 

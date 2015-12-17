@@ -36,9 +36,9 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import configuration as _conf
-import utilities as _util
-import widgets as _widg
+import Configuration as _conf
+import Utilities as _util
+import gui.gtk.Widgets as _widg
 
 # Add localization support.
 import locale

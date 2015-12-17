@@ -20,10 +20,10 @@ import gettext
 import locale
 
 try:
-    import configuration as _conf
+    import Configuration as _conf
     from hardware.component.connection.Connection import Model as Connection
 except ImportError:                         # pragma: no cover
-    import rtk.configuration as _conf
+    import rtk.Configuration as _conf
     from rtk.hardware.component.connection.Connection import Model as Connection
 
 # Add localization support.
