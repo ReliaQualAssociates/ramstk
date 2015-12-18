@@ -3,26 +3,26 @@
 This is the test class for testing Hardware BoM module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.hardware.TestBoM.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+import unittest
+from nose.plugins.attrib import attr
+
 import dao.DAO as _dao
 from hardware.BoM import *
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestBoMController(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestBoMController(unittest.TestCase):
         Sets up the test fixture for the BoM class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 

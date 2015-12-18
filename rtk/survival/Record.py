@@ -12,9 +12,9 @@ Survival Package Dataset Record Data Sub-Module
 # All rights reserved.
 
 try:
-    from utilities import error_handler
+    from Utilities import error_handler
 except ImportError:
-    from rtk.utilities import error_handler
+    from rtk.Utilities import error_handler
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

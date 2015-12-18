@@ -3,24 +3,21 @@
 Contains functions for performing regression analysis.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.statistics.Regression.py is part of The RTK Project
 #
 # All rights reserved.
 
-import inspect
-
-# Import mathematical functions.
+# Import modules for mathematics.
 import numpy as np
-import scipy.misc as misc
 from scipy.stats import norm                # pylint: disable=E0611
 import scipy.optimize as optim
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 def adjusted_rank(data):
@@ -150,10 +147,10 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     # Expand the data set so there is one record for each failure.  Loop
     # through the failure quantity passed for each record.
     _data2 = []
-    for i in range(len(_data)):
-        for j in range(int(_data[i][5])):
-            _data2.append((_data[i][0], _data[i][1], _data[i][2], _data[i][3],
-                           _data[i][4], 1))
+    for __, _record in enumerate(_data):
+        for j in range(int(_record[5])):
+            _data2.append((_record[0], _record[1], _record[2],
+                           _record[3], _record[4], 1))
     _data = np.array(_data2)
 
     # Replace the string status with integer status.

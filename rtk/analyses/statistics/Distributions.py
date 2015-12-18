@@ -25,6 +25,7 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
+
 # TODO: Re-write all distributions to accept Survival data model dicRecords as data input.
 def fisher_information(model, p0, X, noise=1.0):    # pylint: disable=C0103
     """
@@ -306,7 +307,7 @@ class Exponential(object):
         :rtype: list
         """
 
-        _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
+        # _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
 
         # Initialize lists to hold results.
         _parameters = [0.0, 0.0]            # Scale and location parameters.
@@ -630,7 +631,7 @@ class Gaussian(object):
         :rtype: list
         """
 
-        _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
+        # _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
 
         # Initialize lists to hold results.
         _parameters = [0.0, 0.0]            # Scale and location parameters.
@@ -785,8 +786,7 @@ class Gaussian(object):
 
         return _mean
 
-    def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+    def reliability_function(self, scale, shape, start_time, end_time, step_time):    # pylint: disable=R0201
         """
         Method to calculate the reliability function for the Gaussian
         distribution between start_time and end_time in intervals of step_time.
@@ -996,7 +996,7 @@ class LogNormal(object):
         :rtype: list
         """
 
-        _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
+        # _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
 
         # Initialize lists to hold results.
         _parameters = [0.0, 0.0]            # Scale and shape parameters.
@@ -1152,8 +1152,7 @@ class LogNormal(object):
 
         return _mean
 
-    def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+    def reliability_function(self, scale, shape, start_time, end_time, step_time):    # pylint: disable=R0201
         """
         Method to calculate the reliability function for the LogNormal
         distribution between start_time and end_time in intervals of step_time.
@@ -1360,7 +1359,7 @@ class Weibull(object):
         :rtype: list
         """
 
-        _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
+        # _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
 
         # Initialize lists to hold results.
         _parameters = [0.0, 0.0, 0.0]       # Scale, shape, and location
@@ -1510,8 +1509,7 @@ class Weibull(object):
 
         return _mean
 
-    def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+    def reliability_function(self, scale, shape, start_time, end_time, step_time):    # pylint: disable=R0201
         """
         Method to calculate the reliability function for the Weibull
         distribution between start_time and end_time in intervals of step_time.

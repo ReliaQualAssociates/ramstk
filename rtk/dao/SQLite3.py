@@ -5,11 +5,6 @@ SQLite3 Package Data Module
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.SQLite3.py is part of The RTK Project
@@ -21,6 +16,11 @@ try:
     HASSQLITE3 = True
 except ImportError:
     HASSQLITE3 = False
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 def error_handler(message):
@@ -56,7 +56,7 @@ class Model(object):
         Method to initialize an instance of the SQLite3 model.
         """
 
-        pass
+        self.connection = None
 
     def connect(self, database):
         """

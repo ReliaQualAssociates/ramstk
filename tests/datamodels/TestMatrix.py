@@ -3,28 +3,26 @@
 This is the test class for testing the Matrix class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       TestFMEA.py is part of The RTK Project
+#       tests.datamodels.TestMatrix.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
-# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
 
+import dao.DAO as _dao
 from datamodels.matrix.Matrix import *
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestMatrixModel(unittest.TestCase):
@@ -76,7 +74,7 @@ class TestMatrixController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Matrix()

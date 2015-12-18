@@ -5,18 +5,17 @@ PyGTK Multi-Window Interface List Book View
 ===========================================
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       ListBook.py is part of the RTK Project
+#       rtk.gui.gtk.mwi.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,15 +32,16 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
 except ImportError:
     import rtk.Configuration as _conf
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -49,6 +49,23 @@ except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+
+def destroy(__widget, __event=None):
+    """
+    Quits the RTK application when the X in the upper right corner is
+    pressed.
+
+    :param gtk.Widget __widget: the gtk.Widget() that called this method.
+    :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+                                    method.
+    :return: False if successful or True if an error is encountered.
+    :rtype: boolean
+    """
+
+    gtk.main_quit()
+
+    return False
 
 
 class ListView(gtk.Window):                 # pylint: disable=R0904
@@ -78,22 +95,6 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
         self.set_position(gtk.WIN_POS_NONE)
         self.move((2 * _width / 3), 0)
 
-        self.connect('delete_event', self.destroy)
+        self.connect('delete_event', destroy)
 
         self.show_all()
-
-    def destroy(self, __widget, __event=None):
-        """
-        Quits the RTK application when the X in the upper right corner is
-        pressed.
-
-        :param gtk.Widget __widget: the gtk.Widget() that called this method.
-        :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
-                                        method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        gtk.main_quit()
-
-        return False

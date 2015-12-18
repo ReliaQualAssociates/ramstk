@@ -15,12 +15,12 @@ import gettext
 # Import mathematical functions.
 from math import exp, log, sqrt
 
-_ = gettext.gettext
-
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 def calculate_duane_parameters(n_failures, fail_times):

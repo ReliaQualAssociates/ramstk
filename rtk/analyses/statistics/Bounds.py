@@ -4,11 +4,6 @@ Contains functions for performing calculations associated with statistical
 bounds.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.statistics.Bounds.py is part of The RTK Project
@@ -17,13 +12,19 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add NLS support.
 import gettext
-_ = gettext.gettext
 
 # Import mathematical functions.
+from math import exp, log, sqrt
 import numpy as np
 from numpy.linalg import inv
-from math import exp, log, sqrt
 from scipy.stats import chi2, norm          # pylint: disable=E0611
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 def calculate_variance_covariance(n_failures, max_time, alpha, beta):

@@ -3,26 +3,26 @@
 This is the test class for testing Component module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.hardware.TestComponent.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+import unittest
+from nose.plugins.attrib import attr
+
 import dao.DAO as _dao
 from hardware.component.Component import Model, Component
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestComponentModel(unittest.TestCase):

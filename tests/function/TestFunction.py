@@ -247,7 +247,7 @@ class TestFunctionController(unittest.TestCase):
         Sets up the test fixture for the Function class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Function()

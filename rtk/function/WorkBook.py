@@ -5,22 +5,20 @@ Function Package Work Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       rtk.function.Function.WorkBook.py is part of The RTK Project
+#       rtk.function.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
 
 import sys
 
-import pango
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
+import pango
 try:
     import pygtk
     pygtk.require('2.0')
@@ -39,10 +37,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -52,6 +46,11 @@ except ImportError:
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddFunction
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -59,7 +58,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors from Revision.
+
 class WorkView(gtk.VBox):
     """
     The Work Book view displays all the attributes for the selected Function.

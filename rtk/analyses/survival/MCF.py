@@ -4,21 +4,21 @@ Contains functions for performing Mean Cumulative Function survival analysis
 and testing for trend.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.survival.MCF.py is part of The RTK Project
 #
 # All rights reserved.
 
-# Import mathematical functions.
-import numpy as np
-from scipy.stats import norm
+# Import modules for mathematics.
 from math import log, sqrt
+import numpy as np
+from scipy.stats import norm                # pylint: disable=E0611
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 def format_data(data):
@@ -52,7 +52,7 @@ def format_data(data):
                 elif _record.status == 1:
                     _times = [str(_record.right_interval) + '+']
 
-    _data[_record.assembly_id] = _times
+    _data[_record.assembly_id] = _times     # pylint: disable=W0631
 
     return _data
 
@@ -201,7 +201,6 @@ def mean_cumulative_function(data, conf=0.75):
     _mu_hat_ll = np.divide(_mu_hat, _w)
     _mu_hat_ul = np.multiply(_mu_hat, _w)
 
-    _diff_times = np.diff(_times)
     _times = np.matrix(_times).transpose().tolist()
 
     _mcf = np.concatenate((_times, _d_dot), axis=1)
@@ -212,13 +211,13 @@ def mean_cumulative_function(data, conf=0.75):
     return _mcf
 
 
-def mcf_variance(delta, d, delta_dot, d_bar):
+def mcf_variance(delta, d_mat, delta_dot, d_bar):
     """
     Function to calculate the variance of d(tk) for the MCF.
 
     :param numpy matrix delta: the matrix of indicator variables for operating
                                systems.
-    :param numpy matrix d: the matrix of the number of system recurrences.
+    :param numpy matrix d_mat: the matrix of the number of system recurrences.
     :param numpy array delta_dot: an array containing the risk population at
                                   each observed failure time.
     :param numpy array d_bar: an array containing the fraction of the risk
@@ -230,7 +229,7 @@ def mcf_variance(delta, d, delta_dot, d_bar):
     """
 
     _temp1 = np.divide(delta, delta_dot)
-    _temp2 = np.subtract(d, d_bar)
+    _temp2 = np.subtract(d_mat, d_bar)
 
     _variance = np.multiply(_temp1, _temp2)
     _variance = np.power(_variance, 2.0)
@@ -262,7 +261,7 @@ def mil_handbook(times):
     return _mhb
 
 
-def laplace(times, N):
+def laplace(times, n_failures):
     """
     Function to calculate the Laplace statistic for trend.  The test statistic
     is calculated as follows:
@@ -276,18 +275,19 @@ def laplace(times, N):
     for a chosen significance level.
 
     :param numpy array times: an array of failure times.
-    :param int N: the total number of failures.
+    :param int n_failures: the total number of failures.
     :return: _zlp; the Laplace test statistic
     :rtype: float
     """
 
     _T = max(times)
-    _zlp = (sum([(t / _T) for t in times]) - N / 2.0) / sqrt(N / 12.0)
+    _zlp = (sum([(t / _T) for t in times]) - n_failures / 2.0) / \
+           sqrt(n_failures / 12.0)
 
     return _zlp
 
 
-def lewis_robinson(times, N):
+def lewis_robinson(times, n_failures):
     """
     Function to calculate the Lewis-Robinson statistic for trend.  The test
     statistic is calculated as follows:
@@ -302,13 +302,13 @@ def lewis_robinson(times, N):
 
     :param times: an array of failure times,
     :type times: numpy array
-    :param int N: the total number of failures.
+    :param int n_failures: the total number of failures.
     :return: _zlr; the Lewis-Robinson test statistic
     :rtype: float
     """
 
     # Calculate the Laplace statistic.
-    _zlp = laplace(times, N)
+    _zlp = laplace(times, n_failures)
 
     # Find the interarrival times.  We need to add a zero to the times array
     # to get the first interarrival time.
@@ -320,7 +320,7 @@ def lewis_robinson(times, N):
     return _zlr
 
 
-def serial_correlation(times, N, k=1):
+def serial_correlation(times, n_failures, k=1):
     """
     Function to calculate the serial correlation coefficient to test for
     independent interarrival times.  The test statistic is calculated as
@@ -337,7 +337,7 @@ def serial_correlation(times, N, k=1):
 
     :param times: an array of failure times,
     :type times: numpy array
-    :param int N: the total number of failures.
+    :param int n_failures: the total number of failures.
     :param int k: the desired order of the serial-correlation.
     :return: _rho; the serial-correlation coefficient.
     :rtype: float
@@ -358,7 +358,7 @@ def serial_correlation(times, N, k=1):
     _temp2 = sum([(t - _t_bar)**2.0 for t in _tbf[k:]])
 
     try:
-        _rho = sqrt(N - k) * _numerator / sqrt(_temp1 * _temp2)
+        _rho = sqrt(n_failures - k) * _numerator / sqrt(_temp1 * _temp2)
     except ZeroDivisionError:
         _rho = 0.0
 

@@ -7,7 +7,7 @@ PyGTK Multi-Window Interface Module Book View
 
 # -*- coding: utf-8 -*-
 #
-#       ModuleBook.py is part of The RTK Project
+#       rtk.gui.gtk.mwi.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 

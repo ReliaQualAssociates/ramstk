@@ -187,7 +187,7 @@ def make_button(height=40, width=200, label="", image='default'):
     """
 
     if width == 0:
-        _width = int((int(_conf.PLACES) + 5) * 8)
+        width = int((int(_conf.PLACES) + 5) * 8)
 
     _button = gtk.Button(label=label)
 
@@ -520,7 +520,7 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
+def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: disable=R0914
     """
     Utility function to create gtk.TreeView() widgets.
 
@@ -586,7 +586,6 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
     treeview = gtk.TreeView(model)
     treeview.set_name(name)
     cols = int(len(heading))
-    _visible = False
     order = []
     for i in range(cols):
         order.append(int(position[i].text))
@@ -870,7 +869,6 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
     _x_min = min(x_vals)
     _x_max = max(x_vals)
     _y_min = 0.0
-    _y_max = 1.0
     _lst_min = [0.0]
     _lst_max = []
     if y1 is not None:
@@ -898,7 +896,6 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
             _lst_min.append(min(y1))
             _lst_max.append(max(y1))
         _y_min = min(y1)
-        _y_max = max(y1)
 
     if y2 is not None:
         if ltype[1] == 1:
@@ -925,7 +922,6 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
             _lst_min.append(min(y2))
             _lst_max.append(max(y2))
         _y_min = min(y2)
-        _y_max = max(y2)
 
     if y3 is not None:
         if ltype[2] == 1:
@@ -952,7 +948,6 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
             _lst_min.append(min(y3))
             _lst_max.append(max(y3))
         _y_min = min(y3)
-        _y_max = max(y3)
 
     if y4 is not None:
         if ltype[3] == 1:
@@ -979,7 +974,6 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
             _lst_min.append(min(y4))
             _lst_max.append(max(y4))
         _y_min = min(y4)
-        _y_max = max(y4)
 
     axis.set_title(title, {'fontsize': 16, 'fontweight': 'bold',
                            'verticalalignment': 'baseline',
@@ -997,7 +991,7 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
     axis.set_ylabel(ylab, {'fontsize': 14, 'fontweight': 'bold',
                            'verticalalignment': 'center',
                            'horizontalalignment': 'center',
-                           'rotation':'vertical'})
+                           'rotation': 'vertical'})
 
     # Get the minimum and maximum y-values to set the axis bounds.  If the
     # maximum value is infinity, use the next largest value and so forth.

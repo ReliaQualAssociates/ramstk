@@ -5,11 +5,6 @@ Hardware Package Bill of Materials (BoM) Module
 ###############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.BoM.py is part of The RTK Project
@@ -139,6 +134,11 @@ except ImportError:                         # pragma: no cover
     import rtk.hardware.component.switch.Thumbwheel as Thumbwheel
     import rtk.hardware.component.switch.Toggle as Toggle
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:                        # pragma: no cover
@@ -171,51 +171,52 @@ class BoM(object):
     """
 
     _dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
-                         3: Plastic.Film(), 4: Paper.Metallized(),
-                         5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
-                         7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
-                         10: Ceramic.General(), 11: Ceramic.Chip(),
-                         12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
-                         14: Aluminum.Wet(), 15: Aluminum.Dry(),
-                         16: Variable.Ceramic(), 17: Variable.Piston(),
-                         18: Variable.AirTrimmer(), 19: Variable.Vacuum()},
-                     2: {1: Multipin.Multipin(), 2: PCB.PCB(),
-                         3: Socket.Socket(), 4: Solder.PTH(),
-                         5: Solder.NonPTH()},
-                     3: {1: Transformer.Transformer(), 2: Coil.Coil()},
-                     4: {1: Linear.Linear(), 2: Logic.Logic(),
-                         3: PALPLA.PALPLA(),
-                         4: Microprocessor.Microprocessor(),
-                         5: Memory.ROM(), 6: Memory.EEPROM(), 7: Memory.DRAM(),
-                         8: Memory.SRAM(), 9: GaAs.GaAs(), 10: VLSI.VLSI()},
-                     5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
-                     6: {1: Crystal.Crystal(), 2: Filter.Filter(),
-                         3: Fuse.Fuse(), 4: Lamp.Lamp()},
-                     7: {1: Mechanical.Mechanical(),
-                         2: SolidState.SolidState()},
-                     8: {1: Composition.Composition(), 2: Film.Film(),
-                         3: Film.FilmPower(), 4: Film.FilmNetwork(),
-                         5: Wirewound.Wirewound(),
-                         6: Wirewound.WirewoundPower(),
-                         7: Wirewound.WirewoundChassisMount(),
-                         8: Thermistor.Thermistor(),
-                         9: VarWirewound.VarWirewound(),
-                         10: VarWirewound.PrecisionWirewound(),
-                         11: VarWirewound.SemiPrecisionWirewound(),
-                         12: VarWirewound.PowerWirewound(),
-                         13: NonWirewound.NonWirewound(),
-                         14: VarComposition.VarComposition(),
-                         15: VarFilm.VarFilm()},
-                     9: {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
-                         3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
-                         5: Unijunction.Unijunction(),
-                         6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
-                         8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
-                         10: Thyristor.Thyristor(), 11: Detector.Detector(),
-                         12: Display.Display(), 13: LaserDiode.LaserDiode()},
-                    10: {1: Toggle.Toggle(), 2:Sensitive.Sensitive(),
-                         3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
-                         5: Breaker.Breaker()}}
+                          3: Plastic.Film(), 4: Paper.Metallized(),
+                          5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
+                          7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
+                          10: Ceramic.General(), 11: Ceramic.Chip(),
+                          12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
+                          14: Aluminum.Wet(), 15: Aluminum.Dry(),
+                          16: Variable.Ceramic(), 17: Variable.Piston(),
+                          18: Variable.AirTrimmer(), 19: Variable.Vacuum()},
+                      2: {1: Multipin.Multipin(), 2: PCB.PCB(),
+                          3: Socket.Socket(), 4: Solder.PTH(),
+                          5: Solder.NonPTH()},
+                      3: {1: Transformer.Transformer(), 2: Coil.Coil()},
+                      4: {1: Linear.Linear(), 2: Logic.Logic(),
+                          3: PALPLA.PALPLA(),
+                          4: Microprocessor.Microprocessor(),
+                          5: Memory.ROM(), 6: Memory.EEPROM(),
+                          7: Memory.DRAM(), 8: Memory.SRAM(), 9: GaAs.GaAs(),
+                          10: VLSI.VLSI()},
+                      5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
+                      6: {1: Crystal.Crystal(), 2: Filter.Filter(),
+                          3: Fuse.Fuse(), 4: Lamp.Lamp()},
+                      7: {1: Mechanical.Mechanical(),
+                          2: SolidState.SolidState()},
+                      8: {1: Composition.Composition(), 2: Film.Film(),
+                          3: Film.FilmPower(), 4: Film.FilmNetwork(),
+                          5: Wirewound.Wirewound(),
+                          6: Wirewound.WirewoundPower(),
+                          7: Wirewound.WirewoundChassisMount(),
+                          8: Thermistor.Thermistor(),
+                          9: VarWirewound.VarWirewound(),
+                          10: VarWirewound.PrecisionWirewound(),
+                          11: VarWirewound.SemiPrecisionWirewound(),
+                          12: VarWirewound.PowerWirewound(),
+                          13: NonWirewound.NonWirewound(),
+                          14: VarComposition.VarComposition(),
+                          15: VarFilm.VarFilm()},
+                      9: {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
+                          3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
+                          5: Unijunction.Unijunction(),
+                          6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
+                          8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
+                          10: Thyristor.Thyristor(), 11: Detector.Detector(),
+                          12: Display.Display(), 13: LaserDiode.LaserDiode()},
+                      10: {1: Toggle.Toggle(), 2: Sensitive.Sensitive(),
+                           3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
+                           5: Breaker.Breaker()}}
 
     def __init__(self):
         """
@@ -337,7 +338,7 @@ class BoM(object):
 
         try:
             _n_assemblies = len(_results)
-        except TypeError as _err:
+        except TypeError:
             _n_assemblies = 0
 
         for i in range(_n_assemblies):
@@ -360,7 +361,7 @@ class BoM(object):
                     except KeyError:
                         _hardware.dicAssemblies[_hardware.hardware_id] = [_hardware2]
                 elif(_hardware2.parent_id == _hardware.hardware_id and
-                   _hardware2.part == 1):
+                     _hardware2.part == 1):
                     try:
                         _hardware.dicComponents[_hardware.hardware_id].append(_hardware2)
                     except KeyError:
@@ -583,23 +584,25 @@ class BoM(object):
                       fld_rated_current={7:f}, fld_rated_power={8:f}, \
                       fld_rated_voltage={9:f}, fld_temperature_rise={10:f}, \
                       fld_voltage_ratio={11:f}".format(
-                      _hardware.current_ratio, _hardware.max_rated_temperature,
-                      _hardware.min_rated_temperature,
-                      _hardware.operating_current, _hardware.operating_power,
-                      _hardware.operating_voltage, _hardware.power_ratio,
-                      _hardware.rated_current, _hardware.rated_power,
-                      _hardware.rated_voltage, _hardware.temperature_rise,
-                      _hardware.voltage_ratio)
+                          _hardware.current_ratio,
+                          _hardware.max_rated_temperature,
+                          _hardware.min_rated_temperature,
+                          _hardware.operating_current,
+                          _hardware.operating_power,
+                          _hardware.operating_voltage, _hardware.power_ratio,
+                          _hardware.rated_current, _hardware.rated_power,
+                          _hardware.rated_voltage, _hardware.temperature_rise,
+                          _hardware.voltage_ratio)
 
         if _hardware.part == 1:
             _query = _query + ", fld_junction_temperature={0:f}, \
                                fld_knee_temperature={1:f}, \
                                fld_thermal_resistance={2:f}, \
                                fld_tref={3:f}".format(
-                               _hardware.junction_temperature,
-                               _hardware.knee_temperature,
-                               _hardware.thermal_resistance,
-                               _hardware.reference_temperature)
+                                   _hardware.junction_temperature,
+                                   _hardware.knee_temperature,
+                                   _hardware.thermal_resistance,
+                                   _hardware.reference_temperature)
 
         _query = _query + " WHERE fld_hardware_id={0:d}".format(hardware_id)
 

@@ -5,14 +5,9 @@ Similar Item Package Data Module
 ################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.SimilarItem.py is part of The RTK Project
+#       rtk.analyses.similar_item.SimilarItem.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -23,8 +18,15 @@ import locale
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -34,26 +36,7 @@ except locale.Error:                        # pragma: no cover
 _ = gettext.gettext
 
 
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
-
-
-class Model(object):
+class Model(object):                        # pylint: disable=R0902
     """
     The Similar Item data model contains the attributes and methods of an
     similar item analysis.  The attributes of a Similar Item are:
@@ -67,49 +50,49 @@ class Model(object):
         """
 
         # Initialize private dict attributes.
-        self._quality_convert = {(1, 1):1.0, (1, 2):0.8, (1, 3):0.5,
-                                 (1, 4):0.2, (2, 1):1.3, (2, 2):1.0,
-                                 (2, 3):0.6, (2, 4):0.3, (3, 1):2.0,
-                                 (3, 2):1.7, (3, 3):1.0, (3, 4):0.4,
-                                 (4, 1):5.0, (4, 2):3.3, (4, 3):2.5,
-                                 (4, 4):1.0}
-        self._environment_convert = {(1, 1):1.0, (1, 2):0.2, (1, 3):0.3,
-                                     (1, 4):0.3, (1, 5):0.1, (1, 6):1.1,
-                                     (2, 1):5.0, (2, 2):1.0, (2, 3):1.4,
-                                     (2, 4):1.4, (2, 5):0.5, (2, 6):5.0,
-                                     (3, 1):3.3, (3, 2):0.7, (3, 3):1.0,
-                                     (3, 4):1.0, (3, 5):0.3, (3, 6):3.3,
-                                     (4, 1):3.3, (4, 2):0.7, (4, 3):1.0,
-                                     (4, 4):1.0, (4, 5):0.3, (4, 6):3.3,
-                                     (5, 1):10.0, (5, 2):2.0, (5, 3):3.3,
-                                     (5, 4):3.3, (5, 5):1.0, (5, 6):10.0,
-                                     (6, 1):0.9, (6, 2):0.2, (6, 3):0.3,
-                                     (6, 4):0.3, (6, 5):0.1, (6, 6):1.0}
-        self._temperature_convert = {(10.0, 10.0):1.0, (10.0, 20.0):0.9,
-                                     (10.0, 30.0):0.8, (10.0, 40.0):0.8,
-                                     (10.0, 50.0):0.7, (10.0, 60.0):0.5,
-                                     (10.0, 70.0):0.4, (20.0, 10.0):1.1,
-                                     (20.0, 20.0):1.0, (20.0, 30.0):0.9,
-                                     (20.0, 40.0):0.8, (20.0, 50.0):0.7,
-                                     (20.0, 60.0):0.6, (20.0, 70.0):0.5,
-                                     (30.0, 10.0):1.2, (30.0, 20.0):1.1,
-                                     (30.0, 30.0):1.0, (30.0, 40.0):0.9,
-                                     (30.0, 50.0):0.8, (30.0, 60.0):0.6,
-                                     (30.0, 70.0):0.5, (40.0, 10.0):1.3,
-                                     (40.0, 20.0):1.2, (40.0, 30.0):1.1,
-                                     (40.0, 40.0):1.0, (40.0, 50.0):0.9,
-                                     (40.0, 60.0):0.7, (40.0, 70.0):0.6,
-                                     (50.0, 10.0):1.5, (50.0, 20.0):1.4,
-                                     (50.0, 30.0):1.2, (50.0, 40.0):1.1,
-                                     (50.0, 50.0):1.0, (50.0, 60.0):0.8,
-                                     (50.0, 70.0):0.7, (60.0, 10.0):1.9,
-                                     (60.0, 20.0):1.7, (60.0, 30.0):1.6,
-                                     (60.0, 40.0):1.5, (60.0, 50.0):1.2,
-                                     (60.0, 60.0):1.0, (60.0, 70.0):0.8,
-                                     (70.0, 10.0):2.4, (70.0, 20.0):2.2,
-                                     (70.0, 30.0):1.9, (70.0, 40.0):1.8,
-                                     (70.0, 50.0):1.5, (70.0, 60.0):1.2,
-                                     (70.0, 70.0):1.0}
+        self._quality_convert = {(1, 1): 1.0, (1, 2): 0.8, (1, 3): 0.5,
+                                 (1, 4): 0.2, (2, 1): 1.3, (2, 2): 1.0,
+                                 (2, 3): 0.6, (2, 4): 0.3, (3, 1): 2.0,
+                                 (3, 2): 1.7, (3, 3): 1.0, (3, 4): 0.4,
+                                 (4, 1): 5.0, (4, 2): 3.3, (4, 3): 2.5,
+                                 (4, 4): 1.0}
+        self._environment_convert = {(1, 1): 1.0, (1, 2): 0.2, (1, 3): 0.3,
+                                     (1, 4): 0.3, (1, 5): 0.1, (1, 6): 1.1,
+                                     (2, 1): 5.0, (2, 2): 1.0, (2, 3): 1.4,
+                                     (2, 4): 1.4, (2, 5): 0.5, (2, 6): 5.0,
+                                     (3, 1): 3.3, (3, 2): 0.7, (3, 3): 1.0,
+                                     (3, 4): 1.0, (3, 5): 0.3, (3, 6): 3.3,
+                                     (4, 1): 3.3, (4, 2): 0.7, (4, 3): 1.0,
+                                     (4, 4): 1.0, (4, 5): 0.3, (4, 6): 3.3,
+                                     (5, 1): 10.0, (5, 2): 2.0, (5, 3): 3.3,
+                                     (5, 4): 3.3, (5, 5): 1.0, (5, 6): 10.0,
+                                     (6, 1): 0.9, (6, 2): 0.2, (6, 3): 0.3,
+                                     (6, 4): 0.3, (6, 5): 0.1, (6, 6): 1.0}
+        self._temperature_convert = {(10.0, 10.0): 1.0, (10.0, 20.0): 0.9,
+                                     (10.0, 30.0): 0.8, (10.0, 40.0): 0.8,
+                                     (10.0, 50.0): 0.7, (10.0, 60.0): 0.5,
+                                     (10.0, 70.0): 0.4, (20.0, 10.0): 1.1,
+                                     (20.0, 20.0): 1.0, (20.0, 30.0): 0.9,
+                                     (20.0, 40.0): 0.8, (20.0, 50.0): 0.7,
+                                     (20.0, 60.0): 0.6, (20.0, 70.0): 0.5,
+                                     (30.0, 10.0): 1.2, (30.0, 20.0): 1.1,
+                                     (30.0, 30.0): 1.0, (30.0, 40.0): 0.9,
+                                     (30.0, 50.0): 0.8, (30.0, 60.0): 0.6,
+                                     (30.0, 70.0): 0.5, (40.0, 10.0): 1.3,
+                                     (40.0, 20.0): 1.2, (40.0, 30.0): 1.1,
+                                     (40.0, 40.0): 1.0, (40.0, 50.0): 0.9,
+                                     (40.0, 60.0): 0.7, (40.0, 70.0): 0.6,
+                                     (50.0, 10.0): 1.5, (50.0, 20.0): 1.4,
+                                     (50.0, 30.0): 1.2, (50.0, 40.0): 1.1,
+                                     (50.0, 50.0): 1.0, (50.0, 60.0): 0.8,
+                                     (50.0, 70.0): 0.7, (60.0, 10.0): 1.9,
+                                     (60.0, 20.0): 1.7, (60.0, 30.0): 1.6,
+                                     (60.0, 40.0): 1.5, (60.0, 50.0): 1.2,
+                                     (60.0, 60.0): 1.0, (60.0, 70.0): 0.8,
+                                     (70.0, 10.0): 2.4, (70.0, 20.0): 2.2,
+                                     (70.0, 30.0): 1.9, (70.0, 40.0): 1.8,
+                                     (70.0, 50.0): 1.5, (70.0, 60.0): 1.2,
+                                     (70.0, 70.0): 1.0}
 
         # Initialize public scalar attributes.
         self.hardware_id = None
@@ -236,10 +219,10 @@ class Model(object):
             self.user_int_5 = int(values[52])
             self.parent_id = int(values[53])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -322,8 +305,8 @@ class Model(object):
         except KeyError:
             self.change_factor_3 = 1.0
 
-        self.result_1 = hazard_rate / (self.change_factor_1 * \
-                                       self.change_factor_2 * \
+        self.result_1 = hazard_rate / (self.change_factor_1 *
+                                       self.change_factor_2 *
                                        self.change_factor_3)
 
         return False
@@ -386,8 +369,8 @@ class Model(object):
         _keys = _sia.keys()
         _values = _sia.values()
 
-        for i in range(len(_keys)):
-            vars()[_keys[i]] = _values[i]
+        for _index, _key in enumerate(_keys):
+            vars()[_key] = _values[_index]
 
         try:
             self.result_1 = eval(_sia['equation1'])
@@ -489,7 +472,7 @@ class SimilarItem(object):
 
         try:
             _n_similar_item = len(_results)
-        except TypeError as _err:
+        except TypeError:
             _n_similar_item = 0
 
         for i in range(_n_similar_item):

@@ -5,16 +5,21 @@ Failure Definition Module
 #########################
 """
 
+# -*- coding: utf-8 -*-
+#
+#       rtk.failure_definition.FailureDefinition.py is part of The RTK Project
+#
+# All rights reserved.
+
+try:
+    import Utilities as _util
+except ImportError:
+    import rtk.Utilities as _util
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-# -*- coding: utf-8 -*-
-#
-#       FailureDefinition.py is part of The RTK Project
-#
-# All rights reserved.
 
 
 class Model(object):
@@ -44,20 +49,28 @@ class Model(object):
         Method to set the Failure Definition data model attributes.
 
         :param tuple values: values to assign to the attributes.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_code, _msg); the error code and error message.
+        :rtype: tuple
         """
 
-        _error = False
+        _code = 0
+        _msg = ''
 
         try:
             self.revision_id = int(values[0])
             self.definition_id = int(values[1])
             self.definition = str(values[2])
-        except(IndexError, ValueError, TypeError):
-            _error = True
+        except IndexError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Wrong input data type."
 
-        return _error
+        return(_code, _msg)
 
     def get_attributes(self):
         """
@@ -151,7 +164,7 @@ class FailureDefinition(object):
 
         _definition = Model()
         _definition.set_attributes((revision_id, _last_id, ''))
-        self.dicDefinitions[revision_id][_last_id]= _definition
+        self.dicDefinitions[_last_id] = _definition
 
         return(_results, _error_code, _last_id)
 
@@ -169,7 +182,7 @@ class FailureDefinition(object):
                   WHERE fld_definition_id={0:d}".format(definition_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        self.dicDefinitions[revision_id].pop(definition_id)
+        self.dicDefinitions.pop(definition_id)
 
         return(_results, _error_code)
 

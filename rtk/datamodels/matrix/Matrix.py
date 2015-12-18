@@ -5,11 +5,6 @@ Matrix Module
 #############
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.datamodels.matrix.Matrix.py is part of The RTK Project
@@ -28,6 +23,10 @@ except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     from rtk.datamodels.cell.Cell import Model as Cell
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -57,6 +56,7 @@ def _add_cell(matrix, row_id, col_id):
     matrix.dicCells[row_id, col_id] = Cell()
 
     return False
+
 
 def _delete_cell(matrix, row_id, col_id):
     """
@@ -175,10 +175,6 @@ class Matrix(object):
 
         # Now select all the cell information using the passed query.
         (_cells, _error_code, __) = self._dao.execute(query)
-        try:
-            _n_cells = len(_cells)
-        except TypeError:
-            _n_cells = 0
 
         # Create the inner dictionary of Matrix ID --> Matrix relationships.
         _matrices = {}
@@ -186,9 +182,9 @@ class Matrix(object):
             _matrix = Model(_mats[i][0], matrix_type)
             _matrices[_mats[i][0]] = _matrix
             _mat_cells = [x for x in _cells if x[0] == _mats[i][0]]
-            for j in range(len(_mat_cells)):
+            for __, _mat_cell in enumerate(_mat_cells):
                 _cell = Cell()
-                _cell.set_attributes(_mat_cells[j][1:])
+                _cell.set_attributes(_mat_cell[1:])
                 _matrix.dicCells[_cell.row_id, _cell.col_id] = _cell
 
         # Create the outer dictionary of Revision ID --> {}.

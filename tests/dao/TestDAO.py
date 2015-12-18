@@ -3,19 +3,11 @@
 This is the test class for testing the Environment class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.dao.TestDAO.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
 
 import os
 import sys
@@ -25,8 +17,15 @@ sys.path.insert(0, os.path.abspath("../../.."))
 
 import sqlite3
 
+import unittest
+from nose.plugins.attrib import attr
+
 import rtk.dao.DAO as _dao
-from rtk.dao.SQLite3 import Model as SQLite3
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestSQLite3Model(unittest.TestCase):

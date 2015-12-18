@@ -5,11 +5,6 @@ Hardware Package Hardware Module
 ################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.Hardware.py is part of The RTK Project
@@ -24,9 +19,16 @@ import locale
 try:
     import calculations as _calc
     import Configuration as _conf
+    import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -36,25 +38,6 @@ except locale.Error:                        # pragma: no cover
 _ = gettext.gettext
 
 
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
-
-# TODO: Fix all docstrings; copy-paste errors.
 class Model(object):                        # pylint: disable=R0902
     """
     The Hardware data model contains the attributes and methods of a Hardware
@@ -272,10 +255,10 @@ class Model(object):                        # pylint: disable=R0902
             self.vibration = float(values[36])
             self.year_of_manufacture = int(values[37])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -307,10 +290,10 @@ class Model(object):                        # pylint: disable=R0902
             self.temperature_rise = float(values[10])
             self.voltage_ratio = float(values[11])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -366,10 +349,10 @@ class Model(object):                        # pylint: disable=R0902
             self.rel_miss_variance = float(values[34])
             self.survival_analysis = int(values[35])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -523,7 +506,7 @@ class Model(object):                        # pylint: disable=R0902
             if _component.hazard_rate_method == 1:   # Assessed
                 _component.calculate()
             elif _component.hazard_rate_method == 2: # Specified, h(t)
-                _component.hazard_rate_active = _assembly.hazard_rate_specified
+                _component.hazard_rate_active = assembly.hazard_rate_specified
             elif _component.hazard_rate_method == 3: # Specified, MTBF
                 _component.hazard_rate_active = 1.0 / _component.mtbf_specified
 
@@ -540,7 +523,7 @@ class Model(object):                        # pylint: disable=R0902
             assembly.hazard_rate_software += _component.hazard_rate_software
             assembly.cost += _component.cost
             assembly.total_part_quantity += _component.quantity
-            assembly.total_power_dissipation += (_component.operating_power * \
+            assembly.total_power_dissipation += (_component.operating_power *
                                                  _component.quantity)
 
         # Then we calculate all the assemblies that are direct children of the
@@ -559,7 +542,7 @@ class Model(object):                        # pylint: disable=R0902
                 _assembly.hazard_rate_active = 1.0 / _assembly.mtbf_specified
 
             # Adjust the active hazard rate.
-            _assembly.hazard_rate_active = (_assembly.hazard_rate_active + \
+            _assembly.hazard_rate_active = (_assembly.hazard_rate_active +
                                             _assembly.add_adj_factor) * \
                                            (_assembly.duty_cycle / 100.0) * \
                                            _assembly.mult_adj_factor * \
@@ -583,7 +566,7 @@ class Model(object):                        # pylint: disable=R0902
 
         return False
 
-    def _calculate_reliability(self, hardware):
+    def _calculate_reliability(self, hardware):     # pylint: disable=R0201
         """
         Calculates reliability metrics for a hardware item.
 
@@ -606,8 +589,8 @@ class Model(object):                        # pylint: disable=R0902
         except ZeroDivisionError:
             hardware.mtbf_logistics = 0.0
 
-        hardware.reliability_logistics = exp(-1.0 * \
-                                             hardware.hazard_rate_logistics * \
+        hardware.reliability_logistics = exp(-1.0 *
+                                             hardware.hazard_rate_logistics *
                                              hardware.mission_time)
 
         # Calculate hazard rate variances.
@@ -617,7 +600,7 @@ class Model(object):                        # pylint: disable=R0902
 
         return False
 
-    def _calculate_costs(self, hardware):
+    def _calculate_costs(self, hardware):   # pylint: disable=R0201
         """
         Calculates cost metrics for a hardware item.
 

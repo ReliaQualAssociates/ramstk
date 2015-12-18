@@ -17,7 +17,7 @@ import gettext
 # Import modules for mathematics support.
 import numpy as np
 from scipy.optimize import fsolve
-from scipy.stats import norm, t        # pylint: disable=E0611
+from scipy.stats import t                   # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
@@ -84,7 +84,6 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
     # confidence bounds on the parameters.
     if alpha > 1.0:
         alpha = alpha / 100.0
-    _z_norm = norm.ppf(alpha)
     _critical_value_t = abs(t.ppf((1.0 - alpha) / 2.0, sum(F) - 2))
 
     # If no observation time was passed, use the maximum failure time and set
@@ -99,6 +98,7 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
     else:
         _N = sum(F) - 2
 
+# TODO: Add support for one-sided bounds.
     if fitmeth == 1:                        # MLE
         # Estimate the Crow-AMASAA parameters using exact failure time data.
         _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(F, X, t_star)
@@ -220,8 +220,6 @@ def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: d
     # confidence bounds on the parameters.
     if alpha > 1.0:
         alpha = alpha / 100.0
-    _z_norm = norm.ppf(alpha)
-    _critical_value_t = abs(t.ppf((1.0 - alpha) / 2.0, sum(F) - 2))
 
     # If no observation time was passed, use the maximum failure time and set
     # the _typeii variable True to indicate this is a failure truncated
@@ -241,6 +239,7 @@ def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: d
     _g1[1] = fsolve(_gamma1, 0.001, args=(_T, _N, t_star))[0]
     _g0[1] = np.log((_N * _g1[1]) / (np.exp(_g1[1] * t_star) - 1.0))
 
+# TODO: Add support for one-sided bounds.
     #if confmeth == 1:                       # Crow bounds.
 
     #elif confmeth == 3:                     # Fisher matrix bounds.

@@ -5,11 +5,6 @@ Hardware.Assembly Package Assembly Module
 #########################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.assembly.Assembly.py is part of The RTK Project
@@ -23,10 +18,17 @@ import locale
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
     from hardware.Hardware import Model as Hardware
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     from rtk.hardware.Hardware import Model as Hardware
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -34,25 +36,6 @@ except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class Model(Hardware):                        # pylint: disable=R0902
@@ -128,10 +111,10 @@ class Model(Hardware):                        # pylint: disable=R0902
                 self.total_part_quantity = int(values[88])
                 self.total_power_dissipation = float(values[89])
             except IndexError as _err:
-                _code = _error_handler(_err.args)
+                _code = _util.error_handler(_err.args)
                 _msg = "ERROR: Insufficient input values."
             except TypeError as _err:
-                _code = _error_handler(_err.args)
+                _code = _util.error_handler(_err.args)
                 _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

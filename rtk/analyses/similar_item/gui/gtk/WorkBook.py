@@ -5,21 +5,21 @@ Similiar Item Analysis Module Work Book View
 ############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.similiar_item.gui.gtk.WorkBook.py is part of The RTK Project
+#       rtk.analyses.similiar_item.gui.gtk.WorkBook.py is part of The RTK
+#       Project
 #
 # All rights reserved.
 
 import sys
-from lxml import etree
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
+from lxml import etree
 import pango
 try:
     import pygtk
@@ -39,19 +39,18 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
-    import Utilities as _util
     import gui.gtk.Widgets as _widg
 except ImportError:
     import rtk.Configuration as _conf
-    import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -60,27 +59,26 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.HBox):                   # pylint: disable=R0902
     """
-    The Work Book view displays all the attributes for the selected
-    Similar Item Analysis.  The attributes of a Similar Item Analysis Work Book
-    view are:
+    The Work Book view displays all the attributes for the selected Similar
+    Item Analysis.  The attributes of a Similar Item Analysis Work Book view
+    are:
 
-    :ivar _lst_handler_id: default value: []
-
-    :ivar dtcSimilarItem: the Similar Item Analysis data controller.
-    :ivar btnEditFunction:
-    :ivar btnCalculate:
-    :ivar btnSave:
-    :ivar cmbSimilarItemMethod:
-    :ivar cmbFromQuality:
-    :ivar cmbToQuality:
-    :ivar cmbFromEnvironment:
-    :ivar cmbToEnvironment:
-    :ivar txtFromTemperature:
-    :ivar txtToTemperature:
-    :ivar tvwSimilarItem:
+    :ivar list _lst_handler_id: default value: []
+    :ivar dict dtcSimilarItem: the Similar Item Analysis data controller.
+    :ivar gtk.Button btnEditFunction:
+    :ivar gtk.Button btnCalculate:
+    :ivar gtk.Button btnSave:
+    :ivar gtk.ComboBox cmbSimilarItemMethod:
+    :ivar gtk.ComboBox cmbFromQuality:
+    :ivar gtk.ComboBox cmbToQuality:
+    :ivar gtk.ComboBox cmbFromEnvironment:
+    :ivar gtk.ComboBox cmbToEnvironment:
+    :ivar gtk.TreeView tvwSimilarItem:
+    :ivar gtk.Entry txtFromTemperature:
+    :ivar gtk.Entry txtToTemperature:
     """
 
     def __init__(self, controller):
@@ -443,7 +441,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                      _similar_item.user_int_1, _similar_item.user_int_2,
                      _similar_item.user_int_3, _similar_item.user_int_4,
                      _similar_item.user_int_5, _similar_item.parent_id]
-            _piter = _model.append(parent_row, _data)
+            _model.append(parent_row, _data)
 
         if path is None:
             _root = _model.get_iter_root()

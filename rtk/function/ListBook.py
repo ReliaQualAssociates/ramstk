@@ -5,18 +5,17 @@ Function Package List Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       ListBook.py is part of the RTK Project
+#       rtk.function.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -32,14 +31,6 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
-
-# Import modules for localization support.
-import gettext
-import locale
 
 # Import other RTK modules.
 try:
@@ -48,6 +39,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

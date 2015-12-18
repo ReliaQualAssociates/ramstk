@@ -409,6 +409,8 @@ def error_handler(message):
         _error_code = 10
     elif 'could not convert string to float' in message[0]:         # Value error
         _error_code = 10
+    elif 'float division by zero' in message[0]:                    # Zero division error
+        _error_code = 20
     elif 'index out of range' in message[0]:                        # Index error
         _error_code = 40
     else:                                                           # Unhandled error

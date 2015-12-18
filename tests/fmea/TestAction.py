@@ -3,28 +3,26 @@
 This is the test class for testing the Action class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.fmea.TestAction.py is part of The RTK Project
 #
 # All rights reserved.
 
-import unittest
-from nose.plugins.attrib import attr
-
-# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
 
+import dao.DAO as _dao
 from analyses.fmea.Action import Model
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
 
 class TestActionModel(unittest.TestCase):
