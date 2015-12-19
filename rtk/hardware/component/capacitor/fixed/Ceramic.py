@@ -5,11 +5,6 @@ Hardware.Component.Capacitor.Fixed Package Ceramic Module
 #########################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.capacitor.fixed.Ceramic.py is part of the RTK
@@ -26,6 +21,11 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:

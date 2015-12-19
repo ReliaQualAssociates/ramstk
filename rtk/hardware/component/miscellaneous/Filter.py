@@ -5,11 +5,6 @@ Hardware.Component.Miscellaneous Package Filter Module
 ######################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.miscellaneous.Filter.py is part of the RTK
@@ -23,11 +18,18 @@ import locale
 try:
     import calculations as _calc
     import Configuration as _conf
+    import Utilities as _util
     from hardware.component.Component import Model as Component
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     from rtk.hardware.component.Component import Model as Component
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -36,28 +38,6 @@ except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'invalid literal for int() with base 10' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        print message
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class Filter(Component):
@@ -141,10 +121,10 @@ class Filter(Component):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -201,7 +181,7 @@ class Filter(Component):
 
         # Calculate component active hazard rate.
         self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
-        self.hazard_rate_active = (self.hazard_rate_active + \
+        self.hazard_rate_active = (self.hazard_rate_active +
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity

@@ -3,29 +3,28 @@
 This is the test class for testing Capacitor module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.hardware.TestCapacitor.py is part of The RTK Project
 #
 # All rights reserved.
 
-import gettext
-import locale
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+import gettext
+
+import unittest
+from nose.plugins.attrib import attr
+
 import dao.DAO as _dao
 from hardware.component.capacitor.Capacitor import Model
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 _ = gettext.gettext
 
