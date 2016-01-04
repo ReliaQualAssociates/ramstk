@@ -5,7 +5,7 @@ This is the main program for the RTK application.
 
 # -*- coding: utf-8 -*-
 #
-#       RTK.py is part of the RTK Project
+#       rtk.RTK.py is part of the RTK Project
 #
 # All rights reserved.
 

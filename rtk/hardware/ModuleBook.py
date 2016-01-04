@@ -33,12 +33,8 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+import Configuration as _conf
+import gui.gtk.Widgets as _widg
 #from ListBook import ListView
 from WorkBook import WorkView
 
@@ -61,20 +57,20 @@ class ModuleView(object):
     RTK Project in a hierarchical list.  The attributes of a Module Book view
     are:
 
-    :ivar _model: the :class:`rtk.hardware.Hardware.Model` data model that is
-                  currently selected.
+    :ivar _model: the :py:class:`rtk.hardware.Hardware.Model` data model that
+                  is currently selected.
 
     :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :class:`gtk.TreeView`.
+                          Module View :py:class:`gtk.TreeView`.
     :ivar _workbook: the :class:`rtk.hardware.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcBoM: the :class:`rtk.bom.BoM` data controller to use for accessing
-                  the Hardware data models.
-    :ivar dtcAllocation: the :class:`rtk.analyses.allocation.Allocation`
+    :ivar dtcBoM: the :py:class:`rtk.bom.BoM` data controller to use for
+                  accessing the Hardware data models.
+    :ivar dtcAllocation: the :py:class:`rtk.analyses.allocation.Allocation`
                           data controller to use for accessing the Allocation
                           data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the hierarchical list
-                    of Hardware.
+    :ivar treeview: the :py:class:`gtk.TreeView` displaying the hierarchical
+                    list of Hardware.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
