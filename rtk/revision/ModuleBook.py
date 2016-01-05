@@ -5,11 +5,6 @@ Revision Package Module View
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.ModuleBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,22 +36,19 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
     import gui.gtk.Widgets as _widg
-    from usage.UsageProfile import UsageProfile
-    from failure_definition.FailureDefinition import FailureDefinition
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
-    from rtk.usage.UsageProfile import UsageProfile
-    from rtk.failure_definition.FailureDefinition import FailureDefinition
 from WorkBook import WorkView
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

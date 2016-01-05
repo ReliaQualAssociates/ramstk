@@ -12,9 +12,9 @@ Survival Package Dataset Record Data Sub-Module
 # All rights reserved.
 
 try:
-    from Utilities import error_handler
+    import Utilities as _util
 except ImportError:
-    from rtk.Utilities import error_handler
+    import rtk.Utilities as _util
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -124,10 +124,10 @@ class Model(object):
             self.user_string_2 = str(values[19])
             self.user_string_3 = str(values[20])
         except IndexError as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

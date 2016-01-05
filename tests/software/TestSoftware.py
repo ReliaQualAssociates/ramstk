@@ -3,11 +3,6 @@
 This is the test class for testing Software module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.software.TestSoftware.py is part of The RTK Project
@@ -21,8 +16,12 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from software.Software import Model, Software, _calculate_application_risk, _calculate_development_risk, _calculate_anomaly_risk, _calculate_traceability_risk, _calculate_quality_risk, _calculate_language_type_risk, _calculate_risk_reduction, _calculate_reliability_estimation_number
+from software.Software import Model, _calculate_application_risk, _calculate_development_risk, _calculate_anomaly_risk, _calculate_traceability_risk, _calculate_quality_risk, _calculate_language_type_risk, _calculate_risk_reduction, _calculate_reliability_estimation_number
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestSoftwareModel(unittest.TestCase):

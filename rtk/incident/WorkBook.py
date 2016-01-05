@@ -5,11 +5,6 @@ Incident Package Work Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.incident.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,10 +36,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -51,6 +46,11 @@ except ImportError:
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddIncident, AddComponents, FilterIncident, ImportIncident
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -731,12 +731,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwComponentList.set_model(_model)
 
-        _heading = [_(u"Component\nID"), _(u"Part\nNumber"),
-                    _(u"Initial\nInstall"), _(u"Failure"), _(u"Suspension"),
-                    _(u"OOT\nFailure"), _("CND/NFF"), _(u"Interval\nCensored"),
-                    _(u"Use\nOperating\nTime"), _(u"Use\nCalendar\nTime"),
-                    _(u"Time to\nFailure"), _(u"Age at\nFailure")]
-        for i in range(len(_heading)):
+        _headings = [_(u"Component\nID"), _(u"Part\nNumber"),
+                     _(u"Initial\nInstall"), _(u"Failure"), _(u"Suspension"),
+                     _(u"OOT\nFailure"), _("CND/NFF"), _(u"Interval\nCensored"),
+                     _(u"Use\nOperating\nTime"), _(u"Use\nCalendar\nTime"),
+                     _(u"Time to\nFailure"), _(u"Age at\nFailure")]
+        for _index, _heading in enumerate(_headings):
             _column = gtk.TreeViewColumn()
 
             if i in [0, 1, 10, 11]:
@@ -745,20 +745,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 _cell.set_property('background', 'light gray')
                 _cell.set_property('foreground', 'black')
                 _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=i)
+                _column.set_attributes(_cell, text=_index)
             else:
                 _cell = gtk.CellRendererToggle()
                 _cell.set_property('activatable', 1)
-                _cell.connect('toggled', self._on_cellrenderer_toggle, None, i,
-                              _model)
+                _cell.connect('toggled', self._on_cellrenderer_toggle, None,
+                              _index, _model)
                 _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, active=i)
+                _column.set_attributes(_cell, active=_index)
 
-            _label = _widg.make_column_heading(_heading[i])
+            _label = _widg.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.set_clickable(True)
             _column.set_resizable(True)
-            _column.set_sort_column_id(i)
+            _column.set_sort_column_id(_index)
             if i == 0:
                 _column.set_visible(False)
 
@@ -1260,12 +1260,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                gobject.TYPE_STRING, gobject.TYPE_STRING)
         self.tvwActionList.set_model(_model)
 
-        _heading = [_(u"Action\nID"), _(u"Prescribed\nAction"),
-                    _(u"Action\nTaken"), _(u"Action\nOwner"), _(u"Due Date"),
-                    _(u"Action\nStatus"), _("Approved By"),
-                    _(u"Approval\nDate"), _(u"Closed By"),
-                    _(u"Closure\nDate")]
-        for i in range(len(_heading)):
+        _headings = [_(u"Action\nID"), _(u"Prescribed\nAction"),
+                     _(u"Action\nTaken"), _(u"Action\nOwner"), _(u"Due Date"),
+                     _(u"Action\nStatus"), _("Approved By"),
+                     _(u"Approval\nDate"), _(u"Closed By"),
+                     _(u"Closure\nDate")]
+        for _index, _heading in enumerate(_headings):
             _column = gtk.TreeViewColumn()
 
             _cell = gtk.CellRendererText()
@@ -1273,14 +1273,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _cell.set_property('background', 'light gray')
             _cell.set_property('foreground', 'black')
             _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=i)
+            _column.set_attributes(_cell, text=_index)
 
-            _label = _widg.make_column_heading(_heading[i])
+            _label = _widg.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.set_clickable(True)
             _column.set_resizable(True)
-            _column.set_sort_column_id(i)
-            if i in [1, 2]:
+            _column.set_sort_column_id(_index)
+            if _index in [1, 2]:
                 _column.set_visible(False)
 
             self.tvwActionList.append_column(_column)

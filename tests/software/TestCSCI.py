@@ -3,11 +3,6 @@
 This is the test class for testing software CSCI module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.software.TestCSCI.py is part of The RTK Project
@@ -25,6 +20,12 @@ import dao.DAO as _dao
 from software.CSCI import Model
 from software.Unit import Model as Unit
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+
+
 class TestCSCIModel(unittest.TestCase):
     """
     Class for testing the CSCI data model class.
@@ -35,7 +36,7 @@ class TestCSCIModel(unittest.TestCase):
         Setup the test fixture for the CSCI class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()

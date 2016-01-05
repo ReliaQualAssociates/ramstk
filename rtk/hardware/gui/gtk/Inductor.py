@@ -5,11 +5,6 @@ Inductor Package Component Specific Work Book View
 ##################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       hardware.gui.gtk.Inductor.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -39,10 +38,6 @@ matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -50,6 +45,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -262,8 +262,8 @@ class Inputs(gtk.Frame):
                 _insulation = self._lst_insulation[self._hardware_model.specification - 1]
             except IndexError:
                 _insulation = []
-            for i in range(len(_insulation)):
-                self.cmbInsulation.insert_text(i, _insulation[i])
+            for _index, _insul in enumerate(_insulation):
+                self.cmbInsulation.insert_text(_index, _insul)
 
             # Place all the input widgets.
             _fixed.put(self.cmbFamily, _x_pos, _y_pos[4])
@@ -302,8 +302,8 @@ class Inputs(gtk.Frame):
                 _insulation = self._lst_insulation[self._hardware_model.specification - 1]
             except IndexError:
                 _insulation = []
-            for i in range(len(_insulation)):
-                self.cmbInsulation.insert_text(i, _insulation[i])
+            for _index, _insul in enumerate(_insulation):
+                self.cmbInsulation.insert_text(_index, _insul)
 
             # Place all the input widgets.
             _fixed.put(self.cmbConstruction, _x_pos, _y_pos[4])
@@ -618,7 +618,7 @@ class Results(gtk.Frame):
         self.axsDerateV.set_title(
             _(u"Voltage and Current Derating Curve for %s at %s") %
             (model.part_number, model.ref_des),
-            fontdict={'fontsize': 12, 'fontweight' : 'bold',
+            fontdict={'fontsize': 12, 'fontweight': 'bold',
                       'verticalalignment': 'baseline'})
         _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                          _(u"Voltage Operating Point"),
@@ -632,15 +632,15 @@ class Results(gtk.Frame):
         # Set the proper labels on the derating curve.
         self.axsDerateV.set_xlabel(_(u"Temperature (\u2070C)"),
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold'})
+                                             'fontweight': 'bold'})
         self.axsDerateV.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold',
+                                             'fontweight': 'bold',
                                              'rotation': 'vertical',
                                              'verticalalignment': 'baseline'})
         self.axsDerateI.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold',
+                                             'fontweight': 'bold',
                                              'rotation': 'vertical',
                                              'verticalalignment': 'baseline'})
 

@@ -5,11 +5,6 @@ Integrated Circuit Package Component Specific Work Book View
 ############################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       hardware.gui.gtk.IntegratedCircuit.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -39,10 +38,6 @@ matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -50,6 +45,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -404,11 +404,11 @@ class Inputs(gtk.Frame):
             self.cmbTechnology.insert_text(1, "Bipolar")
             self.cmbTechnology.insert_text(2, "MOS")
 
-            for i in range(len(_lst_family)):
-                self.cmbFamily.insert_text(i, _lst_family[i])
+            for _index, _family in enumerate(_lst_family):
+                self.cmbFamily.insert_text(_index, _family)
 
-            for i in range(len(self._lst_package)):
-                self.cmbPackage.insert_text(i, self._lst_package[i])
+            for _index, _package in enumerate(self._lst_package):
+                self.cmbPackage.insert_text(_index, _package)
 
             # Place all the input widgets.
             _fixed.put(self.cmbTechnology, _x_pos, _y_pos[2])
@@ -567,11 +567,11 @@ class Inputs(gtk.Frame):
             for i in range(len(self._lst_package)):
                 self.cmbPackage.insert_text(i, self._lst_package[i])
 
-            for i in range(len(_lst_family)):
-                self.cmbManufacturing.insert_text(i, _lst_family[i])
+            for _index, _family in enumerate(_lst_family):
+                self.cmbManufacturing.insert_text(_index, _family)
 
-            for i in range(len(_lst_ecc)):
-                self.cmbECC.insert_text(i, _lst_ecc[i])
+            for _index, _ecc in enumerate(_lst_ecc):
+                self.cmbECC.insert_text(_index, _ecc)
 
             # Place all the input widgets.
             _fixed.put(self.cmbTechnology, _x_pos, _y_pos[2])
@@ -630,8 +630,8 @@ class Inputs(gtk.Frame):
             for i in range(len(self._lst_package)):
                 self.cmbPackage.insert_text(i, self._lst_package[i])
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
 
             # Place all the input widgets.
             _fixed.put(self.cmbApplication, _x_pos, _y_pos[2])
@@ -672,14 +672,14 @@ class Inputs(gtk.Frame):
                                   _(u"Non QML or Non QPL")]
 
             # Populate the gtk.ComboBox().
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
 
-            for i in range(len(_lst_package)):
-                self.cmbPackage.insert_text(i, _lst_package[i])
+            for _index, _package in enumerate(_lst_package):
+                self.cmbPackage.insert_text(_index, _package)
 
-            for i in range(len(_lst_manufacturing)):
-                self.cmbManufacturing.insert_text(i, _lst_manufacturing[i])
+            for _index, _manufacturing in enumerate(_lst_manufacturing):
+                self.cmbManufacturing.insert_text(_index, _manufacturing)
 
             # Place all the input widgets.
             _fixed.put(self.cmbApplication, _x_pos, _y_pos[2])
@@ -1267,7 +1267,7 @@ class Results(gtk.Frame):
         self.axsDerateV.set_title(
             _(u"Voltage and Current Derating Curve for %s at %s") %
             (model.part_number, model.ref_des),
-            fontdict={'fontsize': 12, 'fontweight' : 'bold',
+            fontdict={'fontsize': 12, 'fontweight': 'bold',
                       'verticalalignment': 'baseline'})
         _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                          _(u"Voltage Operating Point"),
@@ -1281,15 +1281,15 @@ class Results(gtk.Frame):
         # Set the proper labels on the derating curve.
         self.axsDerateV.set_xlabel(_(u"Temperature (\u2070C)"),
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold'})
+                                             'fontweight': 'bold'})
         self.axsDerateV.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold',
+                                             'fontweight': 'bold',
                                              'rotation': 'vertical',
                                              'verticalalignment': 'baseline'})
         self.axsDerateI.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold',
+                                             'fontweight': 'bold',
                                              'rotation': 'vertical',
                                              'verticalalignment': 'baseline'})
 

@@ -3,11 +3,6 @@
 This is the test class for testing Stakeholder module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestStakeholder.py is part of The RTK Project
@@ -23,6 +18,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from stakeholder.Stakeholder import Model, Stakeholder
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestStakeholderModel(unittest.TestCase):
@@ -141,7 +141,7 @@ class TestStakeholderController(unittest.TestCase):
         Sets up the test fixture for the Stakeholder class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Stakeholder()
@@ -218,4 +218,4 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.DUT.request_inputs(self._dao, 0)
-        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.0, 1.0))
+        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.2, 1.2))

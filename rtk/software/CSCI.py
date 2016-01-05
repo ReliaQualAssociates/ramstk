@@ -5,11 +5,6 @@ Software Package CSCI Module
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.software.CSCI.py is part of The RTK Project
@@ -29,6 +24,11 @@ except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     from rtk.software.Software import Model as Software
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

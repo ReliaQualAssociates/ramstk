@@ -3,11 +3,6 @@
 This is the test class for testing Incident module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.incident.TestIncident.py is part of The RTK Project
@@ -25,6 +20,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import dao.DAO as _dao
 from incident.Incident import Model, Incident
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+
 
 class TestIncidentModel(unittest.TestCase):
     """
@@ -36,7 +36,7 @@ class TestIncidentModel(unittest.TestCase):
         Setup the test fixture for the Incident class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -164,7 +164,7 @@ class TestIncidentController(unittest.TestCase):
         Sets up the test fixture for the Incident class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Incident()

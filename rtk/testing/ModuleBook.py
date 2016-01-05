@@ -5,11 +5,6 @@ Testing Package Module View
 ###########################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.testing.ModuleBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,10 +32,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -47,6 +42,11 @@ except ImportError:
 #from ListBook import ListView
 from WorkBook import WorkView
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -54,7 +54,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class ModuleView(object):
     """
     The Module Book view displays all the Testing items associated with the
@@ -102,7 +102,6 @@ class ModuleView(object):
          self._lst_col_order) = _widg.make_treeview('Testing', 11,
                                                     _conf.RTK_COLORS[10],
                                                     _conf.RTK_COLORS[11])
-        _selection = self.treeview.get_selection()
 
         self.treeview.set_tooltip_text(_(u"Displays the list of development "
                                          u"program tests."))

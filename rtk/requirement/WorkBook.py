@@ -5,22 +5,20 @@ Requirement Package Work Book View
 ##################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       WorkBook.py is part of The RTK Project
+#       rtk.requirement.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
 
 import sys
 
-import pango
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
+import pango
 try:
     import pygtk
     pygtk.require('2.0')
@@ -39,10 +37,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -53,6 +47,11 @@ except ImportError:
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddRequirement
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -91,7 +90,7 @@ def _add_to_combo(cell, __path, new_text):
 
     return False
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.VBox):
     """
     The Work Book view displays all the attributes for the selected
@@ -930,7 +929,7 @@ class WorkView(gtk.VBox):
         _query = "SELECT fld_code, fld_description \
                   FROM tbl_requirements \
                   WHERE fld_revision_id={0:d}".format(
-                    self._requirement_model.revision_id)
+                      self._requirement_model.revision_id)
         (_requirements,
          _error_code,
          __) = self.dtcRequirement._dao.execute(_query, commit=False)
@@ -996,8 +995,9 @@ class WorkView(gtk.VBox):
 
         _model = self.tvwClear.get_model()
         _model.clear()
-        for i in range(len(_clear)):
-            _data = [i, _clear[i], self._requirement_model.lst_clear[i]]
+        for _index, _clarity in enumerate(_clear):
+            _data = [_index, _clarity,
+                     self._requirement_model.lst_clear[_index]]
             _model.append(_data)
 
         # Load the completeness gtk.TreeView().
@@ -1027,8 +1027,9 @@ class WorkView(gtk.VBox):
 
         _model = self.tvwComplete.get_model()
         _model.clear()
-        for i in range(len(_complete)):
-            _data = [i, _complete[i], self._requirement_model.lst_complete[i]]
+        for _index, _completeness in range(len(_complete)):
+            _data = [_index, _completeness,
+                     self._requirement_model.lst_complete[_index]]
             _model.append(_data)
 
         # Load the consistency gtk.TreeView().
@@ -1057,9 +1058,9 @@ class WorkView(gtk.VBox):
 
         _model = self.tvwConsistent.get_model()
         _model.clear()
-        for i in range(len(_consistent)):
-            _data = [i, _consistent[i],
-                     self._requirement_model.lst_consistent[i]]
+        for _index, _consistency in enumerate(_consistent):
+            _data = [_index, _consistency,
+                     self._requirement_model.lst_consistent[_index]]
             _model.append(_data)
 
         # Load the verifiable gtk.TreeView().
@@ -1085,9 +1086,9 @@ class WorkView(gtk.VBox):
 
         _model = self.tvwVerifiable.get_model()
         _model.clear()
-        for i in range(len(_verifiable)):
-            _data = [i, _verifiable[i],
-                     self._requirement_model.lst_verifiable[i]]
+        for _index, _verify in enumerate(_verifiable):
+            _data = [_index, _verify,
+                     self._requirement_model.lst_verifiable[_index]]
             _model.append(_data)
 
         return False
@@ -1146,8 +1147,6 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        _requirement_id = self._requirement_model.requirement_id
 
         (_model,
          _row) = self.tvwStakeholderInput.get_selection().get_selected()

@@ -3,11 +3,6 @@
 This is the test class for testing FET module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.hardware.TestFET.py is part of The RTK Project
@@ -22,8 +17,12 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
-import configuration as _conf
 from hardware.component.semiconductor.transistor.FET import *
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestHFSiFETModel(unittest.TestCase):

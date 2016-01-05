@@ -5,11 +5,6 @@ Incident Package Assistants Module
 ##################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.incident.Assistants.py is part of The RTK Project
@@ -51,6 +46,11 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -1426,8 +1426,8 @@ class ImportIncident(gtk.Assistant):
         _cell = gtk.CellRendererCombo()
         _cellmodel = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
         _cellmodel.append(["", -1])
-        for i in range(len(_file_fields)):
-            _cellmodel.append([_file_fields[i], i])
+        for _index, _fields in enumerate(_file_fields):
+            _cellmodel.append([_fields, _index])
 
         _cell.set_property('editable', 1)
         _cell.set_property('has-entry', False)
@@ -1465,8 +1465,8 @@ class ImportIncident(gtk.Assistant):
                       _(u"No Fault Found"), _(u"Out of Calibration"),
                       _(u"Initial Installation"), _(u"Interval Censored")]
 
-        for i in range(len(_db_fields)):
-            _model.append([i, _db_fields[i], ""])
+        for _index, _fields in enumerate(_db_fields):
+            _model.append([_index, _fields, ""])
 
         self.append_page(_scrollwindow)
         self.set_page_type(_scrollwindow, gtk.ASSISTANT_PAGE_CONTENT)
@@ -1542,8 +1542,6 @@ class ImportIncident(gtk.Assistant):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
-        _import_error = False
 
         _util.set_cursor(self, gtk.gdk.WATCH)
 
@@ -1822,20 +1820,17 @@ class CreateDataSet(object):
 
         self.assistant.show_all()
 
-    def _create(self, button):
+    def _create(self, __button):
         """
         Method to create the desired data set.
 
-        :param gtk.Button button: the gtk.Button() that called this method.
+        :param gtk.Button __button: the gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
         _window_ = self.assistant.get_root_window()
         _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-
-        _records = {}
-        _data_set = []
 
         model = self.cmbAssembly.get_model()
         row = self.cmbAssembly.get_active_iter()
@@ -2107,7 +2102,7 @@ class CreateDataSet(object):
                     # Check the consistency of the two adjacent records.  Any
                     # inconsistent records will be logged, but they are always
                     # added to the dataset.
-                    if self._consistency_check(_results[i - n], _results[i]):
+                    if self._consistency_check(_results[i - 1], _results[i]):
                         _n_inconsistent += 1
 
                 else:                       # Different unit.

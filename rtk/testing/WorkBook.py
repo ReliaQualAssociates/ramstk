@@ -5,11 +5,6 @@ Testing Package Work Book View
 ##############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.testing.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,10 +32,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -47,6 +42,11 @@ except ImportError:
 # from Assistants import AddTesting
 import gui.gtk.Growth
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -54,7 +54,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
@@ -339,8 +339,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbTestType.get_model()
         _model.clear()
         self.cmbTestType.append_text("")
-        for i in range(len(_test_types)):
-            self.cmbTestType.append_text(_test_types[i])
+        for __, _types in enumerate(_test_types):
+            self.cmbTestType.append_text(_types)
 
         # Create the labels.
         _labels = [_(u"Test Name:"), _(u"Test Description:"),

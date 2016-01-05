@@ -3,11 +3,6 @@
 This is the test class for testing Requirement module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestRequirement.py is part of The RTK Project
@@ -23,6 +18,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from requirement.Requirement import Model, Requirement
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestRequirementModel(unittest.TestCase):

@@ -5,11 +5,6 @@ Requirement Package Data Module
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       Requirement.py is part of The RTK Project
@@ -23,8 +18,15 @@ import locale
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -34,25 +36,6 @@ except locale.Error:                        # pragma: no cover
 _ = gettext.gettext
 
 
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
-
-# TODO: Fix all docstrings; copy-paste errors.
 class Model(object):
     """
     The Requirement data model contains the attributes and methods of a
@@ -135,10 +118,10 @@ class Model(object):
             self.lst_consistent = self.unpack_values(values[16])
             self.lst_verifiable = self.unpack_values(values[17])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -194,8 +177,8 @@ class Model(object):
         """
 
         _unpacked = []
-        for i in range(len(strvalues)):
-            _unpacked.append(int(strvalues[i]))
+        for __, _value in enumerate(strvalues):
+            _unpacked.append(int(_value))
 
         return _unpacked
 
@@ -256,7 +239,7 @@ class Requirement(object):
 
         try:
             _n_requirements = len(_results)
-        except TypeError as _err:
+        except TypeError:
             _n_requirements = 0
 
         for i in range(_n_requirements):

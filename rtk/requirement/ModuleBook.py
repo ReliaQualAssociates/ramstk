@@ -5,11 +5,6 @@ Requirement Package Module View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       ModuleBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,10 +36,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -51,6 +46,11 @@ except ImportError:
 from ListBook import ListView
 from WorkBook import WorkView
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:
@@ -58,7 +58,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class ModuleView(object):
     """
     The Module Book view displays all the Requirements associated with the RTK
@@ -131,10 +131,10 @@ class ModuleView(object):
         _cellmodel.clear()
         _cellmodel.append([""])
         self.dicRequirementTypes[''] = ["", 0]
-        for i in range(len(_results)):
-            _cellmodel.append([_results[i][0]])
-            self.dicRequirementTypes[_results[i][0]] = [_results[i][1],
-                                                        _results[i][2]]
+        for __, _requirement in enumerate(_results):
+            _cellmodel.append([_requirement[0]])
+            self.dicRequirementTypes[_requirement[0]] = [_requirement[1],
+                                                         _requirement[2]]
 
         # Load the Priority gtk.CellRendererCombo()
         _cell = self.treeview.get_column(
@@ -156,9 +156,9 @@ class ModuleView(object):
         _cellmodel = _cell[0].get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
-        for i in range(len(_results)):
-            _cellmodel.append([_results[i][0]])
-            self.dicOwners[_results[i][0]] = [_results[i][1], i]
+        for _index, _owner in enumerate(_results):
+            _cellmodel.append([_owner[0]])
+            self.dicOwners[_owner[0]] = [_owner[1], _index]
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
                                          u"requirements."))

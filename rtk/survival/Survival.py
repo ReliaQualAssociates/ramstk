@@ -16,6 +16,7 @@ from collections import OrderedDict
 import numpy as np
 
 try:
+    import Utilities as _util
     import analyses.statistics.NHPP as _nhpp
     import analyses.survival.KaplanMeier as _km
     import analyses.survival.MCF as _mcf
@@ -30,8 +31,8 @@ try:
                                                   time_between_failures
     from analyses.statistics.Duane import calculate_duane_mean
     from analyses.statistics.Regression import regression
-    from utilities import error_handler
 except ImportError:
+    import rtk.Utilities as _util
     import rtk.analyses.statistics.NHPP as _nhpp
     import rtk.analyses.survival.KaplanMeier as _km
     import rtk.analyses.survival.MCF as _mcf
@@ -46,7 +47,6 @@ except ImportError:
                                                       time_between_failures
     from rtk.analyses.statistics.Duane import calculate_duane_mean
     from rtk.analyses.statistics.Regression import regression
-    from rtk.utilities import error_handler
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -236,10 +236,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.cvm = float(values[39])
             self.grouped = int(values[40])
         except IndexError as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -896,8 +896,6 @@ class Survival(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
-        _dict = {}
 
         _query = "SELECT fld_record_id, fld_name, fld_failure_date, \
                          fld_left_interval, fld_right_interval, fld_status, \

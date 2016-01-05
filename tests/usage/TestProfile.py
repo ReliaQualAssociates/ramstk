@@ -4,11 +4,6 @@ This is the test class for testing the Usage Profile module algorithms and
 models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestProfile.py is part of The RTK Project
@@ -16,6 +11,7 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import unittest
+from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
@@ -25,7 +21,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import dao.DAO as _dao
 
 from usage.UsageProfile import Model, UsageProfile
-from usage.Mission import Model as Mission
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestUsageProfileModel(unittest.TestCase):
@@ -37,6 +37,7 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT = Model(0)
 
+    @attr(all=True, unit=True)
     def test_profile_create(self):
         """
         Method to test the creation of a Usage Profile class instance and
@@ -55,12 +56,13 @@ class TestUsageProfileController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/home/andrew/Analyses/RTK/AGCO/AxialCombine/AxialCombine.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = UsageProfile()
         self.DUT._dao = self._dao
 
+    @attr(all=True, unit=True)
     def test_create_controller(self):
         """
         Method to test the creation of a Usage Profile controller instance.
@@ -68,7 +70,7 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.assertEqual(self.DUT.dicProfiles, {})
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_request_profile(self):
         """
         Method to test that a Usage Profile can be loaded from a Project
@@ -77,7 +79,7 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.assertFalse(self.DUT.request_profile())
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_add_mission(self):
         """
         Method to test that a mission can be added to the Usage Profile.
@@ -87,7 +89,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         #self.assertTrue(isinstance(self.DUT.dicMissions[_last_id], Mission))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_save_mission(self):
         """
         Method to test that a Mission can be saved to the database.
@@ -95,7 +97,7 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.assertEqual(self.DUT._save_mission(), ([], 0))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_delete_mission(self):
         """
         Method to test that a mission can be deleted from the Usage Profile.
@@ -106,7 +108,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertEqual(self.DUT.delete_mission(_n - 1), ([], 0))
         self.assertTrue(self.DUT.delete_mission(_n))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_add_phase(self):
         """
         Method to test that a phase can be added.
@@ -116,7 +118,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertTrue(isinstance(self.DUT.dicPhases[_last_id], Phase))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_save_phase(self):
         """
         Method to test that a Phase can be saved to the database.
@@ -124,7 +126,7 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.assertEqual(self.DUT.save(), ([], 0))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_delete_phase(self):
         """
         Method to test that a phase can be deleted.
@@ -135,7 +137,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertEqual(self.DUT.delete_phase(_n - 1), ([], 0))
         self.assertTrue(self.DUT.delete_phase(_n))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_add_environment(self):
         """
         Method to test that an Environment can be added.
@@ -146,7 +148,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.dicEnvironments[_last_id],
                                    Environment))
 
-    @unittest.skip("Skipping: Only run during database testing.")
+    @attr(all=True, integration=True)
     def test_delete_environment(self):
         """
         Method to test that an evironment can be deleted.

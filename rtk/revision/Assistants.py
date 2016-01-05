@@ -5,11 +5,6 @@ Revision Package Assistants Module
 ##################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       Assistants.py is part of The RTK Project
@@ -42,6 +37,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -100,9 +100,9 @@ class AddRevision(gtk.Dialog):
         (_results,
          _error_code, __) = self._controller._dao.execute(_query, commit=False)
         _list = []
-        for i in range(len(_results)):
-            _list.append([_results[i][0] + '-' + _results[i][1], '',
-                          _results[i][2]])
+        for __, _revision in enumerate(_results):
+            _list.append([_revision[0] + '-' + _revision[1], '',
+                          _revision[2]])
         _widg.load_combo(self.cmbBaseRevision, _list, simple=False)
 
         _label = _widg.make_label(_(u"This is the RTK Revision Addition "

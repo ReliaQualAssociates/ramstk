@@ -5,11 +5,6 @@ Hardware.Component.Relay Package Solid State Module
 ###################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.relay.SolidState.py is part of the RTK Project
@@ -25,6 +20,11 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     from rtk.hardware.component.relay.Relay import Model as Relay
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:

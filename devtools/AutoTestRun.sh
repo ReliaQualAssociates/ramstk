@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NOSETESTS=`which nosetests`
-CLOC=`which cloc`
+CLOC="/home/andrew/.local/bin/cloc"
 ALL=0
 
 cd /home/andrew/projects/RTK/tests

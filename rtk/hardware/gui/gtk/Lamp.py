@@ -5,11 +5,6 @@ Lamp Module Component Specific Work Book View
 #############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       hardware.gui.gtk.Lamp.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,10 +32,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -44,6 +39,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -368,11 +368,11 @@ class Results(gtk.Frame):
 
         return False
 
-    def load_derate_plot(self, model, frame):
+    def load_derate_plot(self, __model, frame):
         """
         Loads the stress derate plot for the Lamp class.
 
-        :param model: the Hardware data model to load the attributes from.
+        :param __model: the Hardware data model to load the attributes from.
         :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
         :return: False if successful or True if an error is encountered.
         :rtype: bool

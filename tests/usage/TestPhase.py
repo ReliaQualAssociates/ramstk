@@ -3,11 +3,6 @@
 This is the test class for testing the Phase class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestPhase.py is part of The RTK Project
@@ -15,16 +10,19 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import unittest
+from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-
 from usage.Phase import Model
-from usage.Environment import Model as Environment
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestPhaseModel(unittest.TestCase):
@@ -42,6 +40,7 @@ class TestPhaseModel(unittest.TestCase):
         self.good_values = (0, 1, 1, 0.0, 50.0, 'TP1', 'Test Phase')
         self.bad_values = (0, 1, 'TP1', 'Test Mission', 1, 0.0, 50.0)
 
+    @attr(all=True, unit=True)
     def test_phase_create(self):
         """
         Method to test the creation of a Phase class instance and default
@@ -58,6 +57,7 @@ class TestPhaseModel(unittest.TestCase):
         self.assertEqual(self.DUT.code, '')
         self.assertEqual(self.DUT.description, '')
 
+    @attr(all=True, unit=True)
     def test_set_attributes(self):
         """
         Test that attributes can be set.
@@ -66,6 +66,7 @@ class TestPhaseModel(unittest.TestCase):
         self.assertFalse(self.DUT.set_attributes(self.good_values))
         self.assertTrue(self.DUT.set_attributes(self.bad_values))
 
+    @attr(all=True, unit=True)
     def test_get_attributes(self):
         """
         Test that attributes can be retrieved.

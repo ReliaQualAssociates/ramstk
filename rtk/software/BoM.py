@@ -5,11 +5,6 @@ Software Package Bill of Materials (BoM) Module
 ###############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.software.BoM.py is part of The RTK Project
@@ -31,6 +26,11 @@ except ImportError:                         # pragma: no cover
     from rtk.software.Software import Model as Software
     from rtk.software.CSCI import Model as CSCI
     from rtk.software.Unit import Model as Unit
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -434,7 +434,7 @@ class BoM(object):
                   VALUES({0:d}, '{1:s}', {2:d}, {3:d})".format(revision_id,
                                                                _description,
                                                                parent_id,
-                                                               software_type+1)
+                                                               software_type + 1)
         (_results, _error_code, _software_id) = self._dao.execute(_query,
                                                                   commit=True)
 

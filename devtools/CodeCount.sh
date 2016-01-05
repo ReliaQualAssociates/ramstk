@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CLOC=`which cloc`
+CLOC="/home/andrew/.local/bin/cloc"
 SED=`which sed`
 MYSQL=`which mysql`
 RM=`which rm`

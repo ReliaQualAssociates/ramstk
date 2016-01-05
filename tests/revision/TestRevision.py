@@ -3,11 +3,6 @@
 This is the test class for testing Revision module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestRevision.py is part of The RTK Project
@@ -24,6 +19,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import dao.DAO as _dao
 from revision.Revision import Model, Revision
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+
 
 class TestRevisionModel(unittest.TestCase):
     """
@@ -35,7 +35,7 @@ class TestRevisionModel(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/AGCO/AxialCombine/AxialCombine.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -233,7 +233,7 @@ class TestRevisionController(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/AGCO/AxialCombine/AxialCombine.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Revision()

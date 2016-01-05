@@ -3,11 +3,6 @@
 This is the test class for testing Mission module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestMission.py is part of The RTK Project
@@ -26,6 +21,11 @@ import dao.DAO as _dao
 
 from usage.Mission import Model
 from usage.Phase import Model as Phase
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestMissionModel(unittest.TestCase):

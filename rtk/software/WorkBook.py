@@ -5,11 +5,6 @@ Software Package Work Book View
 ###############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.software.WorkBook.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,10 +36,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -57,6 +52,11 @@ import gui.gtk.CDR as CDR
 import gui.gtk.TRR as TRR
 import gui.gtk.TestSelection as TestSelection
 # from Assistants import AddSoftware
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -170,7 +170,7 @@ def _set_risk_color(risk, module):          # pylint: disable=R0912
 
     return _color
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected

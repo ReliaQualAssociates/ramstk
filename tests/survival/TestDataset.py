@@ -3,11 +3,6 @@
 This is the test class for testing Dataset module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.survival.TestDataset.py is part of The RTK Project
@@ -24,6 +19,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from survival.Dataset import Model
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestDatasetModel(unittest.TestCase):

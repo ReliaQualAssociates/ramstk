@@ -5,11 +5,6 @@ Validation Package Work Book View
 #################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.validation.WorkBook.py is part of The RTK Project
@@ -18,6 +13,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 import sys
 from datetime import date
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -33,10 +32,6 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-
-# Import modules for localization support.
-import gettext
-import locale
 
 # Import plotting modules.
 import matplotlib
@@ -56,6 +51,11 @@ except ImportError:
     import rtk.gui.gtk.Widgets as _widg
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
 # from Assistants import AddTask
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -797,19 +797,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _uniq_end = sorted(list(set([_task.end_date for _task in
                                      self.dtcValidation.dicTasks.values()])))
 
-        for i in range(len(_uniq_end)):
+        for _index, _end in enumerate(_uniq_end):
             _sum_time = [0.0, 0.0, 0.0, 0.0]
             for _task in self.dtcValidation.dicTasks.values():
-                if _task.end_date == _uniq_end[i]:
+                if _task.end_date == _end:
                     _sum_time[0] += _task.minimum_time
                     _sum_time[1] += _task.average_time
                     _sum_time[2] += _task.maximum_time
                     _sum_time[3] += _task.average_time * _task.status / 100.0
-            _x.append(_uniq_end[i])
-            _y1.append(_y1[i] - _sum_time[0])
-            _y2.append(_y2[i] - _sum_time[1])
-            _y3.append(_y3[i] - _sum_time[2])
-            _y4.append(_y4[i] - _sum_time[3])
+            _x.append(_end)
+            _y1.append(_y1[_index] - _sum_time[0])
+            _y2.append(_y2[_index] - _sum_time[1])
+            _y3.append(_y3[_index] - _sum_time[2])
+            _y4.append(_y4[_index] - _sum_time[3])
 
         # Plot the expected time and expected time limits.
         _widg.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
@@ -833,15 +833,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # identified as a Reliability Assessment.  Add an annotation box
         # showing the minimum required and goal values for each milestone.
         if len(_assess_dates) > 0:
-            for i in range(len(_assess_dates)):
-                self.axAxis1.axvline(x=_assess_dates[i], ymin=0,
-                                     ymax=1.05 * _y3[0], color='m',
-                                     linewidth=2.5, linestyle=':')
+            for __, _dates in enumerate(_assess_dates):
+                self.axAxis1.axvline(x=_dates, ymin=0, ymax=1.05 * _y3[0],
+                                     color='m', linewidth=2.5, linestyle=':')
 
-            for i in range(len(_targets)):
-                self.axAxis1.annotate(str(fmt.format(_targets[i][0])) + "\n" +
-                                      str(fmt.format(_targets[i][1])),
-                                      xy=(_assess_dates[i], 0.95 * max(_y3)),
+            for _index, _target in enumerate(_targets):
+                self.axAxis1.annotate(str(fmt.format(_target[0])) + "\n" +
+                                      str(fmt.format(_target[1])),
+                                      xy=(_assess_dates[_index], 0.95 * max(_y3)),
                                       xycoords='data',
                                       xytext=(-55, 0),
                                       textcoords='offset points',

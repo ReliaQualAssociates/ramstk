@@ -5,11 +5,6 @@ Dataset Package Dataset Sub-Module
 ###################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.survival.Dataset.py is part of The RTK Project
@@ -17,11 +12,16 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 try:
+    import Utilities as _util
     from analyses.statistics.Distributions import time_between_failures
-    from utilities import error_handler
 except ImportError:
+    import rtk.Utilities as _util
     from rtk.analyses.statistics.Distributions import time_between_failures
-    from rtk.utilities import error_handler
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
 class Model(object):                       # pylint: disable=R0902, R0904
@@ -72,10 +72,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.survival_id = int(values[0])
             self.dataset_id = int(values[1])
         except IndexError as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

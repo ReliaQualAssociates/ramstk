@@ -5,11 +5,6 @@ Testing Package Assistants Module
 #################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.testing.Assistants.py is part of The RTK Project
@@ -48,6 +43,11 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -143,9 +143,7 @@ class MTTFFCalculator(gtk.Dialog):
         :rtype: bool
         """
 
-        from configuration import PLACES
-
-        fmt = '{0:0.' + str(PLACES) + 'g}'
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         _mtbfi = float(self.txtMTBFI.get_text())
         _n_items = float(self.txtNItems.get_text())
@@ -339,11 +337,12 @@ class AddRGRecord(gtk.Assistant):
                   (fld_record_id, fld_dataset_id, fld_left_interval, \
                    fld_right_interval, fld_quantity, fld_mode_type, \
                    fld_assembly_id, fld_failure_date, fld_source) \
-                  VALUES (%d, %d, %f, %f, %d, %d, %d, %d, 1)" % (_last_id,
-                                             self._testing_model.test_id,
-                                             0.0, _time, _n_fails, 0,
-                                             self._testing_model.assembly_id,
-                                             _date)
+                  VALUES ({0:d}, {1:d}, {2:f}, {3:f}, {4:d}, {5:d}, {6:d}, \
+                          {7:d}, 1)".format(_last_id,
+                                            self._testing_model.test_id, 0.0,
+                                            _time, _n_fails, 0,
+                                            self._testing_model.assembly_id,
+                                            _date)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         self._testing_model.dic_test_data[_last_id] = [_date, 0.0, _time,

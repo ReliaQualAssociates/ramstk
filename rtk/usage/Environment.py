@@ -5,16 +5,16 @@ Environment Module
 ##################
 """
 
+# -*- coding: utf-8 -*-
+#
+#       rtk.usage.Environment.py is part of The RTK Project
+#
+# All rights reserved.
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-# -*- coding: utf-8 -*-
-#
-#       Environment.py is part of The RTK Project
-#
-# All rights reserved.
 
 
 class Model(object):

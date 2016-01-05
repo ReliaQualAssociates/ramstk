@@ -5,11 +5,6 @@ Hardware.Component.Semiconductor.Transistor Package Field Effect Transistor Modu
 ##################################################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.semiconductor.transistor.FET.py is part of
@@ -22,12 +17,19 @@ import locale
 
 try:
     import Configuration as _conf
+    import Utilities as _util
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -36,30 +38,6 @@ except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10
-    elif 'invalid literal for int() with base 10' in message[0]:    # Type error
-        _error_code = 10
-    elif 'could not convert string to float' in message[0]:         # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:                        # Index error
-        _error_code = 40
-    else:                                                           # Unhandled error
-        print message
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class HFSiFET(Semiconductor):
@@ -118,10 +96,10 @@ class HFSiFET(Semiconductor):
         try:
             self.type = int(values[117])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -284,10 +262,10 @@ class LFSiFET(Semiconductor):
             self.type = int(values[118])
             self.piA = float(values[101])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -479,10 +457,10 @@ class HFGaAsFET(Semiconductor):
             self.piA = float(values[102])
             self.piM = float(values[103])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -528,7 +506,7 @@ class HFGaAsFET(Semiconductor):
             if self.operating_power < 0.1:
                 self.base_hr = 0.052
             elif self.frequency >= 4.0 and self.operating_power >= 0.1:
-                self.base_hr = 0.0093 * exp(0.429 * self.frequency + \
+                self.base_hr = 0.0093 * exp(0.429 * self.frequency +
                                             0.486 * self.operating_power)
             self.hazard_rate_model['lambdab'] = self.base_hr
 

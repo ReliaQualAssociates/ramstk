@@ -5,11 +5,6 @@ Hardware.Component.Semiconductor.Transistor Package Bipolar Transistor Module
 #############################################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.semiconductor.transistor.Bipolar.py is part of
@@ -22,12 +17,19 @@ import locale
 
 try:
     import Configuration as _conf
+    import Utilities as _util
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -36,30 +38,6 @@ except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10
-    elif 'invalid literal for int() with base 10' in message[0]:    # Type error
-        _error_code = 10
-    elif 'could not convert string to float' in message[0]:         # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:                        # Index error
-        _error_code = 40
-    else:                                                           # Unhandled error
-        print message
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class LFBipolar(Semiconductor):
@@ -134,10 +112,10 @@ class LFBipolar(Semiconductor):
             self.piR = float(values[102])
             self.piS = float(values[103])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -317,10 +295,10 @@ class HFLNBipolar(Semiconductor):
             self.piR = float(values[101])
             self.piS = float(values[102])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -502,10 +480,10 @@ class HFHPBipolar(Semiconductor):
             self.piA = float(values[102])
             self.piM = float(values[103])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -543,7 +521,7 @@ class HFHPBipolar(Semiconductor):
             self.hazard_rate_model['equation'] = 'lambdab * piT * piA * piM * piQ * piE'
 
             # Set the base hazard rate for the model.
-            self.base_hr = 0.032 * exp(0.354 * self.frequency + \
+            self.base_hr = 0.032 * exp(0.354 * self.frequency +
                                        0.00558 * self.operating_power)
             self.hazard_rate_model['lambdab'] = self.base_hr
 

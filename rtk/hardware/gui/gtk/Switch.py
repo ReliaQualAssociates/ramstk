@@ -5,11 +5,6 @@ Switch Module Component Specific Work Book View
 ###############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       hardware.gui.gtk.Switch.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -39,10 +38,6 @@ matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -50,6 +45,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -144,12 +144,12 @@ class Inputs(gtk.Frame):
                          "3PDT", "4PDT", "6PDT"]
             _lst_load = ["", _(u"Resistive"), _(u"Inductive"), _(u"Lamp")]
 
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
-            for i in range(len(_lst_form)):
-                self.cmbContactForm.insert_text(i, _lst_form[i])
-            for i in range(len(_lst_load)):
-                self.cmbLoadType.insert_text(i, _lst_load[i])
+            for _index, _construction in enumerate(_lst_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
+            for _index, _form in enumerate(_lst_form):
+                self.cmbContactForm.insert_text(_index, _form)
+            for _index, _load in enumerate(_lst_load):
+                self.cmbLoadType.insert_text(_index, _load)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -199,8 +199,8 @@ class Inputs(gtk.Frame):
             _lst_quality = ["", "MIL-SPEC", _(u"Lower")]
             _lst_load = ["", _(u"Resistive"), _(u"Inductive"), _(u"Lamp")]
 
-            for i in range(len(_lst_load)):
-                self.cmbLoadType.insert_text(i, _lst_load[i])
+            for _index, _load in enumerate(_lst_load):
+                self.cmbLoadType.insert_text(_index, _load)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -251,10 +251,10 @@ class Inputs(gtk.Frame):
             _lst_construction = ["", _(u"Ceramic RF Wafers"),
                                  _(u"Medium Power Wafers")]
 
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
-            for i in range(len(_lst_load)):
-                self.cmbLoadType.insert_text(i, _lst_load[i])
+            for _index, _construction in enumerate(_lst_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
+            for _index, _load in enumerate(_lst_load):
+                self.cmbLoadType.insert_text(_index, _load)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -298,8 +298,8 @@ class Inputs(gtk.Frame):
             _lst_quality = ["", u"MIL-SPEC", _(u"Lower")]
             _lst_load = ["", _(u"Resistive"), _(u"Inductive"), _(u"Lamp")]
 
-            for i in range(len(_lst_load)):
-                self.cmbLoadType.insert_text(i, _lst_load[i])
+            for _index, _load in enumerate(_lst_load):
+                self.cmbLoadType.insert_text(_index, _load)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -343,12 +343,12 @@ class Inputs(gtk.Frame):
             _lst_application = ["", _(u"Not Used as Power On/Off Switch"),
                                 _(u"Used as Power On/Off Switch")]
 
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
-            for i in range(len(_lst_form)):
-                self.cmbContactForm.insert_text(i, _lst_form[i])
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
+            for _index, _construction in enumerate(_lst_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
+            for _index, _form in enumerate(_lst_form):
+                self.cmbContactForm.insert_text(_index, _form)
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -364,8 +364,8 @@ class Inputs(gtk.Frame):
                                             self._on_combo_changed, _index))
 
         # Populate the quality gtk.ComboBox().
-        for i in range(len(_lst_quality)):
-            self.cmbQuality.insert_text(i, _lst_quality[i])
+        for _index, _quality in enumerate(_lst_quality):
+            self.cmbQuality.insert_text(_index, _quality)
 
     def create_217_count_inputs(self, x_pos=5):
         """
@@ -823,7 +823,7 @@ class Results(gtk.Frame):
         self.axsDerate.set_title(_(u"Current Derating Curve for %s at %s") %
                                  (model.part_number, model.ref_des),
                                  fontdict={'fontsize': 12,
-                                           'fontweight' : 'bold',
+                                           'fontweight': 'bold',
                                            'verticalalignment': 'baseline'})
         _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                          _(u"Current Operating Point")])
@@ -834,10 +834,10 @@ class Results(gtk.Frame):
         # Set the proper labels on the derating curve.
         self.axsDerate.set_xlabel(_(u"Temperature (\u2070C)"),
                                   fontdict={'fontsize': 12,
-                                            'fontweight' : 'bold'})
+                                            'fontweight': 'bold'})
         self.axsDerate.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
                                   fontdict={'fontsize': 12,
-                                            'fontweight' : 'bold',
+                                            'fontweight': 'bold',
                                             'rotation': 'vertical',
                                             'verticalalignment': 'baseline'})
 

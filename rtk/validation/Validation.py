@@ -5,11 +5,6 @@ Validation Package Data Module
 ##############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.validation.Validation.py is part of The RTK Project
@@ -19,29 +14,16 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # Import other RTK modules.
 try:
+    import Utilities as _util
     from analyses.statistics.Bounds import calculate_beta_bounds
 except ImportError:                         # pragma: no cover
+    import rtk.Utilities as _util
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
 
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10                                            # pragma: no cover
-    elif 'invalid literal for int() with base 10' in message[0]:    # Value error
-        _error_code = 10
-    elif 'index out of range' in message[0]:                        # Index error
-        _error_code = 40
-    else:                                                           # Unhandled error
-        _error_code = 1000                                          # pragma: no cover
-
-    return _error_code
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
 class Model(object):                       # pylint: disable=R0902, R0904
@@ -156,10 +138,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.cost_variance = float(values[22])
             self.confidence = float(values[23])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

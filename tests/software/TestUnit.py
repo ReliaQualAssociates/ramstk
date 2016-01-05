@@ -3,11 +3,6 @@
 This is the test class for testing software Unit module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.software.TestUnit.py is part of The RTK Project
@@ -21,9 +16,13 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
 from software.Unit import Model
 from software.Software import _calculate_anomaly_risk, _calculate_quality_risk
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestUnitModel(unittest.TestCase):

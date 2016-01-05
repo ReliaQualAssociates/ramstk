@@ -5,11 +5,6 @@ Software Package Software Module
 ################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.software.Software.py is part of The RTK Project
@@ -28,6 +23,11 @@ except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
 except locale.Error:                        # pragma: no cover
@@ -35,24 +35,6 @@ except locale.Error:                        # pragma: no cover
 
 _ = gettext.gettext
 
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 def _calculate_application_risk(module):
     """
@@ -127,6 +109,7 @@ def _calculate_application_risk(module):
 
     return False
 
+
 def _calculate_development_risk(module):
     """
     Function to calculate Software risk due to the development environment.
@@ -154,6 +137,7 @@ def _calculate_development_risk(module):
         module.d_risk = 1.0
 
     return False
+
 
 def _calculate_anomaly_risk(module):
     """
@@ -210,6 +194,7 @@ def _calculate_anomaly_risk(module):
 
     return False
 
+
 def _calculate_traceability_risk(module):
     """
     Function to calculate Software risk due to requirements traceability.
@@ -247,6 +232,7 @@ def _calculate_traceability_risk(module):
             module.st = 1.1
 
     return False
+
 
 def _calculate_quality_risk(module):
     """
@@ -330,6 +316,7 @@ def _calculate_quality_risk(module):
 
     return False
 
+
 def _calculate_language_type_risk(module):
     """
     Function to calculate Software risk due to the programming language type.
@@ -364,6 +351,7 @@ def _calculate_language_type_risk(module):
         module.sl = 1.4
 
     return False
+
 
 def _calculate_risk_reduction(module):
     """
@@ -429,11 +417,11 @@ def _calculate_risk_reduction(module):
     # Calculate the risk reduction due to test coverage.
     try:
         if module.level_id == 2:            # Module
-            _VS = ((float(module.nm_test) / float(module.nm)) + \
-                   (float(module.interfaces_test) / \
+            _VS = ((float(module.nm_test) / float(module.nm)) +
+                   (float(module.interfaces_test) /
                     float(module.interfaces))) / 2.0
         elif module.level_id == 3:          # Unit
-            _VS = ((float(module.branches_test) / float(module.branches)) + \
+            _VS = ((float(module.branches_test) / float(module.branches)) +
                    (float(module.inputs_test) / float(module.inputs))) / 2.0
         else:
             _VS = 1.0
@@ -451,6 +439,7 @@ def _calculate_risk_reduction(module):
     module.t_risk = module.te * module.tm * module.tc
 
     return False
+
 
 def _calculate_reliability_estimation_number(module):
     """
@@ -506,7 +495,7 @@ def _calculate_reliability_estimation_number(module):
 
     return False
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class Model(object):                        # pylint: disable=R0902
     """
     The Software data model contains the attributes and methods of a Software
@@ -818,10 +807,10 @@ class Model(object):                        # pylint: disable=R0902
             self.dr_eot = int(values[74])
             self.test_time_eot = float(values[75])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)

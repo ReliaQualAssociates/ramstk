@@ -71,7 +71,7 @@ def read_configuration():
         rtk_warning(_(u"Site configuration file {0:s} not found.  This "
                       u"typically indicates RTK was installed improperly or "
                       u"RTK files have been corrupted.  You may try to "
-                      u"uninstall and re-install RTK.") % conf.conf_file)
+                      u"uninstall and re-install RTK.").format(conf.conf_file))
         return True
 
     _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')

@@ -3,11 +3,6 @@
 This is the test class for testing Validation module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.verification.TestValidation.py is part of The RTK Project
@@ -16,7 +11,6 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 import unittest
 from nose.plugins.attrib import attr
-import numpy as np
 
 import sys
 from os.path import dirname
@@ -24,6 +18,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from validation.Validation import Model, Validation
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestValidationModel(unittest.TestCase):
@@ -160,7 +159,7 @@ class TestValidationController(unittest.TestCase):
         Sets up the test fixture for the Validation class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Validation()

@@ -3,11 +3,6 @@
 This is the test class for testing the Environment class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       TestEnvironment.py is part of The RTK Project
@@ -15,14 +10,19 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 
 import unittest
+from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
 from usage.Environment import Model
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestEnvironmentModel(unittest.TestCase):
@@ -42,6 +42,7 @@ class TestEnvironmentModel(unittest.TestCase):
         self.bad_values = (0, 0, 0, 0, 'units', 'Test Environment', 1, 50.0,
                            0.0, 0.0, 0.0)
 
+    @attr(all=True, unit=True)
     def test_environment_create(self):
         """
         Method to test the creation of an Environment class instance and
@@ -62,6 +63,7 @@ class TestEnvironmentModel(unittest.TestCase):
         self.assertEqual(self.DUT.mean, 0.0)
         self.assertEqual(self.DUT.variance, 0.0)
 
+    @attr(all=True, unit=True)
     def test_set_attributes(self):
         """
         Test that Environment instance attributes can be set.
@@ -70,6 +72,7 @@ class TestEnvironmentModel(unittest.TestCase):
         self.assertFalse(self.DUT.set_attributes(self.good_values))
         self.assertTrue(self.DUT.set_attributes(self.bad_values))
 
+    @attr(all=True, unit=True)
     def test_get_attributes(self):
         """
         Test that attributes can be retrieved.

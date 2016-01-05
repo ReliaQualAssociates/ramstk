@@ -1,12 +1,8 @@
 #!/usr/bin/env python -O
 """
-This is the test class for testing Carbon Composition resistor module algorithms and models.
+This is the test class for testing Carbon Composition resistor module
+algorithms and models.
 """
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
@@ -22,9 +18,13 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
-import configuration as _conf
 from hardware.component.resistor.fixed.Composition import Composition
 from hardware.component.resistor.variable.Composition import VarComposition
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestCompositionModel(unittest.TestCase):

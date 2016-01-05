@@ -175,7 +175,7 @@ class TestSurvivalController(unittest.TestCase):
         Sets up the test fixture for the Survival class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Survival()
@@ -250,59 +250,6 @@ class TestSurvivalController(unittest.TestCase):
         self.assertFalse(self.DUT.save_all_survivals())
 
     @attr(all=True, integration=True)
-    def test_request_datasets(self):
-        """
-        (TestSurvival) request_datasets should return 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)
-
-        self.assertEqual(self.DUT.request_datasets(min(self.DUT.dicSurvival.keys()))[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_add_dataset(self):
-        """
-        (TestSurvival) add_dataset should return 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        self.DUT.add_dataset(_survival.survival_id)
-
-    @attr(all=True, integration=True)
-    def test_delete_dataset(self):
-        """
-        (TestSurvival) delete_dataset should return 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-
-        self.DUT.request_datasets(_survival.survival_id)
-        _dataset = _survival.dicDatasets[max(_survival.dicDatasets.keys())]
-
-        self.DUT.delete_dataset(_survival.survival_id, _dataset.dataset_id)
-
-    @attr(all=True, integration=True)
-    def test_save_dataset(self):
-        """
-        (TestSurvival) save_dataset returns 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)[1]
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        self.DUT.request_datasets(_survival.survival_id)
-        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
-        _record = _dataset.dicRecords[min(_dataset.dicRecords.keys())]
-        _record[2] = 138.6
-
-        (_results, _error_code) = self.DUT.save_dataset(_survival.survival_id,
-                                                        _dataset.dataset_id)
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
     def test_add_record(self):
         """
         (TestSurvival) add_record should return 0 on success
@@ -310,11 +257,8 @@ class TestSurvivalController(unittest.TestCase):
 
         self.DUT.request_survival(self._dao, 0)
         _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        self.DUT.request_datasets(_survival.survival_id)
-        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
 
-        (_results, _error_code) = self.DUT.add_record(_survival.survival_id,
-                                                      _dataset.dataset_id)
+        (_results, _error_code) = self.DUT.add_record(_survival.survival_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
@@ -327,12 +271,9 @@ class TestSurvivalController(unittest.TestCase):
 
         self.DUT.request_survival(self._dao, 0)
         _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        self.DUT.request_datasets(_survival.survival_id)
-        _dataset = _survival.dicDatasets[min(_survival.dicDatasets.keys())]
-        _record = _dataset.dicRecords[min(_dataset.dicRecords.keys())]
+        _record = _survival.dicRecords[min(_survival.dicRecords.keys())]
 
         (_results, _error_code) = self.DUT.delete_record(_survival.survival_id,
-                                                         _dataset.dataset_id,
                                                          _record[0])
 
         self.assertTrue(_results)

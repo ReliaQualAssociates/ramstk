@@ -5,11 +5,6 @@ Semiconductor Module Component Specific Work Book View
 ######################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       hardware.gui.gtk.Semiconductor.py is part of The RTK Project
@@ -17,6 +12,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -39,10 +38,6 @@ matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
@@ -50,6 +45,11 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -153,10 +153,10 @@ class Inputs(gtk.Frame):
             _lst_construction = ["", _(u"Metallurgically Bonded"),
                                  _(u"Spring Loaded")]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
+            for _index, _construction in enumerate(_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -205,10 +205,10 @@ class Inputs(gtk.Frame):
                          _(u"Tunnel and Back"), u"PIN", _(u"Schottky Barrier"),
                          u"Varactor"]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -255,8 +255,8 @@ class Inputs(gtk.Frame):
             _lst_application = ["", _(u"Linear Amplification"),
                                 _(u"Switching")]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -301,10 +301,10 @@ class Inputs(gtk.Frame):
                                 _(u"Small-Signal Switching"), _(u"Power")]
             _lst_type = ["", "MOSFET", "JFET"]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -413,12 +413,12 @@ class Inputs(gtk.Frame):
             _lst_matching = ["", _(u"Input and Output"), _(u"Input Only"),
                              _(u"None")]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
-            for i in range(len(_lst_matching)):
-                self.cmbMatching.insert_text(i, _lst_matching[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
+            for _index, _construction in enumerate(_lst_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
+            for _index, _matching in enumerate(_lst_matching):
+                self.cmbMatching.insert_text(_index, _matching)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -482,10 +482,10 @@ class Inputs(gtk.Frame):
             _lst_matching = ["", _(u"Input and Output"), _(u"Input Only"),
                              _(u"None")]
 
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
-            for i in range(len(_lst_matching)):
-                self.cmbMatching.insert_text(i, _lst_matching[i])
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
+            for _index, _matching in enumerate(_lst_matching):
+                self.cmbMatching.insert_text(_index, _matching)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -517,8 +517,8 @@ class Inputs(gtk.Frame):
             _lst_quality = ["", "JANTXV", "JANTX", "JAN", _(u"Lower")]
             _lst_type = ["", u"MOSFET", u"JFET"]
 
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -591,8 +591,8 @@ class Inputs(gtk.Frame):
                          _(u"Emitter, Infrared Light Emitting Diode (IRLED)"),
                          _(u"Emitter, Light Emitting Diode (LED)")]
 
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -625,10 +625,10 @@ class Inputs(gtk.Frame):
             _lst_construction = ["", _(u"With Logic Chip"),
                                  _(u"Without Logic Chip")]
 
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
-            for i in range(len(_lst_construction)):
-                self.cmbConstruction.insert_text(i, _lst_construction[i])
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
+            for _index, _construction in enumerate(_lst_construction):
+                self.cmbConstruction.insert_text(_index, _construction)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -682,7 +682,6 @@ class Inputs(gtk.Frame):
                                                  u"output (mW) of the "
                                                  u"selected laser diode."))
 
-
             # Populate the gtk.ComboBox().
             _lst_quality = ["", _(u"Hermetic Package"),
                             _(u"Nonhermetic with Facet Coating"),
@@ -690,10 +689,10 @@ class Inputs(gtk.Frame):
             _lst_type = ["", "GaAs/Al GaAs", "In GaAs/In GaAsP"]
             _lst_application = ["", _(u"Continuous"), _(u"Pulsed")]
 
-            for i in range(len(_lst_type)):
-                self.cmbType.insert_text(i, _lst_type[i])
-            for i in range(len(_lst_application)):
-                self.cmbApplication.insert_text(i, _lst_application[i])
+            for _index, _type in enumerate(_lst_type):
+                self.cmbType.insert_text(_index, _type)
+            for _index, _application in enumerate(_lst_application):
+                self.cmbApplication.insert_text(_index, _application)
 
             # Connect signals to callback functions.
             self._lst_handler_id.append(
@@ -706,23 +705,23 @@ class Inputs(gtk.Frame):
             _index += 1
             self._lst_handler_id.append(
                 self.txtDutyCycle.connect('focus-out-event',
-                                          self._on_focus_out, _index))#4
+                                          self._on_focus_out, _index))
             _index += 1
             self._lst_handler_id.append(
                 self.txtFwdCurrent.connect('focus-out-event',
-                                           self._on_focus_out, _index))#5
+                                           self._on_focus_out, _index))
             _index += 1
             self._lst_handler_id.append(
                 self.txtPRated.connect('focus-out-event',
-                                       self._on_focus_out, _index))#6
+                                       self._on_focus_out, _index))
             _index += 1
             self._lst_handler_id.append(
                 self.txtPRequired.connect('focus-out-event',
-                                          self._on_focus_out, _index))#7
+                                          self._on_focus_out, _index))
 
         # Populate the quality gtk.ComboBox().
-        for i in range(len(_lst_quality)):
-            self.cmbQuality.insert_text(i, _lst_quality[i])
+        for _index, _quality in enumerate(_lst_quality):
+            self.cmbQuality.insert_text(_index, _quality)
 
     def create_217_count_inputs(self, x_pos=5):
         """
@@ -1379,13 +1378,13 @@ class Results(gtk.Frame):
             self.axsDerate1.set_title(
                 _(u"Power Derating Curve for %s at %s") %
                 (model.part_number, model.ref_des),
-                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                fontdict={'fontsize': 12, 'fontweight': 'bold',
                           'verticalalignment': 'baseline'})
             _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                              _(u"Power Operating Point")])
             self.axsDerate1.set_ylabel(r'$\mathbf{P_{op} / P_{rated}}$',
                                        fontdict={'fontsize': 12,
-                                                 'fontweight' : 'bold',
+                                                 'fontweight': 'bold',
                                                  'rotation': 'vertical',
                                                  'verticalalignment': 'baseline'})
         elif model.subcategory in [14, 15, 16, 17, 18, 19, 20]:
@@ -1398,7 +1397,7 @@ class Results(gtk.Frame):
             self.axsDerate1.set_title(
                 _(u"Power and Voltage Derating Curve for %s at %s") %
                 (model.part_number, model.ref_des),
-                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                fontdict={'fontsize': 12, 'fontweight': 'bold',
                           'verticalalignment': 'baseline'})
             _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                              _(u"Power Operating Point"),
@@ -1413,7 +1412,7 @@ class Results(gtk.Frame):
             self.axsDerate1.set_title(
                 _(u"Voltage and Current Derating Curve for %s at %s") %
                 (model.part_number, model.ref_des),
-                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                fontdict={'fontsize': 12, 'fontweight': 'bold',
                           'verticalalignment': 'baseline'})
             _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                              _(u"Voltage Operating Point"),
@@ -1427,13 +1426,13 @@ class Results(gtk.Frame):
             self.axsDerate1.set_title(
                 _(u"Voltage Derating Curve for %s at %s") %
                 (model.part_number, model.ref_des),
-                fontdict={'fontsize': 12, 'fontweight' : 'bold',
+                fontdict={'fontsize': 12, 'fontweight': 'bold',
                           'verticalalignment': 'baseline'})
             _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                              _(u"Voltage Operating Point")])
             self.axsDerate1.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
                                        fontdict={'fontsize': 12,
-                                                 'fontweight' : 'bold',
+                                                 'fontweight': 'bold',
                                                  'rotation': 'vertical',
                                                  'verticalalignment': 'baseline'})
 
@@ -1457,7 +1456,7 @@ class Results(gtk.Frame):
         # Set the proper labels on the derating curve.
         self.axsDerate1.set_xlabel(_(u"Temperature (\u2070C)"),
                                    fontdict={'fontsize': 12,
-                                             'fontweight' : 'bold'})
+                                             'fontweight': 'bold'})
 
         self.figDerate.tight_layout()
 

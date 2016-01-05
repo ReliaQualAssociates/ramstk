@@ -22,7 +22,6 @@ from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
-import configuration as _conf
 from hardware.component.relay.Relay import Model
 from hardware.component.relay.Mechanical import Mechanical
 from hardware.component.relay.SolidState import SolidState

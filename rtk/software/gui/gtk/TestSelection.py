@@ -5,18 +5,17 @@ Software Package Test Selection Matrix Work Book View
 #####################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       software.gui.gtk.TestSelection.py is part of The RTK Project
+#       rtk.software.gui.gtk.TestSelection.py is part of The RTK Project
 #
 # All rights reserved.
 
 import sys
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,15 +36,16 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import modules for localization support.
-import gettext
-import locale
-
 # Import other RTK modules.
 try:
     import Configuration as _conf
 except ImportError:
     import rtk.Configuration as _conf
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -301,7 +301,7 @@ class CSCITestSelection(gtk.ScrolledWindow):
 
         model[path][position] = not cell.get_active()
 
-        if not cell.get_active() is True:
+        if cell.get_active() is not True:
             _selection = 1
         else:
             _selection = 0
@@ -560,7 +560,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
 
         model[path][position] = not cell.get_active()
 
-        if not cell.get_active() is True:
+        if cell.get_active() is not True:
             _selection = 1
         else:
             _selection = 0

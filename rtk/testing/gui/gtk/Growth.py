@@ -5,11 +5,6 @@ Reliability Growth Testing Module Work Book View
 ################################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.testing.gui.gtk.Growth.py is part of The RTK Project
@@ -18,6 +13,10 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 import sys
 from datetime import datetime
+
+# Import modules for localization support.
+import gettext
+import locale
 
 # Modules required for the GUI.
 try:
@@ -37,10 +36,6 @@ try:
     import gobject
 except ImportError:
     sys.exit(1)
-
-# Import modules for localization support.
-import gettext
-import locale
 
 # Modules used for plotting.
 import matplotlib
@@ -62,6 +57,11 @@ except ImportError:
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
     from rtk.testing.Assistants import MTTFFCalculator, AddRGRecord
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -122,7 +122,7 @@ def _close_plot(__window, __event, plot, parent):
 
     return False
 
-# TODO: Fix all docstrings; copy-paste errors.
+
 class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected Reliability
@@ -1970,8 +1970,8 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         self.axAxis1.add_line(_line)
 
         # Show the target values on the plot.
-        for i in range(len(_targets)):
-            self.axAxis1.axhline(y=_targets[i], xmin=0, color='m',
+        for __, _target in enumerate(_targets):
+            self.axAxis1.axhline(y=_target, xmin=0, color='m',
                                  linewidth=2.5, linestyle=':')
         if self.optLogarithmic.get_active():
             self.axAxis1.set_xscale('log')
@@ -1980,9 +1980,9 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
             self.axAxis1.set_xscale('linear')
             self.axAxis1.set_yscale('linear')
 
-        for i in range(len(_targets)):
-            self.axAxis1.annotate(str(fmt.format(_targets[i])),
-                                  xy=(self._testing_model.ttt, _targets[i]),
+        for __, _target in enumerate(_targets):
+            self.axAxis1.annotate(str(fmt.format(_target)),
+                                  xy=(self._testing_model.ttt, _target),
                                   xycoords='data',
                                   xytext=(25, -25),
                                   textcoords='offset points',

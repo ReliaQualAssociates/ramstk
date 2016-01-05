@@ -5,11 +5,6 @@ Usage Profile Module
 ####################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.usage.UsageProfile.py is part of The RTK Project
@@ -28,6 +23,11 @@ except ImportError:
 from Mission import Model as Mission
 from Phase import Model as Phase
 from Environment import Model as Environment
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -301,7 +301,10 @@ class UsageProfile(object):
                    fld_maximum, fld_mean, fld_variance) \
                   VALUES ({0:d}, {1:d}, {2:d}, {3:d}, '{4:s}', '{5:s}', \
                           {6:f}, {7:f}, {8:f}, {9:f})".format(revision_id,
-                          mission_id, phase_id, 0, '', '', 0.0, 0.0, 0.0, 0.0)
+                                                              mission_id,
+                                                              phase_id, 0, '',
+                                                              '', 0.0, 0.0,
+                                                              0.0, 0.0)
         (_results,
          _error_code,
          _last_id) = self._dao.execute(_query, commit=True)
@@ -417,9 +420,10 @@ class UsageProfile(object):
                       fld_maximum={4:f}, fld_mean={5:f}, \
                       fld_variance={6:f} \
                   WHERE fld_condition_id={0:d}".format(
-                  environment.environment_id, environment.name,
-                  environment.units, environment.minimum, environment.maximum,
-                  environment.mean, environment.variance)
+                      environment.environment_id, environment.name,
+                      environment.units, environment.minimum,
+                      environment.maximum, environment.mean,
+                      environment.variance)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)

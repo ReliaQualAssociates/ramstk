@@ -5,14 +5,9 @@ Revision Package Data Module
 ############################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
-#       Revision.py is part of The RTK Project
+#       rtk.revision.Revision.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -25,6 +20,11 @@ try:
     import Configuration as _conf
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -243,7 +243,7 @@ class Model(object):
         try:
             self.mission_hazard_rate = float(inputs[3])
         except TypeError:
-            self.mission_hazard_rate = 0
+            self.mission_hazard_rate = 0.0
 
         # Calculate the logistics h(t).
         self.hazard_rate = self.active_hazard_rate + \
@@ -502,16 +502,20 @@ class Revision(object):
 
         # First attempt to retrieve results based on components associated
         # with the selected revision.
-        _query = "SELECT SUM(fld_failure_rate_active), \
-                         SUM(fld_failure_rate_dormant), \
-                         SUM(fld_failure_rate_software), \
-                         SUM(fld_failure_rate_mission), \
-                         SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                         SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt), \
-                         SUM(fld_cost), COUNT(fld_assembly_id) \
-                  FROM rtk_hardware \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_part=1".format(revision_id)
+        _query = "SELECT SUM(t1.fld_hazard_rate_active), \
+                         SUM(t1.fld_hazard_rate_dormant), \
+                         SUM(t1.fld_hazard_rate_software), \
+                         SUM(t1.fld_hazard_rate_mission), \
+                         SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
+                         SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
+                         SUM(t3.fld_cost), COUNT(t1.fld_hardware_id) \
+                  FROM rtk_reliability AS t1 \
+                  INNER JOIN rtk_maintainability AS t2 \
+                  ON t2.fld_hardware_id=t1.fld_hardware_id \
+                  INNER JOIN rtk_hardware AS t3 \
+                  ON t3.fld_hardware_id=t1.fld_hardware_id \
+                  WHERE t3.fld_revision_id={0:d} \
+                  AND t3.fld_part=1".format(revision_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
         if _error_code != 0:
             return _error_code
@@ -519,16 +523,20 @@ class Revision(object):
         # If that doesn't work, attempt to retrieve results based on the first
         # level of assemblies associated with the selected revision.
         if _results[0][9] == 0:
-            _query = "SELECT SUM(fld_failure_rate_active), \
-                             SUM(fld_failure_rate_dormant), \
-                             SUM(fld_failure_rate_software), \
-                             SUM(fld_failure_rate_mission), \
-                             SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                             SUM(1.0 / fld_mttr), SUM(1.0 / fld_mmt), \
-                             SUM(fld_cost) \
-                      FROM rtk_hardware \
-                      WHERE fld_revision_id={0:d} \
-                      AND fld_level=1 AND fld_part=0".format(revision_id)
+            _query = "SELECT SUM(t1.fld_hazard_rate_active), \
+                             SUM(t1.fld_hazard_rate_dormant), \
+                             SUM(t1.fld_hazard_rate_software), \
+                             SUM(t1.fld_hazard_rate_mission), \
+                             SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
+                             SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
+                             SUM(t3.fld_cost) \
+                      FROM rtk_reliability AS t1 \
+                      INNER JOIN rtk_maintainability AS t2 \
+                      ON t2.fld_hardware_id=t1.fld_hardware_id \
+                      INNER JOIN rtk_hardware AS t3 \
+                      ON t3.fld_hardware_id=t1.fld_hardware_id \
+                      WHERE t3.fld_revision_id={0:d} \
+                      AND t3.fld_level=1 AND t3.fld_part=0".format(revision_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)
             if _error_code != 0:

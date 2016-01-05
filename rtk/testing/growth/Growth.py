@@ -5,11 +5,6 @@ Testing Package Reliability Growth Data Module
 ##############################################
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.testing.growth.Growth.py is part of The RTK Project
@@ -21,24 +16,31 @@ import gettext
 import locale
 
 # Import modules for mathematics.
-import numpy as np
 from math import exp, log, sqrt
+import numpy as np
 from scipy.optimize import fsolve
 from scipy.stats import chi2                # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
     import analyses.statistics.CrowAMSAA as CrowAMSAA
     import analyses.statistics.Bounds as Bounds
     from testing.Testing import Model as Testing
     from testing.Testing import Testing as dtcTesting
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     import rtk.analyses.statistics.CrowAMSAA as CrowAMSAA
     import rtk.analyses.statistics.Bounds as Bounds
     from rtk.testing.Testing import Model as Testing
     from rtk.testing.Testing import Testing as dtcTesting
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
@@ -46,25 +48,6 @@ except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 def _gr(gr, mi, mf, ttt, t1):
@@ -273,10 +256,10 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             self.instantaneous_mean[-1][1] = float(values[42])
             self.instantaneous_mean[-1][2] = float(values[43])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -320,10 +303,10 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             self.lst_o_mtbfa[phase] = float(values[22])
             self.lst_o_test_time[phase] = float(values[23])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = _util.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -903,16 +886,16 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
                  _times[i], self.alpha_hat[1], self.beta_hat[1])
 
             (_lower, _upper) = Bounds.calculate_crow_bounds(
-                sum(_failures[:i+1]), _times[i], self.alpha_hat[1],
+                sum(_failures[:i + 1]), _times[i], self.alpha_hat[1],
                 self.beta_hat[1], self.confidence, 3)
 
             _cum_mean_ll = 1.0 / _upper
             _cum_mean_ul = 1.0 / _lower
 
-            _i_mean_ll = 1.0 / (self.alpha_hat[2] * self.beta_hat[2] * \
-                _times[-1]**(self.beta_hat[2] - 1.0))
-            _i_mean_ul = 1.0 / (self.alpha_hat[0] * self.beta_hat[0] * \
-                _times[-1]**(self.beta_hat[0] - 1.0))
+            _i_mean_ll = 1.0 / (self.alpha_hat[2] * self.beta_hat[2] *
+                                _times[-1]**(self.beta_hat[2] - 1.0))
+            _i_mean_ul = 1.0 / (self.alpha_hat[0] * self.beta_hat[0] *
+                                _times[-1]**(self.beta_hat[0] - 1.0))
 
             self.cum_mean.append([_cum_mean_ll, _cum_mean, _cum_mean_ul])
             self.instantaneous_mean.append([_i_mean_ll, _instantaneous_mean,
