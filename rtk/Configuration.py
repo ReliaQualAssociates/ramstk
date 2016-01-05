@@ -374,6 +374,8 @@ RTK_PROG_INFO = []
 RTK_HARDWARE_LIST = []
 RTK_SOFTWARE_LIST = []
 
+RTK_MANUFACTURERS = []
+
 # ------------------------------------------------------------------------- #
 # Requirement analysis configuration options.                               #
 # ------------------------------------------------------------------------- #
@@ -411,6 +413,13 @@ RTK_OPERATING_PARAMETERS = []
 # ------------------------------------------------------------------------- #
 RTK_CATEGORIES = {}
 RTK_SUBCATEGORIES = {}
+
+# ------------------------------------------------------------------------- #
+# Software configuration options.                                           #
+# ------------------------------------------------------------------------- #
+RTK_SW_LEVELS = []
+RTK_SW_APPLICATION = []
+RTK_SW_DEV_PHASES = []
 
 # ------------------------------------------------------------------------- #
 # Validation configuration options.                                         #
