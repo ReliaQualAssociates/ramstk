@@ -51,19 +51,19 @@ except ImportError:
     from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
     from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from rtk.analyses.pof.gui.gtk.WorkBook import WorkView as PoF
-import gui.gtk.Capacitor
-import gui.gtk.Connection
-import gui.gtk.Inductor
-import gui.gtk.IntegratedCircuit
-import gui.gtk.Meter
-import gui.gtk.Crystal
-import gui.gtk.Filter
-import gui.gtk.Fuse
-import gui.gtk.Lamp
-import gui.gtk.Relay
-import gui.gtk.Resistor
-import gui.gtk.Semiconductor
-import gui.gtk.Switch
+import __gui.gtk.Capacitor
+import __gui.gtk.Connection
+import __gui.gtk.Inductor
+import __gui.gtk.IntegratedCircuit
+import __gui.gtk.Meter
+import __gui.gtk.Crystal
+import __gui.gtk.Filter
+import __gui.gtk.Fuse
+import __gui.gtk.Lamp
+import __gui.gtk.Relay
+import __gui.gtk.Resistor
+import __gui.gtk.Semiconductor
+import __gui.gtk.Switch
 # from Assistants import AddHardware
 
 try:
@@ -707,8 +707,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbManufacturer.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _man in self._workview.RTK_MANUFACTURERS:
-            _model.append(None, self._workview.RTK_MANUFACTURERS[_man])
+        for _man in _conf.RTK_MANUFACTURERS:
+            _model.append(None, _man)
 
         # Create the labels for quadrant #1.
         _labels = [_(u"Assembly Name:"), _(u"Part Number:"),

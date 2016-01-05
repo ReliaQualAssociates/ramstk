@@ -40,7 +40,7 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
 # from Assistants import AddTesting
-import gui.gtk.Growth
+import __gui.gtk.Growth
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

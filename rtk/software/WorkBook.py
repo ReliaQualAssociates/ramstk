@@ -45,12 +45,12 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
-import gui.gtk.DevelopmentEnvironment as DevEnv
-import gui.gtk.SRR as SRR
-import gui.gtk.PDR as PDR
-import gui.gtk.CDR as CDR
-import gui.gtk.TRR as TRR
-import gui.gtk.TestSelection as TestSelection
+import __gui.gtk.DevelopmentEnvironment as DevEnv
+import __gui.gtk.SRR as SRR
+import __gui.gtk.PDR as PDR
+import __gui.gtk.CDR as CDR
+import __gui.gtk.TRR as TRR
+import __gui.gtk.TestSelection as TestSelection
 # from Assistants import AddSoftware
 
 __author__ = 'Andrew Rowland'
@@ -514,22 +514,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbLevel.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _level in self._workview.RTK_SW_LEVELS:
-            _model.append(None, [self._workview.RTK_SW_LEVELS[_level], 0, ''])
+        for _level in _conf.RTK_SW_LEVELS:
+            _model.append(None, [_level, 0, ''])
 
         _model = self.cmbApplication.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _app in self._workview.RTK_SW_APPLICATION:
-            _model.append(None, [self._workview.RTK_SW_APPLICATION[_app],
-                                 0, ''])
+        for _app in _conf.RTK_SW_APPLICATION:
+            _model.append(None, [_app, 0, ''])
 
         _model = self.cmbPhase.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _phase in self._workview.RTK_SW_DEV_PHASES:
-            _model.append(None, [self._workview.RTK_SW_DEV_PHASES[_phase],
-                                 0, ''])
+        for _phase in _conf.RTK_SW_DEV_PHASES:
+            _model.append(None, [_phase, 0, ''])
 
         # Create the labels.
         _labels = [_(u"Module Description:"), _(u"Application Level:"),

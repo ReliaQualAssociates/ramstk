@@ -45,13 +45,13 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
-import gui.gtk.Exponential
-import gui.gtk.Gaussian
-import gui.gtk.KaplanMeier
-import gui.gtk.LogNormal
-import gui.gtk.MCF
-import gui.gtk.NHPP
-import gui.gtk.Weibull
+import __gui.gtk.Exponential as gExponential
+import __gui.gtk.Gaussian as gGaussian
+import __gui.gtk.KaplanMeier as gKaplanMeier
+import __gui.gtk.LogNormal as gLogNormal
+import __gui.gtk.MCF as gMCF
+import __gui.gtk.NHPP as gNHPP
+import __gui.gtk.Weibull as gWeibull
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -214,20 +214,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Initialize private dict attributes.
 
-        # Initialize private list attributes.
+        # Initialize private list attributes.  The NHPP is listed twice because
+        # there are two NHPP models.
         self._lst_handler_id = []
-        self._lst_results = [gui.gtk.MCF.Results(),
-                             gui.gtk.KaplanMeier.Results(),
-                             gui.gtk.NHPP.Results(), gui.gtk.NHPP.Results(),
-                             gui.gtk.Exponential.Results(),
-                             gui.gtk.LogNormal.Results(),
-                             gui.gtk.Gaussian.Results(),
-                             gui.gtk.Weibull.Results()]
-        self._lst_plots = [gui.gtk.MCF.Plots(), gui.gtk.KaplanMeier.Plots(),
-                           gui.gtk.NHPP.Plots(), gui.gtk.NHPP.Plots(),
-                           gui.gtk.Exponential.Plots(),
-                           gui.gtk.LogNormal.Plots(), gui.gtk.Gaussian.Plots(),
-                           gui.gtk.Weibull.Plots()]
+        self._lst_results = [gMCF.Results(), gKaplanMeier.Results(),
+                             gNHPP.Results(), gNHPP.Results(),
+                             gExponential.Results(), gLogNormal.Results(),
+                             gGaussian.Results(), gWeibull.Results()]
+        self._lst_plots = [gMCF.Plots(), gKaplanMeier.Plots(), gNHPP.Plots(),
+                           gNHPP.Plots(), gExponential.Plots(),
+                           gLogNormal.Plots(), gGaussian.Plots(),
+                           gWeibull.Plots()]
         self._lst_status = [_(u"Event"), _(u"Right Censored"),
                             _(u"Left Censored"), _(u"Interval Censored")]
 
