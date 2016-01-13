@@ -40,7 +40,7 @@ except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
 # from Assistants import AddTesting
-import __gui.gtk.Growth
+import __gui.gtk.Growth as gGrowth
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -599,7 +599,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self.hbxPlanning.get_children()[1])
         except IndexError:
             pass
-        self._obj_planning = gui.gtk.Growth.Planning(self.dtcGrowth)
+        self._obj_planning = gGrowth.Planning(self.dtcGrowth)
         self.hbxPlanning.pack_end(self._obj_planning, True, True)
 
         self._obj_planning.create_page()
@@ -618,7 +618,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self.hbxFeasibility.get_children()[1])
         except IndexError:
             pass
-        self._obj_feasibility = gui.gtk.Growth.Feasibility(self.dtcGrowth)
+        self._obj_feasibility = gGrowth.Feasibility(self.dtcGrowth)
         self.hbxFeasibility.pack_end(self._obj_feasibility, True, True)
 
         self._obj_feasibility.create_page()
@@ -638,7 +638,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self.hbxAssessment.get_children()[1])
         except IndexError:
             pass
-        self._obj_assessment = gui.gtk.Growth.Assessment(self.dtcGrowth)
+        self._obj_assessment = gGrowth.Assessment(self.dtcGrowth)
         self.hbxAssessment.pack_end(self._obj_assessment, True, True)
 
         self._obj_assessment.create_page()

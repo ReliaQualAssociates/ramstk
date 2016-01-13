@@ -136,6 +136,8 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(_position)
         self._lst_handler_id.append(
+            self.notebook.connect('select-page', self._on_switch_page))
+        self._lst_handler_id.append(
             self.notebook.connect('switch-page', self._on_switch_page))
 
         _vbox.pack_start(self.notebook, expand=True, fill=True)
@@ -488,7 +490,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
                              8 = Survival Analyses Tree
         """
 
-        # Remove the existing Work Book before adding the new one.
+        # Remove the existing List Book before adding the new one.
         if self.listview.get_child() is not None:
             self.listview.remove(self.listview.get_child())
 

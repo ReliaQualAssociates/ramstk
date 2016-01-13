@@ -164,7 +164,7 @@ class FailureDefinition(object):
 
         _definition = Model()
         _definition.set_attributes((revision_id, _last_id, ''))
-        self.dicDefinitions[_last_id] = _definition
+        self.dicDefinitions[revision_id][_last_id] = _definition
 
         return(_results, _error_code, _last_id)
 
@@ -182,7 +182,7 @@ class FailureDefinition(object):
                   WHERE fld_definition_id={0:d}".format(definition_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        self.dicDefinitions.pop(definition_id)
+        self.dicDefinitions[revision_id].pop(definition_id)
 
         return(_results, _error_code)
 

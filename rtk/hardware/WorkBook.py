@@ -51,19 +51,19 @@ except ImportError:
     from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
     from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from rtk.analyses.pof.gui.gtk.WorkBook import WorkView as PoF
-import __gui.gtk.Capacitor
-import __gui.gtk.Connection
-import __gui.gtk.Inductor
-import __gui.gtk.IntegratedCircuit
-import __gui.gtk.Meter
-import __gui.gtk.Crystal
-import __gui.gtk.Filter
-import __gui.gtk.Fuse
-import __gui.gtk.Lamp
-import __gui.gtk.Relay
-import __gui.gtk.Resistor
-import __gui.gtk.Semiconductor
-import __gui.gtk.Switch
+import __gui.gtk.Capacitor as gCapacitor
+import __gui.gtk.Connection as gConnection
+import __gui.gtk.Inductor as gInductor
+import __gui.gtk.IntegratedCircuit as gIntegratedCircuit
+import __gui.gtk.Meter as gMeter
+import __gui.gtk.Crystal as gCrystal
+import __gui.gtk.Filter as gFilter
+import __gui.gtk.Fuse as gFuse
+import __gui.gtk.Lamp as gLamp
+import __gui.gtk.Relay as gRelay
+import __gui.gtk.Resistor as gResistor
+import __gui.gtk.Semiconductor as gSemiconductor
+import __gui.gtk.Switch as gSwitch
 # from Assistants import AddHardware
 
 try:
@@ -1982,32 +1982,32 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         if self._hardware_model.category_id == 1:
-            self._obj_inputs = gui.gtk.Capacitor.Inputs(self._hardware_model)
+            self._obj_inputs = gCapacitor.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 2:
-            self._obj_inputs = gui.gtk.Connection.Inputs(self._hardware_model)
+            self._obj_inputs = gConnection.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 3:
-            self._obj_inputs = gui.gtk.Inductor.Inputs(self._hardware_model)
+            self._obj_inputs = gInductor.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 4:
-            self._obj_inputs = gui.gtk.IntegratedCircuit.Inputs(self._hardware_model)
+            self._obj_inputs = gIntegratedCircuit.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 5:
-            self._obj_inputs = gui.gtk.Meter.Inputs(self._hardware_model)
+            self._obj_inputs = gMeter.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 6:
             if self._hardware_model.subcategory_id == 1:
-                self._obj_inputs = gui.gtk.Crystal.Inputs(self._hardware_model)
+                self._obj_inputs = gCrystal.Inputs(self._hardware_model)
             elif self._hardware_model.subcategory_id == 2:
-                self._obj_inputs = gui.gtk.Filter.Inputs(self._hardware_model)
+                self._obj_inputs = gFilter.Inputs(self._hardware_model)
             elif self._hardware_model.subcategory_id == 3:
-                self._obj_inputs = gui.gtk.Fuse.Inputs(self._hardware_model)
+                self._obj_inputs = gFuse.Inputs(self._hardware_model)
             elif self._hardware_model.subcategory_id == 4:
-                self._obj_inputs = gui.gtk.Lamp.Inputs(self._hardware_model)
+                self._obj_inputs = gLamp.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 7:
-            self._obj_inputs = gui.gtk.Relay.Inputs(self._hardware_model)
+            self._obj_inputs = gRelay.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 8:
-            self._obj_inputs = gui.gtk.Resistor.Inputs(self._hardware_model)
+            self._obj_inputs = gResistor.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 9:
-            self._obj_inputs = gui.gtk.Semiconductor.Inputs(self._hardware_model)
+            self._obj_inputs = gSemiconductor.Inputs(self._hardware_model)
         elif self._hardware_model.category_id == 10:
-            self._obj_inputs = gui.gtk.Switch.Inputs(self._hardware_model)
+            self._obj_inputs = gSwitch.Inputs(self._hardware_model)
 
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
@@ -2034,32 +2034,32 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         if self._hardware_model.category_id == 1:
-            self._obj_results = gui.gtk.Capacitor.Results(self._hardware_model)
+            self._obj_results = gCapacitor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 2:
-            self._obj_results = gui.gtk.Connection.Results(self._hardware_model)
+            self._obj_results = gConnection.Results(self._hardware_model)
         elif self._hardware_model.category_id == 3:
-            self._obj_results = gui.gtk.Inductor.Results(self._hardware_model)
+            self._obj_results = gInductor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 4:
-            self._obj_results = gui.gtk.IntegratedCircuit.Results(self._hardware_model)
+            self._obj_results = gIntegratedCircuit.Results(self._hardware_model)
         elif self._hardware_model.category_id == 5:
-            self._obj_results = gui.gtk.Meter.Results(self._hardware_model)
+            self._obj_results = gMeter.Results(self._hardware_model)
         elif self._hardware_model.category_id == 6:
             if self._hardware_model.subcategory_id == 1:
-                self._obj_results = gui.gtk.Crystal.Results(self._hardware_model)
+                self._obj_results = gCrystal.Results(self._hardware_model)
             elif self._hardware_model.subcategory_id == 2:
-                self._obj_results = gui.gtk.Filter.Results(self._hardware_model)
+                self._obj_results = gFilter.Results(self._hardware_model)
             elif self._hardware_model.subcategory_id == 3:
-                self._obj_results = gui.gtk.Fuse.Results(self._hardware_model)
+                self._obj_results = gFuse.Results(self._hardware_model)
             elif self._hardware_model.subcategory_id == 4:
-                self._obj_results = gui.gtk.Lamp.Results(self._hardware_model)
+                self._obj_results = gLamp.Results(self._hardware_model)
         elif self._hardware_model.category_id == 7:
-            self._obj_results = gui.gtk.Relay.Results(self._hardware_model)
+            self._obj_results = gRelay.Results(self._hardware_model)
         elif self._hardware_model.category_id == 8:
-            self._obj_results = gui.gtk.Resistor.Results(self._hardware_model)
+            self._obj_results = gResistor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 9:
-            self._obj_results = gui.gtk.Semiconductor.Results(self._hardware_model)
+            self._obj_results = gSemiconductor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 10:
-            self._obj_results = gui.gtk.Switch.Results(self._hardware_model)
+            self._obj_results = gSwitch.Results(self._hardware_model)
 
         if self.vpnReliabilityResults.get_child2() is not None:
             self.vpnReliabilityResults.remove(

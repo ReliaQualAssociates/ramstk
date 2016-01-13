@@ -145,13 +145,10 @@ class Model(object):
         Method to retrieve the current values of the Function data model
         attributes.
 
-        :return: (self.revision_id, self.function_id, self.availability,
-                  self.mission_availability, self.code, self.cost,
-                  self.mission_hazard_rate, self.hazard_rate, self.mmt,
-                  self.mcmt, self.mpmt, self.mission_mtbf, self.mtbf,
-                  self.mttr, self.name, self.remarks, self.n_modes,
-                  self.n_parts, self.type, self.parent_id, self.level,
-                  self.safety_critical)
+        :return: (revision_id, function_id, availability, mission_availability,
+                  code, cost, mission_hazard_rate, hazard_rate, mmt, mcmt,
+                  mpmt, mission_mtbf, mtbf, mttr, name, remarks, n_modes,
+                  n_parts, type, parent_id, level, safety_critical)
         :rtype: tuple
         """
 
@@ -290,7 +287,9 @@ class Function(object):
     :ivar _dao: the Data Access Object to use when communicating with the RTK
     Project database.
     :ivar _last_id: the last Function ID used.
-    :ivar dicFunctions: Dictionary of the Function data models controlled.  Key is the Function ID; value is a pointer to the Function data model instance.
+    :ivar dicFunctions: Dictionary of the Function data models controlled.  Key
+                        is the Function ID; value is a pointer to the Function
+                        data model instance.
     """
 
     def __init__(self):
@@ -422,6 +421,65 @@ class Function(object):
 
         return(_results, _error_code)
 
+    def copy_function(self, revision_id):
+        """
+        Method to copy a Function from the currently selected Revision to the
+        new Revision.
+
+        :param int revision_id: the ID of the newly created Revision.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Find the existing maximum Function ID already in the RTK Program
+        # database and increment it by one.  If there are no existing Functions
+        # set the first Function ID to zero.
+        _query = "SELECT MAX(fld_function_id) FROM tbl_functions"
+        (_function_id, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
+
+        if _function_id[0][0] is not None:
+            _function_id = _function_id[0][0] + 1
+        else:
+            _function_id = 0
+
+        # Copy the Function hierarchy for the new Revision.
+        _dic_index_xref = {}
+        _dic_index_xref[-1] = -1
+        for _function in self.dicFunctions.values():
+            _query = "INSERT INTO tbl_functions \
+                      (fld_revision_id, fld_function_id, fld_code, \
+                       fld_level, fld_name, fld_parent_id, \
+                       fld_remarks) \
+                      VALUES ({0:d}, {1:d}, '{2:s}', {3:d}, '{4:s}', {5:d}, \
+                              '{6:s}')".format(revision_id, _function_id,
+                                               _function.code, _function.level,
+                                               _function.name,
+                                               _function.parent_id,
+                                               _function.remarks)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            # Add an entry to the Function ID cross-reference dictionary for
+            # for the newly added Function.
+            _dic_index_xref[_function.function_id] = _function_id
+
+            _function_id += 1
+
+        # Update the parent IDs for the new Functions using the index
+        # cross-reference dictionary that was created when adding the new
+        # Functions.
+        for _key in _dic_index_xref.keys():
+            _query = "UPDATE tbl_functions \
+                      SET fld_parent_id={0:d} \
+                      WHERE fld_parent_id={1:d} \
+                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
+                                                        _key, revision_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+        return False
+
     def calculate_function(self, function_id, mission_time, hr_multiplier=1.0):
         """
         Calculates reliability, availability, and cost information for a
@@ -437,6 +495,7 @@ class Function(object):
 
         _function = self.dicFunctions[function_id]
 
+        # All the calculations are pretty simple, so just do them using SQL.
         _query = "SELECT SUM(t2.fld_failure_rate_predicted), \
                          SUM(t2.fld_failure_rate_mission), \
                          COUNT(t2.fld_assembly_id), \
@@ -449,15 +508,15 @@ class Function(object):
                   WHERE t1.fld_function_id={0:d} \
                   AND t2.fld_part=1".format(function_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
-        if _error_code != 0:
-            return _error_code
 
-        _function.calculate_reliability(_results[0][0:3], mission_time,
-                                        hr_multiplier)
-        _function.calculate_availability(_results[0][3:7])
-        _function.calculate_costs(_results[0][8], mission_time)
+        # Perform the calculations if the query returned the proper values.
+        if _error_code == 0:
+            _function.calculate_reliability(_results[0][0:3], mission_time,
+                                            hr_multiplier)
+            _function.calculate_availability(_results[0][3:7])
+            _function.calculate_costs(_results[0][8], mission_time)
 
-        return 0
+        return _error_code
 
     def save_function(self, function_id):
         """

@@ -73,6 +73,8 @@ do
 	shift
 done
 
+cd ${BASEDIR}
+
 if [ "x$SQL" == "x1" ];
 then
     sql_output

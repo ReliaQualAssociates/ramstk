@@ -5,7 +5,7 @@ This is the test class for testing Requirement module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       TestRequirement.py is part of The RTK Project
+#       tests.requirement.TestRequirement.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -35,7 +35,7 @@ class TestRequirementModel(unittest.TestCase):
         Setup the test fixture for the Requirement class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -170,7 +170,7 @@ class TestRequirementController(unittest.TestCase):
         Sets up the test fixture for the Requirement class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Requirement()

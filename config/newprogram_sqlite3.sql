@@ -224,7 +224,7 @@ CREATE TABLE "tbl_stakeholder_input" (
 DROP TABLE IF EXISTS "tbl_requirements";
 CREATE TABLE "tbl_requirements" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Identifier for the associated revision.
-    "fld_requirement_id" IN TEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Identifier for the requirement.
+    "fld_requirement_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Identifier for the requirement.
     "fld_description" BLOB,                                         -- Noun description of the requirement.
     "fld_code" VARCHAR(16) DEFAULT(''),                             -- Alphanumeric code for the requirement.
     "fld_requirement_type" VARCHAR(128) DEFAULT(''),                -- Type of requirement.
@@ -240,7 +240,8 @@ CREATE TABLE "tbl_requirements" (
     "fld_clear" VARCHAR(512) DEFAULT(''),                           -- Answers to the clarity analysis questions.
     "fld_complete" VARCHAR(512) DEFAULT(''),                        -- Answers to the completeness analysis questions.
     "fld_consistent" VARCHAR(512) DEFAULT(''),                      -- Answers to the consistency analysis questions.
-    "fld_verifiable" VARCHAR(512) DEFAULT('')                       -- Answers to the verifiability analysis questions.
+    "fld_verifiable" VARCHAR(512) DEFAULT(''),                      -- Answers to the verifiability analysis questions.
+    FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS "rtk_requirement_analysis";
@@ -281,7 +282,8 @@ CREATE TABLE "rtk_requirement_analysis" (
     "fld_verifiable_q3" TINYINT DEFAULT(0),
     "fld_verifiable_q4" TINYINT DEFAULT(0),
     "fld_verifiable_q5" TINYINT DEFAULT(0),
-    "fld_verifiable_q6" TINYINT DEFAULT(0)
+    "fld_verifiable_q6" TINYINT DEFAULT(0),
+    FOREIGN KEY("fld_requirement_id") REFERENCES "tbl_requirements"("fld_requirement_id") ON DELETE CASCADE
 );
 
 --

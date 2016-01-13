@@ -43,6 +43,7 @@ try:
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+from ListBook import ListView
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -75,20 +76,20 @@ class ModuleView(object):
     :ivar dtcProfile: the :class:`rtk.usage.UsageProfile.UsageProfile` data
                       controller to use for accessing the Usage Profile data
                       models.
-    :ivar dtcDefinitions: the :class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
+    :ivar dtcDefinitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
                           data controller to use for accessing the Failure
                           Definition data models.
     :ivar treeview: the :class:`gtk.TreeView` displaying the list of Revisions.
     """
 
-    def __init__(self, controller, view, position, *args):
+    def __init__(self, controller, rtk_view, position, *args):
         """
         Initializes the Module Book view for the Revision package.
 
         :param rtk.revision.Revision controller: the instance of the Revision
                                                  data controller to use with
                                                  this view.
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the Revision
+        :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Revision
                                       view into.
         :param int position: the page position in the gtk.Notebook() to
                              insert the Revision view.  Pass -1 to add to the
@@ -98,7 +99,6 @@ class ModuleView(object):
 
         # Initialize private scalar attributes.
         self._model = None
-        self.listbook = None
         self._dao = None
 
         # Initialize public scalar attributes.
@@ -146,11 +146,14 @@ class ModuleView(object):
         _hbox.pack_end(_label)
         _hbox.show_all()
 
-        view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
-                                  position=position)
+        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
+                                      position=position)
+
+        # Create a List View to associate with this Module View.
+        self.listbook = ListView(rtk_view.listview, self, args)
 
         # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(view.workview, self)
+        self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id=None):
         """
@@ -251,7 +254,6 @@ class ModuleView(object):
         _revision_id = _model.get_value(_row, 0)
         self._model = self.dtcRevision.dicRevisions[_revision_id]
 
-        _usage_model = self.dtcProfile.dicProfiles[_revision_id]
         _definitions = self.dtcDefinitions.dicDefinitions[_revision_id]
 
         # Load the hardware list for the selected revision.
@@ -269,7 +271,8 @@ class ModuleView(object):
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
         _conf.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
-        self.workbook.load(self._model, _usage_model, _definitions)
+        self.workbook.load(self._model, _definitions)
+        self.listbook.load(_revision_id)
 
         return False
 

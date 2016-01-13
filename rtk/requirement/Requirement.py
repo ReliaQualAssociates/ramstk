@@ -39,23 +39,35 @@ _ = gettext.gettext
 class Model(object):
     """
     The Requirement data model contains the attributes and methods of a
-    requirement.  A :class:`rtk.revision.Revision` will consist of one or more
-    Requirements.  The attributes of a Requirement are:
+    requirement.  A :py:class:`rtk.revision.Revision` will consist of one or
+    more Requirements.  The attributes of a Requirement are:
 
-    :ivar revision_id: default value: None
-    :ivar requirement_id: default value: None
-    :ivar description: default value: ''
-    :ivar code: default value: ''
-    :ivar requirement_type: default value: ''
-    :ivar priority: default value: 1
-    :ivar specification: default value: ''
-    :ivar page_number: default value: ''
-    :ivar figure_number: default value: ''
-    :ivar derived: default value: 0
-    :ivar owner: default value: ''
-    :ivar validated: default value: 0
-    :ivar validated_date: default value: 719163
-    :ivar parent_id: default value: -1
+    :ivar list lst_clear: list of answers to the Requirement clarity questions.
+    :ivar list lst_complete: list of answers to the Requirement completeness
+                             questions.
+    :ivar list lst_consistent: list of answers to the Requirement consistency
+                               questions.
+    :ivar list lst_verifiable: list of answers to the Requirement verifiability
+                               questions.
+    :ivar int revision_id: the ID of the Revision the Requirement belongs to.
+    :ivar int requirement_id: the ID of the Requirement.
+    :ivar str description: noun description of the Requirement.
+    :ivar str code: short code for the Requirement.
+    :ivar str requirement_type: the type of Requirement.
+    :ivar int priority: the priority of the Requirement.
+    :ivar str specification: governing specification, if any, for the
+                             Requirement.
+    :ivar str page_number: applicable page number in the governing
+                           specification.
+    :ivar str figure_number: applicable figure number in the governing
+                             specification.
+    :ivar int derived: indicates whether or not the Requirement is derived.
+    :ivar str owner: the owner of the Requirement.
+    :ivar int validated: indicates whether or not the Requirement has been
+                         validated.
+    :ivar int validated_date: the date the Requirement was validated.
+    :ivar int parent_id: the ID of the parent Requirement if the Requirement is
+                         a derived Requirement.
     """
 
     def __init__(self):
@@ -190,10 +202,12 @@ class Requirement(object):
     controller can manage one or more Requirement data models.  The attributes
     of a Requirement data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-    Project database.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+                the RTK Program database.
     :ivar _last_id: the last Requirement ID used.
-    :ivar dicRequirements: Dictionary of the Requirement data models managed.  Key is the Requirement ID; value is a pointer to the Requirement data model instance.
+    :ivar dicRequirements: Dictionary of the Requirement data models managed.
+                           Key is the Requirement ID; value is a pointer to the
+                           Requirement data model instance.
     """
 
     def __init__(self):
@@ -308,6 +322,78 @@ class Requirement(object):
         self.dicRequirements.pop(requirement_id)
 
         return(_results, _error_code)
+
+    def copy_requirements(self, revision_id):
+        """
+        Method to copy a Requirement from the currently selected Revision to
+        the new Revision.
+
+        :param int revision_id: the ID of the newly created Revision.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Find the existing maximum Requirement ID already in the RTK Program
+        # database and increment it by one.  If there are no existing
+        # Requirements set the first Requirement ID to zero.
+        _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
+        (_requirement_id,
+         _error_code, __) = self._dao.execute(_query, commit=False)
+
+        if _requirement_id[0][0] is not None:
+            _requirement_id = _requirement_id[0][0] + 1
+        else:
+            _requirement_id = 0
+
+        # Copy the Requirement hierarchy for the new Revision.
+        _dic_index_xref = {}
+        _dic_index_xref[-1] = -1
+        for _requirement in self.dicRequirements.values():
+            _query = "INSERT INTO tbl_requirements \
+                      (fld_revision_id, fld_requirement_id, \
+                       fld_description, fld_code, fld_derived, \
+                       fld_parent_id, fld_owner, fld_specification, \
+                       fld_page_number, fld_figure_number) \
+                      VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
+                              {5:d}, '{6:s}', '{7:s}', '{8:s}', \
+                              '{9:s}')".format(revision_id, _requirement_id,
+                                               _requirement.description,
+                                               _requirement.code,
+                                               _requirement.derived,
+                                               _requirement.parent_id,
+                                               _requirement.owner,
+                                               _requirement.specification,
+                                               _requirement.page_number,
+                                               _requirement.figure_number)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            # Add the new Requirement to the requirements analysis table.
+            _query = "INSERT INTO rtk_requirement_analysis \
+                      (fld_requirement_id) \
+                      VALUES ({0:d})".format(_requirement_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            # Add an entry to the Requirement ID cross-reference dictionary for
+            # for the newly added Requirement.
+            _dic_index_xref[_requirement.requirement_id] = _requirement_id
+
+            _requirement_id += 1
+
+        # Update the parent IDs for the new Requirements using the index
+        # cross-reference dictionary that was created when adding the new
+        # Requirements.
+        for _key in _dic_index_xref.keys():
+            _query = "UPDATE tbl_requirements \
+                      SET fld_parent_id={0:d} \
+                      WHERE fld_parent_id={1:d} \
+                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
+                                                        _key, revision_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+        return False
 
     def save_requirement(self, requirement_id):
         """

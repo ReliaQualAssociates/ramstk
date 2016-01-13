@@ -480,10 +480,10 @@ class Model(object):                        # pylint: disable=R0902
 
     def calculate(self, assembly):
         """
-        Iterively calculates various hardware attributes.
+        Method to iterively calculate various hardware attributes.
 
-        :param `rtk.hardware.Assembly` assembly: the rtk.Assembly() data model
-                                                 to calculate.
+        :param assembly: the :py:class:`rtk.hardware.Assembly.Model` data model
+                         to calculate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -503,11 +503,11 @@ class Model(object):                        # pylint: disable=R0902
             _components = []
 
         for _component in _components:
-            if _component.hazard_rate_method == 1:   # Assessed
+            if _component.hazard_rate_method == 1:      # Assessed
                 _component.calculate()
-            elif _component.hazard_rate_method == 2: # Specified, h(t)
+            elif _component.hazard_rate_method == 2:    # Specified, h(t)
                 _component.hazard_rate_active = assembly.hazard_rate_specified
-            elif _component.hazard_rate_method == 3: # Specified, MTBF
+            elif _component.hazard_rate_method == 3:    # Specified, MTBF
                 _component.hazard_rate_active = 1.0 / _component.mtbf_specified
 
             # Calculate the dormant hazard rate.
@@ -534,11 +534,11 @@ class Model(object):                        # pylint: disable=R0902
             _assemblies = []
 
         for _assembly in _assemblies:
-            if _assembly.hazard_rate_method == 1:   # Assessed
+            if _assembly.hazard_rate_method == 1:       # Assessed
                 self.calculate(_assembly)
-            elif _assembly.hazard_rate_method == 2: # Specified, h(t)
+            elif _assembly.hazard_rate_method == 2:     # Specified, h(t)
                 _assembly.hazard_rate_active = _assembly.hazard_rate_specified
-            elif _assembly.hazard_rate_method == 3: # Specified, MTBF
+            elif _assembly.hazard_rate_method == 3:     # Specified, MTBF
                 _assembly.hazard_rate_active = 1.0 / _assembly.mtbf_specified
 
             # Adjust the active hazard rate.
@@ -594,9 +594,9 @@ class Model(object):                        # pylint: disable=R0902
                                              hardware.mission_time)
 
         # Calculate hazard rate variances.
-        #hardware.hr_active_variance = 1.0 / (hardware.hazard_rate_active**2.0)
-        #hardware.hr_dormant_variance = 1.0 / (hardware.hazard_rate_dormant**2.0)
-        #hardware.hr_specified_variance = 1.0 / (hardware.hazard_rate_specified**2.0)
+        # hardware.hr_active_variance = 1.0 / (hardware.hazard_rate_active**2.0)
+        # hardware.hr_dormant_variance = 1.0 / (hardware.hazard_rate_dormant**2.0)
+        # hardware.hr_specified_variance = 1.0 / (hardware.hazard_rate_specified**2.0)
 
         return False
 

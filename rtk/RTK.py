@@ -233,6 +233,11 @@ class RTK(object):
         dtcComponent = Component()
         dtcSurvival = Survival()
 
+        self.dtcRevision.dtcFunction = dtcFunction
+        self.dtcRevision.dtcRequirement = dtcRequirement
+        self.dtcRevision.dtcHardware = dtcHardwareBoM
+        self.dtcRevision.dtcSoftware = dtcSoftwareBoM
+
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
             pass
@@ -292,6 +297,11 @@ class RTK(object):
                                      u"program database."))
 
         self.module_book.present()
+
+        # This is a hack to get the List View to display for the Revision
+        # module when first launching RTK.
+        self.module_book.notebook.next_page()
+        self.module_book.notebook.prev_page()
 
     def _validate_license(self):
         """

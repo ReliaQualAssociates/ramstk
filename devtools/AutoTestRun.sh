@@ -10,7 +10,7 @@ unit_test_run() {
 	
 	DIRECTORY=$1
 
-	$NOSETESTS --quiet --with-coverage --cover-branches --with-html --html-file="_test_results/${DIRECTORY}_unit_tests.html" --attr=unit=True ./${DIRECTORY}
+	$NOSETESTS --quiet --with-coverage --cover-branches --cover-min-percentage=80 --with-html --html-file="_test_results/${DIRECTORY}_unit_tests.html" --attr=unit=True ./${DIRECTORY}
 
 }
 
@@ -18,7 +18,7 @@ integration_test_run() {
 	
 	DIRECTORY=$1
 
-	$NOSETESTS --quiet --with-coverage --cover-branches --with-html --html-file="_test_results/${DIRECTORY}_integration_tests.html" --attr=integration=True ./$DIRECTORY
+	$NOSETESTS --quiet --with-coverage --cover-branches --cover-min-percentage=80 --with-html --html-file="_test_results/${DIRECTORY}_integration_tests.html" --attr=integration=True ./$DIRECTORY
 }
 
 # Get command line arguments.

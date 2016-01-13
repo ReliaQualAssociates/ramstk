@@ -550,6 +550,67 @@ class BoM(object):
 
         return(_results, _error_code)
 
+    def copy_software(self, revision_id):
+        """
+        Method to copy a Hardware item from the currently selected Revision to
+        the new Revision.
+
+        :param int revision_id: the ID of the newly created Revision.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _query = "SELECT MAX(fld_software_id) FROM rtk_software"
+        (_software_id, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
+
+        if _software_id[0][0] is not None:
+            _software_id = _software_id[0][0] + 1
+        else:
+            _software_id = 0
+
+        _query = "INSERT INTO rtk_software \
+                  (fld_revision_id, fld_level_id, fld_description, \
+                   fld_parent_module) \
+                  VALUES ({0:d}, 0, 'System Software', \
+                          '-')".format(revision_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        if not _results:
+            # Add the new software module to each of risk analysis tables.
+            for i in range(43):
+                _query = "INSERT INTO rtk_software_development \
+                         (fld_software_id, fld_question_id, fld_y) \
+                         VALUES (%d, %d, 0)" % (_software_id, i)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+            for i in range(50):
+                _query = "INSERT INTO rtk_srr_ssr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+            for i in range(39):
+                _query = "INSERT INTO rtk_pdr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+            for i in range(72):
+                _query = "INSERT INTO rtk_cdr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+            for i in range(24):
+                _query = "INSERT INTO rtk_trr \
+                         (fld_software_id, fld_question_id, fld_y, fld_value) \
+                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+
+        return False
+
     def save_software_item(self, software_id):
         """
         Saves the Software CSCI or Software Unit attributes to the RTK Project

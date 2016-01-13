@@ -18,7 +18,6 @@ import gettext
 import locale
 
 # Modules required for the GUI.
-import pango
 try:
     import pygtk
     pygtk.require('2.0')
@@ -30,10 +29,6 @@ except ImportError:
     sys.exit(1)
 try:
     import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
 except ImportError:
     sys.exit(1)
 
@@ -164,7 +159,7 @@ class WorkView(gtk.VBox):
 
         # Initialize private scalar attributes.
         self._workview = workview
-        self._module_book = modulebook
+        self._modulebook = modulebook
         self._revision_model = None
         self._usage_model = None
 
@@ -188,21 +183,6 @@ class WorkView(gtk.VBox):
         self.txtCostHour = _widg.make_entry(editable=False)
         self.txtPartCount = _widg.make_entry(editable=False)
         self.txtRemarks = gtk.TextBuffer()
-
-        # Usage profile tab widgets.
-        self.btnAddSibling = _widg.make_button(width=35,
-                                               image='insert_sibling')
-        self.btnAddChild = _widg.make_button(width=35, image='insert_child')
-        self.btnRemoveUsage = _widg.make_button(width=35, image='remove')
-        self.btnSaveUsage = _widg.make_button(width=35, image='save')
-        self.tvwMissionProfile = gtk.TreeView()
-
-        # Failure definition tab widgets.
-        self.btnAddDefinition = _widg.make_button(width=35, image='add')
-        self.btnRemoveDefinition = _widg.make_button(width=35,
-                                                     image='remove')
-        self.btnSaveDefinitions = _widg.make_button(width=35, image='save')
-        self.tvwFailureDefinitions = gtk.TreeView()
 
         # Assessment results tab widgets.
         self.txtActiveHt = _widg.make_entry(width=100, editable=False,
@@ -300,12 +280,12 @@ class WorkView(gtk.VBox):
         _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
                                       u"profile report for the currently "
                                       u"selected revision."))
-        #_menu_item.connect('activate', self._create_report)
+        # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"Failure Definition"))
         _menu_item.set_tooltip_text(_(u"Creates the failure definition report "
                                       u"for the currently selected revision."))
-        #_menu_item.connect('activate', self._create_report)
+        # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _button.set_menu(_menu)
         _menu.show_all()
@@ -351,8 +331,6 @@ class WorkView(gtk.VBox):
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self._create_general_data_page(_notebook)
-        self._create_usage_profile_page(_notebook)
-        self._create_failure_definition_page(_notebook)
         self._create_assessment_results_page(_notebook)
 
         return _notebook
@@ -449,277 +427,6 @@ class WorkView(gtk.VBox):
         notebook.insert_page(_frame,
                              tab_label=_label_,
                              position=-1)
-
-        return False
-
-    def _create_usage_profile_page(self, notebook):
-        """
-        Creates the Revision Work Book page for displaying usage profiles for
-        the selected Revision.
-
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # Create the mission profile gtk.TreeView().
-        self.tvwMissionProfile.set_tooltip_text(_(u"Displays the usage "
-                                                  u"profile for the currently "
-                                                  u"selected revision."))
-        _model = gtk.TreeStore(gtk.gdk.Pixbuf, gobject.TYPE_INT,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT)
-        self.tvwMissionProfile.set_model(_model)
-
-        for i in range(10):
-            _column = gtk.TreeViewColumn()
-            if i == 0:
-                _cell = gtk.CellRendererPixbuf()
-                _cell.set_property('xalign', 0.5)
-                _column.pack_start(_cell, False)
-                _column.set_attributes(_cell, pixbuf=0)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('background', 'light gray')
-                _cell.set_property('editable', 0)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=1)
-
-                _column.set_visible(True)
-            elif i == 1:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._on_usage_cell_edited, 2, _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=2)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._on_usage_cell_edited, 3, _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=3, visible=11)
-
-                _column.set_visible(True)
-            elif i == 2:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._on_usage_cell_edited, 4, _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=4)
-                _column.set_visible(True)
-            elif i == 3 or i == 4:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._on_usage_cell_edited, i + 2,
-                              _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=i + 2)
-                _column.set_visible(True)
-            elif i == 5 or i == 6:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._on_usage_cell_edited, i + 2,
-                              _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=i + 2, visible=10)
-                _column.set_visible(True)
-            else:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
-                _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
-                _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
-                _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
-                _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
-                _column.pack_start(_cell, True)
-
-                _column.set_visible(False)
-
-            _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            self.tvwMissionProfile.append_column(_column)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = gtk.HBox()
-
-        _bbox = gtk.VButtonBox()
-        _bbox.set_layout(gtk.BUTTONBOX_START)
-
-        _hbox.pack_start(_bbox, False, True)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwMissionProfile)
-
-        _frame = _widg.make_frame(label=_(u"Usage Profile"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_end(_frame, True, True)
-
-        _bbox.pack_start(self.btnAddSibling, False, False)
-        _bbox.pack_start(self.btnAddChild, False, False)
-        _bbox.pack_start(self.btnRemoveUsage, False, False)
-        _bbox.pack_start(self.btnSaveUsage, False, False)
-
-        # Connect to callback functions.
-        self._lst_handler_id.append(
-            self.btnAddSibling.connect('clicked', self._on_button_clicked, 3))
-        self._lst_handler_id.append(
-            self.btnAddChild.connect('clicked', self._on_button_clicked, 4))
-        self._lst_handler_id.append(
-            self.btnRemoveUsage.connect('clicked', self._on_button_clicked, 5))
-        self._lst_handler_id.append(
-            self.btnSaveUsage.connect('clicked', self._on_button_clicked, 6))
-
-        self._lst_handler_id.append(
-            self.tvwMissionProfile.connect('cursor_changed',
-                                           self._on_usage_row_changed))
-
-        # Insert the tab.
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Usage\nProfile") +
-                          "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(_(u"Displays usage profile for the selected "
-                                  u"revision."))
-        notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
-        return False
-
-    def _create_failure_definition_page(self, notebook):
-        """
-        Creates the Revision Work Book page for displaying failure definitions
-        for the selected Revision.
-
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING)
-        self.tvwFailureDefinitions.set_model(_model)
-
-        _cell = gtk.CellRendererText()
-        _cell.set_property('editable', 0)
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _label = gtk.Label()
-        _label.set_line_wrap(True)
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.set_markup("<span weight='bold'>Definition\nNumber</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
-        _column = gtk.TreeViewColumn()
-        _column.set_widget(_label)
-        _column.set_visible(True)
-        _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=0)
-        self.tvwFailureDefinitions.append_column(_column)
-
-        _cell = gtk.CellRendererText()
-        _cell.set_property('editable', 1)
-        _cell.set_property('wrap-width', 450)
-        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_failure_cell_edited, 1, _model)
-        _label = gtk.Label()
-        _label.set_line_wrap(True)
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.set_markup("<span weight='bold'>Failure Definition</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
-        _column = gtk.TreeViewColumn()
-        _column.set_widget(_label)
-        _column.set_visible(True)
-        _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=1)
-        self.tvwFailureDefinitions.append_column(_column)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = gtk.HBox()
-
-        _bbox = gtk.VButtonBox()
-        _bbox.set_layout(gtk.BUTTONBOX_START)
-
-        _hbox.pack_start(_bbox, False, True)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwFailureDefinitions)
-
-        _frame = _widg.make_frame(label=_(u"Failure Definition List"))
-        _frame.set_shadow_type(gtk.SHADOW_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_end(_frame, True, True)
-
-        _bbox.pack_start(self.btnAddDefinition, False, False)
-        _bbox.pack_start(self.btnRemoveDefinition, False, False)
-        _bbox.pack_start(self.btnSaveDefinitions, False, False)
-
-        self._lst_handler_id.append(
-            self.btnAddDefinition.connect('clicked',
-                                          self._on_button_clicked, 8))
-        self._lst_handler_id.append(
-            self.btnRemoveDefinition.connect('clicked',
-                                             self._on_button_clicked, 9))
-        self._lst_handler_id.append(
-            self.btnSaveDefinitions.connect('clicked',
-                                            self._on_button_clicked, 10))
-
-        # Insert the tab.
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Failure\nDefinitions") + "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(_(u"Displays usage profiles for the selected "
-                                  u"revision."))
-        notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
         return False
 
@@ -877,13 +584,11 @@ class WorkView(gtk.VBox):
 
         return False
 
-    def load(self, model, usage_model, definitions):
+    def load(self, model, definitions):
         """
         Method to load the Revision class gtk.Notebook() widgets.
 
         :param rtk.revision.Revision.Model: the Revision Model to be viewed.
-        :param rtk.usage.UsageProfile.Model: the Usage Profile Model to be
-                                             viewed.
         :param dict definitions: the list of Failure Definition data model
                                  instances associated with the Revision.
         :return: False if successful or True if an error is encountered.
@@ -893,7 +598,6 @@ class WorkView(gtk.VBox):
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         self._revision_model = model
-        self._usage_model = usage_model
         self._dic_definitions = definitions
         self.revision_id = self._revision_model.revision_id
 
@@ -909,12 +613,6 @@ class WorkView(gtk.VBox):
         self.txtPartCount.set_text(
             str('{0:0.0f}'.format(self._revision_model.n_parts)))
         self.txtCode.set_text(str(self._revision_model.code))
-
-        # Load the Usage Profile page.
-        self._load_usage_profile()
-
-        # Load the Failure Definitions page.
-        self._load_failure_definitions()
 
         # Load the Assessment Results page.
         self.txtAvailability.set_text(
@@ -950,87 +648,6 @@ class WorkView(gtk.VBox):
 
         return False
 
-    def _load_usage_profile(self, path=None):
-        """
-        Loads the Usage Profile gkt.TreeView().
-
-        :keyword str path: the path in the gtk.TreeView() to select as active
-                           after loading the Usage Profile.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _model = self.tvwMissionProfile.get_model()
-        _model.clear()
-        for _mission in self._usage_model.dicMissions.values():
-            _icon = _conf.ICON_DIR + '32x32/mission.png'
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-            _data = (_icon, _mission.mission_id, _mission.description,
-                     '', _mission.time_units, 0.0, _mission.time, 0.0, 0.0, 1,
-                     0, 0)
-            _mission_row = _model.append(None, _data)
-
-            for _phase in _mission.dicPhases.values():
-                _icon = _conf.ICON_DIR + '32x32/phase.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _phase.phase_id, _phase.code,
-                         _phase.description, '', _phase.start_time,
-                         _phase.end_time, 0.0, 0.0, 2, 0, 1)
-                _phase_row = _model.append(_mission_row, _data)
-
-                for _environment in _phase.dicEnvironments.values():
-                    _icon = _conf.ICON_DIR + '32x32/environment.png'
-                    _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                    _data = (_icon, _environment.environment_id,
-                             _environment.name, '', _environment.units,
-                             _environment.minimum, _environment.maximum,
-                             _environment.mean, _environment.variance, 3, 1, 0)
-                    _model.append(_phase_row, _data)
-
-        if path is None:
-            _root = _model.get_iter_root()
-            try:
-                path = _model.get_path(_root)
-            except TypeError:
-                return False
-        _column = self.tvwMissionProfile.get_column(0)
-        self.tvwMissionProfile.set_cursor(path, None, False)
-        self.tvwMissionProfile.row_activated(path, _column)
-        self.tvwMissionProfile.expand_all()
-
-        return False
-
-    def _load_failure_definitions(self, path=None):
-        """
-        Loads the Failure Definitions gkt.TreeView().
-
-        :keyword str path: the path in the gtk.TreeView() to select as active
-                           after loading the Usage Profile.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _revision_id = self._revision_model.revision_id
-
-        _model = self.tvwFailureDefinitions.get_model()
-        _model.clear()
-        for _definition in self.dtcDefinitions.dicDefinitions[_revision_id].values():
-            _data = (_definition.definition_id, _definition.definition)
-            _model.append(_data)
-
-        if path is None:
-            _root = _model.get_iter_root()
-            try:
-                path = _model.get_path(_root)
-            except TypeError:
-                return False
-        _column = self.tvwFailureDefinitions.get_column(0)
-        self.tvwFailureDefinitions.set_cursor(path, None, False)
-        self.tvwFailureDefinitions.row_activated(path, _column)
-        self.tvwFailureDefinitions.expand_all()
-
-        return False
-
     def update(self):
         """
         Updates the Work Book widgets with changes to the Revision data model
@@ -1051,172 +668,6 @@ class WorkView(gtk.VBox):
         _textbuffer = _textview.get_buffer()
         _textbuffer.set_text(self._revision_model.remarks)
         _textview.handler_unblock(self._lst_handler_id[2])
-
-        return False
-
-    def _on_button_clicked(self, button, index):
-        """
-        Responds to gtk.Button() clicked signals and calls the correct function
-        or method, passing any parameters as needed.
-
-        :param gtk.Button button: the gtk.Button() that called this method.
-        :param int index: the index in the handler ID list of the callback
-                          signal associated with the gtk.Button() that called
-                          this method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if index in [3, 4, 5, 6]:
-            (_model,
-             _row) = self.tvwMissionProfile.get_selection().get_selected()
-            try:
-                _path = _model.get_path(_row)
-                _id = _model.get_value(_row, 1)
-                _level = _model.get_value(_row, 9)
-            except TypeError:
-                return True
-        elif index in [8, 9, 10]:
-            (_model,
-             _row) = self.tvwFailureDefinitions.get_selection().get_selected()
-            try:
-                _path = _model.get_path(_row)
-                _id = _model.get_value(_row, 0)
-            except TypeError:
-                return True
-
-        _revision_id = self._revision_model.revision_id
-
-        button.handler_block(self._lst_handler_id[index])
-        if index == 3:                      # Add a sibling.
-            if _level == 1:                 # _id = Mission ID
-                _piter = _model.iter_parent(_row)
-                (__, __,
-                 _mission_id) = self.dtcProfile.add_mission(_revision_id)
-                _attributes = self._usage_model.dicMissions[_mission_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/mission.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _attributes[0], _attributes[3], '',
-                         _attributes[2], 0.0, _attributes[1], 0.0, 0.0, 1, 0,
-                         0)
-            elif _level == 2:               # _id = Phase ID
-                _piter = _model.iter_parent(_row)
-                _mission_id = _model.get_value(_piter, 1)
-                (__, __,
-                 _phase_id) = self.dtcProfile.add_phase(_revision_id, _mission_id)
-                _mission = self._usage_model.dicMissions[_mission_id]
-                _attributes = _mission.dicPhases[_phase_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/phase.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _attributes[2], _attributes[5],
-                         _attributes[6], '', _attributes[3],
-                         _attributes[4], 0.0, 0.0, 2, 0, 1)
-            elif _level == 3:               # _id = Environment ID
-                _piter = _model.iter_parent(_row)
-                _phase_id = _model.get_value(_piter, 1)
-                _grand_piter = _model.iter_parent(_piter)
-                _mission_id = _model.get_value(_grand_piter, 1)
-                (__, __,
-                 _environment_id) = self.dtcProfile.add_environment(_revision_id,
-                                                                    _mission_id,
-                                                                    _phase_id)
-                _mission = self._usage_model.dicMissions[_mission_id]
-                _phase = _mission.dicPhases[_phase_id]
-                _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/environment.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _attributes[4], _attributes[5], '',
-                         _attributes[6], _attributes[7], _attributes[8],
-                         _attributes[9], _attributes[10], 3, 1, 0)
-
-            # Insert a new row with the new Usage Profile item and then select
-            # the newly inserted row for editing.
-            _row = _model.insert(_piter, -1, _data)
-            _path = _model.get_path(_row)
-            self.tvwMissionProfile.set_cursor(_path,
-                                              self.tvwMissionProfile.get_column(1),
-                                              True)
-            self.tvwMissionProfile.row_activated(_path,
-                                                 self.tvwMissionProfile.get_column(0))
-        elif index == 4:                    # Add a child.
-            if _level == 1:                 # _id = Mission ID
-                _piter = _row
-                (__, __,
-                 _phase_id) = self.dtcProfile.add_phase(_revision_id, _id)
-                _mission = self._usage_model.dicMissions[_id]
-                _attributes = _mission.dicPhases[_phase_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/phase.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _attributes[2], _attributes[5],
-                         _attributes[6], '', _attributes[3],
-                         _attributes[4], 0.0, 0.0, 2, 0, 1)
-            elif _level == 2:               # _id = Phase ID
-                _piter = _model.iter_parent(_row)
-                _mission_id = _model.get_value(_piter, 1)
-                _piter = _row
-                (__, __,
-                 _environment_id) = self.dtcProfile.add_environment(_revision_id,
-                                                                    _mission_id,
-                                                                    _id)
-                _mission = self._usage_model.dicMissions[_mission_id]
-                _phase = _mission.dicPhases[_id]
-                _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-                _icon = _conf.ICON_DIR + '32x32/environment.png'
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-                _data = (_icon, _attributes[4], _attributes[5], '',
-                         _attributes[6], _attributes[7], _attributes[8],
-                         _attributes[9], _attributes[10], 3, 1, 0)
-            else:
-# TODO: Informational dialog to let user know they can't add a child to an environment.
-                return False
-            # Insert a new row with the new Usage Profile item and then select
-            # the newly inserted row for editing.
-            _row = _model.insert(_piter, -1, _data)
-            _path = _model.get_path(_row)
-            self.tvwMissionProfile.set_cursor(_path,
-                                              self.tvwMissionProfile.get_column(1),
-                                              True)
-            self.tvwMissionProfile.row_activated(_path,
-                                                 self.tvwMissionProfile.get_column(0))
-        elif index == 5:                    # Remove from profile.
-            if _level == 1:                 # _id = Mission ID
-                _piter = None
-                (_results,
-                 _error_code) = self.dtcProfile.delete_mission(_revision_id, _id)
-            elif _level == 2:               # _id = Phase ID
-                _piter = _model.iter_parent(_row)
-                _mission_id = _model.get_value(_piter, 1)
-                (_results,
-                 _error_code) = self.dtcProfile.delete_phase(_revision_id, _mission_id, _id)
-            elif _level == 3:               # _id = Environment ID
-                _piter = _model.iter_parent(_row)
-                _phase_id = _model.get_value(_piter, 1)
-                _grand_piter = _model.iter_parent(_piter)
-                _mission_id = _model.get_value(_grand_piter, 1)
-                (_results,
-                 _error_code) = self.dtcProfile.delete_environment(_revision_id, _mission_id, _phase_id, _id)
-
-            if _results:
-                try:
-                    _path = _model.get_path(_model.iter_next(_piter))
-                except TypeError:
-                    _path = None
-                self._load_usage_profile(_path)
-            else:
-# TODO: Handle any errors returned.
-                print _error_code
-        elif index == 6:                    # Save profile.
-            self.dtcProfile.save_profile(_revision_id)
-        elif index == 8:                    # Add failure definition.
-            self.dtcDefinitions.add_definition(_revision_id)
-            self._load_failure_definitions()
-        elif index == 9:                    # Remove failure definition.
-            self.dtcDefinitions.delete_definition(_revision_id, _id)
-            self._load_failure_definitions()
-        elif index == 10:                   # Save failure definition.
-            self.dtcDefinitions.save_definitions(_revision_id)
-
-        button.handler_unblock(self._lst_handler_id[index])
 
         return False
 
@@ -1245,150 +696,7 @@ class WorkView(gtk.VBox):
             _text = entry.get_text()
             self._revision_model.code = _text
 
-        self._module_book.update(index, _text)
-
-        return False
-
-    def _on_usage_row_changed(self, treeview):
-        """
-        Callback function to handle events for the Revision package Work Book
-        Usage Profile gtk.TreeView().  It is called whenever a Work Book
-        Usage Profile gtk.TreeView() row is activated.
-
-        :param gtk.TreeView treeview: the Revision classt gtk.TreeView().
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        self.tvwMissionProfile.handler_block(self._lst_handler_id[7])
-
-        (_model, _row) = treeview.get_selection().get_selected()
-        _level = _model.get_value(_row, 9)
-
-        _columns = treeview.get_columns()
-
-        # Change the column headings depending on what is being selected.
-        if _level == 1:                         # Mission
-            _headings = [_(u"Mission ID"), _(u"Description"), _(u"Units"),
-                         _(u"Start Time"), _(u"End Time"), _(u""), _(u""),
-                         _(u"")]
-        elif _level == 2:                       # Mission phase
-            _headings = [_(u"Phase ID"), _(u"  Code\t\tDescription"),
-                         _(u"Units"), _(u"Start Time"), _(u"End Time"), _(u""),
-                         _(u""), _(u"")]
-        elif _level == 3:                       # Environment
-            _headings = [_(u"Environment ID"), _(u"Condition"), _(u"Units"),
-                         _(u"Minimum Value"), _(u"Maximum Value"),
-                         _(u"Mean Value"), _(u"Variance"), _(u"")]
-
-        for i in range(7):
-            _label = gtk.Label()
-            _label.set_line_wrap(True)
-            _label.set_alignment(xalign=0.5, yalign=0.5)
-            _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_markup("<span weight='bold'>" + _headings[i] +
-                              "</span>")
-            _label.set_use_markup(True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
-
-        self.tvwMissionProfile.handler_unblock(self._lst_handler_id[7])
-
-        return False
-
-    def _on_usage_cell_edited(self, __cell, path, new_text, position, model):
-        """
-        Callback function to handle edits of the Revision package Work Book
-        Usage Profile gtk.Treeview()s.
-
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _revision_id = self._revision_model.revision_id
-
-        _row = model.get_iter(path)
-        _id = model.get_value(_row, 1)
-
-        # Update the gtk.TreeModel() with the new value.
-        _type = gobject.type_name(model.get_column_type(position))
-        if _type == 'gchararray':
-            model[path][position] = str(new_text)
-        elif _type == 'gint':
-            model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            model[path][position] = float(new_text)
-
-        # Determine whether we are editing a mission, mission phase, or
-        # environment.  Get the values and update the attributes.
-        _level = model.get_value(_row, 9)
-        if _level == 1:                     # Mission
-            _values = (_revision_id, _id) + model.get(_row, 6, 4, 2)
-            _mission = self._usage_model.dicMissions[_id]
-            _mission.set_attributes(_values)
-        elif _level == 2:                   # Mission phase
-            _values = model.get(_row, 5, 6, 2, 3)
-            _row = model.iter_parent(_row)
-            _mission_id = model.get_value(_row, 1)
-            _mission = self._usage_model.dicMissions[_mission_id]
-            _values = (_revision_id, _mission_id, _id) + _values
-            _phase = _mission.dicPhases[_id]
-            _phase.set_attributes(_values)
-        elif _level == 3:                   # Environment
-            _values = model.get(_row, 2, 4, 5, 6, 7, 8)
-            _row = model.iter_parent(_row)
-            _phase_id = model.get_value(_row, 1)
-            _row = model.iter_parent(_row)
-            _mission_id = model.get_value(_row, 1)
-            _mission = self._usage_model.dicMissions[_mission_id]
-            _phase = _mission.dicPhases[_phase_id]
-            _values = (_revision_id, _mission_id, _phase_id, 0, _id) + _values
-            _environment = _phase.dicEnvironments[_id]
-            _environment.set_attributes(_values)
-
-        return False
-
-    def _on_failure_cell_edited(self, __cell, path, new_text, position, model):
-        """
-        Callback function to handle edits of the Revision package Work Book
-        Failure Definition gtk.Treeview()s.
-
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _row = model.get_iter(path)
-        _id = model.get_value(_row, 0)
-
-        # Update the gtk.TreeModel() with the new value.
-        _type = gobject.type_name(model.get_column_type(position))
-
-        if _type == 'gchararray':
-            model[path][position] = str(new_text)
-        elif _type == 'gint':
-            model[path][position] = int(new_text)
-        elif _type == 'gfloat':
-            model[path][position] = float(new_text)
-
-        _definition = self._dic_definitions[_id]
-        if position == 1:
-            _definition.definition = str(new_text)
+        self._modulebook.update(index, _text)
 
         return False
 
@@ -1420,30 +728,9 @@ class WorkView(gtk.VBox):
         """
 
         # Launch the Add Revision gtk.Assistant().
-        _dialog = AddRevision(self.dtcRevision)
-        if _dialog.run() == gtk.RESPONSE_ACCEPT:
-            # Retrieve the new Revision information
-            _code = _dialog.txtRevisionCode.get_text()
-            _name = _dialog.txtRevisionName.get_text()
-            _remarks = _dialog.txtRemarks.get_text(*_dialog.txtRemarks.get_bounds())
+        AddRevision(self.dtcRevision)
 
-            (_results,
-             _error_code,
-             _last_id) = self.dtcRevision.add_revision(_code, _name, _remarks)
-
-            # If the revision was successfully added to the RTK Project
-            # database, add a Usage Profile and empty failure definition dict
-            # to the controller.  Finally, add the new Revision to the Module
-            # Book gtk.TreeView().
-            if _results:
-                self.dtcProfile.add_profile(_last_id)
-                self.dtcDefinitions.dicDefinitions[_last_id] = {}
-
-                _values = self.dtcRevision.dicRevisions[_last_id].get_attributes()
-                _model = self._modulebook.treeview.get_model()
-                _model.append(None, _values)
-
-        _dialog.destroy()
+        self._modulebook.request_load_data(self._modulebook._dao)
 
         return False
 
@@ -1458,7 +745,8 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        (_model, _row) = self._modulebook.treeview.get_selection().get_selected()
+        (_model,
+         _row) = self._modulebook.treeview.get_selection().get_selected()
         _path = _model.get_path(_row)
 
         _revision_id = self._revision_model.revision_id
@@ -1468,17 +756,19 @@ class WorkView(gtk.VBox):
 
         self.dtcProfile.dicProfiles.pop(_revision_id)
         self.dtcDefinitions.dicDefinitions.pop(_revision_id)
-# TODO: Delete from treeview and refresh Module Book view.
-        #_next_row = _model.iter_next(_row)
 
-        #_model.remove(_row)
-        #_model.row_deleted(_path)
+        # Remove the deleted Revision from the gtk.TreeView().
+        _next_row = _model.iter_next(_row)
 
-        #if _next_row is None:
-        #_next_row = _model.get_iter_root()
-        #_path = _model.get_path(_next_row)
-        #self._modulebook.treeview.set_cursor(_path, None, False)
-        #self._modulebook.treeview.row_activated(_path, self._modulebook.treeview.get_column(0))
+        _model.remove(_row)
+        _model.row_deleted(_path)
+
+        if _next_row is None:
+            _next_row = _model.get_iter_root()
+        _path = _model.get_path(_next_row)
+        _column = self._modulebook.treeview.get_column(0)
+        self._modulebook.treeview.set_cursor(_path, None, False)
+        self._modulebook.treeview.row_activated(_path, _column)
 
         return False
 

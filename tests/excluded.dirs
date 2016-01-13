@@ -4,7 +4,7 @@
 ../rtk/analyses/hazard/gui
 ../rtk/analyses/pof/gui
 ../rtk/analyses/similar_item/gui
-../rtk/hardware/gui
-../rtk/software/gui
-../rtk/survival/gui
-../rtk/testing/gui
+../rtk/hardware/__gui
+../rtk/software/__gui
+../rtk/survival/__gui
+../rtk/testing/__gui

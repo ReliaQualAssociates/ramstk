@@ -409,7 +409,7 @@ class BoM(object):
         # By default we add the new Hardware item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
-# TODO: Replace this with an RTK error or warning dialog and then return.
+            # TODO: Replace this with an RTK error or warning dialog and then return.
             parent_id = 0
 
         _query = "INSERT INTO rtk_hardware \
@@ -500,6 +500,180 @@ class BoM(object):
         self.dicHardware.pop(hardware_id)
 
         return(_results, _error_code)
+
+    def copy_hardware(self, revision_id, failure_info=True, matrix=True):
+        """
+        Method to copy a Hardware item from the currently selected Revision to
+        the new Revision.
+
+        :param int revision_id: the ID of the newly created Revision.
+        :keyword bool failure_info: indicates whether or not to copy failure
+                                    information from the old Hardware to the
+                                    new Hardware.
+        :keyword bool matrix: indicates whether or not to copy functional
+                              matrix information from the old Hardware to the
+                              new Hardware.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # Find the existing maximum Hardware ID already in the RTK Program
+        # database and increment it by one.  If there are no existing
+        # Hardware items set the first Hardware ID to zero.
+        _query = "SELECT MAX(fld_hardware_id) FROM rtk_hardware"
+        (_hardware_id, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
+
+        if _hardware_id[0][0] is not None:
+            _hardware_id = _hardware_id[0][0] + 1
+        else:
+            _hardware_id = 0
+
+        # Copy the Hardware hierarchy for the new Revision.
+        _dic_index_xref = {}
+        _dic_index_xref[-1] = -1
+        for _hardware in self.dicHardware.values():
+            # Set the category and subcategory ID's to zero for assemblies.
+            if _hardware.part != 1:
+                _category_id = 0
+                _subcategory_id = 0
+            else:
+                _category_id = _hardware.category_id
+                _subcategory_id = _hardware.subcategory_id
+
+            _query = "INSERT INTO rtk_hardware \
+                      (fld_revision_id, fld_hardware_id, fld_cage_code, \
+                       fld_category_id, fld_description, fld_figure_number, \
+                       fld_lcn, fld_level, fld_manufacturer, \
+                       fld_mission_time, fld_name, fld_nsn, fld_page_number, \
+                       fld_parent_id, fld_part, fld_part_number, \
+                       fld_quantity, fld_ref_des, fld_remarks, \
+                       fld_specification_number, fld_subcategory_id) \
+                      VALUES ({0:d}, {1:d}, '{2:s}', {3:d}, '{4:s}', '{5:s}', \
+                              '{6:s}', {7:d}, {8:d}, {9:f}, '{10:s}', \
+                              '{11:s}', '{12:s}', {13:d}, {14:d}, '{15:s}', \
+                              {16:d}, '{17:s}', '{18:s}', '{19:s}', \
+                              {20:d})".format(revision_id, _hardware_id,
+                                              _hardware.cage_code,
+                                              _category_id,
+                                              _hardware.description,
+                                              _hardware.figure_number,
+                                              _hardware.lcn, _hardware.level,
+                                              _hardware.manufacturer,
+                                              _hardware.mission_time,
+                                              _hardware.name, _hardware.nsn,
+                                              _hardware.page_number,
+                                              _hardware.parent_id,
+                                              _hardware.part,
+                                              _hardware.part_number,
+                                              _hardware.quantity,
+                                              _hardware.ref_des,
+                                              _hardware.remarks,
+                                              _hardware.specification_number,
+                                              _subcategory_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            if failure_info:
+                # TODO: Add all reliability information.
+                _query = "INSERT INTO rtk_reliability \
+                          (fld_hardware_id, fld_hazard_rate_active, \
+                           fld_hazard_rate_dormant, fld_hazard_rate_software, \
+                           fld_hazard_rate_specified, fld_hazard_rate_type, \
+                           fld_mtbf_logistics, fld_mtbf_specified) \
+                          VALUES ({0:d}, {1:f}, {2:f}, \
+                                  {3:f}, {4:f}, {5:d}, {6:f}, \
+                                  {7:f})".format(_hardware_id,
+                                                 _hardware.hazard_rate_active,
+                                                 _hardware.hazard_rate_dormant,
+                                                 _hardware.hazard_rate_software,
+                                                 _hardware.hazard_rate_specified,
+                                                 _hardware.hazard_rate_type,
+                                                 _hardware.mtbf_logistics,
+                                                 _hardware.mtbf_specified)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+
+            # Add the Hardware item to the prediction table if it's a part.
+            # Otherwise add it to the similar item table.
+            if _hardware.part == 1:
+                _query = "INSERT INTO rtk_prediction \
+                          (fld_hardware_id) \
+                          VALUES ({0:d})".format(_hardware_id)
+            else:
+                _query = "INSERT INTO rtk_similar_item \
+                          (fld_hardware_id) \
+                          VALUES ({0:d})".format(_hardware_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            _query = "INSERT INTO rtk_allocation \
+                      (fld_hardware_id) \
+                      VALUES ({0:d})".format(_hardware_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            _query = "INSERT INTO rtk_hazard \
+                      (fld_hardware_id) \
+                      VALUES ({0:d})".format(_hardware_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            _query = "INSERT INTO rtk_stress \
+                      (fld_hardware_id) \
+                      VALUES ({0:d})".format(_hardware_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+            if matrix:
+                _query = "SELECT MAX(fld_matrix_id) FROM rtk_matrices"
+                (_matrix_id, _error_code, __) = self._dao.execute(_query,
+                                                                  commit=False)
+
+                if _matrix_id[0][0] is not None:
+                    _matrix_id = _matrix_id[0][0] + 1
+                else:
+                    _matrix_id = 0
+
+                _query = "SELECT fld_function_id \
+                          FROM tbl_functions \
+                          WHERE fld_revision_id=%d" % revision_id
+                (_function_ids,
+                 _error_code,
+                 __) = self._dao.execute(_query, commit=False)
+
+                for __, _function_id in enumerate(_function_ids):
+                    _query = "INSERT INTO rtk_matrices \
+                              (fld_revision_id, fld_matrix_type, \
+                               fld_matrix_id, fld_row_id, fld_col_id) \
+                              VALUES({0:d}, 0, {1:d}, \
+                                     {2:d}, {3:d})".format(revision_id,
+                                                           _matrix_id,
+                                                           _hardware_id,
+                                                           _function_id[0])
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+
+            # Add an entry to the Hardware ID cross-reference dictionary for
+            # for the newly added Hardware item.
+            _dic_index_xref[_hardware.hardware_id] = _hardware_id
+
+            _hardware_id += 1
+
+        # Update the parent IDs for the new Hardware items using the index
+        # cross-reference dictionary that was created when adding the new
+        # Hardware items.
+        for _key in _dic_index_xref.keys():
+            _query = "UPDATE rtk_hardware \
+                      SET fld_parent_id={0:d} \
+                      WHERE fld_parent_id={1:d} \
+                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
+                                                        _key, revision_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
+
+        return False
 
     def save_hardware_item(self, hardware_id):
         """
@@ -714,7 +888,7 @@ class BoM(object):
                       _int[3], _int[4], _int[5], _int[6], _int[7], _int[8],
                       _int[9], _str[0], _str[1], _str[2], _str[3], _str[4])
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_bom(self):

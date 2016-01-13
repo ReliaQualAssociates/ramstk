@@ -75,7 +75,7 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
 
     def __init__(self):
         """
-        Initialize an instance of the List view class.
+        Initialize an instance of the RTK List view class.
         """
 
         # Create a new window and set its properties.
