@@ -63,26 +63,27 @@ class ListView(gtk.Notebook):
     The List View displays all the matrices and lists associated with the
     Revision Class.  The attributes of a List View are:
 
-    :ivar _listview:
-    :ivar _modulebook:
-    :ivar _dtc_matrices:
-    :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
-    :ivar tvwHardwareMatrix:
-    :ivar tvwSoftwareMatrix:
-    :ivar tvwTestMatrix:
-    :ivar tvwPartsList:
-    :ivar tvwIncidentsList:
+    :ivar _lst_handler_id:
+    :ivar _dtc_profile:
+    :ivar _dtc_definitions:
+    :ivar _revision_id:
+    :ivar gtk.Button btnAddSibling:
+    :ivar gtk.Button btnAddChild:
+    :ivar gtk.Button btnRemoveUsage:
+    :ivar gtk.Button btnSaveUsage:
+    :ivar gtk.Button btnAddDefinition:
+    :ivar gtk.Button btnRemoveDefinition:
+    :ivar gtk.Button btnSaveDefinitions:
+    :ivar gtk.TreeView tvwUsageProfile:
+    :ivar gtk.TreeView tvwFailureDefinitions:
     """
 
-    def __init__(self, listview, modulebook, args):
+    def __init__(self, modulebook):
         """
         Initializes the List View for the Revision package.
 
-        :param rtk.gui.gtk.mwi.ListView listview: the RTK List View container
-                                                  to insert this List View
-                                                  into.
-        :param rtk.function.ModuleBook: the Revision Module Book to associate
-                                        with this List Book.
+        :param modulebook: the :py:class:`rtk.revision.ModuleBook` to associate
+                           with this List Book.
         """
 
         gtk.Notebook.__init__(self)
@@ -93,8 +94,8 @@ class ListView(gtk.Notebook):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._listview = listview
-        self._modulebook = modulebook
+        self._dtc_profile = modulebook.mdcRTK.dtcProfile
+        self._dtc_definitions = modulebook.mdcRTK.dtcDefinitions
         self._revision_id = None
 
         # Initialize public dictionary attributes.
@@ -102,9 +103,6 @@ class ListView(gtk.Notebook):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dtcProfile = args[0][0]
-        self.dtcDefinitions = args[0][1]
-
         self.btnAddSibling = _widg.make_button(width=35,
                                                image='insert_sibling')
         self.btnAddChild = _widg.make_button(width=35, image='insert_child')
@@ -415,17 +413,15 @@ class ListView(gtk.Notebook):
 
         self._revision_id = revision_id
 
-        self._load_usage_profile(revision_id)
-        self._load_failure_definitions(revision_id)
+        self._load_usage_profile()
+        self._load_failure_definitions()
 
         return False
 
-    def _load_usage_profile(self, revision_id, path=None):
+    def _load_usage_profile(self, path=None):
         """
         Loads the Usage Profile gkt.TreeView().
 
-        :param usage: the :py:class:`rtk.usage.UsageProfile.Model` to be
-                      loaded.
         :keyword str path: the path in the gtk.TreeView() to select as active
                            after loading the Usage Profile.
         :return: False if successful or True if an error is encountered.
@@ -436,7 +432,7 @@ class ListView(gtk.Notebook):
 
         _model = self.tvwUsageProfile.get_model()
         _model.clear()
-        for _mission in self.dtcProfile.dicProfiles[revision_id].dicMissions.values():
+        for _mission in self._dtc_profile.dicProfiles[self._revision_id].dicMissions.values():
             _icon = _conf.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _mission.mission_id, _mission.description,
@@ -477,7 +473,7 @@ class ListView(gtk.Notebook):
 
         return _return
 
-    def _load_failure_definitions(self, revision_id, path=None):
+    def _load_failure_definitions(self, path=None):
         """
         Loads the Failure Definitions gkt.TreeView().
 
@@ -489,7 +485,7 @@ class ListView(gtk.Notebook):
 
         _return = False
 
-        _definitions = self.dtcDefinitions.dicDefinitions[revision_id].values()
+        _definitions = self._dtc_definitions.dicDefinitions[self._revision_id].values()
 
         _model = self.tvwFailureDefinitions.get_model()
         _model.clear()
@@ -535,7 +531,7 @@ class ListView(gtk.Notebook):
         elif index == 2:                    # Remove from profile.
             self._request_delete_from_profile()
         elif index == 3:                    # Save profile.
-            self.dtcProfile.save_profile(self._revision_id)
+            self._dtc_profile.save_profile(self._revision_id)
         elif index in [5, 6, 7]:
             self._manage_failure_definitions(index)
 
@@ -560,12 +556,12 @@ class ListView(gtk.Notebook):
         except TypeError:
             _return = True
 
-        _usage_model = self.dtcProfile.dicProfiles[self._revision_id]
+        _usage_model = self._dtc_profile.dicProfiles[self._revision_id]
 
         if _level == 1:                     # id = Mission ID
             _piter = _model.iter_parent(_row)
             (__, __,
-             _mission_id) = self.dtcProfile.add_mission(self._revision_id)
+             _mission_id) = self._dtc_profile.add_mission(self._revision_id)
             _attributes = _usage_model.dicMissions[_mission_id].get_attributes()
             _icon = _conf.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
@@ -574,8 +570,9 @@ class ListView(gtk.Notebook):
         elif _level == 2:                   # id = Phase ID
             _piter = _model.iter_parent(_row)
             _mission_id = _model.get_value(_piter, 1)
-            (__, __, _phase_id) = self.dtcProfile.add_phase(self._revision_id,
-                                                            _mission_id)
+            (__, __,
+             _phase_id) = self._dtc_profile.add_phase(self._revision_id,
+                                                      _mission_id)
             _mission = _usage_model.dicMissions[_mission_id]
             _attributes = _mission.dicPhases[_phase_id].get_attributes()
             _icon = _conf.ICON_DIR + '32x32/phase.png'
@@ -588,9 +585,9 @@ class ListView(gtk.Notebook):
             _grand_piter = _model.iter_parent(_piter)
             _mission_id = _model.get_value(_grand_piter, 1)
             (__, __,
-             _environment_id) = self.dtcProfile.add_environment(self._revision_id,
-                                                                _mission_id,
-                                                                _phase_id)
+             _environment_id) = self._dtc_profile.add_environment(self._revision_id,
+                                                                  _mission_id,
+                                                                  _phase_id)
             _mission = _usage_model.dicMissions[_mission_id]
             _phase = _mission.dicPhases[_phase_id]
             _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
@@ -630,12 +627,12 @@ class ListView(gtk.Notebook):
         except TypeError:
             _return = True
 
-        _usage_model = self.dtcProfile.dicProfiles[self._revision_id]
+        _usage_model = self._dtc_profile.dicProfiles[self._revision_id]
 
         if _level == 1:                     # _id = Mission ID
             _piter = _row
             (__, __,
-             _phase_id) = self.dtcProfile.add_phase(self._revision_id, _id)
+             _phase_id) = self._dtc_profile.add_phase(self._revision_id, _id)
             _mission = _usage_model.dicMissions[_id]
             _attributes = _mission.dicPhases[_phase_id].get_attributes()
             _icon = _conf.ICON_DIR + '32x32/phase.png'
@@ -647,9 +644,9 @@ class ListView(gtk.Notebook):
             _mission_id = _model.get_value(_piter, 1)
             _piter = _row
             (__, __,
-             _environment_id) = self.dtcProfile.add_environment(self._revision_id,
-                                                                _mission_id,
-                                                                _id)
+             _environment_id) = self._dtc_profile.add_environment(self._revision_id,
+                                                                  _mission_id,
+                                                                  _id)
             _mission = _usage_model.dicMissions[_mission_id]
             _phase = _mission.dicPhases[_id]
             _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
@@ -696,31 +693,31 @@ class ListView(gtk.Notebook):
         if _level == 1:                     # _id = Mission ID
             _piter = None
             (_results,
-             _error_code) = self.dtcProfile.delete_mission(self._revision_id,
-                                                           _id)
+             _error_code) = self._dtc_profile.delete_mission(self._revision_id,
+                                                             _id)
         elif _level == 2:                   # _id = Phase ID
             _piter = _model.iter_parent(_row)
             _mission_id = _model.get_value(_piter, 1)
             (_results,
-             _error_code) = self.dtcProfile.delete_phase(self._revision_id,
-                                                         _mission_id, _id)
+             _error_code) = self._dtc_profile.delete_phase(self._revision_id,
+                                                           _mission_id, _id)
         elif _level == 3:                   # _id = Environment ID
             _piter = _model.iter_parent(_row)
             _phase_id = _model.get_value(_piter, 1)
             _grand_piter = _model.iter_parent(_piter)
             _mission_id = _model.get_value(_grand_piter, 1)
             (_results,
-             _error_code) = self.dtcProfile.delete_environment(self._revision_id,
-                                                               _mission_id,
-                                                               _phase_id,
-                                                               _id)
+             _error_code) = self._dtc_profile.delete_environment(self._revision_id,
+                                                                 _mission_id,
+                                                                 _phase_id,
+                                                                 _id)
 
         if _results:
             try:
                 _path = _model.get_path(_model.iter_next(_piter))
             except TypeError:
                 _path = None
-            self._load_usage_profile(self._revision_id, _path)
+            self._load_usage_profile(_path)
         else:
             print _error_code
 
@@ -751,13 +748,13 @@ class ListView(gtk.Notebook):
 
         # Perform the requested action.
         if index == 5:                      # Add failure definition.
-            self.dtcDefinitions.add_definition(self._revision_id)
+            self._dtc_definitions.add_definition(self._revision_id)
             self._load_failure_definitions(self._revision_id)
         elif index == 6:                    # Remove failure definition.
-            self.dtcDefinitions.delete_definition(self._revision_id, _id)
+            self._dtc_definitions.delete_definition(self._revision_id, _id)
             self._load_failure_definitions(self._revision_id)
         elif index == 7:                    # Save failure definition.
-            self.dtcDefinitions.save_definitions(self._revision_id)
+            self._dtc_definitions.save_definitions(self._revision_id)
 
         return _return
 
@@ -772,7 +769,7 @@ class ListView(gtk.Notebook):
         :rtype: boolean
         """
 
-        self.tvwUsageProfile.handler_block(self._lst_handler_id[7])
+        self.tvwUsageProfile.handler_block(self._lst_handler_id[4])
 
         (_model, _row) = treeview.get_selection().get_selected()
         _level = _model.get_value(_row, 9)
@@ -804,7 +801,7 @@ class ListView(gtk.Notebook):
             _label.show_all()
             _columns[i].set_widget(_label)
 
-        self.tvwUsageProfile.handler_unblock(self._lst_handler_id[7])
+        self.tvwUsageProfile.handler_unblock(self._lst_handler_id[4])
 
         return False
 
@@ -837,7 +834,7 @@ class ListView(gtk.Notebook):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        _usage_model = self.dtcProfile.dicProfiles[self._revision_id]
+        _usage_model = self._dtc_profile.dicProfiles[self._revision_id]
         # Determine whether we are editing a mission, mission phase, or
         # environment.  Get the values and update the attributes.
         _level = model.get_value(_row, 9)
@@ -898,8 +895,7 @@ class ListView(gtk.Notebook):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        _definition = self.dtcDefinitions.dicDefinitions[self._revision_id][_id]
         if position == 1:
-            _definition.definition = str(new_text)
+            self._dtc_definitions.dicDefinitions[self._revision_id][_id].definition = str(new_text)
 
         return False

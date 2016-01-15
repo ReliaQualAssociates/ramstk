@@ -55,19 +55,22 @@ _ = gettext.gettext
 class AddRevision(object):
     """
     This is the assistant that walks the user through the process of adding
-    a new revision to the open RTK Program database.
+    a new Revision to the open RTK Project database.
     """
 
-    def __init__(self, controller):
+    def __init__(self, modulebook):
         """
         Initialize on instance of the Add Revision Assistant.
 
-        :param controller: the :py:class:`rtk.revision.Revision.Revision`
-                           data controller instance.
+        :param modulebook: the current instance of
+                           :py:class:`rtk.revision.ModuleBook`
         """
 
-        self._controller = controller
+        # Initialize private scalar attributes.
+        self._modulebook = modulebook
+        self._controller = modulebook.mdcRTK
 
+        # Initialize public scalar attributes.
         self.assistant = gtk.Assistant()
         self.assistant.set_title(_(u"RTK Revision Addition Assistant"))
         self.assistant.connect('apply', self._add_revision)
@@ -86,11 +89,12 @@ class AddRevision(object):
         self.assistant.set_page_title(_fixed, _(u"Introduction"))
         self.assistant.set_page_complete(_fixed, True)
 
-        # Create the pages to select other information to add.
+        # Create the page to select other information to add.
         y_pos = 5
         self.fxdPageOtherInfo = gtk.Fixed()
         _label = _widg.make_label(_(u"Select additional information "
-                                    u"to add..."), width=300)
+                                    u"to copy from old revision..."),
+                                  width=300)
         self.fxdPageOtherInfo.put(_label, 5, y_pos)
         y_pos += 30
 
@@ -126,7 +130,7 @@ class AddRevision(object):
                                         u"Add"))
         self.assistant.set_page_complete(self.fxdPageOtherInfo, True)
 
-        # Create the software incident general information page.
+        # Create the page for entering the new Revision information.
         self.fxdPageSetValues = gtk.Fixed()
         _label = _widg.make_label(_(u"Revision Code:"))
         self.txtRevisionCode = _widg.make_entry(width=100)
@@ -163,44 +167,27 @@ class AddRevision(object):
 
         _fixed = gtk.Fixed()
         self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
         self.assistant.set_page_title(_fixed, _(u"Revision: Confirm Addition"))
         self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
 
-    def _forward_page_select(self, current_page):
-        """
-        Method to set the next active page in the assistant.
-
-        :param int current_page: the currently active page in the assistant.
-        """
-
-        if current_page == 0:
-            self.assistant.set_current_page(1)
-
-        elif current_page == 1:
-            self.assistant.set_current_page(2)
-
-        elif current_page == 2:
-            self.assistant.set_current_page(3)
-
     def _add_revision(self, __assistant):
         """
-        Method to add the new revision to the RTK Program database.
+        Method to add the new Revision to the open RTK Project database.
 
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
         """
 
-        # Create the revision code.
+        # Create the Revision code.
         _code = self.txtRevisionCode.get_text()
         if _code == '' or _code is None:
             _code = '{0:s} {1:s}'.format(str(_conf.RTK_PREFIX[0]),
                                          str(_conf.RTK_PREFIX[1]))
 
-            # Increment the revision index.
+            # Increment the Revision index.
             _conf.RTK_PREFIX[1] += 1
 
         _name = self.txtRevisionName.get_text()
@@ -209,10 +196,12 @@ class AddRevision(object):
 
         _remarks = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
 
-        # Add the new revision.
+        # Add the new Revision.
         (_results,
          _error_code,
-         _revision_id) = self._controller.add_revision(_code, _name, _remarks)
+         _revision_id) = self._controller.dtcRevision.add_revision(_code,
+                                                                   _name,
+                                                                   _remarks)
 
         # TODO: Copy FMEA for functions and hardware.
         if self.chkFunction.get_active():
@@ -222,12 +211,16 @@ class AddRevision(object):
             self._controller.dtcRequirement.copy_requirements(_revision_id)
 
         if self.chkHardware.get_active():
-            self._controller.dtcHardware.copy_hardware(_revision_id,
-                                                       self.chkFailureInfo.get_active(),
-                                                       self.chkFunctionMatrix.get_active())
+            _failure_info = self.chkFailureInfo.get_active()
+            _matrices = self.chkFunctionMatrix.get_active()
+            self._controller.dtcHardwareBoM.copy_hardware(_revision_id,
+                                                          _failure_info,
+                                                          _matrices)
 
         if self.chkSoftware.get_active():
-            self._controller.dtcSoftware.copy_software(_revision_id)
+            self._controller.dtcSoftwareBoM.copy_software(_revision_id)
+
+        self._modulebook.request_load_data(self._controller.project_dao)
 
         return False
 

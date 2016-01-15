@@ -365,13 +365,6 @@ class Revision(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        # These data controllers are used when creating a new Revision to
-        # access the method(s) for copying existing information to the new
-        # Revision.
-        self.dtcFunction = None
-        self.dtcRequirements = None
-        self.dtcHardware = None
-        self.dtcSoftware = None
 
     def request_revisions(self, dao):
         """

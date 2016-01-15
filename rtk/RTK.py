@@ -213,30 +213,25 @@ class RTK(object):
         # Create data controllers.
         self.dtcMatrices = Matrix()
         self.dtcRevision = Revision()
-        dtcProfile = UsageProfile()
-        dtcDefinitions = FailureDefinition()
-        dtcFunction = Function()
-        dtcFMEA = FMEA()
-        dtcRequirement = Requirement()
-        dtcStakeholder = Stakeholder()
-        dtcHardwareBoM = HardwareBoM()
-        dtcAllocation = Allocation()
-        dtcHazard = Hazard()
-        dtcSimilarItem = SimilarItem()
-        dtcPoF = PoF()
-        dtcSoftwareBoM = SoftwareBoM()
-        dtcTesting = Testing()
-        dtcGrowth = Growth()
-        dtcValidation = Validation()
-        dtcIncident = Incident()
-        dtcAction = Action()
-        dtcComponent = Component()
-        dtcSurvival = Survival()
-
-        self.dtcRevision.dtcFunction = dtcFunction
-        self.dtcRevision.dtcRequirement = dtcRequirement
-        self.dtcRevision.dtcHardware = dtcHardwareBoM
-        self.dtcRevision.dtcSoftware = dtcSoftwareBoM
+        self.dtcProfile = UsageProfile()
+        self.dtcDefinitions = FailureDefinition()
+        self.dtcFunction = Function()
+        self.dtcFMEA = FMEA()
+        self.dtcRequirement = Requirement()
+        self.dtcStakeholder = Stakeholder()
+        self.dtcHardwareBoM = HardwareBoM()
+        self.dtcAllocation = Allocation()
+        self.dtcHazard = Hazard()
+        self.dtcSimilarItem = SimilarItem()
+        self.dtcPoF = PoF()
+        self.dtcSoftwareBoM = SoftwareBoM()
+        self.dtcTesting = Testing()
+        self.dtcGrowth = Growth()
+        self.dtcValidation = Validation()
+        self.dtcIncident = Incident()
+        self.dtcAction = Action()
+        self.dtcComponent = Component()
+        self.dtcSurvival = Survival()
 
         # Initialize RTK views.
         if RTK_INTERFACE == 0:              # Single window.
@@ -247,46 +242,39 @@ class RTK(object):
             self.work_book = self.module_book.create_workview()
 
         # Plug-in each of the RTK module views.
-        _modview = self.module_book.create_module_page(mvwRevision,
-                                                       self.dtcRevision, -1,
-                                                       dtcProfile,
-                                                       dtcDefinitions)
+        _modview = self.module_book.create_module_page(mvwRevision, self, -1)
         _conf.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwFunction,
-                                                       dtcFunction, -1,
-                                                       dtcFMEA,
-                                                       dtcProfile,
-                                                       self.dtcMatrices)
+        _modview = self.module_book.create_module_page(mvwFunction, self, -1)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwRequirement,
-                                                       dtcRequirement, -1,
-                                                       dtcStakeholder,
+                                                       self.dtcRequirement, -1,
+                                                       self.dtcStakeholder,
                                                        self.dtcMatrices,
                                                        self.site_dao)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware,
-                                                       dtcHardwareBoM, -1,
-                                                       dtcAllocation,
-                                                       dtcHazard,
-                                                       dtcSimilarItem,
-                                                       dtcFMEA, dtcPoF)
+                                                       self.dtcHardwareBoM, -1,
+                                                       self.dtcAllocation,
+                                                       self.dtcHazard,
+                                                       self.dtcSimilarItem,
+                                                       self.dtcFMEA, self.dtcPoF)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSoftware,
-                                                       dtcSoftwareBoM, -1)
+                                                       self.dtcSoftwareBoM, -1)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwTesting,
-                                                       dtcTesting, -1,
-                                                       dtcGrowth)
+                                                       self.dtcTesting, -1,
+                                                       self.dtcGrowth)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwValidation,
-                                                       dtcValidation, -1)
+                                                       self.dtcValidation, -1)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwIncident,
-                                                       dtcIncident, -1,
-                                                       dtcAction, dtcComponent)
+                                                       self.dtcIncident, -1,
+                                                       self.dtcAction, self.dtcComponent)
         _conf.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSurvival,
-                                                       dtcSurvival, -1)
+                                                       self.dtcSurvival, -1)
         _conf.RTK_MODULES.append(_modview)
 
         self.icoStatus = gtk.StatusIcon()
@@ -575,13 +563,12 @@ class RTK(object):
 
     def open_project(self):
         """
-        Method to open an RTK Program database and load it into the views.
+        Method to open an RTK Project database and load it into the views.
         """
 
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
         # Connect to the project database.
-        # _database = '/home/andrew/projects/RTKTestDB.rtk'
         self.project_dao = DAO(_conf.RTK_PROG_INFO[2])
 
         self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
@@ -644,6 +631,22 @@ class RTK(object):
         self.module_book.statusbar.pop(2)
 
         self.loaded = True
+
+    def load_revision(self, revision_id):
+        """
+        Method to load the active RTK module data whenever a new Revision is
+        selected.
+
+        :param int revision_id: the ID of the Revision to load data for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        for _moduleview in _conf.RTK_MODULES[1:]:
+            self.module_book.load_module_page(_moduleview, self.project_dao,
+                                              revision_id)
+
+        return False
 
 if __name__ == '__main__':
 

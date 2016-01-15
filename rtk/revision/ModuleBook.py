@@ -64,31 +64,29 @@ class ModuleView(object):
     The Module Book view displays all the Revisions associated with the RTK
     Project in a flat list.  The attributes of a Module Book view are:
 
-    :ivar _model: the :class:`rtk.revision.Revision.Model` data model that is
-                  currently selected.
+    :ivar _dtc_profile: the :class:`rtk.usage.UsageProfile.UsageProfile` data
+                        controller to use for accessing the Usage Profile data
+                        models.
+    :ivar _dtc_definitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
+                            data controller to use for accessing the Failure
+                            Definition data models.
+    :ivar _model: the :py:class:`rtk.revision.Revision.Model` data model that
+                  is currently selected.
     :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :class:`gtk.TreeView`.
-    :ivar _workbook: the :class:`rtk.revision.WorkBook.WorkView` associated
-                     with this instance of the Module View.
-    :ivar dtcRevision: the :class:`rtk.revision.Revision.Revision` data
-                       controller to use for accessing the Revision data
-                       models.
-    :ivar dtcProfile: the :class:`rtk.usage.UsageProfile.UsageProfile` data
-                      controller to use for accessing the Usage Profile data
-                      models.
-    :ivar dtcDefinitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
-                          data controller to use for accessing the Failure
-                          Definition data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the list of Revisions.
+                          Module View gtk.TreeView().
+    :ivar dmcRTK: the :py:class:`rtk.RTK.RTK` data controller instance.
+    :ivar gtk.TreeView treeview: the gtk.TreeView() displaying the list of
+                                 Revisions.
+    :ivar listbook:
+    :ivar workbook:
     """
 
     def __init__(self, controller, rtk_view, position, *args):
         """
         Initializes the Module Book view for the Revision package.
 
-        :param rtk.revision.Revision controller: the instance of the Revision
-                                                 data controller to use with
-                                                 this view.
+        :param controller: the :py:class:`rtk.RTK.RTK` data controller to use
+                           with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Revision
                                       view into.
         :param int position: the page position in the gtk.Notebook() to
@@ -98,13 +96,14 @@ class ModuleView(object):
         """
 
         # Initialize private scalar attributes.
+        self._dtc_revision = controller.dtcRevision
+        self._dtc_profile = controller.dtcProfile
+        self._dtc_definitions = controller.dtcDefinitions
+        self._dtc_hardware = controller.dtcHardwareBoM
         self._model = None
-        self._dao = None
 
         # Initialize public scalar attributes.
-        self.dtcRevision = controller
-        self.dtcProfile = args[0][0]
-        self.dtcDefinitions = args[0][1]
+        self.mdcRTK = controller
 
         # Create the main Revision class treeview.
         (self.treeview,
@@ -150,33 +149,31 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self.listbook = ListView(rtk_view.listview, self, args)
+        self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(self)
 
     def request_load_data(self, dao, revision_id=None):
         """
         Loads the Revision Module Book view gtk.TreeModel() with revision
         information.
 
-        :param :py:class: `rtk.dao.DAO` dao: the DAO object used to communicate
-                                             with the RTK Project database.
-        :param int revision_id: the ID of the revision to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
-        self._dao = dao
-
-        (_revisions, __) = self.dtcRevision.request_revisions(dao)
+        # TODO: Remove dao and revision_id parameters after converting all modules.
+        (_revisions,
+         __) = self._dtc_revision.request_revisions(self.mdcRTK.project_dao)
 
         _model = self.treeview.get_model()
         _model.clear()
         for _revision in _revisions:
             _model.append(None, _revision)
-            self.dtcProfile.request_profile(_revision[0], dao)
-            self.dtcDefinitions.request_definitions(_revision[0], dao)
+            self._dtc_profile.request_profile(_revision[0],
+                                              self.mdcRTK.project_dao)
+            self._dtc_definitions.request_definitions(_revision[0],
+                                                      self.mdcRTK.project_dao)
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()
@@ -252,26 +249,31 @@ class ModuleView(object):
         (_model, _row) = treeview.get_selection().get_selected()
 
         _revision_id = _model.get_value(_row, 0)
-        self._model = self.dtcRevision.dicRevisions[_revision_id]
+        self._model = self._dtc_revision.dicRevisions[_revision_id]
 
-        _definitions = self.dtcDefinitions.dicDefinitions[_revision_id]
+        # Load the remaining active RTK modules for the selected revision.
+        self.mdcRTK.load_revision(_revision_id)
 
         # Load the hardware list for the selected revision.
         _query = "SELECT fld_name, fld_hardware_id, fld_description \
                   FROM rtk_hardware \
                   WHERE fld_revision_id={0:d} \
                   AND fld_part=0".format(self._model.revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results,
+         _error_code,
+         __) = self.mdcRTK.project_dao.execute(_query, commit=False)
         _conf.RTK_HARDWARE_LIST = [_assembly for _assembly in _results]
 
         # Load the software list for the selected revision.
         _query = "SELECT fld_description, fld_software_id, fld_description \
                   FROM rtk_software \
                   WHERE fld_revision_id={0:d}".format(self._model.revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results,
+         _error_code,
+         __) = self.mdcRTK.project_dao.execute(_query, commit=False)
         _conf.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
-        self.workbook.load(self._model, _definitions)
+        self.workbook.load(self._model)
         self.listbook.load(_revision_id)
 
         return False

@@ -145,34 +145,30 @@ class WorkView(gtk.VBox):
                         availability.
     """
 
-    def __init__(self, workview, modulebook):
+    def __init__(self, modulebook):
         """
         Initializes the Work Book view for the Revision package.
 
-        :param rtk.gui.gtk.mwi.WorkView workview: the Work View container to
-                                                  insert this Work Book into.
-        :param rtk.revision.ModuleBook: the Revision Module Book to associate
-                                        with this Work Book.
+        :param modulebook: the :py:class:`rtk.revision.ModuleBook` to associate
+                           with this Work Book.
         """
 
         gtk.VBox.__init__(self)
 
         # Initialize private scalar attributes.
-        self._workview = workview
         self._modulebook = modulebook
+        self._dtc_revision = modulebook.mdcRTK.dtcRevision
+        self._dtc_profile = modulebook.mdcRTK.dtcProfile
+        self._dtc_definiions = modulebook.mdcRTK.dtcDefinitions
         self._revision_model = None
         self._usage_model = None
 
         # Initialize private dict attributes.
-        self._dic_definitions = {}
 
         # Initialize private list attributes.
         self._lst_handler_id = []
 
         # Initialize public scalar attributes.
-        self.dtcRevision = modulebook.dtcRevision
-        self.dtcProfile = modulebook.dtcProfile
-        self.dtcDefinitions = modulebook.dtcDefinitions
         self.revision_id = None
 
         # General data tab widgets.
@@ -246,7 +242,7 @@ class WorkView(gtk.VBox):
         # Delete revision button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Removes the currently selected revision "
-                                   u"from the open RTK Program database."))
+                                   u"from the open RTK Project database."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
@@ -299,7 +295,7 @@ class WorkView(gtk.VBox):
         # Save revision button.
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Saves the currently selected revision "
-                                   u"to the open RTK Program database."))
+                                   u"to the open RTK Project database."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
@@ -584,13 +580,12 @@ class WorkView(gtk.VBox):
 
         return False
 
-    def load(self, model, definitions):
+    def load(self, model):
         """
         Method to load the Revision class gtk.Notebook() widgets.
 
-        :param rtk.revision.Revision.Model: the Revision Model to be viewed.
-        :param dict definitions: the list of Failure Definition data model
-                                 instances associated with the Revision.
+        :param model: the :py:class:`rtk.revision.Revision.Model` whose
+                      attributes are to be displayed.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -598,7 +593,6 @@ class WorkView(gtk.VBox):
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         self._revision_model = model
-        self._dic_definitions = definitions
         self.revision_id = self._revision_model.revision_id
 
         # Load the General Data page.
@@ -711,9 +705,8 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        _revision_id = self._revision_model.revision_id
         (_results,
-         _error_code) = self.dtcRevision.save_revision(_revision_id)
+         _error_code) = self._dtc_revision.save_revision(self.revision_id)
 
         return False
 
@@ -728,9 +721,7 @@ class WorkView(gtk.VBox):
         """
 
         # Launch the Add Revision gtk.Assistant().
-        AddRevision(self.dtcRevision)
-
-        self._modulebook.request_load_data(self._modulebook._dao)
+        AddRevision(self._modulebook)
 
         return False
 
@@ -749,13 +740,11 @@ class WorkView(gtk.VBox):
          _row) = self._modulebook.treeview.get_selection().get_selected()
         _path = _model.get_path(_row)
 
-        _revision_id = self._revision_model.revision_id
-
         (_results,
-         _error_code) = self.dtcRevision.delete_revision(_revision_id)
+         _error_code) = self._dtc_revision.delete_revision(self.revision_id)
 
-        self.dtcProfile.dicProfiles.pop(_revision_id)
-        self.dtcDefinitions.dicDefinitions.pop(_revision_id)
+        self._dtc_profile.dicProfiles.pop(self.revision_id)
+        self._dtc_definiions.dicDefinitions.pop(self.revision_id)
 
         # Remove the deleted Revision from the gtk.TreeView().
         _next_row = _model.iter_next(_row)
@@ -783,8 +772,7 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        _revision_id = self._revision_model.revision_id
-        self.dtcRevision.calculate_revision(_revision_id, _conf.RTK_MTIME,
-                                            _conf.FRMULT)
+        self._dtc_revision.calculate_revision(self.revision_id,
+                                              _conf.RTK_MTIME, _conf.FRMULT)
 
         return False
