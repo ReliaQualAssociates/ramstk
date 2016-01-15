@@ -92,7 +92,8 @@ def _calculate_application_risk(module):
     |  18   | Development Tools            |   High   |
     +-------+------------------------------+----------+
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -122,7 +123,8 @@ def _calculate_development_risk(module):
         Low development risk (Dc > 0.9) is assigned a 0.5.
         High development risk (Dc < 0.5) is assigned a 2.
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -152,7 +154,8 @@ def _calculate_anomaly_risk(module):
         SA = 1.0 if 0.4 >= AM <= 0.6
         SA = 1.1 if AM < 0.4
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -161,14 +164,14 @@ def _calculate_anomaly_risk(module):
     if module.phase_id == 2:                # Requirements review
         _ratios = [0, 0, 0]
         try:
-            if module.lst_anomaly_mgmt[0][1] / \
-                module.lst_anomaly_mgmt[0][0] == 1:
+            if(module.lst_anomaly_mgmt[0][1] /
+               module.lst_anomaly_mgmt[0][0]) == 1:
                 _ratios[0] = 1
-            if module.lst_anomaly_mgmt[0][3] / \
-                module.lst_anomaly_mgmt[0][2] == 1:
+            if(module.lst_anomaly_mgmt[0][3] /
+               module.lst_anomaly_mgmt[0][2]) == 1:
                 _ratios[1] = 1
-            if module.lst_anomaly_mgmt[0][6] / \
-                module.lst_anomaly_mgmt[0][5] == 1:
+            if(module.lst_anomaly_mgmt[0][6] /
+               module.lst_anomaly_mgmt[0][5]) == 1:
                 _ratios[2] = 1
         except ZeroDivisionError:
             _util.rtk_error(_(u"Attempted to divide by zero when "
@@ -206,7 +209,8 @@ def _calculate_traceability_risk(module):
         ST = 1.0 if requirements can be traced
         ST = 1.1 otherwise
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -246,7 +250,8 @@ def _calculate_quality_risk(module):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -277,25 +282,25 @@ def _calculate_quality_risk(module):
     elif module.phase_id == 3:              # Preliminary design review
         _ratios = [0, 0, 0, 0, 0]
         try:
-            if module.lst_sftw_quality[1][3] / \
+            if(module.lst_sftw_quality[1][3] /
                (module.lst_sftw_quality[1][2] +
-                module.lst_sftw_quality[1][3]) <= 0.3:
+                module.lst_sftw_quality[1][3])) <= 0.3:
                 _ratios[0] = 1
-            if module.lst_sftw_quality[1][7] / \
-               module.lst_sftw_quality[1][6] > 0.5:
+            if(module.lst_sftw_quality[1][7] /
+               module.lst_sftw_quality[1][6]) > 0.5:
                 _ratios[1] = 1
-            if module.lst_sftw_quality[1][9] / \
-               module.lst_sftw_quality[1][8] > 0.5:
+            if(module.lst_sftw_quality[1][9] /
+               module.lst_sftw_quality[1][8]) > 0.5:
                 _ratios[2] = 1
-            if module.lst_sftw_quality[1][11] / \
-               module.lst_sftw_quality[1][10] > 0.5:
+            if(module.lst_sftw_quality[1][11] /
+               module.lst_sftw_quality[1][10]) > 0.5:
                 _ratios[3] = 1
-            if module.lst_sftw_quality[1][15] / \
-               module.lst_sftw_quality[1][14] > 0.75:
+            if(module.lst_sftw_quality[1][15] /
+               module.lst_sftw_quality[1][14]) > 0.75:
                 _ratios[4] = 1
         except ZeroDivisionError:
             print ""
-# TODO: Move this to the view module.
+        # TODO: Move this to the view module.
         #    _util.rtk_error(_(u"Attempted to divide by zero when "
         #                      u"calculating the software quality risk for "
         #                      u"{0:s}.  Perhaps you forgot to answer one "
@@ -329,7 +334,8 @@ def _calculate_language_type_risk(module):
 
     SL = (HLOC / SLOC) + (1.4 * ALOC / SLOC)
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -364,7 +370,8 @@ def _calculate_risk_reduction(module):
     software failure rates.  RTK also provides test planning guidance in
     the same manner as RL-TR-92-52.
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -385,12 +392,12 @@ def _calculate_risk_reduction(module):
             _test_ratio = 1.0
     except ZeroDivisionError:
         print ""
-# TODO: Move this to the view module.
-        #_util.rtk_error(_(u"Attempted to divide by zero when "
-        #                  u"calculating the test effort risk "
-        #                  u"reduction for {0:s}.  Perhaps you forgot "
-        #                  u"to answer one or more questions.").format(
-        #                      module.description))
+        # TODO: Move this to the view module.
+        # _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                   u"calculating the test effort risk "
+        #                   u"reduction for {0:s}.  Perhaps you forgot "
+        #                   u"to answer one or more questions.").format(
+        #                       module.description))
 
     module.te = 1.0
     if _test_ratio > 0.4:
@@ -447,7 +454,8 @@ def _calculate_reliability_estimation_number(module):
     selected software module.  The methodology is outlined in RL-TR-92-52,
     Section 300.
 
-    :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -521,7 +529,8 @@ class Model(object):                        # pylint: disable=R0902
                     of this data model.  Key is the Software ID; value is a
                     pointer to the Unit data model instance.
 
-    :ivar revision_id: ID of the Revision the software module is associated with. default value: None
+    :ivar int revision_id: ID of the Revision the software module is associated
+                           with. default value: None
     :ivar software_id: default value: None
     :ivar level_id: default value: 0
     :ivar description: default value: ""
@@ -860,7 +869,8 @@ class Model(object):                        # pylint: disable=R0902
         """
         Iterively calculates various software attributes.
 
-        :param module: the :py:class:`rtk.software.CSCI` or :py:class:`rtk.software.Unit` data model to calculate.
+        :param module: the :py:class:`rtk.software.CSCI` or
+                       :py:class:`rtk.software.Unit` data model to calculate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

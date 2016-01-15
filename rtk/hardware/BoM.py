@@ -790,9 +790,9 @@ class BoM(object):
         _str = []
         if _hardware.part == 1:
             _rel_io = _hardware.get_attributes()[92:]
-            _float = [x for x in _rel_io if type(x) is float]
-            _int = [x for x in _rel_io if type(x) is int]
-            _str = [x for x in _rel_io if type(x) is str]
+            _float = [x for x in _rel_io if isinstance(x, float)]
+            _int = [x for x in _rel_io if isinstance(x, int)]
+            _str = [x for x in _rel_io if isinstance(x, str)]
         _float += [0.0] * (20 - len(_float))
         _int += [0] * (10 - len(_int))
         _str += [''] * (5 - len(_str))

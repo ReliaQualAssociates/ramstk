@@ -431,10 +431,9 @@ class BoM(object):
         _query = "INSERT INTO rtk_software \
                   (fld_revision_id, fld_description, fld_parent_id, \
                    fld_level_id) \
-                  VALUES({0:d}, '{1:s}', {2:d}, {3:d})".format(revision_id,
-                                                               _description,
-                                                               parent_id,
-                                                               software_type + 1)
+                  VALUES({0:d}, '{1:s}', {2:d}, \
+                         {3:d})".format(revision_id, _description, parent_id,
+                                        software_type + 1)
         (_results, _error_code, _software_id) = self._dao.execute(_query,
                                                                   commit=True)
 
@@ -569,45 +568,85 @@ class BoM(object):
         else:
             _software_id = 0
 
-        _query = "INSERT INTO rtk_software \
-                  (fld_revision_id, fld_level_id, fld_description, \
-                   fld_parent_module) \
-                  VALUES ({0:d}, 0, 'System Software', \
-                          '-')".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        # Copy the Hardware hierarchy for the new Revision.
+        _dic_index_xref = {}
+        _dic_index_xref[-1] = -1
+        for _software in self.dicSoftware.values():
+            _query = "INSERT INTO rtk_software \
+                      (fld_revision_id, fld_level_id, fld_description, \
+                       fld_parent_id, fld_application_id, fld_development_id) \
+                      VALUES ({0:d}, {1:d}, '{2:s}', {3:d}, {4:d}, \
+                              {5:d})".format(revision_id, _software.level_id,
+                                             _software.description,
+                                             _software.parent_id,
+                                             _software.application_id,
+                                             _software.development_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
 
-        if not _results:
-            # Add the new software module to each of risk analysis tables.
-            for i in range(43):
-                _query = "INSERT INTO rtk_software_development \
-                         (fld_software_id, fld_question_id, fld_y) \
-                         VALUES (%d, %d, 0)" % (_software_id, i)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-            for i in range(50):
-                _query = "INSERT INTO rtk_srr_ssr \
-                         (fld_software_id, fld_question_id, fld_y, fld_value) \
-                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-            for i in range(39):
-                _query = "INSERT INTO rtk_pdr \
-                         (fld_software_id, fld_question_id, fld_y, fld_value) \
-                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-            for i in range(72):
-                _query = "INSERT INTO rtk_cdr \
-                         (fld_software_id, fld_question_id, fld_y, fld_value) \
-                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-            for i in range(24):
-                _query = "INSERT INTO rtk_trr \
-                         (fld_software_id, fld_question_id, fld_y, fld_value) \
-                         VALUES (%d, %d, 0, 0)" % (_software_id, i)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
+            if not _results:
+                # Add the new software module to each of risk analysis tables.
+                for i in range(43):
+                    _query = "INSERT INTO rtk_software_development \
+                             (fld_software_id, fld_question_id, fld_y) \
+                             VALUES ({0:d}, {1:d}, 0)".format(_software_id, i)
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+                for i in range(50):
+                    _query = "INSERT INTO rtk_srr_ssr \
+                             (fld_software_id, fld_question_id, fld_y, \
+                              fld_value) \
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
+                                                                 i)
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+                for i in range(39):
+                    _query = "INSERT INTO rtk_pdr \
+                             (fld_software_id, fld_question_id, fld_y, \
+                              fld_value) \
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
+                                                                 i)
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+                for i in range(72):
+                    _query = "INSERT INTO rtk_cdr \
+                             (fld_software_id, fld_question_id, fld_y, \
+                              fld_value) \
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
+                                                                 i)
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+                for i in range(24):
+                    _query = "INSERT INTO rtk_trr \
+                             (fld_software_id, fld_question_id, fld_y, \
+                              fld_value) \
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
+                                                                 i)
+                    (_results,
+                     _error_code,
+                     __) = self._dao.execute(_query, commit=True)
+
+            # Add an entry to the Hardware ID cross-reference dictionary for
+            # for the newly added Hardware item.
+            _dic_index_xref[_software.software_id] = _software_id
+
+            _software_id += 1
+
+        # Update the parent IDs for the new Software items using the index
+        # cross-reference dictionary that was created when adding the new
+        # Software items.
+        for _key in _dic_index_xref.keys():
+            _query = "UPDATE rtk_software \
+                      SET fld_parent_id={0:d} \
+                      WHERE fld_parent_id={1:d} \
+                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
+                                                        _key, revision_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=True)
 
         return False
 

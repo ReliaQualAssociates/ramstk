@@ -594,9 +594,12 @@ class Model(object):                        # pylint: disable=R0902
                                              hardware.mission_time)
 
         # Calculate hazard rate variances.
-        # hardware.hr_active_variance = 1.0 / (hardware.hazard_rate_active**2.0)
-        # hardware.hr_dormant_variance = 1.0 / (hardware.hazard_rate_dormant**2.0)
-        # hardware.hr_specified_variance = 1.0 / (hardware.hazard_rate_specified**2.0)
+        # hardware.hr_active_variance = 1.0 / \
+        #                               (hardware.hazard_rate_active**2.0)
+        # hardware.hr_dormant_variance = 1.0 / \
+        #                                (hardware.hazard_rate_dormant**2.0)
+        # hardware.hr_specified_variance = 1.0 / \
+        #                                  (hardware.hazard_rate_specified**2.0)
 
         return False
 
