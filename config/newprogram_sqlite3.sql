@@ -48,6 +48,26 @@ CREATE TABLE "tbl_program_info" (
 );
 INSERT INTO "tbl_program_info" VALUES(0,'REVISION',1,'FUNCTION',1,'ASSEMBLY',1,'PART',1,'FMEA',1,'MODE',1,'EFFECT',1,'CAUSE',1,'MODULE',1,1,1,1,1,1,1,1,0,1,1,1,1,1,'0000-00-00 00:00:00','','0000-00-00 00:00:00','','STANDARD');
 
+
+--
+-- Create the tables used to store matrix information.
+--
+DROP TABLE IF EXISTS "rtk_matrix";
+CREATE TABLE "rtk_matrix" (
+    "fld_revision_id" INTEGER NOT NULL,                             -- Identifier for the Revision the Matrix belongs to.
+    "fld_matrix_id" INTEGER NOT NULL,                               -- Identifier for the Matrix.
+    "fld_matrix_type" INTEGER NOT NULL,                             -- Type of Matrix.  0 = Function/Hardware, 1 = Function/Software, 2 = Function/Testing, 3 = Requirement/Hardware, 4 = Requirement/Software, 5 = Requirement/Validation Task, 6 = Hardware/Testing, 7 = Hardware/Validation Task
+    "fld_row_id" INTEGER NOT NULL DEFAULT(0),                       -- Identifier for the row the cell is in.
+    "fld_col_id" INTEGER NOT NULL DEFAULT(0),                       -- Identifier for the column the cell is in.
+    "fld_parent_id" INTEGER NOT NULL DEFAULT(-1),                   -- Identifier for the parent row.
+    "fld_value" VARCHAR(512),                                       -- The value to place in cell at row/column.
+    "fld_row_item_id" INTEGER DEFAULT(0),                           -- Identifer for the item being displayed in the row (the row heading).
+    "fld_col_item_id" INTEGER DEFAULT(0),                           -- Identifer for the item being displayed in the column (the column heading).
+    PRIMARY KEY("fld_matrix_id", "fld_row_id", "fld_col_id"),
+    FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
+);
+
+
 DROP TABLE IF EXISTS "tbl_reviews";
 CREATE TABLE "tbl_reviews" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Revision design review is associated with.
@@ -59,6 +79,9 @@ CREATE TABLE "tbl_reviews" (
     "fld_owner" VARCHAR(128) DEFAULT('')                            -- The responsible group or individual for the action(s).
 );
 
+
+--
+-- Create the tables for olding Mission and Environmental profile information.
 DROP TABLE IF EXISTS "tbl_missions";
 CREATE TABLE "tbl_missions" (
     "fld_revision_id" INTEGER NOT NULL DEFAULT(0),                  -- Identifier for the revision.
@@ -124,7 +147,7 @@ CREATE TABLE "tbl_revisions" (
     "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),            -- Assessed dormant failure intensity of the revision.
     "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission failure intensity of the revision.
     "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
-    "fld_failure_rate_sftwr" REAL NOT NULL DEFAULT(0),           -- Assessed software failure intensity of the revision.
+    "fld_failure_rate_sftwr" REAL NOT NULL DEFAULT(0),              -- Assessed software failure intensity of the revision.
     "fld_mmt" REAL NOT NULL DEFAULT(0),                             -- Mean maintenance time (MMT) of the revision.
     "fld_mcmt" REAL NOT NULL DEFAULT(0),                            -- Mean corrective maintenance time (MCMT) of the revision.
     "fld_mpmt" REAL NOT NULL DEFAULT(0),                            -- Mean preventive maintenance time (MPMT) of the revision.
@@ -165,37 +188,27 @@ CREATE TABLE "tbl_functions" (
     "fld_availability" FLOAT NOT NULL DEFAULT(1),                   -- Assessed availability of the function.
     "fld_availability_mission" FLOAT NOT NULL DEFAULT(1),           -- Assessed mission availability of the function.
     "fld_code" VARCHAR(16) NOT NULL DEFAULT('Function Code'),       -- Tracking code for the function.
-    "fld_cost" FLOAT NOT NULL DEFAULT(0),                           -- Assessed cost of the function.
-    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),           -- Assessed mission failure intensity of the function.
-    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0),         -- Assessed limiting failure intensity of the function.
-    "fld_mmt" FLOAT NOT NULL DEFAULT(0),                            -- Assessed mean maintenance time of the function.
-    "fld_mcmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean corrective maintenance time of the function.
-    "fld_mpmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean preventive maintenance time of the function.
-    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mission mean time between failures of the function.
-    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT(0),                 -- Assessed limiting mean time between failures of the function.
-    "fld_mttr" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean time to repair of the function.
-    "fld_name" VARCHAR(255) DEFAULT('Function Name'),               -- Noun name of the function.
-    "fld_remarks" BLOB,                                             -- Remarks associated with the function.
-    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of failure modes impacting the function.
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of components comprising the function.
+    "fld_cost" FLOAT NOT NULL DEFAULT(0),                           -- Assessed cost of the Function.
+    "fld_failure_rate_mission" FLOAT NOT NULL DEFAULT(0),           -- Assessed mission failure intensity of the Function.
+    "fld_failure_rate_predicted" FLOAT NOT NULL DEFAULT(0),         -- Assessed limiting failure intensity of the Function.
+    "fld_mmt" FLOAT NOT NULL DEFAULT(0),                            -- Assessed mean maintenance time of the Function.
+    "fld_mcmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean corrective maintenance time of the Function.
+    "fld_mpmt" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean preventive maintenance time of the Function.
+    "fld_mtbf_mission" FLOAT NOT NULL DEFAULT(0),                   -- Assessed mission mean time between failures of the Function.
+    "fld_mtbf_predicted" FLOAT NOT NULL DEFAULT(0),                 -- Assessed limiting mean time between failures of the Function.
+    "fld_mttr" FLOAT NOT NULL DEFAULT(0),                           -- Assessed mean time to repair of the Function.
+    "fld_name" VARCHAR(255) DEFAULT('Function Name'),               -- Noun name of the Function.
+    "fld_remarks" BLOB,                                             -- Remarks associated with the Function.
+    "fld_total_mode_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of failure modes impacting the Function.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(0),          -- Total number of components comprising the Function.
     "fld_type" INTEGER NOT NULL DEFAULT(0),                         --
-    "fld_parent_id" INTEGER NOT NULL DEFAULT(-1),                   -- Identifer of the parent function.
-    "fld_level" INTEGER NOT NULL DEFAULT(0),                        --
+    "fld_parent_id" INTEGER NOT NULL DEFAULT(-1),                   -- Identifer of the parent Function.
+    "fld_level" INTEGER NOT NULL DEFAULT(0),                        -- Level of the Function in the Function hierarchy beginning with 0.
     "fld_safety_critical" INTEGER NOT NULL DEFAULT(0),              -- Indicates whether or not the function is safety critical.
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 INSERT INTO "tbl_functions" VALUES(0,0,1.0,1.0,'UF-01',0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Unassigned to Function','',0,0,0,-1,0,0);
 
-DROP TABLE IF EXISTS "rtk_matrices";
-CREATE TABLE "rtk_matrices" (
-    "fld_revision_id" INTEGER NOT NULL,                             -- Identifier for the revision.
-    "fld_matrix_type" INTEGER NOT NULL,                             -- Type of matrix.
-    "fld_matrix_id" INTEGER NOT NULL,                               -- Identifier for the matrix.
-    "fld_row_id" INTEGER NOT NULL,                                  -- Identifier for the row.
-    "fld_col_id" INTEGER NOT NULL,                                  -- Identifier for the column.
-    "fld_value" INTEGER NOT NULL DEFAULT(0),                        -- Value of cell.  -1=None, 0=Partial, 1=Complete
-    FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
-);
 
 --
 -- Create the tables for storing program requirements information.
@@ -328,7 +341,7 @@ CREATE TABLE "rtk_hardware" (
     "fld_rpm" REAL DEFAULT(0),                                      -- Revolutions per minute of the hardware item.
     "fld_specification_number" VARCHAR(64) DEFAULT(''),             -- Governing specification of the hardware item.
     "fld_subcategory_id" INTEGER DEFAULT(0),                        -- Component sub-category ID.
-    "fld_tagged_part" TINYINT DEFAULT (0),                          --
+    "fld_tagged_part" TINYINT DEFAULT (0),                          -- Indicates whether or not the Hardware item is tagged.
     "fld_temperature_active" REAL DEFAULT(30),                      -- Active operating temperature.
     "fld_temperature_dormant" REAL DEFAULT(30),                     -- Dormant (storage) temperature.
     "fld_total_part_quantity" INTEGER DEFAULT(0),                   -- Total number of components comprising the assembly.
@@ -381,7 +394,7 @@ CREATE TABLE "rtk_reliability" (
     "fld_hazard_rate_mission" REAL DEFAULT(0),                      -- Mission hazard rate.
     "fld_hazard_rate_model" VARCHAR(512) DEFAULT(''),               -- Hazard rate mathematical model.
     "fld_hazard_rate_percent" REAL DEFAULT(0),                      -- Percent of system hazard rate attributable to this hardware item.
-    "fld_hazard_rate_sftwr" REAL DEFAULT(0),                     -- Software hazard rate.
+    "fld_hazard_rate_sftwr" REAL DEFAULT(0),                        -- Software hazard rate.
     "fld_hazard_rate_specified" REAL DEFAULT(0),                    -- Specified hazard rate.
     "fld_hazard_rate_type" INTEGER DEFAULT(1),                      -- How the hazard rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
     "fld_hr_active_variance" REAL DEFAULT(0),                       -- Variance of the active hazard rate estimate.
@@ -516,11 +529,11 @@ DROP TABLE IF EXISTS "rtk_similar_item";
 CREATE TABLE "rtk_similar_item" (
     "fld_hardware_id" INTEGER NOT NULL DEFAULT(0),                  -- Hardware ID.
     "fld_sia_id" INTEGER NOT NULL DEFAULT(0),                       -- Similar item analysis ID.
-    "fld_from_quality" INTEGER DEFAULT(0),
+    "fld_from_quality" INTEGER DEFAULT(0),                          -- Quality level of the surrogate Hardware item.
     "fld_to_quality" INTEGER DEFAULT(0),
-    "fld_from_environment" INTEGER DEFAULT(0),
+    "fld_from_environment" INTEGER DEFAULT(0),                      -- Operating environment of the surrogate Hardware item.
     "fld_to_environment" INTEGER DEFAULT(0),
-    "fld_from_temperature" FLOAT DEFAULT(30),
+    "fld_from_temperature" FLOAT DEFAULT(30),                       -- Operating ambient temperature of the surrogate Hardware item.
     "fld_to_temperature" FLOAT DEFAULT(30),
     "fld_change_desc_1" BLOB DEFAULT('No changes'),
     "fld_change_factor_1" REAL DEFAULT(1),
@@ -569,7 +582,7 @@ CREATE TABLE "rtk_similar_item" (
     "fld_user_int_5" INTEGER DEFAULT(0),
     "fld_parent_id" INTEGER DEFAULT(0),
     PRIMARY KEY("fld_hardware_id", "fld_sia_id"),
-    CONSTRAINT "rtk_similar_item_fk" FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
+    FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
 /* INSERT INTO "rtk_similar_item" VALUES(0, 0, 0, 0, 0, 0, 30.0, 30.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, NULL, NULL, NULL, NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0); */
 
@@ -737,6 +750,7 @@ CREATE TABLE "rtk_test_methods" (
     FOREIGN KEY("fld_stress_id") REFERENCES "rtk_op_stress"("fld_stress_id") ON DELETE CASCADE
 );
 
+
 --
 -- Create tables for storing system software structure information.
 --
@@ -820,7 +834,7 @@ CREATE TABLE "rtk_software" (
     "fld_test_time_eot" FLOAT DEFAULT (0),
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_software" VALUES(0, 0, 1, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO "rtk_software" VALUES(0, 0, 1, "System Software", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 --
 -- Create tables for storing software reliability information.

@@ -22,7 +22,7 @@ from datamodels.cell.Cell import Model
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2016 Andrew "weibullguy" Rowland'
 
 
 class TestCellModel(unittest.TestCase):
@@ -45,18 +45,19 @@ class TestCellModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
 
+        self.assertEqual(self.DUT.cell_id, None)
         self.assertEqual(self.DUT.row_id, None)
         self.assertEqual(self.DUT.col_id, None)
         self.assertEqual(self.DUT.value, None)
 
     @attr(all=True, unit=True)
-    def test_set_good_attributes(self):
+    def test_set_attributes(self):
         """
         (TestCell) set_attributes should return 0 with good inputs
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((1, 2, -1))
+         _error_msg) = self.DUT.set_attributes((0, 1, 2, -1))
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -66,7 +67,7 @@ class TestCellModel(unittest.TestCase):
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((20, -1))
+         _error_msg) = self.DUT.set_attributes((0, 20, -1))
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -76,7 +77,7 @@ class TestCellModel(unittest.TestCase):
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((0, None, 'Test Cell'))
+         _error_msg) = self.DUT.set_attributes((0, 1, None, 'Test Cell'))
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -86,7 +87,7 @@ class TestCellModel(unittest.TestCase):
         """
 
         (_error_code,
-         _error_msg) = self.DUT.set_attributes((1, 'Test Cause', 2))
+         _error_msg) = self.DUT.set_attributes((1, 'Test Cause', 2, 2))
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -95,7 +96,7 @@ class TestCellModel(unittest.TestCase):
         (TestCell) get_attributes should return good values
         """
 
-        self.assertEqual(self.DUT.get_attributes(), (None, None, None))
+        self.assertEqual(self.DUT.get_attributes(), (None, None, None, None))
 
     @attr(all=True, unit=True)
     def test_sanity(self):
@@ -103,7 +104,7 @@ class TestCellModel(unittest.TestCase):
         (TestCell) get_attributes(set_attributes(values)) == values
         """
 
-        values = (4, 10, 1)
+        values = (1, 4, 10, 1)
 
         self.DUT.set_attributes(values)
         result = self.DUT.get_attributes()
