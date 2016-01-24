@@ -136,20 +136,17 @@ class WorkView(gtk.VBox):
                         availability.
     """
 
-    def __init__(self, workview, modulebook):
+    def __init__(self, modulebook):
         """
         Initializes the Work Book view for the Revision package.
 
-        :param rtk.gui.gtk.mwi.WorkView workview: the Work View container to
-                                                  insert this Work Book into.
-        :param rtk.function.ModuleBook: the Function Module Book to associate
-                                        with this Work Book.
+        :param modulebook: the :py:class:`rtk.function.ModuleBook` to associate
+                           with this Work Book.
         """
 
         gtk.VBox.__init__(self)
 
         # Initialize private scalar attributes.
-        self._workview = workview
         self._modulebook = modulebook
         self._function_model = None
         self._fmea_model = None
@@ -161,8 +158,8 @@ class WorkView(gtk.VBox):
         self._lst_handler_id = []
 
         # Initialize public scalar attributes.
-        self.dtcFunction = modulebook.dtcFunction
-        self.dtcFMEA = modulebook.dtcFMEA
+        self.dtcFunction = modulebook.mdcRTK.dtcFunction
+        self.dtcFMEA = modulebook.mdcRTK.dtcFMEA
 
         # General data page widgets.
         self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function "
@@ -539,7 +536,7 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
+        # TODO: Re-write _create_fmea_page; current McCabe metric = 10
         # Create the FMEA gtk.TreeView()
         self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode and "
                                          u"effects analysis for the currently "
@@ -690,9 +687,9 @@ class WorkView(gtk.VBox):
         self._lst_handler_id.append(
             self.btnSaveFMEA.connect('clicked', self._on_button_clicked, 7))
 
-        #self._lst_handler_id.append(
-        #    self.tvwMissionProfile.connect('cursor_changed',
-        #                                   self._on_usage_row_changed))
+        # self._lst_handler_id.append(
+        #     self.tvwMissionProfile.connect('cursor_changed',
+        #                                    self._on_usage_row_changed))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display the functional FMECA.       #
@@ -970,7 +967,7 @@ class WorkView(gtk.VBox):
                   (model.get_value(_row, 11), 0, model.get_value(_row, 12))
         _mode = self._fmea_model.dicModes[_id]
         (_error_code, _error_msg) = _mode.set_attributes(_values)
-# TODO: Handle errors.
+        # TODO: Handle errors in _on_fmea_cell_edited.
         return False
 
     def _on_mission_combo_changed(self, __combo, __path, new_iter, cellmodel):
@@ -1023,7 +1020,7 @@ class WorkView(gtk.VBox):
         _function_id = self._function_model.function_id
         (_results,
          _error_code) = self.dtcFunction.save_function(_function_id)
-# TODO: Handle errors
+        # TODO: Handle errors in _request_save_function.
         return False
 
     def _request_add_function(self, __button, level):
@@ -1032,38 +1029,19 @@ class WorkView(gtk.VBox):
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
-        :param int level: the level to add the new Function(s).
-                          0 = sibling
-                          1 = child
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        # Launch the Add Function gtk.Assistant().
-        _dialog = AddFunction(self.dtcFunction, level)
-        if _dialog.run() == gtk.RESPONSE_ACCEPT:
-            _n_functions = int(_dialog.txtQuantity.get_text())
+        _revision_id = self._function_model.revision_id
+        if level == 0:
+            _parent_id = self._function_model.parent_id
         else:
-            _n_functions = 0
-        _dialog.destroy()
+            _parent_id = self._function_model.function_id
 
-        (_model,
-         _row) = self._modulebook.treeview.get_selection().get_selected()
-        _n_rows = _model.iter_n_children(_row)
-        for i in range(_n_functions):
-            if level == 0:
-                _function_id = -1
-                _piter = None
-            elif level == 1:
-                _function_id = self._function_model.function_id
-                _piter = _row
+        # Launch the Add Function gtk.Assistant().
+        AddFunction(self._modulebook, level, _revision_id, _parent_id)
 
-            (_function,
-             _error_code) = self.dtcFunction.add_function(
-                 self._function_model.revision_id, _function_id)
-            _attributes = _function.get_attributes()
-            _model.insert(_piter, _n_rows + i + 1, _attributes)
-# TODO: Handle errors
         return False
 
     def _request_delete_function(self, __button):
@@ -1099,7 +1077,7 @@ class WorkView(gtk.VBox):
             self._modulebook.treeview.set_cursor(_path, None, False)
             self._modulebook.treeview.row_activated(
                 _path, self._modulebook.treeview.get_column(0))
-# TODO: Handle errors
+        # TODO: Handle errors in _request_delete_function.
         return False
 
     def _request_calculate_function(self, __button):
@@ -1117,5 +1095,5 @@ class WorkView(gtk.VBox):
         _error_code = self.dtcFunction.calculate_function(_function_id,
                                                           _conf.RTK_MTIME,
                                                           _conf.FRMULT)
-# TODO: Handle errors.
+        # TODO: Handle errors in _request_calculate_function.
         return False

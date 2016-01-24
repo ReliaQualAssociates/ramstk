@@ -42,28 +42,28 @@ class Model(object):
     A :class:`rtk.revision.Revision` will consist of one or more Functions.
     The attributes of a Function are:
 
-    :ivar revision_id: default value: 0
-    :ivar function_id: default value: 0
+    :ivar int revision_id: default value: 0
+    :ivar int function_id: default value: 0
     :ivar availability: default value: 1.0
-    :ivar mission_availability: default value: 1.0
-    :ivar code: default value: ''
-    :ivar cost: default value: 0.0
-    :ivar mission_hazard_rate: default value: 0.0
-    :ivar hazard_rate: default value: 0.0
-    :ivar mmt: default value: 0.0
-    :ivar mcmt: default value: 0.0
-    :ivar mpmt: default value: 0.0
-    :ivar mission_mtbf: default value: 0.0
-    :ivar mtbf: default value: 0.0
-    :ivar mttr: default value: 0.0
-    :ivar name: default value: ''
-    :ivar remarks: default value: ''
-    :ivar n_modes: default value: 0
-    :ivar n_parts: default value: 0
-    :ivar type: default value: 0
-    :ivar parent_id: default value: -1
-    :ivar level: default value: 0
-    :ivar safety_critical: default value: 1
+    :ivar float mission_availability: default value: 1.0
+    :ivar str code: default value: ''
+    :ivar float cost: default value: 0.0
+    :ivar float mission_hazard_rate: default value: 0.0
+    :ivar float hazard_rate: default value: 0.0
+    :ivar float mmt: default value: 0.0
+    :ivar float mcmt: default value: 0.0
+    :ivar float mpmt: default value: 0.0
+    :ivar float mission_mtbf: default value: 0.0
+    :ivar float mtbf: default value: 0.0
+    :ivar float mttr: default value: 0.0
+    :ivar str name: default value: ''
+    :ivar str remarks: default value: ''
+    :ivar int n_modes: default value: 0
+    :ivar int n_parts: default value: 0
+    :ivar int type: default value: 0
+    :ivar int parent_id: default value: -1
+    :ivar int level: default value: 0
+    :ivar int safety_critical: default value: 1
     """
 
     def __init__(self):
@@ -71,7 +71,7 @@ class Model(object):
         Method to initialize a Function data model instance.
         """
 
-        # Define public Function class attributes.
+        # Define public scalar attributes.
         self.revision_id = 0
         self.function_id = 0
         self.availability = 1.0
@@ -133,10 +133,11 @@ class Model(object):
             self.safety_critical = int(values[21])
         except IndexError as _err:
             _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
+            _msg = "ERROR: Function Model - Insufficient input values."
         except TypeError as _err:
             _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
+            _msg = "ERROR: Function Model - Converting one or more inputs " \
+                   "to the correct data type."
 
         return(_code, _msg)
 
@@ -304,10 +305,12 @@ class Function(object):
         # Initialize public dictionary attributes.
         self.dicFunctions = {}
 
-    def request_functions(self, dao):
+        self._dicFunctions = {}
+
+    def request_functions(self, dao, revision_id):
         """
-        Reads the RTK Project database and loads all the functions associated
-        with the selected Revision.  For each function returned:
+        Reads the RTK Project database and loads all the Functions associated
+        with the selected Revision.  For each Function returned:
 
         #. Retrieve the functions from the RTK Project database.
         #. Create a Function data model instance.
@@ -318,7 +321,7 @@ class Function(object):
 
         :param rtk.DAO dao: the Data Access object to use for communicating
                             with the RTK Project database.
-        :param int revision_id: the Revision ID to select the functions for.
+        :param int revision_id: the Revision ID to select the Functions for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
@@ -329,7 +332,8 @@ class Function(object):
 
         # Select everything from the function table.
         _query = "SELECT * FROM tbl_functions \
-                  ORDER BY fld_parent_id"
+                  WHERE fld_revision_id={0:d} \
+                  ORDER BY fld_parent_id".format(revision_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         try:
@@ -358,20 +362,6 @@ class Function(object):
         :rtype: tuple
         """
 
-        # By default we add the new function as a top-level function.
-        if parent_id is None:
-            parent_id = -1
-
-        if code is None:
-            code = '{0} {1}'.format(str(_conf.RTK_PREFIX[2]),
-                                    str(_conf.RTK_PREFIX[3]))
-
-            # Increment the revision index.
-            _conf.RTK_PREFIX[3] += 1
-
-        if name is None:
-            name = 'New Function'
-
         _query = "INSERT INTO tbl_functions \
                   (fld_revision_id, fld_name, fld_remarks, fld_code, \
                    fld_parent_id) \
@@ -396,7 +386,7 @@ class Function(object):
                                       parent_id, 0, 1))
             self.dicFunctions[_function.function_id] = _function
 
-        return(_function, _error_code)
+        return(_function, _error_code, _function_id)
 
     def delete_function(self, function_id):
         """
@@ -431,7 +421,7 @@ class Function(object):
         :rtype: bool
         """
 
-        # Find the existing maximum Function ID already in the RTK Program
+        # Find the existing maximum Function ID already in the RTK Project
         # database and increment it by one.  If there are no existing Functions
         # set the first Function ID to zero.
         _query = "SELECT MAX(fld_function_id) FROM tbl_functions"

@@ -97,6 +97,7 @@ class ModuleView(object):
 
         # Initialize private scalar attributes.
         self._dtc_revision = controller.dtcRevision
+        self._dtc_matrices = controller.dtcMatrices
         self._dtc_profile = controller.dtcProfile
         self._dtc_definitions = controller.dtcDefinitions
         self._dtc_hardware = controller.dtcHardwareBoM
@@ -174,6 +175,8 @@ class ModuleView(object):
                                               self.mdcRTK.project_dao)
             self._dtc_definitions.request_definitions(_revision[0],
                                                       self.mdcRTK.project_dao)
+            # TODO: Remove the last two parameters after re-writing the method.
+            self._dtc_matrices.request_matrix(_revision[0], None, 0)
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()

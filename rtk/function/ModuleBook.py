@@ -97,16 +97,15 @@ class ModuleView(object):
         """
 
         # Initialize private scalar attributes.
+        self._dtc_function = controller.dtcFunction
+        self._dtc_fmea = controller.dtcFMEA
+        self._dtc_profile = controller.dtcProfile
         self._model = None
         self._fmea_model = None
 
         # Initialize public scalar attributes.
-        self.dtcFunction = controller
-        self.dtcFMEA = args[0][0]
-        self.dtcProfile = args[0][1]
-        self.dtcMatrices = args[0][2]
+        self.mdcRTK = controller
 
-        # Create the main Function class treeview.
         (self.treeview,
          self._lst_col_order) = _widg.make_treeview('Function', 1,
                                                     _conf.RTK_COLORS[2],
@@ -152,10 +151,10 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(self)
 
     def request_load_data(self, dao, revision_id):
         """
@@ -165,11 +164,12 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
+        # TODO: Remove dao parameter after converting all modules.
+        (_functions,
+         __) = self._dtc_function.request_functions(self.mdcRTK.project_dao,
+                                                    revision_id)
 
-        (_functions, __) = self.dtcFunction.request_functions(dao)
-
-        # Only load the functions associated with the selected Revision.
-        _functions = [_f for _f in _functions if _f[0] == revision_id]
+        # Find the list of top level Functions.
         _top_funcs = [_f for _f in _functions if _f[19] == -1]
 
         # Clear the Function Module View gtk.TreeModel().
@@ -177,7 +177,7 @@ class ModuleView(object):
         _model.clear()
 
         # Recusively load the Function Module View gtk.TreeModel().
-        self._load_treeview(dao, _top_funcs, _functions, _model)
+        self._load_treeview(_top_funcs, _functions, _model)
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -192,32 +192,31 @@ class ModuleView(object):
 
         return False
 
-    def _load_treeview(self, dao, parents, functions, model, row=None):
+    def _load_treeview(self, parents, functions, model, row=None):
         """
         Method to recursively load the gtk.TreeModel().  Recursive loading is
         needed to accomodate the hierarchical structure of Functions.
 
-        :param rtk.DAO dao: the Data Access Object to pass to the FMEA data
-                            controller.
         :param list parents: the list of top-level functions to load.
         :param list functions: the complete list of functions to use for
                                finding the child functions for each parent.
         :param gtk.TreeModel model: the Function Module View gtk.TreeModel().
         :keyword gtk.TreeIter row:
         """
-# TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
+
         for _function in parents:
             if _function[19] == -1:
                 row = None
             _piter = model.append(row, _function)
             _parent_id = _function[1]
 
-            self.dtcFMEA.request_fmea(dao, None, _function[0])
+            self._dtc_fmea.request_fmea(self.mdcRTK.project_dao, None,
+                                        _function[0])
 
             # Find the child functions of the current parent function.  These
             # will be the new parent functions to pass to this method.
             _parents = [_f for _f in functions if _f[19] == _parent_id]
-            self._load_treeview(dao, _parents, functions, model, _piter)
+            self._load_treeview(_parents, functions, model, _piter)
 
         return False
 
@@ -285,15 +284,15 @@ class ModuleView(object):
         (_model, _row) = treeview.get_selection().get_selected()
 
         _function_id = _model.get_value(_row, 1)
-        self._model = self.dtcFunction.dicFunctions[_function_id]
+        self._model = self._dtc_function.dicFunctions[_function_id]
 
         try:
-            self._fmea_model = self.dtcFMEA.dicFFMEA[_function_id]
+            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
         except KeyError:
-            self.dtcFMEA.add_fmea(None, _function_id)
-            self._fmea_model = self.dtcFMEA.dicFFMEA[_function_id]
+            self._dtc_fmea.add_fmea(None, _function_id)
+            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
 
-        _profile_model = self.dtcProfile.dicProfiles[self._model.revision_id]
+        _profile_model = self._dtc_profile.dicProfiles[self._model.revision_id]
         self.workbook.load(self._model, self._fmea_model, _profile_model)
 
         return False
