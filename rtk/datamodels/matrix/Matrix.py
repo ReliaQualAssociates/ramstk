@@ -161,8 +161,8 @@ class Matrix(object):
     :ivar _dao: the :py:class:`rtk.dao.DAO` object for this controller to use
                 when interfacing with the open RTK Project database.
     :ivar dict dicMatrices: Dictionary of the Matrix data models managed.  Key
-                            is the Matrix ID; value is a pointer to the Matrix
-                            data model instance.
+                            is the Matrix type; value is a pointer to the
+                            Matrix data model instance.
     """
 
     def __init__(self):
@@ -195,9 +195,10 @@ class Matrix(object):
         self._dao = dao
 
         # Select all the matrices for the Revision.
-        _query = "SELECT t1.fld_matrix_id, t1.fld_matrix_type, t2.fld_code, \
-                         t2.fld_name, t1.fld_parent_id, t1.fld_row_id, \
-                         t1.fld_col_id, t1.fld_value \
+        _query = "SELECT t1.fld_matrix_id, t1.fld_matrix_type, \
+                         t2.fld_code, t2.fld_name, t2.fld_function_id, \
+                         t1.fld_parent_id, t1.fld_row_id, t1.fld_col_id, \
+                         t1.fld_value \
                   FROM rtk_matrix AS t1 \
                   INNER JOIN tbl_functions AS t2 \
                   ON t2.fld_function_id=t1.fld_row_item_id \
@@ -208,8 +209,8 @@ class Matrix(object):
 
         # Get the total number of matrices associated with the Revision.
         try:
-            _matrix_ids = list(set([_m[0] for _m in _results]))
-            _n_matrices = len(set([_m[0] for _m in _results]))
+            _matrix_ids = list(set([_m[1] for _m in _results]))
+            _n_matrices = len(_matrix_ids)
         except TypeError:
             _n_matrices = 0
 
@@ -219,17 +220,17 @@ class Matrix(object):
             _rows = [_m[2:] for _m in _results if _m[1] == i]
 
             _matrix = Model()
-            _n_row = len(set([_m[3] for _m in _rows]))
-            _n_col = len(set([_m[4] for _m in _rows]))
-            _matrix.set_attributes([revision_id, _matrix_ids[i],
-                                    _results[i][1], _n_row, _n_col])
+            _n_row = len(set([_m[4] for _m in _rows]))
+            _n_col = len(set([_m[5] for _m in _rows]))
+            _matrix.set_attributes([revision_id, _results[i][0],
+                                    _matrix_ids[i], _n_row, _n_col])
             self.dicMatrices[_matrix_ids[i]] = _matrix
 
             # Populate the row dictionary for the Matrix.
             for j in range(_n_row):
-                _name = list(set([_r[0:3] for _r in _rows if _r[3] == j]))
-                _values = [_name[0][2], _name[0][0], _name[0][1]]
-                _values.extend([_r[5] for _r in _rows if _r[3] == j])
+                _name = list(set([_r[0:4] for _r in _rows if _r[4] == j]))
+                _values = [_name[0][3], _name[0][2], _name[0][0], _name[0][1]]
+                _values.extend([_r[6] for _r in _rows if _r[4] == j])
                 _matrix.dicRows[j] = _values
 
         return(_results, _error_code)

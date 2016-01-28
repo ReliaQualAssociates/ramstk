@@ -77,9 +77,8 @@ class ModuleView(object):
         """
         Initializes the Module Book view for the Hardware package.
 
-        :param :class: `rtk.bom.BoM` controller: the instance of the BoM data
-                                                 controller to use with this
-                                                 view.
+        :param controller: the instance of the :py:class:`rtk.bom.BoM` data
+                           controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Hardware
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -91,6 +90,7 @@ class ModuleView(object):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
+        self._dao = None
         self._model = None
         self._allocation_model = None
 
@@ -217,11 +217,13 @@ class ModuleView(object):
 
         :param rtk.DAO dao: the Data Access Object to pass to the Hardware data
                             controller.
-        :param list parents: the list of top-level requirements to load.
-        :param list hardware: the complete list of hardware to use for finding
-                              the child hardware for each parent.
+        :param list parents: the list of top-level Hardware items to load.
+        :param list hardware: the complete list of Hardware to use for finding
+                              the child Hardware for each parent.
         :param gtk.TreeModel model: the Hardware Module View gtk.TreeModel().
         :keyword gtk.TreeIter row: the parent gtk.TreeIter().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 # TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
         _icon = _conf.ICON_DIR + '32x32/assembly.png'

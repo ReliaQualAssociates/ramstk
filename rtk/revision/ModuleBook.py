@@ -176,7 +176,8 @@ class ModuleView(object):
             self._dtc_definitions.request_definitions(_revision[0],
                                                       self.mdcRTK.project_dao)
             # TODO: Remove the last two parameters after re-writing the method.
-            self._dtc_matrices.request_matrix(_revision[0], None, 0)
+            self._dtc_matrices.request_matrix(self.mdcRTK.project_dao,
+                                              _revision[0])
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()

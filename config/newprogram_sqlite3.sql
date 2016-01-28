@@ -60,7 +60,7 @@ CREATE TABLE "rtk_matrix" (
     "fld_row_id" INTEGER NOT NULL DEFAULT(0),                       -- Identifier for the row the cell is in.
     "fld_col_id" INTEGER NOT NULL DEFAULT(0),                       -- Identifier for the column the cell is in.
     "fld_parent_id" INTEGER NOT NULL DEFAULT(-1),                   -- Identifier for the parent row.
-    "fld_value" VARCHAR(512),                                       -- The value to place in cell at row/column.
+    "fld_value" VARCHAR(512) DEFAULT('0'),                          -- The value to place in cell at row/column.
     "fld_row_item_id" INTEGER DEFAULT(0),                           -- Identifer for the item being displayed in the row (the row heading).
     "fld_col_item_id" INTEGER DEFAULT(0),                           -- Identifer for the item being displayed in the column (the column heading).
     PRIMARY KEY("fld_matrix_id", "fld_row_id", "fld_col_id"),
