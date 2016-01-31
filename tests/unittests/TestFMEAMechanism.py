@@ -11,13 +11,13 @@ This is the test class for testing the Mechanism class.
 
 import sys
 from os.path import dirname
+
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from analyses.fmea.Mechanism import *
+from analyses.fmea.Mechanism import Model, OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -126,19 +126,19 @@ class TestMechanismModel(unittest.TestCase):
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _values)
 
-    @attr(all=False, unit=False)
-    def test_rpn(self):
-        """
-        (TestMechanism) calculate always returns a value between 1 - 1000
-        """
+    #@attr(all=False, unit=False)
+    #def test_rpn(self):
+    #    """
+    #    (TestMechanism) calculate always returns a value between 1 - 1000
+    #    """
 
-        for severity in range(1, 11):
-            for occurrence in range(1, 11):
-                for detection in range(1, 11):
-                    self.assertIn(self.DUT.calculate(severity,
-                                                     occurrence,
-                                                     detection),
-                                  range(1, 1001))
+    #    for severity in range(1, 11):
+    #        for occurrence in range(1, 11):
+    #            for detection in range(1, 11):
+    #                self.assertIn(self.DUT.calculate(severity,
+    #                                                 occurrence,
+    #                                                 detection),
+    #                              range(1, 1001))
 
     @attr(all=True, unit=True)
     def test_rpn_out_of_range_inputs(self):

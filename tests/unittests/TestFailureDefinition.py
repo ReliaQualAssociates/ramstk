@@ -13,13 +13,14 @@ models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from failure_definition.FailureDefinition import Model, FailureDefinition
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -130,46 +131,3 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, FailureDefinition))
 
         self.assertEqual(self.DUT.dicDefinitions, {})
-
-    @attr(all=True, integration=True)
-    def test_request_definitions(self):
-        """
-        (TestFailureDefinition) request_definitions should return a list of definitions and an error code of 0 on success
-        """
-
-        (_results, _error_code) = self.DUT.request_definitions(0, self._dao)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_add_definition(self):
-        """
-        (TestFailureDefinition) add_definition should return
-        """
-
-        (_results, _error_code, _last_id) = self.DUT.add_definition(0)
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_save_definition(self):
-        """
-        (TestFailureDefinition) save_definition should return True on success
-        """
-
-        self.DUT.request_definitions(0, self._dao)
-
-        (_results, _error_code) = self.DUT.save_definitions(0)
-        self.assertTrue(_results)
-
-    @attr(all=True, integration=True)
-    def test_delete_definition(self):
-        """
-        (TestFailureDefinition) delete_definition should return a 0 error code on success
-        """
-
-        self.DUT.request_definitions(0, self._dao)
-
-        _n = max(self.DUT.dicDefinitions.keys())
-
-        (_results, _error_code) = self.DUT.delete_definition(0, _n)
-        self.assertEqual(_error_code, 0)

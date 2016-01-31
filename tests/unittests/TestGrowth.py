@@ -973,7 +973,7 @@ class TestGrowthModel(unittest.TestCase):
         self.DUT.grouped = True
 
         self.assertFalse(self.DUT.calculate_chi_square())
-        self.assertAlmostEqual(self.DUT.chi_square, 69.1068657)
+        self.assertAlmostEqual(self.DUT.chi_square, 3.3458049)
 
     @attr(all=True, unit=True)
     def test_assess_growth_rate(self):

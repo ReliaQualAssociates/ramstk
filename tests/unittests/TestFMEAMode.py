@@ -5,13 +5,12 @@ This is the test class for testing the Mode class.
 
 # -*- coding: utf-8 -*-
 #
-#       TestMode.py is part of The RTK Project
+#       TestFMEAMode.py is part of The RTK Project
 #
 # All rights reserved.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
@@ -19,13 +18,15 @@ from nose.plugins.attrib import attr
 import dao.DAO as _dao
 from analyses.fmea.Mode import *
 
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestModeModel(unittest.TestCase):
+class TestFMEAModeModel(unittest.TestCase):
     """
     Class for testing the Mode model class.
     """
@@ -40,7 +41,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_mode_create(self):
         """
-        (TestMode) __init__ should return instance of Mode data model
+        (TestFMEAMode) __init__ should return instance of Mode data model
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
@@ -76,7 +77,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_good_attributes(self):
         """
-        (TestMode) set_attributes should return 0 with good inputs
+        (TestFMEAMode) set_attributes should return 0 with good inputs
         """
 
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -92,7 +93,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_attributes_missing_index(self):
         """
-        (TestMode) set_attributes should return 40 with missing input(s)
+        (TestFMEAMode) set_attributes should return 40 with missing input(s)
         """
 
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -108,7 +109,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_attributes_wrong_type(self):
         """
-        (TestMode) set_attributes should return 10 with wrong data type
+        (TestFMEAMode) set_attributes should return 10 with wrong data type
         """
 
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -124,7 +125,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_set_attributes_wrong_value(self):
         """
-        (TestMode) set_attributes should return 10 with bad value
+        (TestFMEAMode) set_attributes should return 10 with bad value
         """
 
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -140,7 +141,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_get_attributes(self):
         """
-        (TestMode) get_attributes should return good values
+        (TestFMEAMode) get_attributes should return good values
         """
 
         _values = (0, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '',
@@ -151,7 +152,7 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_sanity(self):
         """
-        (TestMode) get_attributes(set_attributes(values)) == values
+        (TestFMEAMode) get_attributes(set_attributes(values)) == values
         """
 
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -167,22 +168,20 @@ class TestModeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_criticality(self):
         """
-        (TestMode) calculate always returns a value between 0 - 1
+        (TestFMEAMode) calculate always returns a value between 0 - 1
         """
 
         pass
 
-    @attr(all=True, unit=True)
+    @attr(all=False, unit=False)
     def test_criticality_out_of_range_inputs(self):
         """
-        (TestMode) calculate raises OutOfRangeError for 10 < input < 1
+        (TestFMEAMode) calculate raises OutOfRangeError for 10 < input < 1
         """
 
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 0, 1, 1)
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 11, 1, 1)
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0, 1)
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11, 1)
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 0)
-        #self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 11)
-
-        pass
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 11, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 0)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 11)

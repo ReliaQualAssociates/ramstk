@@ -20,7 +20,7 @@ import sqlite3
 import unittest
 from nose.plugins.attrib import attr
 
-import rtk.dao.DAO as _dao
+import dao.DAO as _dao
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,7 +35,7 @@ class TestSQLite3Model(unittest.TestCase):
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Environment model class.
+        (TestSQLite3) setup the test fixture for the SQLite3 model class
         """
 
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
@@ -44,8 +44,7 @@ class TestSQLite3Model(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_create_sqlite3(self):
         """
-        Method to test that the DAO creates an SQLite3 model and valid
-        connection attribute.
+        (TestSQLite3) SQLite3 __init__() should return an sqlite3.Connection
         """
 
         self.assertTrue(isinstance(self.DUT, _dao))
@@ -55,7 +54,7 @@ class TestSQLite3Model(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_execute(self):
         """
-        Method to test that the DAO can execute an SQL query.
+        (TestSQLite3) execute should return 0 when an SQL query is successfully executed
         """
 
         _query = "SELECT * FROM tbl_revisions"
@@ -65,7 +64,7 @@ class TestSQLite3Model(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_get_next_id(self):
         """
-        Tests that the next ID can be retrieved.
+        (TestSQLite3) Tests that the next ID can be retrieved.
         """
 
         self.assertEqual(self.DUT.get_last_id('tbl_functions')[1], 0)
