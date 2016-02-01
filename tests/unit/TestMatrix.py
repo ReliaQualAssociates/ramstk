@@ -5,7 +5,7 @@ This is the test class for testing the Matrix class.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.datamodels.TestMatrix.py is part of The RTK Project
+#       tests.unit.TestMatrix.py is part of The RTK Project
 #
 # All rights reserved.
 
