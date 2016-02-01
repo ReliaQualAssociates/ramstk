@@ -6,7 +6,7 @@ models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.verification.TestComponent.py is part of The RTK Project
+#       tests.unit.TestIncidentComponent.py is part of The RTK Project
 #
 # All rights reserved.
 

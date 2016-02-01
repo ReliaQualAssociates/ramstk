@@ -1,11 +1,11 @@
 #!/usr/bin/env python -O
 """
-This is the test class for testing the Mechanism class.
+This is the test class for testing the FMEA failure Mechanism class.
 """
 
 # -*- coding: utf-8 -*-
 #
-#       TestMechanism.py is part of The RTK Project
+#       tests.unit.TestFMEAMechanism.py is part of The RTK Project
 #
 # All rights reserved.
 
