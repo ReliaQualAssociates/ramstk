@@ -12,7 +12,8 @@
 *.tox
 
 # Python specific directories and files to ignore
-/target/
+target/
+*.egg-info
 *.pyc
 *.pyo
 
@@ -24,7 +25,6 @@
 *.xls*
 .coverage*
 *html
-The_Reliability_ToolKit_RTK_.egg-info/
 docs/_temp/
 docs/build/
 docs/generated/

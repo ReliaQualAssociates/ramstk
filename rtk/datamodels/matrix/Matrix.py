@@ -187,7 +187,7 @@ class Matrix(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-        # TODO: Consider refactoring this method, McCabe complexity = 14.
+        # TODO: Consider refactoring this method, McCabe complexity = 13.
         # Controller must be associated with a Revision.
         if revision_id is None:
             raise ParentError
@@ -251,7 +251,7 @@ class Matrix(object):
                 (_results,
                  _error_code) = self.save_cell(matrix_id, _row_id, _col_id,
                                                _matrix.dicRows[_row_id][0],
-                                               _matrix.dicRows[_row_id][_col_id + 3])
+                                               _matrix.dicRows[_row_id][_col_id + 4])
 
         return False
 

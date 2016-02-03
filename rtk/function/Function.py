@@ -42,34 +42,65 @@ class Model(object):
     A :class:`rtk.revision.Revision` will consist of one or more Functions.
     The attributes of a Function are:
 
-    :ivar int revision_id: default value: 0
-    :ivar int function_id: default value: 0
-    :ivar availability: default value: 1.0
-    :ivar float mission_availability: default value: 1.0
-    :ivar str code: default value: ''
-    :ivar float cost: default value: 0.0
-    :ivar float mission_hazard_rate: default value: 0.0
-    :ivar float hazard_rate: default value: 0.0
-    :ivar float mmt: default value: 0.0
-    :ivar float mcmt: default value: 0.0
-    :ivar float mpmt: default value: 0.0
-    :ivar float mission_mtbf: default value: 0.0
-    :ivar float mtbf: default value: 0.0
-    :ivar float mttr: default value: 0.0
-    :ivar str name: default value: ''
-    :ivar str remarks: default value: ''
-    :ivar int n_modes: default value: 0
-    :ivar int n_parts: default value: 0
-    :ivar int type: default value: 0
-    :ivar int parent_id: default value: -1
-    :ivar int level: default value: 0
-    :ivar int safety_critical: default value: 1
+    :ivar int revision_id: the ID of the
+                           :py:class:`rtk.revision.Revision.Model` the Function
+                           belongs to.  Default value = 0.
+    :ivar int function_id: the ID of the Function.  Default value = 0.
+    :ivar availability: the estimated availability of the Function.  Default
+                        value = 1.0.
+    :ivar float mission_availability: the estimated mission availability of the
+                                      Function.  Default value = 1.0.
+    :ivar str code: the alphanumeric code for this Function.  Default
+                    value = ''.
+    :ivar float cost: the estimated O&M costs for this Function.  Default
+                      value = 0.0.
+    :ivar float mission_hazard_rate: the estimated mission hazard rate for this
+                                     Function.  Default value = 0.0.
+    :ivar float hazard_rate: the estimated hazard rate for this Function.
+                             Default value = 0.0.
+    :ivar float mmt: the estimated mean maintenance time for this Function.
+                     Default value = 0.0.
+    :ivar float mcmt: the estimated mean corrective maintenance time for this
+                      Function.  Default value = 0.0.
+    :ivar float mpmt: the estimated mean preventive maintenance time for this
+                      Function.  Default value = 0.0.
+    :ivar float mission_mtbf: the estimated mission mean time between failures
+                              for this Function.  Default value = 0.0.
+    :ivar float mtbf: the estimated mean time between failures for this
+                      Function.  Default value = 0.0.
+    :ivar float mttr: the estimated mean time to repair this Function.  Default
+                      value = 0.0.
+    :ivar str name: the noun name or description of this Function.  Default
+                    value = ''.
+    :ivar str remarks: user remarks associated with this Function.  Default
+                       value = ''.
+    :ivar int n_modes: the number of failure modes this Function is susceptible
+                       to.  Default value = 0.
+    :ivar int n_parts: the number of hardware parts comprising this Funciton.
+                       Default value = 0.
+    :ivar int type: the type of function this Function is.  Default value = 0.
+    :ivar int parent_id: the ID of this Function's parent Function.  Default
+                         value = -1 (no parent).
+    :ivar int level: the level this Function falls in the Function hierarchy.
+                     Default value = 0.
+    :ivar int safety_critical: indicates whether the Function is safety
+                               critical or not.  Default value = 1 (yes).
     """
 
     def __init__(self):
         """
         Method to initialize a Function data model instance.
         """
+
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
 
         # Define public scalar attributes.
         self.revision_id = 0
@@ -285,12 +316,12 @@ class Function(object):
     one or more Function data models.  The attributes of a Function data
     controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-    Project database.
-    :ivar _last_id: the last Function ID used.
+    :ivar _dao: the :py:class:`rtk.dao.DAO` to use when communicating with the
+                RTK Project database.  Default value = None.
+    :ivar _last_id: the last Function ID used.  Default value = None.
     :ivar dicFunctions: Dictionary of the Function data models controlled.  Key
                         is the Function ID; value is a pointer to the Function
-                        data model instance.
+                        data model instance.  Default value = {}.
     """
 
     def __init__(self):
@@ -298,14 +329,12 @@ class Function(object):
         Initializes a Function data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicFunctions = {}
-
-        self._dicFunctions = {}
 
     def request_functions(self, dao, revision_id):
         """
@@ -319,8 +348,8 @@ class Function(object):
         #. Add the instance to the dictionary of Functions being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO` to use for communicating with
+                    the RTK Project database.
         :param int revision_id: the Revision ID to select the Functions for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -512,7 +541,7 @@ class Function(object):
         """
         Saves the Function attributes to the RTK Project database.
 
-        :param int function_id: the ID of the function to save.
+        :param int function_id: the ID of the Function to save.
         :return: (_results, _error_code)
         :rtype: tuple
         """

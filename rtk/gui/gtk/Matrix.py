@@ -135,13 +135,11 @@ class Matrix(gtk.TreeView):
 
         self.set_model(model)
 
-    def insert_column(self, col_type, heading, position, editable=True,
+    def insert_column(self, heading, position, editable=True,
                       background='white', foreground='black'):
         """
         Method to create and add a column to the Matrix at the end.
 
-        :param int col_type: the type of gtk.CellRenderer() to place in the
-                             column.
         :param str heading: the string to use as the column heading.
         :param int position: the position of the column in the gtk.TreeView().
         :keyword bool editable: indicates whether or not the gtk.CellRenderer()
@@ -165,13 +163,27 @@ class Matrix(gtk.TreeView):
         _column = gtk.TreeViewColumn()
         _column.set_visible(1)
 
-        if col_type == 0:
-            _cell = gtk.CellRendererAccel()
+        if position in [0, 1]:
+            _cell = gtk.CellRendererText()
+            _cell.set_property('background', background)
+            _cell.set_property('editable', editable)
+            _cell.set_property('foreground', foreground)
+            _cell.set_property('wrap-width', 250)
+            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            _cell.set_property('yalign', 0.1)
+            _cell.connect('edited', self._on_tree_edited, position)
             _column.pack_start(_cell, True)
-        elif col_type == 1:
+            _column.set_attributes(_cell, text=position)
+        else:
+            _cell = gtk.CellRendererPixbuf()
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, pixbuf=position)
+
             _cell = gtk.CellRendererCombo()
             _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
             _cellmodel.append([""])
+            _cellmodel.append([_(u"Partial")])
+            _cellmodel.append([_(u"Complete")])
             _cell.set_property('background', background)
             _cell.set_property('editable', editable)
             _cell.set_property('foreground', foreground)
@@ -181,46 +193,7 @@ class Matrix(gtk.TreeView):
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             _cell.set_property('yalign', 0.1)
-            _cell.connect('edited', self._on_tree_edited, position)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=position)
-        elif col_type == 2:
-            _cell = gtk.CellRendererPixbuf()
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, pixbuf=position)
-        elif col_type == 3:
-            _cell = gtk.CellRendererProgress()
-            _column.pack_start(_cell, True)
-        elif col_type == 4:
-            _cell = gtk.CellRendererSpin()
-            _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
-            _cell.set_property('adjustment', _adjustment)
-            _cell.set_property('background', background)
-            _cell.set_property('digits', 2)
-            _cell.set_property('editable', editable)
-            _cell.set_property('foreground', foreground)
-            _cell.set_property('yalign', 0.1)
-            _cell.connect('edited', self._on_tree_edited, position)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=position)
-        elif col_type == 5:
-            _cell = gtk.CellRendererSpinner()
-            _column.pack_start(_cell, True)
-        elif col_type == 6:
-            _cell = gtk.CellRendererToggle()
-            _cell.set_property('activatable', editable)
-            _cell.connect('edited', self._on_tree_edited, position)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, active=position)
-        else:
-            _cell = gtk.CellRendererText()
-            _cell.set_property('background', background)
-            _cell.set_property('editable', editable)
-            _cell.set_property('foreground', foreground)
-            _cell.set_property('wrap-width', 250)
-            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-            _cell.set_property('yalign', 0.1)
-            _cell.connect('edited', self._on_tree_edited, position)
+            _cell.connect('changed', self._on_combo_changed, position)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=position)
 
@@ -267,6 +240,21 @@ class Matrix(gtk.TreeView):
             # the new parent items to pass to this method.
             _parents = [_i for _i in items if _i[0] == _parent_id]
             self.load_matrix(_parents, items, model, _piter)
+
+        return False
+
+    def _on_combo_changed(self, cell, path, new_row, position):
+        """
+        """
+
+        _model = cell.get_property('model')
+
+        if _model.get_value(new_row, 0) == 'P':
+            cell.set_property('cell-background', 'pink')
+        elif _model.get_value(new_row, 0) == 'C':
+            cell.set_property('cell-background', 'green')
+        else:
+            cell.set_property('cell-background', 'white')
 
         return False
 

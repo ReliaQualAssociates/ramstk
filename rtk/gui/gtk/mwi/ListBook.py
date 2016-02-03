@@ -70,12 +70,12 @@ def destroy(__widget, __event=None):
 
 class ListView(gtk.Window):                 # pylint: disable=R0904
     """
-    This is the List view class for the pyGTK multiple window interface.
+    This is the List View class for the pyGTK multiple window interface.
     """
 
     def __init__(self):
         """
-        Initialize an instance of the RTK List view class.
+        Method to initialize an instance of the RTK List View class.
         """
 
         # Create a new window and set its properties.

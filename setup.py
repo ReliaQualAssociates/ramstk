@@ -1,66 +1,123 @@
 #!/usr/bin/env python
-#
 
-#   -*- coding: utf-8 -*-
-#
-#   This file is part of PyBuilder
-#
-#   Copyright 2011-2015 PyBuilder Team
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+from setuptools import setup
+from setuptools.command.install import install as _install
 
-#
-# This script allows to support installation via:
-#   pip install git+git://<project>@<branch>
-#
-# This script is designed to be used in combination with `pip install` ONLY
-#
-# DO NOT RUN MANUALLY
-#
+class install(_install):
+    def pre_install_script(self):
+        pass
 
-import os
-import subprocess
-import sys
-import glob
-import shutil
+    def post_install_script(self):
+        pass
 
-from sys import version_info
+    def run(self):
+        self.pre_install_script()
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-exit_code = 0
-try:
-    subprocess.check_call(["pyb", "--version"])
-except FileNotFoundError as e:
-    try:
-        subprocess.check_call([sys.executable, "-m", "pip.__main__", "install", "pybuilder"])
-    except subprocess.CalledProcessError as e:
-        sys.exit(e.returncode)
-except subprocess.CalledProcessError as e:
-        sys.exit(e.returncode)
-try:
-    subprocess.check_call(["pyb", "clean", "install_build_dependencies", "package", "-o"])
-    dist_dir = glob.glob(os.path.join(script_dir, "target", "dist", "*"))[0]
-    for src_file in glob.glob(os.path.join(dist_dir, "*")):
-        file_name = os.path.basename(src_file)
-        target_file_name = os.path.join(script_dir, file_name)
-        if os.path.exists(target_file_name):
-            if os.path.isdir(target_file_name):
-                os.removedirs(target_file_name)
-            else:
-                os.remove(target_file_name)
-        shutil.move(src_file, script_dir)
-    setup_args = sys.argv[1:]
-    subprocess.check_call([sys.executable, "setup.py"] + setup_args, cwd=script_dir)
-except subprocess.CalledProcessError as e:
-    exit_code = e.returncode
-sys.exit(exit_code)
+        _install.run(self)
+
+        self.post_install_script()
+
+if __name__ == '__main__':
+    setup(
+        name = 'The Reliability ToolKit (RTK)',
+        version = '2016.1',
+        description = '''RAMS analysis tool''',
+        long_description = '''RTK is a suite of tools for performing and documenting RAMS                analyses.''',
+        author = "Andrew "weibullguy" Rowland",
+        author_email = "andrew.rowland@reliaqual.com",
+        license = 'Proprietary',
+        url = 'http://www.reliaqual.com/rtk',
+        scripts = [],
+        packages = [
+            'usage',
+            'requirement',
+            'revision',
+            'hardware',
+            'software',
+            'testing',
+            '_reports_',
+            'stakeholder',
+            'analyses',
+            'datamodels',
+            'survival',
+            'incident',
+            'validation',
+            'dao',
+            '_assistants_',
+            'gui',
+            'failure_definition',
+            'function',
+            'hardware.component',
+            'hardware.__gui',
+            'hardware.assembly',
+            'hardware.component.miscellaneous',
+            'hardware.component.relay',
+            'hardware.component.meter',
+            'hardware.component.integrated_circuit',
+            'hardware.component.inductor',
+            'hardware.component.switch',
+            'hardware.component.capacitor',
+            'hardware.component.connection',
+            'hardware.component.resistor',
+            'hardware.component.semiconductor',
+            'hardware.component.capacitor.fixed',
+            'hardware.component.capacitor.electrolytic',
+            'hardware.component.capacitor.variable',
+            'hardware.component.resistor.fixed',
+            'hardware.component.resistor.variable',
+            'hardware.component.semiconductor.optoelectronic',
+            'hardware.component.semiconductor.transistor',
+            'hardware.__gui.gtk',
+            'software.__gui',
+            'software.__gui.gtk',
+            'testing.__gui',
+            'testing.growth',
+            'testing.__gui.gtk',
+            'analyses.statistics',
+            'analyses.pof',
+            'analyses.fmea',
+            'analyses.allocation',
+            'analyses.survival',
+            'analyses.hazard',
+            'analyses.prediction',
+            'analyses.similar_item',
+            'analyses.pof.gui',
+            'analyses.pof.gui.gtk',
+            'analyses.fmea.gui',
+            'analyses.fmea.gui.gtk',
+            'analyses.allocation.gui',
+            'analyses.allocation.gui.gtk',
+            'analyses.hazard.gui',
+            'analyses.hazard.gui.gtk',
+            'analyses.similar_item.gui',
+            'analyses.similar_item.gui.gtk',
+            'datamodels.matrix',
+            'survival.__gui',
+            'survival.__gui.gtk',
+            'incident.component',
+            'incident.action',
+            'gui.gtk',
+            'gui.gtk.mwi'
+        ],
+        py_modules = [
+            'Utilities',
+            'login',
+            'Configuration',
+            'imports',
+            'RTK',
+            'calculations',
+            '__init__',
+            'partlist'
+        ],
+        classifiers = [
+            'Development Status :: 3 - Alpha',
+            'Programming Language :: Python'
+        ],
+        entry_points = {},
+        data_files = [],
+        package_data = {},
+        install_requires = [],
+        dependency_links = [],
+        zip_safe=True,
+        cmdclass={'install': install},
+    )

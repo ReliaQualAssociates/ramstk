@@ -63,11 +63,11 @@ class ListView(gtk.VBox):
     :ivar _modulebook:
     :ivar _dtc_matrices:
     :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
-    :ivar tvwHardwareMatrix:
-    :ivar tvwSoftwareMatrix:
-    :ivar tvwTestMatrix:
-    :ivar tvwPartsList:
-    :ivar tvwIncidentsList:
+    :ivar gtk.TreeView tvwHardwareMatrix:
+    :ivar gtk.TreeView tvwSoftwareMatrix:
+    :ivar gtk.TreeView tvwTestMatrix:
+    :ivar gtk.TreeView tvwPartsList:
+    :ivar gtk.TreeView tvwIncidentsList:
     """
 
     def __init__(self, modulebook):
@@ -335,7 +335,7 @@ class ListView(gtk.VBox):
 
         # Load the Function/Hardware matrix data.
         _gobject_types = [gobject.TYPE_STRING, gobject.TYPE_STRING] + \
-                         [gobject.TYPE_STRING] * (_matrix.n_col)
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * (_matrix.n_col)
         _model = gtk.TreeStore(*_gobject_types)
         self.tvwHardwareMatrix.set_model(_model)
 
@@ -343,9 +343,9 @@ class ListView(gtk.VBox):
         for _column in self.tvwHardwareMatrix.get_columns():
             self.tvwHardwareMatrix.remove_column(_column)
 
-        _types = [-1, -1] + [1] * (_matrix.n_col)
+        _types = [-1, -1] + [1, 2] * (_matrix.n_col)
         _headings = [_(u"Function\nCode"), _(u"Function\nName")] + \
-                    [""] * (_matrix.n_col)
+                    ["", self._lst_matrix_icons[0]] * (_matrix.n_col)
         _editable = [False, False] + [True] * (_matrix.n_col)
         for _index, _heading in enumerate(_headings):
             self.tvwHardwareMatrix.insert_column(_types[_index], _heading,

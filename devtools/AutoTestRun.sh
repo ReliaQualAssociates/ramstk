@@ -1,8 +1,9 @@
 #!/bin/sh
 
+DIRECTORY=${DIRECTORY:-unit}
+
 NOSETESTS=`which nosetests`
 CLOC="/home/andrew/.local/bin/cloc"
-ALL=0
 
 cd /home/andrew/projects/RTK/tests
 
@@ -43,41 +44,17 @@ do
 	shift
 done
 
-if [ "x$DIRECTORY" == "x" ];
-then
-	DIRECTORY="allocation dao datamodels failure_definition fmea function
-    hardware hazard incident pof requirement revision similar_item
-    software stakeholder statistics survival testing usage validation"
-	ALL=1
-fi
-
 if [ "x$UNIT" != "x" ];
 then
 
-	if [ "x$ALL" == "x0" ];
-	then
-	    unit_test_run $DIRECTORY
-	else
-		for dir in $DIRECTORY; 
-		do
-			unit_test_run $dir
-		done
-	fi
+	unit_test_run $DIRECTORY
 
 fi
 
 if [ "x$INTEGRATION" != "x" ];
 then
 	
-	if [ "x$ALL" == "x0" ];
-	then
-	    integration_test_run $DIRECTORY
-	else
-		for dir in $DIRECTORY; 
-		do
-			integration_test_run $dir
-		done
-	fi
+    integration_test_run $DIRECTORY
 
 fi
 
