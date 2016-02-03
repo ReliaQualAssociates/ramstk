@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=RTK
+Type=Application
+Comment=A RAMS analyses solution.
+Exec=rtk
+TryExec=rtk
+Icon=RTK
+Categories=Math;Science;
