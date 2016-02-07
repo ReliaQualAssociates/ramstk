@@ -223,11 +223,11 @@ class BoM(object):
         Initializes a BoM data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicHardware = {}
 
     def request_bom(self, dao, revision_id):

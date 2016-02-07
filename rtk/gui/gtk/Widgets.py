@@ -64,7 +64,7 @@ def make_button(height=40, width=200, label="", image='default'):
                         - commit
                         - default (default)
     :return: _button
-    :rtype: gtk.Button
+    :rtype: gtk.Button()
     """
 
     if width == 0:
