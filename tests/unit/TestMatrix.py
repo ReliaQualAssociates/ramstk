@@ -11,14 +11,13 @@ This is the test class for testing the Matrix class.
 
 import sys
 from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from datamodels.matrix.Matrix import Model, Matrix, ParentError, NoMatrixError
-
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

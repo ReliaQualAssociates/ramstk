@@ -35,9 +35,6 @@ class TestAllocationModel(unittest.TestCase):
         Setup the test fixture for the Allocation class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -411,10 +408,6 @@ class TestAllocationController(unittest.TestCase):
         Sets up the test fixture for the Allocation class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-        self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
-
         self.DUT = Allocation()
 
     @attr(all=True, unit=True)
@@ -426,4 +419,3 @@ class TestAllocationController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Allocation))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicAllocation, {})
-
