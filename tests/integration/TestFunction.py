@@ -10,10 +10,9 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.test.integration.TestFunction.py is part of The RTK Project
+#       tests.integration.TestFunction.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -162,7 +161,7 @@ class TestFunctionController(unittest.TestCase):
     @attr(all=True, integration=True)
     def test8_save_all_functions(self):
         """
-        Test the ability to save all functions to the RTK Project database.
+        (TestFunction) save_all_functions should return a list of tuples
         """
 
         self.DUT.request_functions(self._dao, 0)

@@ -237,7 +237,7 @@ class WorkView(gtk.VBox):
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR +
                              '32x32/insert_sibling.png')
-        _button.set_iconWidgetset(_image)
+        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_add_function, 0)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -249,7 +249,7 @@ class WorkView(gtk.VBox):
                                    u"(i.e., a child function)."))
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_child.png')
-        _button.set_iconWidgetset(_image)
+        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_add_function, 1)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -260,7 +260,7 @@ class WorkView(gtk.VBox):
                                    u"function."))
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
-        _button.set_iconWidgetset(_image)
+        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_delete_function)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -273,7 +273,7 @@ class WorkView(gtk.VBox):
         _button.set_tooltip_text(_(u"Calculate the functions."))
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/calculate.png')
-        _button.set_iconWidgetset(_image)
+        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_calculate_function)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -286,7 +286,7 @@ class WorkView(gtk.VBox):
         _button.set_tooltip_text(_(u"Saves changes to the selected function."))
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
-        _button.set_iconWidgetset(_image)
+        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_save_functions)
         _toolbar.insert(_button, _position)
 
@@ -669,7 +669,7 @@ class WorkView(gtk.VBox):
                               "</span>")
             _label.set_use_markup(True)
             _label.show_all()
-            _column.setWidgetset(_label)
+            _column.set_widget(_label)
             _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
             self.tvwFMECA.append_column(_column)

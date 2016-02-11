@@ -273,7 +273,7 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-# TODO: Write a pop-up menu for the Function Module Book gtk.TreeView()
+            # TODO: See bug 177
             pass
 
         return False

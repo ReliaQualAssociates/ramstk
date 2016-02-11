@@ -86,11 +86,9 @@ class AddFunction(gtk.Assistant):
         self._revision_id = revision_id
         self._parent_id = parent_id
 
-        # Initialize public scalar attributes.
-        #self.assistant = gtk.Assistant()
-
         self.set_title(_(u"RTK Add Function Assistant"))
 
+        # Initialize public scalar attributes.
         self.txtQuantity = Widgets.make_entry(width=50)
         self.txtFunctionCode = Widgets.make_entry(width=100)
         self.txtFunctionName = Widgets.make_entry()
@@ -120,8 +118,8 @@ class AddFunction(gtk.Assistant):
                                             u"to add."))
 
         _label = Widgets.make_label(_(u"Select the number of {0:s} functions "
-                                    u"to add...".format(self._level)),
-                                  width=600, height=-1, wrap=True)
+                                      u"to add...".format(self._level)),
+                                    width=600, height=-1, wrap=True)
         _fixed.put(_label, 5, 10)
         _y_pos = _label.size_request()[1] + 50
 
@@ -156,13 +154,13 @@ class AddFunction(gtk.Assistant):
         _fixed.put(self.txtFunctionCode, _x_pos, _y_pos[0])
         _fixed.put(self.txtFunctionName, _x_pos, _y_pos[1])
         _textview_ = Widgets.make_text_view(txvbuffer=self.txtRemarks,
-                                          width=300, height=100)
+                                            width=300, height=100)
         _fixed.put(_textview_, _x_pos, _y_pos[2])
 
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
         self.set_page_title(_fixed, _(u"Set Values for the New "
-                                                u"Function(s)."))
+                                      u"Function(s)."))
         self.set_page_complete(_fixed, True)
 
         # Create the confirmation page.
@@ -186,7 +184,7 @@ class AddFunction(gtk.Assistant):
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
         """
-# TODO: Consider re-writing _add_function; current McCabe metric = 10
+# TODO: Re-write _add_function; current McCabe metric = 11
         # Find out how many Functions to add.  Defaults to one Function if the
         # user hasn't entered and value.
         try:
@@ -216,7 +214,8 @@ class AddFunction(gtk.Assistant):
                 _code = '{0:s}-{1:d}'.format(str(Configuration.RTK_PREFIX[2]),
                                              Configuration.RTK_PREFIX[3])
             else:
-                _code = '{0:s}-{1:d}'.format(_basecode, Configuration.RTK_PREFIX[3])
+                _code = '{0:s}-{1:d}'.format(_basecode,
+                                             Configuration.RTK_PREFIX[3])
 
             # Create the Function name if one hasn't been specified.
             if _name == '' or _name is None:
