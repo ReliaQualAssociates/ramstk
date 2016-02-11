@@ -701,7 +701,7 @@ def make_column_heading(heading=""):
     :rtype: gtk.Label
     """
 
-    _heading = "<span weight='bold'>%s</span>" % unicode(heading)
+    _heading = "<span weight='bold'>{0:s}</span>".format(unicode(heading))
 
     _label = gtk.Label()
     _label.set_markup(_heading)

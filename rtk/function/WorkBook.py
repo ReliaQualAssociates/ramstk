@@ -40,9 +40,11 @@ except ImportError:
 # Import other RTK modules.
 try:
     import Configuration as _conf
+    import Utilities as _util
     import gui.gtk.Widgets as _widg
 except ImportError:
     import rtk.Configuration as _conf
+    import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddFunction
 
@@ -160,6 +162,7 @@ class WorkView(gtk.VBox):
         # Initialize public scalar attributes.
         self.dtcFunction = modulebook.mdcRTK.dtcFunction
         self.dtcFMEA = modulebook.mdcRTK.dtcFMEA
+        self.dtcMatrices = modulebook.mdcRTK.dtcMatrices
 
         # General data page widgets.
         self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function "
@@ -282,7 +285,7 @@ class WorkView(gtk.VBox):
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self._request_save_function)
+        _button.connect('clicked', self._request_save_functions)
         _toolbar.insert(_button, _position)
 
         _toolbar.show()
@@ -291,7 +294,7 @@ class WorkView(gtk.VBox):
 
     def _create_notebook(self):
         """
-        Method to create the Revision class gtk.Notebook().
+        Method to create the Function class gtk.Notebook().
 
         :return: _notebook
         :rtype: gtk.Notebook
@@ -383,7 +386,7 @@ class WorkView(gtk.VBox):
         _fixed.put(self.txtRemarks, _x_pos, _y_pos2[3])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos2[3] + 110)
 
-        # Connect to callback functions.
+        # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('focus-out-event', self._on_focus_out, 4))
         _textview = self.txtName.get_child().get_child()
@@ -392,6 +395,11 @@ class WorkView(gtk.VBox):
         _textview = self.txtRemarks.get_child().get_child()
         self._lst_handler_id.append(
             _textview.connect('focus-out-event', self._on_focus_out, 15))
+
+        # Connect to callback functions for uneditable gtk.Widgets().
+        self.txtTotalCost.connect('changed', self._on_changed, 5)
+        self.txtModeCount.connect('changed', self._on_changed, 16)
+        self.txtPartCount.connect('changed', self._on_changed, 17)
 
         _fixed.show_all()
 
@@ -418,16 +426,11 @@ class WorkView(gtk.VBox):
         :rtype: boolean
         """
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _hbox = gtk.HBox()
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display general information about   #
-        # the function.                                                 #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Construct the left half of the page.
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build the left half of the page.                                    #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
 
         _scrollwindow = gtk.ScrolledWindow()
@@ -440,7 +443,6 @@ class WorkView(gtk.VBox):
 
         _hbox.pack_start(_frame)
 
-        # Create the left half of the page.
         _labels = [_(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
                    _(u"Mission MTBF:")]
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
@@ -465,9 +467,17 @@ class WorkView(gtk.VBox):
         _fixed.put(self.txtMTBF, _x_pos, _y_pos[2])
         _fixed.put(self.txtMissionMTBF, _x_pos, _y_pos[3])
 
+        # Connect to callback functions for uneditable gtk.Widgets().
+        self.txtMissionHt.connect('changed', self._on_changed, 6)
+        self.txtPredictedHt.connect('changed', self._on_changed, 7)
+        self.txtMissionMTBF.connect('changed', self._on_changed, 11)
+        self.txtMTBF.connect('changed', self._on_changed, 12)
+
         _fixed.show_all()
 
-        # Construct the right half of the page.
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build the right half of the page.                                   #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
 
         _scrollwindow = gtk.ScrolledWindow()
@@ -510,6 +520,14 @@ class WorkView(gtk.VBox):
         _fixed.put(self.txtMMT, _x_pos, _y_pos[3])
         _fixed.put(self.txtAvailability, _x_pos, _y_pos[4])
         _fixed.put(self.txtMissionAt, _x_pos, _y_pos[5])
+
+        # Connect to callback functions for uneditable gtk.Widgets().
+        self.txtAvailability.connect('changed', self._on_changed, 2)
+        self.txtMissionAt.connect('changed', self._on_changed, 3)
+        self.txtMMT.connect('changed', self._on_changed, 8)
+        self.txtMCMT.connect('changed', self._on_changed, 9)
+        self.txtMPMT.connect('changed', self._on_changed, 10)
+        self.txtMTTR.connect('changed', self._on_changed, 13)
 
         _fixed.show_all()
 
@@ -721,13 +739,13 @@ class WorkView(gtk.VBox):
         """
         Method to load the Function class gtk.Notebook() widgets.
 
-        :param rtk.function.Function.Model: the Revision Model to be viewed.
-        :param rtk.usage.UsageProfile.Model: the Usage Profile Model to be
-                                             viewed.
-        :param dict definitions: the list of Failure Definition data model
-                                 instances associated with the Revision.
+        :param model: the :py:class:`rtk.function.Function.Model` to be loaded.
+        :param fmea_model: the :py:class:`rtk.analyses.FMEA.Model` to be
+                           loaded.
+        :param tuple args: any additional arguments to be passed to this
+                           method.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
@@ -737,48 +755,55 @@ class WorkView(gtk.VBox):
         self._profile_model = args[0]
 
         # Load the General Data page widgets.
-        self.txtCode.set_text(self._function_model.code)
-        self.txtTotalCost.set_text(
-            str(locale.currency(self._function_model.cost)))
-
-        _textbuffer_ = self.txtName.get_child().get_child().get_buffer()
-        _textbuffer_.set_text(self._function_model.name)
-
-        _textbuffer_ = self.txtRemarks.get_child().get_child().get_buffer()
-        _textbuffer_.set_text(self._function_model.remarks)
-
-        self.txtModeCount.set_text(
-            str('{0:0.0f}'.format(self._function_model.n_modes)))
-        self.txtPartCount.set_text(
-            str('{0:0.0f}'.format(self._function_model.n_parts)))
+        self._load_general_data_page()
 
         # Load the FMEA page.
         self._load_fmea_page()
 
         # Load the Assessment Results page.
-        self.txtAvailability.set_text(
-            str(fmt.format(self._function_model.availability)))
-        self.txtMissionAt.set_text(
-            str(fmt.format(self._function_model.mission_availability)))
-        self.txtMissionHt.set_text(
-            str(fmt.format(self._function_model.mission_hazard_rate)))
-        self.txtPredictedHt.set_text(
-            str(fmt.format(self._function_model.hazard_rate)))
+        self._load_assessment_results_page()
 
-        self.txtMMT.set_text(str(fmt.format(self._function_model.mmt)))
-        self.txtMCMT.set_text(str(fmt.format(self._function_model.mcmt)))
-        self.txtMPMT.set_text(str(fmt.format(self._function_model.mpmt)))
+        return False
 
-        self.txtMissionMTBF.set_text(
-            str(fmt.format(self._function_model.mission_mtbf)))
-        self.txtMTBF.set_text(str(fmt.format(self._function_model.mtbf)))
-        self.txtMTTR.set_text(str(fmt.format(self._function_model.mttr)))
+    def _load_general_data_page(self):
+        """
+        Method to load the gtk.Widgets() on the General Data page with the
+        values of the selected Function's attributes.
+
+        :return: False
+        :rtype: bool
+        """
+
+        # Load the editable gtk.Widgets().
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(self._function_model.code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        _textview = self.txtName.get_child().get_child()
+        _textview.handler_block(self._lst_handler_id[1])
+        _textbuffer = _textview.get_buffer()
+        _textbuffer.set_text(self._function_model.name)
+        _textview.handler_unblock(self._lst_handler_id[1])
+
+        _textview = self.txtRemarks.get_child().get_child()
+        _textview.handler_block(self._lst_handler_id[2])
+        _textbuffer = _textview.get_buffer()
+        _textbuffer.set_text(self._function_model.remarks)
+        _textview.handler_unblock(self._lst_handler_id[2])
+
+        # Load the non-editable gtk.Widgets().
+        self.txtTotalCost.set_text(
+            str(locale.currency(self._function_model.cost)))
+        self.txtModeCount.set_text(
+            str('{0:d}'.format(self._function_model.n_modes)))
+        self.txtPartCount.set_text(
+            str('{0:d}'.format(self._function_model.n_parts)))
 
         return False
 
     def _load_fmea_page(self, path=None):
         """
-        Loads the FMEA gtk.TreeView().
+        Method to loads the functional FMEA gtk.TreeView().
 
         :keyword str path: the path in the gtk.TreeView() to select as active
                            after loading the FMEA.
@@ -823,28 +848,34 @@ class WorkView(gtk.VBox):
 
         return False
 
-    def update(self):
+    def _load_assessment_results_page(self):
         """
-        Updates the Work Book widgets with changes to the Function data model
-        attributes.  Called by other views when the Function data model
-        attributes are edited via their gtk.Widgets().
+        Method to load the gtk.Widgets() on the Assessment Results page with
+        the values of the selected Function's attributes.
+
+        :return: False
+        :rtype: bool
         """
 
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(self._function_model.code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
-        _textview = self.txtName.get_child().get_child()
-        _textview.handler_block(self._lst_handler_id[1])
-        _textbuffer = _textview.get_buffer()
-        _textbuffer.set_text(self._function_model.name)
-        _textview.handler_unblock(self._lst_handler_id[1])
+        self.txtAvailability.set_text(
+            str(fmt.format(self._function_model.availability)))
+        self.txtMissionAt.set_text(
+            str(fmt.format(self._function_model.mission_availability)))
+        self.txtMissionHt.set_text(
+            str(fmt.format(self._function_model.mission_hazard_rate)))
+        self.txtPredictedHt.set_text(
+            str(fmt.format(self._function_model.hazard_rate)))
 
-        _textview = self.txtRemarks.get_child().get_child()
-        _textview.handler_block(self._lst_handler_id[2])
-        _textbuffer = _textview.get_buffer()
-        _textbuffer.set_text(self._function_model.remarks)
-        _textview.handler_unblock(self._lst_handler_id[2])
+        self.txtMMT.set_text(str(fmt.format(self._function_model.mmt)))
+        self.txtMCMT.set_text(str(fmt.format(self._function_model.mcmt)))
+        self.txtMPMT.set_text(str(fmt.format(self._function_model.mpmt)))
+
+        self.txtMissionMTBF.set_text(
+            str(fmt.format(self._function_model.mission_mtbf)))
+        self.txtMTBF.set_text(str(fmt.format(self._function_model.mtbf)))
+        self.txtMTTR.set_text(str(fmt.format(self._function_model.mttr)))
 
         return False
 
@@ -895,10 +926,39 @@ class WorkView(gtk.VBox):
 
         return False
 
+    def _on_changed(self, entry, index):
+        """
+        Callback method to retrieve uneditable gtk.Entry() changes and update
+        the corresponding gtk.CellRenderer() in the Function Module Book.
+
+        :param gtk.Entry entry: the gtk.Entry() that called the method.
+        :param int index: the position in the Function class gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Entry().
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+
+        from re import sub
+        from decimal import Decimal
+
+        if index == 5:
+            _text = entry.get_text()
+            _text = Decimal(sub(r'[^\d.]', '', _text))
+        elif index in [16, 17]:
+            _text = int(entry.get_text())
+        else:
+            _text = float(entry.get_text())
+
+        self._modulebook.update(index, _text)
+
+        return False
+
     def _on_focus_out(self, entry, __event, index):
         """
-        Callback function to retrieve gtk.Entry() changes and assign the new
-        data to the appropriate Function data model attribute.
+        Callback method to retrieve editable gtk.Entry() changes, assign the
+        new data to the appropriate Function data model attribute, and update
+        the corresponding gtk.CellRenderer() in the Function Module Book.
 
         :param gtk.Entry entry: the gtk.Entry() that called the method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -943,6 +1003,8 @@ class WorkView(gtk.VBox):
         :rtype: boolean
         """
 
+        _return = False
+
         _function_id = self._function_model.function_id
 
         _row = model.get_iter(path)
@@ -967,8 +1029,20 @@ class WorkView(gtk.VBox):
                   (model.get_value(_row, 11), 0, model.get_value(_row, 12))
         _mode = self._fmea_model.dicModes[_id]
         (_error_code, _error_msg) = _mode.set_attributes(_values)
-        # TODO: Handle errors in _on_fmea_cell_edited.
-        return False
+
+        if _error_code != 0:
+            _content = "rtk.function.WorkBook._on_fmea_cell_edited: " \
+                       "Received error {1:s} while attempting to " \
+                       "calculate functions.".format(_error_msg)
+            self._modulebook.mdcRTK.debug_log.error(_content)
+
+            _prompt = _(u"An error occurred while attempting to update the "
+                        u"attributes of failure mode {0:d}.".format(_id))
+            _util.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
 
     def _on_mission_combo_changed(self, __combo, __path, new_iter, cellmodel):
         """
@@ -1006,9 +1080,9 @@ class WorkView(gtk.VBox):
 
         return False
 
-    def _request_save_function(self, __button):
+    def _request_save_functions(self, __button):
         """
-        Sends request to save the selected function to the Function data
+        Method to send a request to save all functions to the Function data
         controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
@@ -1017,15 +1091,30 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        _function_id = self._function_model.function_id
-        (_results,
-         _error_code) = self.dtcFunction.save_function(_function_id)
-        # TODO: Handle errors in _request_save_function.
-        return False
+        _return = False
+
+        _error_codes = self.dtcFunction.save_all_functions()
+        _error_codes = [_code for _code in _error_codes if _code[1] != 0]
+
+        if len(_error_codes) > 0:
+            for __, _code in enumerate(_error_codes):
+                _content = "rtk.function.WorkBook._request_save_functions: " \
+                           "Received error code {1:d} while saving " \
+                           "function {0:d}.".format(_code[0], _code[1])
+                self._modulebook.mdcRTK.debug_log.error(_content)
+
+            _prompt = _(u"An error occurred while saving one or more "
+                        u"function.")
+            _util.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
 
     def _request_add_function(self, __button, level):
         """
-        Sends request to add a new function to the Function data controller.
+        Method to send a request to add a new function to the Function data
+        controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
@@ -1042,12 +1131,16 @@ class WorkView(gtk.VBox):
         # Launch the Add Function gtk.Assistant().
         AddFunction(self._modulebook, level, _revision_id, _parent_id)
 
+# TODO: Remove self._modulebook.mdcRTK.project_dao parameter after converting all modules.
+        self._modulebook.request_load_data(self._modulebook.mdcRTK.project_dao,
+                                           _revision_id)
+
         return False
 
     def _request_delete_function(self, __button):
         """
-        Sends request to delete the selected function from the Function data
-        controller.
+        Method to send a request to delete the selected function from the
+        Function data controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
@@ -1055,35 +1148,49 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
         _function_id = self._function_model.function_id
+        _revision_id = self._function_model.revision_id
 
         (_results,
-         _error_code) = self.dtcFunction.delete_function(_function_id)
+         _error_codes) = self.dtcFunction.delete_function(_function_id)
 
-        self.dtcFMEA.dicFFMEA.pop(_function_id)
+        if sum(_error_codes) != 0:
+            _content = "rtk.function.WorkBook._request_delete_function: " \
+                       "Received error codes [{1:d}, {2:d}] while " \
+                       "attempting to delete " \
+                       "function {0:d}.".format(_function_id, _error_codes[0],
+                                                _error_codes[1])
+            self._modulebook.mdcRTK.debug_log.error(_content)
 
-        # Delete from treeview and refresh Module Book view.
-        _selection = self._modulebook.treeview.get_selection()
-        (_model, _row) = _selection.get_selected()
-        if _row:
-            _path = _model.get_path(_row)
-            _model.remove(_row)
-            _selection.select_path(_path)
+            _prompt = _(u"An error occurred while attempting to delete "
+                        u"function {0:s}.".format(self._function_model.name))
+            _util.rtk_error(_prompt)
 
-            if not _selection.path_is_selected(_path):
-                _path = _model.get_path(_model.get_iter_root())
-                _selection.select_path(_path)
+            _return = True
 
-            self._modulebook.treeview.set_cursor(_path, None, False)
-            self._modulebook.treeview.row_activated(
-                _path, self._modulebook.treeview.get_column(0))
-        # TODO: Handle errors in _request_delete_function.
-        return False
+        else:
+            # Remove the function from the functional FMEA.
+            self.dtcFMEA.dicFFMEA.pop(_function_id)
+
+            # Remove the Function from the functional Matrices.
+            for _matrix_id, _matrix in self.dtcMatrices.dicMatrices.items():
+                _row_ids = [_key for _key, _vals in _matrix.dicRows.items()
+                            if _vals[0] == _function_id or
+                            _vals[1] == _function_id]
+                for _row_id in _row_ids:
+                    self.dtcMatrices.delete_row(_matrix_id, _row_id)
+
+            # Delete from treeview and refresh Module Book view.
+            self._modulebook.request_load_data(
+                self._modulebook.mdcRTK.project_dao, _revision_id)
+
+        return _return
 
     def _request_calculate_function(self, __button):
         """
-        Sends request to calculate the selected function to the Function data
-        controller.
+        Method to send a request to calculate all of the Functions to the
+        Function data controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
                                         method.
@@ -1091,9 +1198,25 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        _function_id = self._function_model.function_id
-        _error_code = self.dtcFunction.calculate_function(_function_id,
-                                                          _conf.RTK_MTIME,
-                                                          _conf.FRMULT)
-        # TODO: Handle errors in _request_calculate_function.
-        return False
+        _return = False
+
+        _error_codes = self.dtcFunction.calculate_function(_conf.RTK_MTIME)
+        _error_codes = [_code for _code in _error_codes if _code[1] != 0]
+
+        if len(_error_codes) == 0:
+            self._load_general_data_page()
+            self._load_assessment_results_page()
+        else:
+            for __, _code in enumerate(_error_codes):
+                _content = "rtk.function.WorkBook._request_calculate_functions: " \
+                           "Received error code {1:d} while calculating " \
+                           "function {0:d}.".format(_code[0], _code[1])
+                self._modulebook.mdcRTK.debug_log.error(_content)
+
+            _prompt = _(u"An error occurred while attempting to calculate "
+                        u"functions.")
+            _util.rtk_error(_prompt)
+
+            _return = True
+
+        return _return

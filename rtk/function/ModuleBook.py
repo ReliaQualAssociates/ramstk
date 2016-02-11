@@ -38,11 +38,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -52,7 +52,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -61,8 +61,9 @@ _ = gettext.gettext
 
 class ModuleView(object):
     """
-    The Module Book view displays all the Revisions associated with the RTK
-    Project in a flat list.  The attributes of a Module Book view are:
+    The Module Book view ro display all the Functions associated with the
+    selected Revision in the RTK Project in a hierarchical list.  The
+    attributes of a Function Module Book view are:
 
     :ivar _model: the :py:class:`rtk.function.Function.Model` data model that
                   is currently selected.
@@ -96,20 +97,28 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dtc_function = controller.dtcFunction
         self._dtc_fmea = controller.dtcFMEA
         self._dtc_profile = controller.dtcProfile
         self._model = None
         self._fmea_model = None
 
-        # Initialize public scalar attributes.
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.mdcRTK = controller
 
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Function', 1,
-                                                    _conf.RTK_COLORS[2],
-                                                    _conf.RTK_COLORS[3])
+         self._lst_col_order) = Widgets.make_treeview('Function', 1,
+                                                      Configuration.RTK_COLORS[2],
+                                                      Configuration.RTK_COLORS[3])
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
                                          u"functions."))
@@ -129,7 +138,7 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-        _icon = _conf.ICON_DIR + '32x32/function.png'
+        _icon = Configuration.ICON_DIR + '32x32/function.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -164,7 +173,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-        # TODO: Remove dao parameter after converting all modules.
+# TODO: Remove dao parameter after converting all modules.
         (_functions,
          __) = self._dtc_function.request_functions(self.mdcRTK.project_dao,
                                                     revision_id)
@@ -188,7 +197,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        self.listbook.load(revision_id)
+        self.listbook.load()
 
         return False
 
@@ -222,9 +231,9 @@ class ModuleView(object):
 
     def update(self, position, new_text):
         """
-        Updates the Module Book gtk.TreeView() with changes to the Function
-        data model attributes.  Called by other views when the Function data
-        model attributes are edited via their gtk.Widgets().
+        Method to update the Module Book gtk.TreeView() with changes to the
+        Function data model attributes.  Called by other views when the
+        Function data model attributes are edited via their gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -241,8 +250,8 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-        Callback function for handling mouse clicks on the Function package
-        Module Book gtk.TreeView().
+        Method for handling mouse clicks on the Function package Module Book
+        gtk.TreeView().
 
         :param gtk.TreeView treeview: the Function class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -264,7 +273,8 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-            print "Pop-up a menu!"
+# TODO: Write a pop-up menu for the Function Module Book gtk.TreeView()
+            pass
 
         return False
 
