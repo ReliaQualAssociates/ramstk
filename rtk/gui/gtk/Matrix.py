@@ -17,7 +17,7 @@ import sys
 import gettext
 import locale
 
-# Modules required for the GUI.
+# Import modules for the GUI.
 import pango
 try:
     import pygtk
@@ -38,8 +38,10 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Configuration as _conf
-import gui.gtk.Widgets as _widg
+try:
+    import Configuration
+except ImportError:
+    import rtk.Configuration as Configuration
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -47,7 +49,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2016 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -73,7 +75,7 @@ def _format_cell(__column, cell, model, row, position):
     _cell_type = gobject.type_name(model.get_column_type(position))
 
     if _cell_type == 'gfloat':
-        _fmt = '{0:0.' + str(_conf.PLACES) + 'f}'
+        _fmt = '{0:0.' + str(Configuration.PLACES) + 'f}'
     elif _cell_type == 'gint':
         _fmt = '{0:0.0f}'
     else:
@@ -116,10 +118,12 @@ def _resize_wrap(column, __param, cell):
     return False
 
 
-class Matrix(gtk.TreeView):
+class Matrix(gobject.GObject):
     """
     The List Book view for displaying a Matrix.  The attributes of a matrix
     List Book view are:
+
+    :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
     """
 
     def __init__(self, model=None):
@@ -131,12 +135,34 @@ class Matrix(gtk.TreeView):
                                       Matrix.
         """
 
-        gtk.TreeView.__init__(self)
+        self.__gobject_init__()
 
-        self.set_model(model)
+        # Define private dictionary attributes.
 
-    def insert_column(self, heading, position, editable=True,
-                      background='white', foreground='black'):
+        # Define private list attributes.
+        _icon = Configuration.ICON_DIR + '32x32/none.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self._lst_matrix_icons = [_icon]
+        _icon = Configuration.ICON_DIR + '32x32/partial.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self._lst_matrix_icons.append(_icon)
+        _icon = Configuration.ICON_DIR + '32x32/complete.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self._lst_matrix_icons.append(_icon)
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.n_fixed_columns = 0
+
+        self.treeview = gtk.TreeView(model)
+
+    def add_column(self, heading, position, editable=True, background='white',
+                   foreground='black'):
         """
         Method to create and add a column to the Matrix at the end.
 
@@ -163,7 +189,7 @@ class Matrix(gtk.TreeView):
         _column = gtk.TreeViewColumn()
         _column.set_visible(1)
 
-        if position in [0, 1]:
+        if position in [0, 1, 2]:
             _cell = gtk.CellRendererText()
             _cell.set_property('background', background)
             _cell.set_property('editable', editable)
@@ -171,13 +197,21 @@ class Matrix(gtk.TreeView):
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             _cell.set_property('yalign', 0.1)
-            _cell.connect('edited', self._on_tree_edited, position)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=position)
         else:
+            # The position in the Matrix that the gtk.CellRendererPixbuf() will
+            # display depends on the number of non-x-reference columns at the
+            # beginning of the Matrix.  The general function for determining
+            # the position for the gtk.CellRendererPixbuf() to display is:
+            #
+            #    _pixbuf_pos = 2 * position - n_fixed_columns
+            #
+            # In this case, there are three non-x-reference columns.
+            _position = 2 * position - self.n_fixed_columns
             _cell = gtk.CellRendererPixbuf()
             _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, pixbuf=position)
+            _column.set_attributes(_cell, pixbuf=_position)
 
             _cell = gtk.CellRendererCombo()
             _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
@@ -193,12 +227,11 @@ class Matrix(gtk.TreeView):
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             _cell.set_property('yalign', 0.1)
-            _cell.connect('changed', self._on_combo_changed, position)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=position)
+            _cell.connect('changed', self._on_combo_changed, _position)
+            _column.pack_end(_cell, True)
 
         # Make sure non-editable cells have a light gray background.
-        if not editable and col_type != 6:
+        if not editable:
             _cell.set_property('background', 'light gray')
 
         _column.set_alignment(0.5)
@@ -208,7 +241,24 @@ class Matrix(gtk.TreeView):
         _column.set_cell_data_func(_cell, _format_cell, position)
         _column.connect('notify::width', _resize_wrap, _cell)
 
-        self.append_column(_column)
+        self.treeview.append_column(_column)
+
+        return False
+
+    def remove_column(self, position):
+        """
+        Method to remove a column from the Matrix.
+
+        :param int position: the position in the Matrix of the column to
+                             remove.
+        :return: False if succesful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _model = self.treeview.get_model()
+        _column = _model.get_n_columns()[position]
+
+        self.treeview.remove_column(_column)
 
         return False
 
@@ -233,7 +283,20 @@ class Matrix(gtk.TreeView):
             if _item[0] == -1:              # Indicates a top-level item.
                 prow = None
 
-            _piter = model.append(prow, _item[2:])
+            _data = _item[1:4]
+
+            # Add the proper Pixbuf right before the database index that
+            # defines which Pixbuf to use.
+            for _index in range(4, len(_item)):
+                if _item[_index] == '':
+                    _item[_index] = '0'
+                _pixbuf = self._lst_matrix_icons[int(_item[_index])]
+                _data.extend([_pixbuf, _item[_index]])
+
+            try:
+                _piter = model.append(prow, _data)
+            except ValueError:
+                print model.get_n_columns(), len(_data), _data
             _parent_id = _item[1]
 
             # Find the child items of the current parent item.  These will be
@@ -243,51 +306,47 @@ class Matrix(gtk.TreeView):
 
         return False
 
-    def _on_combo_changed(self, cell, path, new_row, position):
+    def _on_combo_changed(self, cell, __path, row, column):
         """
-        """
+        Callback method to respond to changed signals for the
+        gtk.CellRendererCombo() in the Matrix.
 
-        _model = cell.get_property('model')
-
-        if _model.get_value(new_row, 0) == 'P':
-            cell.set_property('cell-background', 'pink')
-        elif _model.get_value(new_row, 0) == 'C':
-            cell.set_property('cell-background', 'green')
-        else:
-            cell.set_property('cell-background', 'white')
-
-        return False
-
-    def _on_tree_edited(self, cell, path, new_text, position):
-        """
-        Callback method whenever a gtk.TreeView() gtk.CellRenderer() is edited.
-
-        :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
-                         was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
+        :param gkt.CellRendererCombo cell: the gtk.CellRendererCombo() calling
+                                           this method.
+        :param str __path: the path of the selected row in the Matrix.
+        :param gtk.TreeIter row: the gtk.TreeIter() for the
+                                 gtk.CellRendererCombo() in the selected row in
+                                 the Matrix.
+        :param int column: the column position of the gtk.CellRendererCombo()
+                           in the Matrix.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _model = self.get_model()
-        _convert = gobject.type_name(_model.get_column_type(position))
+        _model = cell.get_property('model')
 
-        if new_text is None:
-            _model[path][position] = not cell.get_active()
-        elif _convert == 'gchararray':
-            _model[path][position] = str(new_text)
-        elif _convert == 'gint':
-            _model[path][position] = int(new_text)
-        elif _convert == 'gfloat':
-            _model[path][position] = float(new_text)
+        (_matrix_model,
+         _matrix_row) = self.treeview.get_selection().get_selected()
+
+        if _model.get_value(row, 0) == 'Partial':
+            _value = 1
+            _icon = self._lst_matrix_icons[1]
+        elif _model.get_value(row, 0) == 'Complete':
+            _value = 2
+            _icon = self._lst_matrix_icons[2]
+        else:
+            _value = 0
+            _icon = self._lst_matrix_icons[0]
+
+        _matrix_model.set_value(_matrix_row, column, _icon)
+
+        self.emit('changed', self.treeview, _value, column)
 
         return False
 
 
 # Register the new widget type.
 gobject.type_register(Matrix)
+gobject.signal_new('changed', Matrix, gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   (gtk.TreeView(), gobject.TYPE_INT, gobject.TYPE_INT))
