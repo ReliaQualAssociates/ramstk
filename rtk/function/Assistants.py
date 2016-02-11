@@ -32,11 +32,13 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -45,14 +47,14 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-class AddFunction(object):
+class AddFunction(gtk.Assistant):
     """
     This is the assistant that walks the user through the process of adding
     a new Function to the open RTK Project database.
@@ -72,6 +74,8 @@ class AddFunction(object):
                                 Function(s) to.
         """
 
+        gtk.Assistant.__init__(self)
+
         # Initialize private scalar attributes.
         self._modulebook = modulebook
         self._controller = modulebook.mdcRTK
@@ -83,11 +87,13 @@ class AddFunction(object):
         self._parent_id = parent_id
 
         # Initialize public scalar attributes.
-        self.assistant = gtk.Assistant()
+        #self.assistant = gtk.Assistant()
 
-        self.txtQuantity = _widg.make_entry(width=50)
-        self.txtFunctionCode = _widg.make_entry(width=100)
-        self.txtFunctionName = _widg.make_entry()
+        self.set_title(_(u"RTK Add Function Assistant"))
+
+        self.txtQuantity = Widgets.make_entry(width=50)
+        self.txtFunctionCode = Widgets.make_entry(width=100)
+        self.txtFunctionName = Widgets.make_entry()
         self.txtRemarks = gtk.TextBuffer()
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -99,12 +105,12 @@ class AddFunction(object):
                   u"help you add a new sibling or child function to the "
                   u"database.  Press 'Forward' to continue or 'Cancel' to "
                   u"quit the assistant.")
-        _label = _widg.make_label(_text, width=500, height=-1, wrap=True)
+        _label = Widgets.make_label(_text, width=500, height=-1, wrap=True)
         _fixed.put(_label, 5, 5)
-        self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
-        self.assistant.set_page_title(_fixed, _(u"Introduction"))
-        self.assistant.set_page_complete(_fixed, True)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_title(_fixed, _(u"Introduction"))
+        self.set_page_complete(_fixed, True)
 
         # Create the page for selecting whether to add a sibling or child
         # Function and how many.
@@ -113,29 +119,29 @@ class AddFunction(object):
         self.txtQuantity.set_tooltip_text(_(u"Enter the number of functions "
                                             u"to add."))
 
-        _label = _widg.make_label(_(u"Select the number of {0:s} functions "
+        _label = Widgets.make_label(_(u"Select the number of {0:s} functions "
                                     u"to add...".format(self._level)),
                                   width=600, height=-1, wrap=True)
         _fixed.put(_label, 5, 10)
         _y_pos = _label.size_request()[1] + 50
 
         _labels = [_(u"Number of {0:s} functions to add:").format(self._level)]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, _y_pos)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, _y_pos)
         _x_pos += 50
         _fixed.put(self.txtQuantity, _x_pos, _y_pos[0])
         self.txtQuantity.set_text("1")
 
-        self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_fixed, _(u"Select Number of New "
-                                                u"Functions to Add"))
-        self.assistant.set_page_complete(_fixed, True)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(_fixed, _(u"Select Number of New Functions to "
+                                      u"Add"))
+        self.set_page_complete(_fixed, True)
 
         # Create the new Function information page.
         _fixed = gtk.Fixed()
 
         _labels = [_(u"Function Code:"), _(u"Function Name:"), _(u"Remarks:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 50
 
         self.txtFunctionCode.set_tooltip_text(_(u"Enter a code for the new "
@@ -149,29 +155,29 @@ class AddFunction(object):
 
         _fixed.put(self.txtFunctionCode, _x_pos, _y_pos[0])
         _fixed.put(self.txtFunctionName, _x_pos, _y_pos[1])
-        _textview_ = _widg.make_text_view(txvbuffer=self.txtRemarks,
+        _textview_ = Widgets.make_text_view(txvbuffer=self.txtRemarks,
                                           width=300, height=100)
         _fixed.put(_textview_, _x_pos, _y_pos[2])
 
-        self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_fixed, _(u"Set Values for the New "
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_title(_fixed, _(u"Set Values for the New "
                                                 u"Function(s)."))
-        self.assistant.set_page_complete(_fixed, True)
+        self.set_page_complete(_fixed, True)
 
         # Create the confirmation page.
         _fixed = gtk.Fixed()
-        self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(_fixed, _(u"Function: Confirm Addition"))
-        self.assistant.set_page_complete(_fixed, True)
+        self.append_page(_fixed)
+        self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_title(_fixed, _(u"Function: Confirm Addition"))
+        self.set_page_complete(_fixed, True)
 
         # Connect to callback methods.
-        self.assistant.connect('apply', self._add_function)
-        self.assistant.connect('cancel', self._cancel)
-        self.assistant.connect('close', self._cancel)
+        self.connect('apply', self._add_function)
+        self.connect('cancel', self._cancel)
+        self.connect('close', self._cancel)
 
-        self.assistant.show_all()
+        self.show_all()
 
     def _add_function(self, __assistant):
         """
@@ -180,7 +186,7 @@ class AddFunction(object):
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
         """
-
+# TODO: Consider re-writing _add_function; current McCabe metric = 10
         # Find out how many Functions to add.  Defaults to one Function if the
         # user hasn't entered and value.
         try:
@@ -188,12 +194,12 @@ class AddFunction(object):
         except ValueError:
             _n_functions = 1
 
+        # If specified, the same base code will be used for _n_function newly
+        # added Functions.
         _basecode = self.txtFunctionCode.get_text()
-        if _basecode == '' or _basecode is None:
-            _basecode = str(_conf.RTK_PREFIX[2])
 
-        # If specified, the same name will be used for _n_function newly added
-        # Functions.
+        # If specified, the same base name will be used for _n_function newly
+        # added Functions.
         _name = self.txtFunctionName.get_text()
 
         # The same remarks will be used for _n_function newly added Functions.
@@ -203,35 +209,73 @@ class AddFunction(object):
         if self._parent_id is None:
             self._parent_id = -1
 
+        _error_codes = []
         for i in range(_n_functions):
             # Create the Function code for the new Function.
-            _code = '{0:s}-{1:d}'.format(_basecode, _conf.RTK_PREFIX[3])
+            if _basecode == '' or _basecode is None:
+                _code = '{0:s}-{1:d}'.format(str(Configuration.RTK_PREFIX[2]),
+                                             Configuration.RTK_PREFIX[3])
+            else:
+                _code = '{0:s}-{1:d}'.format(_basecode, Configuration.RTK_PREFIX[3])
 
             # Create the Function name if one hasn't been specified.
             if _name == '' or _name is None:
                 _name = 'New Function {0:d}'.format(i + 1)
 
-            # Add the new Function.
+            # Add the new Function.  If there was an error adding the function
+            # update the error_codes list with a tuple (Iteration, Error Code)
+            # otherwise add a new functional FMEA for new Function and add the
+            # new Function to each of the functional Matrix.
             (_results,
              _error_code,
              _function_id) = self._controller.dtcFunction.add_function(
                  self._revision_id, self._parent_id, _code, _name, _remarks)
 
-            # Increment the Function index.
-            _conf.RTK_PREFIX[3] += 1
+            if _error_code != 0:
+                _error_codes.append((i, _error_code))
+            else:
+                # Add a FMEA with one failure mode to the new Function.
+                self._controller.dtcFMEA.add_fmea(None, _function_id)
+                self._controller.dtcFMEA.add_mode(None, _function_id)
 
-        # TODO: Add FMEA mode for new Function.
+                # Add the new Function to each of the Function matrices.
+                _matrix_ids = self._controller.dtcMatrices.dicMatrices.keys()
+                for __, _matrix_id in enumerate(_matrix_ids):
+                    self._controller.dtcMatrices.add_row(_matrix_id,
+                                                         self._parent_id,
+                                                         _function_id,
+                                                         val1=_code,
+                                                         val2=_name)
+
+            # Increment the Function index.
+            Configuration.RTK_PREFIX[3] += 1
+
+        # Handle any errors returned.  Write each of them to the debug log and
+        # then raise an error dialog.
+        for __, _code in enumerate(_error_codes):
+            _content = "rtk.function.WorkBook._add_function: " \
+                       "Received error code {1:d} while adding function " \
+                       "{0:d} of {3:d}.".format(_code[0], _code[1],
+                                                _n_functions)
+            self._modulebook.mdcRTK.debug_log.error(_content)
+
+        if len(_error_codes) > 0:
+            _prompt = _(u"An error occurred while attempting to add one or "
+                        u"more functions.")
+            Utilities.rtk_error(_prompt)
+
         self._modulebook.request_load_data(self._controller.project_dao,
                                            self._revision_id)
 
         return False
 
-    def _cancel(self, __button):
+    def _cancel(self, __assistant):
         """
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param gtk.Assistant __assistant: the current instance of the
+                                          assistant.
         """
 
-        self.assistant.destroy()
+        self.destroy()
